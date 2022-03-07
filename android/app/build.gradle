@@ -165,6 +165,7 @@ packagingOptions {
                   UMENG_CHANNEL_VALUE: "DEFAULT_TEST",
                   JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "developer-default",       //在此替换你的channel，也可使用默认的
+                  JPUSH_PKGNAME:"com.licaimofang.app",
                   XIAOMI_APPKEY:"MI-5931731298226",//小米平台注册的appkey 
                   XIAOMI_APPID:"MI-2882303761517312226" //小米平台注册的appid
           ]

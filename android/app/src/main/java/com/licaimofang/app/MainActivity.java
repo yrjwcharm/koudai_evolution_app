@@ -6,17 +6,39 @@
  * @Description: 
  */
 package com.licaimofang.app;
+import android.content.Intent;
 import android.os.Bundle; // here
 import org.devio.rn.splashscreen.SplashScreen; // here
 import com.facebook.react.ReactActivity;
 import android.os.Build;
 import android.util.Log;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import com.licaimofang.readcard.ActivityNavigator;
 import com.licaimofang.readcard.utils.PermissionsUtils;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 public class MainActivity extends ReactActivity {
     public static final String TAG = "DemoHelper12";
+    /**消息Id**/
+    private static final String KEY_MSGID = "msg_id";
+    /**该通知的下发通道**/
+    private static final String KEY_WHICH_PUSH_SDK = "rom_type";
+    /**通知标题**/
+    private static final String KEY_TITLE = "n_title";
+    /**通知内容**/
+    private static final String KEY_CONTENT = "n_content";
+    /**通知附加字段**/
+    private static final String KEY_EXTRAS = "n_extras";
+
+
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
