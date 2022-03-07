@@ -55,6 +55,7 @@ class Button extends React.Component {
             title,
             desc,
             superscript = '',
+            onLayout,
         } = this.props;
         const {superscriptWidth} = this.state;
         return (
@@ -69,7 +70,10 @@ class Button extends React.Component {
                         disabled && {backgroundColor: disabledColor, borderColor: disabledColor},
                     ]}
                     underlayColor={type == 'primary' ? (color ? color : '#0046B1') : '#F6F6F6'}
-                    disabled={disabled}>
+                    disabled={disabled}
+                    onLayout={(e) => {
+                        onLayout && onLayout(e.nativeEvent.layout);
+                    }}>
                     <View style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
                         <View>
                             <Text style={[type == 'primary' ? styles.Text : styles.minorText, textStyle]}>{title}</Text>

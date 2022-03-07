@@ -3,9 +3,9 @@
  * @Author: dx
  * @LastEditors: yhc
  * @LastEditTime: 2021-12-02 21:23:08
- * @Description: 牛人跟投设置
+ * @Description: 跟投设置
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
@@ -19,6 +19,7 @@ import http from '../../services';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
 
 const FollowInvestSetting = ({navigation, route}) => {
     const jump = useJump();
@@ -28,16 +29,26 @@ const FollowInvestSetting = ({navigation, route}) => {
     const [errMainMes, setErrMainMes] = useState('');
     const [errBottomMes, setErrBottomMes] = useState('');
     const [inputVal, setInputVal] = useState('');
+    const [autoChargeStatus, setAutoChargeStatus] = useState(false);
     const inputModal = useRef();
     const inputRef = useRef();
     const [selectedBank, setSelectedBank] = useState({});
     const bankModal = useRef();
 
+    const selectConflict = useMemo(() => selectedBank.pay_method === 'wallet' && autoChargeStatus, [
+        autoChargeStatus,
+        selectedBank.pay_method,
+    ]);
+
     useFocusEffect(
         useCallback(() => {
-            http.get('/niuren/follow_invest/setting/info/20210801', {poid: route.params?.poid}).then((res) => {
+            http.get('/signal/follow_invest/setting/info/20220214', {
+                poid: route.params?.poid,
+                scene: route.params?.scene || route.params?.fr,
+            }).then((res) => {
                 if (res.code === '000000') {
                     setOpen(res.result.status);
+                    setAutoChargeStatus(res.result.auto_charge_status);
                     setAmount(res.result?.amount);
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
@@ -49,7 +60,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                     }
                     // 用此处理主界面错误提示和下弹框提示
                     changeInput(defaultAmount, res.result.pay_methods[0], setErrMainMes);
-                    navigation.setOptions({title: res.result.title || '设置'});
+                    navigation.setOptions({title: res.result.title || '跟投设置'});
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,11 +107,13 @@ const FollowInvestSetting = ({navigation, route}) => {
         value !== inputVal && setInputVal(onlyNumber(value));
     };
     const onSave = () => {
-        http.post('/niuren/follow_invest/setting/modify/20210801', {
+        http.post('/signal/follow_invest/setting/modify/20220214', {
             amount,
             pay_method: selectedBank.pay_method,
             poid: route.params?.poid,
             status: open ? 1 : 0,
+            auto_charge_status: +autoChargeStatus,
+            scene: route.params?.scene || route.params?.fr,
         }).then((res) => {
             if (res.code === '000000') {
                 Toast.show('保存成功');
@@ -150,38 +163,66 @@ const FollowInvestSetting = ({navigation, route}) => {
                     </View>
                     <View style={{paddingHorizontal: Space.padding}}>
                         <Text style={styles.desc}>{data.desc}</Text>
-                        <Text style={[styles.desc, {marginTop: px(4), color: Colors.lightGrayColor}]}>{data.tip}</Text>
+                        <Text style={[styles.desc, {marginTop: px(4)}]}>{data.tip}</Text>
                     </View>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => bankModal.current?.show()}
-                        style={[Style.flexBetween, styles.bankChange]}>
-                        <View style={Style.flexRow}>
-                            <Image source={{uri: selectedBank.bank_icon}} style={styles.bankIcon} />
-                            <View>
-                                <Text
-                                    style={[
-                                        styles.label,
-                                        {
-                                            color: Colors.defaultColor,
-                                            fontWeight: Platform.select({android: '700', ios: '500'}),
-                                        },
-                                    ]}>
-                                    {selectedBank.bank_name}
-                                    {selectedBank.bank_no ? <Text>({selectedBank.bank_no})</Text> : null}
-                                </Text>
-                                <Text style={styles.limitDesc}>{selectedBank.limit_desc}</Text>
+                    <View style={styles.autoChargeWrapper}>
+                        <View style={[Style.flexBetween]}>
+                            <Text style={{fontSize: px(14), color: '#4e556c', lineHeight: px(20)}}>魔方宝自动充值</Text>
+                            <Switch
+                                ios_backgroundColor={'#CCD0DB'}
+                                onValueChange={(val) => {
+                                    setAutoChargeStatus(val);
+                                }}
+                                thumbColor={'#fff'}
+                                trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                                value={autoChargeStatus}
+                            />
+                        </View>
+                        <View style={styles.autoChargeTip}>
+                            <Html
+                                style={{fontSize: px(12), lineHeight: px(17), color: '#545968'}}
+                                html={data.auto_charge_tip}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.bankChangeWrapper}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => bankModal.current?.show()}
+                            style={[Style.flexBetween, styles.bankChange]}>
+                            <View style={Style.flexRow}>
+                                <Image source={{uri: selectedBank.bank_icon}} style={styles.bankIcon} />
+                                <View>
+                                    <Text
+                                        style={[
+                                            styles.label,
+                                            {
+                                                color: Colors.defaultColor,
+                                                fontWeight: Platform.select({android: '700', ios: '500'}),
+                                            },
+                                        ]}>
+                                        {selectedBank.bank_name}
+                                        {selectedBank.bank_no ? <Text>({selectedBank.bank_no})</Text> : null}
+                                    </Text>
+                                    <Text style={styles.limitDesc}>{selectedBank.limit_desc}</Text>
+                                </View>
                             </View>
-                        </View>
-                        <View style={Style.flexRow}>
-                            <Text style={[styles.limitDesc, {lineHeight: px(17)}]}>切换</Text>
-                            <AntDesign color={Colors.lightGrayColor} name={'right'} size={px(12)} />
-                        </View>
-                    </TouchableOpacity>
+                            <View style={Style.flexRow}>
+                                <Text style={[styles.limitDesc, {lineHeight: px(17)}]}>切换</Text>
+                                <AntDesign color={Colors.lightGrayColor} name={'right'} size={px(12)} />
+                            </View>
+                        </TouchableOpacity>
+                        {selectConflict && (
+                            <View style={styles.changeTip}>
+                                <Text style={styles.changeTipText}>为开启魔方宝自动充值功能，请切换扣款银行卡</Text>
+                            </View>
+                        )}
+                    </View>
+                    {data.pay_method_tip && <Text style={styles.payMethodTip}>{data.pay_method_tip}</Text>}
                     <Button
                         onPress={onSave}
                         style={{marginTop: px(40), marginHorizontal: Space.marginAlign}}
-                        disabled={!!errMainMes || !amount}
+                        disabled={!!errMainMes || !amount || selectConflict}
                         title={'保存'}
                     />
                 </ScrollView>
@@ -314,13 +355,44 @@ const styles = StyleSheet.create({
     desc: {
         fontSize: Font.textH3,
         lineHeight: px(21),
-        color: Colors.descColor,
+        color: Colors.lightGrayColor,
     },
-    bankChange: {
+    autoChargeWrapper: {
+        paddingHorizontal: px(16),
+        paddingVertical: px(18),
+        backgroundColor: '#fff',
         marginTop: px(20),
-        paddingVertical: px(12),
+    },
+    bankChangeWrapper: {
         paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
+        marginTop: px(12),
+    },
+    autoChargeTip: {
+        marginTop: px(15),
+        padding: px(12),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(4),
+    },
+    changeTip: {
+        paddingVertical: px(7),
+        borderTopColor: '#DDDDDD',
+        borderTopWidth: px(1),
+    },
+    changeTipText: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#e74949',
+    },
+    payMethodTip: {
+        paddingTop: px(12),
+        paddingHorizontal: px(16),
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#9AA1B2',
+    },
+    bankChange: {
+        paddingVertical: px(12),
     },
     bankIcon: {
         marginRight: px(8),

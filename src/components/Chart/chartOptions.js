@@ -485,3 +485,331 @@ export const pie = () => `
     chart.get('canvas').draw();
 })();
 `;
+
+export const LowBuyAreaChart = (data, colors, areaColors, tag_position = {}, px) => {
+    return `
+(function(){
+chart = new F2.Chart({
+  id: 'chart',
+  pixelRatio: window.devicePixelRatio,
+  width: ${px(311)},
+  height:${px(200)},
+  appendPadding: [10, 10, 10, 0],
+});
+chart.source(${JSON.stringify(data)});
+chart.scale('date', {
+  type: 'timeCat',
+  tickCount: 3,
+  range: [0, 1]
+});
+chart.scale('value', {
+  tickCount: 5,
+});
+chart.axis('date', {
+  label: function label(text, index, total) {
+    const textCfg = {};
+    if (index === 0) {
+      textCfg.textAlign = 'left';
+    } else if (index === total - 1 ) {
+      textCfg.textAlign = 'right';
+    }
+    textCfg.fontFamily = 'DINAlternate-Bold';
+    return textCfg;
+  }
+});
+chart.axis('value', {
+  label: function label(text) {
+    const cfg = {};
+    cfg.text = parseFloat(text).toFixed(2);
+    cfg.fontFamily = 'DINAlternate-Bold';
+    return cfg;
+  }
+});
+chart.legend(false);
+chart.tooltip({
+  crosshairsStyle: {
+    stroke: ${JSON.stringify(colors[0])},
+    lineWidth: 0.5,
+    lineDash: [2],
+  },
+  crosshairsType: 'y',
+  custom: true,
+  showCrosshairs: true,
+  showXTip: true,
+  snap: true,
+  tooltipMarkerStyle: {
+    radius: 1
+  },
+});
+  chart.area({startOnZero: false, connectNulls: true})
+  .position('date*value')
+  .shape('smooth')
+  .color(${data[0].type ? "'type'," : ''}${JSON.stringify(areaColors)})
+  .animate({
+      appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+      }
+  });
+
+chart.line()
+  .position('date*value')
+  .shape('smooth')
+  .color(${data[0].type ? "'type'," : ''}${JSON.stringify(colors)})
+  .animate({
+    appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+    }
+  })
+  .style('type', {
+    lineWidth: 1,
+  });
+
+  chart.point().position('date*value').size('tag', function(val) {
+    return val ? 3 : 0;
+  }).style('tag', {
+    fill: function fill(val) {
+      if (val === 2) {
+        return '#4BA471';
+      } else if (val === 1) {
+        return '#E74949';
+      }else if (val === 3) {
+          return '#0051CC';
+       }
+    },
+    stroke: '#fff',
+    lineWidth: 1
+  });
+
+  if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.buy?.position)},
+        content: ${JSON.stringify(tag_position?.buy?.name)},
+        limitInPlot:true,
+        offsetY: -8,
+        background: {
+          fill: '#E74949',
+          padding: 2,
+        },
+        pointStyle: {
+          fill: '#E74949'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
+        }
+      });
+    };
+
+chart.render();
+})();
+`;
+};
+
+export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
+    let ticks = chart.ticks.reduce((memo, cur) => {
+        memo[cur[0] * 100] = cur[1];
+        return memo;
+    }, {});
+    let valueArea = chart.value_area;
+
+    let badTickValue = chart?.ticks?.[1]?.[0];
+    let axisLabelDistance = badTickValue > 0.3 && badTickValue < 0.7 ? '4' : '0';
+    return `
+  option = {
+    backgroundColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#fff' }, { offset: 1, color: '#FBFBFC' }]),
+    series: [
+      {
+        type: 'gauge',
+        center: ['50%', '50%'],
+        radius:'70%',
+        min: 0,
+        max: 100,
+        splitNumber: 50,
+        progress: {
+          show: true,
+          width: 35
+        },
+        pointer: {
+          show: false
+        },
+        emphasis: {
+          disabled: true
+        },
+        axisLine: {
+          lineStyle: {
+            width: 35,
+            color: [[1, '#F8F9FA']]
+          }
+        },
+        axisTick: {
+          distance: -50,
+          splitNumber: 1,
+          lineStyle: {
+            width: 1,
+            color: '#E2E4EA'
+          }
+        },
+        splitLine: {
+          show: true,
+          distance: -43,
+          length: 0,
+          lineStyle: {
+            width: 1,
+            color: '#E2E4EA'
+          }
+        },
+        axisLabel: {
+          show: true,
+          distance: ${axisLabelDistance},
+          color: '#9AA1B2',
+          formatter: function (val) {
+           let ticks = ${JSON.stringify(ticks)};
+          return ticks[val] === '-' ? '' : (ticks[val] || '')
+          },
+          padding:[0,0,0,0],
+          fontSize: 14
+        },
+        anchor: {
+          show: false
+        },
+        title: {
+          show: false
+        },
+        detail: {
+          valueAnimation: true,
+          width: '60%',
+          lineHeight: 40,
+          borderRadius: 8,
+          offsetCenter: [0, '-0%'],
+          fontSize: 40,
+          fontWeight: 'bolder',
+          formatter: '${chart?.marks?.text || ' '}',
+          rich:{
+              a: {
+                 color: '#E74949',
+                 fontWeight: '600',
+                 fontSize: '24px',
+                 lineHeight: 33
+              },
+              b: {
+                 color: '#E74949',
+                 fontWeight: '600',
+                 fontSize: '14px',
+                 lineHeight: 20,
+                 verticalAlign:'center',
+              },
+              c: {
+                 color: '#E74949',
+                 fontWeight: '600',
+                 fontFamily: 'DINAlternate-Bold',
+                 verticalAlign:'top',
+                 fontSize: '24px',
+                 lineHeight: 28
+              },
+              d:{
+                 color: '#121D3A',
+                 fontWeight: '600',
+                 fontSize: '24px',
+                 lineHeight: 33
+              },
+              e:{
+                fontSize: 12,
+                fontWeight: 400,
+                color: '#121D3A',
+                lineHeight: 17
+              },
+              f:{
+                fontFamily: 'DINAlternate-Bold',
+                fontWeight: 'bold',
+                color: '#E74949',
+                fontSize: 18,
+                lineHeight: 30
+              }
+          },
+          color: 'auto'
+        },
+        data: [${valueArea.map(([value], idx, arr) => {
+            return `{
+                value:${value * 100 >= 100 ? 99.99 : value * 100},
+                itemStyle: {
+                    color: ${
+                        idx === 0
+                            ? arr.length > 1
+                                ? `'#F8F9FA'`
+                                : `new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#F6F7F8' }, { offset: 1, color: '#DAE6FF' }])`
+                            : `new echarts.graphic.LinearGradient(0, 0, 1, 0, [{offset: ${
+                                  arr[idx - 1][0]
+                              }, color: '#F8F9FA' },{ offset: ${value}, color: '#F9BABA' }])`
+                    }
+                }
+            }`;
+        })}]
+      },
+      {
+        type: 'gauge',
+        center: ['50%', '50%'],
+        radius:'73%',
+        emphasis: {
+          disabled: true
+        },
+        min: 0,
+        max: 100,
+        progress: {
+          show: true,
+          width: 10
+        },
+        pointer: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            width: 10,
+            color: [[1, '#E2E4EA']]
+          }
+        },
+        axisTick: {
+          show: false
+        },
+        splitLine: {
+          show: false
+        },
+        axisLabel: {
+          show: false
+        },
+        detail: {
+          show: false
+        },
+        data: [${valueArea.map(([value, colour], idx) => {
+            return `{
+                value:${value * 100 >= 100 ? 99.99 : value * 100},
+                detail: {
+                  show: ${idx > 0 ? `false` : `true`},
+                  formatter: '${desc || ' '}',
+                  offsetCenter:[0,'70%'],
+                  rich:{
+                      a:{
+                      fontSize: 12,
+                      color:'#121D3A',
+                      lineHeight: 17,
+                      },
+                      b:{
+                      fontSize: 16,
+                      color:'#121D3A',
+                      fontFamily:'DINAlternate-Bold',
+                      lineHeight: 19,
+                      fontWeight: 'bold'
+                      },
+                  }
+                },
+                 itemStyle: {
+                    color: '${colour}'
+                 }
+            }`;
+        })}]
+      }
+    ]
+  };
+
+  option && myChart.setOption(option);`;
+};
