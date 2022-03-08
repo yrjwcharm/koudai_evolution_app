@@ -3,13 +3,13 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-03 18:56:13
+ * @LastEditTime: 2022-03-07 11:56:10
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState, Image} from 'react-native';
+import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState, Image, DeviceEventEmitter} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppStack from './src/routes';
@@ -65,6 +65,10 @@ function App(props) {
     };
 
     React.useEffect(() => {
+        //厂商通道收到 push
+        DeviceEventEmitter.addListener('jdeeplink', (e) => {
+            store.dispatch(updateUserInfo({pushRoute: JSON.parse(e.extras)?.route}));
+        });
         http.get('/mapi/app/config/20210101').then((result) => {
             store.dispatch(updateUserInfo(result.result));
             //版本更新显示小红点逻辑
