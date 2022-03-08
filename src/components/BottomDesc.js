@@ -25,17 +25,20 @@ const BottomDesc = (props) => {
     }, [userInfo]);
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
-            {props?.fix_img
-                ? [props.fix_img].flat(3).map((item) => (
-                      <View style={styles.item}>
-                          <FastImage
-                              resizeMode={FastImage.resizeMode.contain}
-                              source={{uri: item}}
-                              style={[{height: text(30), width: '100%', marginBottom: text(8)}]}
-                          />
-                      </View>
-                  ))
-                : null}
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
+                {props?.fix_img
+                    ? [props.fix_img]
+                          .flat(3)
+                          .map((item, idx) => (
+                              <FastImage
+                                  key={idx}
+                                  resizeMode={FastImage.resizeMode.contain}
+                                  source={{uri: item}}
+                                  style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
+                              />
+                          ))
+                    : null}
+            </View>
             <View style={styles.item}>
                 <FastImage
                     resizeMode={FastImage.resizeMode.contain}
