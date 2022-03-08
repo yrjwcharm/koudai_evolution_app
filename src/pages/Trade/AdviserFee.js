@@ -105,7 +105,7 @@ export default ({navigation}) => {
                             <Icon color={Colors.descColor} name="right" size={px(12)} />
                         </TouchableOpacity>
                     ) : null}
-                    <BottomDesc fix_img={data.advisor_footer_img} style={styles.bottomDesc} />
+                    <BottomDesc fix_img={data.advisor_footer_imgs} style={styles.bottomDesc} />
                     <BottomModal ref={bottomModal} title={data?.tips?.title}>
                         <View style={[{padding: px(16)}]}>
                             {data?.tips?.content?.map?.((item, index) => {

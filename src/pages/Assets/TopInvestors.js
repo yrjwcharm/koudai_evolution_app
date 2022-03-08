@@ -26,6 +26,7 @@ import {BottomModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {debounce} from 'lodash';
 import {LowBuyPanelChart} from '../../components/Chart/chartOptions';
+import {Modal} from '../../components/Modal';
 
 const LoadingWebview = () => {
     return (
@@ -54,6 +55,7 @@ const TopInvestors = ({route}) => {
     const [panelWebviewLoaded, setPanelWebviewLoaded] = useState('1');
     const [buttonDistance, setButtonDistance] = useState(null);
     const [scrollY, setScrollY] = useState(0);
+    const [autoFlowState, updateAutoFlowState] = useState(false);
     const signModal = React.useRef(null);
     const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef('');
@@ -64,6 +66,7 @@ const TopInvestors = ({route}) => {
             if (res.code === '000000') {
                 setData(res.result || {});
                 setShowEmpty(true);
+                updateAutoFlowState(res.result.head?.settings?.is_autoing);
                 res.result.period && setPeriod(res.result.period);
             }
         });
@@ -125,14 +128,24 @@ const TopInvestors = ({route}) => {
             }
         });
     };
-    const handlerOpenFlow = () => {
+    const handlerOpenFlow = (val) => {
         if (!data.adviser_sign?.is_signed) {
             setSignCheck(data?.adviser_sign?.agreement_bottom?.default_agree);
             setSignTimer(data?.adviser_sign?.risk_disclosure?.countdown);
             signModal.current?.show();
             startTimer();
-        } else {
-            jump(jump(data.head?.settings?.button?.url));
+        } else if (val) {
+            jump(data.head?.settings?.button?.url);
+        } else if (!val) {
+            Modal.show({
+                title: data.head?.settings?.pop?.title,
+                content: data.head?.settings?.pop?.content,
+                confirmText: data.head?.settings?.pop?.confirm?.text,
+                confirm: true,
+                confirmCallBack: () => {
+                    updateAutoFlowState(val);
+                },
+            });
         }
     };
 
@@ -164,6 +177,9 @@ const TopInvestors = ({route}) => {
                                 scrollEnabled={false}
                                 onMessage={(e) => {
                                     console.log(e.nativeEvent.data);
+                                    if (e.nativeEvent.data === 'click') {
+                                        jump(data.button?.url);
+                                    }
                                 }}
                                 onLoadEnd={() => {
                                     setPanelWebviewLoaded('2');
@@ -183,8 +199,11 @@ const TopInvestors = ({route}) => {
                             </View>
                             {/* auto flow */}
                             {data.head?.settings && (
-                                <TouchableOpacity activeOpacity={0.8} style={styles.autoFlow} onPress={handlerOpenFlow}>
-                                    <View style={[styles.autoFlowItem]}>
+                                <View style={styles.autoFlow}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.autoFlowItem]}
+                                        onPress={() => handlerOpenFlow(!autoFlowState)}>
                                         <Text style={[styles.autoFlowItemLeft]}>
                                             {data.head?.settings?.button?.text}
                                         </Text>
@@ -193,11 +212,15 @@ const TopInvestors = ({route}) => {
                                             ios_backgroundColor={'#CCD0DB'}
                                             thumbColor={'#fff'}
                                             trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
-                                            value={data.head?.settings.is_autoing}
+                                            value={autoFlowState}
                                         />
-                                    </View>
-                                    {data.head?.settings?.is_autoing && (
-                                        <View
+                                    </TouchableOpacity>
+                                    {autoFlowState && (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump(data.head?.settings?.button?.url);
+                                            }}
                                             style={[
                                                 styles.autoFlowItem,
                                                 {
@@ -217,9 +240,9 @@ const TopInvestors = ({route}) => {
                                                     color="#9095A5"
                                                 />
                                             </View>
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
-                                </TouchableOpacity>
+                                </View>
                             )}
 
                             {/* button */}
@@ -256,15 +279,6 @@ const TopInvestors = ({route}) => {
                         <View style={styles.niewRenWrapper}>
                             <Text style={styles.title}>{'牛人买入点走势图'}</Text>
                             <View style={{...styles.boxSty, minHeight: px(276)}}>
-                                <View style={{height: px(70), marginBottom: px(20)}}>
-                                    {chartData.chart ? (
-                                        <Chart
-                                            initScript={baseHotChart(chartData.chart, deviceWidth - px(64), px(70))}
-                                            ref={hotChartRef}
-                                            style={{width: '100%'}}
-                                        />
-                                    ) : null}
-                                </View>
                                 <View style={{height: px(216)}}>
                                     {chartData.chart ? (
                                         <Chart
@@ -291,6 +305,15 @@ const TopInvestors = ({route}) => {
                                                 )});chart.showTooltip(p)`;
                                                 hotChartRef?.current?.chart?.current.injectJavaScript(str);
                                             }}
+                                            style={{width: '100%'}}
+                                        />
+                                    ) : null}
+                                </View>
+                                <View style={{height: px(70), marginTop: px(-10)}}>
+                                    {chartData.chart ? (
+                                        <Chart
+                                            initScript={baseHotChart(chartData.chart, deviceWidth - px(64), px(70))}
+                                            ref={hotChartRef}
                                             style={{width: '100%'}}
                                         />
                                     ) : null}

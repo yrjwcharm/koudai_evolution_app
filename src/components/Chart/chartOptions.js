@@ -486,17 +486,33 @@ export const pie = () => `
 })();
 `;
 
-export const LowBuyAreaChart = (data, colors, areaColors, tag_position = {}, px) => {
+export const LowBuyAreaChart = (data = [], colors, areaColors, tag_position = {}, px) => {
     return `
 (function(){
+let tooltip = document.createElement('div');
+tooltip.style.position = 'absolute'
+tooltip.style.background = 'rgba(0,0,0,0.6)';
+tooltip.style.borderRadius = '5px';
+tooltip.style.fontSize = '12px';
+tooltip.style.lineHeight = '18px';
+tooltip.style.color = '#fff';
+tooltip.style.padding = '3px 5px';
+tooltip.style.top = '5px';
+tooltip.style.opacity = 0;
+document.body.appendChild(tooltip);
+
+let width = ${px(311)};
+let height = ${px(200)};
+
+const data = ${JSON.stringify(data)};
 chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
-  width: ${px(311)},
-  height:${px(200)},
+  width: width,
+  height: height,
   appendPadding: [10, 10, 10, 0],
 });
-chart.source(${JSON.stringify(data)});
+chart.source(data);
 chart.scale('date', {
   type: 'timeCat',
   tickCount: 3,
@@ -533,18 +549,40 @@ chart.tooltip({
     lineDash: [2],
   },
   crosshairsType: 'y',
-  custom: true,
   showCrosshairs: true,
-  showXTip: true,
   snap: true,
   tooltipMarkerStyle: {
     radius: 1
   },
+  custom: true,
+  onHide: function(){
+    tooltip.style.opacity = 0;
+  },
+  onShow: function onShow(ev) {
+    if(!ev.items) return;
+    const item = ev.items[0];
+    let str = '<div>'+item.title+'</div>';
+    if(data[0].type){
+      str += '<div>跟随信号收益：'+item.value+'</div>'
+      str += '<div>不跟随信号收益：'+ev.items[1].value +'</div>'
+    }
+    tooltip.innerHTML = str;
+    let left = 0;
+    if(item.x <  (tooltip.offsetWidth / 2)){
+      left = item.x + 10;
+    }else if (width - item.x < (tooltip.offsetWidth / 2)){
+      left = item.x - 10 - tooltip.offsetWidth;
+    } else {
+      left = item.x - (tooltip.offsetWidth / 2)
+    }
+    tooltip.style.left = left + 'px';
+    tooltip.style.opacity = 1;
+  }
 });
   chart.area({startOnZero: false, connectNulls: true})
   .position('date*value')
   .shape('smooth')
-  .color(${data[0].type ? "'type'," : ''}${JSON.stringify(areaColors)})
+  .color(${data[0].type ? `'type',` : ''}${JSON.stringify(areaColors)})
   .animate({
       appear: {
       animation: 'groupWaveIn',
@@ -555,7 +593,7 @@ chart.tooltip({
 chart.line()
   .position('date*value')
   .shape('smooth')
-  .color(${data[0].type ? "'type'," : ''}${JSON.stringify(colors)})
+  .color(${data[0].type ? `'type',` : ''}${JSON.stringify(colors)})
   .animate({
     appear: {
       animation: 'groupWaveIn',
@@ -725,6 +763,15 @@ export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
                 color: '#E74949',
                 fontSize: 18,
                 lineHeight: 30
+              },
+              g:{
+                backgroundColor:'#E74949',
+                color:'#fff',
+                borderRadius: 5,
+                height: 20,
+                width: 60,
+                fontSize:10,
+                lineHeight: 18
               }
           },
           color: 'auto'
@@ -810,6 +857,10 @@ export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
       }
     ]
   };
-
+  if(window.ReactNativeWebView){
+    chartDom.addEventListener('click',function(){
+      window.ReactNativeWebView.postMessage("click")
+    });
+  }
   option && myChart.setOption(option);`;
 };

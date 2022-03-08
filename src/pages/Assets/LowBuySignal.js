@@ -33,6 +33,7 @@ import {BottomModal} from '../../components/Modal';
 import Agreements from '../../components/Agreements';
 import Notice from '../../components/Notice';
 import {debounce} from 'lodash';
+import {Modal} from '../../components/Modal';
 
 const LoadingComponent = () => {
     return (
@@ -96,6 +97,7 @@ const LowBuySignalExplain = ({route}) => {
     const [buttonDistance, setButtonDistance] = useState(null);
     const [signCheck, setSignCheck] = useState(false);
     const [signTimer, setSignTimer] = useState(8);
+    const [autoFlowState, updateAutoFlowState] = useState(false);
     const startDateRef = useRef(null);
     const textInputRef = useRef(null);
     const sliderWidth = useRef(0);
@@ -144,13 +146,16 @@ const LowBuySignalExplain = ({route}) => {
         })
     ).current;
 
-    useEffect(() => {
-        if (webviewLoaded === '3') {
-            setTimeout(() => {
-                updateLoadSecondWebView(true);
-            }, 1200);
-        }
-    }, [webviewLoaded]);
+    useFocusEffect(
+        useCallback(() => {
+            if (webviewLoaded === '3') {
+                setTimeout(() => {
+                    console.log('panel-focus-loaded');
+                    updateLoadSecondWebView(true);
+                }, 1200);
+            }
+        }, [webviewLoaded])
+    );
 
     const handlerTableInfo = (tableInfo, idx) => {
         return tableInfo.reduce((memo, cur) => {
@@ -172,7 +177,9 @@ const LowBuySignalExplain = ({route}) => {
                 chartRef.current?.injectJavaScript(injectedJavaScript);
                 setWebviewLoaded('3');
             } else if (webviewLoaded === '3') {
-                chartRef.current?.injectJavaScript(`chart.changeData(${JSON.stringify(calcData.chart)});`);
+                chartRef.current?.injectJavaScript(
+                    `chart.hideTooltip();chart.changeData(${JSON.stringify(calcData.chart)});`
+                );
             }
             updateLoadingChart(false);
         }
@@ -191,6 +198,7 @@ const LowBuySignalExplain = ({route}) => {
         http.get('/signal/low_buy/detail/20220214', {poid: route.params?.poid}).then((res) => {
             setData(res.result);
             updateIsOpen(res.result.is_open);
+            updateAutoFlowState(res.result.head?.settings?.is_autoing);
             let tableInfo = [res.result.annual_yield.table.th, ...res.result.annual_yield.table.td];
             setAnnualTableLeft(handlerTableInfo(tableInfo, 0));
             setAnnualTableCenter(handlerTableInfo(tableInfo, 1));
@@ -274,14 +282,24 @@ const LowBuySignalExplain = ({route}) => {
         });
     };
 
-    const handlerOpenFlow = () => {
+    const handlerOpenFlow = (val) => {
         if (!data.adviser_sign?.is_signed) {
             setSignCheck(data?.adviser_sign?.agreement_bottom?.default_agree);
             setSignTimer(data?.adviser_sign?.risk_disclosure?.countdown);
             signModal.current?.show();
             startTimer();
-        } else {
-            jump(jump(data.head?.settings?.button?.url));
+        } else if (val) {
+            jump(data.head?.settings?.button?.url);
+        } else if (!val) {
+            Modal.show({
+                title: data.head?.settings?.pop?.title,
+                content: data.head?.settings?.pop?.content,
+                confirmText: data.head?.settings?.pop?.confirm?.text,
+                confirm: true,
+                confirmCallBack: () => {
+                    updateAutoFlowState(val);
+                },
+            });
         }
     };
 
@@ -346,6 +364,9 @@ const LowBuySignalExplain = ({route}) => {
                                     scrollEnabled={false}
                                     onMessage={(e) => {
                                         console.log(e.nativeEvent.data);
+                                        if (e.nativeEvent.data === 'click') {
+                                            jump(data.button?.url);
+                                        }
                                     }}
                                     onLoadEnd={() => {
                                         setPanelWebviewLoaded('2');
@@ -366,8 +387,11 @@ const LowBuySignalExplain = ({route}) => {
                             </View>
                             {/* auto flow */}
                             {data.head?.settings && (
-                                <TouchableOpacity activeOpacity={0.8} style={styles.autoFlow} onPress={handlerOpenFlow}>
-                                    <View style={[styles.autoFlowItem]}>
+                                <View style={styles.autoFlow}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.autoFlowItem]}
+                                        onPress={() => handlerOpenFlow(!autoFlowState)}>
                                         <Text style={[styles.autoFlowItemLeft]}>
                                             {data.head?.settings?.button?.text}
                                         </Text>
@@ -376,11 +400,15 @@ const LowBuySignalExplain = ({route}) => {
                                             ios_backgroundColor={'#CCD0DB'}
                                             thumbColor={'#fff'}
                                             trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
-                                            value={data.head?.settings.is_autoing}
+                                            value={autoFlowState}
                                         />
-                                    </View>
-                                    {data.head?.settings?.is_autoing && (
-                                        <View
+                                    </TouchableOpacity>
+                                    {autoFlowState && (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump(data.head?.settings?.button?.url);
+                                            }}
                                             style={[
                                                 styles.autoFlowItem,
                                                 {
@@ -400,9 +428,9 @@ const LowBuySignalExplain = ({route}) => {
                                                     color="#9095A5"
                                                 />
                                             </View>
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
-                                </TouchableOpacity>
+                                </View>
                             )}
 
                             {/* button */}
@@ -489,6 +517,7 @@ const LowBuySignalExplain = ({route}) => {
                     </View>
                     <View style={styles.chartWrapper}>
                         <WebView
+                            key={curTab}
                             allowFileAccess
                             allowFileAccessFromFileURLs
                             allowUniversalAccessFromFileURLs
@@ -504,6 +533,9 @@ const LowBuySignalExplain = ({route}) => {
                             startInLoadingState={true}
                             originWhitelist={['*']}
                             textZoom={100}
+                            onMessage={(e) => {
+                                console.log(e.nativeEvent.data);
+                            }}
                         />
                         {loadingChart && <LoadingWebview />}
                     </View>

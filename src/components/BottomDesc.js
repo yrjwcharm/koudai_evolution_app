@@ -25,15 +25,17 @@ const BottomDesc = (props) => {
     }, [userInfo]);
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
-            {props?.fix_img ? (
-                <View style={styles.item}>
-                    <FastImage
-                        resizeMode={FastImage.resizeMode.contain}
-                        source={{uri: props?.fix_img}}
-                        style={[{height: text(30), width: text(166), marginBottom: text(8)}]}
-                    />
-                </View>
-            ) : null}
+            {props?.fix_img
+                ? [props.fix_img].flat(3).map((item) => (
+                      <View style={styles.item}>
+                          <FastImage
+                              resizeMode={FastImage.resizeMode.contain}
+                              source={{uri: item}}
+                              style={[{height: text(30), width: '100%', marginBottom: text(8)}]}
+                          />
+                      </View>
+                  ))
+                : null}
             <View style={styles.item}>
                 <FastImage
                     resizeMode={FastImage.resizeMode.contain}
