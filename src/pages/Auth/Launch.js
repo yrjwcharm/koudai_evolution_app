@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-07 11:56:53
+ * @LastEditTime: 2022-03-09 17:12:06
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -16,7 +16,6 @@ import {
     Platform,
     BackHandler,
     ScrollView,
-    DeviceEventEmitter,
     NativeModules,
 } from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
@@ -25,7 +24,7 @@ import http from '../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
-import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
+import {getAppConfig, getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
@@ -270,6 +269,7 @@ export default function Launch({navigation}) {
                         global.env = env;
                     }
                     dispatch(getUserInfo());
+                    dispatch(getAppConfig());
                     if (callback) {
                         callback();
                     } else {
@@ -286,6 +286,7 @@ export default function Launch({navigation}) {
                                     throw new Error();
                                 }
                                 dispatch(getUserInfo());
+                                dispatch(getAppConfig());
                                 if (callback) {
                                     callback();
                                 } else {

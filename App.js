@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-07 11:56:10
+ * @LastEditTime: 2022-03-09 17:09:25
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -22,7 +22,7 @@ import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
 import NetInfo from '@react-native-community/netinfo';
-import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
+import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
 import {deleteModal, updateModal} from './src/redux/actions/modalInfo';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
@@ -69,31 +69,6 @@ function App(props) {
         DeviceEventEmitter.addListener('jdeeplink', (e) => {
             store.dispatch(updateUserInfo({pushRoute: JSON.parse(e.extras)?.route}));
         });
-        http.get('/mapi/app/config/20210101').then((result) => {
-            store.dispatch(updateUserInfo(result.result));
-            //版本更新显示小红点逻辑
-            if (global.ver < result?.result?.latest_version) {
-                Storage.keys().then((_res) => {
-                    if (_res?.length > 0) {
-                        let version_list = _res.filter((_item) => {
-                            return _item.includes('version');
-                        });
-                        //查看是否有较上次未更新 更新的版本
-                        if (
-                            version_list?.length > 0 &&
-                            version_list[0]?.slice(7, 12) < result?.result?.latest_version
-                        ) {
-                            //有更加新的版本 删除本地缓存 显示小红点
-                            _res.forEach((item) => {
-                                if (item?.includes('version')) {
-                                    Storage.delete(item);
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
         CodePush.checkForUpdate(key)
             .then((update) => {
                 if (!update) {
@@ -123,6 +98,7 @@ function App(props) {
                     Toast.show('网络已断开,请检查您的网络');
                 } else {
                     store.dispatch(getUserInfo());
+                    store.dispatch(getAppConfig());
                 }
             }, 500)
         );

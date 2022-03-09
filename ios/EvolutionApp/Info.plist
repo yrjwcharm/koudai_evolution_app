@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>6.5.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -82,6 +82,8 @@
 	<string>我们将要访问您的相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>方便您与投顾更好的沟通</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>此标识符将用于向您推荐个性化广告。</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>DIN-Medium.otf</string>
@@ -102,8 +104,6 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-	<key>NSUserTrackingUsageDescription</key>
-   <string>应用跟踪</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

@@ -2,7 +2,7 @@
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-26 17:20:20
+ * @LastEditTime: 2022-03-09 16:45:34
  * @Description: 验证码登陆
  */
 /*
@@ -23,7 +23,7 @@ import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
 import {connect} from 'react-redux';
 import {Style} from '../../../common/commonStyle';
-import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
+import {getUserInfo, getVerifyGesture, getAppConfig} from '../../../redux/actions/userInfo';
 import _ from 'lodash';
 import {CommonActions} from '@react-navigation/native';
 class VerifyLogin extends Component {
@@ -46,6 +46,7 @@ class VerifyLogin extends Component {
             Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.getUserInfo();
+                this.props.getAppConfig();
                 this.props.getVerifyGesture(true);
                 await Storage.save('loginStatus', res.result);
                 Toast.show('登录成功', {
@@ -206,6 +207,7 @@ const mapStateToProps = (state) => state;
 const mapDispatchToProps = {
     getUserInfo,
     getVerifyGesture,
+    getAppConfig,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyLogin);
 const styles = StyleSheet.create({
