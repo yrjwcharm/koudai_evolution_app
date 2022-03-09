@@ -38,7 +38,7 @@ public class OaidModule extends ReactContextBaseJavaModule {
            String _oaid = DeviceIdentifier.getOAID(reactContext);
            successCallback.invoke(_oaid);
        }else{
-           successCallback.invoke(null);
+           successCallback.invoke("");
        }
     }
 }
