@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 10:43:07
+ * @LastEditTime: 2022-03-09 16:42:29
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -50,5 +50,34 @@ export const updateVerifyGesture = (verifyGesture) => {
 export function getVerifyGesture(verifyGesture) {
     return (dispatch) => {
         dispatch(updateVerifyGesture(verifyGesture));
+    };
+}
+export function getAppConfig() {
+    return (dispatch) => {
+        http.get('/mapi/app/config/20210101').then((result) => {
+            dispatch(updateUserInfo(result.result));
+            //版本更新显示小红点逻辑
+            if (global.ver < result?.result?.latest_version) {
+                Storage.keys().then((_res) => {
+                    if (_res?.length > 0) {
+                        let version_list = _res.filter((_item) => {
+                            return _item.includes('version');
+                        });
+                        //查看是否有较上次未更新 更新的版本
+                        if (
+                            version_list?.length > 0 &&
+                            version_list[0]?.slice(7, 12) < result?.result?.latest_version
+                        ) {
+                            //有更加新的版本 删除本地缓存 显示小红点
+                            _res.forEach((item) => {
+                                if (item?.includes('version')) {
+                                    Storage.delete(item);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     };
 }

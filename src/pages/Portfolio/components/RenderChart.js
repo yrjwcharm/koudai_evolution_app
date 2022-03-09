@@ -47,6 +47,8 @@ export default function RenderChart(props) {
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current?.setNativeProps({text: items[0]?.title});
+            // 基于项目里独特的f2库代码，每次都会在items的最后多加两个obj，并且在实现类似于一条线多颜色的图表时也能保证数据的准确性，所以取最后两个比较有意义的obj
+            let len = items.length;
             if (type == 2 && showFutureArea) {
                 let range = items[0]?.origin?.value;
                 let _value = '';
@@ -63,12 +65,12 @@ export default function RenderChart(props) {
                 });
             } else {
                 _textPortfolio.current?.setNativeProps({
-                    text: items[0]?.value,
+                    text: items[len - 2]?.value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             }
             _textBenchmark.current?.setNativeProps({
-                text: items[1]?.value,
+                text: items[len - 1]?.value,
                 style: [
                     styles.legend_title_sty,
                     {color: lowLine === 1 ? Colors.defaultColor : getColor(items[1]?.value)},

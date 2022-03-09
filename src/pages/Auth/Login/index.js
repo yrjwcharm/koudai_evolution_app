@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 14:17:53
+ * @LastEditTime: 2022-03-09 16:44:29
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import http from '../../../services/';
 import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
 import {connect} from 'react-redux';
-import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
+import {getUserInfo, getVerifyGesture, getAppConfig} from '../../../redux/actions/userInfo';
 import {Modal} from '../../../components/Modal';
 import base64 from '../../../utils/base64';
 class Login extends Component {
@@ -58,6 +58,7 @@ class Login extends Component {
                     return;
                 }
                 this.props.getUserInfo();
+                this.props.getAppConfig();
                 this.props.getVerifyGesture(true);
                 await Storage.save('loginStatus', res.result);
                 Toast.show('登录成功', {
@@ -186,6 +187,7 @@ const mapStateToProps = (state) => state;
 const mapDispatchToProps = {
     getUserInfo,
     getVerifyGesture,
+    getAppConfig,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 const styles = StyleSheet.create({
