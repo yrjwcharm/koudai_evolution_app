@@ -2,27 +2,17 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-27 10:25:40
+ * @LastEditTime: 2022-03-09 16:45:58
  * @Description:找回登录密码
  */
-/*
- * @Date: 2021-01-13 16:52:39
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:28:23
- * @Description: 注册
- */
+
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {px as text, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
-import {Style, Colors} from '../../../common/commonStyle';
-import WechatView from '../wechatView';
 import InputView from '../input';
-import Agreements from '../../../components/Agreements';
 import http from '../../../services/';
 import Toast from '../../../components/Toast';
-import FastImage from 'react-native-fast-image';
 export default class index extends Component {
     constructor(props) {
         super(props);
