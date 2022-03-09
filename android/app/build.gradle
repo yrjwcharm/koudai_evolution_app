@@ -155,8 +155,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 65000
-        versionName '6.5.0'
+        versionCode 65100
+        versionName '6.5.1'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
@@ -322,6 +322,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.7'
     //androidx下的support库
     implementation "androidx.legacy:legacy-support-v4:1.0.0+"
+    implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.4'
 }
 
 // Run this once to be able to run the application with BUCK

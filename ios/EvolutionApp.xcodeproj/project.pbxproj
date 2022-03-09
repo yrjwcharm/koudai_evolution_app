@@ -31,6 +31,8 @@
 		008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045602591A5F00083350B /* CoreTelephony.framework */; };
 		008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045622591A5FD0083350B /* libsqlite3.0.tbd */; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
+		00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */; };
+		00E3FB5D27CE11F600FCFD34 /* PTRIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */; };
 		0C140D6F06EEF82032CEB527 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FF701FCEC3967D78711580 /* libPods-EvolutionApp-tvOSTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -119,6 +121,9 @@
 		00E356EE1AD99517003FC87E /* EvolutionAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EvolutionAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* EvolutionAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EvolutionAppTests.m; sourceTree = "<group>"; };
+		00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		00E3FB5B27CE11F600FCFD34 /* PTRIDFA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PTRIDFA.h; path = EvolutionApp/PTRIDFA.h; sourceTree = "<group>"; };
+		00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PTRIDFA.m; path = EvolutionApp/PTRIDFA.m; sourceTree = "<group>"; };
 		02ADFA153B301D4D3DF85E1C /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* EvolutionApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvolutionApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = EvolutionApp/AppDelegate.h; sourceTree = "<group>"; };
@@ -172,6 +177,7 @@
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */,
+				00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
@@ -245,6 +251,8 @@
 		13B07FAE1A68108700A75B9A /* EvolutionApp */ = {
 			isa = PBXGroup;
 			children = (
+				00E3FB5B27CE11F600FCFD34 /* PTRIDFA.h */,
+				00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */,
 				0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */,
 				0016AC14277B276700E78FBC /* IDCardModel.h */,
 				0016AC2E277B276C00E78FBC /* IDCardModel.m */,
@@ -268,6 +276,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */,
 				D07216DD27717393006AFA8D /* libJPush.a */,
 				D07216DB27717293006AFA8D /* libswiftWebKit.tbd */,
 				008045622591A5FD0083350B /* libsqlite3.0.tbd */,
@@ -831,6 +840,7 @@
 				0016AC39277B276D00E78FBC /* MJFoundation.m in Sources */,
 				0016AC3A277B276D00E78FBC /* ReadCardManager.m in Sources */,
 				0016AC30277B276D00E78FBC /* MJPropertyType.m in Sources */,
+				00E3FB5D27CE11F600FCFD34 /* PTRIDFA.m in Sources */,
 				0016AC34277B276D00E78FBC /* MJExtensionConst.m in Sources */,
 				0016AC33277B276D00E78FBC /* NSObject+MJCoding.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
@@ -944,7 +954,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 65000;
+				CURRENT_PROJECT_VERSION = 65100;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1154,7 +1164,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 65000;
+				CURRENT_PROJECT_VERSION = 65100;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1243,7 +1253,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 65000;
+				CURRENT_PROJECT_VERSION = 65100;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (

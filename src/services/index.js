@@ -49,6 +49,8 @@ axios.interceptors.request.use(
             deviceId: DeviceInfo.getDeviceId(),
             systemVersion: DeviceInfo.getSystemVersion(),
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
+            idfa: global.idfa,
+            oaid: global.oaid,
         };
         return config;
     },

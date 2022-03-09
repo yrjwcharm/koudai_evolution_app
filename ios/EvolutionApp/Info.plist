@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.5.0</string>
+	<string>6.5.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -82,6 +82,8 @@
 	<string>我们将要访问您的相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>方便您与投顾更好的沟通</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>应用跟踪</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>DIN-Medium.otf</string>
