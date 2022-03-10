@@ -10,8 +10,6 @@ package com.licaimofang.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
-
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -20,10 +18,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.microsoft.codepush.react.CodePush;
 import com.theweflex.react.WeChatPackage;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
 import cn.jiguang.plugins.push.JPushModule;
 import com.licaimofang.readcard.ReadCardPackage;
 import com.licaimofang.oaid.OaidPackage;
