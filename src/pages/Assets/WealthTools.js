@@ -285,7 +285,7 @@ const WealthTools = () => {
                         {data?.user_data?.all_amount?.desc}
                         <Text style={styles.udContentDescMoney}> {data?.user_data?.all_amount?.amount}</Text>
                     </Text>
-                    <View style={{marginTop: px(24), overflow: 'hidden'}}>
+                    <View style={{marginTop: px(24), overflow: 'scroll'}}>
                         <TextSwiper
                             list={data?.user_data?.latest_records?.list?.filter((_, idx) => idx % 2 === 0)}
                             speed={1500}
