@@ -141,6 +141,7 @@ const TopInvestors = ({route}) => {
                 title: data.head?.settings?.pop?.title,
                 content: data.head?.settings?.pop?.content,
                 confirmText: data.head?.settings?.pop?.confirm?.text,
+                isTouchMaskToClose: false,
                 confirm: true,
                 confirmCallBack: () => {
                     updateAutoFlowState(val);

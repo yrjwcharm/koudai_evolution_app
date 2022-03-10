@@ -130,7 +130,6 @@ const FollowInvestSetting = ({navigation, route}) => {
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
                             <TextInput
-                                autoFocus
                                 ref={inputRef}
                                 clearButtonMode={'never'}
                                 keyboardType="numeric"
@@ -191,7 +190,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                                 </View>
                                 <View style={[Style.flexBetween, {marginTop: px(6), marginHorizontal: px(16)}]}>
                                     <Text style={{fontSize: px(11)}}>{data.auto_charge_next_deduct}</Text>
-                                    <Text style={{fontSize: px(11)}}>跟投金额{amount || 0}元</Text>
+                                    <Text style={{fontSize: px(11)}}>跟投金额{(amount + '').slice(0, 7) || 0}元</Text>
                                 </View>
                             </View>
                         )}
@@ -241,7 +240,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                     {data.pay_method_tip && <Text style={styles.payMethodTip}>{data.pay_method_tip}</Text>}
                     <Button
                         onPress={onSave}
-                        style={{marginTop: px(40), marginHorizontal: Space.marginAlign}}
+                        style={{marginVertical: px(40), marginHorizontal: Space.marginAlign}}
                         disabled={!!errMainMes || !amount || selectConflict}
                         title={'保存'}
                     />
