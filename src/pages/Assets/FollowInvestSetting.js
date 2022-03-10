@@ -162,6 +162,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                             backgroundColor: '#fff',
                         }}>
                         <Html style={styles.desc} html={data.desc} />
+                        <Text style={styles.desc}>{data.tip}</Text>
                     </View>
                     <View style={styles.autoChargeWrapper}>
                         <View style={[Style.flexBetween, {paddingVertical: px(15)}]}>
@@ -350,8 +351,8 @@ const styles = StyleSheet.create({
     },
     desc: {
         fontSize: Font.textH3,
-        lineHeight: px(21),
-        color: Colors.lightGrayColor,
+        lineHeight: px(17),
+        color: '#9095A5',
     },
     autoChargeWrapper: {
         paddingHorizontal: px(16),
