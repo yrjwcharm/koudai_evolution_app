@@ -30,6 +30,8 @@ const FollowInvestSetting = ({navigation, route}) => {
     const [autoChargeStatus, setAutoChargeStatus] = useState(false);
     const inputRef = useRef(null);
     const [selectedBank, setSelectedBank] = useState({});
+    const [progressWrapperWidth, setProgressWrapperWidth] = useState(0);
+    const [progressFlagWidth, setProgressFlagWidth] = useState(0);
     const bankModal = useRef();
     const progressRate = useMemo(() => {
         let rate = +(data.wallet_amount / +amount).toFixed(2);
@@ -178,8 +180,27 @@ const FollowInvestSetting = ({navigation, route}) => {
                             />
                         </View>
                         {autoChargeStatus && (
-                            <View style={styles.progressWrapper}>
-                                <View style={[styles.flag, {left: 63 * progressRate + '%'}]}>
+                            <View
+                                style={styles.progressWrapper}
+                                onLayout={(e) => {
+                                    setProgressWrapperWidth(e.nativeEvent.layout.width);
+                                }}>
+                                <View
+                                    style={[
+                                        styles.flag,
+                                        {
+                                            left: Math.min(
+                                                Math.max(
+                                                    progressRate * progressWrapperWidth - progressFlagWidth / 2,
+                                                    0
+                                                ),
+                                                progressWrapperWidth - progressFlagWidth
+                                            ),
+                                        },
+                                    ]}
+                                    onLayout={(e) => {
+                                        setProgressFlagWidth(e.nativeEvent.layout.width);
+                                    }}>
                                     <Text style={styles.flagText}>魔方宝余额{data.wallet_amount}元</Text>
                                 </View>
                                 <View style={[styles.flagpole, {left: 90.5 * progressRate + '%'}]}>
