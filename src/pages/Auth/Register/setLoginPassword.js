@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-27 10:25:52
+ * @LastEditTime: 2022-03-09 16:47:11
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import http from '../../../services/';
 import Toast from '../../../components/Toast';
 import Storage from '../../../utils/storage';
 import {connect} from 'react-redux';
-import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
+import {getUserInfo, getVerifyGesture, getAppConfig} from '../../../redux/actions/userInfo';
 import _ from 'lodash';
 import {CommonActions} from '@react-navigation/native';
 import base64 from '../../../utils/base64';
@@ -89,6 +89,7 @@ class SetLoginPassword extends Component {
                         password: base64.encode(password),
                     }).then((data) => {
                         this.props.getUserInfo();
+                        this.props.getAppConfig();
                         this.props.getVerifyGesture(true);
                         if (this.props.route?.params?.fr) {
                             this.props.navigation.pop(4);
@@ -117,6 +118,7 @@ class SetLoginPassword extends Component {
                         password: base64.encode(password),
                     }).then((data) => {
                         this.props.getUserInfo();
+                        this.props.getAppConfig();
                         this.props.getVerifyGesture(true);
                         if (this.props.route?.params?.redirect) {
                             this.props.navigation.dispatch((state) => {
@@ -253,6 +255,7 @@ const mapStateToProps = (state) => ({});
 const mapDispatchToProps = {
     getUserInfo,
     getVerifyGesture,
+    getAppConfig,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(SetLoginPassword);
 const styles = StyleSheet.create({
