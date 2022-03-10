@@ -133,6 +133,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                                 ref={inputRef}
                                 clearButtonMode={'never'}
                                 keyboardType="numeric"
+                                placeholder={'请输入跟投金额'}
                                 onChangeText={(val) => changeInput(val, null)}
                                 style={styles.inputStyle}
                                 value={inputVal}
@@ -190,7 +191,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                                 </View>
                                 <View style={[Style.flexBetween, {marginTop: px(6), marginHorizontal: px(16)}]}>
                                     <Text style={{fontSize: px(11)}}>{data.auto_charge_next_deduct}</Text>
-                                    <Text style={{fontSize: px(11)}}>跟投金额{(amount + '').slice(0, 7) || 0}元</Text>
+                                    <Text style={{fontSize: px(11)}}>跟投金额{(amount + '').slice(0, 8) || 0}元</Text>
                                 </View>
                             </View>
                         )}
