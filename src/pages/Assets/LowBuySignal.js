@@ -932,10 +932,10 @@ const styles = StyleSheet.create({
     calcAmountTip: {
         marginTop: px(8),
         width: px(311),
-        height: px(42),
         paddingTop: px(16),
-        // paddingBottom: px(4),
+        paddingBottom: px(6),
         paddingLeft: px(15),
+        paddingRight: px(3),
     },
     tabsWrapper: {
         flexDirection: 'row',
