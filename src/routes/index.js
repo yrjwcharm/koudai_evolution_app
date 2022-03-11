@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 18:52:52
+ * @LastEditTime: 2022-03-11 18:12:22
  * @Description:路由表
  */
 import React from 'react';
@@ -174,6 +174,7 @@ import LiveList from '../pages/Vision/LiveList'; //直播列表
 import Live from '../pages/Vision/Live'; //直播详情页
 import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
+import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -703,6 +704,7 @@ export default function AppStack() {
             <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
             <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
+            <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
