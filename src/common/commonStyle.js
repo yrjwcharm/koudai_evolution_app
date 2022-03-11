@@ -1,12 +1,12 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 15:46:54
+ * @LastEditTime: 2022-03-11 11:33:46
  * @Description:主题及公共样式表
  */
 
 import {StyleSheet} from 'react-native';
-import {px as text} from '../utils/appUtil';
+import {px, px as text} from '../utils/appUtil';
 export const Colors = {
     /** color **/
 
@@ -165,5 +165,21 @@ export const Style = StyleSheet.create({
     more: {
         fontSize: text(12),
         color: Colors.btnColor,
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+        padding: px(16),
+    },
+    title: {
+        fontSize: px(14),
+        color: Colors.defaultColor,
+        fontWeight: 'bold',
+        lineHeight: px(20),
+    },
+    title_desc: {
+        fontSize: px(12),
+        lineHeight: px(18),
+        color: '#545968',
     },
 });

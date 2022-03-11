@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-02-28 17:15:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-11 11:42:02
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -180,6 +180,25 @@ const Vision = ({navigation, route}) => {
                                         global.LogTool('visionRecArticle', data?.part2);
                                     }}
                                 />
+                                {/* 投顾观点 */}
+                                <TouchableOpacity style={[Style.card, {marginBottom: px(16)}]}>
+                                    <View style={styles.time}>
+                                        <Text style={styles.time}>12:100</Text>
+                                    </View>
+                                    <Text numberOfLines={2} style={[Style.title, {marginTop: px(12)}]}>
+                                        市场什么时候企稳回升？最新市场观点来了！
+                                    </Text>
+                                    <Text numberOfLines={2} style={[Style.title_desc, {marginTop: px(8)}]}>
+                                        2022年开年以来，全球市场持续低迷，近期A股更是用5根阴线将投资人的情绪砸向谷底。昨日A股盘中一度上演…
+                                    </Text>
+                                    <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                                        <Image
+                                            source={require('../../assets/img/logo.png')}
+                                            style={styles.card_avatar}
+                                        />
+                                        <Text style={[Style.title_desc, {fontSize: px(13)}]}>理财魔方</Text>
+                                    </View>
+                                </TouchableOpacity>
                                 {/* 其他模块 */}
                                 {data?.part3?.map((item, index) => {
                                     return (
@@ -249,6 +268,7 @@ const styles = StyleSheet.create({
         width: px(32),
         height: px(32),
     },
+
     point_sty: {
         position: 'absolute',
         left: px(15),
@@ -280,5 +300,19 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         paddingBottom: px(16),
         paddingTop: px(4),
+    },
+    time: {
+        color: Colors.defaultColor,
+        fontSize: px(11),
+        paddingVertical: px(3),
+        paddingHorizontal: px(5),
+        borderRadius: px(6),
+        backgroundColor: Colors.bgColor,
+    },
+    card_avatar: {
+        width: px(24),
+        height: px(24),
+        borderRadius: px(12),
+        marginRight: px(8),
     },
 });
