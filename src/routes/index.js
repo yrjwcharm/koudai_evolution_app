@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 18:52:52
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-11 14:47:20
  * @Description:路由表
  */
 import React from 'react';
@@ -163,7 +163,6 @@ import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备�
 import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
 import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财计划
 import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
-import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
 import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
@@ -692,7 +691,6 @@ export default function AppStack() {
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
             <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
-            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
             <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
             <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
