@@ -482,7 +482,7 @@ const WealthTools = () => {
                         {data?.user_data && (hasOpen ? loadingFinish : !loadingFinish) && userData()}
                     </Animatable.View>
                 </ScrollView>
-                {data?.bottom_data && loadingFinish && <FixedBtn btns={btns} />}
+                {data?.bottom_data && (loadingFinish || !hasOpen) && <FixedBtn btns={btns} />}
             </View>
         </>
     );

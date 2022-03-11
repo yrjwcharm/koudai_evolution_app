@@ -144,6 +144,13 @@ const TopInvestors = ({route}) => {
                 isTouchMaskToClose: false,
                 confirm: true,
                 confirmCallBack: () => {
+                    http.post('/signal/follow_invest/setting/modify/20220214', {
+                        ...data.head?.settings,
+                        status: 0,
+                        auto_charge_status: 0,
+                    }).then((res) => {
+                        console.log(res);
+                    });
                     updateAutoFlowState(val);
                 },
             });
