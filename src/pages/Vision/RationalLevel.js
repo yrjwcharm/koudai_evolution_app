@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-11 16:37:52
+ * @LastEditTime: 2022-03-11 18:16:13
  * @Description: 理性等级
  */
 import React, {useEffect, useState} from 'react';
@@ -51,6 +51,9 @@ export default ({navigation}) => {
                             end={{x: 1, y: 0}}
                             style={[styles.activeBar, {width: '63%'}]}
                         />
+                        <View style={[styles.lightCon, {width: '63%'}]}>
+                            <Image source={require('../../assets/img/vision/light.png')} style={styles.light} />
+                        </View>
                     </View>
                 </LinearGradient>
             </View>
@@ -144,5 +147,19 @@ const styles = StyleSheet.create({
     activeBar: {
         height: '100%',
         borderRadius: px(3),
+    },
+    lightCon: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: px(3),
+        overflow: 'visible',
+    },
+    light: {
+        position: 'absolute',
+        top: px(-8),
+        right: px(-8),
+        width: px(19),
+        height: px(19),
     },
 });
