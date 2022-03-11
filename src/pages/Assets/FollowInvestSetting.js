@@ -164,7 +164,9 @@ const FollowInvestSetting = ({navigation, route}) => {
                             backgroundColor: '#fff',
                         }}>
                         <Html style={styles.desc} html={data.desc} />
-                        <Text style={styles.desc}>{data.tip}</Text>
+                        {(route.params?.scene || route.params?.fr) === 'NRGT' && (
+                            <Text style={styles.desc}>{data.tip}</Text>
+                        )}
                     </View>
                     <View style={styles.autoChargeWrapper}>
                         <View style={[Style.flexBetween, {paddingVertical: px(15)}]}>
