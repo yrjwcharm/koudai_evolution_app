@@ -212,7 +212,11 @@ const FollowInvestSetting = ({navigation, route}) => {
                                     <View style={[styles.progressInner, {width: progressRate * 100 + '%'}]} />
                                 </View>
                                 <View style={[Style.flexBetween, {marginTop: px(6), marginHorizontal: px(16)}]}>
-                                    <Text style={{fontSize: px(11)}}>{data.auto_charge_next_deduct}</Text>
+                                    <Text style={{fontSize: px(11)}}>
+                                        {amount > data.wallet_amount
+                                            ? data.auto_charge_next_deduct
+                                            : data.auto_charge_not_deduct}
+                                    </Text>
                                     <Text style={{fontSize: px(11)}}>跟投金额{(amount + '').slice(0, 8) || 0}元</Text>
                                 </View>
                             </View>
@@ -220,7 +224,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                         <View style={styles.autoChargeTip}>
                             <Html
                                 style={{color: '#9aa1b2', fontSize: px(12), lineHeight: px(17)}}
-                                html={data.auto_charge_desc}
+                                html={data.auto_charge_desc.replace(/#amount#/i, (amount || 0) + '元')}
                             />
                         </View>
                         <View style={styles.changeTip}>
