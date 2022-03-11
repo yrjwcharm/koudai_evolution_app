@@ -177,9 +177,15 @@ const LowBuySignalExplain = ({route}) => {
                 chartRef.current?.injectJavaScript(injectedJavaScript);
                 setWebviewLoaded('3');
             } else if (webviewLoaded === '3') {
-                chartRef.current?.injectJavaScript(
-                    `chart.hideTooltip();chart.changeData(${JSON.stringify(calcData.chart)});`
+                chartRef.current?.injectJavaScript(`chart.hideTooltip();chart.clear();`);
+                let injectedJavaScript = LowBuyAreaChart(
+                    calcData?.chart,
+                    [Colors.red, '#6694F3'],
+                    ['l(90) 0:#E74949 1:#fff', 'transparent'],
+                    calcData?.tag_position,
+                    px
                 );
+                chartRef.current?.injectJavaScript(injectedJavaScript);
             }
             updateLoadingChart(false);
         }
@@ -525,7 +531,6 @@ const LowBuySignalExplain = ({route}) => {
                     </View>
                     <View style={styles.chartWrapper}>
                         <WebView
-                            key={curTab}
                             allowFileAccess
                             allowFileAccessFromFileURLs
                             allowUniversalAccessFromFileURLs
@@ -994,7 +999,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         lineHeight: px(12),
         textAlign: 'center',
-        width: px(84),
+        width: '100%',
     },
     leftArrow: {
         position: 'absolute',
