@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-15 10:42:55
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-22 14:09:24
  * @Description:路由表
  */
 import React from 'react';
@@ -174,6 +174,7 @@ import Live from '../pages/Vision/Live'; //直播详情页
 import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
+import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -703,6 +704,7 @@ export default function AppStack() {
             <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
             <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
+            <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
         </Stack.Navigator>
     );
 }
