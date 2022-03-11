@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     udContentMoney: {
         marginTop: px(8),
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         color: Colors.red,
         // lineHeight: px(36),
         fontSize: px(36),
