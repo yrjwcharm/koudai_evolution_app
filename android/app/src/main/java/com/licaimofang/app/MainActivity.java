@@ -2,7 +2,7 @@
  * @Date: 2022-01-17 19:32:47
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-04 18:58:36
+ * @LastEditTime: 2022-03-14 13:38:04
  * @Description: 
  */
 package com.licaimofang.app;
@@ -148,7 +148,7 @@ public class MainActivity extends ReactActivity {
             //js模块此时没有加载完成，延时400毫秒
             //主线程中调用：
             Log.v(TAG, "mainreactContext = null");
-            new Handler().postDelayed(() -> sendEvent(eventName, params), 2000);
+            new Handler().postDelayed(() -> sendEvent(eventName, params), 3000);
         }
     }
   @Override
