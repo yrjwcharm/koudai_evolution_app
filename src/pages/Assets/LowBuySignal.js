@@ -594,10 +594,10 @@ const LowBuySignalExplain = ({route}) => {
                                     color: '#dc4949',
                                     opacity: 0.07,
                                     width: px(112),
-                                    height: px(241),
+                                    height: px(240),
                                     radius: px(4),
                                     x: -1,
-                                    y: -1,
+                                    y: 0,
                                 }}>
                                 {calcTableCenter.map((item, idx) => {
                                     if (idx === 0) {
@@ -717,10 +717,10 @@ const LowBuySignalExplain = ({route}) => {
                                     color: '#dc4949',
                                     opacity: 0.07,
                                     width: px(112),
-                                    height: px(193),
+                                    height: px(192),
                                     radius: px(4),
                                     x: -1,
-                                    y: -1,
+                                    y: 0,
                                 }}>
                                 {annualTableCenter.map((item, idx) => {
                                     if (idx === 0) {
