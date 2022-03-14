@@ -146,17 +146,6 @@ const LowBuySignalExplain = ({route}) => {
         })
     ).current;
 
-    useFocusEffect(
-        useCallback(() => {
-            if (webviewLoaded === '3') {
-                setTimeout(() => {
-                    console.log('panel-focus-loaded');
-                    updateLoadSecondWebView(true);
-                }, 1200);
-            }
-        }, [webviewLoaded])
-    );
-
     const handlerTableInfo = (tableInfo, idx) => {
         return tableInfo.reduce((memo, cur) => {
             memo.push(cur[idx]);
@@ -167,16 +156,6 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (calcData.chart) {
             if (webviewLoaded === '2') {
-                let injectedJavaScript = LowBuyAreaChart(
-                    calcData?.chart,
-                    [Colors.red, '#6694F3'],
-                    ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                    calcData?.tag_position,
-                    px
-                );
-                chartRef.current?.injectJavaScript(injectedJavaScript);
-                setWebviewLoaded('3');
-            } else if (webviewLoaded === '3') {
                 chartRef.current?.injectJavaScript(`chart.hideTooltip();chart.clear();`);
                 let injectedJavaScript = LowBuyAreaChart(
                     calcData?.chart,
@@ -186,6 +165,10 @@ const LowBuySignalExplain = ({route}) => {
                     px
                 );
                 chartRef.current?.injectJavaScript(injectedJavaScript);
+                setTimeout(() => {
+                    console.log('panel-focus-loaded');
+                    updateLoadSecondWebView(true);
+                }, 1200);
             }
             updateLoadingChart(false);
         }
@@ -194,6 +177,7 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (data.head && isOpen) {
             if (panelWebviewLoaded === '2') {
+                console.log(123);
                 let injectedJavaScript = LowBuyPanelChart(data.head);
                 panelChartRef.current?.injectJavaScript(injectedJavaScript);
             }
