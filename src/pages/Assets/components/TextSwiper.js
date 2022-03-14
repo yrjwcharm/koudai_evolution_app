@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
@@ -7,9 +7,27 @@ import {px} from '../../../utils/appUtil';
 
 const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
     const [textSwiperWidth, setTextSwiperWidth] = useState([px(311)]);
+    const [animate, setAnimate] = useState(null);
     const duration = useMemo(() => {
-        return Math.round(textSwiperWidth.reduce((memo, cur) => (memo += +cur), 0) / 100) * speed;
-    }, [textSwiperWidth, speed]);
+        let d = null;
+        if (textSwiperWidth.length - 1 === list.length) {
+            d = Math.round(textSwiperWidth.reduce((memo, cur) => (memo += +cur), 0) / 100) * speed;
+        }
+        return d;
+    }, [textSwiperWidth, list.length, speed]);
+
+    useEffect(() => {
+        if (duration) {
+            setAnimate({
+                0: {
+                    transform: [{translateX: 0}],
+                },
+                1: {
+                    transform: [{translateX: textSwiperWidth.reduce((memo, cur) => (memo -= +cur), 0)}],
+                },
+            });
+        }
+    }, [duration, textSwiperWidth]);
     return list?.[0] ? (
         <Animatable.View
             useNativeDriver={true}
@@ -17,14 +35,7 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
             duration={duration}
             iterationCount="infinite"
             delay={1000}
-            animation={{
-                0: {
-                    transform: [{translateX: 0}],
-                },
-                1: {
-                    transform: [{translateX: textSwiperWidth.reduce((memo, cur) => (memo -= +cur), 0)}],
-                },
-            }}
+            animation={animate}
             style={[styles.textSwiper, style]}>
             <View style={{width: px(311)}} />
             {list?.map((item, idx) => (
