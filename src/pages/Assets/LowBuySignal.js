@@ -726,7 +726,7 @@ const LowBuySignalExplain = ({route}) => {
                                     color: '#dc4949',
                                     opacity: 0.07,
                                     width: px(112),
-                                    height: px(192),
+                                    height: px(193),
                                     radius: px(4),
                                     x: -1,
                                     y: 0,
