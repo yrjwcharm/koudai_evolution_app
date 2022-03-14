@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     triangleInner: {
         position: 'absolute',
         right: px(13),
-        bottom: px(-10),
+        bottom: px(-10.5),
         width: 0,
         height: 0,
         borderStyle: 'solid',
@@ -182,8 +182,8 @@ const styles = StyleSheet.create({
     },
     verticalLine: {
         position: 'absolute',
-        right: px(20),
-        bottom: px(-14),
+        right: px(19),
+        bottom: px(-12),
         width: px(1),
         height: px(9),
     },

@@ -379,7 +379,11 @@ const LowBuySignalExplain = ({route}) => {
                         </View>
                         <View style={{}}>
                             <View style={styles.summaryWrapper}>
-                                <FastImage source={require('../../assets/img/comma.png')} style={styles.comma} />
+                                <FastImage
+                                    source={require('../../assets/img/comma.png')}
+                                    style={styles.comma}
+                                    resizeMode="contain"
+                                />
                                 <Html html={data?.head?.content} style={styles.summaryText} />
                             </View>
                             {/* auto flow */}
@@ -590,10 +594,10 @@ const LowBuySignalExplain = ({route}) => {
                                     color: '#dc4949',
                                     opacity: 0.07,
                                     width: px(112),
-                                    height: px(248),
+                                    height: px(241),
                                     radius: px(4),
                                     x: -1,
-                                    y: -4,
+                                    y: -1,
                                 }}>
                                 {calcTableCenter.map((item, idx) => {
                                     if (idx === 0) {
@@ -713,10 +717,10 @@ const LowBuySignalExplain = ({route}) => {
                                     color: '#dc4949',
                                     opacity: 0.07,
                                     width: px(112),
-                                    height: px(200),
+                                    height: px(193),
                                     radius: px(4),
                                     x: -1,
-                                    y: -4,
+                                    y: -1,
                                 }}>
                                 {annualTableCenter.map((item, idx) => {
                                     if (idx === 0) {
@@ -779,7 +783,7 @@ const LowBuySignalExplain = ({route}) => {
                         <Text style={styles.dataTime}>{data.annual_yield?.data_time}</Text>
                     ) : null}
                 </View>
-                <View style={{marginTop: px(12)}}>
+                <View style={{marginTop: px(16)}}>
                     <FastImage style={{width: '100%', height: px(511)}} source={{uri: data.profit_prob?.img}} />
                 </View>
             </ScrollView>
@@ -894,7 +898,7 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
         alignSelf: 'center',
         padding: px(16),
-        marginTop: px(12),
+        marginTop: px(16),
     },
     partTitle: {
         fontSize: px(16),

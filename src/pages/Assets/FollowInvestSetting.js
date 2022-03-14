@@ -169,7 +169,15 @@ const FollowInvestSetting = ({navigation, route}) => {
                         )}
                     </View>
                     <View style={styles.autoChargeWrapper}>
-                        <View style={[Style.flexBetween, {paddingVertical: px(15)}]}>
+                        <View
+                            style={[
+                                Style.flexBetween,
+                                {paddingVertical: px(15)},
+                                !autoChargeStatus && {
+                                    borderBottomWidth: Space.borderWidth,
+                                    borderBottomColor: Colors.borderColor,
+                                },
+                            ]}>
                             <Text style={{fontSize: px(14), color: '#4e556c', lineHeight: px(20)}}>魔方宝自动充值</Text>
                             <Switch
                                 ios_backgroundColor={'#CCD0DB'}

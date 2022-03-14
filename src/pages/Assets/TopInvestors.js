@@ -170,7 +170,7 @@ const TopInvestors = ({route}) => {
                     scrollEventThrottle={6}
                     scrollIndicatorInsets={{right: 1}}
                     onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}>
-                    <LinearGradient colors={['#FFFFFF', '#F5F6F8']} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                    <LinearGradient colors={['#FFFFFF', '#F5F6F8']} start={{x: 0, y: 0}} end={{x: 0, y: 0.4}}>
                         <View
                             style={{
                                 height: px(285),
@@ -202,7 +202,11 @@ const TopInvestors = ({route}) => {
                         </View>
                         <View style={{}}>
                             <View style={styles.summaryWrapper}>
-                                <Image source={require('../../assets/img/comma.png')} style={styles.comma} />
+                                <Image
+                                    source={require('../../assets/img/comma.png')}
+                                    style={styles.comma}
+                                    resizeMode="contain"
+                                />
                                 <HTML html={data?.head?.content} style={styles.summaryText} />
                             </View>
                             {/* auto flow */}
@@ -360,7 +364,7 @@ const TopInvestors = ({route}) => {
                         </View>
                         <Image
                             source={{uri: data.instructions.img}}
-                            style={{width: px(343), alignSelf: 'center', height: px(543), marginTop: px(13)}}
+                            style={{width: px(375), height: px(566), marginTop: px(16), marginBottom: px(30)}}
                             resizeMode={Image.resizeMode.contain}
                         />
                     </LinearGradient>
