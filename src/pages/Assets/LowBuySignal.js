@@ -669,21 +669,30 @@ const LowBuySignalExplain = ({route}) => {
                         <View style={styles.yieldInfoData}>
                             <View style={styles.yieldInfoDataRate}>
                                 <View style={{flexDirection: 'row'}}>
-                                    <Text style={[styles.yieldInfoDataRateNum, {color: '#121D3A'}]}>5.12</Text>
-                                    <Text style={[styles.yieldInfoDataRateNumSymbol, {color: '#121D3A'}]}>%</Text>
+                                    <Text style={[styles.yieldInfoDataRateNum, {color: '#E74949'}]}>
+                                        {data.annual_yield?.yield_info[1]?.value.slice(0, -1)}
+                                    </Text>
+                                    <Text style={[styles.yieldInfoDataRateNumSymbol, {color: '#E74949'}]}>%</Text>
                                 </View>
+
                                 <FastImage
                                     source={require('../../assets/img/top-right-arrow.png')}
                                     style={{width: px(42), height: px(30), marginHorizontal: px(13)}}
                                 />
                                 <View style={{flexDirection: 'row'}}>
-                                    <Text style={[styles.yieldInfoDataRateNum, {color: '#E74949'}]}>6.12</Text>
-                                    <Text style={[styles.yieldInfoDataRateNumSymbol, {color: '#E74949'}]}>%</Text>
+                                    <Text style={[styles.yieldInfoDataRateNum, {color: '#121D3A'}]}>
+                                        {data.annual_yield?.yield_info[0]?.value.slice(0, -1)}
+                                    </Text>
+                                    <Text style={[styles.yieldInfoDataRateNumSymbol, {color: '#121D3A'}]}>%</Text>
                                 </View>
                             </View>
                             <View style={styles.yieldInfoDataRateNumDescWrapper}>
-                                <Text style={styles.yieldInfoDataRateNumDesc}>不跟随信号</Text>
-                                <Text style={styles.yieldInfoDataRateNumDesc}>跟随信号</Text>
+                                <Text style={styles.yieldInfoDataRateNumDesc}>
+                                    {data.annual_yield?.yield_info[1]?.text}
+                                </Text>
+                                <Text style={styles.yieldInfoDataRateNumDesc}>
+                                    {data.annual_yield?.yield_info[0]?.text}
+                                </Text>
                             </View>
                         </View>
                     </View>
@@ -784,7 +793,10 @@ const LowBuySignalExplain = ({route}) => {
                     ) : null}
                 </View>
                 <View style={{marginTop: px(16)}}>
-                    <FastImage style={{width: '100%', height: px(511)}} source={{uri: data.profit_prob?.img}} />
+                    <FastImage
+                        style={{width: '100%', height: px(511), marginBottom: px(20)}}
+                        source={{uri: data.profit_prob?.img}}
+                    />
                 </View>
             </ScrollView>
             {
@@ -1058,21 +1070,20 @@ const styles = StyleSheet.create({
     yieldInfoDataRate: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-around',
         paddingVertical: px(6),
-        borderBottomWidth: px(1),
+        borderBottomWidth: 0.5,
         borderColor: '#E2E4EA',
     },
     yieldInfoDataRateNum: {
-        fontSize: px(35),
+        fontSize: px(24),
         fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
-        alignSelf: 'baseline',
     },
     yieldInfoDataRateNumSymbol: {
-        fontSize: px(18),
+        fontSize: px(22),
         fontWeight: '300',
         fontFamily: Font.numFontFamily,
-        alignSelf: 'baseline',
     },
     yieldInfoDataRateNumDescWrapper: {
         flexDirection: 'row',
