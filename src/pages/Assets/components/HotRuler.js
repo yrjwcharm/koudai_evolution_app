@@ -103,7 +103,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     {Object.entries(ticksText).map(([x, text], idx) => (
                         <Text key={idx + text} style={[styles.scaleItemLabel, {position: 'absolute', left: +x}]}>
-                            {text}
+                            {text === '-' ? '' : text}
                         </Text>
                     ))}
                 </View>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(3),
         paddingHorizontal: px(6),
         borderRadius: px(20),
-        borderWidth: px(1),
+        borderWidth: 0.5,
     },
     triangle: {
         position: 'absolute',

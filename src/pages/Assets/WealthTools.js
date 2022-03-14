@@ -211,7 +211,7 @@ const WealthTools = () => {
                                     waitOpen && {
                                         backgroundColor: '#fff',
                                         borderColor: Colors.lightGrayColor,
-                                        borderWidth: px(0.5),
+                                        borderWidth: 0.5,
                                     },
                                 ]}
                                 disabled={waitOpen}>
@@ -290,7 +290,7 @@ const WealthTools = () => {
                         {data?.user_data?.all_amount?.desc}
                         <Text style={styles.udContentDescMoney}> {data?.user_data?.all_amount?.amount}</Text>
                     </Text>
-                    <View style={{marginTop: px(24), overflow: 'scroll'}}>
+                    <View style={{marginTop: px(24), width: px(311), overflow: 'hidden'}}>
                         <TextSwiper
                             list={data?.user_data?.latest_records?.list?.filter((_, idx) => idx % 2 === 0)}
                             speed={1500}
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
     toolListOnOpen: {
         width: px(343),
         alignSelf: 'center',
-        marginTop: px(-85),
+        marginTop: px(-90),
         backgroundColor: Colors.bgColor,
         borderRadius: px(8),
     },

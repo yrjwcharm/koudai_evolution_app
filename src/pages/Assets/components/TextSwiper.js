@@ -6,9 +6,9 @@ import Html from '../../../components/RenderHtml';
 import {px} from '../../../utils/appUtil';
 
 const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
-    const [textSwiperWidth, setTextSwiperWidth] = useState(0);
+    const [textSwiperWidth, setTextSwiperWidth] = useState([px(311)]);
     const duration = useMemo(() => {
-        return Math.round(Math.abs(textSwiperWidth) / 100) * speed;
+        return Math.round(textSwiperWidth.reduce((memo, cur) => (memo += +cur), 0) / 100) * speed;
     }, [textSwiperWidth, speed]);
     return list?.[0] ? (
         <Animatable.View
@@ -22,17 +22,24 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
                     transform: [{translateX: 0}],
                 },
                 1: {
-                    transform: [{translateX: textSwiperWidth}],
+                    transform: [{translateX: textSwiperWidth.reduce((memo, cur) => (memo -= +cur), 0)}],
                 },
             }}
-            style={[styles.textSwiper, style]}
-            onLayout={(e) => {
-                const layoutWidth = e.nativeEvent.layout.width;
-                setTextSwiperWidth(-layoutWidth);
-            }}>
-            <View style={{width: px(343)}} />
+            style={[styles.textSwiper, style]}>
+            <View style={{width: px(311)}} />
             {list?.map((item, idx) => (
-                <View key={idx + item} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View
+                    key={idx + item}
+                    style={{flexDirection: 'row', alignItems: 'center'}}
+                    onLayout={(e) => {
+                        const layoutWidth = e.nativeEvent.layout.width;
+                        setTextSwiperWidth((val) => {
+                            let index = idx + 1;
+                            let newVal = [...val];
+                            newVal[index] = +layoutWidth.toFixed(2);
+                            return newVal;
+                        });
+                    }}>
                     {<View style={{width: px(12), height: px(20)}} />}
                     <View style={[styles.textItem]}>
                         <View style={{width: px(12)}} />

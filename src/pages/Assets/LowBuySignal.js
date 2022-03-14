@@ -177,7 +177,6 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (data.head && isOpen) {
             if (panelWebviewLoaded === '2') {
-                console.log(123);
                 let injectedJavaScript = LowBuyPanelChart(data.head);
                 panelChartRef.current?.injectJavaScript(injectedJavaScript);
             }
