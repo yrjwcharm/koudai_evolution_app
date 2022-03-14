@@ -86,7 +86,7 @@ const WealthTools = () => {
         http.get('/tool/manage/detail/20211207').then(async (res) => {
             try {
                 setData(res.result);
-                if (hasOpen) return; // 防止跳回时依旧加载动画
+                if (rate.current) return updatePageLoading(false); // 防止跳回时依旧加载动画
                 const hasOpenState = !!res.result.open_list;
                 updateHasOpen(hasOpenState);
 
@@ -116,7 +116,7 @@ const WealthTools = () => {
                                     setLoadingFinish(true);
                                 })
                                 .then(() => {
-                                    setLinearColors([['#2B7AF3', '#E74949'][res.result?.head_data.status], '#F5F6F8']);
+                                    setLinearColors([['#2B7AF3', '#E74949'][res.result?.head_data?.status], '#F5F6F8']);
                                     bottomPartOnOpenRef?.current.animate('fadeInUp');
                                     topPartHintRef?.current?.animate('fadeIn');
                                 });
@@ -131,7 +131,6 @@ const WealthTools = () => {
         });
 
         return () => rate.current?.removeListener?.(rateListener);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useFocusEffect(init);
 
@@ -249,7 +248,13 @@ const WealthTools = () => {
                 <View style={styles.toolItemContentOnOpen}>
                     <View>
                         <Text style={styles.toolItemContentLeftDescOnOpen}>{item?.state_info?.value_tip}</Text>
-                        <Text style={styles.toolItemContentLeftDegreeOnOpen}>{item?.state_info?.value}</Text>
+                        <Text
+                            style={[
+                                styles.toolItemContentLeftDegreeOnOpen,
+                                data?.head_data?.status && {color: '#E74949'},
+                            ]}>
+                            {item?.state_info?.value}
+                        </Text>
                     </View>
                     <View style={styles.toolItemContentRightOnOpen}>
                         {item.state_info?.chart && <HotRuler {...item.state_info?.chart} />}
@@ -588,7 +593,7 @@ const styles = StyleSheet.create({
     udContentMoney: {
         marginTop: px(8),
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         color: Colors.red,
         // lineHeight: px(36),
         fontSize: px(36),

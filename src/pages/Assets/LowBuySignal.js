@@ -146,17 +146,6 @@ const LowBuySignalExplain = ({route}) => {
         })
     ).current;
 
-    useFocusEffect(
-        useCallback(() => {
-            if (webviewLoaded === '3') {
-                setTimeout(() => {
-                    console.log('panel-focus-loaded');
-                    updateLoadSecondWebView(true);
-                }, 1200);
-            }
-        }, [webviewLoaded])
-    );
-
     const handlerTableInfo = (tableInfo, idx) => {
         return tableInfo.reduce((memo, cur) => {
             memo.push(cur[idx]);
@@ -167,6 +156,7 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (calcData.chart) {
             if (webviewLoaded === '2') {
+                chartRef.current?.injectJavaScript(`chart.hideTooltip();chart.clear();`);
                 let injectedJavaScript = LowBuyAreaChart(
                     calcData?.chart,
                     [Colors.red, '#6694F3'],
@@ -175,11 +165,10 @@ const LowBuySignalExplain = ({route}) => {
                     px
                 );
                 chartRef.current?.injectJavaScript(injectedJavaScript);
-                setWebviewLoaded('3');
-            } else if (webviewLoaded === '3') {
-                chartRef.current?.injectJavaScript(
-                    `chart.hideTooltip();chart.changeData(${JSON.stringify(calcData.chart)});`
-                );
+                setTimeout(() => {
+                    console.log('panel-focus-loaded');
+                    updateLoadSecondWebView(true);
+                }, 1200);
             }
             updateLoadingChart(false);
         }
@@ -188,6 +177,7 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (data.head && isOpen) {
             if (panelWebviewLoaded === '2') {
+                console.log(123);
                 let injectedJavaScript = LowBuyPanelChart(data.head);
                 panelChartRef.current?.injectJavaScript(injectedJavaScript);
             }
@@ -525,7 +515,6 @@ const LowBuySignalExplain = ({route}) => {
                     </View>
                     <View style={styles.chartWrapper}>
                         <WebView
-                            key={curTab}
                             allowFileAccess
                             allowFileAccessFromFileURLs
                             allowUniversalAccessFromFileURLs
@@ -932,10 +921,10 @@ const styles = StyleSheet.create({
     calcAmountTip: {
         marginTop: px(8),
         width: px(311),
-        height: px(42),
         paddingTop: px(16),
-        // paddingBottom: px(4),
+        paddingBottom: px(6),
         paddingLeft: px(15),
+        paddingRight: px(3),
     },
     tabsWrapper: {
         flexDirection: 'row',
@@ -994,7 +983,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         lineHeight: px(12),
         textAlign: 'center',
-        width: px(84),
+        width: '100%',
     },
     leftArrow: {
         position: 'absolute',

@@ -16,6 +16,7 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
             easing="linear"
             duration={duration}
             iterationCount="infinite"
+            delay={1000}
             animation={{
                 0: {
                     transform: [{translateX: 0}],
@@ -31,17 +32,17 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
             }}>
             <View style={{width: px(343)}} />
             {list?.map((item, idx) => (
-                <View key={idx + item} style={[styles.textItem, idx > 0 && {marginLeft: px(12)}]}>
-                    <View style={{width: px(12)}} />
-                    <Image source={{uri: item.icon}} style={{width: px(16), height: px(16)}} />
-                    <View
-                        style={{
-                            marginLeft: px(6),
-                        }}>
+                <View key={idx + item} style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {<View style={{width: px(12), height: px(20)}} />}
+                    <View style={[styles.textItem]}>
+                        <View style={{width: px(12)}} />
+                        <Image source={{uri: item.icon}} style={{width: px(16), height: px(16)}} />
+                        <View style={{width: px(6)}} />
                         <Html html={item.desc} />
+                        <View style={{width: px(8)}} />
+                        <Text style={styles.textItemTime}>{item.order_time}</Text>
+                        <View style={{width: px(12)}} />
                     </View>
-                    <Text style={styles.textItemTime}>{item.order_time}</Text>
-                    <View style={{width: px(12)}} />
                 </View>
             ))}
         </Animatable.View>
@@ -52,8 +53,8 @@ export default TextSwiper;
 const styles = StyleSheet.create({
     textSwiper: {
         flexDirection: 'row',
+        alignItems: 'center',
         flexGrow: 0,
-        width: '100%',
     },
     textItem: {
         backgroundColor: '#f5F6F8',
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
     },
 
     textItemTime: {
-        marginLeft: px(8),
         fontSize: px(12),
         fontWeight: '300',
         color: '#9AA1B2',
