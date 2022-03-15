@@ -486,7 +486,7 @@ export const pie = () => `
 })();
 `;
 
-export const LowBuyAreaChart = (data = [], colors, areaColors, tag_position = {}, px) => {
+export const LowBuyAreaChart = (data = [], colors, areaColors, tag_position = {}, px, rectArr) => {
     return `
 (function(){
 let tooltip = document.createElement('div');
@@ -638,7 +638,18 @@ chart.line()
         }
       });
     };
-
+    if(${JSON.stringify(rectArr)}){
+      ${JSON.stringify(rectArr)}.forEach(item=>{
+        chart.guide().rect({ //  分割背景透明区域
+          start: [item[0], 'max'], // 左上角
+          end: [item[1], 'min'], // 右下角
+          style: {
+              fill: '#62CF90',
+              opacity: 0.2
+          }
+        });
+      })
+    }
 chart.render();
 })();
 `;

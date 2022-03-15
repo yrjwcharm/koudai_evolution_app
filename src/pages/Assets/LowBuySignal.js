@@ -160,7 +160,8 @@ const LowBuySignalExplain = ({route}) => {
                     [Colors.red, '#6694F3'],
                     ['l(90) 0:#E74949 1:#fff', 'transparent'],
                     calcData?.tag_position,
-                    px
+                    px,
+                    calcData?.negative_yield_dates
                 );
                 chartRef.current?.injectJavaScript(injectedJavaScript);
                 setTimeout(() => {
@@ -564,6 +565,12 @@ const LowBuySignalExplain = ({route}) => {
                             />
                         </Animated.View>
                     </View>
+                    {curTab === 'nav' && calcData?.negative_yield_dates?.[0] && (
+                        <View style={styles.greenAreaHintWrapper}>
+                            <View style={styles.greenAreaHintFigure} />
+                            <Text style={styles.greenAreaHintText}>{calcData.reminder}</Text>
+                        </View>
+                    )}
                     <View style={styles.tableWrapper}>
                         <View style={styles.tableLeft}>
                             {calcTableLeft.map((item, idx) => (
@@ -1145,5 +1152,24 @@ const styles = StyleSheet.create({
         lineHeight: px(19),
         fontSize: px(16),
         fontFamily: Font.numFontFamily,
+    },
+    greenAreaHintWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: px(8),
+    },
+    greenAreaHintFigure: {
+        width: px(10),
+        height: px(10),
+        backgroundColor: '#62CF90',
+        borderRadius: px(2),
+        opacity: 0.2,
+    },
+    greenAreaHintText: {
+        fontSize: px(11),
+        fontWeight: '500',
+        color: '#121D3A',
+        lineHeight: px(16),
+        marginLeft: px(8),
     },
 });
