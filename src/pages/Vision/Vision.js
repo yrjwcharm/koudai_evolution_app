@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-11 17:44:37
+ * @LastEditTime: 2022-03-15 12:02:04
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -36,6 +36,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
+import LoadingTips from '../../components/LoadingTips.js';
 
 const Vision = ({navigation, route}) => {
     const netInfo = useNetInfo();
@@ -222,9 +223,7 @@ const Vision = ({navigation, route}) => {
                             <BottomDesc />
                         </LinearGradient>
                     ) : (
-                        <View style={{flex: 1, paddingTop: px(100)}}>
-                            <ActivityIndicator />
-                        </View>
+                        <LoadingTips loadingStyle={{marginTop: px(100)}} />
                     )}
                 </ScrollView>
 

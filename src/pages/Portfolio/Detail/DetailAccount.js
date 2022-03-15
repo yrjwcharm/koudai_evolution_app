@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: wxp
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -443,6 +443,17 @@ export default function DetailAccount({route, navigation}) {
                             ) : null}
                         </View>
                     )}
+                    {/* 产品介绍 */}
+                    {data?.portfolio_intro ? (
+                        <TouchableOpacity
+                            style={styles.card_sty}
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                jump(data?.portfolio_intro?.url);
+                            }}>
+                            <Html html={data?.portfolio_intro?.text} />
+                        </TouchableOpacity>
+                    ) : null}
 
                     {/* 全球配置 */}
                     {data?.asset_deploy ? (

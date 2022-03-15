@@ -307,6 +307,8 @@ PODS:
     - React-Core
   - react-native-slider (3.0.3):
     - React
+  - react-native-spinkit (1.4.1):
+    - React
   - react-native-splash-screen (3.2.0):
     - React
   - react-native-ssl-request (1.0.8):
@@ -496,6 +498,7 @@ DEPENDENCIES:
   - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-ssl-request (from `../node_modules/react-native-ssl-request`)
   - react-native-video (from `../node_modules/react-native-video`)
@@ -631,6 +634,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-spinkit:
+    :path: "../node_modules/react-native-spinkit"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
   react-native-ssl-request:
@@ -752,6 +757,7 @@ SPEC CHECKSUMS:
   react-native-progress-view: 9e6b6a5305a9115c2157ae3b8852081aba0aab7c
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
+  react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-ssl-request: 2ec05d2ed22fce3ea6009c272dbaa14607fd1a47
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
