@@ -20,13 +20,15 @@ import FastImage from 'react-native-fast-image';
 import http from '../../services';
 import Header from '../../components/NavBar';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import URI from 'urijs';
+import {baseURL} from '../../services/config';
 import dayjs from 'dayjs';
 import Html from '../../components/RenderHtml';
 import {WebView} from 'react-native-webview';
 import LinearGradient from 'react-native-linear-gradient';
 import {BoxShadow} from 'react-native-shadow';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {LowBuyPanelChart, LowBuyAreaChart} from '../../components/Chart/chartOptions';
+import {LowBuyAreaChart} from '../../components/Chart/chartOptions';
 import {useFocusEffect} from '@react-navigation/native';
 import Toast from '../../components/Toast';
 import {BottomModal} from '../../components/Modal';
@@ -69,10 +71,7 @@ const source = Platform.select({
     ios: require('../../components/Chart/f2chart.html'),
     android: {uri: 'file:///android_asset/f2chart.html'},
 });
-const panelSource = Platform.select({
-    ios: require('../../components/Chart/echarts.html'),
-    android: {uri: 'file:///android_asset/echarts.html'},
-});
+
 const LowBuySignalExplain = ({route}) => {
     const jump = useJump();
     const [loading, updateLoading] = useState(true);
@@ -86,8 +85,6 @@ const LowBuySignalExplain = ({route}) => {
     const [loadingChart, updateLoadingChart] = useState(false);
     const [moveDirection, setMoveDirection] = useState('left');
     const [webviewLoaded, setWebviewLoaded] = useState('1');
-    const [panelWebviewLoaded, setPanelWebviewLoaded] = useState('1');
-    const [loadSecondWebView, updateLoadSecondWebView] = useState(false);
     const [calcTableLeft, setCalcTableLeft] = useState([]);
     const [calcTableCenter, seCalctTableCenter] = useState([]);
     const [calcTableRight, setCalcTableRight] = useState([]);
@@ -165,23 +162,10 @@ const LowBuySignalExplain = ({route}) => {
                     px
                 );
                 chartRef.current?.injectJavaScript(injectedJavaScript);
-                setTimeout(() => {
-                    console.log('panel-focus-loaded');
-                    updateLoadSecondWebView(true);
-                }, 1200);
             }
             updateLoadingChart(false);
         }
     }, [calcData.chart, calcData.tag_position, webviewLoaded]);
-
-    useEffect(() => {
-        if (data.head && isOpen) {
-            if (panelWebviewLoaded === '2') {
-                let injectedJavaScript = LowBuyPanelChart(data.head);
-                panelChartRef.current?.injectJavaScript(injectedJavaScript);
-            }
-        }
-    }, [data.head, isOpen, panelWebviewLoaded]);
 
     const init = useCallback(() => {
         http.get('/signal/low_buy/detail/20220214', {poid: route.params?.poid}).then((res) => {
@@ -350,32 +334,36 @@ const LowBuySignalExplain = ({route}) => {
                                 height: px(285),
                                 paddingTop: px(10),
                             }}>
-                            {loadSecondWebView && (
-                                <WebView
-                                    bounces={false}
-                                    allowFileAccess
-                                    allowFileAccessFromFileURLs
-                                    allowUniversalAccessFromFileURLs
-                                    javaScriptEnabled
-                                    ref={panelChartRef}
-                                    scrollEnabled={false}
-                                    onMessage={(e) => {
-                                        console.log(e.nativeEvent.data);
-                                        if (e.nativeEvent.data === 'click') {
-                                            jump(data.button?.url);
-                                        }
-                                    }}
-                                    onLoadEnd={() => {
-                                        setPanelWebviewLoaded('2');
-                                    }}
-                                    style={{width: '100%', height: px(260), alignSelf: 'center'}}
-                                    renderLoading={() => <LoadingWebview />}
-                                    source={panelSource}
-                                    startInLoadingState={true}
-                                    originWhitelist={['*']}
-                                    textZoom={100}
-                                />
-                            )}
+                            <WebView
+                                bounces={false}
+                                allowFileAccess
+                                allowFileAccessFromFileURLs
+                                allowUniversalAccessFromFileURLs
+                                javaScriptEnabled
+                                ref={panelChartRef}
+                                scrollEnabled={false}
+                                onMessage={(e) => {
+                                    console.log(e.nativeEvent.data);
+                                    if (e.nativeEvent.data === 'click') {
+                                        jump(data.button?.url);
+                                    }
+                                }}
+                                style={{width: '100%', height: px(260), alignSelf: 'center'}}
+                                renderLoading={() => <LoadingWebview />}
+                                source={{
+                                    uri: URI(baseURL.H5)
+                                        .addQuery({
+                                            data: JSON.stringify({
+                                                chart: data.head?.chart?.chart,
+                                                desc: data.head?.desc,
+                                            }),
+                                        })
+                                        .valueOf(),
+                                }}
+                                startInLoadingState={true}
+                                originWhitelist={['*']}
+                                textZoom={100}
+                            />
                         </View>
                         <View style={{}}>
                             <View style={styles.summaryWrapper}>

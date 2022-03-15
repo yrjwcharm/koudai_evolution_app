@@ -24,8 +24,9 @@ import http from '../../services';
 import Notice from '../../components/Notice';
 import {BottomModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import URI from 'urijs';
+import {baseURL} from '../../services/config';
 import {debounce} from 'lodash';
-import {LowBuyPanelChart} from '../../components/Chart/chartOptions';
 import {Modal} from '../../components/Modal';
 
 const LoadingWebview = () => {
@@ -39,10 +40,6 @@ const LoadingWebview = () => {
         </View>
     );
 };
-const panelSource = Platform.select({
-    ios: require('../../components/Chart/echarts.html'),
-    android: {uri: 'file:///android_asset/echarts.html'},
-});
 
 const TopInvestors = ({route}) => {
     const jump = useJump();
@@ -52,7 +49,6 @@ const TopInvestors = ({route}) => {
     const [showEmpty, setShowEmpty] = useState(false);
     const [signCheck, setSignCheck] = useState(false);
     const [signTimer, setSignTimer] = useState(8);
-    const [panelWebviewLoaded, setPanelWebviewLoaded] = useState('1');
     const [buttonDistance, setButtonDistance] = useState(null);
     const [scrollY, setScrollY] = useState(0);
     const [autoFlowState, updateAutoFlowState] = useState(false);
@@ -93,15 +89,6 @@ const TopInvestors = ({route}) => {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period]);
-
-    useEffect(() => {
-        if (data.head) {
-            if (panelWebviewLoaded === '2') {
-                let injectedJavaScript = LowBuyPanelChart(data.head);
-                panelChartRef.current?.injectJavaScript(injectedJavaScript);
-            }
-        }
-    }, [data.head, panelWebviewLoaded]);
 
     //签约计时器
     const startTimer = () => {
@@ -189,12 +176,18 @@ const TopInvestors = ({route}) => {
                                         jump(data.button?.url);
                                     }
                                 }}
-                                onLoadEnd={() => {
-                                    setPanelWebviewLoaded('2');
-                                }}
                                 style={{width: '100%', alignSelf: 'center'}}
                                 renderLoading={() => <LoadingWebview />}
-                                source={panelSource}
+                                source={{
+                                    uri: URI(baseURL.H5)
+                                        .addQuery({
+                                            data: JSON.stringify({
+                                                chart: data.head?.chart?.chart,
+                                                desc: data.head?.desc,
+                                            }),
+                                        })
+                                        .valueOf(),
+                                }}
                                 startInLoadingState={true}
                                 originWhitelist={['*']}
                                 textZoom={100}
