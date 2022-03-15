@@ -107,19 +107,20 @@ const WealthTools = () => {
                             setLoadItemsFinish(defaultItemsFinish.map((_) => level-- > 0));
                         }
                         topPartRateRef.current?.setNativeProps({text: value + '%'});
-                        if (value === 100) {
+                        if (value === 90) {
                             // loading动画完成
-                            rate.current.removeListener(rateListener);
                             bottomPartOfLoadingRef?.current
                                 ?.animate('fadeOutUp')
                                 .then(() => {
+                                    setLinearColors([['#2B7AF3', '#E74949'][res.result?.head_data?.status], '#F5F6F8']);
                                     setLoadingFinish(true);
                                 })
                                 .then(() => {
-                                    setLinearColors([['#2B7AF3', '#E74949'][res.result?.head_data?.status], '#F5F6F8']);
                                     bottomPartOnOpenRef?.current.animate('fadeInUp');
-                                    topPartHintRef?.current?.animate('fadeIn');
                                 });
+                        }
+                        if (value === 100) {
+                            rate.current.removeListener(rateListener);
                         }
                     });
                 }
@@ -367,12 +368,13 @@ const WealthTools = () => {
                                 colors={linearColors}
                                 start={{x: 0, y: 0.82}}
                                 end={{x: 0, y: 1}}>
-                                <Animatable.View
-                                    ref={(e) => (topPartHintRef.current = e)}
-                                    duration={800}
-                                    style={{paddingTop: insets.top + px(44)}}>
+                                <View style={{paddingTop: insets.top + px(44)}}>
                                     {loadingFinish ? (
-                                        <View style={{marginTop: px(18)}}>
+                                        <Animatable.View
+                                            ref={(e) => (topPartHintRef.current = e)}
+                                            duration={800}
+                                            animation="fadeIn"
+                                            style={{marginTop: px(18)}}>
                                             <Text
                                                 style={{
                                                     fontSize: px(32),
@@ -397,7 +399,7 @@ const WealthTools = () => {
                                                     {item}
                                                 </Text>
                                             ))}
-                                        </View>
+                                        </Animatable.View>
                                     ) : (
                                         <View style={[Style.flexRowCenter, {marginTop: px(18)}]}>
                                             <Image
@@ -414,7 +416,7 @@ const WealthTools = () => {
                                             />
                                         </View>
                                     )}
-                                </Animatable.View>
+                                </View>
                             </LinearGradient>
                             {/* loading动画的选项列表 */}
                             {loadingFinish ? null : (
