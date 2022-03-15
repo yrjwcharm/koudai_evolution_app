@@ -91,6 +91,7 @@ const LowBuySignalExplain = ({route}) => {
     const [annualTableLeft, setAnnualTableLeft] = useState([]);
     const [annualTableCenter, setAnnualTableCenter] = useState([]);
     const [annualTableRight, setAnnualTableRight] = useState([]);
+    const [loadSecondWebView, updateLoadSecondWebView] = useState(false);
     const [buttonDistance, setButtonDistance] = useState(null);
     const [signCheck, setSignCheck] = useState(false);
     const [signTimer, setSignTimer] = useState(8);
@@ -162,6 +163,9 @@ const LowBuySignalExplain = ({route}) => {
                     px
                 );
                 chartRef.current?.injectJavaScript(injectedJavaScript);
+                setTimeout(() => {
+                    updateLoadSecondWebView(true);
+                }, 500);
             }
             updateLoadingChart(false);
         }
@@ -334,36 +338,38 @@ const LowBuySignalExplain = ({route}) => {
                                 height: px(285),
                                 paddingTop: px(10),
                             }}>
-                            <WebView
-                                bounces={false}
-                                allowFileAccess
-                                allowFileAccessFromFileURLs
-                                allowUniversalAccessFromFileURLs
-                                javaScriptEnabled
-                                ref={panelChartRef}
-                                scrollEnabled={false}
-                                onMessage={(e) => {
-                                    console.log(e.nativeEvent.data);
-                                    if (e.nativeEvent.data === 'click') {
-                                        jump(data.button?.url);
-                                    }
-                                }}
-                                style={{width: '100%', height: px(260), alignSelf: 'center'}}
-                                renderLoading={() => <LoadingWebview />}
-                                source={{
-                                    uri: URI(baseURL.H5 + '/panelChartOfTool')
-                                        .addQuery({
-                                            data: JSON.stringify({
-                                                chart: data.head?.chart?.chart,
-                                                desc: data.head?.desc,
-                                            }),
-                                        })
-                                        .valueOf(),
-                                }}
-                                startInLoadingState={true}
-                                originWhitelist={['*']}
-                                textZoom={100}
-                            />
+                            {loadSecondWebView && (
+                                <WebView
+                                    bounces={false}
+                                    allowFileAccess
+                                    allowFileAccessFromFileURLs
+                                    allowUniversalAccessFromFileURLs
+                                    javaScriptEnabled
+                                    ref={panelChartRef}
+                                    scrollEnabled={false}
+                                    onMessage={(e) => {
+                                        console.log(e.nativeEvent.data);
+                                        if (e.nativeEvent.data === 'click') {
+                                            jump(data.button?.url);
+                                        }
+                                    }}
+                                    style={{width: '100%', height: px(260), alignSelf: 'center'}}
+                                    renderLoading={() => <LoadingWebview />}
+                                    source={{
+                                        uri: URI(baseURL.H5 + '/panelChartOfTool')
+                                            .addQuery({
+                                                data: JSON.stringify({
+                                                    chart: data.head?.chart?.chart,
+                                                    desc: data.head?.desc,
+                                                }),
+                                            })
+                                            .valueOf(),
+                                    }}
+                                    startInLoadingState={true}
+                                    originWhitelist={['*']}
+                                    textZoom={100}
+                                />
+                            )}
                         </View>
                         <View style={{}}>
                             <View style={styles.summaryWrapper}>
