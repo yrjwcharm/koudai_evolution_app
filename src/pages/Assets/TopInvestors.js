@@ -179,7 +179,7 @@ const TopInvestors = ({route}) => {
                                 style={{width: '100%', alignSelf: 'center'}}
                                 renderLoading={() => <LoadingWebview />}
                                 source={{
-                                    uri: URI(baseURL.H5)
+                                    uri: URI(baseURL.H5 + '/panelChartOfTool')
                                         .addQuery({
                                             data: JSON.stringify({
                                                 chart: data.head?.chart?.chart,

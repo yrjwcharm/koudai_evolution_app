@@ -351,7 +351,7 @@ const LowBuySignalExplain = ({route}) => {
                                 style={{width: '100%', height: px(260), alignSelf: 'center'}}
                                 renderLoading={() => <LoadingWebview />}
                                 source={{
-                                    uri: URI(baseURL.H5)
+                                    uri: URI(baseURL.H5 + '/panelChartOfTool')
                                         .addQuery({
                                             data: JSON.stringify({
                                                 chart: data.head?.chart?.chart,
