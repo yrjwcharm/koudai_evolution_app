@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
-import {BankCardModal, Modal, InputModal} from '../../components/Modal';
+import {BankCardModal, Modal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
 import {formaNum, onlyNumber, px} from '../../utils/appUtil';
 import http from '../../services';
@@ -20,6 +20,7 @@ import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
+import {PasswordModal} from '../../components/Password';
 
 const FollowInvestSetting = ({navigation, route}) => {
     const jump = useJump();
@@ -33,6 +34,7 @@ const FollowInvestSetting = ({navigation, route}) => {
     const [progressWrapperWidth, setProgressWrapperWidth] = useState(0);
     const [progressFlagWidth, setProgressFlagWidth] = useState(0);
     const bankModal = useRef();
+    const passwordModalRef = useRef(null);
     const progressRate = useMemo(() => {
         let rate = +(data.wallet_amount / +amount).toFixed(2);
         if (rate < 0) rate = 0;
@@ -99,7 +101,8 @@ const FollowInvestSetting = ({navigation, route}) => {
             setAmount(onlyNumber(value));
         }
     };
-    const onSave = () => {
+    const submit = (password) => {
+        let toast = Toast.showLoading();
         http.post('/signal/follow_invest/setting/modify/20220214', {
             amount,
             pay_method: selectedBank.pay_method,
@@ -107,7 +110,9 @@ const FollowInvestSetting = ({navigation, route}) => {
             status: 1,
             auto_charge_status: +autoChargeStatus,
             scene: route.params?.scene || route.params?.fr,
+            password,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
                 Toast.show('保存成功');
                 setTimeout(() => {
@@ -118,7 +123,13 @@ const FollowInvestSetting = ({navigation, route}) => {
                     }
                 }, 2000);
             } else {
-                Toast.show(res.message);
+                Toast.show(res.message, {
+                    onHidden: () => {
+                        if (res.code === 'TA2803') {
+                            passwordModalRef.current.show();
+                        }
+                    },
+                });
             }
         });
     };
@@ -276,10 +287,18 @@ const FollowInvestSetting = ({navigation, route}) => {
                     </View>
                     {data.pay_method_tip && <Text style={styles.payMethodTip}>{data.pay_method_tip}</Text>}
                     <Button
-                        onPress={onSave}
+                        onPress={() => {
+                            passwordModalRef.current.show();
+                        }}
                         style={{marginVertical: px(40), marginHorizontal: Space.marginAlign}}
                         disabled={!!errMainMes || !amount || selectConflict}
                         title={'保存'}
+                    />
+                    <PasswordModal
+                        ref={(ref) => {
+                            passwordModalRef.current = ref;
+                        }}
+                        onDone={submit}
                     />
                 </ScrollView>
             ) : (
