@@ -176,7 +176,7 @@ const TopInvestors = ({route}) => {
                                         jump(data.button?.url);
                                     }
                                 }}
-                                style={{width: '100%', alignSelf: 'center'}}
+                                style={{width: '100%', alignSelf: 'center', opacity: 0.99}}
                                 renderLoading={() => <LoadingWebview />}
                                 source={{
                                     uri: URI(baseURL.H5 + '/panelChartOfTool')

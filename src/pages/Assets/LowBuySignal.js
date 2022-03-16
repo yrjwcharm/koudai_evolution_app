@@ -354,7 +354,7 @@ const LowBuySignalExplain = ({route}) => {
                                             jump(data.button?.url);
                                         }
                                     }}
-                                    style={{width: '100%', height: px(260), alignSelf: 'center'}}
+                                    style={{width: '100%', height: px(260), alignSelf: 'center', opacity: 0.99}}
                                     renderLoading={() => <LoadingWebview />}
                                     source={{
                                         uri: URI(baseURL.H5 + '/panelChartOfTool')
@@ -522,7 +522,7 @@ const LowBuySignalExplain = ({route}) => {
                                 setWebviewLoaded('2');
                             }}
                             scrollEnabled={false}
-                            style={{flex: 1}}
+                            style={{flex: 1, opacity: 0.99}}
                             renderLoading={() => <LoadingWebview />}
                             source={source}
                             startInLoadingState={true}
