@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-15 15:52:20
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-22 14:11:23
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -10,7 +10,7 @@ import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, T
 
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {Colors, Font, Style} from '../../common/commonStyle';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import RenderTitle from './components/RenderTitle.js';
 import RecommendCard from '../../components/Article/RecommendCard';
@@ -171,7 +171,73 @@ const Vision = () => {
                                         global.LogTool('visionRecArticle', data?.part2);
                                     }}
                                 />
-
+                                <View style={styles.rationalBox}>
+                                    <Image
+                                        source={require('../../assets/img/vision/rationalBg.png')}
+                                        style={styles.rationalBg}
+                                    />
+                                    {/* <View style={Style.flexBetween}>
+                                        <View>
+                                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                                <Image
+                                                    source={require('../../assets/img/vision/level_black.png')}
+                                                    style={styles.levelIcon}
+                                                />
+                                                <Text style={styles.levelText}>{'理性等级 '}</Text>
+                                                <Text style={styles.levelNum}>{6}</Text>
+                                            </View>
+                                            <View style={[Style.flexRow, {marginTop: px(10)}]}>
+                                                <Text style={styles.nowNum}>{'6,854'}</Text>
+                                                <Text style={styles.nextNum}>
+                                                    {' 距7级还需理性值'}
+                                                    <Text style={{fontFamily: Font.numRegular}}>{'2,146'}</Text>
+                                                </Text>
+                                            </View>
+                                            <View style={styles.taskBar}>
+                                                <View style={[styles.taskActiveBar, {width: '76.32%'}]} />
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity activeOpacity={0.8} style={styles.getRational}>
+                                            <Text style={styles.getRationalText}>{'提升理性值'}</Text>
+                                        </TouchableOpacity>
+                                    </View> */}
+                                    <View>
+                                        <View style={styles.upgradeBox}>
+                                            <Image
+                                                source={require('../../assets/img/vision/upgrade.png')}
+                                                style={styles.upgradeImg}
+                                            />
+                                            <Text style={styles.currentLevel}>{'6级'}</Text>
+                                            <Text style={styles.nextLevel}>{'7级'}</Text>
+                                        </View>
+                                        <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
+                                            <Text style={{...styles.levelText, fontSize: px(18), lineHeight: px(18)}}>
+                                                {'理性等级可提升至 '}
+                                            </Text>
+                                            <Text style={styles.levelNum}>{7}</Text>
+                                            <Text style={{...styles.levelText, fontSize: px(18), lineHeight: px(18)}}>
+                                                {' 级'}
+                                            </Text>
+                                        </View>
+                                        <Text style={styles.levelTips}>
+                                            {'收益率预计可提升 '}
+                                            <Text
+                                                style={{
+                                                    color: '#EB7121',
+                                                    fontWeight: Platform.select({android: '700', ios: '500'}),
+                                                }}>
+                                                {'30%～50%'}
+                                            </Text>
+                                        </Text>
+                                        <Button
+                                            color="#E9CE99"
+                                            onPress={() => navigation.navigate('RationalUpgrade')}
+                                            style={styles.upgradeBtn}
+                                            textStyle={styles.upgradeBtnText}
+                                            title="去升级"
+                                        />
+                                    </View>
+                                </View>
                                 {/* 其他模块 */}
                                 {data?.part3?.map((item, index) => {
                                     return (
@@ -193,7 +259,7 @@ const Vision = () => {
                                                     style={styles.horiView}
                                                     showsHorizontalScrollIndicator={false}>
                                                     <View style={[{marginLeft: px(16)}, Style.flexRow]}>
-                                                        {item?.items?.map((_article, index) => {
+                                                        {item?.items?.map((_article) => {
                                                             return RenderCate(_article, {
                                                                 marginBottom: px(12),
                                                                 marginRight: px(12),
@@ -202,7 +268,7 @@ const Vision = () => {
                                                     </View>
                                                 </ScrollView>
                                             ) : (
-                                                item?.items?.map((_article, index) => {
+                                                item?.items?.map((_article) => {
                                                     return RenderCate(_article, {marginBottom: px(12)});
                                                 })
                                             )}
@@ -271,5 +337,119 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         paddingBottom: px(16),
         paddingTop: px(4),
+    },
+    rationalBox: {
+        marginTop: px(4),
+        marginBottom: px(16),
+        paddingHorizontal: Space.padding,
+        borderRadius: Space.borderRadius,
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#fff',
+    },
+    rationalBg: {
+        width: px(343),
+        height: px(57),
+        position: 'absolute',
+        top: 0,
+        right: 0,
+    },
+    levelIcon: {
+        marginRight: px(5),
+        width: px(16),
+        height: px(16),
+    },
+    levelText: {
+        fontSize: Font.textH1,
+        lineHeight: px(16),
+        color: Colors.defaultColor,
+        fontWeight: Platform.select({android: '700', ios: '600'}),
+    },
+    levelNum: {
+        fontSize: px(24),
+        lineHeight: px(24),
+        color: '#EB7121',
+        fontFamily: Font.numFontFamily,
+    },
+    nowNum: {
+        fontSize: Font.textH3,
+        lineHeight: px(14),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    nextNum: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.defaultColor,
+    },
+    taskBar: {
+        marginTop: px(2),
+        marginBottom: Space.marginVertical,
+        borderRadius: px(3),
+        width: px(190),
+        height: px(3),
+        backgroundColor: '#FBF3E4',
+    },
+    taskActiveBar: {
+        borderRadius: px(3),
+        height: px(3),
+        backgroundColor: '#E8CF9D',
+    },
+    getRational: {
+        marginRight: px(4),
+        paddingVertical: px(5),
+        paddingHorizontal: px(12),
+        borderRadius: px(16),
+        backgroundColor: '#E8CF9D',
+    },
+    getRationalText: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+    },
+    levelTips: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.descColor,
+    },
+    upgradeBtn: {
+        marginVertical: px(20),
+        marginHorizontal: px(46),
+        borderRadius: px(20),
+        backgroundColor: '#E9CE99',
+        height: px(40),
+    },
+    upgradeBtnText: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
+    upgradeBox: {
+        position: 'absolute',
+        top: px(18),
+        right: px(2),
+    },
+    upgradeImg: {
+        width: px(100),
+        height: px(57),
+    },
+    currentLevel: {
+        fontSize: px(11.66),
+        lineHeight: px(16),
+        color: '#C5A25F',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+        position: 'absolute',
+        bottom: px(15),
+        left: px(12),
+    },
+    nextLevel: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: '#C5A25F',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+        position: 'absolute',
+        top: px(13),
+        right: px(8),
     },
 });

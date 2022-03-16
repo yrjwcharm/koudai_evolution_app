@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-10 00:37:19
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-16 11:15:17
  * @Description:
  */
 /**
@@ -40,6 +40,26 @@ export default class Modal extends React.Component {
                     <>
                         {<Mask />}
                         <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
+                    </>
+                )
+            );
+        }
+        return global.rootSibling;
+    }
+    static showCustom(children) {
+        if (global.rootSibling) {
+            global.rootSibling.update(
+                <>
+                    <Mask />
+                    {children}
+                </>
+            );
+        } else {
+            global.rootSibling = new RootSibling(
+                (
+                    <>
+                        <Mask />
+                        {children}
                     </>
                 )
             );

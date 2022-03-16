@@ -7616,6 +7616,11 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.6.tgz"
   integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
 
+react-native-number-ticker@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmmirror.com/react-native-number-ticker/-/react-native-number-ticker-0.1.5.tgz#af7de09a2bc8c8bb7a2eadaff60aeb56ff0b4b0b"
+  integrity sha512-HHk9sV+vt4w1f9lt9s60GsFYWWCEFaK+PgF6KaXnaUD+FftAx/JJjey805e8CPkDJrQY57ca22fIb7pmPg3CXA==
+
 react-native-orientation-locker@^1.1.8:
   version "1.1.8"
   resolved "https://registry.nlark.com/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz"
