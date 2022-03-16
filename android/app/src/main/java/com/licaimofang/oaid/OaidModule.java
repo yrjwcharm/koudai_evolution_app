@@ -1,21 +1,12 @@
 package com.licaimofang.oaid;
-
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-
-
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-
-
 import org.jetbrains.annotations.NotNull;
-
 import com.github.gzuliyujiang.oaid.DeviceIdentifier;
 import com.github.gzuliyujiang.oaid.DeviceID;
-
 public class OaidModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
     public OaidModule(ReactApplicationContext context) {
