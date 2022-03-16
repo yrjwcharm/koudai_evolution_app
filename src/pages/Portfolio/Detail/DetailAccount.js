@@ -237,6 +237,11 @@ export default function DetailAccount({route, navigation}) {
                                         </TouchableOpacity>
                                     ) : null}
                                 </View>
+                                {data?.line_drawback?.ratio_text ? (
+                                    <Text style={[styles.radio_sty, {fontSize: px(11)}]}>
+                                        {data?.line_drawback?.ratio_text}
+                                    </Text>
+                                ) : null}
                             </View>
                         )}
                         {data.rise_info && (

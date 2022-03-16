@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-24 15:14:13
+ * @LastEditTime: 2022-03-16 14:44:34
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -1085,6 +1085,14 @@ class TradeBuy extends Component {
                 ) : null}
 
                 <BottomDesc />
+                {/* 博时提示 */}
+                {data?.footer?.text ? (
+                    <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                        <Text style={{fontSize: px(11), lineHeight: px(17), color: Colors.lightGrayColor}}>
+                            {data?.footer?.text}
+                        </Text>
+                    </View>
+                ) : null}
                 <BottomModal ref={(ref) => (this.bottomModal = ref)} title="低估值定投计算方式">
                     <FastImage
                         source={require('../../assets/img/common/fixIcon.png')}

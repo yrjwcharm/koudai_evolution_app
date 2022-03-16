@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-03 19:34:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-16 15:33:38
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -128,6 +128,7 @@ export const baseAreaChart = (
     //   fill: '#E74949',
     // },
   });
+ 
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
       chart.guide().tag({
         position: ${JSON.stringify(tag_position?.buy?.position)},
@@ -181,6 +182,16 @@ export const baseAreaChart = (
       });
     };
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position.splitTag)}){
+      if(${JSON.stringify(tag_position.splitTag.showSplatLine)}==true){
+        chart.guide().line({ // 绘制辅助线
+          start: [ ${JSON.stringify(splitTag?.date)}, 'min' ],
+          end: [ ${JSON.stringify(splitTag?.date)}, 'max' ],
+          style: {
+            stroke: '#ccc',
+            lineDash: [ 2 ]
+          }
+        });
+      }
       chart.guide().tag({
         position: [${JSON.stringify(splitTag?.date)},${JSON.stringify(splitTag?.value)}],
         content: ${JSON.stringify(splitTag?.text)},
@@ -201,6 +212,7 @@ export const baseAreaChart = (
           fontSize: 11, // 字体大小
         }
       });
+      
     }
 
     if(${JSON.stringify(showArea)}){
