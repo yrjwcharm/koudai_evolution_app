@@ -486,7 +486,12 @@ export const pie = () => `
 })();
 `;
 
-export const LowBuyAreaChart = (data = [], colors, areaColors, tag_position = {}, px, rectArr) => {
+export const LowBuyAreaChart = (_data = [], _colors, _areaColors, tag_position = {}, px, rectArr) => {
+    // 如果是两条线 则调换位置 以更改层叠顺序
+    let isDoubleLine = !!_data?.[0]?.type;
+    const data = isDoubleLine ? _data.reverse() : _data;
+    const colors = isDoubleLine ? _colors.reverse() : _colors;
+    const areaColors = isDoubleLine ? _areaColors.reverse() : _areaColors;
     return `
 (function(){
 let tooltip = document.createElement('div');
