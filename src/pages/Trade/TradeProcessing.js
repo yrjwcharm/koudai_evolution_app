@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-02-25 11:49:25
+ * @LastEditTime: 2022-03-10 18:51:32
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -156,7 +156,7 @@ const TradeProcessing = ({navigation, route}) => {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
                 title="交易确认"
-                rightText={'完成'}
+                rightText={finish ? '完成' : ''}
                 rightPress={finishClick}
                 rightTextStyle={{marginRight: text(6)}}
             />
