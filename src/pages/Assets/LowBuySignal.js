@@ -170,7 +170,7 @@ const LowBuySignalExplain = ({route}) => {
             }
             updateLoadingChart(false);
         }
-    }, [calcData.chart, calcData.tag_position, webviewLoaded]);
+    }, [calcData.chart, calcData.tag_position, calcData.negative_yield_dates, webviewLoaded]);
 
     const init = useCallback(() => {
         http.get('/signal/low_buy/detail/20220214', {poid: route.params?.poid}).then((res) => {
@@ -805,7 +805,7 @@ const LowBuySignalExplain = ({route}) => {
                     disabled={!(data?.button?.avail !== undefined ? data.button.avail : 1)}
                     title={data.button?.text}
                     superscript={data.button?.superscript}
-                    style={isOpen && !(data?.button && scrollY > buttonDistance + px(285)) && {display: 'none'}}
+                    style={isOpen && !(data?.button && scrollY > buttonDistance + px(285)) ? {display: 'none'} : {}}
                     onPress={() => {
                         if (data?.button?.action === 'buy') {
                             jump(data?.button?.url);
