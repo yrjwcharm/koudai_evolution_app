@@ -2,16 +2,15 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-18 15:41:38
+ * @LastEditTime: 2022-03-16 14:34:28
  * @Description:
  */
 
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
-import {px} from '../../../utils/appUtil';
-import {Colors} from '../../../common/commonStyle';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Animated} from 'react-native';
+import {px} from '../utils/appUtil';
+import {Colors} from '../common/commonStyle';
 import {connect} from 'react-redux';
-import {updateVision} from '../../../redux/actions/visionData';
 const PhoneWidth = Dimensions.get('window').width;
 const tabHeight = px(42);
 const Button = (props) => {
@@ -36,15 +35,11 @@ class ScrollTabbar extends Component {
         this.scrollToIndex(nextProps.activeTab);
     }
     componentDidMount() {
-        global.visionTabChange = this.props.goToPage;
         setTimeout(() => {
             this.scrollToIndex(this.props.activeTab);
         }, 100);
     }
     scrollToIndex = (index) => {
-        if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[index].k) {
-            this.props.dispatch(updateVision({visionTabUpdate: ''}));
-        }
         setTimeout(() => {
             let {width, left} = this.tabsLayouts[index];
             let newX = 0;
@@ -55,8 +50,7 @@ class ScrollTabbar extends Component {
                 newX = 0;
             }
             this?._scrollTabBarView?.scrollTo({x: newX, animated: true});
-            // }
-        });
+        }, 100);
     };
     measureTabContainer(evt) {
         const {width} = evt.nativeEvent.layout;
@@ -70,10 +64,52 @@ class ScrollTabbar extends Component {
             this.tabsWidth = right;
         }
     }
-
+    _renderUnderline() {
+        const containerWidth = this.tabsWidth;
+        const numberOfTabs = this.props.tabs.length;
+        const underlineWidth = px(20);
+        const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 4;
+        const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2 || 0;
+        const tabUnderlineStyle = {
+            position: 'absolute',
+            width: underlineWidth,
+            height: 2,
+            borderRadius: 2,
+            backgroundColor: this.props.underlineColor ? this.props.underlineColor : Colors.defaultColor,
+            bottom: 6,
+            left: deLen,
+        };
+        const translateX = this.props.scrollValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, containerWidth / numberOfTabs],
+        });
+        const scaleValue = (defaultScale) => {
+            let arr = new Array(numberOfTabs * 2);
+            return arr.fill(0).reduce(
+                function (pre, cur, idx) {
+                    idx == 0 ? pre.inputRange.push(cur) : pre.inputRange.push(pre.inputRange[idx - 1] + 0.5);
+                    idx % 2 ? pre.outputRange.push(defaultScale) : pre.outputRange.push(1);
+                    return pre;
+                },
+                {inputRange: [], outputRange: []}
+            );
+        };
+        const scaleX = this.props.scrollValue.interpolate(scaleValue(scale));
+        return (
+            <Animated.View
+                style={[
+                    tabUnderlineStyle,
+                    {
+                        transform: [{translateX}, {scaleX}],
+                    },
+                    this.props.underlineStyle,
+                ]}
+            />
+        );
+    }
     renderTab = (name, page, isTabActive, onPressHandler) => {
         const textColor = isTabActive ? Colors.defaultColor : Colors.lightBlackColor;
-        const textFontSize = isTabActive ? px(22) : px(14);
+        const textFontSize = isTabActive ? px(16) : px(14);
         const textFontWeight = isTabActive ? '700' : '400';
         return (
             <Button
@@ -87,10 +123,6 @@ class ScrollTabbar extends Component {
                     onPressHandler(page);
                 }}>
                 <View style={[styles.tab]}>
-                    {this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k &&
-                    this.props.tabList[this.props.activeTab].k != this.props.vision.toJS().visionTabUpdate ? (
-                        <View style={styles.badge} />
-                    ) : null}
                     <Text style={[{color: textColor, fontSize: textFontSize, fontWeight: textFontWeight}]}>{name}</Text>
                 </View>
             </Button>
@@ -102,8 +134,9 @@ class ScrollTabbar extends Component {
             <View style={[styles.tabBarBox, this.props.boxStyle]}>
                 <ScrollView
                     ref={(ref) => (this._scrollTabBarView = ref)}
-                    onLayout={this.measureTabContainer.bind(this)}
                     horizontal
+                    style={{flexDirection: 'row'}}
+                    onLayout={this.measureTabContainer.bind(this)}
                     showsHorizontalScrollIndicator={false}>
                     <View style={{flexDirection: 'row'}}>
                         {this.props.tabs.map((name, page) => {
@@ -111,6 +144,7 @@ class ScrollTabbar extends Component {
                             const renderTab = this.props.renderTab || this.renderTab;
                             return renderTab(name, page, isTabActive, this.props.goToPage);
                         })}
+                        {this._renderUnderline()}
                     </View>
                 </ScrollView>
             </View>
@@ -124,8 +158,6 @@ const styles = StyleSheet.create({
         height: tabHeight,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
     },
     iconBox: {
         margin: 15,

@@ -2,10 +2,10 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 17:13:43
+ * @LastEditTime: 2022-03-16 14:34:43
  * @Description:
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -26,19 +26,29 @@ import InsuranceCard from '../../components/Portfolios/InsuranceCard';
 import {useJump} from '../../components/hooks';
 import RenderCate from '../Vision/components/RenderCate';
 import {useFocusEffect} from '@react-navigation/native';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import ScrollTabbar from '../../components/ScrollTabbar';
+import LoadingTips from '../../components/LoadingTips';
+import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
+import ScrollableTabBar from 'react-native-scrollable-tab-view/ScrollableTabBar';
 
 const InsuranceList = (props) => {
     const insets = useSafeAreaInsets();
     const jump = useJump();
     const [data, setData] = useState({});
+    const [activeTab, setActiveTab] = useState('');
     useFocusEffect(
         useCallback(() => {
-            http.get('/insurance/list/20210820').then((res) => {
+            http.get('/insurance/list/20210820', {category: activeTab}).then((res) => {
                 setData(res.result);
             });
-        }, [])
+        }, [activeTab])
     );
-
+    const onChangeTab = (obj) => {
+        if (data?.part2?.products) {
+            setActiveTab(data?.part2?.category_list[obj.i].name);
+        }
+    };
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <TouchableOpacity
@@ -62,7 +72,7 @@ const InsuranceList = (props) => {
                     <Text style={styles.img_desc}>{data?.part1?.name}</Text>
                     <Text style={styles.img_title}>{data?.part1?.slogan}</Text>
                 </View>
-                <View style={{marginHorizontal: px(16), marginTop: px(-60)}}>
+                <View style={{marginHorizontal: px(16), marginTop: px(-60), overflow: 'hidden'}}>
                     <ImageBackground source={require('../../assets/img/insuranceCardBg.png')} style={styles.card}>
                         <Text style={{fontSize: px(16), lineHeight: px(22), fontWeight: '700', marginBottom: px(9)}}>
                             {data?.part1?.card?.name}
@@ -82,10 +92,20 @@ const InsuranceList = (props) => {
                             }}
                         />
                     </ImageBackground>
+                    {/* 产品tab */}
                     <Text style={[styles.large_title, {marginTop: px(-18)}]}>{data?.part2?.group_name}</Text>
-                    {data?.part2?.products?.map((item, index) => (
-                        <InsuranceCard data={item} key={index} style={{marginBottom: px(13)}} />
-                    ))}
+                    <ScrollableTabView
+                        renderTabBar={() => <ScrollTabbar />}
+                        style={{height: data?.part2?.products?.length * px(157) + px(40), marginTop: px(-14)}}
+                        onChangeTab={onChangeTab}>
+                        {data?.part2?.category_list?.map((category) => (
+                            <View tabLabel={category?.name} style={{marginTop: px(6)}}>
+                                {data?.part2?.products?.map((item, index) => (
+                                    <InsuranceCard data={item} key={index} style={{marginBottom: px(13)}} />
+                                ))}
+                            </View>
+                        ))}
+                    </ScrollableTabView>
                     {data?.part3?.group_name ? (
                         <Text style={[styles.large_title, {marginTop: px(8)}]}>{data?.part3?.group_name}</Text>
                     ) : null}
@@ -148,9 +168,7 @@ const InsuranceList = (props) => {
             </TouchableOpacity>
         </View>
     ) : (
-        <View style={[Style.flexRowCenter, {flex: 1, backgroundColor: '#fff'}]}>
-            <ActivityIndicator />
-        </View>
+        <LoadingTips />
     );
 };
 

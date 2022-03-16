@@ -2,7 +2,7 @@
  * @Date: 2021-08-20 10:39:20
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 17:22:18
+ * @LastEditTime: 2022-03-16 11:28:59
  * @Description: 保险产品卡片
  */
 import React from 'react';
@@ -31,11 +31,20 @@ const InsuranceCard = ({data, style}) => {
                         }}
                     />
                 ) : null}
-                <View>
-                    <Text style={{fontSize: px(14), fontWeight: '600', lineHeight: px(20), marginVertical: px(4)}}>
+                <View style={{flex: 1}}>
+                    <Text
+                        numberOfLines={1}
+                        style={{
+                            fontSize: px(14),
+                            fontWeight: '700',
+                            lineHeight: px(20),
+                            marginBottom: px(4),
+                        }}>
                         {data?.name}
                     </Text>
-                    <Text style={[styles.gray_text, {marginBottom: px(6)}]}>{data?.slogan}</Text>
+                    <Text style={[styles.gray_text, {marginBottom: px(4)}]} numberOfLines={1}>
+                        {data?.slogan}
+                    </Text>
                     <Text style={styles.gray_text}>
                         <Text
                             style={{
@@ -46,7 +55,7 @@ const InsuranceCard = ({data, style}) => {
                             }}>
                             {data?.price}
                         </Text>
-                        &nbsp;起
+                        {data?.field ? <Text>&nbsp;{data?.field}</Text> : null}
                     </Text>
                 </View>
             </View>
@@ -72,13 +81,14 @@ const styles = StyleSheet.create({
         paddingBottom: px(12),
         paddingHorizontal: px(16),
         borderRadius: px(6),
+        height: px(144),
     },
     gray_text: {fontSize: px(12), lineHeight: px(20), color: Colors.lightBlackColor},
     tip: {
         backgroundColor: '#FFF5E5',
-        paddingHorizontal: px(12),
+        paddingLeft: px(12),
         paddingVertical: px(6),
-        marginTop: px(12),
+        marginTop: px(11),
         borderRadius: px(2),
     },
     mark: {width: px(12), height: px(10), position: 'absolute', left: 0, top: 0},

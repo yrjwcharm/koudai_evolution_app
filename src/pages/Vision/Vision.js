@@ -2,21 +2,11 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-15 12:02:04
+ * @LastEditTime: 2022-03-15 15:52:20
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {
-    StyleSheet,
-    View,
-    TouchableOpacity,
-    Image,
-    RefreshControl,
-    ScrollView,
-    Text,
-    Platform,
-    ActivityIndicator,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
 
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -29,7 +19,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
@@ -38,7 +28,7 @@ import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 import LoadingTips from '../../components/LoadingTips.js';
 
-const Vision = ({navigation, route}) => {
+const Vision = () => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
