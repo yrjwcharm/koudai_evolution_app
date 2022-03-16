@@ -6,16 +6,7 @@
  * @Description:
  */
 import React, {useState, useCallback, useRef} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    ScrollView,
-    ActivityIndicator,
-    Platform,
-    ImageBackground,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Style, Font} from '../../common/commonStyle';
@@ -29,9 +20,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '../../components/ScrollTabbar';
 import LoadingTips from '../../components/LoadingTips';
-import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
-import ScrollableTabBar from 'react-native-scrollable-tab-view/ScrollableTabBar';
-
 const InsuranceList = (props) => {
     const insets = useSafeAreaInsets();
     const jump = useJump();
