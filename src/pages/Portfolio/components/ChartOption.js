@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-16 15:33:38
+ * @LastEditTime: 2022-03-17 17:14:16
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -182,7 +182,7 @@ export const baseAreaChart = (
       });
     };
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position.splitTag)}){
-      if(${JSON.stringify(tag_position.splitTag.showSplatLine)}==true){
+      if(${JSON.stringify(tag_position.splitTag?.showSplatLine)}==true){
         chart.guide().line({ // 绘制辅助线
           start: [ ${JSON.stringify(splitTag?.date)}, 'min' ],
           end: [ ${JSON.stringify(splitTag?.date)}, 'max' ],
