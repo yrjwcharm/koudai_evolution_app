@@ -2,7 +2,7 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-16 14:34:43
+ * @LastEditTime: 2022-03-17 10:46:00
  * @Description:
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -81,19 +81,24 @@ const InsuranceList = (props) => {
                         />
                     </ImageBackground>
                     {/* 产品tab */}
-                    <Text style={[styles.large_title, {marginTop: px(-18)}]}>{data?.part2?.group_name}</Text>
-                    <ScrollableTabView
-                        renderTabBar={() => <ScrollTabbar />}
-                        style={{height: data?.part2?.products?.length * px(157) + px(40), marginTop: px(-14)}}
-                        onChangeTab={onChangeTab}>
-                        {data?.part2?.category_list?.map((category) => (
-                            <View tabLabel={category?.name} style={{marginTop: px(6)}}>
-                                {data?.part2?.products?.map((item, index) => (
-                                    <InsuranceCard data={item} key={index} style={{marginBottom: px(13)}} />
+                    {data?.part2?.category_list?.length > 0 ? (
+                        <>
+                            <Text style={[styles.large_title, {marginTop: px(-18)}]}>{data?.part2?.group_name}</Text>
+                            <ScrollableTabView
+                                renderTabBar={() => <ScrollTabbar />}
+                                style={{height: data?.part2?.products?.length * px(157) + px(40), marginTop: px(-14)}}
+                                onChangeTab={onChangeTab}>
+                                {data?.part2?.category_list?.map((category) => (
+                                    <View tabLabel={category?.name} style={{marginTop: px(6)}}>
+                                        {data?.part2?.products?.map((item, index) => (
+                                            <InsuranceCard data={item} key={index} style={{marginBottom: px(13)}} />
+                                        ))}
+                                    </View>
                                 ))}
-                            </View>
-                        ))}
-                    </ScrollableTabView>
+                            </ScrollableTabView>
+                        </>
+                    ) : null}
+
                     {data?.part3?.group_name ? (
                         <Text style={[styles.large_title, {marginTop: px(8)}]}>{data?.part3?.group_name}</Text>
                     ) : null}
