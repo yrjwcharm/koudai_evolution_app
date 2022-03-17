@@ -485,3 +485,401 @@ export const pie = () => `
     chart.get('canvas').draw();
 })();
 `;
+
+export const LowBuyAreaChart = (_data = [], _colors, _areaColors, tag_position = {}, px, rectArr) => {
+    // 如果是两条线 则调换位置 以更改层叠顺序
+    let isDoubleLine = !!_data?.[0]?.type;
+    const data = isDoubleLine ? _data.reverse() : _data;
+    const colors = isDoubleLine ? _colors.reverse() : _colors;
+    const areaColors = isDoubleLine ? _areaColors.reverse() : _areaColors;
+    return `
+(function(){
+let tooltip = document.createElement('div');
+tooltip.style.position = 'absolute'
+tooltip.style.background = 'rgba(0,0,0,0.6)';
+tooltip.style.borderRadius = '5px';
+tooltip.style.fontSize = '12px';
+tooltip.style.lineHeight = '18px';
+tooltip.style.color = '#fff';
+tooltip.style.padding = '3px 5px';
+tooltip.style.top = '5px';
+tooltip.style.opacity = 0;
+document.body.appendChild(tooltip);
+
+let width = ${px(311)};
+let height = ${px(200)};
+
+const data = ${JSON.stringify(data)};
+chart = new F2.Chart({
+  id: 'chart',
+  pixelRatio: window.devicePixelRatio,
+  width: width,
+  height: height,
+  appendPadding: [10, 10, 10, 0],
+});
+chart.source(data);
+chart.scale('date', {
+  type: 'timeCat',
+  tickCount: 3,
+  range: [0, 1]
+});
+chart.scale('value', {
+  tickCount: 5,
+});
+chart.axis('date', {
+  label: function label(text, index, total) {
+    const textCfg = {};
+    if (index === 0) {
+      textCfg.textAlign = 'left';
+    } else if (index === total - 1 ) {
+      textCfg.textAlign = 'right';
+    }
+    textCfg.fontFamily = 'DINAlternate-Bold';
+    return textCfg;
+  }
+});
+chart.axis('value', {
+  label: function label(text) {
+    const cfg = {};
+    cfg.text = parseFloat(text).toFixed(2);
+    cfg.fontFamily = 'DINAlternate-Bold';
+    return cfg;
+  }
+});
+chart.legend(false);
+chart.tooltip({
+  crosshairsStyle: {
+    stroke: ${JSON.stringify(colors[0])},
+    lineWidth: 0.5,
+    lineDash: [2],
+  },
+  crosshairsType: 'y',
+  showCrosshairs: true,
+  snap: true,
+  tooltipMarkerStyle: {
+    radius: 1
+  },
+  custom: true,
+  onHide: function(){
+    tooltip.style.opacity = 0;
+  },
+  onShow: function onShow(ev) {
+    if(!ev.items) return;
+    const item = ev.items[0];
+    let str = '<div>'+item.title+'</div>';
+    if(data[0].type){
+      str += '<div>跟随信号收益：'+item.value+'</div>'
+      str += '<div>不跟随信号收益：'+ev.items[1].value +'</div>'
+    }
+    tooltip.innerHTML = str;
+    let left = 0;
+    if(item.x <  (tooltip.offsetWidth / 2)){
+      left = item.x + 10;
+    }else if (width - item.x < (tooltip.offsetWidth / 2)){
+      left = item.x - 10 - tooltip.offsetWidth;
+    } else {
+      left = item.x - (tooltip.offsetWidth / 2)
+    }
+    tooltip.style.left = left + 'px';
+    tooltip.style.opacity = 1;
+  }
+});
+  chart.area({startOnZero: false, connectNulls: true})
+  .position('date*value')
+  .shape('smooth')
+  .color(${data[0].type ? `'type',` : ''}${JSON.stringify(areaColors)})
+  .animate({
+      appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+      }
+  });
+
+chart.line()
+  .position('date*value')
+  .shape('smooth')
+  .color(${data[0].type ? `'type',` : ''}${JSON.stringify(colors)})
+  .animate({
+    appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+    }
+  })
+  .style('type', {
+    lineWidth: 1,
+  });
+
+  chart.point().position('date*value').size('tag', function(val) {
+    return val ? 3 : 0;
+  }).style('tag', {
+    fill: function fill(val) {
+      if (val === 2) {
+        return '#4BA471';
+      } else if (val === 1) {
+        return '#E74949';
+      }else if (val === 3) {
+          return '#0051CC';
+       }
+    },
+    stroke: '#fff',
+    lineWidth: 1
+  });
+
+  if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.buy?.position)},
+        content: ${JSON.stringify(tag_position?.buy?.name)},
+        limitInPlot:true,
+        offsetY: -8,
+        background: {
+          fill: '#E74949',
+          padding: 2,
+        },
+        pointStyle: {
+          fill: '#E74949'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
+        }
+      });
+    };
+    if(${JSON.stringify(rectArr)}){
+      ${JSON.stringify(rectArr)}.forEach(item=>{
+        chart.guide().rect({ //  分割背景透明区域
+          start: [item[0], 'max'], // 左上角
+          end: [item[1], 'min'], // 右下角
+          style: {
+              fill: '#62CF90',
+              opacity: 0.2
+          }
+        });
+      })
+    }
+chart.render();
+})();
+`;
+};
+
+export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
+    let ticks = chart.ticks.reduce((memo, cur) => {
+        memo[cur[0] * 100] = cur[1];
+        return memo;
+    }, {});
+    let valueArea = chart.value_area;
+
+    let badTickValue = chart?.ticks?.[1]?.[0];
+    let axisLabelDistance = badTickValue > 0.3 && badTickValue < 0.7 ? '4' : '0';
+    return `
+  (function(){
+    option = {
+      backgroundColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#fff' }, { offset: 1, color: '#FBFBFC' }]),
+      series: [
+        {
+          type: 'gauge',
+          center: ['50%', '50%'],
+          radius:'70%',
+          min: 0,
+          max: 100,
+          splitNumber: 50,
+          progress: {
+            show: true,
+            width: 28
+          },
+          pointer: {
+            show: false
+          },
+          emphasis: {
+            disabled: true
+          },
+          axisLine: {
+            lineStyle: {
+              width: 28,
+              color: [[1, '#F8F9FA']]
+            }
+          },
+          axisTick: {
+            distance: -40,
+            splitNumber: 1,
+            lineStyle: {
+              width: 1,
+              color: '#E2E4EA'
+            }
+          },
+          splitLine: {
+            show: true,
+            distance: -45,
+            length: 0,
+            lineStyle: {
+              width: 1,
+              color: '#E2E4EA'
+            }
+          },
+          axisLabel: {
+            show: true,
+            distance: ${axisLabelDistance},
+            color: '#9AA1B2',
+            formatter: function (val) {
+             let ticks = ${JSON.stringify(ticks)};
+            return ticks[val] === '-' ? '' : (ticks[val] || '')
+            },
+            padding:[0,0,0,0],
+            fontSize: 14
+          },
+          anchor: {
+            show: false
+          },
+          title: {
+            show: false
+          },
+          detail: {
+            valueAnimation: true,
+            width: '60%',
+            lineHeight: 40,
+            borderRadius: 8,
+            offsetCenter: [0, '-0%'],
+            fontSize: 40,
+            fontWeight: 'bolder',
+            formatter: '${chart?.marks?.text || ' '}',
+            rich:{
+                a: {
+                   color: '#E74949',
+                   fontWeight: '600',
+                   fontSize: '24px',
+                   lineHeight: 33
+                },
+                b: {
+                   color: '#E74949',
+                   fontWeight: '600',
+                   fontSize: '14px',
+                   lineHeight: 20,
+                   verticalAlign:'center',
+                },
+                c: {
+                   color: '#E74949',
+                   fontWeight: '600',
+                   fontFamily: 'DINAlternate-Bold',
+                   verticalAlign:'top',
+                   fontSize: '24px',
+                   lineHeight: 28
+                },
+                d:{
+                   color: '#121D3A',
+                   fontWeight: '600',
+                   fontSize: '24px',
+                   lineHeight: 33
+                },
+                e:{
+                  fontSize: 12,
+                  fontWeight: 400,
+                  color: '#121D3A',
+                  lineHeight: 17
+                },
+                f:{
+                  fontFamily: 'DINAlternate-Bold',
+                  fontWeight: 'bold',
+                  color: '#E74949',
+                  fontSize: 18,
+                  lineHeight: 30
+                },
+                g:{
+                  backgroundColor:'#E74949',
+                  color:'#fff',
+                  borderRadius: 5,
+                  height: 20,
+                  width: 60,
+                  fontSize:10,
+                  lineHeight: 18
+                }
+            },
+            color: 'auto'
+          },
+          data: [${valueArea.map(([value], idx, arr) => {
+              return `{
+                  value:${value * 100 >= 100 ? 99.99 : value * 100},
+                  itemStyle: {
+                      color: ${
+                          idx === 0
+                              ? arr.length > 1
+                                  ? `'#F8F9FA'`
+                                  : `new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#F6F7F8' }, { offset: 1, color: '#DAE6FF' }])`
+                              : `new echarts.graphic.LinearGradient(0, 0, 1, 0, [{offset: ${
+                                    arr[idx - 1][0]
+                                }, color: '#F8F9FA' },{ offset: ${value}, color: '#F9BABA' }])`
+                      }
+                  }
+              }`;
+          })}]
+        },
+        {
+          type: 'gauge',
+          center: ['50%', '50%'],
+          radius:'73%',
+          emphasis: {
+            disabled: true
+          },
+          min: 0,
+          max: 100,
+          progress: {
+            show: true,
+            width: 6
+          },
+          pointer: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              width: 10,
+              color: [[1, '#E2E4EA']]
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisLabel: {
+            show: false
+          },
+          detail: {
+            show: false
+          },
+          data: [${valueArea.map(([value, colour], idx) => {
+              return `{
+                  value:${value * 100 >= 100 ? 99.99 : value * 100},
+                  detail: {
+                    show: ${idx > 0 ? `false` : `true`},
+                    formatter: '${desc || ' '}',
+                    offsetCenter:[0,'70%'],
+                    rich:{
+                        a:{
+                        fontSize: 12,
+                        color:'#121D3A',
+                        lineHeight: 17,
+                        },
+                        b:{
+                        fontSize: 16,
+                        color:'#121D3A',
+                        fontFamily:'DINAlternate-Bold',
+                        lineHeight: 19,
+                        fontWeight: 'bold'
+                        },
+                    }
+                  },
+                   itemStyle: {
+                      color: '${colour}'
+                   }
+              }`;
+          })}]
+        }
+      ]
+    };
+    if(window.ReactNativeWebView){
+      chartDom.addEventListener('click',function(){
+        window.ReactNativeWebView.postMessage("click")
+      });
+    }
+    option && myChart.setOption(option);
+  })()
+  `;
+};

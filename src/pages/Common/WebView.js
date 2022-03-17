@@ -65,6 +65,8 @@ export default function WebView({route, navigation}) {
         } else {
             if (route?.params?.title) {
                 setTitle(route?.params?.title);
+            } else if (route.params.hideTitle) {
+                setTitle('');
             } else if (navState.title) {
                 setTitle(navState.title);
             }
@@ -91,7 +93,12 @@ export default function WebView({route, navigation}) {
     };
     return (
         <View style={{flex: 1}}>
-            <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
+            <NavBar
+                leftIcon="chevron-left"
+                title={title}
+                leftPress={onBackAndroid}
+                {...(route.params.navProps || {})}
+            />
             <ShareModal ref={shareLinkModal} title={'分享理财魔方'} shareContent={shareData || {}} />
             {token && route?.params?.link ? (
                 <RNWebView

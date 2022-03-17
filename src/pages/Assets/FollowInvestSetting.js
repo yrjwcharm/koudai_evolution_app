@@ -3,41 +3,58 @@
  * @Author: dx
  * @LastEditors: yhc
  * @LastEditTime: 2021-12-02 21:23:08
- * @Description: 牛人跟投设置
+ * @Description: 跟投设置
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
-import {BankCardModal, Modal, InputModal} from '../../components/Modal';
+import {BankCardModal, Modal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
 import {formaNum, onlyNumber, px} from '../../utils/appUtil';
 import http from '../../services';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
+import {PasswordModal} from '../../components/Password';
 
 const FollowInvestSetting = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const [open, setOpen] = useState(true);
     const [amount, setAmount] = useState('');
     const [errMainMes, setErrMainMes] = useState('');
-    const [errBottomMes, setErrBottomMes] = useState('');
     const [inputVal, setInputVal] = useState('');
-    const inputModal = useRef();
-    const inputRef = useRef();
+    const [autoChargeStatus, setAutoChargeStatus] = useState(false);
+    const inputRef = useRef(null);
     const [selectedBank, setSelectedBank] = useState({});
+    const [progressWrapperWidth, setProgressWrapperWidth] = useState(0);
+    const [progressFlagWidth, setProgressFlagWidth] = useState(0);
     const bankModal = useRef();
+    const passwordModalRef = useRef(null);
+    const progressRate = useMemo(() => {
+        let rate = +(data.wallet_amount / +amount).toFixed(2);
+        if (rate < 0) rate = 0;
+        if (rate > 1) rate = 1;
+        return rate;
+    }, [amount, data.wallet_amount]);
+
+    const selectConflict = useMemo(() => selectedBank.pay_method === 'wallet' && autoChargeStatus, [
+        autoChargeStatus,
+        selectedBank.pay_method,
+    ]);
 
     useFocusEffect(
         useCallback(() => {
-            http.get('/niuren/follow_invest/setting/info/20210801', {poid: route.params?.poid}).then((res) => {
+            http.get('/signal/follow_invest/setting/info/20220214', {
+                poid: route.params?.poid,
+                scene: route.params?.scene || route.params?.fr,
+            }).then((res) => {
                 if (res.code === '000000') {
-                    setOpen(res.result.status);
+                    setAutoChargeStatus(res.result.auto_charge_status);
                     setAmount(res.result?.amount);
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
@@ -47,61 +64,55 @@ const FollowInvestSetting = ({navigation, route}) => {
                         // 魔方宝不参入判断
                         defaultAmount = Math.min(res.result?.amount, res.result.pay_methods[0].day_limit);
                     }
-                    // 用此处理主界面错误提示和下弹框提示
-                    changeInput(defaultAmount, res.result.pay_methods[0], setErrMainMes);
-                    navigation.setOptions({title: res.result.title || '设置'});
+                    // 用此处理主界面错误提示
+                    changeInput(defaultAmount, res.result.pay_methods[0]);
+                    navigation.setOptions({title: res.result.title || '跟投设置'});
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [navigation, route.params])
     );
-
-    const onToggle = () => {
-        setOpen((prev) => !prev);
-    };
-    const confirmClick = () => {
-        if (!errBottomMes) {
-            inputModal.current.hide();
-            let val = inputVal ? parseFloat(inputVal) : '';
-            changeInput(val, null, setErrMainMes);
-            setAmount(val);
-        }
-    };
     const changeBankCard = (select) => {
         setSelectedBank(select);
-        changeInput(amount, select, setErrMainMes);
+        changeInput(amount, select);
     };
     /**
      * @description: 金额输入
-     * @param {*}
-     * @return {*}
      */
-    const changeInput = (value, _bank, setErr) => {
+    const changeInput = (value, _bank) => {
         // 格式化
         value = value ? value + '' : '';
         let bank = _bank || selectedBank;
         // 可以清空金额
         if (value === '') {
-            setErr('');
+            setErrMainMes('');
         } else if (value < data.min_amount) {
-            setErr(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
+            setErrMainMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
         } else if (bank.pay_method !== 'wallet' && value > bank.day_limit) {
-            setErr(`最大单日购买金额为${formaNum(bank.day_limit, 'int')}元`);
+            setErrMainMes(`最大单日购买金额为${formaNum(bank.day_limit, 'int')}元`);
         } else if (value > data.max_amount) {
-            setErr(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
+            setErrMainMes(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
-            setErr('');
+            setErrMainMes('');
         }
         // 不一样则设置
-        value !== inputVal && setInputVal(onlyNumber(value));
+        if (value !== inputVal) {
+            setInputVal(onlyNumber(value));
+            setAmount(onlyNumber(value));
+        }
     };
-    const onSave = () => {
-        http.post('/niuren/follow_invest/setting/modify/20210801', {
+    const submit = (password) => {
+        let toast = Toast.showLoading();
+        http.post('/signal/follow_invest/setting/modify/20220214', {
             amount,
             pay_method: selectedBank.pay_method,
             poid: route.params?.poid,
-            status: open ? 1 : 0,
+            status: 1,
+            auto_charge_status: +autoChargeStatus,
+            scene: route.params?.scene || route.params?.fr,
+            password,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
                 Toast.show('保存成功');
                 setTimeout(() => {
@@ -112,7 +123,13 @@ const FollowInvestSetting = ({navigation, route}) => {
                     }
                 }, 2000);
             } else {
-                Toast.show(res.message);
+                Toast.show(res.message, {
+                    onHidden: () => {
+                        if (res.code === 'TA2803') {
+                            passwordModalRef.current.show();
+                        }
+                    },
+                });
             }
         });
     };
@@ -122,100 +139,171 @@ const FollowInvestSetting = ({navigation, route}) => {
             {Object.keys(data || {}).length > 0 ? (
                 <ScrollView bounces={false} style={styles.container}>
                     <View style={styles.topPart}>
-                        <View style={[Style.flexBetween, {paddingVertical: px(18)}]}>
-                            <Text style={styles.label}>{'自动跟投'}</Text>
+                        <Text style={styles.flowText}>跟投金额</Text>
+                        <View style={[Style.flexRow, styles.inputContainer]}>
+                            <Text style={styles.unit}>¥</Text>
+                            <TextInput
+                                ref={inputRef}
+                                clearButtonMode={'never'}
+                                keyboardType="numeric"
+                                placeholder={'请输入跟投金额'}
+                                onChangeText={(val) => changeInput(val, null)}
+                                style={styles.inputStyle}
+                                value={inputVal}
+                            />
+                            {inputVal.length > 0 ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        changeInput('', null);
+                                        inputRef.current.focus();
+                                    }}>
+                                    <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(20)} />
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                        {errMainMes ? (
+                            <Text style={{color: Colors.red, marginBottom: px(9), paddingHorizontal: px(16)}}>
+                                {errMainMes}
+                            </Text>
+                        ) : null}
+                    </View>
+                    <View
+                        style={{
+                            paddingHorizontal: Space.padding,
+                            paddingBottom: Space.padding,
+                            backgroundColor: '#fff',
+                        }}>
+                        <Html style={styles.desc} html={data.desc} />
+                        {(route.params?.scene || route.params?.fr) === 'NRGT' && (
+                            <Text style={styles.desc}>{data.tip}</Text>
+                        )}
+                    </View>
+                    <View style={styles.autoChargeWrapper}>
+                        <View
+                            style={[
+                                Style.flexBetween,
+                                {paddingVertical: px(15)},
+                                !autoChargeStatus && {
+                                    borderBottomWidth: Space.borderWidth,
+                                    borderBottomColor: Colors.borderColor,
+                                },
+                            ]}>
+                            <Text style={{fontSize: px(14), color: '#4e556c', lineHeight: px(20)}}>魔方宝自动充值</Text>
                             <Switch
                                 ios_backgroundColor={'#CCD0DB'}
-                                onValueChange={onToggle}
+                                onValueChange={(val) => {
+                                    setAutoChargeStatus(val);
+                                }}
                                 thumbColor={'#fff'}
                                 trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
-                                value={open}
+                                value={autoChargeStatus}
                             />
                         </View>
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => {
-                                inputModal.current?.show?.();
-                                changeInput(amount, null, setErrBottomMes);
-                                // changeInput(`${amount}`);
-                                // setTimeout(() => {
-                                //     inputRef.current?.focus?.();
-                                // }, 200);
-                            }}
-                            style={[Style.flexBetween, styles.inputBox]}>
-                            <Text style={styles.label}>{'跟投金额(元)'}</Text>
-                            <Text style={styles.amount}>{amount}</Text>
-                        </TouchableOpacity>
-                        {errMainMes ? <Text style={{color: Colors.red, top: px(-12)}}>{errMainMes}</Text> : null}
-                    </View>
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        <Text style={styles.desc}>{data.desc}</Text>
-                        <Text style={[styles.desc, {marginTop: px(4), color: Colors.lightGrayColor}]}>{data.tip}</Text>
-                    </View>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => bankModal.current?.show()}
-                        style={[Style.flexBetween, styles.bankChange]}>
-                        <View style={Style.flexRow}>
-                            <Image source={{uri: selectedBank.bank_icon}} style={styles.bankIcon} />
-                            <View>
-                                <Text
+                        {autoChargeStatus && (
+                            <View
+                                style={styles.progressWrapper}
+                                onLayout={(e) => {
+                                    setProgressWrapperWidth(e.nativeEvent.layout.width);
+                                }}>
+                                <View
                                     style={[
-                                        styles.label,
+                                        styles.flag,
                                         {
-                                            color: Colors.defaultColor,
-                                            fontWeight: Platform.select({android: '700', ios: '500'}),
+                                            left: Math.min(
+                                                Math.max(
+                                                    progressRate * progressWrapperWidth - progressFlagWidth / 2,
+                                                    0
+                                                ),
+                                                progressWrapperWidth - progressFlagWidth
+                                            ),
                                         },
-                                    ]}>
-                                    {selectedBank.bank_name}
-                                    {selectedBank.bank_no ? <Text>({selectedBank.bank_no})</Text> : null}
-                                </Text>
-                                <Text style={styles.limitDesc}>{selectedBank.limit_desc}</Text>
+                                    ]}
+                                    onLayout={(e) => {
+                                        setProgressFlagWidth(e.nativeEvent.layout.width);
+                                    }}>
+                                    <Text style={styles.flagText}>魔方宝余额{data.wallet_amount}元</Text>
+                                </View>
+                                <View style={[styles.flagpole, {left: 90.5 * progressRate + '%'}]}>
+                                    <View style={[styles.triangle]} />
+                                    <View style={[styles.triangleInner]} />
+                                    <View style={[styles.flagpoleLine]} />
+                                </View>
+                                <View style={styles.progressOuter}>
+                                    <View style={[styles.progressInner, {width: progressRate * 100 + '%'}]} />
+                                </View>
+                                <View style={[Style.flexBetween, {marginTop: px(6), marginHorizontal: px(16)}]}>
+                                    <Text style={{fontSize: px(11)}}>
+                                        {amount > data.wallet_amount
+                                            ? data.auto_charge_next_deduct
+                                            : data.auto_charge_not_deduct}
+                                    </Text>
+                                    <Text style={{fontSize: px(11)}}>跟投金额{(amount + '').slice(0, 8) || 0}元</Text>
+                                </View>
                             </View>
+                        )}
+                        <View style={styles.autoChargeTip}>
+                            <Html
+                                style={{color: '#9aa1b2', fontSize: px(12), lineHeight: px(17)}}
+                                html={data.auto_charge_desc.replace(/#amount#/i, (amount || 0) + '元')}
+                            />
                         </View>
-                        <View style={Style.flexRow}>
-                            <Text style={[styles.limitDesc, {lineHeight: px(17)}]}>切换</Text>
-                            <AntDesign color={Colors.lightGrayColor} name={'right'} size={px(12)} />
+                        <View style={styles.changeTip}>
+                            <Text style={styles.changeTipText}>*{data.auto_charge_tip}</Text>
                         </View>
-                    </TouchableOpacity>
+                    </View>
+                    <View style={styles.bankChangeWrapper}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => bankModal.current?.show()}
+                            style={[Style.flexBetween, styles.bankChange]}>
+                            <View style={Style.flexRow}>
+                                <Image source={{uri: selectedBank.bank_icon}} style={styles.bankIcon} />
+                                <View>
+                                    <Text
+                                        style={[
+                                            styles.label,
+                                            {
+                                                color: Colors.defaultColor,
+                                                fontWeight: Platform.select({android: '700', ios: '500'}),
+                                            },
+                                        ]}>
+                                        {selectedBank.bank_name}
+                                        {selectedBank.bank_no ? <Text>({selectedBank.bank_no})</Text> : null}
+                                    </Text>
+                                    <Text style={styles.limitDesc}>{selectedBank.limit_desc}</Text>
+                                </View>
+                            </View>
+                            <View style={Style.flexRow}>
+                                <Text style={[styles.limitDesc, {lineHeight: px(17)}]}>切换</Text>
+                                <AntDesign color={Colors.lightGrayColor} name={'right'} size={px(12)} />
+                            </View>
+                        </TouchableOpacity>
+                        {selectConflict && (
+                            <View style={styles.changeTip}>
+                                <Text style={styles.changeTipText}>为开启魔方宝自动充值功能，请切换扣款银行卡</Text>
+                            </View>
+                        )}
+                    </View>
+                    {data.pay_method_tip && <Text style={styles.payMethodTip}>{data.pay_method_tip}</Text>}
                     <Button
-                        onPress={onSave}
-                        style={{marginTop: px(40), marginHorizontal: Space.marginAlign}}
-                        disabled={!!errMainMes || !amount}
+                        onPress={() => {
+                            passwordModalRef.current.show();
+                        }}
+                        style={{marginVertical: px(40), marginHorizontal: Space.marginAlign}}
+                        disabled={!!errMainMes || !amount || selectConflict}
                         title={'保存'}
+                    />
+                    <PasswordModal
+                        ref={(ref) => {
+                            passwordModalRef.current = ref;
+                        }}
+                        onDone={submit}
                     />
                 </ScrollView>
             ) : (
                 <Loading />
             )}
-            <InputModal confirmClick={confirmClick} ref={inputModal} title={'请输入跟投金额'}>
-                <View style={[Style.flexRow, styles.inputContainer]}>
-                    <Text style={styles.unit}>¥</Text>
-                    <TextInput
-                        autoFocus
-                        ref={inputRef}
-                        clearButtonMode={'never'}
-                        keyboardType="numeric"
-                        onChangeText={(val) => changeInput(val, null, setErrBottomMes)}
-                        style={styles.inputStyle}
-                        value={inputVal}
-                    />
-                    {inputVal.length === 0 && <Text style={styles.placeholder}>{'请输入跟投金额(元)'}</Text>}
-                    {inputVal.length > 0 && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                setInputVal('');
-                                setErrBottomMes('');
-                            }}>
-                            <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(16)} />
-                        </TouchableOpacity>
-                    )}
-                </View>
-                {errBottomMes ? (
-                    <Text style={{color: Colors.red, top: px(-16), left: px(16)}}>{errBottomMes}</Text>
-                ) : null}
-            </InputModal>
             <BankCardModal
                 data={data.pay_methods || []}
                 onDone={changeBankCard}
@@ -262,9 +350,14 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     topPart: {
-        marginVertical: px(12),
-        paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
+    },
+    flowText: {
+        paddingVertical: px(16),
+        paddingLeft: px(16),
+        fontSize: px(16),
+        color: '#121D3A',
+        lineHeight: px(22),
     },
     inputBox: {
         paddingVertical: px(18),
@@ -283,12 +376,11 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     inputContainer: {
-        marginVertical: px(32),
+        marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
         paddingBottom: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
-        position: 'relative',
     },
     unit: {
         fontSize: px(26),
@@ -313,14 +405,46 @@ const styles = StyleSheet.create({
     },
     desc: {
         fontSize: Font.textH3,
-        lineHeight: px(21),
-        color: Colors.descColor,
+        lineHeight: px(17),
+        color: '#9095A5',
     },
-    bankChange: {
-        marginTop: px(20),
-        paddingVertical: px(12),
+    autoChargeWrapper: {
+        paddingHorizontal: px(16),
+        marginVertical: px(12),
+        backgroundColor: '#fff',
+    },
+    bankChangeWrapper: {
         paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
+    },
+    progressWrapper: {
+        marginTop: px(2),
+        paddingVertical: px(12),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(4),
+    },
+    autoChargeTip: {
+        paddingVertical: px(12),
+    },
+    changeTip: {
+        paddingVertical: px(7),
+        borderTopWidth: Space.borderWidth,
+        borderTopColor: Colors.borderColor,
+    },
+    changeTipText: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#e74949',
+    },
+    payMethodTip: {
+        paddingTop: px(12),
+        paddingHorizontal: px(16),
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#9AA1B2',
+    },
+    bankChange: {
+        paddingVertical: px(12),
     },
     bankIcon: {
         marginRight: px(8),
@@ -331,5 +455,70 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(20),
         color: Colors.lightGrayColor,
+    },
+    flag: {
+        borderWidth: px(1),
+        borderColor: '#0051CC',
+        paddingHorizontal: px(6),
+        paddingVertical: px(3),
+        borderRadius: px(10),
+        width: 'auto',
+        minWidth: 50,
+        alignSelf: 'flex-start',
+    },
+    flagText: {
+        fontSize: px(12),
+        fontWeight: '500',
+        lineHeight: px(14),
+        color: '#0051CC',
+        width: 'auto',
+        minWidth: 50,
+    },
+    flagpole: {
+        height: px(10),
+        marginHorizontal: px(13),
+    },
+    triangle: {
+        width: 0,
+        height: 0,
+        borderStyle: 'solid',
+        borderWidth: px(4),
+        borderColor: 'transparent',
+        zIndex: -1,
+        borderTopColor: '#0051CC',
+        position: 'absolute',
+        top: px(-1),
+    },
+    triangleInner: {
+        width: 0,
+        height: 0,
+        borderStyle: 'solid',
+        borderWidth: px(4),
+        borderColor: 'transparent',
+        zIndex: 1,
+        borderTopColor: '#fff',
+        position: 'absolute',
+        top: px(-2),
+    },
+    flagpoleLine: {
+        width: px(1),
+        height: px(7),
+        backgroundColor: '#0051CC',
+        top: px(3),
+        left: px(3),
+    },
+    progressOuter: {
+        marginHorizontal: px(16),
+        height: px(6),
+        backgroundColor: '#e2e4ea',
+        borderRadius: px(1),
+    },
+    progressInner: {
+        height: px(6),
+        backgroundColor: '#0051CC',
+        borderTopStartRadius: px(1),
+        borderTopEndRadius: px(0),
+        borderBottomStartRadius: px(1),
+        borderBottomEndRadius: px(0),
     },
 });
