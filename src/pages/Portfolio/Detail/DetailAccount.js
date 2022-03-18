@@ -203,9 +203,10 @@ export default function DetailAccount({route, navigation}) {
                                             setTipsDataOfBottomModal(data?.ratio_info?.tips);
                                             bottomModal.current.show();
                                         }}
-                                        style={{...styles.radio_sty, marginLeft: px(4)}}>
+                                        style={{...styles.radio_sty}}>
                                         <Image
-                                            style={{width: text(12), height: text(12)}}
+                                            resizeMode="contain"
+                                            style={{width: text(20), height: text(14)}}
                                             source={require('../../../assets/img/tip.png')}
                                         />
                                     </TouchableOpacity>
@@ -231,7 +232,8 @@ export default function DetailAccount({route, navigation}) {
                                             }}
                                             style={{...styles.radio_sty, marginLeft: px(4)}}>
                                             <Image
-                                                style={{width: text(12), height: text(12)}}
+                                                resizeMode="contain"
+                                                style={{width: text(20), height: text(14)}}
                                                 source={require('../../../assets/img/tip.png')}
                                             />
                                         </TouchableOpacity>
@@ -694,7 +696,7 @@ export default function DetailAccount({route, navigation}) {
                     {tipsDataOfBottomModal?.content?.map?.((item, index) => {
                         return (
                             <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
-                                <Text style={styles.tipTitle}>{item.key}:</Text>
+                                {item.key ? <Text style={styles.tipTitle}>{item.key}:</Text> : null}
                                 <Html style={{lineHeight: text(18), fontSize: text(13)}} html={item.val} />
                             </View>
                         );
