@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-12-06 20:46:35
+ * @LastEditTime: 2022-03-18 17:31:12
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -9,7 +9,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet, ImageBackground} from 'react-native';
-import {deviceWidth, px as text} from '../utils/appUtil';
+import {deviceWidth, px, px as text} from '../utils/appUtil';
 import {Colors, Space, Style} from '../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
@@ -47,11 +47,21 @@ const BottomDesc = (props) => {
                 />
             </View>
             {userInfo.toJS()[type + '_footer_config']?.sale_service ? (
-                <ImageBackground
-                    style={[Style.flexRowCenter, styles.bg]}
-                    source={require('../assets/img/bottomBg.png')}>
-                    <Text style={styles.text}>{userInfo.toJS()[type + '_footer_config']?.sale_service}</Text>
-                </ImageBackground>
+                <View style={{alignItems: 'center'}}>
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={require('../assets/img/bottomDescLeft.png')}
+                        style={{position: 'absolute', left: px(10), height: text(10), width: px(78), top: px(4)}}
+                    />
+                    <Text style={[styles.text, {textAlign: 'center', position: 'relative'}]}>
+                        {userInfo.toJS()[type + '_footer_config']?.sale_service}
+                    </Text>
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={require('../assets/img/bottomDescRight.png')}
+                        style={{position: 'absolute', right: px(10), height: text(10), width: px(78), top: px(4)}}
+                    />
+                </View>
             ) : null}
             <View style={styles.item}>
                 <Text style={[styles.text]}>{userInfo.toJS()[type + '_footer_config']?.sale_credential?.text}</Text>
