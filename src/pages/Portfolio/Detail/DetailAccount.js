@@ -203,10 +203,9 @@ export default function DetailAccount({route, navigation}) {
                                             setTipsDataOfBottomModal(data?.ratio_info?.tips);
                                             bottomModal.current.show();
                                         }}
-                                        style={{...styles.radio_sty}}>
+                                        style={{...styles.radio_sty, marginLeft: px(4)}}>
                                         <Image
-                                            resizeMode="contain"
-                                            style={{width: text(20), height: text(14)}}
+                                            style={{width: text(12), height: text(12)}}
                                             source={require('../../../assets/img/tip.png')}
                                         />
                                     </TouchableOpacity>
@@ -233,7 +232,7 @@ export default function DetailAccount({route, navigation}) {
                                             style={{...styles.radio_sty, marginLeft: px(4)}}>
                                             <Image
                                                 resizeMode="contain"
-                                                style={{width: text(20), height: text(14)}}
+                                                style={{width: text(12), height: text(12)}}
                                                 source={require('../../../assets/img/tip.png')}
                                             />
                                         </TouchableOpacity>
