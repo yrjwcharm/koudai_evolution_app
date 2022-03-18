@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 17:26:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-17 16:41:42
+ * @LastEditTime: 2022-03-18 10:48:02
  * @Description:组合封面
  */
 import {ScrollView, Image} from 'react-native';
@@ -20,20 +20,21 @@ const ProductCover = ({navigation, route}) => {
         async function fetchData() {
             const res = await http.get('/portfolio/cover/20220311', {plan_id: route?.params?.plan_id});
             if (res.result?.cover) {
+                navigation.setOptions({title: res?.result?.title});
+                Image.prefetch(res.result?.cover);
                 //计算图片高度
                 Image.getSize(res.result.cover, (w, h) => {
                     setHeight((h * deviceWidth) / w || 1000);
                 });
-                Image.prefetch(res.result?.cover);
-                navigation.setOptions({title: res?.result?.title});
                 setData(res.result);
             } else {
                 jump(res.result?.button?.url, 'replace');
             }
         }
         fetchData();
-    }, [navigation, route, jump]);
-    return height ? (
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return height && data ? (
         <>
             <ScrollView scrollIndicatorInsets={{right: 1}}>
                 <Image
