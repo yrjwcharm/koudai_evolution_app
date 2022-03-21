@@ -7452,7 +7452,7 @@ react-deep-force-update@^1.0.0:
   resolved "https://registry.npm.taobao.org/react-deep-force-update/download/react-deep-force-update-1.1.2.tgz"
   integrity sha1-PSrkXCyQQMuxdyvlL46hrebKLuE=
 
-react-devtools-core@4.14.0, react-devtools-core@^4.6.0:
+react-devtools-core@^4.6.0:
   version "4.14.0"
   resolved "https://registry.npmmirror.com/react-devtools-core/-/react-devtools-core-4.14.0.tgz#4b9dc50937ed4cf4c04fa293430cac62d829fa8b"
   integrity sha512-cE7tkSUkGCDxTA79pntDGJCBgzNN/XxA3kgPdXujdfSfEfVhzrItQIEsN0kCN/hJJACDvH2Q8p5+tJb/K4B3qA==
