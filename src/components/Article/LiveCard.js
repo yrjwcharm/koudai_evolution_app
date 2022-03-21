@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 18:43:50
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-21 17:34:42
  * @Description:直播模块
  */
 
@@ -97,6 +97,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         _checkNotifications(
             () => {
                 postReserve(() => {
+                    global.LogTool('visionappointment', data.id);
                     setReserved(true);
                 });
             },
@@ -134,6 +135,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
             style={[styles.card, style]}
             activeOpacity={0.8}
             onPress={() => {
+                global.LogTool('visionbroadcast', data.id);
                 jump(data?.url);
             }}>
             {/* 封面 */}

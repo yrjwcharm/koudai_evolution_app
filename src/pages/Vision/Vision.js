@@ -206,7 +206,10 @@ const Vision = () => {
                                                     </View>
                                                     <TouchableOpacity
                                                         activeOpacity={0.8}
-                                                        onPress={() => jump(gradeData.url)}>
+                                                        onPress={() => {
+                                                            jump(gradeData.url);
+                                                            global.LogTool('visionassessment');
+                                                        }}>
                                                         <Image
                                                             source={require('../../assets/img/vision/levelTips.png')}
                                                             style={styles.levelTipsIcon}
@@ -271,7 +274,10 @@ const Vision = () => {
                                                 {gradeData.button ? (
                                                     <TouchableOpacity
                                                         activeOpacity={0.8}
-                                                        onPress={() => jump(gradeData.button.url)}
+                                                        onPress={() => {
+                                                            jump(gradeData.button.url);
+                                                            global.LogTool('visionpromote');
+                                                        }}
                                                         style={styles.getRational}>
                                                         <Text style={styles.getRationalText}>
                                                             {gradeData.button.text}
@@ -315,7 +321,10 @@ const Vision = () => {
                                                 {gradeData.button ? (
                                                     <Button
                                                         color="#E9CE99"
-                                                        onPress={() => jump(gradeData.button.url)}
+                                                        onPress={() => {
+                                                            jump(gradeData.button.url);
+                                                            global.LogTool('visionupgrade');
+                                                        }}
                                                         style={styles.upgradeBtn}
                                                         textStyle={styles.upgradeBtnText}
                                                         title={gradeData.button.text}
@@ -336,6 +345,7 @@ const Vision = () => {
                                                     sub_title={item?.sub_title}
                                                     more_text={item?.more ? item?.more?.text : ''}
                                                     onPress={() => {
+                                                        global.LogTool('visionspecial', item.title);
                                                         jump(item?.more?.url);
                                                     }}
                                                 />
@@ -455,7 +465,7 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: Font.textH1,
-        lineHeight: px(16),
+        lineHeight: px(18),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '600'}),
     },

@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-18 16:07:46
+ * @LastEditTime: 2022-03-21 17:40:09
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -40,7 +40,10 @@ export default ({navigation}) => {
                                         <TouchableOpacity
                                             activeOpacity={0.8}
                                             style={[Style.flexCenter, {marginRight: Space.marginAlign}]}
-                                            onPress={() => jump(res.result.top_button.url)}>
+                                            onPress={() => {
+                                                jump(res.result.top_button.url);
+                                                global.LogTool('graderecord');
+                                            }}>
                                             <Text style={{...styles.taskTitle, marginRight: 0, fontWeight: '400'}}>
                                                 {res.result.top_button.text}
                                             </Text>
@@ -114,7 +117,12 @@ export default ({navigation}) => {
                             <Text style={{...styles.infoText, color: '#FFEBCB', opacity: showAdd ? 1 : 0}}>
                                 +{grade_info?.score_add}
                             </Text>
-                            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('RationalRecord')}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    navigation.navigate('RationalRecord');
+                                    global.LogTool('graderecord');
+                                }}>
                                 <Text style={[styles.linkText, {marginBottom: value.includes(',') ? px(5) : px(-1)}]}>
                                     {'理性值'}
                                     <Icon color={'#FFEBCB'} name="right" size={10} />
@@ -191,7 +199,9 @@ export default ({navigation}) => {
                                                 activeOpacity={task.button.avail ? 0.8 : 1}
                                                 disabled={task.button.avail === 0}
                                                 onPress={() => {
+                                                    global.LogTool('gradetask', task.name);
                                                     if (task.button.action === 'open_push') {
+                                                        // 打开推送权限
                                                         requestNotifications(['alert', 'sound'])
                                                             .then(({status}) => {
                                                                 if (status === 'granted') {
@@ -280,7 +290,7 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: Font.textH1,
-        lineHeight: px(16),
+        lineHeight: px(18),
         color: '#FFECCF',
         fontWeight: Platform.select({android: '700', ios: '600'}),
     },

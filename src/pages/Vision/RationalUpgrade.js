@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 14:57:52
+ * @LastEditTime: 2022-03-21 17:43:43
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -54,7 +54,7 @@ function reducer(state, action) {
     }
 }
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const listener = useRef();
     const [data, dispatch] = useReducer(reducer, initData);
@@ -101,7 +101,11 @@ export default ({navigation}) => {
 
     // 结果弹窗
     const showModal = (popup) => {
-        const {cancel, confirm, grade, image, prefix, suffix} = popup;
+        const {cancel, confirm, grade, image, prefix, status, suffix} = popup;
+        global.LogTool(
+            route.params.scene === 'grade' ? 'evaluationresults' : 'testpage',
+            status === 1 ? 'success' : 'fail'
+        );
         Modal.showCustomModal(
             <ModalContainer animationType="fade" onRequestClose={(a) => a} transparent visible>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
@@ -190,8 +194,8 @@ export default ({navigation}) => {
             Modal.show({
                 backButtonClose: false,
                 isTouchMaskToClose: false,
-                title: '放弃升级',
-                content: '确定要放弃本次升级吗？',
+                title: route.params.scene === 'grade' ? '放弃评估' : '放弃升级',
+                content: `确定放弃本次${route.params.scene === 'grade' ? '评估' : '升级'}么？`,
                 confirm: true,
                 confirmCallBack: () => {
                     navigation.dispatch(e.data.action);
