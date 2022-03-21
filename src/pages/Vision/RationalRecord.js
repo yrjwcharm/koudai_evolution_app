@@ -2,18 +2,19 @@
  * @Date: 2022-03-14 17:22:17
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-15 16:38:37
+ * @LastEditTime: 2022-03-17 16:21:23
  * @Description: 理性值记录
  */
 import React, {useEffect, useState} from 'react';
 import {FlatList, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Empty from '../../components/EmptyTip';
-import HTML from '../../components/RenderHtml';
+import {useJump} from '../../components/hooks';
 import http from '../../services';
 import {px} from '../../utils/appUtil';
 
 export default () => {
+    const jump = useJump();
     const [, setPage] = useState(1);
     const [refreshing] = useState(false);
     const [hasMore] = useState(false);
@@ -35,12 +36,13 @@ export default () => {
                             <View
                                 key={record + index}
                                 style={[Style.flexBetween, styles.recordItem, index === 0 ? {marginTop: px(8)} : {}]}>
-                                {/* <TouchableOpacity activeOpacity={0.8} style={{marginRight: px(24), flex: 1}}>
-                                    <HTML html={record.content} style={styles.content} />
-                                </TouchableOpacity> */}
                                 <Text style={styles.content}>
                                     {record.prefix}
-                                    <Text style={{color: Colors.brandColor}}>{record.content}</Text>
+                                    <Text
+                                        onPress={() => jump(record.url)}
+                                        style={{color: record.url ? Colors.brandColor : Colors.defaultColor}}>
+                                        {record.content}
+                                    </Text>
                                 </Text>
                                 <Text style={styles.numText}>{record.score_text}</Text>
                             </View>
@@ -80,7 +82,7 @@ export default () => {
     };
 
     useEffect(() => {
-        http.get('http://127.0.0.1:4523/mock/587315/rational/score/list/20220315').then((res) => {
+        http.get('/rational/score/list/20220315').then((res) => {
             if (res.code === '000000') {
                 setData((prev) => {
                     const next = new Map(prev);

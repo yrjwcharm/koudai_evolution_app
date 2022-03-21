@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-04 15:56:23
+ * @LastEditTime: 2022-03-17 18:38:23
  * @Description: 自定义跳转钩子
  */
 import {useRef} from 'react';
@@ -55,24 +55,26 @@ function useJump() {
                     Modal.show(options, 'slide');
                 } else {
                     Modal.show({
+                        backButtonClose: false,
                         cancelCallBack: () => {
-                            if (popup?.cancel?.act === 'back') {
+                            if (popup?.cancel?.action === 'back') {
                                 navigation.goBack();
-                            } else if (popup?.cancel?.act === 'jump') {
+                            } else if (popup?.cancel?.action === 'jump') {
                                 jump(popup?.cancel?.url);
                             }
                         },
                         cancelText: popup?.cancel?.text,
                         confirm: popup?.cancel ? true : false,
                         confirmCallBack: () => {
-                            if (popup?.confirm?.act === 'back') {
+                            if (popup?.confirm?.action === 'back') {
                                 navigation.goBack();
-                            } else if (popup?.confirm?.act === 'jump') {
+                            } else if (popup?.confirm?.action === 'jump') {
                                 jump(popup?.confirm?.url);
                             }
                         },
                         confirmText: popup?.confirm?.text,
                         content: popup?.content,
+                        isTouchMaskToClose: false,
                         title: popup?.title,
                     });
                 }

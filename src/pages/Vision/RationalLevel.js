@@ -2,46 +2,98 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-16 15:28:20
+ * @LastEditTime: 2022-03-18 16:07:46
  * @Description: 理性等级
  */
-import React, {useEffect, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {AppState, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import NumberTicker from 'react-native-number-ticker';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {useJump} from '../../components/hooks';
+import {Modal} from '../../components/Modal';
+import NumberTicker from '../../components/NumberTicker';
+import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {px} from '../../utils/appUtil';
 
 export default ({navigation}) => {
-    const [value, setVal] = useState('7,264');
+    const jump = useJump();
+    const [data, setData] = useState({});
+    const [value, setVal] = useState('');
+    const [showAdd, setShowAdd] = useState(false);
+    const {grade_info, task_list, tip_info} = data || {};
+
+    const init = () => {
+        checkNotifications()
+            .then(({status}) => {
+                const params = {open_push: status === 'granted' ? 1 : 0};
+                http.get('/rational/grade/detail/20220315', params).then((res) => {
+                    if (res.code === '000000') {
+                        res.result.top_button &&
+                            navigation.setOptions({
+                                headerRight: (props) => (
+                                    <>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[Style.flexCenter, {marginRight: Space.marginAlign}]}
+                                            onPress={() => jump(res.result.top_button.url)}>
+                                            <Text style={{...styles.taskTitle, marginRight: 0, fontWeight: '400'}}>
+                                                {res.result.top_button.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                ),
+                            });
+                        setVal(res.result.grade_info?.score_text_before);
+                        if (res.result.grade_info?.score_add > 0) {
+                            setShowAdd(true);
+                        }
+                        setTimeout(() => {
+                            setVal(res.result.grade_info?.score_text);
+                            setTimeout(() => {
+                                setShowAdd(false);
+                            }, 500);
+                        }, 1500);
+                        setData(res.result);
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     useEffect(() => {
-        http.get('http://127.0.0.1:4523/mock/587315/rational/grade/detail/20220315').then((res) => {
-            console.log(res);
-        });
-        navigation.setOptions({
-            headerRight: (props) => (
-                <>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={[Style.flexCenter, {marginRight: Space.marginAlign}]}
-                        onPress={() => navigation.navigate('RationalRecord')}>
-                        <Text style={{...styles.taskTitle, marginRight: 0, fontWeight: '400'}}>{'记录'}</Text>
-                    </TouchableOpacity>
-                </>
-            ),
-        });
+        const onStateChange = (appState) => {
+            if (appState === 'active') {
+                init();
+            }
+        };
+        AppState.addEventListener('change', onStateChange);
+        return () => {
+            AppState.removeEventListener('change', onStateChange);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return (
+    return Object.keys(data || {}).length > 0 ? (
         <ScrollView bounces={false} style={styles.container}>
-            <View style={styles.topInfo}>
-                <Text style={styles.infoText}>{'新手必须：为什么理性等级和您赚钱的能力密切相关？'}</Text>
-            </View>
+            {tip_info ? (
+                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(tip_info.url)} style={styles.topInfo}>
+                    <Text style={styles.infoText}>{tip_info.text}</Text>
+                </TouchableOpacity>
+            ) : null}
             <View style={{paddingHorizontal: Space.padding}}>
                 <LinearGradient
                     colors={['#3E4166', '#14102A']}
@@ -51,96 +103,145 @@ export default ({navigation}) => {
                     <Image source={require('../../assets/img/vision/levelBg.png')} style={styles.levelBg} />
                     <View style={[Style.flexRow, {marginTop: px(13)}]}>
                         <Image source={require('../../assets/img/vision/level.png')} style={styles.levelIcon} />
-                        <Text style={styles.levelText}>{'理性等级'}</Text>
-                        <Text style={styles.levelNum}>{'6'}</Text>
-                        <View style={styles.divider} />
-                        <Text style={styles.levelTips}>{'升至7级，收益率可提升7.8%'}</Text>
+                        <Text style={styles.levelText}>{grade_info?.title}</Text>
+                        <Text style={styles.levelNum}>{grade_info?.grade}</Text>
+                        {grade_info?.reminder ? <View style={styles.divider} /> : null}
+                        <Text style={styles.levelTips}>{grade_info?.reminder}</Text>
                     </View>
-                    <View style={styles.levelValCon}>
+                    <View style={[styles.levelValCon, {marginTop: value.includes(',') ? px(12) : px(6)}]}>
                         <NumberTicker duration={500} number={value} textSize={px(36)} textStyle={styles.levelVal} />
                         <View>
-                            <Text style={{...styles.infoText, color: '#FFEBCB'}}>{'+300'}</Text>
+                            <Text style={{...styles.infoText, color: '#FFEBCB', opacity: showAdd ? 1 : 0}}>
+                                +{grade_info?.score_add}
+                            </Text>
                             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('RationalRecord')}>
-                                <Text style={styles.linkText}>
+                                <Text style={[styles.linkText, {marginBottom: value.includes(',') ? px(5) : px(-1)}]}>
                                     {'理性值'}
                                     <Icon color={'#FFEBCB'} name="right" size={10} />
                                 </Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={styles.barCon}>
+                    <View style={[styles.barCon, {marginTop: value.includes(',') ? px(2) : px(8)}]}>
                         <LinearGradient
                             colors={['#FFF4E3', '#FFFFFF']}
                             start={{x: 0, y: 0}}
                             end={{x: 1, y: 0}}
-                            style={[styles.activeBar, {width: '63%'}]}
+                            style={[styles.activeBar, {width: `${grade_info?.progress?.percent}%`}]}
                         />
-                        <View style={[styles.lightCon, {width: '63%'}]}>
+                        <View style={[styles.lightCon, {width: `${grade_info?.progress?.percent}%`}]}>
                             <Image source={require('../../assets/img/vision/light.png')} style={styles.light} />
                         </View>
                     </View>
                     <View style={[Style.flexBetween, {marginTop: px(4)}]}>
-                        <Text style={{...styles.levelTips, opacity: 0.4}}>{'6,000'}</Text>
-                        <Text style={{...styles.levelTips, opacity: 0.4}}>{'7级 9,000'}</Text>
+                        {grade_info?.progress?.range_text?.map?.((item, index) => {
+                            return (
+                                <Text key={item + index} style={{...styles.levelTips, opacity: 0.4}}>
+                                    {item}
+                                </Text>
+                            );
+                        })}
                     </View>
                 </LinearGradient>
-                <View style={[styles.taskCon, {marginTop: px(20)}]}>
-                    <Text style={styles.partTitle}>{'日常任务'}</Text>
-                    <View style={[Style.flexBetween, styles.taskItem, {borderTopWidth: 0}]}>
-                        <View>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.taskTitle}>{'视野阅读10篇文章'}</Text>
-                                <Text style={styles.earnNum}>
-                                    <Text style={{fontFamily: Font.numFontFamily}}>{'+300 '}</Text>
-                                    {'理性值'}
-                                </Text>
-                            </View>
-                            <Text style={styles.taskTips}>{'10篇文章阅读完成即可获得理性值'}</Text>
+                {task_list?.map?.((item, index) => {
+                    return (
+                        <View key={item + index} style={[styles.taskCon, index === 0 ? {marginTop: px(20)} : {}]}>
+                            <Text style={styles.partTitle}>{item.title}</Text>
+                            {item.list?.map?.((task, idx) => {
+                                return (
+                                    <View
+                                        key={task + idx}
+                                        style={[
+                                            Style.flexBetween,
+                                            styles.taskItem,
+                                            idx === 0 ? {borderTopWidth: 0} : {},
+                                        ]}>
+                                        <View>
+                                            <View style={Style.flexRow}>
+                                                <Text style={styles.taskTitle}>{task.name}</Text>
+                                                <Text style={styles.earnNum}>
+                                                    <Text style={{fontFamily: Font.numFontFamily}}>
+                                                        +{task.score_text}
+                                                    </Text>
+                                                    {' 理性值'}
+                                                </Text>
+                                            </View>
+                                            {task.tip ? <Text style={styles.taskTips}>{task.tip}</Text> : null}
+                                            {task.progress ? (
+                                                <View style={[Style.flexRow, {marginTop: px(7)}]}>
+                                                    <View style={styles.taskBar}>
+                                                        <View
+                                                            style={[
+                                                                styles.taskActiveBar,
+                                                                {width: `${task.progress.percent}%`},
+                                                            ]}
+                                                        />
+                                                    </View>
+                                                    <Text style={styles.taskProgress}>
+                                                        <Text style={{color: '#EB7121'}}>
+                                                            {task.progress.current_num}
+                                                        </Text>
+                                                        /{task.progress.total_num}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
+                                        </View>
+                                        {task.button ? (
+                                            <TouchableOpacity
+                                                activeOpacity={task.button.avail ? 0.8 : 1}
+                                                disabled={task.button.avail === 0}
+                                                onPress={() => {
+                                                    if (task.button.action === 'open_push') {
+                                                        requestNotifications(['alert', 'sound'])
+                                                            .then(({status}) => {
+                                                                if (status === 'granted') {
+                                                                    init();
+                                                                } else {
+                                                                    Modal.show({
+                                                                        backButtonClose: false,
+                                                                        isTouchMaskToClose: false,
+                                                                        title: '权限申请',
+                                                                        content: '开启推送，方便了解市场情况',
+                                                                        confirm: true,
+                                                                        confirmText: '前往',
+                                                                        confirmCallBack: () => {
+                                                                            openSettings().catch(() =>
+                                                                                console.log('cannot open settings')
+                                                                            );
+                                                                        },
+                                                                    });
+                                                                }
+                                                            })
+                                                            .catch((error) => {
+                                                                console.log(error);
+                                                            });
+                                                    } else {
+                                                        jump(task.button.url);
+                                                    }
+                                                }}
+                                                style={[
+                                                    styles.btnCon,
+                                                    task.button.avail ? {} : {backgroundColor: '#E9EAEF'},
+                                                ]}>
+                                                <Text
+                                                    style={{
+                                                        ...styles.infoText,
+                                                        color: task.button.avail ? '#242341' : Colors.lightGrayColor,
+                                                    }}>
+                                                    {task.button?.text}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </View>
+                                );
+                            })}
                         </View>
-                        <TouchableOpacity activeOpacity={0.8} style={[styles.btnCon]}>
-                            <Text style={{...styles.infoText, color: '#242341'}}>{'去完成'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={[Style.flexBetween, styles.taskItem]}>
-                        <View>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.taskTitle}>{'视野阅读10篇文章'}</Text>
-                                <Text style={styles.earnNum}>
-                                    <Text style={{fontFamily: Font.numFontFamily}}>{'+300 '}</Text>
-                                    {'理性值'}
-                                </Text>
-                            </View>
-                            <View style={[Style.flexRow, {marginTop: px(7)}]}>
-                                <View style={styles.taskBar}>
-                                    <View style={[styles.taskActiveBar, {width: '20%'}]} />
-                                </View>
-                                <Text style={styles.taskProgress}>
-                                    <Text style={{color: '#EB7121'}}>{2}</Text>/10
-                                </Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity activeOpacity={0.8} style={[styles.btnCon]}>
-                            <Text style={{...styles.infoText, color: '#242341'}}>{'去完成'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={[Style.flexBetween, styles.taskItem]}>
-                        <View>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.taskTitle}>{'观看1场直播'}</Text>
-                                <Text style={styles.earnNum}>
-                                    <Text style={{fontFamily: Font.numFontFamily}}>{'+3,000 '}</Text>
-                                    {'理性值'}
-                                </Text>
-                            </View>
-                            <Text style={styles.taskTips}>{'观看直播完成即可获得理性值'}</Text>
-                        </View>
-                        <TouchableOpacity activeOpacity={1} style={[styles.btnCon, {backgroundColor: '#E9EAEF'}]}>
-                            <Text style={{...styles.infoText, color: Colors.lightGrayColor}}>{'去完成'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                    );
+                })}
             </View>
         </ScrollView>
+    ) : (
+        <Loading />
     );
 };
 
@@ -202,7 +303,6 @@ const styles = StyleSheet.create({
         color: '#FFECCF',
     },
     levelValCon: {
-        marginTop: px(12),
         flexDirection: 'row',
         alignItems: 'flex-end',
     },
@@ -221,7 +321,6 @@ const styles = StyleSheet.create({
         color: '#FFECCF',
     },
     barCon: {
-        marginTop: px(2),
         borderRadius: px(3),
         width: '100%',
         height: px(3),

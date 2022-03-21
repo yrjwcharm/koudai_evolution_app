@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 11:48:45
+ * @LastEditTime: 2022-03-21 11:53:06
  * @Description:
  */
 /**
@@ -74,21 +74,9 @@ export default class Modal extends React.Component {
     }
     static showCustom(children) {
         if (global.rootSibling) {
-            global.rootSibling.update(
-                <>
-                    <Mask />
-                    {children}
-                </>
-            );
+            global.rootSibling.update(<>{children}</>);
         } else {
-            global.rootSibling = new RootSibling(
-                (
-                    <>
-                        <Mask />
-                        {children}
-                    </>
-                )
-            );
+            global.rootSibling = new RootSibling(<>{children}</>);
         }
         return global.rootSibling;
     }

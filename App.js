@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 11:51:27
+ * @LastEditTime: 2022-03-21 11:52:57
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -479,7 +479,7 @@ function App(props) {
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
             }, 10 * 60 * 1000);
-        } else if (appState.match(/active/)) {
+        } else if (appState === 'active') {
             BackgroundTimer.stopBackgroundTimer();
         }
     };

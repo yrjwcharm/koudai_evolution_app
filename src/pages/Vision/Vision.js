@@ -2,16 +2,18 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-22 14:11:23
+ * @LastEditTime: 2022-03-22 14:12:43
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
+import {WebView} from 'react-native-webview';
 
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
+import HTML from '../../components/RenderHtml';
 import RenderTitle from './components/RenderTitle.js';
 import RecommendCard from '../../components/Article/RecommendCard';
 import RenderCate from './components/RenderCate';
@@ -27,6 +29,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 import LoadingTips from '../../components/LoadingTips.js';
+import {baseURL} from '../../services/config';
+import Loading from '../Portfolio/components/PageLoading';
 
 const Vision = () => {
     const netInfo = useNetInfo();
@@ -37,6 +41,7 @@ const Vision = () => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const [data, setData] = useState();
+    const [gradeData, setGradeData] = useState({});
     const [allMsg, setAll] = useState(0);
     const jump = useJump();
     const init = useCallback((type) => {
@@ -44,6 +49,11 @@ const Vision = () => {
         http.get('/vision/index/20220215').then((res) => {
             setData(res.result);
             setRefreshing(false);
+        });
+        http.get('/rational/grade/entrance/20220315').then((res) => {
+            if (res.code === '000000') {
+                setGradeData(res.result);
+            }
         });
     }, []);
     const readInterface = useCallback(() => {
@@ -171,73 +181,145 @@ const Vision = () => {
                                         global.LogTool('visionRecArticle', data?.part2);
                                     }}
                                 />
-                                <View style={styles.rationalBox}>
-                                    <Image
-                                        source={require('../../assets/img/vision/rationalBg.png')}
-                                        style={styles.rationalBg}
-                                    />
-                                    {/* <View style={Style.flexBetween}>
-                                        <View>
-                                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                                                <Image
-                                                    source={require('../../assets/img/vision/level_black.png')}
-                                                    style={styles.levelIcon}
-                                                />
-                                                <Text style={styles.levelText}>{'理性等级 '}</Text>
-                                                <Text style={styles.levelNum}>{6}</Text>
-                                            </View>
-                                            <View style={[Style.flexRow, {marginTop: px(10)}]}>
-                                                <Text style={styles.nowNum}>{'6,854'}</Text>
-                                                <Text style={styles.nextNum}>
-                                                    {' 距7级还需理性值'}
-                                                    <Text style={{fontFamily: Font.numRegular}}>{'2,146'}</Text>
-                                                </Text>
-                                            </View>
-                                            <View style={styles.taskBar}>
-                                                <View style={[styles.taskActiveBar, {width: '76.32%'}]} />
-                                            </View>
-                                        </View>
-                                        <TouchableOpacity activeOpacity={0.8} style={styles.getRational}>
-                                            <Text style={styles.getRationalText}>{'提升理性值'}</Text>
-                                        </TouchableOpacity>
-                                    </View> */}
-                                    <View>
-                                        <View style={styles.upgradeBox}>
+                                {Object.keys(gradeData || {}).length > 0 && (
+                                    <View style={styles.rationalBox}>
+                                        {gradeData.style_type === 1 ? (
                                             <Image
-                                                source={require('../../assets/img/vision/upgrade.png')}
-                                                style={styles.upgradeImg}
+                                                source={require('../../assets/img/vision/beginRationalBg.png')}
+                                                style={styles.beginRationalBg}
                                             />
-                                            <Text style={styles.currentLevel}>{'6级'}</Text>
-                                            <Text style={styles.nextLevel}>{'7级'}</Text>
-                                        </View>
-                                        <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
-                                            <Text style={{...styles.levelText, fontSize: px(18), lineHeight: px(18)}}>
-                                                {'理性等级可提升至 '}
-                                            </Text>
-                                            <Text style={styles.levelNum}>{7}</Text>
-                                            <Text style={{...styles.levelText, fontSize: px(18), lineHeight: px(18)}}>
-                                                {' 级'}
-                                            </Text>
-                                        </View>
-                                        <Text style={styles.levelTips}>
-                                            {'收益率预计可提升 '}
-                                            <Text
-                                                style={{
-                                                    color: '#EB7121',
-                                                    fontWeight: Platform.select({android: '700', ios: '500'}),
-                                                }}>
-                                                {'30%～50%'}
-                                            </Text>
-                                        </Text>
-                                        <Button
-                                            color="#E9CE99"
-                                            onPress={() => navigation.navigate('RationalUpgrade')}
-                                            style={styles.upgradeBtn}
-                                            textStyle={styles.upgradeBtnText}
-                                            title="去升级"
-                                        />
+                                        ) : (
+                                            <Image
+                                                source={require('../../assets/img/vision/rationalBg.png')}
+                                                style={styles.rationalBg}
+                                            />
+                                        )}
+                                        {gradeData.style_type === 1 && (
+                                            <View>
+                                                <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
+                                                    <View style={Style.flexRow}>
+                                                        <Image
+                                                            source={require('../../assets/img/vision/level_black.png')}
+                                                            style={styles.levelIcon}
+                                                        />
+                                                        <Text style={styles.levelText}>{'理性等级'}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() => jump(gradeData.url)}>
+                                                        <Image
+                                                            source={require('../../assets/img/vision/levelTips.png')}
+                                                            style={styles.levelTipsIcon}
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <Text style={{...styles.levelTips, marginTop: px(10)}}>
+                                                    {gradeData.desc}
+                                                </Text>
+                                                <View style={{height: px(144)}}>
+                                                    <WebView
+                                                        renderLoading={
+                                                            Platform.OS === 'android' ? () => <Loading /> : undefined
+                                                        }
+                                                        startInLoadingState={true}
+                                                        scalesPageToFit={false}
+                                                        source={{
+                                                            uri: `${baseURL.H5}/rationalChart`,
+                                                        }}
+                                                        textZoom={100}
+                                                    />
+                                                </View>
+                                                {gradeData.button ? (
+                                                    <Button
+                                                        color="#E9CE99"
+                                                        onPress={() => jump(gradeData.button.url)}
+                                                        style={styles.upgradeBtn}
+                                                        textStyle={styles.upgradeBtnText}
+                                                        title={gradeData.button.text}
+                                                    />
+                                                ) : null}
+                                            </View>
+                                        )}
+                                        {gradeData.style_type === 2 && (
+                                            <View style={Style.flexBetween}>
+                                                <View>
+                                                    <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                                        <Image
+                                                            source={require('../../assets/img/vision/level_black.png')}
+                                                            style={styles.levelIcon}
+                                                        />
+                                                        <Text style={styles.levelText}>{'理性等级 '}</Text>
+                                                        <Text style={styles.levelNum}>{gradeData.current_grade}</Text>
+                                                    </View>
+                                                    <View style={[Style.flexRow, {marginTop: px(6)}]}>
+                                                        <HTML html={gradeData.desc} style={styles.nextNum} />
+                                                    </View>
+                                                    <View style={styles.taskBar}>
+                                                        <View
+                                                            style={[
+                                                                styles.taskActiveBar,
+                                                                {width: `${gradeData.percent}%`},
+                                                            ]}
+                                                        />
+                                                    </View>
+                                                </View>
+                                                {gradeData.button ? (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() => jump(gradeData.button.url)}
+                                                        style={styles.getRational}>
+                                                        <Text style={styles.getRationalText}>
+                                                            {gradeData.button.text}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                ) : null}
+                                            </View>
+                                        )}
+                                        {gradeData.style_type === 3 && (
+                                            <View>
+                                                <View style={styles.upgradeBox}>
+                                                    <Image
+                                                        source={require('../../assets/img/vision/upgrade.png')}
+                                                        style={styles.upgradeImg}
+                                                    />
+                                                    <Text style={styles.currentLevel}>{gradeData.current_grade}级</Text>
+                                                    <Text style={styles.nextLevel}>{gradeData.next_grade}级</Text>
+                                                </View>
+                                                <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
+                                                    <Text
+                                                        style={{
+                                                            ...styles.levelText,
+                                                            fontSize: px(18),
+                                                            lineHeight: px(20),
+                                                        }}>
+                                                        {gradeData.name}
+                                                    </Text>
+                                                    <Text style={styles.levelNum}>{gradeData.next_grade}</Text>
+                                                    <Text
+                                                        style={{
+                                                            ...styles.levelText,
+                                                            fontSize: px(18),
+                                                            lineHeight: px(20),
+                                                        }}>
+                                                        {' 级'}
+                                                    </Text>
+                                                </View>
+                                                <View style={{marginTop: px(4)}}>
+                                                    <HTML html={gradeData.desc} style={styles.levelTips} />
+                                                </View>
+                                                {gradeData.button ? (
+                                                    <Button
+                                                        color="#E9CE99"
+                                                        onPress={() => jump(gradeData.button.url)}
+                                                        style={styles.upgradeBtn}
+                                                        textStyle={styles.upgradeBtnText}
+                                                        title={gradeData.button.text}
+                                                    />
+                                                ) : null}
+                                            </View>
+                                        )}
                                     </View>
-                                </View>
+                                )}
                                 {/* 其他模块 */}
                                 {data?.part3?.map((item, index) => {
                                     return (
@@ -347,6 +429,13 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#fff',
     },
+    beginRationalBg: {
+        width: px(343),
+        height: px(92),
+        position: 'absolute',
+        top: 0,
+        right: 0,
+    },
     rationalBg: {
         width: px(343),
         height: px(57),
@@ -370,6 +459,10 @@ const styles = StyleSheet.create({
         lineHeight: px(24),
         color: '#EB7121',
         fontFamily: Font.numFontFamily,
+    },
+    levelTipsIcon: {
+        width: px(17),
+        height: px(16),
     },
     nowNum: {
         fontSize: Font.textH3,
