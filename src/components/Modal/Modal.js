@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 11:53:06
+ * @LastEditTime: 2022-03-21 14:37:47
  * @Description:
  */
 /**
@@ -72,7 +72,7 @@ export default class Modal extends React.Component {
         }, 0);
         return global.rootSibling;
     }
-    static showCustom(children) {
+    static showCustomModal(children) {
         if (global.rootSibling) {
             global.rootSibling.update(<>{children}</>);
         } else {

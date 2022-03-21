@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 11:52:57
+ * @LastEditTime: 2022-03-21 11:57:52
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -22,6 +22,7 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
+    DeviceEventEmitter,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import AntDesign from 'react-native-vector-icons/AntDesign';

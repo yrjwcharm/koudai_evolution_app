@@ -218,11 +218,16 @@ const Vision = () => {
                                                 </Text>
                                                 <View style={{height: px(144)}}>
                                                     <WebView
+                                                        allowFileAccess
+                                                        allowFileAccessFromFileURLs
+                                                        allowUniversalAccessFromFileURLs
+                                                        bounces={false}
                                                         renderLoading={
                                                             Platform.OS === 'android' ? () => <Loading /> : undefined
                                                         }
                                                         startInLoadingState={true}
                                                         scalesPageToFit={false}
+                                                        scrollEnabled={false}
                                                         source={{
                                                             uri: `${baseURL.H5}/rationalChart`,
                                                         }}

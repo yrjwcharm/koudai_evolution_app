@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 10:11:20
+ * @LastEditTime: 2022-03-21 14:57:52
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -68,7 +68,7 @@ export default ({navigation}) => {
         question_analysis = '',
         question_answer_id: answer = '',
         question_content = '',
-        question_id = '',
+        id: question_id = '',
     } = question; // 当前题目
     const timeRef = useRef();
 
@@ -136,7 +136,7 @@ export default ({navigation}) => {
     };
 
     // 上报用户选项
-    const reportAnswer = (last) => {
+    const reportAnswer = async (last) => {
         const time = Date.now();
         http.post('/rational/grade/answer/20220317', {
             cate_id,
@@ -155,7 +155,7 @@ export default ({navigation}) => {
     };
 
     // 下一题/完成答题
-    const onNext = () => {
+    const onNext = async () => {
         if (!showAnswer) {
             dispatch({type: 'toggleShowAnswer'});
             if (now_count === all_count) {
@@ -167,10 +167,10 @@ export default ({navigation}) => {
             if (now_count === all_count) {
                 return reportAnswer(true);
             }
-            if (current === question.length - 1) {
+            await reportAnswer();
+            if (current === question_list.length - 1) {
                 getQuestions(summary_id);
             } else {
-                reportAnswer();
                 dispatch({payload: '提交答案', type: 'setBtn'});
                 dispatch({payload: {}, type: 'setChosen'});
                 dispatch({payload: current + 1, type: 'setCurrent'});
