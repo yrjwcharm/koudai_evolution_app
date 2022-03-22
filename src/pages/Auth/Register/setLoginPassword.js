@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-09 16:47:11
+ * @LastEditTime: 2022-03-22 14:04:45
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -24,6 +24,7 @@ class SetLoginPassword extends Component {
     state = {
         code: '',
         password: '',
+        re_password: '',
         btnClick: true,
         verifyText: '获取验证码',
         second: 60,
@@ -203,7 +204,7 @@ class SetLoginPassword extends Component {
         this.setState({password: password, btnClick: !(code.length >= 6 && password.length >= 8)});
     };
     render() {
-        const {code, password, btnClick, verifyText, code_btn_click} = this.state;
+        const {code, password, btnClick, verifyText, code_btn_click, re_password} = this.state;
         return (
             <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <Text style={styles.title}>请输入短信验证码</Text>
@@ -230,7 +231,7 @@ class SetLoginPassword extends Component {
                 </View>
 
                 <InputView
-                    title="登录密码"
+                    title={this.fr == 'forget' ? '新密码' : '登录密码'}
                     onChangeText={this.onChangePassword}
                     value={password}
                     placeholder="8-20位数字、英文或符号"
@@ -239,8 +240,20 @@ class SetLoginPassword extends Component {
                     keyboardType={'ascii-capable'}
                     clearButtonMode="while-editing"
                 />
+                {this.fr == 'forget' ? (
+                    <InputView
+                        title="确认新密码"
+                        onChangeText={this.onChangeRePassword}
+                        value={re_password}
+                        placeholder="请输入相同的新密码"
+                        maxLength={20}
+                        secureTextEntry={true}
+                        keyboardType={'ascii-capable'}
+                        clearButtonMode="while-editing"
+                    />
+                ) : null}
                 <Button
-                    title={this.fr == 'forget' ? '完成找回密码' : this.union_id ? '完成绑定' : '完成注册'}
+                    title={this.fr == 'forget' ? '确定' : this.union_id ? '完成绑定' : '完成注册'}
                     disabled={btnClick}
                     onPress={this.register}
                     style={{marginVertical: text(20)}}

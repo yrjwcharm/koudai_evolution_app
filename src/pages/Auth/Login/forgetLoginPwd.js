@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-09 16:45:58
+ * @LastEditTime: 2022-03-22 10:47:02
  * @Description:找回登录密码
  */
 
@@ -45,7 +45,7 @@ export default class index extends Component {
         return (
             <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <View style={{marginBottom: text(30), marginTop: text(20)}}>
-                    <Text style={styles.title}>找回登录密码</Text>
+                    <Text style={styles.title}>修改登录密码</Text>
                 </View>
                 <Text style={{color: '#666666', marginBottom: 16}}>请输入注册手机号以接收验证码</Text>
                 <InputView

@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 18:43:50
+ * @LastEditTime: 2022-03-21 16:21:50
  * @Description:直播模块
  */
 
@@ -26,6 +26,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
     const isLiveRecommend = scene == 'largeLiveCard';
     //是否是回放小卡片 针对回放小卡片特殊处理
     const issmLiveCard = scene == 'smLiveCard';
+
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
@@ -216,7 +217,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                     </View>
                 ) : null}
                 {issmLiveCard || isLiveRecommend ? null : (
-                    <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                    <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                         {data?.live_time_desc ? (
                             <View style={[styles.time]}>
                                 <Text style={styles.time}>{data?.live_time_desc}</Text>

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-15 15:52:20
+ * @LastEditTime: 2022-03-21 16:34:52
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -27,6 +27,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 import LoadingTips from '../../components/LoadingTips.js';
+import LiveCard from '../../components/Article/LiveCard.js';
 
 const Vision = () => {
     const netInfo = useNetInfo();
@@ -187,13 +188,19 @@ const Vision = () => {
                                                     }}
                                                 />
                                             ) : null}
-                                            {item?.direction == 'horizontal' ? (
+                                            {item?.scene == 'live' && item?.items?.length == 1 ? (
+                                                // 单场直播
+                                                <LiveCard
+                                                    data={item?.items[0]}
+                                                    style={{marginBottom: px(12), width: '100%'}}
+                                                />
+                                            ) : item?.direction == 'horizontal' ? (
                                                 <ScrollView
                                                     horizontal
                                                     style={styles.horiView}
                                                     showsHorizontalScrollIndicator={false}>
                                                     <View style={[{marginLeft: px(16)}, Style.flexRow]}>
-                                                        {item?.items?.map((_article, index) => {
+                                                        {item?.items?.map((_article) => {
                                                             return RenderCate(_article, {
                                                                 marginBottom: px(12),
                                                                 marginRight: px(12),
@@ -202,7 +209,7 @@ const Vision = () => {
                                                     </View>
                                                 </ScrollView>
                                             ) : (
-                                                item?.items?.map((_article, index) => {
+                                                item?.items?.map((_article) => {
                                                     return RenderCate(_article, {marginBottom: px(12)});
                                                 })
                                             )}
