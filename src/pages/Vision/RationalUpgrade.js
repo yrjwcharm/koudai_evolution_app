@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 17:43:43
+ * @LastEditTime: 2022-03-22 10:38:53
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -12,6 +12,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import {Modal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 import http from '../../services';
 import {px, isIphoneX, deviceWidth, deviceHeight} from '../../utils/appUtil';
 
@@ -78,6 +79,8 @@ export default ({navigation, route}) => {
             if (res.code === '000000') {
                 dispatch({payload: res.result, type: 'setData'});
                 timeRef.current = Date.now();
+            } else {
+                Toast.show(res.message);
             }
         });
     };
@@ -142,6 +145,7 @@ export default ({navigation, route}) => {
     // 上报用户选项
     const reportAnswer = async (last) => {
         const time = Date.now();
+        const toast = last ? Toast.showLoading('计算中...') : '';
         http.post('/rational/grade/answer/20220317', {
             cate_id,
             during_time: time - timeRef.current,
@@ -151,8 +155,12 @@ export default ({navigation, route}) => {
         }).then((res) => {
             if (res.code === '000000') {
                 if (last) {
+                    Toast.hide(toast);
                     showModal(res.result);
                 }
+            } else {
+                last && Toast.hide(toast);
+                Toast.show(res.message);
             }
         });
         timeRef.current = time;
