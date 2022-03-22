@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-03-11 17:01:58
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-11 17:54:02
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-22 14:21:14
  * @Description:投顾观点
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -18,6 +18,7 @@ const InvestPointCard = ({data, style}) => {
             style={[Style.card, style]}
             activeOpacity={0.9}
             onPress={() => {
+                global.LogTool('visionviewpoint');
                 jump(data.url);
             }}>
             <View style={Style.flexBetween}>

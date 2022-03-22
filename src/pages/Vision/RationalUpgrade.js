@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-22 10:38:53
+ * @LastEditTime: 2022-03-22 16:05:13
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -72,6 +72,7 @@ export default ({navigation, route}) => {
         id: question_id = '',
     } = question; // 当前题目
     const timeRef = useRef();
+    const clickRef = useRef(true);
 
     // 获取题目
     const getQuestions = (id) => {
@@ -146,28 +147,34 @@ export default ({navigation, route}) => {
     const reportAnswer = async (last) => {
         const time = Date.now();
         const toast = last ? Toast.showLoading('计算中...') : '';
-        http.post('/rational/grade/answer/20220317', {
-            cate_id,
-            during_time: time - timeRef.current,
-            question_id,
-            summary_id,
-            user_option: chosenId,
-        }).then((res) => {
-            if (res.code === '000000') {
-                if (last) {
-                    Toast.hide(toast);
-                    showModal(res.result);
+        await http
+            .post('/rational/grade/answer/20220317', {
+                cate_id,
+                during_time: time - timeRef.current,
+                question_id,
+                summary_id,
+                user_option: chosenId,
+            })
+            .then((res) => {
+                if (res.code === '000000') {
+                    if (last) {
+                        Toast.hide(toast);
+                        showModal(res.result);
+                    }
+                } else {
+                    last && Toast.hide(toast);
+                    Toast.show(res.message);
                 }
-            } else {
-                last && Toast.hide(toast);
-                Toast.show(res.message);
-            }
-        });
+            });
         timeRef.current = time;
     };
 
     // 下一题/完成答题
     const onNext = async () => {
+        if (!clickRef.current) {
+            return false;
+        }
+        clickRef.current = false;
         if (!showAnswer) {
             dispatch({type: 'toggleShowAnswer'});
             if (now_count === all_count) {
@@ -189,6 +196,9 @@ export default ({navigation, route}) => {
                 dispatch({type: 'toggleShowAnswer'});
             }
         }
+        setTimeout(() => {
+            clickRef.current = true;
+        }, 100);
     };
 
     useEffect(() => {
