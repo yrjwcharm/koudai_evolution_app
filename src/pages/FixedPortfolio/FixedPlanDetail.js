@@ -178,9 +178,9 @@ export default function FixedPlan(props) {
                                 showEmpty && <EmptyTip text={'暂无记录'} style={{paddingTop: text(20)}} type={'part'} />
                             )}
                         </View>
+                        <BottomDesc />
                     </View>
                 )}
-                <BottomDesc />
             </ScrollView>
             {Object.keys(data).length > 0 && (
                 <FixedButton
