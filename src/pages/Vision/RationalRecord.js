@@ -2,7 +2,7 @@
  * @Date: 2022-03-14 17:22:17
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-17 16:21:23
+ * @LastEditTime: 2022-03-23 14:29:12
  * @Description: 理性值记录
  */
 import React, {useEffect, useState} from 'react';
@@ -55,7 +55,7 @@ export default () => {
 
     // 渲染空数据状态
     const renderEmpty = () => {
-        return showEmpty ? <Empty text={'暂无基金公告'} /> : null;
+        return showEmpty ? <Empty text={'暂无记录'} /> : null;
     };
 
     // 渲染底部
