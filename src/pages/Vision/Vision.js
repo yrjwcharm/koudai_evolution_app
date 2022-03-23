@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-22 14:12:43
+ * @LastEditTime: 2022-03-23 11:20:11
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -240,7 +240,10 @@ const Vision = () => {
                                                 {gradeData.button ? (
                                                     <Button
                                                         color="#E9CE99"
-                                                        onPress={() => jump(gradeData.button.url)}
+                                                        onPress={() => {
+                                                            jump(gradeData.button.url);
+                                                            global.LogTool('visionassessment');
+                                                        }}
                                                         style={styles.upgradeBtn}
                                                         textStyle={styles.upgradeBtnText}
                                                         title={gradeData.button.text}

@@ -2,10 +2,10 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-22 16:05:13
+ * @LastEditTime: 2022-03-23 11:21:34
  * @Description: 理性等级升级
  */
-import React, {useEffect, useReducer, useRef} from 'react';
+import React, {useEffect, useMemo, useReducer, useRef} from 'react';
 import {Modal as ModalContainer, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -15,6 +15,7 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import http from '../../services';
 import {px, isIphoneX, deviceWidth, deviceHeight} from '../../utils/appUtil';
+import debounce from 'lodash/debounce';
 
 const initData = {
     btn: '提交答案',
@@ -72,7 +73,6 @@ export default ({navigation, route}) => {
         id: question_id = '',
     } = question; // 当前题目
     const timeRef = useRef();
-    const clickRef = useRef(true);
 
     // 获取题目
     const getQuestions = (id) => {
@@ -170,36 +170,35 @@ export default ({navigation, route}) => {
     };
 
     // 下一题/完成答题
-    const onNext = async () => {
-        if (!clickRef.current) {
-            return false;
-        }
-        clickRef.current = false;
-        if (!showAnswer) {
-            dispatch({type: 'toggleShowAnswer'});
-            if (now_count === all_count) {
-                dispatch({payload: '完成答题，开始评估', type: 'setBtn'});
-            } else {
-                dispatch({payload: '进入下一题', type: 'setBtn'});
-            }
-        } else {
-            if (now_count === all_count) {
-                return reportAnswer(true);
-            }
-            await reportAnswer();
-            if (current === question_list.length - 1) {
-                getQuestions(summary_id);
-            } else {
-                dispatch({payload: '提交答案', type: 'setBtn'});
-                dispatch({payload: {}, type: 'setChosen'});
-                dispatch({payload: current + 1, type: 'setCurrent'});
-                dispatch({type: 'toggleShowAnswer'});
-            }
-        }
-        setTimeout(() => {
-            clickRef.current = true;
-        }, 100);
-    };
+    const onNext = useMemo(
+        function () {
+            return debounce(async () => {
+                if (!showAnswer) {
+                    dispatch({type: 'toggleShowAnswer'});
+                    if (now_count === all_count) {
+                        dispatch({payload: '完成答题，开始评估', type: 'setBtn'});
+                    } else {
+                        dispatch({payload: '进入下一题', type: 'setBtn'});
+                    }
+                } else {
+                    if (now_count === all_count) {
+                        return reportAnswer(true);
+                    }
+                    await reportAnswer();
+                    if (current === question_list.length - 1) {
+                        getQuestions(summary_id);
+                    } else {
+                        dispatch({payload: '提交答案', type: 'setBtn'});
+                        dispatch({payload: {}, type: 'setChosen'});
+                        dispatch({payload: current + 1, type: 'setCurrent'});
+                        dispatch({type: 'toggleShowAnswer'});
+                    }
+                }
+            }, 300);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [all_count, current, now_count, question_list.length, showAnswer, summary_id]
+    );
 
     useEffect(() => {
         getQuestions();
