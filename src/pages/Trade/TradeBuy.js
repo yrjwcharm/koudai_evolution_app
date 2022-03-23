@@ -16,6 +16,7 @@ import {
     TouchableOpacity,
     Image,
     Keyboard,
+    Switch,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
@@ -38,6 +39,7 @@ import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
 import _ from 'lodash';
+import memoize from 'memoize-one';
 let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
@@ -71,6 +73,7 @@ class TradeBuy extends Component {
             fixTip: '',
             largeTip: '',
             deltaHeight: 0,
+            autoChargeStatus: false,
         };
         this.plan_id = this.props.route?.params?.plan_id || '';
         this.show_risk_disclosure = true;
@@ -123,6 +126,7 @@ class TradeBuy extends Component {
                             bankSelect: res.result?.pay_methods[0],
                             currentDate: res.result?.period_info?.current_date,
                             nextday: res.result?.period_info?.nextday,
+                            autoChargeStatus: res?.result?.auto_charge?.is_open,
                         },
                         () => {
                             let amount = this.state.amount;
@@ -262,6 +266,7 @@ class TradeBuy extends Component {
                 poid,
                 amount: this.state.amount,
                 password,
+                wallet_auto_charge: +this.state.autoChargeStatus,
                 trade_method: bankSelect?.pay_type,
                 pay_method: bankSelect?.pay_method || '',
                 cycle: currentDate[0],
@@ -269,6 +274,7 @@ class TradeBuy extends Component {
                 need_buy: this.need_buy,
             }).then((res) => {
                 Toast.hide(toast);
+                global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Condition');
                 if (res.code === '000000') {
                     this.props.navigation.replace('TradeFixedConfirm', res.result);
                 } else {
@@ -717,7 +723,7 @@ class TradeBuy extends Component {
         );
     }
     render_bank() {
-        const {data, bankSelect} = this.state;
+        const {data, bankSelect, type, autoChargeStatus} = this.state;
         const {pay_methods, large_pay_method} = data;
         return (
             <View style={{marginBottom: px(12)}}>
@@ -798,6 +804,11 @@ class TradeBuy extends Component {
                         ) : null}
                     </View>
                 </View>
+                {type === 1 && autoChargeStatus && bankSelect.pay_method == 'wallet' && (
+                    <View style={{backgroundColor: '#fff', paddingHorizontal: px(16), paddingBottom: px(12)}}>
+                        <Html style={styles.autoChargeHintText} html={data.auto_charge?.conflict_tip} />
+                    </View>
+                )}
                 {large_pay_method ? (
                     <View
                         style={[
@@ -879,9 +890,60 @@ class TradeBuy extends Component {
                         <Icon name={'right'} size={px(12)} color={Colors.lightGrayColor} />
                     </View>
                 </View>
-                <Text style={{color: Colors.darkGrayColor, fontSize: px(12), lineHeight: px(17)}}>{nextday}</Text>
+                <Html style={{color: Colors.darkGrayColor, fontSize: px(12), lineHeight: px(17)}} html={nextday} />
             </TouchableOpacity>
         );
+    }
+    // 自动充值
+    render_autoRecharge() {
+        const {autoChargeStatus, data} = this.state;
+        return (
+            <View style={styles.autoRechargeContent}>
+                <View style={styles.autoRechargePanel}>
+                    <View>
+                        <Text style={styles.autoRechargePanelText}>{data?.auto_charge?.title}</Text>
+                        <View style={styles.autoRechargePanelRecommendWrapper}>
+                            <Text style={styles.autoRechargePanelRecommend}>{data?.auto_charge?.label}</Text>
+                        </View>
+                    </View>
+                    <Switch
+                        ios_backgroundColor={'#CCD0DB'}
+                        onValueChange={(val) => {
+                            this.setState({
+                                autoChargeStatus: val,
+                            });
+                        }}
+                        thumbColor={'#fff'}
+                        trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                        value={autoChargeStatus}
+                    />
+                </View>
+                <View style={styles.autoRechargeDesc}>
+                    <Html style={styles.autoRechargeText} html={data?.auto_charge?.desc} />
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={styles.autoRechargeDetail}
+                        onPress={() => {
+                            this.jumpPage(data?.auto_charge?.button?.url?.path, {
+                                title: data?.auto_charge?.button?.url?.params.title,
+                                img: data?.auto_charge?.detail_img,
+                            });
+                        }}>
+                        <Text style={{fontSize: px(12), fontWeight: '400', color: '#0051cc', lineHeight: px(17)}}>
+                            {data?.auto_charge?.button?.text}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                {autoChargeStatus && (
+                    <View style={styles.autoChargeHintOnOpen}>
+                        <Html html={data?.auto_charge?.close_tip} style={styles.autoChargeHintText} />
+                    </View>
+                )}
+            </View>
+        );
+    }
+    render_deductionHint() {
+        return <Text style={styles.render_deductionHintText}>{this.state.data?.auto_charge?.deduction_tip}</Text>;
     }
     //购买
     render_buy() {
@@ -1030,12 +1092,16 @@ class TradeBuy extends Component {
                         ) : null}
                     </View>
                 ) : null}
-                {/* 银行卡 */}
-                {this.render_bank()}
-                {/* 买入明细 */}
-                {type == 0 && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
+                {/* 魔方宝自动充值 */}
+                {type == 1 && this.render_autoRecharge()}
+                {/* 银行卡 */}
+                {this.render_bank()}
+                {/* 魔方宝自动充值 */}
+                {type == 1 && this.render_deductionHint()}
+                {/* 买入明细 */}
+                {type == 0 && this.render_config()}
 
                 {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
@@ -1129,9 +1195,11 @@ class TradeBuy extends Component {
             </ScrollView>
         );
     }
-
+    disableOfwalletErrorOverBtn = memoize((type, autoChargeStatus, pay_method) => {
+        return !!(type === 1 && autoChargeStatus && pay_method == 'wallet');
+    });
     render() {
-        const {showMask, data, type, buyBtnCanClick, deltaHeight} = this.state;
+        const {showMask, data, type, buyBtnCanClick, deltaHeight, autoChargeStatus, bankSelect} = this.state;
         const {button} = data;
         return (
             <>
@@ -1164,7 +1232,11 @@ class TradeBuy extends Component {
                             <FixedButton
                                 agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                                 title={button.text}
-                                disabled={button.avail == 0 || !buyBtnCanClick}
+                                disabled={
+                                    button.avail == 0 ||
+                                    !buyBtnCanClick ||
+                                    this.disableOfwalletErrorOverBtn(type, autoChargeStatus, bankSelect?.pay_method)
+                                }
                                 onPress={this.buyClick}
                                 heightChange={(height) => this.setState({deltaHeight: height})}
                                 suffix={data?.agreement_bottom?.agree_text}
@@ -1308,8 +1380,8 @@ const styles = StyleSheet.create({
     },
     auto_time: {
         paddingHorizontal: px(16),
+        paddingVertical: px(12),
         backgroundColor: '#fff',
-        height: px(70),
         marginBottom: px(12),
         justifyContent: 'center',
     },
@@ -1358,6 +1430,75 @@ const styles = StyleSheet.create({
         left: 0,
         backgroundColor: Colors.bgColor,
         zIndex: 99,
+    },
+    autoRechargeContent: {
+        backgroundColor: '#fff',
+        paddingHorizontal: px(16),
+        marginBottom: px(12),
+    },
+    autoRechargePanel: {
+        paddingVertical: px(14),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomColor: '#E9EAEF',
+        borderBottomWidth: 1,
+    },
+    autoRechargePanelText: {
+        fontSize: px(16),
+        fontWeight: '400',
+        color: '#1F2432',
+        lineHeight: px(22),
+    },
+    autoRechargePanelRecommendWrapper: {
+        backgroundColor: Colors.red,
+        borderRadius: px(9),
+        borderBottomLeftRadius: px(1),
+        paddingHorizontal: px(6),
+        paddingVertical: px(1),
+        position: 'absolute',
+        right: -px(35),
+        top: -5,
+    },
+    autoRechargePanelRecommend: {
+        fontSize: px(11),
+        fontWeight: '500',
+        lineHeight: px(16),
+        color: '#fff',
+    },
+    autoRechargeDesc: {
+        paddingTop: px(11),
+        paddingBottom: px(16),
+    },
+    autoRechargeText: {
+        fontSize: px(13),
+        fontWeight: '400',
+        color: Colors.lightBlackColor,
+        lineHeight: px(20),
+    },
+    autoRechargeDetail: {
+        position: 'absolute',
+        right: 0,
+        bottom: px(16),
+    },
+    render_deductionHintText: {
+        fontSize: px(12),
+        fontWeight: '400',
+        color: '#9095A5',
+        lineHeight: px(17),
+        marginBottom: px(12),
+        paddingHorizontal: px(16),
+    },
+    autoChargeHintOnOpen: {
+        paddingVertical: px(7),
+        borderTopColor: '#E9EAEF',
+        borderTopWidth: 1,
+    },
+    autoChargeHintText: {
+        fontSize: px(13),
+        fontWeight: '400',
+        color: Colors.red,
+        lineHeight: px(20),
     },
 });
 

@@ -616,7 +616,9 @@ export default function PortfolioAssets(props) {
                         }}
                     />
                 }>
-                {data?.processing_info && <Notice content={data?.processing_info} />}
+                {data?.processing_info && (
+                    <Notice content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}} />
+                )}
                 <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>

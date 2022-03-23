@@ -6,11 +6,11 @@
  * @LastEditTime: 2021-12-22 18:33:45
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView, Switch} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, formaNum, onlyNumber} from '../../utils/appUtil';
+import {px as text, px, formaNum, onlyNumber} from '../../utils/appUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
@@ -29,6 +29,7 @@ export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
     const [cycle, setCycle] = useState('');
+    const [autoChargeStatus, updateAutoChargeStatus] = useState(false);
     const passwordModal = useRef(null);
     const [type, setType] = useState();
     const jump = useJump();
@@ -150,6 +151,7 @@ export default function FixedUpdate({navigation, route}) {
                         setData(res.result);
                         setPayMethod(res.result.pay_methods[0] || {});
                         setNum(parseFloat(res.result.target_info.invest.amount));
+                        updateAutoChargeStatus(res.result?.auto_charge?.is_open);
                         const _date = res.result.target_info.fix_period.current_date;
                         setCycle(_date);
                         cycleRef.current = _date.split(' ')[0];
@@ -222,11 +224,15 @@ export default function FixedUpdate({navigation, route}) {
                 invest_id: data?.invest_id,
                 amount: num,
                 cycle: cycleRef.current,
+                wallet_auto_charge: +autoChargeStatus,
                 timing: timingRef.current,
                 password,
                 pay_method: payMethod.pay_method,
             }).then((res) => {
                 Toast.show(res.message);
+                if (data.auto_charge?.is_open !== autoChargeStatus) {
+                    global.LogTool('FixedPlanDetail_Planrecord_BabyRecharge_Condition');
+                }
                 if (res.code == '000000') {
                     setTimeout(() => {
                         jump(data.button[1].url);
@@ -263,6 +269,58 @@ export default function FixedUpdate({navigation, route}) {
             inputModal.current.hide();
             setNum(parseFloat(iptValRef.current));
         }
+    };
+    // 自动充值
+    const render_autoRecharge = () => {
+        let auto_charge = data.auto_charge;
+        return (
+            <View style={styles.autoRechargeContent}>
+                <View style={styles.autoRechargePanel}>
+                    <View>
+                        <Text style={styles.autoRechargePanelText}>{auto_charge?.title}</Text>
+                        <View style={styles.autoRechargePanelRecommendWrapper}>
+                            <Text style={styles.autoRechargePanelRecommend}>{auto_charge?.label}</Text>
+                        </View>
+                    </View>
+                    <Switch
+                        ios_backgroundColor={'#CCD0DB'}
+                        onValueChange={(val) => {
+                            updateAutoChargeStatus(val);
+                        }}
+                        thumbColor={'#fff'}
+                        trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                        value={autoChargeStatus}
+                    />
+                </View>
+                <View style={styles.autoRechargeDesc}>
+                    <Html style={styles.autoRechargeText} html={auto_charge?.desc} />
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={styles.autoRechargeDetail}
+                        onPress={() => {
+                            jump({
+                                path: auto_charge?.button?.url?.path,
+                                params: {
+                                    title: auto_charge?.button?.url?.params.title,
+                                    img: auto_charge?.detail_img,
+                                },
+                            });
+                        }}>
+                        <Text style={{fontSize: px(12), fontWeight: '400', color: '#0051cc', lineHeight: px(17)}}>
+                            {auto_charge?.button?.text}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                {autoChargeStatus && (
+                    <View style={styles.autoChargeHintOnOpen}>
+                        <Html html={auto_charge?.close_tip} style={styles.autoChargeHintText} />
+                    </View>
+                )}
+            </View>
+        );
+    };
+    const render_deductionHint = () => {
+        return <Text style={styles.render_deductionHintText}>{data?.auto_charge?.deduction_tip}</Text>;
     };
     useEffect(() => {
         if (Object.keys(modalProps).length > 0) {
@@ -382,6 +440,7 @@ export default function FixedUpdate({navigation, route}) {
                             </View>
                         </TouchableOpacity>
                     </View>
+                    {render_autoRecharge()}
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => bankCardModal.current.show()}
@@ -406,6 +465,12 @@ export default function FixedUpdate({navigation, route}) {
                             />
                         </View>
                     </TouchableOpacity>
+                    {payMethod.pay_method == 'wallet' && autoChargeStatus && (
+                        <View style={{backgroundColor: '#fff', paddingHorizontal: text(16), paddingBottom: text(12)}}>
+                            <Html style={styles.autoChargeHintText} html={data.auto_charge?.conflict_tip} />
+                        </View>
+                    )}
+                    {render_deductionHint()}
                     <View
                         style={[
                             Style.flexRow,
@@ -424,8 +489,14 @@ export default function FixedUpdate({navigation, route}) {
                             <Text style={styles.btn_sty}>{data.button[0].text}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={{backgroundColor: '#0051CC', borderRadius: text(6), flex: 1}}
+                            activeOpacity={payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 0.8}
+                            style={{
+                                backgroundColor: '#0051CC',
+                                borderRadius: text(6),
+                                flex: 1,
+                                opacity: payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 1,
+                            }}
+                            disabled={payMethod.pay_method == 'wallet' && autoChargeStatus}
                             onPress={() => handleClick('update')}>
                             <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
                         </TouchableOpacity>
@@ -515,5 +586,74 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(20),
         color: Colors.lightGrayColor,
+    },
+    autoChargeHintText: {
+        fontSize: px(13),
+        fontWeight: '400',
+        color: Colors.red,
+        lineHeight: px(20),
+    },
+    autoRechargeContent: {
+        backgroundColor: '#fff',
+        paddingHorizontal: px(16),
+        marginTop: px(12),
+    },
+    autoRechargePanel: {
+        paddingVertical: px(14),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomColor: '#E9EAEF',
+        borderBottomWidth: 1,
+    },
+    autoRechargePanelText: {
+        fontSize: px(16),
+        fontWeight: '400',
+        color: '#1F2432',
+        lineHeight: px(22),
+    },
+    autoRechargePanelRecommendWrapper: {
+        backgroundColor: Colors.red,
+        borderRadius: px(9),
+        borderBottomLeftRadius: px(1),
+        paddingHorizontal: px(6),
+        paddingVertical: px(1),
+        position: 'absolute',
+        right: -px(35),
+        top: -5,
+    },
+    autoRechargePanelRecommend: {
+        fontSize: px(11),
+        fontWeight: '500',
+        lineHeight: px(16),
+        color: '#fff',
+    },
+    autoRechargeDesc: {
+        paddingTop: px(11),
+        paddingBottom: px(16),
+    },
+    autoRechargeText: {
+        fontSize: px(13),
+        fontWeight: '400',
+        color: Colors.lightBlackColor,
+        lineHeight: px(20),
+    },
+    autoRechargeDetail: {
+        position: 'absolute',
+        right: 0,
+        bottom: px(16),
+    },
+    render_deductionHintText: {
+        fontSize: px(12),
+        fontWeight: '400',
+        color: '#9095A5',
+        lineHeight: px(17),
+        marginTop: px(12),
+        paddingHorizontal: px(16),
+    },
+    autoChargeHintOnOpen: {
+        paddingVertical: px(7),
+        borderTopColor: '#E9EAEF',
+        borderTopWidth: 1,
     },
 });

@@ -36,6 +36,7 @@ import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资�
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
+import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
@@ -174,6 +175,7 @@ import Live from '../pages/Vision/Live'; //直播详情页
 import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -691,6 +693,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+            <Stack.Screen name="WalletAutoRechargeDetail" component={WalletAutoRechargeDetail} options={{title: ''}} />
             <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
             <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />

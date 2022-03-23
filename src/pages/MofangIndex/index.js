@@ -207,6 +207,16 @@ const Index = (props) => {
             </View>
         );
     };
+    const handler = () => {
+        jump({
+            path: 'WalletAutoRechargeDetail',
+            type: 1,
+            params: {
+                title: '魔方宝自动充值全新上线',
+                img: 'https://static.licaimofang.com/wp-content/uploads/2022/03/wallet-auto-recharge-detail.png',
+            },
+        });
+    };
     return hasNet ? (
         <>
             {loading ? (
@@ -321,6 +331,7 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
+                            <Button title="123" onPress={handler} />
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 推荐 */}
