@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 15:24:20
+ * @LastEditTime: 2022-03-24 15:37:47
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -184,10 +184,10 @@ export default ({navigation, route}) => {
                     dispatch({payload: '进入下一题', type: 'setBtn'});
                 }
             } else {
+                clickRef.current = false;
                 if (now_count === all_count) {
                     return reportAnswer(true);
                 }
-                clickRef.current = false;
                 await reportAnswer();
                 if (current === question_list.length - 1) {
                     getQuestions(summary_id);

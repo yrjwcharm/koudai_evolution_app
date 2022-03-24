@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 11:48:58
+ * @LastEditTime: 2022-03-24 15:31:56
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -29,7 +29,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 import LoadingTips from '../../components/LoadingTips.js';
-import {baseURL} from '../../services/config';
+import {SERVER_URL} from '../../services/config';
 import Loading from '../Portfolio/components/PageLoading';
 
 const Vision = () => {
@@ -232,7 +232,7 @@ const Vision = () => {
                                                         scalesPageToFit={false}
                                                         scrollEnabled={false}
                                                         source={{
-                                                            uri: `${baseURL.H5}/rationalChart`,
+                                                            uri: `${SERVER_URL[global.env].H5}/rationalChart`,
                                                         }}
                                                         style={{opacity: 0.99}}
                                                         textZoom={100}
