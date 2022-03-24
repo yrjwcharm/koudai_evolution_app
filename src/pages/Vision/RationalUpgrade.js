@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 15:07:59
+ * @LastEditTime: 2022-03-24 15:24:20
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -187,11 +187,11 @@ export default ({navigation, route}) => {
                 if (now_count === all_count) {
                     return reportAnswer(true);
                 }
+                clickRef.current = false;
                 await reportAnswer();
                 if (current === question_list.length - 1) {
                     getQuestions(summary_id);
                 } else {
-                    clickRef.current = false;
                     dispatch({payload: '提交答案', type: 'setBtn'});
                     dispatch({payload: {}, type: 'setChosen'});
                     dispatch({payload: false, type: 'toggleShowAnswer'});
