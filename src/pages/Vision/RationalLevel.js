@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 15:13:45
+ * @LastEditTime: 2022-03-24 17:35:57
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: Font.textH1,
-        lineHeight: px(18),
+        lineHeight: Platform.select({android: px(19), ios: px(18)}),
         color: '#FFECCF',
         fontWeight: Platform.select({android: '700', ios: '600'}),
     },

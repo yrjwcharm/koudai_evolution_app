@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 15:31:56
+ * @LastEditTime: 2022-03-24 17:45:35
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -21,7 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
@@ -32,7 +32,8 @@ import LoadingTips from '../../components/LoadingTips.js';
 import {SERVER_URL} from '../../services/config';
 import Loading from '../Portfolio/components/PageLoading';
 
-const Vision = () => {
+const Vision = ({navigation}) => {
+    const isFocused = useIsFocused();
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
@@ -75,6 +76,17 @@ const Vision = () => {
         });
         return () => listener();
     }, []);
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            if (isFocused && userInfo.is_login) {
+                scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                hasNet && init('refresh');
+                global.LogTool('tabDoubleClick', 'Vision');
+            }
+        });
+        return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hasNet, isFocused, userInfo.is_login]);
     //上传滚动百分比
     const onScroll = (evt) => {
         const event = evt.nativeEvent;
@@ -469,7 +481,7 @@ const styles = StyleSheet.create({
     },
     levelText: {
         fontSize: Font.textH1,
-        lineHeight: px(18),
+        lineHeight: Platform.select({android: px(19), ios: px(18)}),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '600'}),
     },
