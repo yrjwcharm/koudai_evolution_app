@@ -710,7 +710,7 @@ export default function AppStack() {
             <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
             <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
             <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
-            <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: '理性等级升级'}} />
+            <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
             <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
         </Stack.Navigator>

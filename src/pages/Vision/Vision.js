@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-23 11:20:11
+ * @LastEditTime: 2022-03-24 11:48:58
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -234,6 +234,7 @@ const Vision = () => {
                                                         source={{
                                                             uri: `${baseURL.H5}/rationalChart`,
                                                         }}
+                                                        style={{opacity: 0.99}}
                                                         textZoom={100}
                                                     />
                                                 </View>

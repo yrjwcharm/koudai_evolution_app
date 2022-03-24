@@ -2,10 +2,10 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-23 11:21:34
+ * @LastEditTime: 2022-03-24 15:07:59
  * @Description: 理性等级升级
  */
-import React, {useEffect, useMemo, useReducer, useRef} from 'react';
+import React, {useEffect, useReducer, useRef} from 'react';
 import {Modal as ModalContainer, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -15,7 +15,6 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import http from '../../services';
 import {px, isIphoneX, deviceWidth, deviceHeight} from '../../utils/appUtil';
-import debounce from 'lodash/debounce';
 
 const initData = {
     btn: '提交答案',
@@ -49,7 +48,7 @@ function reducer(state, action) {
         case 'toggleShowAnswer':
             return {
                 ...state,
-                showAnswer: !state.showAnswer,
+                showAnswer: action.payload !== undefined ? action.payload : !state.showAnswer,
             };
         default:
             throw new Error();
@@ -73,6 +72,7 @@ export default ({navigation, route}) => {
         id: question_id = '',
     } = question; // 当前题目
     const timeRef = useRef();
+    const clickRef = useRef(true);
 
     // 获取题目
     const getQuestions = (id) => {
@@ -130,12 +130,16 @@ export default ({navigation, route}) => {
                                     <Text style={styles.modalBtnText}>{cancel.text}</Text>
                                 </TouchableOpacity>
                             ) : null}
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => pressModalBtn(confirm)}
-                                style={[Style.flexCenter, styles.modalBtn, {backgroundColor: '#fff'}]}>
-                                <Text style={{...styles.modalBtnText, color: Colors.defaultColor}}>{confirm.text}</Text>
-                            </TouchableOpacity>
+                            {confirm ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => pressModalBtn(confirm)}
+                                    style={[Style.flexCenter, styles.modalBtn, {backgroundColor: '#fff'}]}>
+                                    <Text style={{...styles.modalBtnText, color: Colors.defaultColor}}>
+                                        {confirm.text}
+                                    </Text>
+                                </TouchableOpacity>
+                            ) : null}
                         </View>
                     </View>
                 </View>
@@ -170,35 +174,32 @@ export default ({navigation, route}) => {
     };
 
     // 下一题/完成答题
-    const onNext = useMemo(
-        function () {
-            return debounce(async () => {
-                if (!showAnswer) {
-                    dispatch({type: 'toggleShowAnswer'});
-                    if (now_count === all_count) {
-                        dispatch({payload: '完成答题，开始评估', type: 'setBtn'});
-                    } else {
-                        dispatch({payload: '进入下一题', type: 'setBtn'});
-                    }
+    const onNext = async () => {
+        if (clickRef.current) {
+            if (!showAnswer) {
+                dispatch({payload: true, type: 'toggleShowAnswer'});
+                if (now_count === all_count) {
+                    dispatch({payload: '完成答题，开始评估', type: 'setBtn'});
                 } else {
-                    if (now_count === all_count) {
-                        return reportAnswer(true);
-                    }
-                    await reportAnswer();
-                    if (current === question_list.length - 1) {
-                        getQuestions(summary_id);
-                    } else {
-                        dispatch({payload: '提交答案', type: 'setBtn'});
-                        dispatch({payload: {}, type: 'setChosen'});
-                        dispatch({payload: current + 1, type: 'setCurrent'});
-                        dispatch({type: 'toggleShowAnswer'});
-                    }
+                    dispatch({payload: '进入下一题', type: 'setBtn'});
                 }
-            }, 300);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [all_count, current, now_count, question_list.length, showAnswer, summary_id]
-    );
+            } else {
+                if (now_count === all_count) {
+                    return reportAnswer(true);
+                }
+                await reportAnswer();
+                if (current === question_list.length - 1) {
+                    getQuestions(summary_id);
+                } else {
+                    clickRef.current = false;
+                    dispatch({payload: '提交答案', type: 'setBtn'});
+                    dispatch({payload: {}, type: 'setChosen'});
+                    dispatch({payload: false, type: 'toggleShowAnswer'});
+                    dispatch({payload: current + 1, type: 'setCurrent'});
+                }
+            }
+        }
+    };
 
     useEffect(() => {
         getQuestions();
@@ -218,6 +219,9 @@ export default ({navigation, route}) => {
                     navigation.dispatch(e.data.action);
                 },
             });
+        });
+        navigation.setOptions({
+            title: route.params.scene === 'grade' ? '理性等级评估' : '理性等级升级',
         });
         return () => {
             listener.current?.();
@@ -242,12 +246,13 @@ export default ({navigation, route}) => {
                                 activeOpacity={showAnswer ? 1 : 0.8}
                                 disabled={showAnswer}
                                 key={item + index}
-                                onPress={() =>
+                                onPress={() => {
+                                    clickRef.current = true;
                                     dispatch({
                                         payload: {chosenId: item.id, chosenIndex: String.fromCharCode(index + 65)},
                                         type: 'setChosen',
-                                    })
-                                }
+                                    });
+                                }}
                                 style={[
                                     Style.flexRow,
                                     styles.optionCon,
@@ -372,7 +377,7 @@ const styles = StyleSheet.create({
     },
     optionIndexText: {
         fontSize: px(13),
-        lineHeight: px(13),
+        lineHeight: px(17),
         color: Colors.defaultColor,
     },
     optionText: {

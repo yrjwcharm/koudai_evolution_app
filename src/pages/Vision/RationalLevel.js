@@ -2,11 +2,11 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 17:40:09
+ * @LastEditTime: 2022-03-24 15:13:45
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppState, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {AppState, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import Image from 'react-native-fast-image';
@@ -22,6 +22,7 @@ import {px} from '../../utils/appUtil';
 
 export default ({navigation}) => {
     const jump = useJump();
+    const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
     const [value, setVal] = useState('');
     const [showAdd, setShowAdd] = useState(false);
@@ -63,6 +64,7 @@ export default ({navigation}) => {
                         }, 1500);
                         setData(res.result);
                     }
+                    setRefreshing(false);
                 });
             })
             .catch((error) => {
@@ -91,7 +93,9 @@ export default ({navigation}) => {
     }, []);
 
     return Object.keys(data || {}).length > 0 ? (
-        <ScrollView bounces={false} style={styles.container}>
+        <ScrollView
+            refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}
+            style={styles.container}>
             {tip_info ? (
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(tip_info.url)} style={styles.topInfo}>
                     <Text style={styles.infoText}>{tip_info.text}</Text>
@@ -108,8 +112,12 @@ export default ({navigation}) => {
                         <Image source={require('../../assets/img/vision/level.png')} style={styles.levelIcon} />
                         <Text style={styles.levelText}>{grade_info?.title}</Text>
                         <Text style={styles.levelNum}>{grade_info?.grade}</Text>
-                        {grade_info?.reminder ? <View style={styles.divider} /> : null}
-                        <Text style={styles.levelTips}>{grade_info?.reminder}</Text>
+                        {grade_info?.reminder ? (
+                            <>
+                                <View style={styles.divider} />
+                                <Text style={styles.levelTips}>{grade_info?.reminder}</Text>
+                            </>
+                        ) : null}
                     </View>
                     <View style={[styles.levelValCon, {marginTop: value.includes(',') ? px(12) : px(6)}]}>
                         <NumberTicker duration={500} number={value} textSize={px(36)} textStyle={styles.levelVal} />
