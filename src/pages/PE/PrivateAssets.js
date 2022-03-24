@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 16:05:47
+ * @LastEditTime: 2022-03-23 17:54:31
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {
@@ -95,6 +95,7 @@ export default function PrivateAssets({navigation, route}) {
                         setShowEye(result ? result : 'true');
                     });
                     setData(res.result);
+                    setPeriod('m1');
                     getChartInfo();
                 })
                 .catch(() => {

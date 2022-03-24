@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-07-15 19:01:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-22 14:42:54
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -18,6 +18,7 @@ import {useJump} from '../../components/hooks';
 import Html from '../../components/RenderHtml';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
+import {useFocusEffect} from '@react-navigation/native';
 const PrivateApply = (props) => {
     const {fund_code, poid, scene} = props.route.params || {};
     const jump = useJump();
@@ -44,9 +45,11 @@ const PrivateApply = (props) => {
     const btnClick = () => {
         props.navigation.navigate('Home');
     };
-    useEffect(() => {
-        init();
-    }, [init]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
     useEffect(() => {
         if (data.title) {
             props.navigation.setOptions({

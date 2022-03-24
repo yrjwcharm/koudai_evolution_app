@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-22 14:04:45
+ * @LastEditTime: 2022-03-22 14:30:57
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -38,7 +38,7 @@ class SetLoginPassword extends Component {
         this.sendCode();
     }
     register = () => {
-        const {code, password} = this.state;
+        const {code, password, re_password} = this.state;
         const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
         if (password.length < 8 || password.length > 20) {
             Toast.show('密码必须8-20位');
@@ -57,6 +57,10 @@ class SetLoginPassword extends Component {
         }
         //找回登录密码
         if (this.fr == 'forget') {
+            if (password != re_password) {
+                Toast.show('输入的新密码不一致');
+                return;
+            }
             let toast = Toast.showLoading('正在修改...');
             http.post('passport/find_login_password/20210101', {
                 mobile: this.props.route?.params?.mobile,
@@ -65,7 +69,7 @@ class SetLoginPassword extends Component {
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
-                    Toast.show('找回成功');
+                    Toast.show('登录密码修改成功');
                     this.props.navigation.pop(2);
                 } else {
                     Toast.show(res.message);
@@ -195,13 +199,37 @@ class SetLoginPassword extends Component {
         this.time && clearInterval(this.time);
     }
     onChangeCode = (code) => {
-        const {password} = this.state;
+        const {password, re_password} = this.state;
         let _code = inputInt(code);
-        this.setState({code: _code, btnClick: !(_code.length >= 6 && password.length >= 8)});
+        if (this.fr == 'forget') {
+            this.setState({
+                code: _code,
+                btnClick: !(_code.length >= 6 && password.length >= 8 && re_password.length == password.length),
+            });
+        } else {
+            this.setState({
+                code: _code,
+                btnClick: !(_code.length >= 6 && password.length >= 8),
+            });
+        }
     };
     onChangePassword = (password) => {
-        const {code} = this.state;
-        this.setState({password: password, btnClick: !(code.length >= 6 && password.length >= 8)});
+        const {code, re_password} = this.state;
+        if (this.fr == 'forget') {
+            this.setState({
+                password: password,
+                btnClick: !(code.length >= 6 && password.length >= 8 && re_password.length >= 8),
+            });
+        } else {
+            this.setState({password: password, btnClick: !(code.length >= 6 && re_password.length == password.length)});
+        }
+    };
+    onChangeRePassword = (re_password) => {
+        const {code, password} = this.state;
+        this.setState({
+            re_password,
+            btnClick: !(code.length >= 6 && password.length >= 8 && re_password.length == password.length),
+        });
     };
     render() {
         const {code, password, btnClick, verifyText, code_btn_click, re_password} = this.state;
