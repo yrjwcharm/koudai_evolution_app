@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 17:35:57
+ * @LastEditTime: 2022-03-25 11:03:32
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -145,9 +145,11 @@ export default ({navigation}) => {
                             end={{x: 1, y: 0}}
                             style={[styles.activeBar, {width: `${grade_info?.progress?.percent}%`}]}
                         />
-                        <View style={[styles.lightCon, {width: `${grade_info?.progress?.percent}%`}]}>
-                            <Image source={require('../../assets/img/vision/light.png')} style={styles.light} />
-                        </View>
+                        {grade_info?.progress?.percent > 0 && (
+                            <View style={[styles.lightCon, {width: `${grade_info?.progress?.percent}%`}]}>
+                                <Image source={require('../../assets/img/vision/light.png')} style={styles.light} />
+                            </View>
+                        )}
                     </View>
                     <View style={[Style.flexBetween, {marginTop: px(4)}]}>
                         {grade_info?.progress?.range_text?.map?.((item, index) => {
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
         borderRadius: px(3),
         width: '100%',
         height: px(3),
-        backgroundColor: '#383547',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
     activeBar: {
         height: '100%',
