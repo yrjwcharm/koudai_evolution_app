@@ -2,11 +2,11 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 15:37:47
+ * @LastEditTime: 2022-03-25 15:52:50
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
-import {Modal as ModalContainer, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
@@ -14,7 +14,7 @@ import {useJump} from '../../components/hooks';
 import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import http from '../../services';
-import {px, isIphoneX, deviceWidth, deviceHeight} from '../../utils/appUtil';
+import {px, isIphoneX} from '../../utils/appUtil';
 
 const initData = {
     btn: '提交答案',
@@ -110,10 +110,10 @@ export default ({navigation, route}) => {
             route.params.scene === 'grade' ? 'evaluationresults' : 'testpage',
             status === 1 ? 'success' : 'fail'
         );
-        Modal.showCustomModal(
-            <ModalContainer animationType="fade" onRequestClose={(a) => a} transparent visible>
-                <View style={[Style.flexCenter, styles.modalContainer]}>
-                    <TouchableOpacity activeOpacity={1} style={styles.modalMask} />
+        Modal.show({
+            backButtonClose: false,
+            children: (
+                <>
                     <View style={Style.flexCenter}>
                         <Image source={{uri: image}} style={styles.modalImage} />
                         <View style={[Style.flexRowCenter, styles.modalTips]}>
@@ -142,9 +142,11 @@ export default ({navigation, route}) => {
                             ) : null}
                         </View>
                     </View>
-                </View>
-            </ModalContainer>
-        );
+                </>
+            ),
+            isTouchMaskToClose: false,
+            type: 'custom',
+        });
     };
 
     // 上报用户选项
@@ -422,18 +424,6 @@ const styles = StyleSheet.create({
         right: px(16),
         bottom: isIphoneX() ? 34 : px(12),
         left: px(16),
-    },
-    modalContainer: {
-        width: deviceWidth,
-        height: deviceHeight,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    },
-    modalMask: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
     },
     modalImage: {
         width: px(250),

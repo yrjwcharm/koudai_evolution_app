@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 14:37:47
+ * @LastEditTime: 2022-03-25 15:55:37
  * @Description:
  */
 /**
@@ -70,14 +70,6 @@ export default class Modal extends React.Component {
         setTimeout(() => {
             this.bottomModal && this.bottomModal.show();
         }, 0);
-        return global.rootSibling;
-    }
-    static showCustomModal(children) {
-        if (global.rootSibling) {
-            global.rootSibling.update(<>{children}</>);
-        } else {
-            global.rootSibling = new RootSibling(<>{children}</>);
-        }
         return global.rootSibling;
     }
     static close(options, type = 'fade') {

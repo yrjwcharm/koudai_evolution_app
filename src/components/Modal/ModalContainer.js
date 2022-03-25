@@ -1,4 +1,5 @@
 import {
+    AppState,
     View,
     StyleSheet,
     TouchableWithoutFeedback,
@@ -37,6 +38,7 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
  * @param {boolean} backCloseCallbackExecute //返回键是否执行cancleCallBack 默认执行
  */
 const modalWidth = 280;
+const isAndroid7 = Platform.OS === 'android' && (Platform.Version === 24 || Platform.Version === 25);
 export default class MyModal extends Component {
     constructor(props) {
         super(props);
@@ -63,6 +65,7 @@ export default class MyModal extends Component {
             subPop: '',
             guide_pop_button: this.props?.data?.button?.text || '开启通知',
             countdown: this.props.countdown || 0,
+            appState: AppState.currentState,
         };
     }
 
@@ -109,6 +112,9 @@ export default class MyModal extends Component {
         });
     };
     componentDidMount() {
+        if (isAndroid7) {
+            AppState.addEventListener('change', this.handleAppStateChange);
+        }
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
@@ -127,6 +133,14 @@ export default class MyModal extends Component {
             }, 1000);
         }
     }
+    componentWillUnmount() {
+        if (isAndroid7) {
+            AppState.removeEventListener('change', this.handleAppStateChange);
+        }
+    }
+    handleAppStateChange = (nextAppState) => {
+        this.setState({appState: nextAppState});
+    };
     cancel() {
         this.setModalVisiable(false);
         setTimeout(() => {
@@ -324,9 +338,9 @@ export default class MyModal extends Component {
                                         global.LogTool('enableNotificationStart');
                                         checkNotifications().then(({status, settings}) => {
                                             if (status == 'denied' || status == 'blocked') {
-                                                requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+                                                requestNotifications(['alert', 'sound']).then(({_status}) => {
                                                     // …
-                                                    if (status !== 'granted') {
+                                                    if (_status !== 'granted') {
                                                         openSettings().catch(() =>
                                                             console.warn('cannot open settings')
                                                         );
@@ -376,12 +390,12 @@ export default class MyModal extends Component {
         );
     };
     render() {
-        const {isVisible, subPop} = this.state;
+        const {isVisible, subPop, appState} = this.state;
         return (
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={isVisible}
+                visible={isAndroid7 ? isVisible && appState === 'active' : isVisible}
                 onRequestClose={() => {
                     if (!this.backButtonClose) return;
                     if (this.backCloseCallbackExecute) {
@@ -406,6 +420,8 @@ export default class MyModal extends Component {
                         ? this.renderDefaultModal()
                         : this.type == 'user_guide'
                         ? this.renderGuideModal()
+                        : this.type == 'custom'
+                        ? this.props.children
                         : this.renderImageModal()}
                     {/* //弹窗里的弹窗 */}
                     <Modal

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-24 17:45:35
+ * @LastEditTime: 2022-03-25 16:03:27
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -461,14 +461,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     beginRationalBg: {
-        width: px(343),
+        width: deviceWidth - Space.padding * 2,
         height: px(92),
         position: 'absolute',
         top: 0,
         right: 0,
     },
     rationalBg: {
-        width: px(343),
+        width: deviceWidth - Space.padding * 2,
         height: px(57),
         position: 'absolute',
         top: 0,
