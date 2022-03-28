@@ -11,7 +11,7 @@ import Html from '../../components/RenderHtml';
 
 const WalletAutoRechargeDetail = ({navigation, route}) => {
     const insets = useSafeAreaInsets();
-    const [data, setData] = useState({});
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         navigation.setOptions({title: route.params.title});
@@ -47,7 +47,7 @@ const WalletAutoRechargeDetail = ({navigation, route}) => {
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1, backgroundColor: '#fff', padding: px(16)}}>
                 {/* <Image source={{uri: ''}} style={{width: px(343), height: px(835)}} resizeMode="contain" /> */}
-                <Image source={{uri: data[0].img}} style={{width: px(343), height: px(30)}} resizeMode="contain" />
+                {/* <Image source={{uri: data[0].img}} style={{width: px(343), height: px(30)}} resizeMode="contain" />
                 <Text style={styles.desc}>{data[1].desc}</Text>
                 <Text style={styles.desc}>{data[2].desc}</Text>
                 <Text style={styles.title}>{data[3].title}</Text>
@@ -63,7 +63,25 @@ const WalletAutoRechargeDetail = ({navigation, route}) => {
                     source={{uri: data[8].img}}
                     style={{width: px(343), height: px(226), marginTop: px(8)}}
                     resizeMode="contain"
-                />
+                /> */}
+                {data.map((item, idx) => {
+                    switch (item.key) {
+                        case 'img':
+                            return (
+                                <Image
+                                    source={{uri: item.val}}
+                                    style={{width: px(item.w), height: px(item.h), marginTop: px(idx > 0 ? 8 : 0)}}
+                                    resizeMode="contain"
+                                />
+                            );
+                        case 'desc':
+                            return <Html html={item.val} style={styles.desc} />;
+                        case 'title':
+                            return <Text style={styles.title}>{item.val}</Text>;
+                        default:
+                            return null;
+                    }
+                })}
                 <View style={{height: insets.bottom + 50}} />
             </ScrollView>
         </>
