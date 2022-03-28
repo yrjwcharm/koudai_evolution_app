@@ -231,7 +231,7 @@ export default function FixedUpdate({navigation, route}) {
             }).then((res) => {
                 Toast.show(res.message);
                 if (data.auto_charge?.is_open !== autoChargeStatus) {
-                    global.LogTool('FixedPlanDetail_Planrecord_BabyRecharge_Condition');
+                    global.LogTool('FixedPlanDetail_Planrecord_BabyRecharge_Condition', +autoChargeStatus);
                 }
                 if (res.code == '000000') {
                     setTimeout(() => {

@@ -274,7 +274,7 @@ class TradeBuy extends Component {
                 need_buy: this.need_buy,
             }).then((res) => {
                 Toast.hide(toast);
-                global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Condition');
+                global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Condition', +this.state.autoChargeStatus);
                 if (res.code === '000000') {
                     this.props.navigation.replace('TradeFixedConfirm', res.result);
                 } else {
