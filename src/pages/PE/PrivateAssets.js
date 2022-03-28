@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-23 17:54:31
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-28 15:39:15
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {
@@ -45,7 +45,7 @@ export default function PrivateAssets({navigation, route}) {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const bottomModal = React.useRef(null);
-    const [period, setPeriod] = useState('m1');
+    const [period, setPeriod] = useState('');
     const [qa, setQa] = useState({});
     const [chart, setChart] = useState({});
     const [chartData, setChartData] = useState([]);
@@ -81,29 +81,33 @@ export default function PrivateAssets({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     }, []);
-    const init = useCallback(
-        (type) => {
-            type == 'refresh' && setRefreshing(true);
-            Http.get('/pe/asset_detail/20210101', {
-                fund_code: route.params.fund_code,
-                poid: route.params.poid,
-            })
-                .then((res) => {
-                    setLoading(false);
-                    setRefreshing(false);
-                    storage.get('peEye').then((result) => {
-                        setShowEye(result ? result : 'true');
-                    });
-                    setData(res.result);
-                    setPeriod('m1');
-                    getChartInfo();
-                })
-                .catch(() => {
-                    setLoading(false);
+    const init = (type) => {
+        type == 'refresh' && setRefreshing(true);
+        Http.get('/pe/asset_detail/20210101', {
+            fund_code: route.params.fund_code,
+            poid: route.params.poid,
+        })
+            .then((res) => {
+                setLoading(false);
+                setRefreshing(false);
+                storage.get('peEye').then((result) => {
+                    setShowEye(result ? result : 'true');
                 });
-        },
-        [getChartInfo, route.params]
-    );
+                setData(res.result);
+                setPeriod((prev) => {
+                    if (!prev) {
+                        getChartInfo(res.result.period);
+                        return res.result.period;
+                    } else {
+                        getChartInfo(prev);
+                        return prev;
+                    }
+                });
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    };
     const renderLoading = () => {
         return (
             <View
@@ -125,7 +129,8 @@ export default function PrivateAssets({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             init();
-        }, [init])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
     const redeemBtn = () => {
         Modal.show({
@@ -137,21 +142,18 @@ export default function PrivateAssets({navigation, route}) {
         });
     };
 
-    const getChartInfo = useCallback(
-        (_period) => {
-            setChartData([]);
-            Http.get('/pe/chart/20210101', {
-                fund_code: route.params.fund_code,
-                poid: route.params.poid,
-                period: _period || period,
-            }).then((res) => {
-                tabClick.current = true;
-                setChart(res.result);
-                setChartData(res.result.chart);
-            });
-        },
-        [period, route]
-    );
+    const getChartInfo = (_period) => {
+        setChartData([]);
+        Http.get('/pe/chart/20210101', {
+            fund_code: route.params.fund_code,
+            poid: route.params.poid,
+            period: _period,
+        }).then((res) => {
+            tabClick.current = true;
+            setChart(res.result);
+            setChartData(res.result.chart);
+        });
+    };
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
