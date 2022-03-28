@@ -2,7 +2,7 @@
  * @Date: 2022-03-28 14:08:46
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-28 14:54:45
+ * @LastEditTime: 2022-03-28 16:40:30
  * @Description: 直播落地页
  */
 import React, {useEffect, useState} from 'react';
@@ -21,18 +21,19 @@ export default ({navigation, route}) => {
     const [image, setImage] = useState({});
 
     useEffect(() => {
-        Image.getSize(
-            route.params.land_image,
-            (width, height) => {
-                setImage({
-                    height: (deviceWidth * height) / width,
-                    url: route.params.land_image,
-                });
-            },
-            (error) => {
-                console.log(error);
-            }
-        );
+        route.params.land_image &&
+            Image.getSize(
+                route.params.land_image,
+                (width, height) => {
+                    setImage({
+                        height: (deviceWidth * height) / width,
+                        url: route.params.land_image,
+                    });
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
         setButton({
             disabled: route.params.reserved,
             title: route.params.reserved ? '已预约' : '预约',
