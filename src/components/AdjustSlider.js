@@ -2,11 +2,11 @@
  * @Date: 2022-03-24 16:12:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-25 15:14:39
+ * @LastEditTime: 2022-03-28 17:53:37
  * @Description:调整风险slider
  */
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 // 导入 Silder组件
 import Slider from 'react-native-slider';
 import {px} from '../utils/appUtil';
@@ -21,7 +21,7 @@ const AdjustSlider = ({
     perfixText = '等级',
     onChange = () => {},
     tickTextStyle,
-    currentTag = true, //标记当前默认值
+    defalutTag = true, //标记当前默认值
 }) => {
     const [tickCount, setTickCount] = useState(0);
     const [activeTick, setActiveTick] = useState(value);
@@ -39,8 +39,11 @@ const AdjustSlider = ({
         setActiveTick(_value);
         onChange(_value);
     };
+    useEffect(() => {
+        setActiveTick(value);
+    }, [value]);
     return (
-        <View style={{backgroundColor: '#fff', padding: px(20)}}>
+        <View style={{backgroundColor: '#fff', padding: px(20), paddingTop: px(16)}}>
             <View
                 onLayout={(evt) => {
                     width.current = evt.nativeEvent.layout.width - thumbWidth / 2;
@@ -48,7 +51,7 @@ const AdjustSlider = ({
                     setTickCount(_tickCount);
                 }}>
                 <Slider
-                    value={value}
+                    value={activeTick}
                     minimumValue={minimumValue}
                     step={1}
                     maximumValue={maximumValue}
@@ -102,12 +105,12 @@ const AdjustSlider = ({
                                                 : index == maximumValue - minimumValue
                                                 ? 'right'
                                                 : 'center',
-                                        fontSize: _ == activeTick || (value == _ && currentTag) ? px(14) : px(11),
+                                        fontSize: _ == activeTick || (value == _ && defalutTag) ? px(14) : px(11),
                                         color:
                                             _ == activeTick && value != _
-                                                ? '#545968'
-                                                : value == _ && currentTag
                                                 ? '#2B7AF3'
+                                                : value == _ && defalutTag
+                                                ? '#545968'
                                                 : '#9AA1B2',
                                     },
                                     tickTextStyle,

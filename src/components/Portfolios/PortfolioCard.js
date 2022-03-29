@@ -2,7 +2,7 @@
  * @Date: 2021-06-07 11:14:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 21:29:18
+ * @LastEditTime: 2022-03-29 10:32:34
  * @Description:
  */
 import React from 'react';
@@ -19,6 +19,7 @@ const PortfolioCard = ({data, style}) => {
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
+                global.LogTool('findProduct', data?.plan_id);
                 jump(data?.url);
             }}
             style={[styles.card, {borderRadius: 8}, Style.flexRow, style]}>

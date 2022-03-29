@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 16:59:32
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-29 11:52:26
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -79,7 +79,14 @@ const QuestionnaireResult = () => {
                     </View>
                     <Button
                         title={data.button.text}
-                        onPress={() => handleJump(data.button.url)}
+                        onPress={() => {
+                            //调整风险工具
+                            if (route?.params?.fr?.includes('riskch')) {
+                                navigation.goBack();
+                            } else {
+                                jump(data?.button?.url, 'repalce');
+                            }
+                        }}
                         style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
                     />
                 </ImageBackground>

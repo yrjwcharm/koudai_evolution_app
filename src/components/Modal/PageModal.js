@@ -1,15 +1,15 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-10 16:59:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-28 17:28:47
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
  * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, BackHandler} from 'react-native';
+import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
