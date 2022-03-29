@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:12:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-28 17:53:37
+ * @LastEditTime: 2022-03-29 15:06:24
  * @Description:调整风险slider
  */
 import {StyleSheet, Text, View} from 'react-native';
@@ -78,6 +78,7 @@ const AdjustSlider = ({
                         //例如 tickCount为39，每一个大刻度为9个小刻度，总共4个小刻度，所以渲染36就可以，所以要舍弃37，38，39
                         return index > _value * _oneTickCount ? null : (
                             <View
+                                key={index}
                                 style={{
                                     width: tickWidth + _awidth / tickCount,
                                 }}>

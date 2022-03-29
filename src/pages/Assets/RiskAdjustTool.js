@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-28 18:23:26
+ * @LastEditTime: 2022-03-29 16:41:41
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -25,6 +25,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Toast from '../../components/Toast';
 import CheckBox from '../../components/CheckBox';
 import Notice from '../../components/Notice';
+import {PasswordModal} from '../../components/Password';
 const themeColor = '#2B7AF3';
 const chartWidth = deviceWidth - px(24);
 const Title = ({title}) => {
@@ -61,7 +62,7 @@ const Steps = ({data, style}) => {
 
                         <View style={{marginBottom: px(16), flex: 1}}>
                             <Text style={styles.steps_title}>{item.title}</Text>
-                            <Text style={styles.steps_desc}>{item.desc}</Text>
+                            <RenderHtml html={item.desc} style={styles.steps_desc} />
                         </View>
                     </View>
                 );
@@ -73,6 +74,7 @@ const Steps = ({data, style}) => {
 const Table = ({data, risk, style, current_risk}) => {
     const jump = useJump();
     const table_data = data?.filter((item) => item.value == risk);
+    const current_table_data = data?.filter((item) => item.value == current_risk);
     return table_data && table_data?.length > 0 ? (
         <View style={{paddingBottom: px(20)}}>
             <View style={[{flexDirection: 'row', alignItems: 'flex-start'}, style]}>
@@ -81,7 +83,7 @@ const Table = ({data, risk, style, current_risk}) => {
                         <Text style={{flex: 1}} />
                         <Text style={{flex: 1, textAlign: 'center', fontWeight: '600'}}>当前等级{current_risk}</Text>
                     </View>
-                    {Object.values(table_data[0]?.table)?.map((item, index) => {
+                    {Object.values(current_table_data[0]?.table)?.map((item, index) => {
                         return (
                             <View
                                 key={index}
@@ -120,7 +122,7 @@ const Table = ({data, risk, style, current_risk}) => {
                                     },
                                 ]}>
                                 <Text style={{fontSize: px(14), fontFamily: Font.numMedium, color: themeColor}}>
-                                    {item?.comp?.updown != '-' ? item?.comp?.diff : '-'}
+                                    {item?.comp?.updown != '-' ? item?.value : '-'}
                                 </Text>
                                 {item?.comp?.updown != '-' ? (
                                     <Icon
@@ -148,6 +150,7 @@ const Table = ({data, risk, style, current_risk}) => {
                     style={styles.btn}
                     textStyle={{color: Colors.btnColor, fontSize: px(15)}}
                     onPress={() => {
+                        global.LogTool('riskDetail');
                         jump(table_data[0]?.card?.button?.url);
                     }}
                 />
@@ -163,9 +166,11 @@ const RiskAdjustTool = ({route, navigation}) => {
     const [signData, setSignData] = useState();
     const signModal = useRef(null);
     const [signTimer, setSignTimer] = useState(8);
-    const [signSelectData, setSignSelectData] = useState([]);
+    const [signCheck, setSignCheck] = useState(false);
     const intervalt_timer = useRef('');
     const adjustConfirm = useRef(0);
+    const passwordInput = useRef(0);
+    const passwordModal = useRef();
     const jump = useJump();
     const getInfo = () => {
         http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/detail/20220323').then((res) => {
@@ -190,43 +195,27 @@ const RiskAdjustTool = ({route, navigation}) => {
         }
     }, [period, adjustRisk, data]);
     const onChange = (value) => {
+        global.LogTool('riskSlide', value);
         setAdjustRisk(value);
     };
     const changeSubTab = (per) => {
         setPeriod(per);
     };
-    //checkBox 选中
-    const checkBoxClick = (_check, poid) => {
-        //选中
-        if (_check) {
-            if (poid) {
-                setSignSelectData((prev) => {
-                    return [...prev, poid];
-                });
-            } else {
-                setSignSelectData((prev) => {
-                    let poids = signData?.plan_list?.map((item) => {
-                        return item.poid;
-                    });
-                    return [...new Set([...prev, ...poids])];
-                });
-            }
-        } else {
-            //非选中
-            if (poid) {
-                setSignSelectData((prev) => {
-                    let data = [...prev];
-                    _.remove(data, function (_poid) {
-                        return _poid === poid;
-                    });
-                    return data;
-                });
-            } else {
-                setSignSelectData([]);
-            }
-        }
+    //签约计时器
+    const startTimer = () => {
+        intervalt_timer.current = setInterval(() => {
+            setSignTimer((time) => {
+                if (time > 0) {
+                    return --time;
+                } else {
+                    intervalt_timer.current && clearInterval(intervalt_timer.current);
+                    return time;
+                }
+            });
+        }, 1000);
     };
     const handleClick = () => {
+        global.LogTool('riskButton');
         http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/predo/20220323', {
             is_confirm: adjustConfirm.current,
             new_risk: adjustRisk,
@@ -252,6 +241,12 @@ const RiskAdjustTool = ({route, navigation}) => {
                         },
                     });
                 } else {
+                    passwordInput.current = _data.params?.need_password;
+                    setSignData(_data?.params?.risk_disclosure);
+                    setSignCheck(_data?.params?.risk_disclosure?.agreements?.default_agree);
+                    setSignTimer(_data?.params?.risk_disclosure?.countdown);
+                    signModal.current.show();
+                    startTimer();
                     //签约
                 }
             } else {
@@ -259,7 +254,30 @@ const RiskAdjustTool = ({route, navigation}) => {
             }
         });
     };
-    const handleSign = () => {};
+    const postSignData = (password) => {
+        http.get('/tool/riskchange/confirmdo/20220323', {new_risk: adjustRisk, password}).then((res) => {
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                signModal?.current?.hide();
+                getInfo();
+                if (res.result?.url) {
+                    jump(res.result?.rul);
+                }
+            }
+        });
+    };
+    const handleSign = () => {
+        if (!signCheck) {
+            Toast.show('请勾选相关投顾服务协议');
+            return;
+        }
+        if (passwordInput.current == 1) {
+            signModal?.current?.hide();
+            passwordModal?.current?.show();
+        } else {
+            postSignData();
+        }
+    };
     return data ? (
         <>
             <ScrollView>
@@ -367,6 +385,21 @@ const RiskAdjustTool = ({route, navigation}) => {
                     ) : null}
                 </LinearGradient>
             </ScrollView>
+
+            <Animatable.View animation={'fadeInUp'} style={{borderTopWidth: 0.5, borderTopColor: '#E2E4EA'}}>
+                <AdjustSlider
+                    value={data?.current_risk}
+                    minimumValue={data?.table_data[0]?.value}
+                    maximumValue={data?.table_data[data?.table_data?.length - 1]?.value}
+                    onChange={_.debounce(onChange, 300)}
+                />
+                <Button
+                    title={data?.footer?.button?.text}
+                    disabled={data?.footer?.button?.avail != 1 || data?.current_risk == adjustRisk}
+                    style={{marginBottom: isIphoneX() ? px(8) + 34 : px(8), marginHorizontal: px(16)}}
+                    onPress={_.debounce(handleClick, 500)}
+                />
+            </Animatable.View>
             {signData && (
                 <PageModal
                     ref={signModal}
@@ -374,7 +407,6 @@ const RiskAdjustTool = ({route, navigation}) => {
                     title={signData?.title}
                     onClose={() => {
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
-                        navigation.goBack();
                     }}>
                     <View style={{flex: 1}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
@@ -390,12 +422,9 @@ const RiskAdjustTool = ({route, navigation}) => {
                                     paddingTop: px(20),
                                     borderRadius: px(6),
                                 }}>
-                                {signData?.risk_disclosure_list?.length > 0 &&
-                                signData?.risk_disclosure_list[0]?.title ? (
-                                    <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
-                                        {signData?.risk_disclosure_list[0]?.title}
-                                    </Text>
-                                ) : null}
+                                <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
+                                    {signData?.sub_title}
+                                </Text>
                                 <View style={styles.sign_scrollview}>
                                     <ScrollView
                                         nestedScrollEnabled={true}
@@ -403,120 +432,81 @@ const RiskAdjustTool = ({route, navigation}) => {
                                             flex: 1,
                                             paddingRight: px(12),
                                         }}>
-                                        {signData?.risk_disclosure_list
-                                            ? signData?.risk_disclosure_list?.map((item, index) => {
-                                                  return (
-                                                      <RenderHtml
-                                                          html={item?.content}
-                                                          key={index}
-                                                          style={{fontSize: px(13), lineHeight: px(20)}}
-                                                      />
-                                                  );
-                                              })
-                                            : null}
+                                        <RenderHtml
+                                            html={signData.content}
+                                            style={{fontSize: px(13), lineHeight: px(20)}}
+                                        />
                                     </ScrollView>
                                 </View>
-                                <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
-                                    <View style={Style.flexRow}>
-                                        <CheckBox
-                                            checked={signSelectData?.length == signData?.plan_list?.length}
-                                            style={{marginRight: px(6)}}
-                                            onChange={(value) => {
-                                                checkBoxClick(value);
-                                            }}
-                                        />
-                                        <Text style={{fontSize: px(16), fontWeight: '700'}}>全选</Text>
-                                    </View>
-                                    <Text style={{fontSize: px(16)}}>
-                                        {signSelectData?.length}/{signData?.plan_list?.length}
-                                    </Text>
-                                </View>
-                                <View style={{marginBottom: px(40)}}>
-                                    {signData?.plan_list?.map((item, index) => {
-                                        return (
-                                            <View key={index} style={styles.border_bottom}>
-                                                <Text
-                                                    style={{
-                                                        fontSize: px(16),
-                                                        fontWeight: '700',
-                                                        marginBottom: px(6),
-                                                    }}>
-                                                    {item?.name}
-                                                </Text>
-                                                {item?.adviser_cost_desc ? (
-                                                    <Text style={[styles.light_text, {marginBottom: px(6)}]}>
-                                                        {item.adviser_cost_desc}
-                                                    </Text>
-                                                ) : null}
-                                                <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
-                                                    <CheckBox
-                                                        checked={signSelectData?.includes(item?.poid)}
-                                                        style={{marginRight: px(6)}}
-                                                        onChange={(value) => {
-                                                            checkBoxClick(value, item.poid);
-                                                        }}
-                                                    />
-                                                    <Text style={[styles.light_text, {flex: 1}]}>
-                                                        {item?.desc}
 
-                                                        <Text>
-                                                            {item?.link_list?.map((link, _index) => (
-                                                                <Text
-                                                                    style={{color: Colors.btnColor}}
-                                                                    key={_index}
-                                                                    onPress={() => {
-                                                                        if (link?.url) {
-                                                                            jump(link?.url);
-                                                                        }
-                                                                    }}>
-                                                                    {link?.text}
-                                                                    {item?.link_list?.length > 1 &&
-                                                                    _index == item?.link_list?.length - 2
-                                                                        ? '和'
-                                                                        : _index == item?.link_list?.length - 1
-                                                                        ? ''
-                                                                        : '、'}
-                                                                </Text>
-                                                            ))}
-                                                            {item?.desc_end ? (
-                                                                <Text style={styles.light_text}>{item?.desc_end}</Text>
-                                                            ) : null}
+                                <View style={{marginBottom: px(40)}}>
+                                    <View style={styles.border_bottom}>
+                                        <Text
+                                            style={{
+                                                fontSize: px(16),
+                                                fontWeight: '700',
+                                                marginBottom: px(6),
+                                            }}>
+                                            {signData?.name}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                fontSize: px(12),
+                                                color: Colors.lightBlackColor,
+                                                marginBottom: px(6),
+                                            }}>
+                                            {signData?.tips}
+                                        </Text>
+
+                                        <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
+                                            <CheckBox
+                                                checked={signCheck}
+                                                style={{marginRight: px(6)}}
+                                                onChange={(value) => {
+                                                    setSignCheck(value);
+                                                }}
+                                            />
+                                            <Text style={[styles.light_text, {flex: 1}]}>
+                                                已阅读并同意
+                                                <Text>
+                                                    {signData?.agreements?.list?.map((link, _index, arr) => (
+                                                        <Text
+                                                            style={{color: Colors.btnColor}}
+                                                            key={_index}
+                                                            onPress={() => {
+                                                                if (link?.url) {
+                                                                    jump(link?.url);
+                                                                }
+                                                            }}>
+                                                            {link?.title}
+                                                            {arr?.length > 1 && _index == arr?.length - 2
+                                                                ? '和'
+                                                                : _index == arr?.length - 1
+                                                                ? ''
+                                                                : '、'}
                                                         </Text>
+                                                    ))}
+
+                                                    <Text style={styles.light_text}>
+                                                        {signData?.agreements?.agree_text}
                                                     </Text>
-                                                </View>
-                                            </View>
-                                        );
-                                    })}
+                                                </Text>
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
                             </ScrollView>
                         </View>
-                        {signData?.button ? (
-                            <Button
-                                disabled={signTimer > 0 || !signSelectData?.length > 0}
-                                style={{marginTop: px(12), marginHorizontal: px(16)}}
-                                onPress={_.debounce(handleSign, 500)}
-                                title={
-                                    signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
-                                }
-                            />
-                        ) : null}
+                        <Button
+                            disabled={signTimer > 0}
+                            style={{marginTop: px(12), marginHorizontal: px(16)}}
+                            onPress={_.debounce(handleSign, 500)}
+                            title={signTimer > 0 ? signTimer + 's后' + '签署' : '立即签署'}
+                        />
                     </View>
                 </PageModal>
             )}
-            <Animatable.View animation={'fadeInUp'} style={{borderTopWidth: 0.5, borderTopColor: '#E2E4EA'}}>
-                <AdjustSlider
-                    value={data?.current_risk}
-                    minimumValue={data?.table_data[0]?.value}
-                    maximumValue={data?.table_data[data?.table_data?.length - 1]?.value}
-                    onChange={onChange}
-                />
-                <Button
-                    title={data?.footer?.button?.text}
-                    disabled={data?.footer?.button?.avail != 1 || data?.current_risk == adjustRisk}
-                    style={{marginBottom: isIphoneX() ? px(8) + 34 : px(8), marginHorizontal: px(16)}}
-                    onPress={_.debounce(handleClick, 500)}
-                />
-            </Animatable.View>
+            <PasswordModal ref={passwordModal} onDone={postSignData} />
         </>
     ) : (
         <LoadingTips />
@@ -665,6 +655,14 @@ const styles = StyleSheet.create({
         height: px(8),
         backgroundColor: '#9AA1B2',
         marginRight: px(4),
+    },
+    sign_scrollview: {
+        height: px(168),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(6),
+        padding: px(12),
+        paddingRight: 0,
+        marginBottom: px(16),
     },
 });
 const baseAreaChart = (
