@@ -63,10 +63,7 @@ export default function DetailAccount({route, navigation}) {
         }, 500),
         [data]
     );
-    const rightPress = useCallback(() => {
-        global.LogTool('portfolioDetailInstruction');
-        navigation.navigate('ProductIntro', {upid: route?.params?.upid});
-    }, [navigation, route]);
+
     const init = useCallback(() => {
         if (route.params.scene === 'adviser') {
             Http.get('/adviser/detail/20210923', {poid: route.params.poid})
@@ -117,9 +114,17 @@ export default function DetailAccount({route, navigation}) {
                         navigation.setOptions({
                             title: res.result.title,
                             headerRight: () => {
-                                return res.result.show_toolkit ? (
-                                    <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                                        <Text style={styles.right_sty}>{'产品说明书'}</Text>
+                                return res.result?.top_right_button ? (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            global.LogTool('top_right_button');
+                                            jump(
+                                                res.result?.top_right_button?.url,
+                                                res.result?.top_right_button?.jump_type
+                                            );
+                                        }}
+                                        activeOpacity={1}>
+                                        <Text style={styles.right_sty}>{res.result?.top_right_button?.text}</Text>
                                     </TouchableOpacity>
                                 ) : null;
                             },

@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: yhc
  * @Desc:私募预约
- * @LastEditTime: 2021-11-09 11:10:19
+ * @LastEditTime: 2022-03-23 17:51:28
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -132,7 +132,8 @@ export default class PrivateOrder extends Component {
             Toast.show('请输入正确的购买金额');
             return;
         }
-        if (!phone) {
+
+        if (!phone || inputInt(phone).length < 11) {
             Toast.show('请输入您的登录手机号');
             return;
         }
