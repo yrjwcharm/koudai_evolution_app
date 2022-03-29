@@ -2,7 +2,7 @@
  * @Date: 2022-03-11 14:51:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-25 14:37:48
+ * @LastEditTime: 2022-03-29 19:14:03
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -55,6 +55,8 @@ export default ({navigation}) => {
                         setVal(res.result.grade_info?.score_text_before);
                         if (res.result.grade_info?.score_add > 0) {
                             setShowAdd(true);
+                        } else {
+                            setShowAdd(false);
                         }
                         setTimeout(() => {
                             setVal(res.result.grade_info?.score_text);

@@ -2,11 +2,21 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-29 18:57:07
+ * @LastEditTime: 2022-03-29 19:17:37
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
+import {
+    ActivityIndicator,
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Image,
+    RefreshControl,
+    ScrollView,
+    Text,
+    Platform,
+} from 'react-native';
 import {WebView} from 'react-native-webview';
 
 import http from '../../services/index.js';
@@ -44,6 +54,7 @@ const Vision = ({navigation}) => {
     const [data, setData] = useState();
     const [gradeData, setGradeData] = useState({});
     const [allMsg, setAll] = useState(0);
+    const [loadingChart, setLoadingChart] = useState(false);
     const jump = useJump();
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
@@ -239,18 +250,25 @@ const Vision = ({navigation}) => {
                                                         allowFileAccessFromFileURLs
                                                         allowUniversalAccessFromFileURLs
                                                         bounces={false}
+                                                        onLoadEnd={() => setLoadingChart(false)}
+                                                        onLoadStart={() => setLoadingChart(true)}
                                                         renderLoading={
                                                             Platform.OS === 'android' ? () => <Loading /> : undefined
                                                         }
-                                                        startInLoadingState={true}
                                                         scalesPageToFit={false}
                                                         scrollEnabled={false}
                                                         source={{
                                                             uri: `${SERVER_URL[global.env].H5}/rationalChart`,
                                                         }}
+                                                        startInLoadingState={true}
                                                         style={{opacity: 0.99}}
                                                         textZoom={100}
                                                     />
+                                                    {loadingChart && (
+                                                        <View style={[Style.flexCenter, styles.loadingChart]}>
+                                                            <ActivityIndicator color={Colors.brandColor} />
+                                                        </View>
+                                                    )}
                                                 </View>
                                                 {gradeData.button ? (
                                                     <Button
@@ -577,5 +595,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: px(13),
         right: px(8),
+    },
+    loadingChart: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 0,
+        backgroundColor: '#fff',
     },
 });
