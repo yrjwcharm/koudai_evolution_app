@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-25 16:03:27
+ * @LastEditTime: 2022-03-29 18:57:07
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -216,17 +216,19 @@ const Vision = ({navigation}) => {
                                                         />
                                                         <Text style={styles.levelText}>{'理性等级'}</Text>
                                                     </View>
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.8}
-                                                        onPress={() => {
-                                                            jump(gradeData.url);
-                                                            global.LogTool('visionassessment');
-                                                        }}>
-                                                        <Image
-                                                            source={require('../../assets/img/vision/levelTips.png')}
-                                                            style={styles.levelTipsIcon}
-                                                        />
-                                                    </TouchableOpacity>
+                                                    {gradeData.url ? (
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.8}
+                                                            onPress={() => {
+                                                                jump(gradeData.url);
+                                                                global.LogTool('visionassessment');
+                                                            }}>
+                                                            <Image
+                                                                source={require('../../assets/img/vision/levelTips.png')}
+                                                                style={styles.levelTipsIcon}
+                                                            />
+                                                        </TouchableOpacity>
+                                                    ) : null}
                                                 </View>
                                                 <Text style={{...styles.levelTips, marginTop: px(10)}}>
                                                     {gradeData.desc}
