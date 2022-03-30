@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-12-14 20:55:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-29 17:13:24
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -237,7 +237,10 @@ const WealthTools = () => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 key={idx}
-                onPress={() => jumpToolDetail(item?.state_info?.button?.url || item?.url)}
+                onPress={() => {
+                    global.LogTool('toolCard', item?.tool_id);
+                    jumpToolDetail(item?.state_info?.button?.url || item?.url);
+                }}
                 style={[styles.toolItemOnOpen, {marginTop: px(idx > 0 ? 12 : 0)}]}>
                 <View style={styles.toolItemHeaderOnOpen}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>

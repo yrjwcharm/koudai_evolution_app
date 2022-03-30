@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-29 16:41:41
+ * @LastEditTime: 2022-03-30 16:39:44
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -97,12 +97,21 @@ const Table = ({data, risk, style, current_risk}) => {
                         );
                     })}
                 </View>
+                {/* //最后一列 */}
                 <View style={styles.floatColumn}>
                     <LinearGradient
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 1}}
                         colors={['rgba(214, 229, 255, 1)', 'rgba(245, 249, 255, 1)']}
-                        style={[Style.flexRowCenter, {height: px(44), paddingTop: px(4), borderRadius: px(4)}]}>
+                        style={[
+                            Style.flexRowCenter,
+                            {
+                                height: px(44),
+                                paddingTop: px(4),
+                                borderTopLeftRadius: px(4),
+                                borderTopRightRadius: px(4),
+                            },
+                        ]}>
                         <Text>
                             调后
                             <Text style={{color: themeColor}}>等级{risk != current_risk ? risk : '-'}</Text>
@@ -117,7 +126,8 @@ const Table = ({data, risk, style, current_risk}) => {
                                     Style.flexRowCenter,
                                     {
                                         height: index == length - 1 ? px(44) : px(40),
-                                        borderRadius: index == length - 1 ? px(4) : 0,
+                                        borderBottomEndRadius: index == length - 1 ? px(4) : 0,
+                                        borderBottomStartRadius: index == length - 1 ? px(4) : 0,
                                         backgroundColor: index % 2 == 0 ? '#fff' : '#F5F9FF',
                                     },
                                 ]}>
@@ -214,6 +224,7 @@ const RiskAdjustTool = ({route, navigation}) => {
             });
         }, 1000);
     };
+    //调整按钮
     const handleClick = () => {
         global.LogTool('riskButton');
         http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/predo/20220323', {
@@ -603,11 +614,11 @@ const styles = StyleSheet.create({
     floatColumn: {
         marginTop: px(-4),
         width: px(96),
-        borderRadius: px(4),
         shadowColor: '#0051CC',
         shadowOffset: {h: 10, w: 10},
         shadowRadius: 20,
         shadowOpacity: 0.2,
+        elevation: 40,
     },
     column: {
         flex: 1,
