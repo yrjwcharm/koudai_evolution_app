@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-30 15:24:57
+ * @LastEditTime: 2022-03-30 16:56:01
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -130,12 +130,12 @@ export const generateOptions = (modal) => {
                         text={'专属一对一投顾服务'}
                     />
                 </View>
-                <View style={{marginTop: px(58), paddingLeft: px(36)}}>
+                <View style={{marginTop: px(34), paddingTop: px(24), paddingLeft: px(36)}}>
                     {modal?.content_list?.map?.((item, index) => {
                         return (
                             <View
                                 key={item + index}
-                                style={{flexDirection: 'row', marginTop: index !== 0 ? px(20) : 0}}>
+                                style={{flexDirection: 'row', marginTop: index !== 0 ? px(12) : 0}}>
                                 <FastImage
                                     source={{
                                         uri: item.icon,
@@ -547,7 +547,7 @@ function App(props) {
 const styles = StyleSheet.create({
     modalBg: {
         width: deviceWidth,
-        height: px(297),
+        height: px(388),
         position: 'relative',
     },
     close: {
@@ -579,14 +579,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#003FAC',
     },
     serviceIcon: {
-        marginTop: px(4),
+        marginTop: px(2),
         marginRight: px(10),
         width: px(16),
         height: px(16),
     },
     serviceTitle: {
         fontSize: Font.textH1,
-        lineHeight: px(22),
+        lineHeight: px(20),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
@@ -597,9 +597,9 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     qrcode: {
-        marginTop: px(24),
-        width: px(140),
-        height: px(140),
+        marginTop: px(14),
+        width: px(94),
+        height: px(94),
     },
     codeTips: {
         marginTop: px(12),
