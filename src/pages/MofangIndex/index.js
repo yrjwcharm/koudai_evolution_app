@@ -591,7 +591,7 @@ const Index = (props) => {
                             {data?.comment_list ? (
                                 <>
                                     <RenderTitle
-                                        more_text={'更多'}
+                                        // more_text={'更多'}
                                         onPress={() => {
                                             jump({
                                                 path: 'CommentList',
