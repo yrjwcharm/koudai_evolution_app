@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-17 10:36:08
+ * @LastEditTime: 2022-03-30 17:44:35
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,6 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import {updateAccount} from '../../redux/actions/accountInfo.js';
+import {deleteModal} from '../../redux/actions/modalInfo';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const Settings = ({navigation}) => {
                                         id_no: '',
                                     })
                                 );
+                                dispatch(deleteModal());
                                 navigation.replace('Login');
                             }
                         });
