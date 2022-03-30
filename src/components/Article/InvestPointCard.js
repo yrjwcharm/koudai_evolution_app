@@ -22,7 +22,7 @@ const InvestPointCard = ({data, style}) => {
                 jump(data.url);
             }}>
             <View style={Style.flexBetween}>
-                <Image source={{uri: data?.cate_icon}} style={{width: px(100), height: px(22)}} />
+                <Image source={{uri: data?.cate_icon}} style={{width: px(132), height: px(22)}} />
                 <Text style={styles.time}>{data?.published_at}</Text>
             </View>
             <Text numberOfLines={2} style={[Style.title, {marginTop: px(12)}]}>
