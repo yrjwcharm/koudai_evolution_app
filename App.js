@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-21 11:57:52
+ * @LastEditTime: 2022-03-30 15:24:57
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -50,6 +50,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce, cloneDeep} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
+import * as WeChat from 'react-native-wechat-lib';
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',

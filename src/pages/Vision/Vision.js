@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-29 19:17:37
+ * @LastEditTime: 2022-03-30 15:43:52
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -18,6 +18,7 @@ import {
     Platform,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
+import * as Animatable from 'react-native-animatable';
 
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -78,8 +79,7 @@ const Vision = ({navigation}) => {
             init();
             userInfo?.is_login && readInterface();
             dispatch(updateVision({visionUpdate: ''}));
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [init, dispatch, readInterface])
+        }, [init, dispatch, readInterface, userInfo.is_login])
     );
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
@@ -271,16 +271,34 @@ const Vision = ({navigation}) => {
                                                     )}
                                                 </View>
                                                 {gradeData.button ? (
-                                                    <Button
-                                                        color="#E9CE99"
-                                                        onPress={() => {
-                                                            jump(gradeData.button.url);
-                                                            global.LogTool('visionassessment');
+                                                    <Animatable.View
+                                                        animation={{
+                                                            0: {
+                                                                scale: 1,
+                                                                opacity: 1,
+                                                            },
+                                                            0.5: {
+                                                                scale: 1.05,
+                                                                opacity: 0.9,
+                                                            },
+                                                            1: {
+                                                                scale: 1,
+                                                                opacity: 1,
+                                                            },
                                                         }}
-                                                        style={styles.upgradeBtn}
-                                                        textStyle={styles.upgradeBtnText}
-                                                        title={gradeData.button.text}
-                                                    />
+                                                        duration={1500}
+                                                        iterationCount={'infinite'}>
+                                                        <Button
+                                                            color="#E9CE99"
+                                                            onPress={() => {
+                                                                jump(gradeData.button.url);
+                                                                global.LogTool('visionassessment');
+                                                            }}
+                                                            style={styles.upgradeBtn}
+                                                            textStyle={styles.upgradeBtnText}
+                                                            title={gradeData.button.text}
+                                                        />
+                                                    </Animatable.View>
                                                 ) : null}
                                             </View>
                                         )}
@@ -355,16 +373,34 @@ const Vision = ({navigation}) => {
                                                     <HTML html={gradeData.desc} style={styles.levelTips} />
                                                 </View>
                                                 {gradeData.button ? (
-                                                    <Button
-                                                        color="#E9CE99"
-                                                        onPress={() => {
-                                                            jump(gradeData.button.url);
-                                                            global.LogTool('visionupgrade');
+                                                    <Animatable.View
+                                                        animation={{
+                                                            0: {
+                                                                scale: 1,
+                                                                opacity: 1,
+                                                            },
+                                                            0.5: {
+                                                                scale: 1.05,
+                                                                opacity: 0.9,
+                                                            },
+                                                            1: {
+                                                                scale: 1,
+                                                                opacity: 1,
+                                                            },
                                                         }}
-                                                        style={styles.upgradeBtn}
-                                                        textStyle={styles.upgradeBtnText}
-                                                        title={gradeData.button.text}
-                                                    />
+                                                        duration={1500}
+                                                        iterationCount={'infinite'}>
+                                                        <Button
+                                                            color="#E9CE99"
+                                                            onPress={() => {
+                                                                jump(gradeData.button.url);
+                                                                global.LogTool('visionupgrade');
+                                                            }}
+                                                            style={styles.upgradeBtn}
+                                                            textStyle={styles.upgradeBtnText}
+                                                            title={gradeData.button.text}
+                                                        />
+                                                    </Animatable.View>
                                                 ) : null}
                                             </View>
                                         )}
@@ -522,7 +558,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     nextNum: {
-        fontSize: Font.textSm,
+        fontSize: Font.textH3,
         lineHeight: px(16),
         color: Colors.defaultColor,
     },
@@ -552,7 +588,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     levelTips: {
-        fontSize: Font.textH3,
+        fontSize: px(13),
         lineHeight: px(17),
         color: Colors.descColor,
     },

@@ -2,7 +2,7 @@
  * @Date: 2022-03-15 17:15:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-25 15:52:50
+ * @LastEditTime: 2022-03-30 15:15:22
  * @Description: 理性等级升级
  */
 import React, {useEffect, useReducer, useRef} from 'react';
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     },
     topicText: {
         marginTop: px(8),
-        fontSize: Font.textH2,
+        fontSize: px(15),
         lineHeight: px(20),
         color: Colors.defaultColor,
     },
@@ -378,12 +378,12 @@ const styles = StyleSheet.create({
         height: px(20),
     },
     optionIndexText: {
-        fontSize: px(13),
+        fontSize: Font.textH2,
         lineHeight: px(17),
         color: Colors.defaultColor,
     },
     optionText: {
-        fontSize: px(13),
+        fontSize: Font.textH2,
         lineHeight: px(22),
         color: Colors.defaultColor,
         flex: 1,
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     answerAnalysis: {
         marginTop: px(12),
         marginBottom: px(32),
-        fontSize: px(13),
+        fontSize: Font.textH2,
         lineHeight: px(22),
         color: Colors.descColor,
     },
