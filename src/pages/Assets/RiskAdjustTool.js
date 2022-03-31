@@ -2,11 +2,11 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-30 16:39:44
+ * @LastEditTime: 2022-03-31 19:29:56
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import AdjustSlider from '../../components/AdjustSlider';
 import {deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
@@ -21,7 +21,6 @@ import {useJump} from '../../components/hooks';
 import {Chart} from '../../components/Chart';
 import _ from 'lodash';
 import {Modal, PageModal} from '../../components/Modal';
-import {useFocusEffect} from '@react-navigation/native';
 import Toast from '../../components/Toast';
 import CheckBox from '../../components/CheckBox';
 import Notice from '../../components/Notice';
@@ -183,7 +182,7 @@ const RiskAdjustTool = ({route, navigation}) => {
     const passwordModal = useRef();
     const jump = useJump();
     const getInfo = () => {
-        http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/detail/20220323').then((res) => {
+        http.get('/tool/riskchange/detail/20220323').then((res) => {
             navigation.setOptions({title: route?.params?.title || '风险等级调整工具'});
             setAdjustRisk(res.result?.current_risk);
             setPeriod(period || res.result?.body?.part1?.default_period);
@@ -196,7 +195,7 @@ const RiskAdjustTool = ({route, navigation}) => {
     }, []);
     useEffect(() => {
         if (data) {
-            http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/chart/20220323', {
+            http.get('/tool/riskchange/chart/20220323', {
                 change_risk_level: adjustRisk,
                 period,
             }).then((res) => {
@@ -227,7 +226,7 @@ const RiskAdjustTool = ({route, navigation}) => {
     //调整按钮
     const handleClick = () => {
         global.LogTool('riskButton');
-        http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/tool/riskchange/predo/20220323', {
+        http.get('/tool/riskchange/predo/20220323', {
             is_confirm: adjustConfirm.current,
             new_risk: adjustRisk,
         }).then((res) => {
