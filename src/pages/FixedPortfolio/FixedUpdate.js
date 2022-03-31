@@ -343,7 +343,7 @@ export default function FixedUpdate({navigation, route}) {
     ) : (
         <>
             {Object.keys(data).length > 0 && (
-                <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                <ScrollView style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {showMask && (
                         <Mask
                             onClick={() => {
@@ -502,7 +502,7 @@ export default function FixedUpdate({navigation, route}) {
                         </TouchableOpacity>
                     </View>
                     <BottomDesc />
-                </View>
+                </ScrollView>
             )}
         </>
     );
