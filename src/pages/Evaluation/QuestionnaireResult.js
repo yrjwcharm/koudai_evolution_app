@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-29 11:52:26
+ * @LastEditTime: 2022-03-31 15:49:35
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -10,7 +10,7 @@ import {ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} f
 import Image from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px, px as text} from '../../utils/appUtil';
 import http from '../../services';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
@@ -77,6 +77,11 @@ const QuestionnaireResult = () => {
                             }}
                         />
                     </View>
+                    {data?.tips ? (
+                        <View style={{paddingHorizontal: px(51), marginTop: px(10)}}>
+                            <HTML html={data?.tips} style={{fontSize: text(11), lineHeight: text(17)}} />
+                        </View>
+                    ) : null}
                     <Button
                         title={data.button.text}
                         onPress={() => {

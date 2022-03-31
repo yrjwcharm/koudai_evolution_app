@@ -99,7 +99,6 @@ export default function DetailAccount({route, navigation}) {
                 upid: route?.params?.upid,
                 fr: route.params?.fr,
                 amount: route?.params?.amount,
-                is_preview: route?.params?.is_preview,
                 risk_level: route?.params?.risk_level,
             })
                 .then((res) => {
