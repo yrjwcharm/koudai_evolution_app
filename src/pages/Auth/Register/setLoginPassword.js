@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-22 14:30:57
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-31 14:22:30
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -270,7 +270,7 @@ class SetLoginPassword extends Component {
                 />
                 {this.fr == 'forget' ? (
                     <InputView
-                        title="确认新密码"
+                        title="确认密码"
                         onChangeText={this.onChangeRePassword}
                         value={re_password}
                         placeholder="请输入相同的新密码"

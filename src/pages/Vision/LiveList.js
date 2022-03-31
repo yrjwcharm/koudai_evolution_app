@@ -1,12 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 19:18:41
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-31 15:48:25
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import http from '../../services';
 import RenderCate from './components/RenderCate';
 import {deviceWidth, px} from '../../utils/appUtil';
@@ -25,21 +27,25 @@ const LiveList = () => {
             setData(res.result);
         });
     }, []);
-    useEffect(() => {
-        init();
-    }, [init]);
-    useEffect(() => {
-        setShowMoreLoading(true);
-        http.get('/live/get_lived_list/202202015', {page}).then((res) => {
-            setShowMoreLoading(false);
-            setHasMore(res.result.has_more);
-            if (page == 1) {
-                setPlayBackList(res.result.items);
-            } else {
-                setPlayBackList((prevList) => [...prevList, ...(res.result.items || [])]);
-            }
-        });
-    }, [page]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            setShowMoreLoading(true);
+            http.get('/live/get_lived_list/202202015', {page}).then((res) => {
+                setShowMoreLoading(false);
+                setHasMore(res.result.has_more);
+                if (page == 1) {
+                    setPlayBackList(res.result.items);
+                } else {
+                    setPlayBackList((prevList) => [...prevList, ...(res.result.items || [])]);
+                }
+            });
+        }, [page])
+    );
     const _onScroll = (evt) => {
         if (!hasMore || showMoreLoading) return;
         const event = evt.nativeEvent;
@@ -65,14 +71,19 @@ const LiveList = () => {
             {data?.part2 ? (
                 <>
                     <RenderTitle title={data?.part2?.title} sub_title={data?.part2?.sub_title} />
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {data?.part2?.items?.map((_article, index) => {
-                            return RenderCate(_article, {
-                                marginBottom: px(12),
-                                marginRight: px(12),
-                            });
-                        })}
-                    </ScrollView>
+                    {data?.part2?.items?.length == 1 ? (
+                        // 单场直播
+                        <LiveCard data={data?.part2?.items[0]} style={{marginBottom: px(12), width: '100%'}} />
+                    ) : (
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {data?.part2?.items?.map((_article, index) => {
+                                return RenderCate(_article, {
+                                    marginBottom: px(12),
+                                    marginRight: px(12),
+                                });
+                            })}
+                        </ScrollView>
+                    )}
                 </>
             ) : null}
             {data?.part3 ? (
