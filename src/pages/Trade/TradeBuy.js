@@ -901,7 +901,7 @@ class TradeBuy extends Component {
     // 自动充值
     render_autoRecharge() {
         const {autoChargeStatus, data} = this.state;
-        return (
+        return data.auto_charge ? (
             <View style={styles.autoRechargeContent}>
                 <View style={styles.autoRechargePanel}>
                     <View>
@@ -945,7 +945,7 @@ class TradeBuy extends Component {
                     </View>
                 )}
             </View>
-        );
+        ) : null;
     }
     render_deductionHint() {
         return <Text style={styles.render_deductionHintText}>{this.state.data?.auto_charge?.deduction_tip}</Text>;
