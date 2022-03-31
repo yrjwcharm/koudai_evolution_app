@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-22 14:06:05
+ * @LastEditors: dx
+ * @LastEditTime: 2022-03-24 14:52:00
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
@@ -63,7 +63,7 @@ const SERVER_URL = {
         HTTP: 'http://kapi-web.yitao.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     develop: {
         HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
@@ -87,37 +87,37 @@ const SERVER_URL = {
         HTTP: 'http://kapi-web.ll.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     hjq: {
         HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',
         WS: 'ws://192.168.88.68:39503',
         IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     hmm: {
         HTTP: 'http://kapi-web.hmm.mofanglicai.com.cn:10080/',
         WS: 'ws://192.168.88.68:39503',
         IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     test2: {
         HTTP: 'http://kapi-mapi2.yitao2.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     lixiaoguang: {
         HTTP: 'http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     mayue: {
         HTTP: 'http://kapiweb.mayue.mofanglicai.com.cn:10080',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     ssltest: {
         // 正式环境
@@ -130,25 +130,25 @@ const SERVER_URL = {
         HTTP: ' http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     test3: {
         HTTP: 'http://kapi-web.shengyitao3.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     wcy: {
         HTTP: 'http://kapi-web.wangchunyan.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
     liuchao: {
         HTTP: 'http://kapi-web.liuchao01.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
-        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
     },
 };
 const baseURL = SERVER_URL[env];

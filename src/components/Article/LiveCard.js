@@ -98,6 +98,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         _checkNotifications(
             () => {
                 postReserve(() => {
+                    global.LogTool('visionappointment', data.id);
                     setReserved(true);
                 });
             },
@@ -135,6 +136,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
             style={[styles.card, style]}
             activeOpacity={0.8}
             onPress={() => {
+                global.LogTool('visionbroadcast', data.id);
                 jump(data?.url);
             }}>
             {/* 封面 */}

@@ -176,7 +176,11 @@ import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
 import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
-
+import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
+import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
+import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
+import CommentList from '../pages/Portfolio/CommentList'; // 评论列表
+import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -708,6 +712,11 @@ export default function AppStack() {
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
             <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
             <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
+            <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
+            <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
+            <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
+            <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
+            <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
