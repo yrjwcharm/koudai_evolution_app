@@ -2,7 +2,7 @@
  * @Date: 2022-03-28 14:08:46
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-28 16:40:30
+ * @LastEditTime: 2022-04-01 14:44:40
  * @Description: 直播落地页
  */
 import React, {useEffect, useState} from 'react';
@@ -145,7 +145,7 @@ export default ({navigation, route}) => {
                 }}
                 style={{backgroundColor: 'transparent', position: 'absolute', zIndex: 20}}
             />
-            <ScrollView bounces={false} style={{flex: 1}}>
+            <ScrollView bounces={false} style={styles.container}>
                 {image.url ? (
                     <FastImage source={{uri: image.url}} style={{width: deviceWidth, height: image.height}} />
                 ) : null}
@@ -161,6 +161,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        borderWidth: 0.2,
+        borderColor: '#000',
     },
     button: {
         position: 'absolute',
