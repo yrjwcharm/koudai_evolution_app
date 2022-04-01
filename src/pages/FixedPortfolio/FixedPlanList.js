@@ -22,8 +22,13 @@ export default function PlanDetail(props) {
 
     useEffect(() => {
         props.navigation.dispatch((state) => {
+            let removeRoutes = ['FixedUpdate', 'FixedPlanDetail'];
             const routes = state.routes.filter((r) => {
-                return r.name !== 'FixedUpdate';
+                if (removeRoutes.includes(r.name)) {
+                    return false;
+                } else {
+                    return true;
+                }
             });
             return CommonActions.reset({
                 ...state,

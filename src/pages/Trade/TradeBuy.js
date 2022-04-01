@@ -77,23 +77,25 @@ class TradeBuy extends Component {
         };
         this.plan_id = this.props.route?.params?.plan_id || '';
         this.show_risk_disclosure = true;
+        this._tabType = null;
     }
-    getTab = () => {
+    getTab = async () => {
         const {poid} = this.state;
-        http.get('/trade/set_tabs/20210101', {page_type: this.props.route.params.page_type || '', poid}).then(
-            (data) => {
-                this.setState(
-                    {
-                        type: data.result.active,
-                        has_tab: data.result.has_tab,
-                    },
-                    () => {
-                        this.init(data.result.active);
-                        if (this.tabView) {
-                            this.tabView.goToPage(data.result.active);
-                        }
-                    }
-                );
+        let data = await http.get('/trade/set_tabs/20210101', {
+            page_type: this.props.route.params.page_type || '',
+            poid,
+        });
+        const active = data.result.has_tab && this._tabType !== null ? this._tabType : active;
+        this.setState(
+            {
+                type: active,
+                has_tab: data.result.has_tab,
+            },
+            () => {
+                this.init(active);
+                if (this.tabView) {
+                    this.tabView.goToPage(active);
+                }
             }
         );
     };
@@ -126,7 +128,6 @@ class TradeBuy extends Component {
                             bankSelect: res.result?.pay_methods[0],
                             currentDate: res.result?.period_info?.current_date,
                             nextday: res.result?.period_info?.nextday,
-                            autoChargeStatus: res?.result?.auto_charge?.is_open,
                         },
                         () => {
                             let amount = this.state.amount;
@@ -564,6 +565,7 @@ class TradeBuy extends Component {
         if ((obj.from == 0 && obj.i == 0) || (obj.from == 1 && obj.i == 1)) {
             return;
         }
+        this._tabType = obj.i;
         this.setState({type: obj.i, errTip: ''}, () => {
             this.init(null, 'cacheBank');
         });
