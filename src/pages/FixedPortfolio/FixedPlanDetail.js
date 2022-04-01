@@ -55,7 +55,7 @@ export default function FixedPlan(props) {
         </View>
     ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
-            <ScrollView bounces={false} style={{flex: 1}}>
+            <ScrollView bounces={false} style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
                 {Object.keys(data).length > 0 && (
                     <View style={{marginBottom: FixedBtn.btnHeight}}>
                         <View style={styles.bank_wrap_sty}>
