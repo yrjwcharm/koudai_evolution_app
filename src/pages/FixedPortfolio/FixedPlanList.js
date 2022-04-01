@@ -5,7 +5,7 @@
  * @LastEditors: yhc
  * @LastEditTime: 2022-02-25 12:51:15
  */
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -13,10 +13,25 @@ import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Empty from '../../components/EmptyTip';
 import {useFocusEffect} from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
+
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
+
+    useEffect(() => {
+        props.navigation.dispatch((state) => {
+            const routes = state.routes.filter((r) => {
+                return r.name !== 'FixedUpdate';
+            });
+            return CommonActions.reset({
+                ...state,
+                routes,
+                index: routes.length - 1,
+            });
+        });
+    }, [props.navigation]);
 
     useFocusEffect(
         useCallback(() => {
