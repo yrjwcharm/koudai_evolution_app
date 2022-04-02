@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-03-31 14:22:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-02 13:32:38
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -221,7 +221,7 @@ class SetLoginPassword extends Component {
                 btnClick: !(code.length >= 6 && password.length >= 8 && re_password.length >= 8),
             });
         } else {
-            this.setState({password: password, btnClick: !(code.length >= 6 && re_password.length == password.length)});
+            this.setState({password: password, btnClick: !(code.length >= 6 && password.length >= 8)});
         }
     };
     onChangeRePassword = (re_password) => {
