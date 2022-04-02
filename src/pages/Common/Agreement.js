@@ -29,7 +29,7 @@ export class Agreement extends Component {
         return (
             <ScrollView style={styles.container}>
                 <View style={{paddingHorizontal: text(14), marginBottom: isIphoneX() ? 42 : 8}}>
-                    {agreement && <Html html={agreement} style={{fontSize: text(14)}} />}
+                    {agreement ? <Html html={agreement} style={{fontSize: text(14)}} /> : null}
                 </View>
             </ScrollView>
         );
