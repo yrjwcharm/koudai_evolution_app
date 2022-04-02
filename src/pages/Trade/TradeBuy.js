@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-22 10:39:30
+ * @LastEditTime: 2022-04-02 15:23:49
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -586,19 +586,17 @@ class TradeBuy extends Component {
                             <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
                                 {buy_text || '买入明细'}
                             </Text>
-                            {data.is_plan ? null : (
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Modal.show({
-                                            title: buy_text || '买入明细',
-                                            content:
-                                                tips ||
-                                                '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
-                                        });
-                                    }}>
-                                    <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
-                                </TouchableOpacity>
-                            )}
+                            <TouchableOpacity
+                                onPress={() => {
+                                    Modal.show({
+                                        title: buy_text || '买入明细',
+                                        content:
+                                            tips ||
+                                            '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
+                                    });
+                                }}>
+                                <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
                         </View>
                         {configExpand ? (
                             <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />
@@ -1107,13 +1105,13 @@ class TradeBuy extends Component {
 
                 {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                        购买即代表您已知悉该{data?.is_plan ? '理财计划' : '基金组合'}的
+                        购买即代表您已知悉该基金组合的
                         <Text
                             onPress={() => {
                                 this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
                             }}
                             style={{color: Colors.btnColor}}>
-                            {data?.is_plan ? '理财计划' : '基金组合'}协议
+                            基金服务协议
                         </Text>
                         、
                         <Text
