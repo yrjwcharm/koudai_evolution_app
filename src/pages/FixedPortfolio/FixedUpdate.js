@@ -273,6 +273,7 @@ export default function FixedUpdate({navigation, route}) {
     // 自动充值
     const render_autoRecharge = () => {
         let auto_charge = data.auto_charge;
+        if (!auto_charge) return null;
         return (
             <View style={styles.autoRechargeContent}>
                 <View style={styles.autoRechargePanel}>
