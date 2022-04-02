@@ -1127,10 +1127,10 @@ class TradeBuy extends Component {
                                     {index === arr.length - 1 ? '和' : '、'}
                                     <Text
                                         onPress={() => {
-                                            this.jumpPage('Agreement', {id: item?.id});
+                                            this.props.jump(item.url);
                                         }}
                                         style={{color: Colors.btnColor}}>
-                                        {item?.name}
+                                        {item?.name || item?.title}
                                     </Text>
                                 </Text>
                             );
