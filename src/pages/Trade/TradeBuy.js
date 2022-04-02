@@ -85,7 +85,7 @@ class TradeBuy extends Component {
             page_type: this.props.route.params.page_type || '',
             poid,
         });
-        const active = data.result.has_tab && this._tabType !== null ? this._tabType : active;
+        const active = data.result.has_tab && this._tabType !== null ? this._tabType : data.result.active;
         this.setState(
             {
                 type: active,
