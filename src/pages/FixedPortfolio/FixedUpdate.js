@@ -53,11 +53,10 @@ export default function FixedUpdate({navigation, route}) {
 
     const addNum = () => {
         setNum((prev) => {
-            let pm = autoChargeStatus ? data.pay_methods.find((item) => item.pay_method === 'wallet') : payMethod;
-            if (prev + intervalRef.current > pm.day_limit) {
-                Toast.show(`${cycleRef.current}投入金额最大为${formaNum(pm.day_limit, 'nozero')}`);
+            if (prev + intervalRef.current > payMethod.day_limit) {
+                Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
             }
-            return prev + intervalRef.current > pm.day_limit ? pm.day_limit : prev + intervalRef.current;
+            return prev + intervalRef.current > payMethod.day_limit ? payMethod.day_limit : prev + intervalRef.current;
         });
     };
     const subtractNum = () => {
@@ -258,15 +257,14 @@ export default function FixedUpdate({navigation, route}) {
         }, 200);
     };
     const confirmClick = () => {
-        let pm = autoChargeStatus ? data.pay_methods.find((item) => item.pay_method === 'wallet') : payMethod;
         if (iptValRef.current < initAmount.current) {
             inputModal.current.hide();
             setNum(initAmount.current);
             Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
-        } else if (iptValRef.current > pm.day_limit) {
+        } else if (iptValRef.current > payMethod.day_limit) {
             inputModal.current.hide();
-            setNum(pm.day_limit);
-            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(pm.day_limit, 'nozero')}`);
+            setNum(payMethod.day_limit);
+            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
         } else {
             inputModal.current.hide();
             setNum(parseFloat(iptValRef.current));
@@ -330,12 +328,11 @@ export default function FixedUpdate({navigation, route}) {
         }
     }, [modalProps]);
     useEffect(() => {
-        let pm = autoChargeStatus ? data.pay_methods.find((item) => item.pay_method === 'wallet') : payMethod;
-        if (num > pm.day_limit) {
-            setNum(pm.day_limit);
-            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(pm.day_limit, 'nozero')}`);
+        if (num > payMethod.day_limit) {
+            setNum(payMethod.day_limit);
+            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
         }
-    }, [autoChargeStatus, data.pay_methods, num, payMethod]);
+    }, [num, payMethod]);
     useEffect(() => {
         iptValRef.current = iptVal;
     }, [iptVal]);

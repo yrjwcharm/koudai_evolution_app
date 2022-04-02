@@ -382,11 +382,7 @@ class TradeBuy extends Component {
                     }
                 } else {
                     //定投
-                    if (
-                        _amount > this.state.bankSelect.day_limit &&
-                        this.state.bankSelect.pay_method !== 'wallet' &&
-                        !this.state.autoChargeStatus
-                    ) {
+                    if (_amount > this.state.bankSelect.day_limit && this.state.bankSelect.pay_method !== 'wallet') {
                         this.setState({
                             buyBtnCanClick: false,
                             errTip: `最大单日购买金额为${this.state.bankSelect.day_limit}元`,
@@ -918,7 +914,6 @@ class TradeBuy extends Component {
                             this.setState({
                                 autoChargeStatus: val,
                             });
-                            this.onInput(this.state.amount);
                         }}
                         thumbColor={'#fff'}
                         trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
