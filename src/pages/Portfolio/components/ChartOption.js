@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-31 16:56:28
+ * @LastEditTime: 2022-04-02 16:19:28
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -277,6 +277,8 @@ export const baseAreaChart = (
           return '#E74949';
         }else if (val === 3) {
             return '#0051CC';
+         }else if(val===4){
+           return '#EB7121';
          }
       },
       stroke: '#fff',
