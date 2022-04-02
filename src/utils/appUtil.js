@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 17:55:03
+ * @LastEditTime: 2022-04-02 10:41:36
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -145,14 +145,14 @@ const handlePhone = (mobile) => {
     return mobile ? mobile.replace(/(\d{3})\d*(\d{4})/, '$1****$2') : '';
 };
 //处理tag 颜色
-//3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
+//3: 购买（红色） 4:赎回（绿色）6或10:调仓（蓝色） 7:分红（红色）
 const tagColor = (type) => {
     if (type == 4) {
         return {
             text_color: '#4BA471',
             bg_color: '#EDF7EC',
         };
-    } else if (type == 6) {
+    } else if (type == 6 || type == 10) {
         return {
             text_color: '#0051CC',
             bg_color: '#EFF5FF',
