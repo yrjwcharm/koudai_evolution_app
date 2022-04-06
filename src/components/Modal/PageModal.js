@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-10 16:59:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-06 18:27:13
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -72,7 +72,7 @@ export default class PageModal extends Component {
                                     {
                                         translateY: this.state.offset.interpolate({
                                             inputRange: [0, 1],
-                                            outputRange: [height, height - this.state.aHeight - px(60)],
+                                            outputRange: [height, height - this.state.aHeight],
                                         }),
                                     },
                                 ],
