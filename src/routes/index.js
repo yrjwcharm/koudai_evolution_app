@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-03-28 15:15:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-06 17:47:46
  * @Description:路由表
  */
 import React from 'react';
@@ -179,8 +179,9 @@ import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
 import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
-import CommentList from '../pages/Portfolio/CommentList'; // 评论列表
+import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
+import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -717,6 +718,11 @@ export default function AppStack() {
             <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
             <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+            <Stack.Screen
+                name="ArticleCommentList"
+                component={ArticleCommentList}
+                options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+            />
         </Stack.Navigator>
     );
 }

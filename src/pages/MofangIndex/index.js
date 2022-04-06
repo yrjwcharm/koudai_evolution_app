@@ -322,6 +322,11 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
+                            <Button
+                                onPress={() => {
+                                    props.navigation.navigate('ArticleCommentList');
+                                }}
+                            />
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 直播 */}

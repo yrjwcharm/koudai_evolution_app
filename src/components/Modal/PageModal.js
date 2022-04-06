@@ -9,7 +9,7 @@
  * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, BackHandler} from 'react-native';
+import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
