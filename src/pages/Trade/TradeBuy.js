@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-02 15:23:49
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-06 19:11:20
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -38,7 +38,6 @@ import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
-import _ from 'lodash';
 import memoize from 'memoize-one';
 let _modalRef = '';
 class TradeBuy extends Component {
