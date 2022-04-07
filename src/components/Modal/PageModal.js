@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-07 11:41:35
+ * @LastEditTime: 2022-04-07 16:05:19
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -39,7 +39,6 @@ export default class PageModal extends Component {
         headerShown: true, //所在页面是否为自定义header
     };
     componentDidMount() {
-        console.log(Keyboard);
         Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', this.keyboardWillShow);
         Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', this.keyboardWillHide);
     }
