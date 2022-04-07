@@ -994,7 +994,6 @@ const styles = StyleSheet.create({
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
-        paddingHorizontal: px(4),
         zIndex: 10,
         minWidth: px(20),
         height: px(20),
