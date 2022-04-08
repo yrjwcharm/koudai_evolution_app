@@ -1,16 +1,16 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2022-03-18 17:31:12
+ * @LastEditTime: 2022-04-08 13:18:00
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {deviceWidth, px, px as text} from '../utils/appUtil';
-import {Colors, Space, Style} from '../common/commonStyle';
+import {Colors, Space} from '../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {useJump} from './hooks';
@@ -26,18 +26,24 @@ const BottomDesc = (props) => {
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
             <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
-                {props?.fix_img
-                    ? [props.fix_img]
-                          .flat(3)
-                          .map((item, idx) => (
-                              <FastImage
-                                  key={idx}
-                                  resizeMode={FastImage.resizeMode.contain}
-                                  source={{uri: item}}
-                                  style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
-                              />
-                          ))
-                    : null}
+                {props?.fix_img ? (
+                    Array.isArray(props.fix_img) ? (
+                        Array.isArray.map((item, idx) => (
+                            <FastImage
+                                key={idx}
+                                resizeMode={FastImage.resizeMode.contain}
+                                source={{uri: item}}
+                                style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
+                            />
+                        ))
+                    ) : (
+                        <FastImage
+                            resizeMode={FastImage.resizeMode.contain}
+                            source={{uri: props.fix_img}}
+                            style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
+                        />
+                    )
+                ) : null}
             </View>
             <View style={styles.item}>
                 <FastImage

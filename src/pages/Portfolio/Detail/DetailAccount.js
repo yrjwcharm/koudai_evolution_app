@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -29,8 +29,9 @@ import NumText from '../../../components/NumText';
 import Praise from '../../../components/Praise';
 import {throttle} from 'lodash';
 import {BottomModal} from '../../../components/Modal';
+import {withErrorBoundary} from 'react-native-error-helper';
 
-export default function DetailAccount({route, navigation}) {
+function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -65,7 +66,6 @@ export default function DetailAccount({route, navigation}) {
         }, 500),
         [data]
     );
-
     const init = useCallback(() => {
         if (route.params.scene === 'adviser') {
             Http.get('/adviser/detail/20210923', {poid: route.params.poid})
@@ -303,7 +303,6 @@ export default function DetailAccount({route, navigation}) {
                             snap: true,
                         }}
                     />
-
                     <View
                         style={{
                             flexDirection: 'row',
@@ -402,7 +401,6 @@ export default function DetailAccount({route, navigation}) {
                             ) : null}
                         </View>
                     )}
-
                     {/* 底线 */}
                     {type === 1 && (
                         <View style={styles.line_con}>
@@ -476,7 +474,6 @@ export default function DetailAccount({route, navigation}) {
                             <Html html={data?.portfolio_intro?.text} />
                         </TouchableOpacity>
                     ) : null}
-
                     {/* 全球配置 */}
                     {data?.asset_deploy ? (
                         <View style={styles.card_sty}>
@@ -652,7 +649,6 @@ export default function DetailAccount({route, navigation}) {
                             </View>
                         </View>
                     ) : null}
-
                     {/* 用户评论 */}
                     {Object.keys(commentData || {}).length > 0 ? (
                         <View style={styles.card_sty}>
@@ -688,7 +684,6 @@ export default function DetailAccount({route, navigation}) {
                             })}
                         </View>
                     ) : null}
-
                     <View style={[styles.card_sty, {paddingVertical: 0}]}>
                         {data?.gather_info.map((_info, _idx) => {
                             return (
@@ -757,6 +752,12 @@ export default function DetailAccount({route, navigation}) {
         </>
     );
 }
+const SafeCenter = withErrorBoundary({
+    renderBoundary: ({error}) => {
+        return <Text>catch error: {error.message}</Text>;
+    },
+})(DetailAccount);
+export default SafeCenter;
 const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
