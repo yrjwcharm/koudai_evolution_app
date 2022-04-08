@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 17:41:09
+ * @LastEditTime: 2022-04-08 17:56:02
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -537,7 +537,13 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal style={{backgroundColor: '#fff'}} height={px(600)} ref={bottomModal} title={signData?.title}>
+                <PageModal
+                    style={{backgroundColor: '#fff'}}
+                    height={px(600)}
+                    headerShown={false}
+                    tabbar={true}
+                    ref={bottomModal}
+                    title={signData?.title}>
                     <View style={{flex: 1}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView

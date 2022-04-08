@@ -1,15 +1,15 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-10 16:59:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-08 17:55:34
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
  * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, BackHandler} from 'react-native';
+import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, Keyboard, Platform} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
@@ -23,6 +23,7 @@ export default class PageModal extends Component {
             opacity: new Animated.Value(0),
             aHeight: props.height || constants.bottomMinHeight,
             hide: true,
+            keyboardHeight: 0,
         };
     }
     static defaultProps = {
@@ -35,9 +36,33 @@ export default class PageModal extends Component {
         isTouchMaskToClose: true, //点击蒙层是否能关闭
         onClose: () => {}, //关闭的回掉
         confirmClick: () => {}, //确认按钮的回掉
+        headerShown: true, //所在页面是否为自定义header
+        tabbar: false, //所在页面是否为主tab
     };
     componentDidMount() {
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', this.keyboardWillShow);
+        Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', this.keyboardWillHide);
+    }
+    keyboardWillShow = (e) => {
+        const {offset} = this.state;
+        this.setState({keyboardHeight: e.endCoordinates.height});
+        Animated.timing(offset, {
+            toValue: 2,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    };
+    keyboardWillHide = (e) => {
+        const {offset} = this.state;
+        Animated.timing(offset, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true,
+        }).start();
+    };
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow);
+        Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide);
     }
     //安卓返回按钮关闭弹窗
     onBackAndroid = () => {
@@ -49,7 +74,18 @@ export default class PageModal extends Component {
         }
     };
     render() {
-        const {header, title, sub_title, confirmText, children, style, isTouchMaskToClose, confirmClick} = this.props;
+        const {
+            header,
+            title,
+            sub_title,
+            confirmText,
+            children,
+            style,
+            isTouchMaskToClose,
+            confirmClick,
+            headerShown,
+            tabbar,
+        } = this.props;
         if (this.state.hide) {
             return <View />;
         } else {
@@ -71,8 +107,19 @@ export default class PageModal extends Component {
                                 transform: [
                                     {
                                         translateY: this.state.offset.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: [height, height - this.state.aHeight - px(60)],
+                                            inputRange: [0, 1, 2],
+                                            outputRange: [
+                                                height,
+                                                height -
+                                                    this.state.aHeight -
+                                                    (headerShown ? px(60) : 0) -
+                                                    (tabbar ? (Platform.OS == 'android' ? px(42) : px(42) + 34) : 0) +
+                                                    (Platform.OS == 'ios' ? 0 : 34),
+                                                height -
+                                                    this.state.aHeight -
+                                                    (headerShown ? px(60) : 0) -
+                                                    this.state.keyboardHeight,
+                                            ],
                                         }),
                                     },
                                 ],
@@ -101,10 +148,6 @@ export default class PageModal extends Component {
                 </View>
             );
         }
-    }
-
-    componentWillUnmount() {
-        // BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
     }
 
     //显示动画
