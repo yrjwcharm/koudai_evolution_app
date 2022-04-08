@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-07 15:09:01
+ * @LastEditTime: 2022-04-07 19:12:35
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -13,14 +13,12 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
 import {Button} from '../../components/Button';
 import {Style} from '../../common/commonStyle';
+import CommentItem from './components/CommentItem';
 const inputMaxLength = 500;
 const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
-    const renderItem = (data) => {
-        return <Text>{data.title}</Text>;
-    };
     const DATA = [
         {
             title: 'First Item',
@@ -31,7 +29,17 @@ const ArticleCommentList = ({navigation, route}) => {
         {
             title: 'Third Item',
         },
+        {
+            title: 'First Item',
+        },
+        {
+            title: 'Second Item',
+        },
+        {
+            title: 'Third Item',
+        },
     ];
+
     return (
         <>
             <Header
@@ -42,7 +50,15 @@ const ArticleCommentList = ({navigation, route}) => {
                     </TouchableOpacity>
                 }
             />
-            <FlatList style={styles.con} renderItem={renderItem} data={DATA} keyExtractor={(item) => item.index} />
+
+            <FlatList
+                style={styles.con}
+                renderItem={({item}) => {
+                    return <CommentItem data={item} style={{marginBottom: px(20)}} />;
+                }}
+                data={DATA}
+                keyExtractor={(item, index) => index.toString()}
+            />
             <PageModal ref={inputModal} title="写评论" height={px(370)} headerShown={false}>
                 <TextInput
                     ref={inputRef}
@@ -54,7 +70,7 @@ const ArticleCommentList = ({navigation, route}) => {
                     }}
                     maxLength={inputMaxLength}
                     textAlignVertical="top"
-                    placeholder="哈哈哈哈"
+                    placeholder="聊点什么吧..."
                 />
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
@@ -86,7 +102,7 @@ const ArticleCommentList = ({navigation, route}) => {
 export default ArticleCommentList;
 
 const styles = StyleSheet.create({
-    con: {flex: 1, backgroundColor: '#fff', paddingHorizontal: px(16)},
+    con: {flex: 1, backgroundColor: '#fff', paddingHorizontal: px(16), paddingTop: px(16)},
     input: {
         paddingHorizontal: px(20),
         marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
