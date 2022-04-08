@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2022-03-18 17:31:12
+ * @LastEditTime: 2022-04-08 14:28:46
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -26,18 +26,24 @@ const BottomDesc = (props) => {
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
             <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
-                {props?.fix_img
-                    ? [props.fix_img]
-                          .flat(3)
-                          .map((item, idx) => (
-                              <FastImage
-                                  key={idx}
-                                  resizeMode={FastImage.resizeMode.contain}
-                                  source={{uri: item}}
-                                  style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
-                              />
-                          ))
-                    : null}
+                {props?.fix_img ? (
+                    Array.isArray(props.fix_img) ? (
+                        Array.isArray.map((item, idx) => (
+                            <FastImage
+                                key={idx}
+                                resizeMode={FastImage.resizeMode.contain}
+                                source={{uri: item}}
+                                style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
+                            />
+                        ))
+                    ) : (
+                        <FastImage
+                            resizeMode={FastImage.resizeMode.contain}
+                            source={{uri: props.fix_img}}
+                            style={[{height: text(30), minWidth: '50%', maxWidth: '100%', marginBottom: text(8)}]}
+                        />
+                    )
+                ) : null}
             </View>
             <View style={styles.item}>
                 <FastImage
