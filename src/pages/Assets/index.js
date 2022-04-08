@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 17:56:02
+ * @LastEditTime: 2022-04-08 18:07:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -554,23 +554,25 @@ function HomeScreen({navigation, route}) {
                             }}>
                             <HTML html={signData?.desc} style={styles.light_text} />
                             {signData?.risk_disclosure?.title ? (
-                                <Text style={{fontSize: px(18), fontWeight: '700', marginVertical: px(12)}}>
-                                    {signData?.risk_disclosure?.title}
-                                </Text>
+                                <>
+                                    <Text style={{fontSize: px(18), fontWeight: '700', marginVertical: px(12)}}>
+                                        {signData?.risk_disclosure?.title}
+                                    </Text>
+                                    <View style={styles.sign_scrollview}>
+                                        <ScrollView
+                                            nestedScrollEnabled={true}
+                                            style={{
+                                                flex: 1,
+                                                paddingRight: px(12),
+                                            }}>
+                                            <HTML
+                                                html={signData?.risk_disclosure?.content}
+                                                style={{fontSize: px(13), lineHeight: px(20)}}
+                                            />
+                                        </ScrollView>
+                                    </View>
+                                </>
                             ) : null}
-                            <View style={styles.sign_scrollview}>
-                                <ScrollView
-                                    nestedScrollEnabled={true}
-                                    style={{
-                                        flex: 1,
-                                        paddingRight: px(12),
-                                    }}>
-                                    <HTML
-                                        html={signData?.risk_disclosure?.content}
-                                        style={{fontSize: px(13), lineHeight: px(20)}}
-                                    />
-                                </ScrollView>
-                            </View>
                             <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
                                 {signData?.desc ? (
                                     <>
