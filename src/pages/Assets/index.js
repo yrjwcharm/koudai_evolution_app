@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 21:00:40
+ * @LastEditTime: 2022-04-08 21:23:43
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -537,7 +537,7 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal height={px(520)} tabbar={true} ref={bottomModal} title={signData?.title}>
+                <PageModal height={px(530)} tabbar={true} ref={bottomModal} title={signData?.title}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
@@ -568,24 +568,6 @@ function HomeScreen({navigation, route}) {
                                 </>
                             ) : null}
                             <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
-                                {signData?.desc ? (
-                                    <>
-                                        <Text>
-                                            {signData?.desc_link_list?.map((item, index) => (
-                                                <Text
-                                                    style={[styles.light_text, {color: Colors.btnColor}]}
-                                                    key={index}
-                                                    onPress={() => {
-                                                        if (item?.url) {
-                                                            jump(item?.url);
-                                                        }
-                                                    }}>
-                                                    {item.text}
-                                                </Text>
-                                            ))}
-                                        </Text>
-                                    </>
-                                ) : null}
                                 <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
                                     <View style={Style.flexRow}>
                                         <CheckBox
@@ -1623,7 +1605,7 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
     },
     sign_scrollview: {
-        height: px(168),
+        height: px(146),
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
         padding: px(12),
