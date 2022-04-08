@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 19:57:55
+ * @LastEditTime: 2022-04-08 20:14:35
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -13,11 +13,8 @@ import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, 
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {px} from '../../utils/appUtil';
-const {width, height} = Dimensions.get('screen');
+const {width, height} = Dimensions.get('window');
 import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
-
-// ...
-
 const [left, top] = [0, 0];
 export default class PageModal extends Component {
     constructor(props) {
