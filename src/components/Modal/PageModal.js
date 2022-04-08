@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 17:55:34
+ * @LastEditTime: 2022-04-08 19:57:55
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -12,8 +12,12 @@ import React, {Component} from 'react';
 import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, Keyboard, Platform} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {isIphoneX, px} from '../../utils/appUtil';
-const {width, height} = Dimensions.get('window');
+import {px} from '../../utils/appUtil';
+const {width, height} = Dimensions.get('screen');
+import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
+
+// ...
+
 const [left, top] = [0, 0];
 export default class PageModal extends Component {
     constructor(props) {
@@ -97,54 +101,56 @@ export default class PageModal extends Component {
                             isTouchMaskToClose && this.cancel();
                         }}
                     />
-                    <Animated.View
-                        style={[
-                            {
-                                width: width,
-                                height: this.state.aHeight,
-                            },
-                            {
-                                transform: [
+
+                    <BottomTabBarHeightContext.Consumer>
+                        {(tabBarHeight) => (
+                            /* render something */
+                            <Animated.View
+                                style={[
                                     {
-                                        translateY: this.state.offset.interpolate({
-                                            inputRange: [0, 1, 2],
-                                            outputRange: [
-                                                height,
-                                                height -
-                                                    this.state.aHeight -
-                                                    (headerShown ? px(60) : 0) -
-                                                    (tabbar ? (Platform.OS == 'android' ? px(42) : px(42) + 34) : 0) +
-                                                    (Platform.OS == 'ios' ? 0 : 34),
-                                                height -
-                                                    this.state.aHeight -
-                                                    (headerShown ? px(60) : 0) -
-                                                    this.state.keyboardHeight,
-                                            ],
-                                        }),
+                                        width: width,
+                                        height: this.state.aHeight,
                                     },
-                                ],
-                            },
-                            styles.content,
-                            style,
-                        ]}>
-                        {header || (
-                            <View style={styles.header}>
-                                <TouchableOpacity style={styles.close} onPress={this.cancel}>
-                                    <Icon name={'close'} size={18} />
-                                </TouchableOpacity>
-                                <View style={{alignItems: 'center'}}>
-                                    <Text style={styles.title}>{title}</Text>
-                                    {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
-                                </View>
-                                {confirmText ? (
-                                    <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
-                                        <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </View>
+                                    {
+                                        transform: [
+                                            {
+                                                translateY: this.state.offset.interpolate({
+                                                    inputRange: [0, 1, 2],
+                                                    outputRange: [
+                                                        height,
+                                                        height - this.state.aHeight - (tabbar ? tabBarHeight : 0),
+                                                        height -
+                                                            this.state.aHeight -
+                                                            (headerShown ? px(60) : 0) -
+                                                            this.state.keyboardHeight,
+                                                    ],
+                                                }),
+                                            },
+                                        ],
+                                    },
+                                    styles.content,
+                                    style,
+                                ]}>
+                                {header || (
+                                    <View style={styles.header}>
+                                        <TouchableOpacity style={styles.close} onPress={this.cancel}>
+                                            <Icon name={'close'} size={18} />
+                                        </TouchableOpacity>
+                                        <View style={{alignItems: 'center'}}>
+                                            <Text style={styles.title}>{title}</Text>
+                                            {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
+                                        </View>
+                                        {confirmText ? (
+                                            <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
+                                                <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </View>
+                                )}
+                                {children}
+                            </Animated.View>
                         )}
-                        {children}
-                    </Animated.View>
+                    </BottomTabBarHeightContext.Consumer>
                 </View>
             );
         }
@@ -214,6 +220,7 @@ const styles = StyleSheet.create({
         height: height,
         left: left,
         top: top,
+        bottom: 0,
         zIndex: 10,
     },
     mask: {
@@ -224,7 +231,7 @@ const styles = StyleSheet.create({
         height: height,
     },
     content: {
-        paddingBottom: isIphoneX() ? 34 + px(20) : px(20),
+        // paddingBottom: isIphoneX() ? 34 + px(20) : px(20),
         backgroundColor: '#fff',
         minHeight: constants.bottomMinHeight,
         borderTopLeftRadius: constants.borderRadius,

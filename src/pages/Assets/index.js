@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 18:07:51
+ * @LastEditTime: 2022-04-08 19:58:23
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -537,14 +537,8 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal
-                    style={{backgroundColor: '#fff'}}
-                    height={px(600)}
-                    headerShown={false}
-                    tabbar={true}
-                    ref={bottomModal}
-                    title={signData?.title}>
-                    <View style={{flex: 1}}>
+                <PageModal height={px(600)} tabbar={true} ref={bottomModal} title={signData?.title}>
+                    <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
                             bounces={false}
@@ -674,7 +668,10 @@ function HomeScreen({navigation, route}) {
                         {signData?.button ? (
                             <Button
                                 disabled={!signSelectData?.length > 0}
-                                style={{marginTop: px(12), marginHorizontal: px(16)}}
+                                style={{
+                                    marginVertical: px(12),
+                                    marginHorizontal: px(16),
+                                }}
                                 onPress={_.debounce(() => {
                                     passwordModal?.current?.show();
                                 }, 500)}
