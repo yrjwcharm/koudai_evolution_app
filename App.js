@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-03-30 16:56:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-08 17:38:49
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -51,6 +51,8 @@ import CodePush from 'react-native-code-push';
 import {throttle, debounce, cloneDeep} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
 import * as WeChat from 'react-native-wechat-lib';
+import {setGlobalErrorHandler} from 'react-native-error-helper';
+
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -174,6 +176,16 @@ function App(props) {
     };
 
     React.useEffect(() => {
+        setGlobalErrorHandler((error, isFatal) => {
+            if (__DEV__) {
+                console.log('global error：', JSON.stringify(error), isFatal);
+            } else {
+                http.post('/mapi/report/app_log/20210101', {
+                    error: JSON.stringify(error),
+                });
+            }
+        }, true);
+
         //厂商通道收到 push
         DeviceEventEmitter.addListener('jdeeplink', (e) => {
             store.dispatch(updateUserInfo({pushRoute: JSON.parse(e.extras)?.route}));
@@ -191,15 +203,6 @@ function App(props) {
             });
     }, []);
 
-    global.ErrorUtils.setGlobalHandler((error) => {
-        console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
-        console.log(error, error.name, error.message);
-        http.post('/mapi/report/app_log/20210101', {
-            error: JSON.stringify(error),
-            error_type: error.name,
-            error_msg: error.message,
-        });
-    }, true);
     React.useEffect(() => {
         NetInfo.addEventListener(
             debounce((state) => {

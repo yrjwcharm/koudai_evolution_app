@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 16:45:32
+ * @LastEditTime: 2022-04-08 21:23:43
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -537,8 +537,8 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal style={{backgroundColor: '#fff'}} height={px(600)} ref={bottomModal} title={signData?.title}>
-                    <View style={{flex: 1}}>
+                <PageModal height={px(530)} tabbar={true} ref={bottomModal} title={signData?.title}>
+                    <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
                             bounces={false}
@@ -548,42 +548,26 @@ function HomeScreen({navigation, route}) {
                             }}>
                             <HTML html={signData?.desc} style={styles.light_text} />
                             {signData?.risk_disclosure?.title ? (
-                                <Text style={{fontSize: px(18), fontWeight: '700', marginVertical: px(12)}}>
-                                    {signData?.risk_disclosure?.title}
-                                </Text>
+                                <>
+                                    <Text style={{fontSize: px(18), fontWeight: '700', marginVertical: px(12)}}>
+                                        {signData?.risk_disclosure?.title}
+                                    </Text>
+                                    <View style={styles.sign_scrollview}>
+                                        <ScrollView
+                                            nestedScrollEnabled={true}
+                                            style={{
+                                                flex: 1,
+                                                paddingRight: px(12),
+                                            }}>
+                                            <HTML
+                                                html={signData?.risk_disclosure?.content}
+                                                style={{fontSize: px(13), lineHeight: px(20)}}
+                                            />
+                                        </ScrollView>
+                                    </View>
+                                </>
                             ) : null}
-                            <View style={styles.sign_scrollview}>
-                                <ScrollView
-                                    nestedScrollEnabled={true}
-                                    style={{
-                                        flex: 1,
-                                        paddingRight: px(12),
-                                    }}>
-                                    <HTML
-                                        html={signData?.risk_disclosure?.content}
-                                        style={{fontSize: px(13), lineHeight: px(20)}}
-                                    />
-                                </ScrollView>
-                            </View>
                             <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
-                                {signData?.desc ? (
-                                    <>
-                                        <Text>
-                                            {signData?.desc_link_list?.map((item, index) => (
-                                                <Text
-                                                    style={[styles.light_text, {color: Colors.btnColor}]}
-                                                    key={index}
-                                                    onPress={() => {
-                                                        if (item?.url) {
-                                                            jump(item?.url);
-                                                        }
-                                                    }}>
-                                                    {item.text}
-                                                </Text>
-                                            ))}
-                                        </Text>
-                                    </>
-                                ) : null}
                                 <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
                                     <View style={Style.flexRow}>
                                         <CheckBox
@@ -666,7 +650,10 @@ function HomeScreen({navigation, route}) {
                         {signData?.button ? (
                             <Button
                                 disabled={!signSelectData?.length > 0}
-                                style={{marginTop: px(12), marginHorizontal: px(16)}}
+                                style={{
+                                    marginVertical: px(12),
+                                    marginHorizontal: px(16),
+                                }}
                                 onPress={_.debounce(() => {
                                     passwordModal?.current?.show();
                                 }, 500)}
@@ -1618,7 +1605,7 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
     },
     sign_scrollview: {
-        height: px(168),
+        height: px(146),
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
         padding: px(12),

@@ -7530,10 +7530,10 @@ react-native-easy-chat-ui@^0.4.14:
   dependencies:
     moment "^2.22.2"
 
-react-native-exception-handler@^2.10.9:
-  version "2.10.9"
-  resolved "https://registry.npm.taobao.org/react-native-exception-handler/download/react-native-exception-handler-2.10.9.tgz"
-  integrity sha1-STWp4QawLr7Mcpv6rIrI5rA0B4E=
+react-native-error-helper@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmmirror.com/react-native-error-helper/-/react-native-error-helper-0.2.2.tgz#57971de3526ef70c3d595e0f642c133452542149"
+  integrity sha512-38gNMdSPZi2b0/rXT+uiKBYT7/KifXAEujlct7PLCinhyYfyuswUe275zf5gRDpJ8RrTA475ISsd9yzFuTuAFg==
 
 react-native-exit-app@^1.1.0:
   version "1.1.0"
