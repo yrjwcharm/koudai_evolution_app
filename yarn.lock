@@ -7621,6 +7621,13 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.6.tgz"
   integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
 
+react-native-modalbox@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmmirror.com/react-native-modalbox/-/react-native-modalbox-2.0.2.tgz#8a7b3d2e7be79b5d1cb9530b2c6bc535b1bc8c66"
+  integrity sha512-uSuoZ+siPPNqWGyw8NXhA/Aots7mOx2+qijFoeovequY0kczZEPZDd0ARHbzg+1cE3H3AATJEwGdkVA8lUxs0g==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-orientation-locker@^1.1.8:
   version "1.1.8"
   resolved "https://registry.nlark.com/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz"
