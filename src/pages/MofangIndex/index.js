@@ -34,8 +34,7 @@ import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
-import Modal from 'react-native-modalbox';
-import {PageModal} from '../../components/Modal';
+
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
@@ -254,26 +253,6 @@ const Index = (props) => {
                             )}
                         </View>
                     </View>
-                    <Modal style={[{height: 500}]} height={500} ref={modal2} position={'bottom'}>
-                        <View style={{flex: 1}}>
-                            <ScrollView style={{flex: 1}}>
-                                <TouchableOpacity>
-                                    <View style={{height: 300, backgroundColor: 'red'}} />
-                                    <View style={{height: 300, backgroundColor: 'pink'}} />
-                                </TouchableOpacity>
-                            </ScrollView>
-                            <Button style={styles.text}>Basic modal</Button>
-                        </View>
-                    </Modal>
-                    <PageModal style={[{height: 500}]} height={500} ref={modal1}>
-                        <View style={{flex: 1}}>
-                            <ScrollView style={{flex: 1}}>
-                                <View style={{height: 300, backgroundColor: 'red'}} />
-                                <View style={{height: 300, backgroundColor: 'pink'}} />
-                            </ScrollView>
-                            <Button style={styles.text}>Basic modal</Button>
-                        </View>
-                    </PageModal>
 
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
@@ -346,8 +325,7 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-                            <Button title="Basic modal" onPress={() => modal1.current.show()} style={styles.btn} />
-                            <Button title="Basic modal" onPress={() => modal2.current.open()} style={styles.btn} />
+
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 直播 */}

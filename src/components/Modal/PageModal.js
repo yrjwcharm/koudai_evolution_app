@@ -144,7 +144,7 @@ export default class PageModal extends Component {
         );
     };
     renderContent = () => {
-        const {children, style, headerShown} = this.props;
+        const {children, style} = this.props;
         const size = {
             height: this.state.containerHeight,
             width: this.state.containerWidth,
@@ -163,7 +163,7 @@ export default class PageModal extends Component {
                                     outputRange: [
                                         height,
                                         this.state.containerHeight - this.state.height,
-                                        this.state.containerHeight - this.state.height - -this.state.keyboardHeight,
+                                        this.state.containerHeight - this.state.height - this.state.keyboardHeight,
                                     ],
                                 }),
                             },

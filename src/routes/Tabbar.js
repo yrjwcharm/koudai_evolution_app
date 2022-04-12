@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 18:20:54
+ * @LastEditTime: 2022-04-12 19:02:32
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -113,7 +113,7 @@ export default function Tabbar() {
                 },
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
-            <Tab.Screen name="Index" options={{tabBarLabel: '魔方', tabBarVisible: false}} component={Index} />
+            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             {userInfo?.toJS()?.show_find_tab ? (
                 <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
             ) : null}
