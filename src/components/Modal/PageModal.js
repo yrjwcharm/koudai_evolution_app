@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 13:10:56
+ * @LastEditTime: 2022-04-12 13:12:57
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -108,10 +108,7 @@ export default class PageModal extends Component {
                                             inputRange: [0, 1, 2],
                                             outputRange: [
                                                 height,
-                                                height -
-                                                    this.state.aHeight -
-                                                    (headerShown ? px(60) : 0) +
-                                                    (Platform.OS == 'ios' ? 0 : 34),
+                                                height - this.state.aHeight - (headerShown ? px(60) : 0),
                                                 height -
                                                     this.state.aHeight -
                                                     (headerShown ? px(60) : 0) -
