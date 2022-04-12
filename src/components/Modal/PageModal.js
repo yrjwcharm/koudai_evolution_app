@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 18:13:55
+ * @LastEditTime: 2022-04-12 18:42:41
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -20,6 +20,7 @@ import {
     Keyboard,
     Platform,
     BackHandler,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -49,6 +50,7 @@ export default class PageModal extends Component {
         onClose: () => {}, //关闭的回掉
         confirmClick: () => {}, //确认按钮的回掉
         backButtonClose: false,
+        animateDuration: 400,
     };
     componentDidMount() {
         Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', this.keyboardWillShow);
@@ -110,12 +112,14 @@ export default class PageModal extends Component {
     };
     renderBackDrop = () => {
         return (
-            <TouchableOpacity
-                style={styles.mask}
+            <TouchableWithoutFeedback
                 onPress={() => {
                     this.props.isTouchMaskToClose && this.cancel();
-                }}
-            />
+                }}>
+                <Animated.View importantForAccessibility="no" style={[styles.absolute, {opacity: this.state.opacity}]}>
+                    <View style={[styles.absolute, styles.mask]} />
+                </Animated.View>
+            </TouchableWithoutFeedback>
         );
     };
     renderHeader = () => {
@@ -147,22 +151,19 @@ export default class PageModal extends Component {
         };
         return (
             <Animated.View
+                importantForAccessibility="no"
                 onLayout={this.onViewLayout}
                 style={[
                     size,
                     {
-                        opacity: this.state.opacity,
                         transform: [
                             {
                                 translateY: this.state.offset.interpolate({
                                     inputRange: [0, 1, 2],
                                     outputRange: [
                                         height,
-                                        this.state.containerHeight - this.props.height,
-                                        height -
-                                            this.state.height -
-                                            (headerShown ? px(60) : 0) -
-                                            this.state.keyboardHeight,
+                                        this.state.containerHeight - this.state.height,
+                                        this.state.containerHeight - this.state.height - -this.state.keyboardHeight,
                                     ],
                                 }),
                             },
@@ -200,13 +201,13 @@ export default class PageModal extends Component {
         Animated.parallel([
             Animated.timing(this.state.opacity, {
                 easing: Easing.elastic(0.8), //一个用于定义曲线的渐变函数
-                duration: 200, //动画持续的时间（单位是毫秒），默认为200。
+                duration: this.props.animateDuration,
                 toValue: 1, //动画的最终值
                 useNativeDriver: true,
             }),
             Animated.timing(this.state.offset, {
                 easing: Easing.elastic(0.8),
-                duration: 200,
+                duration: this.props.animateDuration,
                 toValue: 1,
                 useNativeDriver: true,
             }),
@@ -220,14 +221,14 @@ export default class PageModal extends Component {
     out = () => {
         Animated.parallel([
             Animated.timing(this.state.opacity, {
-                easing: Easing.linear,
-                duration: 200,
+                easing: Easing.elastic(0.8),
+                duration: this.props.animateDuration,
                 toValue: 0,
                 useNativeDriver: true,
             }),
             Animated.timing(this.state.offset, {
-                easing: Easing.linear,
-                duration: 200,
+                easing: Easing.elastic(0.8),
+                duration: this.props.animateDuration,
                 toValue: 0,
                 useNativeDriver: true,
             }),
@@ -279,10 +280,8 @@ const styles = StyleSheet.create({
 
     mask: {
         backgroundColor: '#000000',
-        opacity: 0.3,
-        position: 'absolute',
-        width: width,
-        height: height,
+        opacity: 0.5,
+        zIndex: 10,
     },
     content: {
         backgroundColor: '#fff',
