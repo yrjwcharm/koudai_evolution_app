@@ -2,12 +2,12 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-07 19:12:35
+ * @LastEditTime: 2022-04-12 13:02:58
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
 import React, {useRef, useState} from 'react';
-import {PageModal} from '../../components/Modal';
+import {BottomModal, PageModal} from '../../components/Modal';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
@@ -59,7 +59,7 @@ const ArticleCommentList = ({navigation, route}) => {
                 data={DATA}
                 keyExtractor={(item, index) => index.toString()}
             />
-            <PageModal ref={inputModal} title="写评论" height={px(370)} headerShown={false}>
+            <BottomModal ref={inputModal} title="写评论" height={px(370)} headerShown={false}>
                 <TextInput
                     ref={inputRef}
                     value={content}
@@ -80,7 +80,7 @@ const ArticleCommentList = ({navigation, route}) => {
                         <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={() => {}} />
                     </View>
                 </View>
-            </PageModal>
+            </BottomModal>
             {/* footer */}
             <TouchableOpacity
                 style={styles.footer}
