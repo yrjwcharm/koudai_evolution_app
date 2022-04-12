@@ -2,28 +2,41 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 13:12:57
+ * @LastEditTime: 2022-04-12 18:55:37
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
  * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, Keyboard, Platform} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    Animated,
+    Easing,
+    Dimensions,
+    TouchableOpacity,
+    Keyboard,
+    Platform,
+    BackHandler,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {isIphoneX, px} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 const {width, height} = Dimensions.get('window');
-const [left, top] = [0, 0];
 export default class PageModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             offset: new Animated.Value(0),
             opacity: new Animated.Value(0),
-            aHeight: props.height || constants.bottomMinHeight,
             hide: true,
             keyboardHeight: 0,
+            containerHeight: height,
+            containerWidth: width,
+            height: height, //内容高度
         };
     }
     static defaultProps = {
@@ -36,7 +49,8 @@ export default class PageModal extends Component {
         isTouchMaskToClose: true, //点击蒙层是否能关闭
         onClose: () => {}, //关闭的回掉
         confirmClick: () => {}, //确认按钮的回掉
-        headerShown: true, //所在页面是否为自定义header
+        backButtonClose: false,
+        animateDuration: 400,
     };
     componentDidMount() {
         Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', this.keyboardWillShow);
@@ -62,83 +76,121 @@ export default class PageModal extends Component {
     componentWillUnmount() {
         Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow);
         Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide);
+        if (this.props.backButtonClose && Platform.OS === 'android')
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
     //安卓返回按钮关闭弹窗
-    onBackAndroid = () => {
-        if (!this.state.hide && this.props.focused) {
-            this.cancel();
-            return true;
-        } else {
-            return false;
+
+    onBackPress = () => {
+        this.cancel();
+        return true;
+    };
+
+    onContainerLayout = (evt) => {
+        const _height = evt.nativeEvent.layout.height;
+        const _width = evt.nativeEvent.layout.width;
+        if (_height == this.state.containerHeight && _width == this.state.containerWidth) {
+            return;
         }
+        if (!this.state.hide) {
+            this.in();
+        }
+        this.setState({
+            containerHeight: _height,
+            containerWidth: _width,
+        });
+    };
+    onViewLayout = (evt) => {
+        const _height = evt.nativeEvent.layout.height;
+        const _width = evt.nativeEvent.layout.width;
+        // If the dimensions are still the same we're done
+        let newState = {};
+        if (_height !== this.state.height) newState.height = _height;
+        if (_width !== this.state.width) newState.width = _width;
+        this.setState(newState);
+        if (this.onViewLayoutCalculated) this.onViewLayoutCalculated();
+    };
+    renderBackDrop = () => {
+        return (
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    this.props.isTouchMaskToClose && this.cancel();
+                }}>
+                <Animated.View importantForAccessibility="no" style={[styles.absolute, {opacity: this.state.opacity}]}>
+                    <View style={[styles.absolute, styles.mask]} />
+                </Animated.View>
+            </TouchableWithoutFeedback>
+        );
+    };
+    renderHeader = () => {
+        const {title, header, sub_title, confirmClick, confirmText} = this.props;
+        return (
+            header || (
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.close} onPress={this.cancel}>
+                        <Icon name={'close'} size={18} />
+                    </TouchableOpacity>
+                    <View style={{alignItems: 'center'}}>
+                        <Text style={styles.title}>{title}</Text>
+                        {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
+                    </View>
+                    {confirmText ? (
+                        <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
+                            <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
+                        </TouchableOpacity>
+                    ) : null}
+                </View>
+            )
+        );
+    };
+    renderContent = () => {
+        const {children, style} = this.props;
+        const size = {
+            height: this.state.containerHeight,
+            width: this.state.containerWidth,
+        };
+        return (
+            <Animated.View
+                importantForAccessibility="no"
+                onLayout={this.onViewLayout}
+                style={[
+                    size,
+                    {
+                        transform: [
+                            {
+                                translateY: this.state.offset.interpolate({
+                                    inputRange: [0, 1, 2],
+                                    outputRange: [
+                                        height,
+                                        this.state.containerHeight - this.state.height,
+                                        this.state.containerHeight - this.state.height - this.state.keyboardHeight,
+                                    ],
+                                }),
+                            },
+                        ],
+                    },
+                    styles.content,
+                    style,
+                ]}>
+                {this.renderHeader()}
+                {children}
+            </Animated.View>
+        );
     };
     render() {
-        const {
-            header,
-            title,
-            sub_title,
-            confirmText,
-            children,
-            style,
-            isTouchMaskToClose,
-            confirmClick,
-            headerShown,
-        } = this.props;
         if (this.state.hide) {
             return <View />;
         } else {
             return (
-                <View style={styles.container}>
-                    <TouchableOpacity
-                        style={styles.mask}
-                        onPress={() => {
-                            isTouchMaskToClose && this.cancel();
-                        }}
-                    />
-                    <Animated.View
-                        style={[
-                            {
-                                width: width,
-                                height: this.state.aHeight,
-                            },
-                            {
-                                transform: [
-                                    {
-                                        translateY: this.state.offset.interpolate({
-                                            inputRange: [0, 1, 2],
-                                            outputRange: [
-                                                height,
-                                                height - this.state.aHeight - (headerShown ? px(60) : 0),
-                                                height -
-                                                    this.state.aHeight -
-                                                    (headerShown ? px(60) : 0) -
-                                                    this.state.keyboardHeight,
-                                            ],
-                                        }),
-                                    },
-                                ],
-                            },
-                            styles.content,
-                            style,
-                        ]}>
-                        {header || (
-                            <View style={styles.header}>
-                                <TouchableOpacity style={styles.close} onPress={this.cancel}>
-                                    <Icon name={'close'} size={18} />
-                                </TouchableOpacity>
-                                <View style={{alignItems: 'center'}}>
-                                    <Text style={styles.title}>{title}</Text>
-                                    {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
-                                </View>
-                                {confirmText ? (
-                                    <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
-                                        <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </View>
-                        )}
-                        {children}
-                    </Animated.View>
+                <View
+                    importantForAccessibility="yes"
+                    accessibilityViewIsModal={true}
+                    style={[styles.transparent, styles.absolute]}
+                    pointerEvents={'box-none'}>
+                    <View style={{flex: 1}} pointerEvents={'box-none'} onLayout={this.onContainerLayout}>
+                        {!this.state.hide && this.renderBackDrop()}
+                        {!this.state.hide && this.renderContent()}
+                    </View>
                 </View>
             );
         }
@@ -148,49 +200,61 @@ export default class PageModal extends Component {
     in = () => {
         Animated.parallel([
             Animated.timing(this.state.opacity, {
-                easing: Easing.linear, //一个用于定义曲线的渐变函数
-                duration: 200, //动画持续的时间（单位是毫秒），默认为200。
-                toValue: 0.8, //动画的最终值
+                easing: Easing.elastic(0.8), //一个用于定义曲线的渐变函数
+                duration: this.props.animateDuration,
+                toValue: 1, //动画的最终值
                 useNativeDriver: true,
             }),
             Animated.timing(this.state.offset, {
-                easing: Easing.linear,
-                duration: 200,
+                easing: Easing.elastic(0.8),
+                duration: this.props.animateDuration,
                 toValue: 1,
                 useNativeDriver: true,
             }),
-        ]).start();
+        ]).start(() => {
+            if (this.props.backButtonClose && Platform.OS === 'android')
+                BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        });
     };
 
     //隐藏动画
     out = () => {
         Animated.parallel([
             Animated.timing(this.state.opacity, {
-                easing: Easing.linear,
-                duration: 200,
+                easing: Easing.elastic(0.8),
+                duration: this.props.animateDuration,
                 toValue: 0,
                 useNativeDriver: true,
             }),
             Animated.timing(this.state.offset, {
-                easing: Easing.linear,
-                duration: 200,
+                easing: Easing.elastic(0.8),
+                duration: this.props.animateDuration,
                 toValue: 0,
                 useNativeDriver: true,
             }),
-        ]).start((finished) => this.setState({hide: true}));
+        ]).start(() => {
+            this.setState({hide: true});
+            this.state.offset.setValue(0);
+        });
     };
 
     //取消
     cancel = () => {
         if (!this.state.hide) {
             this.out();
-            this.props.onClose();
+            if (this.props.backButtonClose && Platform.OS === 'android')
+                BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }
     };
 
     show = () => {
         if (this.state.hide) {
-            this.setState({hide: false}, this.in);
+            this.onViewLayoutCalculated = () => {
+                this.in();
+                // BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+                this.onViewLayoutCalculated = null;
+            };
+            this.setState({hide: false});
         }
     };
 
@@ -202,23 +266,24 @@ export default class PageModal extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        width: width,
-        height: height,
-        left: left,
-        top: top,
-        zIndex: 10,
+    transparent: {
+        zIndex: 2,
+        backgroundColor: 'rgba(0,0,0,0)',
     },
+    absolute: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+
     mask: {
         backgroundColor: '#000000',
-        opacity: 0.3,
-        position: 'absolute',
-        width: width,
-        height: height,
+        opacity: 0.5,
+        zIndex: 10,
     },
     content: {
-        paddingBottom: isIphoneX() ? 34 + px(20) : px(20),
         backgroundColor: '#fff',
         minHeight: constants.bottomMinHeight,
         borderTopLeftRadius: constants.borderRadius,

@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 13:02:58
+ * @LastEditTime: 2022-04-12 18:46:33
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -14,6 +14,7 @@ import {isIphoneX, px} from '../../utils/appUtil';
 import {Button} from '../../components/Button';
 import {Style} from '../../common/commonStyle';
 import CommentItem from './components/CommentItem';
+import Modal from 'react-native-modalbox';
 const inputMaxLength = 500;
 const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
@@ -59,7 +60,13 @@ const ArticleCommentList = ({navigation, route}) => {
                 data={DATA}
                 keyExtractor={(item, index) => index.toString()}
             />
-            <BottomModal ref={inputModal} title="写评论" height={px(370)} headerShown={false}>
+            {/* <Modal
+                ref={inputModal}
+                title="写评论"
+                height={px(370)}
+                style={{height: px(370)}}
+                headerShown={false}
+                position="bottom">
                 <TextInput
                     ref={inputRef}
                     value={content}
@@ -80,7 +87,35 @@ const ArticleCommentList = ({navigation, route}) => {
                         <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={() => {}} />
                     </View>
                 </View>
-            </BottomModal>
+            </Modal> */}
+            <PageModal
+                ref={inputModal}
+                title="写评论"
+                height={px(370)}
+                style={{height: px(370)}}
+                headerShown={false}
+                position="bottom">
+                <TextInput
+                    ref={inputRef}
+                    value={content}
+                    multiline={true}
+                    style={styles.input}
+                    onChangeText={(value) => {
+                        setContent(value);
+                    }}
+                    maxLength={inputMaxLength}
+                    textAlignVertical="top"
+                    placeholder="聊点什么吧..."
+                />
+                <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                    <View style={Style.flexRow}>
+                        <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                            {content.length}/{inputMaxLength}
+                        </Text>
+                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={() => {}} />
+                    </View>
+                </View>
+            </PageModal>
             {/* footer */}
             <TouchableOpacity
                 style={styles.footer}
