@@ -5,10 +5,10 @@
  * @LastEditors: dx
  * @LastEditTime: 2021-11-25 17:19:07
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView, ActivityIndicator} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, px} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import FixedBtn from '../Portfolio/components/FixedBtn';
@@ -16,12 +16,18 @@ import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import EmptyTip from '../../components/EmptyTip';
 import BottomDesc from '../../components/BottomDesc';
+import Html from '../../components/RenderHtml';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [progressWrapperWidth, setProgressWrapperWidth] = useState(0);
+    const [progressFlagWidth, setProgressFlagWidth] = useState(0);
+    const progressRate = useMemo(() => {
+        return +(data.auth_charge_process?.process_percent / 100).toFixed(2);
+    }, [data]);
 
     useFocusEffect(
         useCallback(() => {
@@ -49,7 +55,7 @@ export default function FixedPlan(props) {
         </View>
     ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
-            <ScrollView bounces={false} style={{flex: 1}}>
+            <ScrollView bounces={false} style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
                 {Object.keys(data).length > 0 && (
                     <View style={{marginBottom: FixedBtn.btnHeight}}>
                         <View style={styles.bank_wrap_sty}>
@@ -65,9 +71,68 @@ export default function FixedPlan(props) {
                                     </Text>
                                 </View>
                             </View>
-                            <Text style={styles.time_sty}>{data?.fix_info?.next_date}</Text>
+                            <View style={{marginTop: text(12)}}>
+                                <Html style={styles.time_sty} html={data?.fix_info?.next_date} />
+                            </View>
                         </View>
-
+                        {data.auth_charge_process && (
+                            <View style={styles.autoChargeWrapper}>
+                                <View
+                                    style={[
+                                        {
+                                            paddingVertical: px(15),
+                                            borderBottomWidth: Space.borderWidth,
+                                            borderBottomColor: Colors.borderColor,
+                                        },
+                                    ]}>
+                                    <Text style={{fontSize: px(16), color: '#1F2432', lineHeight: px(22)}}>
+                                        {data.auth_charge_process?.title}
+                                    </Text>
+                                </View>
+                                <View
+                                    style={styles.progressWrapper}
+                                    onLayout={(e) => {
+                                        setProgressWrapperWidth(e.nativeEvent.layout.width);
+                                    }}>
+                                    <View
+                                        style={[
+                                            styles.flag,
+                                            {
+                                                left: Math.min(
+                                                    Math.max(
+                                                        progressRate * progressWrapperWidth - progressFlagWidth / 2,
+                                                        0
+                                                    ),
+                                                    progressWrapperWidth - progressFlagWidth
+                                                ),
+                                            },
+                                        ]}
+                                        onLayout={(e) => {
+                                            setProgressFlagWidth(e.nativeEvent.layout.width);
+                                        }}>
+                                        <Text style={styles.flagText}>{data.auth_charge_process?.wallet_amount}</Text>
+                                    </View>
+                                    <View style={[styles.flagpole, {left: 90.5 * progressRate + '%'}]}>
+                                        <View style={[styles.triangle]} />
+                                        <View style={[styles.triangleInner]} />
+                                        <View style={[styles.flagpoleLine]} />
+                                    </View>
+                                    <View style={styles.progressOuter}>
+                                        <View style={[styles.progressInner, {width: progressRate * 100 + '%'}]} />
+                                    </View>
+                                    <View style={[Style.flexBetween, {marginTop: px(6), marginHorizontal: px(16)}]}>
+                                        <Text style={{fontSize: px(11)}}>{data.auth_charge_process?.next_date}</Text>
+                                        <Text style={{fontSize: px(11)}}>{data.auth_charge_process?.next_amount}</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.autoChargeTip}>
+                                    <Html
+                                        style={{color: '#545968', fontSize: px(12), lineHeight: px(17)}}
+                                        html={data.auth_charge_process?.desc}
+                                    />
+                                </View>
+                            </View>
+                        )}
                         <View style={styles.records_sty}>
                             <View style={Style.flexBetween}>
                                 <Text
@@ -113,9 +178,9 @@ export default function FixedPlan(props) {
                                 showEmpty && <EmptyTip text={'暂无记录'} style={{paddingTop: text(20)}} type={'part'} />
                             )}
                         </View>
+                        <BottomDesc />
                     </View>
                 )}
-                <BottomDesc />
             </ScrollView>
             {Object.keys(data).length > 0 && (
                 <FixedButton
@@ -130,7 +195,8 @@ export default function FixedPlan(props) {
 const styles = StyleSheet.create({
     bank_wrap_sty: {
         backgroundColor: '#fff',
-        marginVertical: text(12),
+        marginTop: text(12),
+        marginBottom: text(16),
         padding: Space.padding,
         paddingBottom: text(10),
     },
@@ -145,7 +211,6 @@ const styles = StyleSheet.create({
     time_sty: {
         color: Colors.descColor,
         fontSize: Font.textH3,
-        paddingTop: text(12),
     },
     records_sty: {
         paddingVertical: text(13),
@@ -194,5 +259,85 @@ const styles = StyleSheet.create({
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
         paddingBottom: text(10),
+    },
+    autoChargeWrapper: {
+        paddingHorizontal: px(16),
+        marginBottom: px(16),
+        backgroundColor: '#fff',
+    },
+    progressWrapper: {
+        marginTop: px(12),
+        paddingVertical: px(12),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(4),
+    },
+    flag: {
+        borderWidth: px(1),
+        borderColor: '#0051CC',
+        paddingHorizontal: px(6),
+        paddingVertical: px(3),
+        borderRadius: px(10),
+        width: 'auto',
+        minWidth: 50,
+        alignSelf: 'flex-start',
+    },
+    flagText: {
+        fontSize: px(12),
+        fontWeight: '500',
+        lineHeight: px(14),
+        color: '#0051CC',
+        width: 'auto',
+        minWidth: 50,
+    },
+    flagpole: {
+        height: px(10),
+        marginHorizontal: px(13),
+    },
+    triangle: {
+        width: 0,
+        height: 0,
+        borderStyle: 'solid',
+        borderWidth: px(4),
+        borderColor: 'transparent',
+        zIndex: -1,
+        borderTopColor: '#0051CC',
+        position: 'absolute',
+        top: px(-1),
+    },
+    triangleInner: {
+        width: 0,
+        height: 0,
+        borderStyle: 'solid',
+        borderWidth: px(4),
+        borderColor: 'transparent',
+        zIndex: 1,
+        borderTopColor: '#fff',
+        position: 'absolute',
+        top: px(-2),
+    },
+    flagpoleLine: {
+        width: px(1),
+        height: px(7),
+        backgroundColor: '#0051CC',
+        top: px(3),
+        left: px(3),
+    },
+    progressOuter: {
+        marginHorizontal: px(16),
+        height: px(6),
+        backgroundColor: '#e2e4ea',
+        borderRadius: px(1),
+    },
+    progressInner: {
+        height: px(6),
+        backgroundColor: '#0051CC',
+        borderTopStartRadius: px(1),
+        borderTopEndRadius: px(0),
+        borderBottomStartRadius: px(1),
+        borderBottomEndRadius: px(0),
+    },
+    autoChargeTip: {
+        paddingTop: px(12),
+        paddingBottom: px(16),
     },
 });

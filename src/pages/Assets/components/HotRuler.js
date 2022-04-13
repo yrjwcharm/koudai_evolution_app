@@ -11,7 +11,7 @@ import {px} from '../../../utils/appUtil';
  * @param {object} options.marks // 标记
  * @returns
  */
-const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) => {
+const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks}) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const scaleArr = useMemo(() => {
         let index = 0;
@@ -36,32 +36,34 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
                 setContainerWidth(e.nativeEvent.layout.width);
             }}>
             {/* 标记 */}
-            <View style={[styles.mark, {right: (1 - marks.value) * containerWidth + px(-20)}]}>
-                <View style={[styles.markCircle, {backgroundColor: marks.bg_color, borderColor: marks.theme}]}>
-                    <Text
-                        style={{fontWeight: '500', lineHeight: px(14), fontSize: px(12), color: marks.theme}}
-                        numberOfLines={1}>
-                        {marks.text}
-                    </Text>
+            {marks ? (
+                <View style={[styles.mark, {right: (1 - marks.value) * containerWidth + px(-20)}]}>
+                    <View style={[styles.markCircle, {backgroundColor: marks.bg_color, borderColor: marks.theme}]}>
+                        <Text
+                            style={{fontWeight: '500', lineHeight: px(14), fontSize: px(12), color: marks.theme}}
+                            numberOfLines={1}>
+                            {marks.text}
+                        </Text>
+                    </View>
+                    <View
+                        style={[
+                            styles.triangle,
+                            {
+                                borderTopColor: marks.theme,
+                            },
+                        ]}
+                    />
+                    <View
+                        style={[
+                            styles.triangleInner,
+                            {
+                                borderTopColor: marks.bg_color,
+                            },
+                        ]}
+                    />
+                    <View style={[styles.verticalLine, {backgroundColor: marks.theme}]} />
                 </View>
-                <View
-                    style={[
-                        styles.triangle,
-                        {
-                            borderTopColor: marks.theme,
-                        },
-                    ]}
-                />
-                <View
-                    style={[
-                        styles.triangleInner,
-                        {
-                            borderTopColor: marks.bg_color,
-                        },
-                    ]}
-                />
-                <View style={[styles.verticalLine, {backgroundColor: marks.theme}]} />
-            </View>
+            ) : null}
             {/* 进度 */}
             <View style={styles.process}>
                 {value_area.map(([width, backgroundColor], idx) => {

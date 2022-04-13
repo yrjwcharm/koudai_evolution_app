@@ -33,7 +33,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
-
+import LiveCard from '../../components/Article/LiveCard';
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
@@ -323,6 +323,26 @@ const Index = (props) => {
                             )}
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
+                            {/* 直播 */}
+                            {data?.live_card?.options ? (
+                                <>
+                                    {data?.live_card?.title ? (
+                                        <RenderTitle
+                                            title={data?.live_card?.title}
+                                            sub_title={data?.live_card?.sub_title}
+                                            more_text={data?.live_card?.more ? data?.live_card?.more?.text : ''}
+                                            onPress={() => {
+                                                jump(data?.live_card?.more?.url);
+                                            }}
+                                        />
+                                    ) : null}
+                                    <LiveCard
+                                        data={data?.live_card?.options}
+                                        style={{marginBottom: px(16), width: '100%'}}
+                                        scene="largeLive"
+                                    />
+                                </>
+                            ) : null}
                             {/* 推荐 */}
                             {data?.custom_info ? (
                                 !data.show_recommend ? (
@@ -573,7 +593,7 @@ const Index = (props) => {
 
                             {/* 推荐阅读 */}
                             {data?.article_list && (
-                                <View style={{marginBottom: px(20)}}>
+                                <View style={{marginBottom: px(12)}}>
                                     <RenderTitle
                                         title={'推荐阅读'}
                                         more_text={'更多'}
@@ -590,7 +610,17 @@ const Index = (props) => {
                             {/* 听听魔方用户怎么说 */}
                             {data?.comment_list ? (
                                 <>
-                                    <RenderTitle title={'听听魔方用户怎么说'} />
+                                    <RenderTitle
+                                        // more_text={'更多'}
+                                        onPress={() => {
+                                            jump({
+                                                path: 'CommentList',
+                                                params: {scene: 'user_say', title: '用户留言详情'},
+                                                type: 1,
+                                            });
+                                        }}
+                                        title={'听听魔方用户怎么说'}
+                                    />
                                     <ScrollView
                                         style={{paddingLeft: px(16), width: deviceWidth, marginLeft: px(-16)}}
                                         showsPagination={false}
@@ -603,7 +633,8 @@ const Index = (props) => {
                                                 ? Math.ceil(lastx / interval)
                                                 : Math.floor(lastx / interval);
                                             var scrollTo = snapTo * interval;
-                                            global.LogTool('indexUserReviewSlide', data?.comment_list[snapTo].id);
+                                            data?.comment_list[snapTo]?.id &&
+                                                global.LogTool('indexUserReviewSlide', data.comment_list[snapTo].id);
                                             snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
                                         }}
                                         scrollEventThrottle={100}
@@ -962,7 +993,6 @@ const styles = StyleSheet.create({
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
-        paddingHorizontal: px(4),
         zIndex: 10,
         minWidth: px(20),
         height: px(20),

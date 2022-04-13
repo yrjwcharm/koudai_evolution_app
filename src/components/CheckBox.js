@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 15:09:18
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-07 14:26:55
  * @Description:
  */
 import React from 'react';
@@ -38,7 +38,7 @@ class CheckBox extends React.Component {
             this.props.onChange(this.state.checked);
         });
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.checked != this.state.checked) {
             this.setState({checked: nextProps.checked});
         }

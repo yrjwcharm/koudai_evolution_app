@@ -125,7 +125,7 @@ const ResetLoginPwd = ({navigation}) => {
                 placeholder={'请输入相同的新密码'}
                 secureTextEntry={true}
                 textContentType={'newPassword'}
-                title={'确认新密码'}
+                title={'确认密码'}
                 value={confirmPwd}
             />
             <Button disabled={!btnClick.current} onPress={submit} style={styles.btn} title={'完成密码重设'} />

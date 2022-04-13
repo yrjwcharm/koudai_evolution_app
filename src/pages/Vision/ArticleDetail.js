@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-02 11:13:17
+ * @LastEditTime: 2022-04-08 16:43:07
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {ShareModal} from '../../components/Modal';
+import {ShareModal, Modal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -34,6 +34,7 @@ import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
+import useJump from '../../components/hooks/useJump.js';
 
 const options = {
     enableVibrateFallback: true,
@@ -43,6 +44,7 @@ const options = {
 let post_progress = false;
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
+    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -242,6 +244,24 @@ const ArticleDetail = ({navigation, route}) => {
                 fr,
             });
         }
+        // // 提示弹窗
+        // http.get('/community/article/popup/20220406', {
+        //     article_id: route.params?.article_id,
+        //     done_status: data?.read_info?.done_status || +finishRead,
+        // }).then((res) => {
+        //     if (res.code === '000000') {
+        //         const result = res.result;
+        //         result &&
+        //             Modal.show({
+        //                 title: result.title,
+        //                 content: result.content,
+        //                 confirmText: result.confirm?.text,
+        //                 confirmCallBack: () => {
+        //                     jump(result.confirm?.url);
+        //                 },
+        //             });
+        //     }
+        // });
     }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {

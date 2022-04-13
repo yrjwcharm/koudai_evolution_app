@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:43:46
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-04 15:18:03
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {constants} from './util';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Font, Style} from '../../common/commonStyle';
+import {Font, Style} from '../../common/commonStyle';
 import Mask from '../Mask';
 const BottomModal = React.forwardRef((props, ref) => {
     const {
@@ -27,7 +27,9 @@ const BottomModal = React.forwardRef((props, ref) => {
          */
         onDone = () => {},
         isTouchMaskToClose = true,
+        backButtonClose = true,
         onClose = () => {},
+        destroy = () => {},
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -38,11 +40,13 @@ const BottomModal = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(false);
+        destroy && destroy();
         onClose && onClose();
     };
 
     const confirmClick = () => {
         setVisible(false);
+        destroy && destroy();
         onDone && onDone();
     };
     const toastShow = (t, duration = 2000, {onHidden} = {}) => {
@@ -62,7 +66,11 @@ const BottomModal = React.forwardRef((props, ref) => {
         };
     });
     return (
-        <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
+        <Modal
+            animationType={'slide'}
+            visible={visible}
+            onRequestClose={backButtonClose ? hide : () => {}}
+            transparent={true}>
             {backdrop && !global.rootSibling && <Mask />}
             <TouchableOpacity
                 activeOpacity={1}
@@ -116,6 +124,7 @@ const styles = StyleSheet.create({
         minHeight: constants.bottomMinHeight,
         borderTopLeftRadius: constants.borderRadius,
         borderTopRightRadius: constants.borderRadius,
+        overflow: 'hidden',
     },
     header: {
         paddingVertical: px(16),
