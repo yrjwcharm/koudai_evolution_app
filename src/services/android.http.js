@@ -31,6 +31,7 @@ const HTTP = async (method, url, body = {}) => {
             platform: Platform.OS,
             device: device || '',
             deviceId: DeviceInfo.getDeviceId(),
+            brandName: DeviceInfo.getBrand(),
             systemVersion: DeviceInfo.getSystemVersion(),
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
             oaid: global.oaid,
