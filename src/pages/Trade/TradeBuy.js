@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-06 19:11:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-13 14:04:46
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -237,30 +237,35 @@ class TradeBuy extends Component {
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
         if (type == 0) {
-            this.plan(this.state.amount).then((buy_id) => {
-                http.post('/trade/buy/do/20210101', {
-                    poid,
-                    buy_id: buy_id || this.state.planData.buy_id || '',
-                    amount: this.state.amount,
-                    password,
-                    trade_method: bank?.pay_type,
-                    pay_method: bank.pay_method || '',
-                    page_type: this.props.route.params.page_type || '',
-                }).then((res) => {
+            this.plan(this.state.amount)
+                .then((buy_id) => {
+                    http.post('/trade/buy/do/20210101', {
+                        poid,
+                        buy_id: buy_id || this.state.planData.buy_id || '',
+                        amount: this.state.amount,
+                        password,
+                        trade_method: bank?.pay_type,
+                        pay_method: bank.pay_method || '',
+                        page_type: this.props.route.params.page_type || '',
+                    }).then((res) => {
+                        Toast.hide(toast);
+                        if (res.code === '000000') {
+                            this.props.navigation.navigate('TradeProcessing', res.result);
+                        } else {
+                            Toast.show(res.message, {
+                                onHidden: () => {
+                                    if (res.code === 'TA2803') {
+                                        this.passwordModal.show();
+                                    }
+                                },
+                            });
+                        }
+                    });
+                })
+                .catch((err) => {
                     Toast.hide(toast);
-                    if (res.code === '000000') {
-                        this.props.navigation.navigate('TradeProcessing', res.result);
-                    } else {
-                        Toast.show(res.message, {
-                            onHidden: () => {
-                                if (res.code === 'TA2803') {
-                                    this.passwordModal.show();
-                                }
-                            },
-                        });
-                    }
+                    Toast.show(err);
                 });
-            });
         } else {
             http.post('/trade/fix_invest/do/20210101', {
                 poid,
@@ -288,13 +293,8 @@ class TradeBuy extends Component {
      * @param {*} plan
      * @return {*}
      */
-    // plan_timer = null;
     plan = (amount) => {
-        // this.plan_timer && clearTimeout(this.plan_timer);
         const {isLargeAmount, largeAmount, bankSelect} = this.state;
-        // this.plan_timer = setTimeout(()=>{
-
-        // })
         return new Promise((resove, reject) => {
             let bank = isLargeAmount ? largeAmount : bankSelect || '';
             const params = {
@@ -314,7 +314,7 @@ class TradeBuy extends Component {
                         // buyBtnCanClick: false,
                         errTip: data.message,
                     });
-                    reject();
+                    reject(data.message);
                 }
             });
         });

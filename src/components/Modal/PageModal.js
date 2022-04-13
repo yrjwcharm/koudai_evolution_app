@@ -3,7 +3,7 @@
  * @Author: yhc
  * @LastEditors: yhc
 <<<<<<< HEAD
- * @LastEditTime: 2022-04-13 10:23:57
+ * @LastEditTime: 2022-04-13 15:41:07
 =======
  * @LastEditTime: 2022-04-12 19:26:05
 >>>>>>> master
@@ -246,6 +246,7 @@ export default class PageModal extends Component {
     cancel = () => {
         if (!this.state.hide) {
             this.out();
+            this.props.onClose && this.props.onClose();
             if (this.props.backButtonClose && Platform.OS === 'android')
                 BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }

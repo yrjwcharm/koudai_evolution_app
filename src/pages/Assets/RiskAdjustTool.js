@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-31 19:29:56
+ * @LastEditTime: 2022-04-13 16:50:07
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -333,8 +333,8 @@ const RiskAdjustTool = ({route, navigation}) => {
                                     <Chart
                                         initScript={baseAreaChart(
                                             chartData?.yield_chart,
-                                            [themeColor, Colors.darkGrayColor],
-                                            ['l(90) 0:#2B7AF3 1:#fff', 'transparent']
+                                            [Colors.darkGrayColor, themeColor],
+                                            ['transparent', 'l(90) 0:#2B7AF3 1:#fff']
                                         )}
                                         data={chartData?.yield_chart}
                                     />
@@ -413,19 +413,18 @@ const RiskAdjustTool = ({route, navigation}) => {
             {signData && (
                 <PageModal
                     ref={signModal}
-                    height={px(600)}
+                    style={{height: px(600)}}
                     title={signData?.title}
                     onClose={() => {
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <View
                             style={{
                                 flex: 1,
                             }}>
                             <ScrollView
-                                bounces={false}
                                 style={{
                                     flex: 1,
                                     paddingHorizontal: px(16),
@@ -806,7 +805,7 @@ const area = (source, percent = true, tofixed = 2) => `
 chart.legend(false);
   chart.line()
     .position('date*value')
-    .color('type', ${JSON.stringify(['#2B7AF3', '#9aA1B2', '#9aA1B2', '#2B7AF3'])})
+    .color('type',['#9aA1B2','#9aA1B2','#2B7AF3','#2B7AF3'])
     .shape('smooth')
     .style('type', {
         lineWidth: 1,
@@ -817,7 +816,7 @@ chart.legend(false);
     });
   chart.area()
     .position('date*value')
-    .color('type', ${JSON.stringify(['#2B7AF3', 'transparent', 'transparent', 'transparent'])})
+    .color('type', ['transparent','transparent','l(90) 0:#2B7AF3 1:#fff','transparent'])
     .shape('smooth');
   chart.render();
 })();

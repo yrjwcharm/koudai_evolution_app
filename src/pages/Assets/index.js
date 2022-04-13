@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 21:23:43
+ * @LastEditTime: 2022-04-13 15:47:11
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -80,8 +80,10 @@ function HomeScreen({navigation, route}) {
     const [signData, setSignData] = useState(null);
     const bottomModal = useRef(null);
     const [signSelectData, setSignSelectData] = useState([]);
+    const [signTimer, setSignTimer] = useState(8);
     const [signOpen, setSignOpen] = useState([]);
     const passwordModal = useRef();
+    const intervalt_timer = useRef('');
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -126,6 +128,7 @@ function HomeScreen({navigation, route}) {
             setSignOpen(sign_open);
             setSignData(data.result);
             bottomModal?.current?.show();
+            startTimer();
         });
     };
     const init = (refresh) => {
@@ -183,6 +186,19 @@ function HomeScreen({navigation, route}) {
                 }
             });
         }
+    };
+    //签约计时器
+    const startTimer = () => {
+        intervalt_timer.current = setInterval(() => {
+            setSignTimer((time) => {
+                if (time > 0) {
+                    return --time;
+                } else {
+                    intervalt_timer.current && clearInterval(intervalt_timer.current);
+                    return time;
+                }
+            });
+        }, 1000);
     };
     // 展示渠道弹窗
     const showChannelModal = (_modalData) => {
@@ -276,14 +292,9 @@ function HomeScreen({navigation, route}) {
         http.post('adviser/sign/20210923', {poids: signSelectData, password}).then((res) => {
             Toast.show(res.message);
             if (res.code === '000000') {
-                if (signSelectData?.length == signData?.plan_list?.length) {
-                    setTimeout(() => {
-                        bottomModal?.current?.hide();
-                    }, 1000);
-                } else {
-                    setSignSelectData([]);
-                    getSignData();
-                }
+                setTimeout(() => {
+                    bottomModal?.current?.hide();
+                }, 1000);
             }
         });
     };
@@ -537,7 +548,14 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal height={px(530)} tabbar={true} ref={bottomModal} title={signData?.title}>
+                <PageModal
+                    style={{height: px(530)}}
+                    tabbar={true}
+                    ref={bottomModal}
+                    title={signData?.title}
+                    onClose={() => {
+                        intervalt_timer.current && clearInterval(intervalt_timer.current);
+                    }}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
@@ -649,7 +667,7 @@ function HomeScreen({navigation, route}) {
                         </ScrollView>
                         {signData?.button ? (
                             <Button
-                                disabled={!signSelectData?.length > 0}
+                                disabled={signSelectData?.length !== signSelectData.length || signTimer > 0}
                                 style={{
                                     marginVertical: px(12),
                                     marginHorizontal: px(16),
@@ -657,7 +675,9 @@ function HomeScreen({navigation, route}) {
                                 onPress={_.debounce(() => {
                                     passwordModal?.current?.show();
                                 }, 500)}
-                                title={signData?.button?.text}
+                                title={
+                                    signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
+                                }
                             />
                         ) : null}
                     </View>
