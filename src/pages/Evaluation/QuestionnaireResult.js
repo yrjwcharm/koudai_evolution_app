@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-31 15:49:35
+ * @LastEditTime: 2022-04-13 11:07:28
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -89,7 +89,7 @@ const QuestionnaireResult = () => {
                             if (route?.params?.fr?.includes('riskch')) {
                                 navigation.goBack();
                             } else {
-                                jump(data?.button?.url, 'repalce');
+                                jump(data?.button?.url, 'replace');
                             }
                         }}
                         style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
