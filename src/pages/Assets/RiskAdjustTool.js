@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 16:50:07
+ * @LastEditTime: 2022-04-13 17:46:29
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
