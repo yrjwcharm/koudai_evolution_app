@@ -34,7 +34,6 @@ import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
-
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
@@ -80,8 +79,6 @@ const Index = (props) => {
     const [baner, setBaner] = useState([]);
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const dispatch = useDispatch();
-    const modal1 = useRef();
-    const modal2 = useRef();
     let scrollingRight = '';
     let lastx = '';
     const snapScroll = useRef(null);
@@ -253,7 +250,6 @@ const Index = (props) => {
                             )}
                         </View>
                     </View>
-
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
                         scrollEventThrottle={16}
@@ -325,7 +321,6 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 直播 */}

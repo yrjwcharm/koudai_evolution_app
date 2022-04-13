@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 18:42:41
+ * @LastEditTime: 2022-04-12 19:26:05
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -34,7 +34,7 @@ export default class PageModal extends Component {
             opacity: new Animated.Value(0),
             hide: true,
             keyboardHeight: 0,
-            containerHeight: height,
+            containerHeight: height, //容器
             containerWidth: width,
             height: height, //内容高度
         };
