@@ -233,9 +233,9 @@ const ArticleDetail = ({navigation, route}) => {
                 Picker.hide();
             }
         });
+        let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
+        progress = progress > 100 ? 100 : progress;
         if (route?.params?.type !== 5 && route?.params?.type !== 2) {
-            let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
-            progress = progress > 100 ? 100 : progress;
             postProgress({
                 article_id: route.params?.article_id,
                 latency: Date.now() - timeRef.current,
@@ -248,6 +248,7 @@ const ArticleDetail = ({navigation, route}) => {
         http.get('/community/article/popup/20220406', {
             article_id: route.params?.article_id,
             done_status: data?.read_info?.done_status || +finishRead,
+            article_progress: progress,
         }).then((res) => {
             if (res.code === '000000') {
                 const result = res.result;
