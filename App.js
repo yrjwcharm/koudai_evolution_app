@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 17:38:49
+ * @LastEditTime: 2022-04-12 18:09:16
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -178,10 +178,10 @@ function App(props) {
     React.useEffect(() => {
         setGlobalErrorHandler((error, isFatal) => {
             if (__DEV__) {
-                console.log('global error：', JSON.stringify(error), isFatal);
+                console.log('global error：', error, isFatal);
             } else {
                 http.post('/mapi/report/app_log/20210101', {
-                    error: JSON.stringify(error),
+                    error: error,
                 });
             }
         }, true);

@@ -34,7 +34,6 @@ import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
-
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
