@@ -19,6 +19,8 @@ import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
+import VerifyCodeQA from '../pages/Auth/VerifyCodeQA'; // 收不到短信验证码
+
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
 import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
@@ -717,6 +719,7 @@ export default function AppStack() {
             <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
             <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+            <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

@@ -468,6 +468,33 @@ function App(props) {
         } else if (modal.type === 'add_wechat_guide') {
             options = generateOptions(modal);
             type = 'slide';
+        } else if (modal.type === 'encourage') {
+            options = {
+                ...options,
+                confirm: true,
+                confirmText: modal.confirm?.text || '',
+                cancelCallBack: () => {
+                    http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
+                        console.log(res);
+                    });
+                },
+                confirmCallBack: () => {
+                    Linking.canOpenURL(modal.confirm.url.path)
+                        .then((res) => {
+                            if (res) {
+                                Linking.openURL(modal.confirm.url.path);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                    http.post('/mapi/set/encourage/20220412', {action_scene: 1}).then((res) => {
+                        console.log(res);
+                    });
+                },
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+            };
         }
         if (modal.type) {
             Modal.show(options, type);

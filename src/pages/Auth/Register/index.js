@@ -6,7 +6,7 @@
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Dimensions, StatusBar} from 'react-native';
 import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -17,7 +17,8 @@ import http from '../../../services/';
 import Toast from '../../../components/Toast';
 import FastImage from 'react-native-fast-image';
 import {connect} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {HeaderHeightContext} from '@react-navigation/stack';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 class Index extends Component {
     constructor(props) {
         super(props);
@@ -67,7 +68,14 @@ class Index extends Component {
     render() {
         const {btnClick, mobile} = this.state;
         return (
-            <SafeAreaView edges={['bottom']} style={styles.register_content}>
+            <View
+                style={[
+                    styles.register_content,
+                    {
+                        height: Dimensions.get('window').height - this.props.headerHeight + StatusBar.currentHeight,
+                        paddingBottom: px(28) + this.props.insets.bottom,
+                    },
+                ]}>
                 <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flex: 1}}>
                     <View style={[Style.flexRow, {marginBottom: text(36), marginTop: text(20)}]}>
                         <FastImage
@@ -127,22 +135,28 @@ class Index extends Component {
                         <WechatView fr={this.props.route?.params?.fr || ''} style={[styles.wechatLoginPosition]} />
                     ) : null}
                 </ScrollView>
-            </SafeAreaView>
+            </View>
         );
     }
 }
+const IndexConsumer = (props) => {
+    const insets = useSafeAreaInsets();
+    return (
+        <HeaderHeightContext.Consumer>
+            {(headerHeight) => <Index {...props} headerHeight={headerHeight} insets={insets} />}
+        </HeaderHeightContext.Consumer>
+    );
+};
 const mapStateToProps = (state) => {
     return {
         userInfo: state.userInfo?.toJS(),
     };
 };
-export default connect(mapStateToProps, null)(Index);
+export default connect(mapStateToProps, null)(IndexConsumer);
 const styles = StyleSheet.create({
     register_content: {
-        flex: 1,
         backgroundColor: '#fff',
         padding: text(23),
-        paddingBottom: px(28),
     },
     title: {
         fontSize: text(22),

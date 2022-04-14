@@ -6,7 +6,7 @@
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Linking} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -21,6 +21,7 @@ import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import {updateAccount} from '../../redux/actions/accountInfo.js';
 import {deleteModal} from '../../redux/actions/modalInfo';
+import http from '../../services/index.js';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -93,6 +94,19 @@ const Settings = ({navigation}) => {
                             }
                         });
                     },
+                });
+            } else if (item.type === 'encourage') {
+                Linking.canOpenURL(item.url.path)
+                    .then((res) => {
+                        if (res) {
+                            Linking.openURL(item.url.path);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                http.post('/mapi/set/encourage/20220412').then((res) => {
+                    console.log(res);
                 });
             } else {
                 if (item.type == 'about') {
@@ -229,7 +243,7 @@ const Settings = ({navigation}) => {
                                                     </Text>
                                                 ) : null}
 
-                                                {item.type == 'about' && showCircle ? (
+                                                {(item.type == 'about' && showCircle) || item.show_circle ? (
                                                     <View style={styles.circle} />
                                                 ) : null}
                                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
