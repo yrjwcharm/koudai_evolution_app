@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 10:24:16
-=======
- * @LastEditors: dx
- * @LastEditTime: 2022-03-28 15:15:25
->>>>>>> master
+ * @LastEditTime: 2022-04-14 17:24:26
  * @Description:路由表
  */
 import React from 'react';
@@ -214,7 +209,7 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Launch"
-            headerMode="screen"
+            headerMode="float"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
