@@ -2,7 +2,7 @@
  * @Date: 2021-06-09 11:37:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 17:14:22
+ * @LastEditTime: 2022-04-14 17:57:11
  * @Description:引导提示tips
  */
 import React from 'react';
@@ -21,7 +21,7 @@ const GuideTips = ({data, style}) => {
                 jump(data?.button?.url);
             }}>
             <Text style={styles.text}>{data.text}</Text>
-            {data?.button ? (
+            {data?.button?.text ? (
                 <View style={styles.btn}>
                     <Text style={[styles.text, {lineHeight: px(17)}]}>{data?.button?.text}</Text>
                 </View>
