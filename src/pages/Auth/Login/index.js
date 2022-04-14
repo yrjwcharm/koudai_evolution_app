@@ -266,6 +266,7 @@ class Login extends Component {
                     <View style={Style.flexBetween}>
                         <Text
                             onPress={() => {
+                                global.LogTool(['Code_Login', 'Password_Login'][type - 1]);
                                 this.setState((val) => {
                                     return {type: val.type === 1 ? 2 : 1, password: '', code: ''};
                                 });

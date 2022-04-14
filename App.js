@@ -469,16 +469,19 @@ function App(props) {
             options = generateOptions(modal);
             type = 'slide';
         } else if (modal.type === 'encourage') {
+            global.LogTool('GradeWindows');
             options = {
                 ...options,
                 confirm: true,
                 confirmText: modal.confirm?.text || '',
                 cancelCallBack: () => {
+                    global.LogTool('GradeWindows_No');
                     http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
                         console.log(res);
                     });
                 },
                 confirmCallBack: () => {
+                    global.LogTool('GradeWindows_Yes');
                     Linking.canOpenURL(modal.confirm.url.path)
                         .then((res) => {
                             if (res) {

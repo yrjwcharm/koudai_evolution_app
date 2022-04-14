@@ -18,6 +18,7 @@ const VerifyCodeQA = () => {
                 Toast.show(res.message || '网络繁忙');
             }
         });
+        global.LogTool('CodePrompt');
     }, []);
 
     return data?.title ? (

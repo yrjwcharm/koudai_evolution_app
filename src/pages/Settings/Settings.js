@@ -96,6 +96,7 @@ const Settings = ({navigation}) => {
                     },
                 });
             } else if (item.type === 'encourage') {
+                global.LogTool('Grade');
                 Linking.canOpenURL(item.url.path)
                     .then((res) => {
                         if (res) {
