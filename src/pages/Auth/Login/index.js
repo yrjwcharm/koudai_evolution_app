@@ -156,8 +156,9 @@ class Login extends Component {
     });
     weChatLogin = () => {};
     sendCode = () => {
-        const {code_btn_click, mobile} = this.state;
+        const {code_btn_click, mobile, agreeState} = this.state;
         if (!(mobile?.length === 11)) return Toast.show('请正确输入您的手机号');
+        if (!agreeState) return Toast.show('请勾选并同意理财魔方相关协议');
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile,
