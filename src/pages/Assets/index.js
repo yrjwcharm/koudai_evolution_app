@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 17:59:54
+ * @LastEditTime: 2022-04-15 20:55:49
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -117,6 +117,7 @@ function HomeScreen({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     };
+    //获取签约数据
     const getSignData = () => {
         http.get('adviser/get_need_sign_list/20210923').then((data) => {
             setSignTimer(data?.result?.risk_disclosure?.countdown);
@@ -132,6 +133,7 @@ function HomeScreen({navigation, route}) {
             if (res.code === '000000') {
                 setHoldingData(res.result);
                 if (res.result?.is_need_sign == 1 && !sign_intervalt_timer.current) {
+                    sign_intervalt_timer.current = 1;
                     getSignData();
                 }
             }
