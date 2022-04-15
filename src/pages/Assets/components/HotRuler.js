@@ -9,9 +9,10 @@ import {px} from '../../../utils/appUtil';
  * @param {array} options.ticks // 刻度标签
  * @param {array} options.value_area // 进度
  * @param {object} options.marks // 标记
+ * @param {object} options.isLevel // 是否是风险等级调整工具
  * @returns
  */
-const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks}) => {
+const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel}) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const scaleArr = useMemo(() => {
         let index = 0;
@@ -69,7 +70,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks}) => {
                 {value_area.map(([width, backgroundColor], idx) => {
                     return (
                         <View
-                            key={idx}
+                            key={idx + 1000}
                             style={[
                                 styles.processItem,
                                 {width: width * 100 + '%', backgroundColor, zIndex: value_area.length - idx + 1},
@@ -86,11 +87,12 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks}) => {
                             <View
                                 style={[
                                     styles.scaleItem,
+                                    isLevel && {height: px(0)},
                                     item && {
                                         height: px(8),
                                     },
                                 ]}
-                                key={item + idx}
+                                key={idx + 10000}
                                 onLayout={(e) => {
                                     let x = e.nativeEvent.layout.x;
                                     item &&
@@ -104,7 +106,15 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks}) => {
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     {Object.entries(ticksText).map(([x, text], idx) => (
-                        <Text key={idx + text} style={[styles.scaleItemLabel, {position: 'absolute', left: +x}]}>
+                        <Text
+                            key={20000 + idx}
+                            style={[
+                                styles.scaleItemLabel,
+                                {position: 'absolute', left: +x},
+                                isLevel && +text - 1 === ticks.findIndex((item) => item[0] === marks.value)
+                                    ? {fontWeight: '700', color: '#121D3Ad'}
+                                    : {},
+                            ]}>
                             {text === '-' ? '' : text}
                         </Text>
                     ))}
