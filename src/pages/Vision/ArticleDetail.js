@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-02 11:13:17
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-15 11:26:43
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,6 +34,7 @@ import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
+import RenderInteract from './components/RenderInteract';
 
 const options = {
     enableVibrateFallback: true,
@@ -517,6 +518,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 ) : null}
                             </>
                         )}
+                        <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
                     </ScrollView>
                     {!userInfo.is_login && <LoginMask />}
                 </>
