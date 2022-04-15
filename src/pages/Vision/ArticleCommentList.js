@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 18:46:33
+ * @LastEditTime: 2022-04-15 10:48:34
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -14,7 +14,6 @@ import {isIphoneX, px} from '../../utils/appUtil';
 import {Button} from '../../components/Button';
 import {Style} from '../../common/commonStyle';
 import CommentItem from './components/CommentItem';
-import Modal from 'react-native-modalbox';
 const inputMaxLength = 500;
 const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
