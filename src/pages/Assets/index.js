@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 13:24:33
+ * @LastEditTime: 2022-04-15 17:59:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -599,7 +599,13 @@ function HomeScreen({navigation, route}) {
                                         <View key={index} style={styles.border_bottom}>
                                             <Text style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
                                                 {item?.name}
+                                                {item?.sub_name ? (
+                                                    <Text style={{fontWeight: '400', fontSize: px(12)}}>
+                                                        {item.sub_name}
+                                                    </Text>
+                                                ) : null}
                                             </Text>
+
                                             {item?.adviser_cost_desc ? (
                                                 <Text style={[styles.light_text, {marginBottom: px(6)}]}>
                                                     {item.adviser_cost_desc}
