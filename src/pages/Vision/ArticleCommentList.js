@@ -2,11 +2,11 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 10:48:34
+ * @LastEditTime: 2022-04-15 11:12:20
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {BottomModal, PageModal} from '../../components/Modal';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -14,11 +14,13 @@ import {isIphoneX, px} from '../../utils/appUtil';
 import {Button} from '../../components/Button';
 import {Style} from '../../common/commonStyle';
 import CommentItem from './components/CommentItem';
+import http from '../../services';
 const inputMaxLength = 500;
 const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
+    const [data, setData] = useState();
     const DATA = [
         {
             title: 'First Item',
@@ -39,7 +41,14 @@ const ArticleCommentList = ({navigation, route}) => {
             title: 'Third Item',
         },
     ];
-
+    const getComment = () => {
+        http.get('/community/article/comment/list/20210101').then((res) => {
+            setData(res.result);
+        });
+    };
+    useEffect(() => {
+        getComment();
+    }, []);
     return (
         <>
             <Header
@@ -54,7 +63,7 @@ const ArticleCommentList = ({navigation, route}) => {
             <FlatList
                 style={styles.con}
                 renderItem={({item}) => {
-                    return <CommentItem data={item} style={{marginBottom: px(20)}} />;
+                    return <CommentItem data={item} style={{marginBottom: px(9)}} />;
                 }}
                 data={DATA}
                 keyExtractor={(item, index) => index.toString()}

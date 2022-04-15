@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-07 19:04:37
+ * @LastEditTime: 2022-04-15 11:06:38
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -25,14 +25,14 @@ const CommentItem = ({data, style}) => {
             return !pre_status;
         });
     };
-    return (
-        <View style={style}>
-            <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
+    const renderContent = (_style) => {
+        return (
+            <View style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
                 <FastImage
                     source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/avatar_013.jpeg'}}
                     style={styles.avatar}
                 />
-                <View style={{flex: 1}}>
+                <View style={[{flex: 1}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-10)}]}>
                         <Text style={styles.name}>{data.title}</Text>
                         <TouchableOpacity style={Style.flexRow} onPress={onFavor} activeOpacity={0.9}>
@@ -56,6 +56,12 @@ const CommentItem = ({data, style}) => {
                     <Text style={styles.date}>3月10日</Text>
                 </View>
             </View>
+        );
+    };
+    return (
+        <View style={style}>
+            {renderContent({marginBottom: px(11)})}
+            {renderContent({marginLeft: px(46), marginBottom: px(11)})}
         </View>
     );
 };
