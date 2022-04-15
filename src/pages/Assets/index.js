@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 11:50:02
+ * @LastEditTime: 2022-04-15 13:24:33
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -547,7 +547,6 @@ function HomeScreen({navigation, route}) {
                     title={signData?.title}
                     onClose={() => {
                         sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
-                        setSignTimer(8);
                         sign_intervalt_timer.current = null;
                     }}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
@@ -886,7 +885,7 @@ function HomeScreen({navigation, route}) {
                                     key={`topmenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
                                     <View style={{position: 'relative'}}>
-                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                        <Image source={{uri: item?.icon}} style={styles.topMenuIcon} />
                                         {item.is_new ? (
                                             <View style={styles.newMenu}>
                                                 <Text style={styles.contentTagText}>{'新'}</Text>
