@@ -94,6 +94,7 @@ const FixedBtn = (props) => {
                     <Button
                         title={btns[1]?.title}
                         desc={btns[1]?.desc}
+                        superscript={btns[1]?.superscript}
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
