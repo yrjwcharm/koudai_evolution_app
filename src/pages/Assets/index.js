@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 18:10:29
+ * @LastEditTime: 2022-04-15 11:50:02
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -629,11 +629,13 @@ function HomeScreen({navigation, route}) {
                                                                 }}>
                                                                 {link?.text}
                                                                 {item?.link_list?.length > 1 &&
-                                                                _index == item?.link_list?.length - 2
-                                                                    ? '和'
-                                                                    : _index == item?.link_list?.length - 1
-                                                                    ? ''
-                                                                    : '、'}
+                                                                _index == item?.link_list?.length - 2 ? (
+                                                                    <Text style={styles.light_text}>和</Text>
+                                                                ) : _index == item?.link_list?.length - 1 ? (
+                                                                    ''
+                                                                ) : (
+                                                                    '、'
+                                                                )}
                                                             </Text>
                                                         ))}
                                                         {item?.desc_end ? (
