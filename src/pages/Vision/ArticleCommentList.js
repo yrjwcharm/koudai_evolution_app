@@ -2,12 +2,12 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 11:53:46
+ * @LastEditTime: 2022-04-15 14:22:17
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {PageModal} from '../../components/Modal';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Modal, PageModal} from '../../components/Modal';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
@@ -15,40 +15,50 @@ import {Button} from '../../components/Button';
 import {Style} from '../../common/commonStyle';
 import CommentItem from './components/CommentItem';
 import http from '../../services';
+import Toast from '../../components/Toast';
 const inputMaxLength = 500;
 const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
     const [data, setData] = useState();
-    const DATA = [
-        {
-            title: 'First Item',
-        },
-        {
-            title: 'Second Item',
-        },
-        {
-            title: 'Third Item',
-        },
-        {
-            title: 'First Item',
-        },
-        {
-            title: 'Second Item',
-        },
-        {
-            title: 'Third Item',
-        },
-    ];
-    const getComment = () => {
-        http.get('/community/article/comment/list/20210101', {article_id: 1374}).then((res) => {
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const article_id = route?.params?.article_id || 1374;
+    const getData = useCallback(() => {
+        http.get('/community/article/comment/list/20210101', {article_id: article_id, page}).then((res) => {
+            setRefreshing(false);
+            setHasMore(res.result.has_more);
             setData(res.result);
         });
-    };
+    }, [page, article_id]);
     useEffect(() => {
-        getComment();
-    }, []);
+        getData();
+    }, [getData]);
+    const onRefresh = () => {
+        setRefreshing(true);
+        if (page == 1) {
+            getData();
+        } else {
+            setPage(1);
+        }
+    };
+    //发布评论
+    const publish = () => {
+        http.post('/community/article/comment/add/20210101', {article_id, content}).then((res) => {
+            if (res.code == '000000') {
+                inputModal.current.hide();
+                setContent('');
+                Modal.show({
+                    title: '提示',
+                    content: res.result.message,
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
     return (
         <>
             <Header
@@ -62,19 +72,21 @@ const ArticleCommentList = ({navigation, route}) => {
 
             <FlatList
                 style={styles.con}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
                 renderItem={({item}) => {
                     return <CommentItem data={item} style={{marginBottom: px(9)}} />;
                 }}
                 data={data?.list}
+                onEndReached={() => {
+                    if (hasMore) {
+                        setPage((p) => p + 1);
+                    }
+                }}
                 keyExtractor={(item, index) => index.toString()}
             />
-            {/* <Modal
-                ref={inputModal}
-                title="写评论"
-                height={px(370)}
-                style={{height: px(370)}}
-                headerShown={false}
-                position="bottom">
+
+            <PageModal ref={inputModal} title="写评论" style={{height: px(370)}}>
                 <TextInput
                     ref={inputRef}
                     value={content}
@@ -92,35 +104,7 @@ const ArticleCommentList = ({navigation, route}) => {
                         <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
                             {content.length}/{inputMaxLength}
                         </Text>
-                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={() => {}} />
-                    </View>
-                </View>
-            </Modal> */}
-            <PageModal
-                ref={inputModal}
-                title="写评论"
-                height={px(370)}
-                style={{height: px(370)}}
-                headerShown={false}
-                position="bottom">
-                <TextInput
-                    ref={inputRef}
-                    value={content}
-                    multiline={true}
-                    style={styles.input}
-                    onChangeText={(value) => {
-                        setContent(value);
-                    }}
-                    maxLength={inputMaxLength}
-                    textAlignVertical="top"
-                    placeholder="聊点什么吧..."
-                />
-                <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                    <View style={Style.flexRow}>
-                        <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {content.length}/{inputMaxLength}
-                        </Text>
-                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={() => {}} />
+                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
                     </View>
                 </View>
             </PageModal>
