@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 14:04:46
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-15 18:35:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -73,6 +73,7 @@ class TradeBuy extends Component {
             largeTip: '',
             deltaHeight: 0,
             autoChargeStatus: false,
+            is_continue_buy: false,
         };
         this.plan_id = this.props.route?.params?.plan_id || '';
         this.show_risk_disclosure = true;
@@ -206,6 +207,7 @@ class TradeBuy extends Component {
     showRishPop = (data) => {
         Modal.show({
             cancelCallBack: () => {
+                global.LogTool('RiskWarningWindows_No');
                 if (data.risk_pop.cancel?.act == 'back') {
                     this.props.navigation.goBack();
                 } else if (data.risk_pop.cancel?.act == 'jump') {
@@ -215,6 +217,8 @@ class TradeBuy extends Component {
             cancelText: data.risk_pop.cancel.text,
             confirm: true,
             confirmCallBack: () => {
+                global.LogTool('RiskWarningWindows_Yes');
+                this.setState({is_continue_buy: true});
                 if (data.risk_pop.confirm.url) {
                     this.props.jump(data.risk_pop.confirm.url);
                 }
@@ -247,6 +251,7 @@ class TradeBuy extends Component {
                         trade_method: bank?.pay_type,
                         pay_method: bank.pay_method || '',
                         page_type: this.props.route.params.page_type || '',
+                        is_continue_buy: this.state.is_continue_buy,
                     }).then((res) => {
                         Toast.hide(toast);
                         if (res.code === '000000') {
