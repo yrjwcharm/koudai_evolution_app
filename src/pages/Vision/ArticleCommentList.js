@@ -2,12 +2,12 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 11:12:20
+ * @LastEditTime: 2022-04-15 11:53:46
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {BottomModal, PageModal} from '../../components/Modal';
+import {PageModal} from '../../components/Modal';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
@@ -42,7 +42,7 @@ const ArticleCommentList = ({navigation, route}) => {
         },
     ];
     const getComment = () => {
-        http.get('/community/article/comment/list/20210101').then((res) => {
+        http.get('/community/article/comment/list/20210101', {article_id: 1374}).then((res) => {
             setData(res.result);
         });
     };
@@ -65,7 +65,7 @@ const ArticleCommentList = ({navigation, route}) => {
                 renderItem={({item}) => {
                     return <CommentItem data={item} style={{marginBottom: px(9)}} />;
                 }}
-                data={DATA}
+                data={data?.list}
                 keyExtractor={(item, index) => index.toString()}
             />
             {/* <Modal

@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 11:06:38
+ * @LastEditTime: 2022-04-15 12:05:40
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -25,16 +25,13 @@ const CommentItem = ({data, style}) => {
             return !pre_status;
         });
     };
-    const renderContent = (_style) => {
+    const renderContent = (_data, _style, key) => {
         return (
-            <View style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
-                <FastImage
-                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/avatar_013.jpeg'}}
-                    style={styles.avatar}
-                />
+            <View key={key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
+                <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
                 <View style={[{flex: 1}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-10)}]}>
-                        <Text style={styles.name}>{data.title}</Text>
+                        <Text style={styles.name}>{_data?.user_info?.nickname}</Text>
                         <TouchableOpacity style={Style.flexRow} onPress={onFavor} activeOpacity={0.9}>
                             <Text style={styles.zan_text}>{favor_num}</Text>
                             <LottieView
@@ -50,18 +47,18 @@ const CommentItem = ({data, style}) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.content}>
-                        看到理财魔方，感觉像是找到人生中的灯塔，照亮我前行的方向，之前啥也不懂，亏钱亏钱亏钱亏到怀疑人生，现在好了，稳定赚钱赚钱，文章显示最多500个中文字。
-                    </Text>
-                    <Text style={styles.date}>3月10日</Text>
+                    <Text style={styles.content}>{_data?.content}</Text>
+                    <Text style={styles.date}>{_data?.created_at_human}</Text>
                 </View>
             </View>
         );
     };
     return (
         <View style={style}>
-            {renderContent({marginBottom: px(11)})}
-            {renderContent({marginLeft: px(46), marginBottom: px(11)})}
+            {renderContent(data, {marginBottom: px(11)})}
+            {data?.children?.map((item, index) => {
+                return renderContent(item, {marginLeft: px(46), marginBottom: px(11), index});
+            })}
         </View>
     );
 };
