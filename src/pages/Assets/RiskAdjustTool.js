@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 16:43:06
+ * @LastEditTime: 2022-04-15 18:14:09
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -80,7 +80,9 @@ const Table = ({data, risk, style, current_risk}) => {
                 <View style={styles.column}>
                     <View style={[{backgroundColor: '#F7F8FA', height: px(40)}, Style.flexRow]}>
                         <Text style={{flex: 1}} />
-                        <Text style={{flex: 1, textAlign: 'center', fontWeight: '600'}}>当前等级{current_risk}</Text>
+                        <Text style={{flex: 1, textAlign: 'center', fontWeight: '600', fontSize: px(12)}}>
+                            当前等级{current_risk}
+                        </Text>
                     </View>
                     {Object.values(current_table_data[0]?.table)?.map((item, index) => {
                         return (
@@ -90,7 +92,9 @@ const Table = ({data, risk, style, current_risk}) => {
                                     Style.flexRow,
                                     {backgroundColor: index % 2 == 0 ? '#fff' : '#F7F8FA', height: px(40)},
                                 ]}>
-                                <Text style={{flex: 1, textAlign: 'center', color: '#0B1E3E'}}>{item.key}</Text>
+                                <Text style={{flex: 1, textAlign: 'center', color: '#0B1E3E', fontSize: px(12)}}>
+                                    {item.key}
+                                </Text>
                                 <Text style={styles.numMedium}>{item.value}</Text>
                             </View>
                         );
@@ -111,7 +115,7 @@ const Table = ({data, risk, style, current_risk}) => {
                                 borderTopRightRadius: px(4),
                             },
                         ]}>
-                        <Text>
+                        <Text style={{fontSize: px(12)}}>
                             调后
                             <Text style={{color: themeColor}}>等级{risk != current_risk ? risk : '-'}</Text>
                         </Text>
@@ -291,7 +295,7 @@ const RiskAdjustTool = ({route, navigation}) => {
                 <LinearGradient
                     colors={['#FFFFFF', '#F5F6F8']}
                     start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.4}}
+                    end={{x: 0, y: 0.05}}
                     style={styles.con}>
                     <View style={[styles.name_con, Style.flexRowCenter]}>
                         <View>
@@ -393,7 +397,9 @@ const RiskAdjustTool = ({route, navigation}) => {
                 </LinearGradient>
             </ScrollView>
 
-            <Animatable.View animation={'fadeInUp'} style={{borderTopWidth: 0.5, borderTopColor: '#E2E4EA'}}>
+            <Animatable.View
+                animation={'fadeInUp'}
+                style={{borderTopWidth: 0.5, borderTopColor: '#E2E4EA', backgroundColor: '#fff'}}>
                 <AdjustSlider
                     value={data?.current_risk}
                     minimumValue={data?.table_data[0]?.value}

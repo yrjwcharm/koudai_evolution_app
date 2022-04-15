@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-29 17:13:24
+ * @LastEditTime: 2022-04-15 18:21:57
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -256,6 +256,7 @@ const WealthTools = () => {
                             style={[
                                 styles.toolItemContentLeftDegreeOnOpen,
                                 data?.head_data?.status && {color: '#E74949'},
+                                {textAlign: 'left'},
                             ]}>
                             {item?.state_info?.value}
                         </Text>
