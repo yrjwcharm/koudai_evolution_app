@@ -2,7 +2,7 @@
  * @Date: 2022-03-24 16:13:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 15:00:00
+ * @LastEditTime: 2022-04-15 16:43:06
  * @Description:风险等级调整工具
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -269,7 +269,7 @@ const RiskAdjustTool = ({route, navigation}) => {
             Toast.show(res.message);
             if (res.code === '000000') {
                 signModal?.current?.hide();
-                jump(res.result?.rul);
+                jump(res.result?.url);
             }
         });
     };
