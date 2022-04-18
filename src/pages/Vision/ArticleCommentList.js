@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 18:47:41
+ * @LastEditTime: 2022-04-18 19:33:25
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -38,21 +38,25 @@ const ArticleCommentList = ({navigation, route}) => {
             setHasMore(res.result.has_more);
             if (page != 1) {
                 setCommentList((prevData) => {
-                    return prevData.concat(res.result.list);
+                    return prevData.concat(res.result?.list || []);
                 });
             } else {
-                setCommentList(res.result.list);
+                setCommentList(res.result?.list || []);
             }
         });
-    }, [page, article_id, comment_id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
     useEffect(() => {
         getData();
+    }, [getData]);
+    useEffect(() => {
         if (comment_id === undefined && show_modal) {
             setTimeout(() => {
                 commentInput();
             }, 500);
         }
-    }, [getData, comment_id, show_modal]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const onRefresh = () => {
         setRefreshing(true);
         if (page == 1) {

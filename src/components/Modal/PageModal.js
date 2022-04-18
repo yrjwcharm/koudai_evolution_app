@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 19:18:08
+ * @LastEditTime: 2022-04-18 19:34:53
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -31,7 +31,6 @@ export default class PageModal extends Component {
         super(props);
         this.state = {
             offset: new Animated.Value(0),
-            opacity: new Animated.Value(0),
             hide: true,
             keyboardHeight: 0,
             containerHeight: height,
@@ -198,20 +197,12 @@ export default class PageModal extends Component {
 
     //显示动画
     in = () => {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                easing: Easing.elastic(0.8), //一个用于定义曲线的渐变函数
-                duration: this.props.animateDuration,
-                toValue: 1, //动画的最终值
-                useNativeDriver: true,
-            }),
-            Animated.timing(this.state.offset, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 1,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
+        Animated.timing(this.state.offset, {
+            easing: Easing.elastic(0.8),
+            duration: this.props.animateDuration,
+            toValue: 1,
+            useNativeDriver: true,
+        }).start(() => {
             if (this.props.backButtonClose && Platform.OS === 'android')
                 BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         });
@@ -219,22 +210,15 @@ export default class PageModal extends Component {
 
     //隐藏动画
     out = () => {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 0,
-                useNativeDriver: true,
-            }),
-            Animated.timing(this.state.offset, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 0,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
+        Animated.timing(this.state.offset, {
+            easing: Easing.elastic(0.8),
+            duration: this.props.animateDuration,
+            toValue: 0,
+            useNativeDriver: true,
+        }).start(() => {
             this.setState({hide: true});
             this.state.offset.setValue(0);
+            this.state.opacity.setValue(0);
         });
     };
 
