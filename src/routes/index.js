@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-14 17:24:26
+ * @LastEditTime: 2022-04-18 10:48:01
  * @Description:路由表
  */
 import React from 'react';
@@ -209,7 +209,7 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Launch"
-            headerMode="float"
+            headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {

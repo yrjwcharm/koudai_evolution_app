@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 18:21:57
+ * @LastEditTime: 2022-04-18 10:40:31
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -262,7 +262,9 @@ const WealthTools = () => {
                         </Text>
                     </View>
                     <View style={styles.toolItemContentRightOnOpen}>
-                        {item.state_info?.chart && <HotRuler {...item.state_info?.chart} />}
+                        {item.state_info?.chart && (
+                            <HotRuler {...item.state_info?.chart} isLevel={item?.tool_id == 'risk_change'} />
+                        )}
                     </View>
                 </View>
                 {item.state_info?.button && (

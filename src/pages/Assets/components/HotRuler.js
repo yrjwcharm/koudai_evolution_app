@@ -29,7 +29,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
     }, [splitNumber, ticks]);
 
     const [ticksText, setTicksText] = useState({});
-
+    const currentIndex = ticks.findIndex((item) => item[0] === marks.value);
     return (
         <View
             style={styles.container}
@@ -38,7 +38,16 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
             }}>
             {/* 标记 */}
             {marks ? (
-                <View style={[styles.mark, {right: (1 - marks.value) * containerWidth + px(-20)}]}>
+                <View
+                    style={[
+                        styles.mark,
+                        {
+                            right:
+                                (1 - marks.value) * containerWidth +
+                                px(-20) -
+                                (isLevel && currentIndex === 0 ? px(10) : 0),
+                        },
+                    ]}>
                     <View style={[styles.markCircle, {backgroundColor: marks.bg_color, borderColor: marks.theme}]}>
                         <Text
                             style={{fontWeight: '500', lineHeight: px(14), fontSize: px(12), color: marks.theme}}
@@ -51,6 +60,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
                             styles.triangle,
                             {
                                 borderTopColor: marks.theme,
+                                right: isLevel && currentIndex === 0 ? px(13) + px(10) : px(13),
                             },
                         ]}
                     />
@@ -59,10 +69,19 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
                             styles.triangleInner,
                             {
                                 borderTopColor: marks.bg_color,
+                                right: isLevel && currentIndex === 0 ? px(12) + px(10) : px(12),
                             },
                         ]}
                     />
-                    <View style={[styles.verticalLine, {backgroundColor: marks.theme}]} />
+                    <View
+                        style={[
+                            styles.verticalLine,
+                            {
+                                backgroundColor: marks.theme,
+                                right: isLevel && currentIndex === 0 ? px(19) + px(10) : px(19),
+                            },
+                        ]}
+                    />
                 </View>
             ) : null}
             {/* 进度 */}
@@ -172,7 +191,6 @@ const styles = StyleSheet.create({
     },
     triangle: {
         position: 'absolute',
-        right: px(13),
         bottom: px(-11),
         width: 0,
         height: 0,
@@ -183,18 +201,16 @@ const styles = StyleSheet.create({
     },
     triangleInner: {
         position: 'absolute',
-        right: px(13),
         bottom: px(-10.5),
         width: 0,
         height: 0,
         borderStyle: 'solid',
-        borderWidth: px(7),
+        borderWidth: px(8),
         borderColor: 'transparent',
         zIndex: 1,
     },
     verticalLine: {
         position: 'absolute',
-        right: px(19),
         bottom: px(-12),
         width: px(1),
         height: px(9),

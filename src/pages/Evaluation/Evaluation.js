@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-04 11:00:59
+ * @LastEditTime: 2022-04-18 10:59:04
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -561,7 +561,11 @@ class Question extends Component {
                                                           <View
                                                               key={index}
                                                               style={[Style.flexRow, {marginBottom: px(8)}]}>
-                                                              <Text style={[styles.name, {marginRight: px(16)}]}>
+                                                              <Text
+                                                                  style={[
+                                                                      styles.name,
+                                                                      {marginRight: px(16), maxWidth: px(200)},
+                                                                  ]}>
                                                                   {item.key}
                                                               </Text>
                                                               <View style={[{flex: 1}, Style.flexRow]}>
