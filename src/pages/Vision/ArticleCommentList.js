@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 16:27:11
+ * @LastEditTime: 2022-04-18 17:10:57
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -25,12 +25,13 @@ const ArticleCommentList = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const article_id = route?.params?.article_id || 1374;
+    const article_id = route?.params?.article_id;
+    const comment_id = route?.params?.comment_id;
     const getData = useCallback(() => {
         http.get('/community/article/comment/list/20210101', {
-            article_id: article_id,
+            article_id,
             page,
-            comment_id: route?.params?.comment_id,
+            comment_id,
         }).then((res) => {
             setRefreshing(false);
             setHasMore(res.result.has_more);
@@ -42,9 +43,14 @@ const ArticleCommentList = ({navigation, route}) => {
                 setCommentList(res.result.list);
             }
         });
-    }, [page, article_id, route]);
+    }, [page, article_id, comment_id]);
     useEffect(() => {
         getData();
+        if (!comment_id)
+            setTimeout(() => {
+                commentInput();
+            }, 500);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getData]);
     const onRefresh = () => {
         setRefreshing(true);

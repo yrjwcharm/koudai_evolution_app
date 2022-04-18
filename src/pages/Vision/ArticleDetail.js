@@ -2,11 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 16:28:21
+ * @LastEditTime: 2022-04-18 17:09:34
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -25,7 +25,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderCate from './components/RenderCate.js';
-import LinearGradient from 'react-native-linear-gradient';
 import RenderTitle from './components/RenderTitle';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
 import Picker from 'react-native-picker';
@@ -453,65 +452,52 @@ const ArticleDetail = ({navigation, route}) => {
                                 )}
 
                                 {Object.keys(recommendData).length > 0 ? (
-                                    <LinearGradient
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 0, y: 0.2}}
-                                        colors={['#fff', '#F5F6F8']}>
-                                        <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
-                                            <RenderTitle title={recommendData?.portfolios?.title} />
-                                            {recommendData?.portfolios?.list?.map((item, index) => {
-                                                return (
-                                                    <PortfolioCard
-                                                        data={item}
-                                                        key={index}
-                                                        style={{marginBottom: text(12)}}
-                                                    />
-                                                );
-                                            })}
-                                            <RenderTitle title={recommendData?.articles?.title} />
-                                            {recommendData?.articles?.list?.map((item, index) => {
-                                                return RenderCate(item, {marginBottom: text(12)}, 'article');
-                                            })}
-                                        </View>
-                                    </LinearGradient>
+                                    <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
+                                        <RenderTitle title={recommendData?.portfolios?.title} />
+                                        {recommendData?.portfolios?.list?.map((item, index) => {
+                                            return <PortfolioCard data={item} key={index} style={styles.cardStye} />;
+                                        })}
+                                        <RenderTitle title={recommendData?.articles?.title} />
+                                        {recommendData?.articles?.list?.map((item, index) => {
+                                            return RenderCate(item, styles.cardStye, 'article');
+                                        })}
+                                    </View>
                                 ) : null}
-                            </>
-                        )}
-                        {/* 问答 */}
-                        <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
-                        {/* 评论 */}
-                        <Text style={styles.commentTitle}>评论</Text>
-                        <FlatList
-                            style={{padding: px(16)}}
-                            renderItem={({item}) => {
-                                return <CommentItem data={item} style={{marginBottom: px(9)}} />;
-                            }}
-                            ListEmptyComponent={() => (
-                                <View style={[{height: px(40)}, Style.flexCenter]}>
-                                    <Text style={styles.footnote}>
-                                        暂无评论&nbsp;
-                                        <Text style={{color: Colors.btnColor}} onPress={handelComment}>
-                                            我来写一条
-                                        </Text>
-                                    </Text>
-                                </View>
-                            )}
-                            ListFooterComponent={() => (
-                                <View style={[{height: px(40)}, Style.flexCenter]}>
-                                    {commentData?.list?.length >= 10 ? (
-                                        <Text
-                                            style={[styles.footnote, {color: Colors.btnColor}]}
-                                            onPress={handelComment}>
-                                            查看全部评论
-                                        </Text>
+                                {/* 问答 */}
+                                <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
+                                {/* 评论 */}
+                                <RenderTitle title={'评论'} style={{paddingLeft: px(16)}} />
+                                <View style={{padding: px(16)}}>
+                                    {commentData?.list?.length > 0 ? (
+                                        <>
+                                            {commentData?.list?.map((item, index) => (
+                                                <CommentItem data={item} style={{marginBottom: px(9)}} key={index} />
+                                            ))}
+                                            <View style={[{height: px(40)}, Style.flexCenter]}>
+                                                {commentData?.list?.length >= 10 ? (
+                                                    <Text
+                                                        style={[styles.footnote, {color: Colors.btnColor}]}
+                                                        onPress={handelComment}>
+                                                        查看全部评论
+                                                    </Text>
+                                                ) : (
+                                                    <Text style={styles.footnote}>已显示全部评论</Text>
+                                                )}
+                                            </View>
+                                        </>
                                     ) : (
-                                        <Text style={styles.footnote}>已显示全部评论</Text>
+                                        <View style={[{height: px(40)}, Style.flexCenter]}>
+                                            <Text style={styles.footnote}>
+                                                暂无评论&nbsp;
+                                                <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                                    我来写一条
+                                                </Text>
+                                            </Text>
+                                        </View>
                                     )}
                                 </View>
-                            )}
-                            data={commentData?.list}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                            </>
+                        )}
                     </ScrollView>
                     {/* footer */}
                     <View style={[styles.footer, Style.flexRow]}>
@@ -666,12 +652,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: px(16),
     },
-    commentTitle: {
-        paddingLeft: px(16),
-        fontSize: px(16),
-        fontWeight: '700',
-        lineHeight: px(22),
-        marginBottom: px(12),
+    cardStye: {
+        marginBottom: text(12),
+        borderWidth: 0.5,
+        borderColor: '#ddd',
     },
 });
 

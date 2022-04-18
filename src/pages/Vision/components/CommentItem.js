@@ -2,19 +2,19 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 15:24:22
+ * @LastEditTime: 2022-04-18 17:09:23
  * @Description:评论内容体
  */
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React, {useRef, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import FastImage from 'react-native-fast-image';
 import {px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import Like from './Like';
-const CommentItem = ({data, style}) => {
-    const renderContent = (_data, _style, key) => {
+const CommentItem = ({data, style, key}) => {
+    const renderContent = (_data, _style, _key) => {
         return (
-            <View key={key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
+            <View key={_key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
                 <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
                 <View style={[{flex: 1}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
@@ -33,7 +33,7 @@ const CommentItem = ({data, style}) => {
         );
     };
     return (
-        <View style={style}>
+        <View style={style} key={key}>
             {renderContent(data, {marginBottom: px(11)})}
             {data?.children?.map((item, index) => {
                 return renderContent(item, {marginLeft: px(42), marginBottom: px(11), index});
