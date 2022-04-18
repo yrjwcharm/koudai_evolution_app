@@ -34,6 +34,7 @@ import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
+import {PageModal} from '../../components/Modal';
 
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
@@ -80,6 +81,7 @@ const Index = (props) => {
     const [baner, setBaner] = useState([]);
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const dispatch = useDispatch();
+    const modal = useRef();
     let scrollingRight = '';
     let lastx = '';
     const snapScroll = useRef(null);
@@ -160,6 +162,7 @@ const Index = (props) => {
             setAll(res.result.all);
         });
     }, []);
+
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
@@ -251,6 +254,11 @@ const Index = (props) => {
                             )}
                         </View>
                     </View>
+                    <PageModal style={{height: 100}} ref={modal}>
+                        <View>
+                            <Text>123</Text>
+                        </View>
+                    </PageModal>
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
                         scrollEventThrottle={16}
@@ -324,7 +332,7 @@ const Index = (props) => {
                             )}
                             <Button
                                 onPress={() => {
-                                    props.navigation.navigate('ArticleCommentList');
+                                    modal.current.show();
                                 }}
                             />
                             {/* 安全保障 */}

@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 13:52:49
+ * @LastEditTime: 2022-04-18 15:24:22
  * @Description:评论内容体
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -17,9 +17,14 @@ const CommentItem = ({data, style}) => {
             <View key={key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
                 <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
                 <View style={[{flex: 1}]}>
-                    <View style={[Style.flexBetween, {marginBottom: px(-10)}]}>
+                    <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
                         <Text style={styles.name}>{_data?.user_info?.nickname}</Text>
-                        <Like favor_status={_data.is_liked} favor_num={_data.like_num} comment_id={_data.id} />
+                        <Like
+                            favor_status={_data.is_liked}
+                            favor_num={_data.like_num}
+                            comment_id={_data.id}
+                            style={{top: px(-4)}}
+                        />
                     </View>
                     <Text style={styles.content}>{_data?.content}</Text>
                     <Text style={styles.date}>{_data?.created_at_human}</Text>

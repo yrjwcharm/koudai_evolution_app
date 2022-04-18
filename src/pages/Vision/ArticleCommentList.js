@@ -2,17 +2,17 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 14:22:17
+ * @LastEditTime: 2022-04-18 16:27:11
  * @Description:文章评论解表
  */
-import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity, Platform, FlatList} from 'react-native';
+import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Modal, PageModal} from '../../components/Modal';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
 import {Button} from '../../components/Button';
-import {Style} from '../../common/commonStyle';
+import {Colors, Style} from '../../common/commonStyle';
 import CommentItem from './components/CommentItem';
 import http from '../../services';
 import Toast from '../../components/Toast';
@@ -21,18 +21,28 @@ const ArticleCommentList = ({navigation, route}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
-    const [data, setData] = useState();
+    const [commentList, setCommentList] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const article_id = route?.params?.article_id || 1374;
     const getData = useCallback(() => {
-        http.get('/community/article/comment/list/20210101', {article_id: article_id, page}).then((res) => {
+        http.get('/community/article/comment/list/20210101', {
+            article_id: article_id,
+            page,
+            comment_id: route?.params?.comment_id,
+        }).then((res) => {
             setRefreshing(false);
             setHasMore(res.result.has_more);
-            setData(res.result);
+            if (page != 1) {
+                setCommentList((prevData) => {
+                    return prevData.concat(res.result.list);
+                });
+            } else {
+                setCommentList(res.result.list);
+            }
         });
-    }, [page, article_id]);
+    }, [page, article_id, route]);
     useEffect(() => {
         getData();
     }, [getData]);
@@ -43,6 +53,13 @@ const ArticleCommentList = ({navigation, route}) => {
         } else {
             setPage(1);
         }
+    };
+    //commentInput
+    const commentInput = () => {
+        inputModal?.current?.show();
+        setTimeout(() => {
+            inputRef?.current?.focus();
+        }, 100);
     };
     //发布评论
     const publish = () => {
@@ -59,13 +76,29 @@ const ArticleCommentList = ({navigation, route}) => {
             }
         });
     };
+    const ListFooterComponent = () => {
+        return (
+            <View style={[Style.flexRowCenter, {paddingBottom: px(40)}]}>
+                {hasMore ? (
+                    <>
+                        <ActivityIndicator size="small" animating={true} />
+                        <Text style={{color: Colors.darkGrayColor, marginLeft: px(4), fontSize: px(12)}}>
+                            正在加载...
+                        </Text>
+                    </>
+                ) : commentList.length >= 10 ? (
+                    <Text style={{color: Colors.darkGrayColor, fontSize: px(12)}}>已显示全部评论</Text>
+                ) : null}
+            </View>
+        );
+    };
     return (
         <>
             <Header
                 title="评论"
                 renderLeft={
                     <TouchableOpacity style={styles.title_btn} onPress={() => navigation.goBack()}>
-                        <Icon name="close" size={px(18)} />
+                        <Icon name="close" size={px(24)} />
                     </TouchableOpacity>
                 }
             />
@@ -77,7 +110,20 @@ const ArticleCommentList = ({navigation, route}) => {
                 renderItem={({item}) => {
                     return <CommentItem data={item} style={{marginBottom: px(9)}} />;
                 }}
-                data={data?.list}
+                ListEmptyComponent={() =>
+                    refreshing && (
+                        <View style={[{height: px(40)}, Style.flexCenter]}>
+                            <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                                暂无评论&nbsp;
+                                <Text style={{color: Colors.btnColor}} onPress={commentInput}>
+                                    我来写一条
+                                </Text>
+                            </Text>
+                        </View>
+                    )
+                }
+                ListFooterComponent={!refreshing && commentList.length > 0 && ListFooterComponent}
+                data={commentList}
                 onEndReached={() => {
                     if (hasMore) {
                         setPage((p) => p + 1);
@@ -109,15 +155,7 @@ const ArticleCommentList = ({navigation, route}) => {
                 </View>
             </PageModal>
             {/* footer */}
-            <TouchableOpacity
-                style={styles.footer}
-                activeOpacity={0.9}
-                onPress={() => {
-                    inputModal?.current?.show();
-                    setTimeout(() => {
-                        inputRef?.current?.focus();
-                    }, 100);
-                }}>
+            <TouchableOpacity style={styles.footer} activeOpacity={0.9} onPress={commentInput}>
                 <View style={styles.footer_content}>
                     <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
                 </View>
@@ -129,7 +167,7 @@ const ArticleCommentList = ({navigation, route}) => {
 export default ArticleCommentList;
 
 const styles = StyleSheet.create({
-    con: {flex: 1, backgroundColor: '#fff', paddingHorizontal: px(16), paddingTop: px(16)},
+    con: {flex: 1, backgroundColor: '#fff', padding: px(16)},
     input: {
         paddingHorizontal: px(20),
         marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
@@ -149,7 +187,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5,
         backgroundColor: '#fff',
         paddingTop: px(8),
-        paddingBottom: px(20) + isIphoneX() ? 34 : 0,
+        paddingBottom: px(8) + (isIphoneX() ? 34 : 0),
     },
     footer_content: {
         height: px(31),

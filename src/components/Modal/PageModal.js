@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 13:48:11
+ * @LastEditTime: 2022-04-18 16:07:13
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -116,7 +116,14 @@ export default class PageModal extends Component {
                 onPress={() => {
                     this.props.isTouchMaskToClose && this.cancel();
                 }}>
-                <Animated.View importantForAccessibility="no" style={[styles.absolute, {opacity: this.state.opacity}]}>
+                <Animated.View
+                    importantForAccessibility="no"
+                    style={[
+                        styles.absolute,
+                        {
+                            opacity: this.state.opacity,
+                        },
+                    ]}>
                     <View style={[styles.absolute, styles.mask]} />
                 </Animated.View>
             </TouchableWithoutFeedback>
@@ -161,7 +168,7 @@ export default class PageModal extends Component {
                                 translateY: this.state.offset.interpolate({
                                     inputRange: [0, 1, 2],
                                     outputRange: [
-                                        height,
+                                        this.state.containerHeight,
                                         this.state.containerHeight - this.state.height,
                                         this.state.containerHeight - this.state.height - this.state.keyboardHeight,
                                     ],
@@ -267,7 +274,7 @@ export default class PageModal extends Component {
 
 const styles = StyleSheet.create({
     transparent: {
-        zIndex: 2,
+        zIndex: 10,
         backgroundColor: 'rgba(0,0,0,0)',
     },
     absolute: {

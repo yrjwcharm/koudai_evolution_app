@@ -1,17 +1,17 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-04-15 11:26:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-18 16:28:21
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
@@ -35,6 +35,7 @@ import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
+import CommentItem from './components/CommentItem.js';
 
 const options = {
     enableVibrateFallback: true,
@@ -67,6 +68,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [favor_status, setFavorStatus] = useState(false);
     const [collect_status, setCollectStatus] = useState(false);
     const [collect_num, setCollectNum] = useState(0);
+    const [commentData, setCommentData] = useState({});
     const zanRef = useRef(null);
     const collectRef = useRef(null);
     const fr = route.params?.fr;
@@ -91,6 +93,11 @@ const ArticleDetail = ({navigation, route}) => {
             http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
                 setRecommendData(result.result);
             });
+            http.get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1}).then(
+                (res) => {
+                    setCommentData(res.result);
+                }
+            );
         },
         [route, fr]
     );
@@ -275,6 +282,14 @@ const ArticleDetail = ({navigation, route}) => {
                 ) : null;
             },
         });
+        if (route?.params?.comment_id) {
+            setTimeout(() => {
+                navigation.navigate('ArticleCommentList', {
+                    comment_id: route?.params?.comment_id,
+                    article_id: route?.params?.article_id,
+                });
+            }, 500);
+        }
     }, [navigation, hasNet, route]);
     useEffect(() => {
         if (route?.params?.type !== 5) {
@@ -337,6 +352,9 @@ const ArticleDetail = ({navigation, route}) => {
     const hidePicker = () => {
         Picker.hide();
         setShowMask(false);
+    };
+    const handelComment = () => {
+        navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id});
     };
     return (
         <View style={[styles.container]}>
@@ -433,66 +451,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 ) : (
                                     <View style={{height: text(20)}} />
                                 )}
-                                <View
-                                    style={[
-                                        Style.flexRow,
-                                        {paddingBottom: Object.keys(recommendData).length > 0 ? 0 : text(64)},
-                                    ]}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => onFavor('normal')}
-                                        style={[Style.flexCenter, {flex: 1}]}>
-                                        <LottieView
-                                            ref={zanRef}
-                                            loop={false}
-                                            autoPlay
-                                            source={
-                                                favor_status
-                                                    ? require('../../assets/animation/zanActive.json')
-                                                    : require('../../assets/animation/zan.json')
-                                            }
-                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
-                                        />
 
-                                        <Text style={styles.finishText}>{`点赞${favor_num >= 0 ? favor_num : 0}`}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => onCollect('normal')}
-                                        style={[Style.flexCenter, {flex: 1}]}>
-                                        <LottieView
-                                            ref={collectRef}
-                                            loop={false}
-                                            autoPlay
-                                            source={
-                                                collect_status
-                                                    ? require('../../assets/animation/collect.json')
-                                                    : require('../../assets/animation/collectActive.json')
-                                            }
-                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
-                                        />
-
-                                        <Text style={styles.finishText}>{`收藏${
-                                            collect_num >= 0 ? collect_num : 0
-                                        }`}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            setMore(false);
-                                            shareModal.current.show();
-                                        }}
-                                        style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
-                                        <Image
-                                            source={require('../../assets/img/article/share.png')}
-                                            style={[
-                                                styles.actionIcon,
-                                                {width: px(20), height: px(20), marginBottom: px(4)},
-                                            ]}
-                                        />
-                                        <Text style={styles.finishText}>{'分享'}</Text>
-                                    </TouchableOpacity>
-                                </View>
                                 {Object.keys(recommendData).length > 0 ? (
                                     <LinearGradient
                                         start={{x: 0, y: 0}}
@@ -518,8 +477,108 @@ const ArticleDetail = ({navigation, route}) => {
                                 ) : null}
                             </>
                         )}
+                        {/* 问答 */}
                         <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
+                        {/* 评论 */}
+                        <Text style={styles.commentTitle}>评论</Text>
+                        <FlatList
+                            style={{padding: px(16)}}
+                            renderItem={({item}) => {
+                                return <CommentItem data={item} style={{marginBottom: px(9)}} />;
+                            }}
+                            ListEmptyComponent={() => (
+                                <View style={[{height: px(40)}, Style.flexCenter]}>
+                                    <Text style={styles.footnote}>
+                                        暂无评论&nbsp;
+                                        <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                            我来写一条
+                                        </Text>
+                                    </Text>
+                                </View>
+                            )}
+                            ListFooterComponent={() => (
+                                <View style={[{height: px(40)}, Style.flexCenter]}>
+                                    {commentData?.list?.length >= 10 ? (
+                                        <Text
+                                            style={[styles.footnote, {color: Colors.btnColor}]}
+                                            onPress={handelComment}>
+                                            查看全部评论
+                                        </Text>
+                                    ) : (
+                                        <Text style={styles.footnote}>已显示全部评论</Text>
+                                    )}
+                                </View>
+                            )}
+                            data={commentData?.list}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </ScrollView>
+                    {/* footer */}
+                    <View style={[styles.footer, Style.flexRow]}>
+                        <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={handelComment}>
+                            <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={handelComment}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <FastImage
+                                style={{height: px(24), width: px(24), marginBottom: px(-4)}}
+                                source={require('../../assets/img/vision/commentIcon.png')}
+                            />
+                            <Text style={[styles.iconText, {top: px(-7)}]}>{`${
+                                data.comment_num > 0 ? data.comment_num : 0
+                            }`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onFavor('normal')}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <LottieView
+                                ref={zanRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    favor_status
+                                        ? require('../../assets/animation/zanActive.json')
+                                        : require('../../assets/animation/zan.json')
+                                }
+                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                            />
+
+                            <Text style={styles.iconText}>{`${favor_num >= 0 ? favor_num : 0}`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onCollect('normal')}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <LottieView
+                                ref={collectRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    collect_status
+                                        ? require('../../assets/animation/collect.json')
+                                        : require('../../assets/animation/collectActive.json')
+                                }
+                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                            />
+
+                            <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                setMore(false);
+                                shareModal.current.show();
+                            }}
+                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
+                            <Image
+                                source={require('../../assets/img/article/share.png')}
+                                style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                            />
+                        </TouchableOpacity>
+                    </View>
                     {!userInfo.is_login && <LoginMask />}
                 </>
             ) : (
@@ -560,6 +619,15 @@ const styles = StyleSheet.create({
         height: text(80),
         marginBottom: text(4),
     },
+    iconText: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.lightBlackColor,
+        position: 'absolute',
+        textAlign: 'left',
+        left: px(34),
+        top: 0,
+    },
     finishText: {
         fontSize: Font.textH3,
         lineHeight: text(17),
@@ -579,8 +647,31 @@ const styles = StyleSheet.create({
     goTop: {
         position: 'absolute',
         right: px(16),
-        bottom: isIPhoneX ? 34 + px(40) : px(40),
+        bottom: isIphoneX() ? 34 + px(60) : px(60),
         zIndex: 10,
+    },
+    footer: {
+        paddingHorizontal: px(16),
+        borderColor: '#DDDDDD',
+        borderTopWidth: 0.5,
+        backgroundColor: '#fff',
+        paddingTop: px(8),
+        paddingBottom: px(20),
+    },
+    footer_content: {
+        height: px(31),
+        backgroundColor: '#F3F5F8',
+        borderRadius: px(16),
+        width: px(151),
+        justifyContent: 'center',
+        paddingLeft: px(16),
+    },
+    commentTitle: {
+        paddingLeft: px(16),
+        fontSize: px(16),
+        fontWeight: '700',
+        lineHeight: px(22),
+        marginBottom: px(12),
     },
 });
 

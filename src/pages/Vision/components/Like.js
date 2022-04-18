@@ -2,7 +2,7 @@
  * @Date: 2022-04-15 11:59:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 13:38:43
+ * @LastEditTime: 2022-04-18 15:24:04
  * @Description:点赞
  */
 /*
@@ -18,7 +18,7 @@ import {px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import LottieView from 'lottie-react-native';
 import http from '../../../services';
-const Like = ({favor_num, favor_status, comment_id}) => {
+const Like = ({favor_num, favor_status, comment_id, style}) => {
     const [favorNum, setFavorNum] = useState(favor_num);
     const [favorStatus, setFavorStatus] = useState(favor_status);
     const zanRef = useRef();
@@ -34,7 +34,7 @@ const Like = ({favor_num, favor_status, comment_id}) => {
         });
     };
     return (
-        <TouchableOpacity style={Style.flexRow} onPress={onFavor} activeOpacity={0.9}>
+        <TouchableOpacity style={[Style.flexRow, style]} onPress={onFavor} activeOpacity={0.9}>
             <Text style={styles.zan_text}>{favorNum}</Text>
             <LottieView
                 ref={zanRef}
