@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-15 18:35:39
+ * @LastEditTime: 2022-04-18 17:41:19
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -115,11 +115,15 @@ class TradeBuy extends Component {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
                     // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
-                    if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
-                        if (res.result?.pop_risk_disclosure) {
-                            this.showRiskDisclosure(res.result);
-                        }
-                    } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
+                    if (
+                        this.props.isFocused &&
+                        res.result?.risk_disclosure &&
+                        res.result?.pop_risk_disclosure &&
+                        this.show_risk_disclosure &&
+                        !_modalRef
+                    ) {
+                        this.showRiskDisclosure(res.result);
+                    } else if (this.props.isFocused && res.result?.risk_pop && !_modalRef) {
                         this.showRishPop(res.result);
                     }
                     this.setState(
@@ -181,11 +185,11 @@ class TradeBuy extends Component {
                     </View>
                 );
             },
-            confirmCallBack: () => {
-                if (this.props.isFocused && data.risk_pop) {
-                    this.showRishPop(data);
-                }
-            },
+            // confirmCallBack: () => {
+            //     if (this.props.isFocused && data.risk_pop) {
+            //         this.showRishPop(data);
+            //     }
+            // },
             confirmText: '关闭',
             countdown: data.risk_disclosure.countdown,
             isTouchMaskToClose: false,
@@ -219,8 +223,12 @@ class TradeBuy extends Component {
             confirmCallBack: () => {
                 global.LogTool('RiskWarningWindows_Yes');
                 this.setState({is_continue_buy: true});
-                if (data.risk_pop.confirm.url) {
-                    this.props.jump(data.risk_pop.confirm.url);
+                if (data.risk_pop.confirm?.act == 'back') {
+                    this.props.navigation.goBack();
+                } else if (data.risk_pop.confirm?.act == 'jump') {
+                    this.props.jump(data.risk_pop.confirm?.url);
+                } else if (data.risk_pop.confirm?.act == 'pop_risk_disclosure') {
+                    this.showRiskDisclosure(data);
                 }
             },
             confirmText: data.risk_pop.confirm.text,
