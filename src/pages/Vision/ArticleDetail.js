@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 17:15:29
+ * @LastEditTime: 2022-04-18 18:07:53
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -315,6 +315,7 @@ const ArticleDetail = ({navigation, route}) => {
                         );
                     }
                 }
+                Toast.show('您已阅读完本篇文章');
                 return true;
             });
             if (route.params?.article_id && !post_progress) {
