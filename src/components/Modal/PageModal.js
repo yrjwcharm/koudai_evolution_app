@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 16:07:13
+ * @LastEditTime: 2022-04-18 19:18:08
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -116,16 +116,9 @@ export default class PageModal extends Component {
                 onPress={() => {
                     this.props.isTouchMaskToClose && this.cancel();
                 }}>
-                <Animated.View
-                    importantForAccessibility="no"
-                    style={[
-                        styles.absolute,
-                        {
-                            opacity: this.state.opacity,
-                        },
-                    ]}>
+                <View importantForAccessibility="no" style={[styles.absolute]}>
                     <View style={[styles.absolute, styles.mask]} />
-                </Animated.View>
+                </View>
             </TouchableWithoutFeedback>
         );
     };
