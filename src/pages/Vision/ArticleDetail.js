@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 17:09:34
+ * @LastEditTime: 2022-04-18 17:15:29
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -512,9 +512,9 @@ const ArticleDetail = ({navigation, route}) => {
                                 style={{height: px(24), width: px(24), marginBottom: px(-4)}}
                                 source={require('../../assets/img/vision/commentIcon.png')}
                             />
-                            <Text style={[styles.iconText, {top: px(-7)}]}>{`${
-                                data.comment_num > 0 ? data.comment_num : 0
-                            }`}</Text>
+                            {data.comment_num > 0 ? (
+                                <Text style={[styles.iconText, {top: px(-7)}]}>{data.comment_num}</Text>
+                            ) : null}
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}

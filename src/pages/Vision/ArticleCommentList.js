@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 17:10:57
+ * @LastEditTime: 2022-04-18 17:14:20
  * @Description:文章评论解表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -149,7 +149,7 @@ const ArticleCommentList = ({navigation, route}) => {
                     }}
                     maxLength={inputMaxLength}
                     textAlignVertical="top"
-                    placeholder="聊点什么吧..."
+                    placeholder="我来聊两句..."
                 />
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
