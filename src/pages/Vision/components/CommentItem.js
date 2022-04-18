@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 17:09:23
+ * @LastEditTime: 2022-04-18 18:22:34
  * @Description:评论内容体
  */
 import {StyleSheet, Text, View} from 'react-native';
@@ -19,12 +19,14 @@ const CommentItem = ({data, style, key}) => {
                 <View style={[{flex: 1}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
                         <Text style={styles.name}>{_data?.user_info?.nickname}</Text>
-                        <Like
-                            favor_status={_data.is_liked}
-                            favor_num={_data.like_num}
-                            comment_id={_data.id}
-                            style={{top: px(-4)}}
-                        />
+                        {_data.id != 0 ? (
+                            <Like
+                                favor_status={_data.is_liked}
+                                favor_num={_data.like_num}
+                                comment_id={_data.id}
+                                style={{top: px(-4)}}
+                            />
+                        ) : null}
                     </View>
                     <Text style={styles.content}>{_data?.content}</Text>
                     <Text style={styles.date}>{_data?.created_at_human}</Text>

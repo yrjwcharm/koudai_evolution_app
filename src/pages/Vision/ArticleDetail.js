@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 18:07:53
+ * @LastEditTime: 2022-04-18 19:03:02
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -230,7 +230,11 @@ const ArticleDetail = ({navigation, route}) => {
         [data, collect_status]
     );
     const postProgress = useCallback((params) => {
-        http.post('/community/article/progress/20210101', params || {});
+        http.post('/community/article/progress/20210101', params || {}).then((res) => {
+            if (res.code == '000000' && res.result?.add_rational_num > 0) {
+                Toast.show('理性值+' + res.result.add_rational_num);
+            }
+        });
     }, []);
     const back = useCallback(() => {
         Picker.isPickerShow((res) => {
@@ -315,7 +319,6 @@ const ArticleDetail = ({navigation, route}) => {
                         );
                     }
                 }
-                Toast.show('您已阅读完本篇文章');
                 return true;
             });
             if (route.params?.article_id && !post_progress) {
@@ -353,8 +356,8 @@ const ArticleDetail = ({navigation, route}) => {
         Picker.hide();
         setShowMask(false);
     };
-    const handelComment = () => {
-        navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id});
+    const handelComment = (show_modal) => {
+        navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id, show_modal});
     };
     return (
         <View style={[styles.container]}>
@@ -478,7 +481,9 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {commentData?.list?.length >= 10 ? (
                                                     <Text
                                                         style={[styles.footnote, {color: Colors.btnColor}]}
-                                                        onPress={handelComment}>
+                                                        onPress={() => {
+                                                            handelComment(false);
+                                                        }}>
                                                         查看全部评论
                                                     </Text>
                                                 ) : (

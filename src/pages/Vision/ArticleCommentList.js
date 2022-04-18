@@ -2,8 +2,8 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 17:14:20
- * @Description:文章评论解表
+ * @LastEditTime: 2022-04-18 18:47:41
+ * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -27,6 +27,7 @@ const ArticleCommentList = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const article_id = route?.params?.article_id;
     const comment_id = route?.params?.comment_id;
+    const show_modal = route?.params?.show_modal == undefined ? true : route?.params?.show_modal;
     const getData = useCallback(() => {
         http.get('/community/article/comment/list/20210101', {
             article_id,
@@ -46,12 +47,12 @@ const ArticleCommentList = ({navigation, route}) => {
     }, [page, article_id, comment_id]);
     useEffect(() => {
         getData();
-        if (!comment_id)
+        if (comment_id === undefined && show_modal) {
             setTimeout(() => {
                 commentInput();
             }, 500);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getData]);
+        }
+    }, [getData, comment_id, show_modal]);
     const onRefresh = () => {
         setRefreshing(true);
         if (page == 1) {
@@ -113,8 +114,8 @@ const ArticleCommentList = ({navigation, route}) => {
                 style={styles.con}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
-                renderItem={({item}) => {
-                    return <CommentItem data={item} style={{marginBottom: px(9)}} />;
+                renderItem={({item, index}) => {
+                    return <CommentItem key={index} data={item} style={{marginBottom: px(9)}} />;
                 }}
                 ListEmptyComponent={() =>
                     refreshing && (
