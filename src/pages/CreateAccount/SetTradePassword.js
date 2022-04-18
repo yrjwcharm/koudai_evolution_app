@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 17:59:09
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-18 10:59:47
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -124,43 +124,45 @@ const SetTradePassword = ({navigation, route}) => {
     }, [jump, navigation, password, pwdFisrt, route, dispatch]);
 
     return (
-        <ScrollView style={[Style.containerPadding]} keyboardShouldPersistTaps="handled">
-            <FastImage
-                style={styles.pwd_img}
-                source={require('../../assets/img/account/tradePwd.png')}
-                resizeMode={FastImage.resizeMode.contain}
-            />
-            <View style={styles.card}>
-                <View style={[Style.flexRow, styles.card_head]}>
-                    <FastImage
-                        source={require('../../assets/img/account/password.png')}
-                        style={{width: px(20), height: px(20), resizeMode: 'contain', marginRight: px(4)}}
-                    />
-                    <Text style={styles.title}>{pwdMsg}</Text>
-                </View>
-                <View style={{marginTop: text(25), position: 'relative'}}>
-                    {render_box()}
-                    <TextInput
-                        ref={textInput}
-                        underlineColorAndroid="transparent"
-                        caretHidden
-                        keyboardType="number-pad"
-                        style={styles.input}
-                        autoFocus={true}
-                        maxLength={6}
-                        value={password}
-                        onChangeText={(value) => setPassword(value.replace(/\D/g, ''))}
-                    />
-                    <Text
-                        onPress={handelReset}
-                        style={{
-                            fontSize: text(12),
-                            textAlign: 'center',
-                            color: '#0051CC',
-                            marginTop: text(20),
-                        }}>
-                        重新设置密码
-                    </Text>
+        <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+            <View style={{paddingHorizontal: Space.padding}}>
+                <FastImage
+                    style={styles.pwd_img}
+                    source={require('../../assets/img/account/tradePwd.png')}
+                    resizeMode={FastImage.resizeMode.contain}
+                />
+                <View style={styles.card}>
+                    <View style={[Style.flexRow, styles.card_head]}>
+                        <FastImage
+                            source={require('../../assets/img/account/password.png')}
+                            style={{width: px(20), height: px(20), resizeMode: 'contain', marginRight: px(4)}}
+                        />
+                        <Text style={styles.title}>{pwdMsg}</Text>
+                    </View>
+                    <View style={{marginTop: text(25), position: 'relative'}}>
+                        {render_box()}
+                        <TextInput
+                            ref={textInput}
+                            underlineColorAndroid="transparent"
+                            caretHidden
+                            keyboardType="number-pad"
+                            style={styles.input}
+                            autoFocus={true}
+                            maxLength={6}
+                            value={password}
+                            onChangeText={(value) => setPassword(value.replace(/\D/g, ''))}
+                        />
+                        <Text
+                            onPress={handelReset}
+                            style={{
+                                fontSize: text(12),
+                                textAlign: 'center',
+                                color: '#0051CC',
+                                marginTop: text(20),
+                            }}>
+                            重新设置密码
+                        </Text>
+                    </View>
                 </View>
             </View>
             <BottomDesc style={{marginTop: text(120)}} />
@@ -168,6 +170,11 @@ const SetTradePassword = ({navigation, route}) => {
     );
 };
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.bgColor,
+        paddingVertical: Space.padding,
+    },
     pwd_img: {
         width: '100%',
         height: text(55),
