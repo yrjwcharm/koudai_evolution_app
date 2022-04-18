@@ -474,6 +474,8 @@ function App(props) {
                 ...options,
                 confirm: true,
                 confirmText: modal.confirm?.text || '',
+                isTouchMaskToClose: false,
+                backButtonClose: false,
                 cancelCallBack: () => {
                     global.LogTool('GradeWindows_No');
                     http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
