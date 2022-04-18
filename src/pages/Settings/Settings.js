@@ -6,7 +6,7 @@
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Linking} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Linking, AppState} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -166,16 +166,25 @@ const Settings = ({navigation}) => {
                 setShowCircle(true);
             }
         });
-        Http.get('/mapi/config/20210101').then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
+        const handlerData = () => {
+            if (AppState.currentState === 'active') {
+                Http.get('/mapi/config/20210101').then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    }
+                });
             }
-        });
+        };
+        handlerData();
         Http.get('/share/common/info/20210101', {scene: 'share_lcmf'}).then((res) => {
             if (res.code === '000000') {
                 setShareContent(res.result);
             }
         });
+        AppState.addEventListener('change', handlerData);
+        return () => {
+            AppState.removeEventListener('change', handlerData);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
