@@ -29,7 +29,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
     }, [splitNumber, ticks]);
 
     const [ticksText, setTicksText] = useState({});
-    const currentIndex = ticks.findIndex((item) => item[0] === marks.value);
+    const currentIndex = marks ? ticks.findIndex((item) => item[0] === marks?.value) : 0;
     return (
         <View
             style={styles.container}
@@ -130,7 +130,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel
                             style={[
                                 styles.scaleItemLabel,
                                 {position: 'absolute', left: +x},
-                                isLevel && +text - 1 === ticks.findIndex((item) => item[0] === marks.value)
+                                isLevel && marks && +text - 1 === ticks.findIndex((item) => item[0] === marks.value)
                                     ? {fontWeight: '700', color: '#121D3Ad'}
                                     : {},
                             ]}>
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     },
     triangle: {
         position: 'absolute',
-        bottom: px(-11),
+        bottom: px(-12),
         width: 0,
         height: 0,
         borderStyle: 'solid',
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     },
     triangleInner: {
         position: 'absolute',
-        bottom: px(-10.5),
+        bottom: px(-12),
         width: 0,
         height: 0,
         borderStyle: 'solid',
