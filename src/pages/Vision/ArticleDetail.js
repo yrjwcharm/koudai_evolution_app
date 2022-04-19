@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-19 11:07:15
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-19 11:21:15
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -41,7 +41,6 @@ const options = {
     ignoreAndroidSystemSettings: false,
 };
 
-let post_progress = false;
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -71,6 +70,7 @@ const ArticleDetail = ({navigation, route}) => {
     const zanRef = useRef(null);
     const collectRef = useRef(null);
     const fr = route.params?.fr;
+    const post_progress = useRef(false);
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -312,7 +312,7 @@ const ArticleDetail = ({navigation, route}) => {
         }
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
             setFinishRead(true);
-            if (route.params?.article_id && !post_progress) {
+            if (route.params?.article_id && !post_progress.current) {
                 postProgress({
                     article_id: route.params?.article_id,
                     latency: Date.now() - timeRef.current,
@@ -320,7 +320,7 @@ const ArticleDetail = ({navigation, route}) => {
                     article_progress: 100,
                     fr,
                 });
-                post_progress = true;
+                post_progress.current = true;
             }
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData, fr]);
