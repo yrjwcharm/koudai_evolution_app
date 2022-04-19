@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:31:45
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 19:29:24
+ * @LastEditTime: 2022-04-19 19:15:59
  * @Description:答题按钮
  */
 import React from 'react';
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         borderRadius: px(19),
         borderWidth: 1,
         borderColor: Colors.btnColor,
-        height: px(34),
+        paddingVertical: px(9),
         paddingHorizontal: px(24),
         minWidth: px(126),
         marginBottom: px(12),
