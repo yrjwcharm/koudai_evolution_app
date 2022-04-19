@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 19:33:25
+ * @LastEditTime: 2022-04-19 18:26:42
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -143,7 +143,7 @@ const ArticleCommentList = ({navigation, route}) => {
                 keyExtractor={(item, index) => index.toString()}
             />
 
-            <PageModal ref={inputModal} title="写评论" style={{height: px(370)}}>
+            <PageModal ref={inputModal} title="写评论" style={{height: px(370)}} backButtonClose={true}>
                 <TextInput
                     ref={inputRef}
                     value={content}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-04-19 11:21:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-19 18:12:16
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -469,7 +469,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                 <CommentItem data={item} style={{marginBottom: px(9)}} key={index} />
                                             ))}
                                             <View style={[{height: px(40)}, Style.flexCenter]}>
-                                                {commentData?.list?.length >= 10 ? (
+                                                {commentData?.list?.length >= 10 && commentData.has_more ? (
                                                     <Text
                                                         style={[styles.footnote, {color: Colors.btnColor}]}
                                                         onPress={() => {
@@ -510,7 +510,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 source={require('../../assets/img/vision/commentIcon.png')}
                             />
                             {data.comment_num > 0 ? (
-                                <Text style={[styles.iconText, {top: px(-7)}]}>{data.comment_num}</Text>
+                                <Text style={[styles.iconText, {top: px(-7), left: px(34)}]}>{data.comment_num}</Text>
                             ) : null}
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -603,12 +603,12 @@ const styles = StyleSheet.create({
         marginBottom: text(4),
     },
     iconText: {
-        fontSize: Font.textH3,
+        fontSize: Font.textSm,
         lineHeight: text(17),
         color: Colors.lightBlackColor,
         position: 'absolute',
         textAlign: 'left',
-        left: px(34),
+        left: px(32),
         top: 0,
     },
     finishText: {

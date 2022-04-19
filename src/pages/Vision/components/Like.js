@@ -2,7 +2,7 @@
  * @Date: 2022-04-15 11:59:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 15:24:04
+ * @LastEditTime: 2022-04-19 18:24:54
  * @Description:点赞
  */
 /*
@@ -12,7 +12,7 @@
  * @LastEditTime: 2022-04-15 11:57:10
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
@@ -22,7 +22,6 @@ const Like = ({favor_num, favor_status, comment_id, style}) => {
     const [favorNum, setFavorNum] = useState(favor_num);
     const [favorStatus, setFavorStatus] = useState(favor_status);
     const zanRef = useRef();
-
     const onFavor = () => {
         http.post('/community/article/comment/like/20210101', {is_like: favorStatus ? 0 : 1, comment_id: comment_id});
         setFavorNum((preNum) => {
