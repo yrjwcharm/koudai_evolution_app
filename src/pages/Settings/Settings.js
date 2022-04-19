@@ -101,6 +101,12 @@ const Settings = ({navigation}) => {
                     .then((res) => {
                         if (res) {
                             Linking.openURL(item.url.path);
+                        } else if (item.url.path !== item.url.params.default_url) {
+                            Linking.canOpenURL(item.url.params.default_url).then((r) => {
+                                if (r) {
+                                    Linking.openURL(item.url.params.default_url);
+                                }
+                            });
                         }
                     })
                     .catch((err) => {

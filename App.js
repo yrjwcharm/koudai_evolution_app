@@ -488,6 +488,12 @@ function App(props) {
                         .then((res) => {
                             if (res) {
                                 Linking.openURL(modal.confirm.url.path);
+                            } else if (modal.confirm.url.path !== modal.confirm.url.params.default_url) {
+                                Linking.canOpenURL(modal.confirm.url.params.default_url).then((r) => {
+                                    if (r) {
+                                        Linking.openURL(modal.confirm.url.params.default_url);
+                                    }
+                                });
                             }
                         })
                         .catch((err) => {
