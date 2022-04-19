@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 19:03:02
+ * @LastEditTime: 2022-04-19 11:07:15
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -311,16 +311,7 @@ const ArticleDetail = ({navigation, route}) => {
             setShowGoTop(false);
         }
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
-            setFinishRead((prev) => {
-                if (!prev) {
-                    if (route.params?.article_id) {
-                        dispatch(
-                            updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))})
-                        );
-                    }
-                }
-                return true;
-            });
+            setFinishRead(true);
             if (route.params?.article_id && !post_progress) {
                 postProgress({
                     article_id: route.params?.article_id,
@@ -377,7 +368,7 @@ const ArticleDetail = ({navigation, route}) => {
                         style={{flex: 1}}
                         onScroll={onScroll}
                         scrollIndicatorInsets={{right: 1}}
-                        scrollEventThrottle={16}>
+                        scrollEventThrottle={100}>
                         <ShareModal
                             ctrl={
                                 route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link
