@@ -2,10 +2,10 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-18 17:41:19
+ * @LastEditTime: 2022-04-20 17:39:27
  * @Description: 购买定投
  */
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {
     ActivityIndicator,
     View,
@@ -39,7 +39,6 @@ import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
 import memoize from 'memoize-one';
-let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -114,16 +113,16 @@ class TradeBuy extends Component {
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
-                    // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
+                    // this.props.modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
                     if (
                         this.props.isFocused &&
                         res.result?.risk_disclosure &&
                         res.result?.pop_risk_disclosure &&
                         this.show_risk_disclosure &&
-                        !_modalRef
+                        !this.props.modalRef
                     ) {
                         this.showRiskDisclosure(res.result);
-                    } else if (this.props.isFocused && res.result?.risk_pop && !_modalRef) {
+                    } else if (this.props.isFocused && res.result?.risk_pop && !this.props.modalRef) {
                         this.showRishPop(res.result);
                     }
                     this.setState(
@@ -1284,32 +1283,34 @@ function WithHooks(props) {
     const jump = useJump();
     const userInfo = useSelector((state) => state.userInfo);
     const isFocused = useIsFocused();
+    const [modal, setModal] = useState('');
     useFocusEffect(
         React.useCallback(() => {
             const {anti_pop} = userInfo.toJS();
-            _modalRef = '';
+            setModal('');
             if (anti_pop) {
-                _modalRef = Modal.show({
+                const _modal = Modal.show({
                     title: anti_pop.title,
                     content: anti_pop.content,
                     confirm: true,
                     isTouchMaskToClose: false,
                     cancelCallBack: () => {
-                        _modalRef = '';
+                        setModal('');
                         props.navigation.goBack();
                     },
                     confirmCallBack: () => {
-                        _modalRef = '';
+                        setModal('');
                         jump(anti_pop.confirm_action?.url);
                     },
                     cancelText: anti_pop.cancel_action?.text,
                     confirmText: anti_pop.confirm_action?.text,
                 });
+                setModal(_modal);
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
-    return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} />;
+    return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} modalRef={modal} />;
 }
 const styles = StyleSheet.create({
     title: {
