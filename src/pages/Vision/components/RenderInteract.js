@@ -2,7 +2,7 @@
  * @Date: 2022-04-15 11:03:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-15 16:53:36
+ * @LastEditTime: 2022-04-20 17:09:55
  * @Description: 用户互动
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -167,8 +167,8 @@ export default (props) => {
                                             ]}
                                         />
                                     )}
-                                    <View style={[Style.flexBetween, {paddingHorizontal: px(12), height: '100%'}]}>
-                                        <View style={Style.flexRow}>
+                                    <View style={[Style.flexBetween, {padding: px(12), minHeight: px(46)}]}>
+                                        <View style={[Style.flexRow, {maxWidth: px(240)}]}>
                                             {type === 3 && (
                                                 <>
                                                     {answered && (my_answer === value || value === answer) ? (
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.brandColor,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
-        height: px(46),
+        // height: px(46),
         position: 'relative',
         overflow: 'hidden',
     },
