@@ -9,9 +9,10 @@ import {px} from '../../../utils/appUtil';
  * @param {array} options.ticks // 刻度标签
  * @param {array} options.value_area // 进度
  * @param {object} options.marks // 标记
+ * @param {object} options.isLevel // 是否是风险等级调整工具
  * @returns
  */
-const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) => {
+const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks, isLevel}) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const scaleArr = useMemo(() => {
         let index = 0;
@@ -28,7 +29,7 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
     }, [splitNumber, ticks]);
 
     const [ticksText, setTicksText] = useState({});
-
+    const currentIndex = marks ? ticks.findIndex((item) => item[0] === marks?.value) : 0;
     return (
         <View
             style={styles.container}
@@ -36,38 +37,59 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
                 setContainerWidth(e.nativeEvent.layout.width);
             }}>
             {/* 标记 */}
-            <View style={[styles.mark, {right: (1 - marks.value) * containerWidth + px(-20)}]}>
-                <View style={[styles.markCircle, {backgroundColor: marks.bg_color, borderColor: marks.theme}]}>
-                    <Text
-                        style={{fontWeight: '500', lineHeight: px(14), fontSize: px(12), color: marks.theme}}
-                        numberOfLines={1}>
-                        {marks.text}
-                    </Text>
+            {marks ? (
+                <View
+                    style={[
+                        styles.mark,
+                        {
+                            right:
+                                (1 - marks.value) * containerWidth +
+                                px(-20) -
+                                (isLevel && currentIndex === 0 ? px(10) : 0),
+                        },
+                    ]}>
+                    <View style={[styles.markCircle, {backgroundColor: marks.bg_color, borderColor: marks.theme}]}>
+                        <Text
+                            style={{fontWeight: '500', lineHeight: px(14), fontSize: px(12), color: marks.theme}}
+                            numberOfLines={1}>
+                            {marks.text}
+                        </Text>
+                    </View>
+                    <View
+                        style={[
+                            styles.triangle,
+                            {
+                                borderTopColor: marks.theme,
+                                right: isLevel && currentIndex === 0 ? px(13) + px(10) : px(13),
+                            },
+                        ]}
+                    />
+                    <View
+                        style={[
+                            styles.triangleInner,
+                            {
+                                borderTopColor: marks.bg_color,
+                                right: isLevel && currentIndex === 0 ? px(12) + px(10) : px(12),
+                            },
+                        ]}
+                    />
+                    <View
+                        style={[
+                            styles.verticalLine,
+                            {
+                                backgroundColor: marks.theme,
+                                right: isLevel && currentIndex === 0 ? px(19) + px(10) : px(19),
+                            },
+                        ]}
+                    />
                 </View>
-                <View
-                    style={[
-                        styles.triangle,
-                        {
-                            borderTopColor: marks.theme,
-                        },
-                    ]}
-                />
-                <View
-                    style={[
-                        styles.triangleInner,
-                        {
-                            borderTopColor: marks.bg_color,
-                        },
-                    ]}
-                />
-                <View style={[styles.verticalLine, {backgroundColor: marks.theme}]} />
-            </View>
+            ) : null}
             {/* 进度 */}
             <View style={styles.process}>
                 {value_area.map(([width, backgroundColor], idx) => {
                     return (
                         <View
-                            key={idx}
+                            key={idx + 1000}
                             style={[
                                 styles.processItem,
                                 {width: width * 100 + '%', backgroundColor, zIndex: value_area.length - idx + 1},
@@ -84,11 +106,12 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
                             <View
                                 style={[
                                     styles.scaleItem,
+                                    isLevel && {height: px(0)},
                                     item && {
                                         height: px(8),
                                     },
                                 ]}
-                                key={item + idx}
+                                key={idx + 10000}
                                 onLayout={(e) => {
                                     let x = e.nativeEvent.layout.x;
                                     item &&
@@ -102,7 +125,15 @@ const HotRuler = ({splitNumber = 50, ticks = [], value_area = [], marks = {}}) =
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     {Object.entries(ticksText).map(([x, text], idx) => (
-                        <Text key={idx + text} style={[styles.scaleItemLabel, {position: 'absolute', left: +x}]}>
+                        <Text
+                            key={20000 + idx}
+                            style={[
+                                styles.scaleItemLabel,
+                                {position: 'absolute', left: +x},
+                                isLevel && marks && +text - 1 === ticks.findIndex((item) => item[0] === marks.value)
+                                    ? {fontWeight: '700', color: '#121D3Ad'}
+                                    : {},
+                            ]}>
                             {text === '-' ? '' : text}
                         </Text>
                     ))}
@@ -160,8 +191,7 @@ const styles = StyleSheet.create({
     },
     triangle: {
         position: 'absolute',
-        right: px(13),
-        bottom: px(-11),
+        bottom: px(-12),
         width: 0,
         height: 0,
         borderStyle: 'solid',
@@ -171,18 +201,16 @@ const styles = StyleSheet.create({
     },
     triangleInner: {
         position: 'absolute',
-        right: px(13),
-        bottom: px(-10.5),
+        bottom: px(-12),
         width: 0,
         height: 0,
         borderStyle: 'solid',
-        borderWidth: px(7),
+        borderWidth: px(8),
         borderColor: 'transparent',
         zIndex: 1,
     },
     verticalLine: {
         position: 'absolute',
-        right: px(19),
         bottom: px(-12),
         width: px(1),
         height: px(9),

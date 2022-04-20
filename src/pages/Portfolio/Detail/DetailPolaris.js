@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-21 10:10:13
+ * @LastEditTime: 2022-04-19 15:27:04
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
@@ -348,7 +348,14 @@ export default function DetailPolaris({route, navigation}) {
                                             jump(_info.url);
                                         }}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
-                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        <View style={Style.flexRow}>
+                                            {_info.desc ? (
+                                                <Text style={{color: Colors.lightGrayColor, marginRight: text(8)}}>
+                                                    {_info.desc}
+                                                </Text>
+                                            ) : null}
+                                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        </View>
                                     </TouchableOpacity>
                                 );
                             })}

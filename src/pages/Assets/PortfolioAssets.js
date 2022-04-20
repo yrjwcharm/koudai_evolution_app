@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-17 17:10:21
+ * @LastEditTime: 2022-04-14 17:58:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -251,6 +251,7 @@ export default function PortfolioAssets(props) {
     const accountJump = (url, type) => {
         http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
             if (res.result) {
+                global.LogTool('RedemptionDetainmentWindows');
                 if (res.result?.button_list) {
                     Modal.show({
                         title: res.result?.title || '提示',
@@ -258,8 +259,14 @@ export default function PortfolioAssets(props) {
                         confirm: true,
                         cancelText: res.result?.button_list[0]?.text || '确认赎回',
                         confirmText: res.result?.button_list[1]?.text || '再想一想',
-                        cancelCallBack: () => jump(res?.result?.button_list[0]?.url || url),
-                        confirmCallBack: () => jump(res?.result?.button_list[1]?.url || url),
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                            jump(res?.result?.button_list[0]?.url || url);
+                        },
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(res?.result?.button_list[1]?.url || url);
+                        },
                     });
                 } else {
                     Modal.show({
@@ -268,7 +275,13 @@ export default function PortfolioAssets(props) {
                         confirm: true,
                         cancelText: '确认赎回',
                         confirmText: '再想一想',
-                        cancelCallBack: () => jump(url),
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                        },
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(url);
+                        },
                     });
                 }
             } else {

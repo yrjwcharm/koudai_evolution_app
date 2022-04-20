@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-12 19:02:32
+ * @LastEditTime: 2022-04-13 12:32:29
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -30,6 +30,7 @@ export default function Tabbar() {
         });
     }, [userInfo]);
     return (
+        // //如需要在此插入元素,如tabbar底部弹窗 可添加 <RootSiblingParent inactive={true}>
         <Tab.Navigator
             initialRouteName="Index"
             screenOptions={({route, navigation}) => ({

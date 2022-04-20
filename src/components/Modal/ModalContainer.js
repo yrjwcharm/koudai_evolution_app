@@ -158,9 +158,8 @@ export default class MyModal extends Component {
             });
             this.props.destroy();
         }
-        setTimeout(() => {
-            this.props.confirmCallBack && this.props.confirmCallBack();
-        }, 500);
+
+        this.props.confirmCallBack && this.props.confirmCallBack();
     };
 
     UNSAFE_componentWillReceiveProps(nextProps) {

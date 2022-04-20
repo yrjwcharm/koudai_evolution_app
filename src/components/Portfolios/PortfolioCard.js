@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-06-07 11:14:13
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-03-29 10:37:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-13 17:19:17
  * @Description:
  */
 import React from 'react';
@@ -13,6 +13,7 @@ import FastImage from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../hooks';
 import {Chart, chartOptions} from '../Chart';
+import RenderHtml from '../RenderHtml';
 const PortfolioCard = ({data, style}) => {
     const jump = useJump();
     return (
@@ -27,11 +28,11 @@ const PortfolioCard = ({data, style}) => {
                 <View style={Style.flexRow}>
                     <Text style={styles.card_title}>{data?.name}</Text>
                     {data?.labels && (
-                        <Text style={styles.card_title_dexc}>
-                            {data?.labels.map((_data, _index) =>
-                                _index == 0 ? <Text key={_index}>{_data}</Text> : <Text key={_index}>｜{_data}</Text>
-                            )}
-                        </Text>
+                        <View style={Style.flexRow}>
+                            {data?.labels.map((_data, _index) => (
+                                <RenderHtml style={styles.card_title_dexc} html={_data} key={_index} />
+                            ))}
+                        </View>
                     )}
                 </View>
                 {data.yield ? (

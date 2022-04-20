@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-16 18:11:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-19 10:20:41
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -243,34 +243,36 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                 );
                             })}
                         </View>
-                        <View>
-                            <View style={[Style.flexRow, {marginBottom: text(4)}]}>
-                                <MaterialCommunityIcons name={'circle-medium'} color={Colors.green} size={18} />
-                                <Text style={{fontSize: text(12), lineHeight: text(17)}}>
-                                    {chartData?.remark?.title}{' '}
-                                </Text>
-                                <Text
-                                    style={{
-                                        color: Colors.green,
-                                        fontSize: text(15),
-                                        lineHeight: text(17),
-                                        fontFamily: Font.numFontFamily,
-                                    }}>
-                                    {chartData?.remark?.ratio}
-                                </Text>
-                            </View>
-                            {chartData?.remark?.content && (
-                                <Html
-                                    html={chartData?.remark?.content}
-                                    style={{
-                                        fontSize: Font.textH3,
-                                        lineHeight: text(18),
-                                        color: Colors.darkGrayColor,
-                                        textAlign: 'justify',
-                                    }}
-                                />
-                            )}
-                        </View>
+                        {chartData?.remark?.title ? (
+                            <>
+                                <View style={[Style.flexRow, {marginBottom: text(4)}]}>
+                                    <MaterialCommunityIcons name={'circle-medium'} color={Colors.green} size={18} />
+                                    <Text style={{fontSize: text(12), lineHeight: text(17)}}>
+                                        {chartData?.remark?.title}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: Colors.green,
+                                            fontSize: text(15),
+                                            lineHeight: text(17),
+                                            fontFamily: Font.numFontFamily,
+                                        }}>
+                                        {chartData?.remark?.ratio}
+                                    </Text>
+                                </View>
+                                {chartData?.remark?.content && (
+                                    <Html
+                                        html={chartData?.remark?.content}
+                                        style={{
+                                            fontSize: Font.textH3,
+                                            lineHeight: text(18),
+                                            color: Colors.darkGrayColor,
+                                            textAlign: 'justify',
+                                        }}
+                                    />
+                                )}
+                            </>
+                        ) : null}
                     </View>
                 ) : null}
                 {showEmpty &&

@@ -52,6 +52,7 @@ axios.interceptors.request.use(
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
             idfa: global.idfa,
             oaid: global.oaid,
+            currentViewPage: global.currentRoutePageId,
         };
         return config;
     },

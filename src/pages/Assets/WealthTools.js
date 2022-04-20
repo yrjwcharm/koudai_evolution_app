@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-12-14 20:55:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-18 10:40:31
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -237,7 +237,10 @@ const WealthTools = () => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 key={idx}
-                onPress={() => jumpToolDetail(item?.state_info?.button?.url || item?.url)}
+                onPress={() => {
+                    global.LogTool('toolCard', item?.tool_id);
+                    jumpToolDetail(item?.state_info?.button?.url || item?.url);
+                }}
                 style={[styles.toolItemOnOpen, {marginTop: px(idx > 0 ? 12 : 0)}]}>
                 <View style={styles.toolItemHeaderOnOpen}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -253,12 +256,15 @@ const WealthTools = () => {
                             style={[
                                 styles.toolItemContentLeftDegreeOnOpen,
                                 data?.head_data?.status && {color: '#E74949'},
+                                {textAlign: 'left'},
                             ]}>
                             {item?.state_info?.value}
                         </Text>
                     </View>
                     <View style={styles.toolItemContentRightOnOpen}>
-                        {item.state_info?.chart && <HotRuler {...item.state_info?.chart} />}
+                        {item.state_info?.chart && (
+                            <HotRuler {...item.state_info?.chart} isLevel={item?.tool_id == 'risk_change'} />
+                        )}
                     </View>
                 </View>
                 {item.state_info?.button && (
