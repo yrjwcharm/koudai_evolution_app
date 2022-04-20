@@ -1,16 +1,16 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2022-04-13 10:48:48
+ * @LastEditTime: 2022-04-19 19:16:26
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {deviceWidth, px, px as text} from '../utils/appUtil';
-import {Colors, Space, Style} from '../common/commonStyle';
+import {Colors, Space} from '../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {useJump} from './hooks';

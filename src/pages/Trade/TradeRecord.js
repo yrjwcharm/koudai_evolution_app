@@ -3,10 +3,10 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 16:27:24
+ * @LastEditTime: 2022-04-06 15:35:59
  * @Description:交易记录
  */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
@@ -28,6 +28,7 @@ const TradeRecord = ({route, navigation}) => {
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
     const [tabActive, setActiveTab] = useState(0);
+    const offset = useRef('');
     const jump = useJump();
     const isMfb = route?.params?.fr == 'mfb';
     const getData = useCallback(
@@ -39,9 +40,11 @@ const TradeRecord = ({route, navigation}) => {
                 page: Page,
                 poid: route.params?.poid,
                 prod_code: route.params?.prod_code,
+                offset: offset.current,
             })
                 .then((res) => {
                     setHasMore(res.result.has_more);
+                    offset.current = res.result.next_offset;
                     setLoading(false);
                     if (toast) {
                         Toast.show('交易记录已更新', {duration: 500});
@@ -110,6 +113,7 @@ const TradeRecord = ({route, navigation}) => {
     const onRefresh = () => {
         getData(1, 'toast');
         setPage(1);
+        offset.current = '';
         // setPage(1);
     };
     const changeTab = (obj) => {
@@ -120,6 +124,7 @@ const TradeRecord = ({route, navigation}) => {
             return obj.i;
         });
         setPage(1);
+        offset.current = '';
     };
 
     const tradeStuatusColor = (status) => {

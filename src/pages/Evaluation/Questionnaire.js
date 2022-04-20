@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-16 18:51:32
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-03-29 11:42:16
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -115,6 +115,7 @@ const Questionnaire = () => {
                     navigation.replace('QuestionnaireResult', {
                         upid: upidRef.current,
                         summary_id: summaryIdRef.current,
+                        fr: route.params?.fr,
                     });
                 }
             }

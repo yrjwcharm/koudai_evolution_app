@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 21:23:43
+ * @LastEditTime: 2022-04-15 20:55:49
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -80,8 +80,9 @@ function HomeScreen({navigation, route}) {
     const [signData, setSignData] = useState(null);
     const bottomModal = useRef(null);
     const [signSelectData, setSignSelectData] = useState([]);
-    const [signOpen, setSignOpen] = useState([]);
+    const [signTimer, setSignTimer] = useState(8);
     const passwordModal = useRef();
+    const sign_intervalt_timer = useRef('');
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -116,16 +117,13 @@ function HomeScreen({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     };
+    //获取签约数据
     const getSignData = () => {
         http.get('adviser/get_need_sign_list/20210923').then((data) => {
-            let sign_open = data?.result?.plan_list?.map((item) => {
-                if (item?.is_open == 1) {
-                    return item?.poid;
-                }
-            });
-            setSignOpen(sign_open);
+            setSignTimer(data?.result?.risk_disclosure?.countdown);
             setSignData(data.result);
             bottomModal?.current?.show();
+            startTimer();
         });
     };
     const init = (refresh) => {
@@ -134,7 +132,8 @@ function HomeScreen({navigation, route}) {
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
                 setHoldingData(res.result);
-                if (res.result?.is_need_sign == 1) {
+                if (res.result?.is_need_sign == 1 && !sign_intervalt_timer.current) {
+                    sign_intervalt_timer.current = 1;
                     getSignData();
                 }
             }
@@ -183,6 +182,19 @@ function HomeScreen({navigation, route}) {
                 }
             });
         }
+    };
+    //签约计时器
+    const startTimer = () => {
+        sign_intervalt_timer.current = setInterval(() => {
+            setSignTimer((time) => {
+                if (time > 0) {
+                    return --time;
+                } else {
+                    sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
+                    return 0;
+                }
+            });
+        }, 1000);
     };
     // 展示渠道弹窗
     const showChannelModal = (_modalData) => {
@@ -265,25 +277,14 @@ function HomeScreen({navigation, route}) {
             }
         }
     };
-    //点击签约协议展开
-    const handleSignOpen = (poid) => {
-        setSignOpen((prev) => {
-            return [...prev, poid];
-        });
-    };
     //签约
     const handleSign = (password) => {
         http.post('adviser/sign/20210923', {poids: signSelectData, password}).then((res) => {
             Toast.show(res.message);
             if (res.code === '000000') {
-                if (signSelectData?.length == signData?.plan_list?.length) {
-                    setTimeout(() => {
-                        bottomModal?.current?.hide();
-                    }, 1000);
-                } else {
-                    setSignSelectData([]);
-                    getSignData();
-                }
+                setTimeout(() => {
+                    bottomModal?.current?.hide();
+                }, 1000);
             }
         });
     };
@@ -299,6 +300,149 @@ function HomeScreen({navigation, route}) {
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
     }, [netInfo]);
+
+    const needAdjust = useCallback((item) => {
+        return item.portfolios.every((po) => po.adjust_status > 0);
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            Storage.get('version' + userInfo.latest_version + 'setting_icon').then((res) => {
+                if (!res && global.ver < userInfo.latest_version) {
+                    setShowCircle(true);
+                } else {
+                    setShowCircle(false);
+                }
+            });
+            hasNet && !showGesture ? init() : setLoading(false);
+            storage.get('myAssetsEye').then((res) => {
+                setShowEye(res ? res : 'true');
+            });
+
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [hasNet, showGesture, userInfo.is_login, userInfo.latest_version])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            if (scrollY > 50) {
+                StatusBar.setBarStyle('dark-content');
+            } else {
+                StatusBar.setBarStyle('light-content');
+            }
+        }, [scrollY])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            !userInfo.is_login && scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [userInfo.is_login])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            if (centerData.length > 0) {
+                centerData[page] && global.LogTool('assetsConsole', centerData[page].type);
+            }
+        }, [centerData, page])
+    );
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            if (isFocused && userInfo.is_login) {
+                scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                hasNet && !showGesture && init('refresh');
+                global.LogTool('tabDoubleClick', 'Home');
+            }
+        });
+        return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hasNet, isFocused, navigation, userInfo.is_login, showGesture]);
+    useEffect(() => {
+        const listener = NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
+        return () => {
+            listener();
+            sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
+        };
+    }, []);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: insets.top + text(8),
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
+    /** @name 渲染中控滑块 */
+    const renderItem = ({item, index}) => {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                    if (item.button) {
+                        global.LogTool('assetsConsoleStart', item.type);
+                        http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
+                        jump(item.button.url);
+                    }
+                }}
+                style={{...styles.contentBox, height: text(164)}}
+                key={item + index}>
+                {item.tag ? (
+                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                        <View style={[styles.contentTag, {backgroundColor: item.color}]}>
+                            <Text style={styles.contentTagText}>{item.tag}</Text>
+                        </View>
+                        {item.pub_date ? (
+                            <Text
+                                style={{
+                                    ...styles.contentTagText,
+                                    color: Colors.lightGrayColor,
+                                    fontWeight: '400',
+                                }}>
+                                {item.pub_date}
+                            </Text>
+                        ) : null}
+                    </View>
+                ) : null}
+                {item.title ? (
+                    <View style={{marginBottom: text(4)}}>
+                        <HTML html={item.title} numberOfLines={1} style={styles.contentTitle} />
+                    </View>
+                ) : null}
+                <HTML
+                    html={item.content}
+                    numberOfLines={3}
+                    style={{
+                        ...styles.contentText,
+                        color: item.title ? Colors.descColor : Colors.defaultColor,
+                    }}
+                />
+                {item.button ? (
+                    <View
+                        style={[
+                            Style.flexRowCenter,
+                            styles.checkBtn,
+                            styles.bottomBtn,
+                            {backgroundColor: item.color || Colors.red},
+                        ]}>
+                        <Text style={{...styles.noticeText, marginRight: text(4)}}>{item.button.text}</Text>
+                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
+                    </View>
+                ) : null}
+            </TouchableOpacity>
+        );
+    };
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
         return item.has_bought !== undefined && !item.has_bought ? (
@@ -392,152 +536,21 @@ function HomeScreen({navigation, route}) {
         },
         [renderTitle, renderProfit, jump]
     );
-    const needAdjust = useCallback((item) => {
-        return item.portfolios.every((po) => po.adjust_status > 0);
-    }, []);
-    const renderLoading = () => {
-        return (
-            <View
-                style={{
-                    paddingTop: insets.top + text(8),
-                    flex: 1,
-                    backgroundColor: '#fff',
-                }}>
-                <Image
-                    style={{
-                        flex: 1,
-                    }}
-                    source={require('../../assets/personal/loading.png')}
-                    resizeMode={Image.resizeMode.contain}
-                />
-            </View>
-        );
-    };
-    /** @name 渲染中控滑块 */
-    const renderItem = ({item, index}) => {
-        return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                    if (item.button) {
-                        global.LogTool('assetsConsoleStart', item.type);
-                        http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
-                        jump(item.button.url);
-                    }
-                }}
-                style={{...styles.contentBox, height: text(164)}}
-                key={item + index}>
-                {item.tag ? (
-                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
-                        <View style={[styles.contentTag, {backgroundColor: item.color}]}>
-                            <Text style={styles.contentTagText}>{item.tag}</Text>
-                        </View>
-                        {item.pub_date ? (
-                            <Text
-                                style={{
-                                    ...styles.contentTagText,
-                                    color: Colors.lightGrayColor,
-                                    fontWeight: '400',
-                                }}>
-                                {item.pub_date}
-                            </Text>
-                        ) : null}
-                    </View>
-                ) : null}
-                {item.title ? (
-                    <View style={{marginBottom: text(4)}}>
-                        <HTML html={item.title} numberOfLines={1} style={styles.contentTitle} />
-                    </View>
-                ) : null}
-                <HTML
-                    html={item.content}
-                    numberOfLines={3}
-                    style={{
-                        ...styles.contentText,
-                        color: item.title ? Colors.descColor : Colors.defaultColor,
-                    }}
-                />
-                {item.button ? (
-                    <View
-                        style={[
-                            Style.flexRowCenter,
-                            styles.checkBtn,
-                            styles.bottomBtn,
-                            {backgroundColor: item.color || Colors.red},
-                        ]}>
-                        <Text style={{...styles.noticeText, marginRight: text(4)}}>{item.button.text}</Text>
-                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                    </View>
-                ) : null}
-            </TouchableOpacity>
-        );
-    };
-
-    useFocusEffect(
-        useCallback(() => {
-            Storage.get('version' + userInfo.latest_version + 'setting_icon').then((res) => {
-                if (!res && global.ver < userInfo.latest_version) {
-                    setShowCircle(true);
-                } else {
-                    setShowCircle(false);
-                }
-            });
-            hasNet && !showGesture ? init() : setLoading(false);
-            storage.get('myAssetsEye').then((res) => {
-                setShowEye(res ? res : 'true');
-            });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [hasNet, showGesture, userInfo.is_login, userInfo.latest_version])
-    );
-    useFocusEffect(
-        useCallback(() => {
-            if (scrollY > 50) {
-                StatusBar.setBarStyle('dark-content');
-            } else {
-                StatusBar.setBarStyle('light-content');
-            }
-        }, [scrollY])
-    );
-    useFocusEffect(
-        useCallback(() => {
-            !userInfo.is_login && scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-            return () => {
-                StatusBar.setBarStyle('dark-content');
-            };
-        }, [userInfo.is_login])
-    );
-    useFocusEffect(
-        useCallback(() => {
-            if (centerData.length > 0) {
-                centerData[page] && global.LogTool('assetsConsole', centerData[page].type);
-            }
-        }, [centerData, page])
-    );
-    useEffect(() => {
-        const listener = navigation.addListener('tabPress', () => {
-            if (isFocused && userInfo.is_login) {
-                scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-                hasNet && !showGesture && init('refresh');
-                global.LogTool('tabDoubleClick', 'Home');
-            }
-        });
-        return () => listener();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasNet, isFocused, navigation, userInfo.is_login, showGesture]);
-    useEffect(() => {
-        const listener = NetInfo.addEventListener((state) => {
-            setHasNet(state.isConnected);
-        });
-        return () => listener();
-    }, []);
-
     return hasNet ? (
         loading ? (
             renderLoading()
         ) : !showGesture ? (
             <View style={styles.container}>
                 <PasswordModal ref={passwordModal} onDone={handleSign} />
-                <PageModal height={px(530)} tabbar={true} ref={bottomModal} title={signData?.title}>
+                <PageModal
+                    style={{height: px(530)}}
+                    tabbar={true}
+                    ref={bottomModal}
+                    title={signData?.title}
+                    onClose={() => {
+                        sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
+                        sign_intervalt_timer.current = null;
+                    }}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
@@ -588,7 +601,13 @@ function HomeScreen({navigation, route}) {
                                         <View key={index} style={styles.border_bottom}>
                                             <Text style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
                                                 {item?.name}
+                                                {item?.sub_name ? (
+                                                    <Text style={{fontWeight: '400', fontSize: px(12)}}>
+                                                        {item.sub_name}
+                                                    </Text>
+                                                ) : null}
                                             </Text>
+
                                             {item?.adviser_cost_desc ? (
                                                 <Text style={[styles.light_text, {marginBottom: px(6)}]}>
                                                     {item.adviser_cost_desc}
@@ -604,42 +623,32 @@ function HomeScreen({navigation, route}) {
                                                 />
                                                 <Text style={[styles.light_text, {flex: 1}]}>
                                                     {item?.desc}
-                                                    <Text
-                                                        style={{
-                                                            color: signOpen?.includes(item?.poid)
-                                                                ? Colors.lightBlackColor
-                                                                : Colors.btnColor,
-                                                        }}
-                                                        onPress={() => {
-                                                            handleSignOpen(item?.poid);
-                                                        }}>
-                                                        {item?.link_name}
+                                                    {item?.link_name}
+                                                    <Text>
+                                                        {item?.link_list?.map((link, _index) => (
+                                                            <Text
+                                                                style={{color: Colors.btnColor}}
+                                                                key={_index}
+                                                                onPress={() => {
+                                                                    if (link?.url) {
+                                                                        jump(link?.url);
+                                                                    }
+                                                                }}>
+                                                                {link?.text}
+                                                                {item?.link_list?.length > 1 &&
+                                                                _index == item?.link_list?.length - 2 ? (
+                                                                    <Text style={styles.light_text}>和</Text>
+                                                                ) : _index == item?.link_list?.length - 1 ? (
+                                                                    ''
+                                                                ) : (
+                                                                    '、'
+                                                                )}
+                                                            </Text>
+                                                        ))}
+                                                        {item?.desc_end ? (
+                                                            <Text style={styles.light_text}>{item?.desc_end}</Text>
+                                                        ) : null}
                                                     </Text>
-                                                    {signOpen?.includes(item?.poid) && (
-                                                        <Text>
-                                                            {item?.link_list?.map((link, _index) => (
-                                                                <Text
-                                                                    style={{color: Colors.btnColor}}
-                                                                    key={_index}
-                                                                    onPress={() => {
-                                                                        if (link?.url) {
-                                                                            jump(link?.url);
-                                                                        }
-                                                                    }}>
-                                                                    {link?.text}
-                                                                    {item?.link_list?.length > 1 &&
-                                                                    _index == item?.link_list?.length - 2
-                                                                        ? '和'
-                                                                        : _index == item?.link_list?.length - 1
-                                                                        ? ''
-                                                                        : '、'}
-                                                                </Text>
-                                                            ))}
-                                                            {item?.desc_end ? (
-                                                                <Text style={styles.light_text}>{item?.desc_end}</Text>
-                                                            ) : null}
-                                                        </Text>
-                                                    )}
                                                 </Text>
                                             </View>
                                         </View>
@@ -649,15 +658,16 @@ function HomeScreen({navigation, route}) {
                         </ScrollView>
                         {signData?.button ? (
                             <Button
-                                disabled={!signSelectData?.length > 0}
+                                disabled={signData?.plan_list?.length !== signSelectData.length || signTimer > 0}
                                 style={{
-                                    marginVertical: px(12),
                                     marginHorizontal: px(16),
                                 }}
                                 onPress={_.debounce(() => {
                                     passwordModal?.current?.show();
                                 }, 500)}
-                                title={signData?.button?.text}
+                                title={
+                                    signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
+                                }
                             />
                         ) : null}
                     </View>
@@ -883,7 +893,7 @@ function HomeScreen({navigation, route}) {
                                     key={`topmenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
                                     <View style={{position: 'relative'}}>
-                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                        <Image source={{uri: item?.icon}} style={styles.topMenuIcon} />
                                         {item.is_new ? (
                                             <View style={styles.newMenu}>
                                                 <Text style={styles.contentTagText}>{'新'}</Text>

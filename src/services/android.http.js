@@ -2,7 +2,7 @@
  * @Date: 2022-01-21 14:37:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-03 17:48:02
+ * @LastEditTime: 2022-04-01 17:29:04
  * @Description:
  */
 import {fetch} from 'react-native-ssl-request';
@@ -34,6 +34,7 @@ const HTTP = async (method, url, body = {}) => {
             systemVersion: DeviceInfo.getSystemVersion(),
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
             oaid: global.oaid,
+            currentViewPage: global.currentRoutePageId,
         });
     try {
         let options = {

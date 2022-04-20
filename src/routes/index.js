@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-03-28 15:15:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-18 10:48:01
  * @Description:路由表
  */
 import React from 'react';
@@ -175,6 +175,7 @@ import Live from '../pages/Vision/Live'; //直播详情页
 import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
+import RiskAdjustTool from '../pages/Assets/RiskAdjustTool'; //风险等级调整工具
 import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
@@ -711,6 +712,7 @@ export default function AppStack() {
             <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
             <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
+            <Stack.Screen name="RiskAdjustTool" component={RiskAdjustTool} options={{title: ''}} />
             <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
             <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
             <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />

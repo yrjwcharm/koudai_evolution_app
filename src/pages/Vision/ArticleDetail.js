@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 16:43:07
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-19 11:12:44
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {ShareModal, Modal} from '../../components/Modal';
+import {ShareModal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -34,17 +34,14 @@ import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
-import useJump from '../../components/hooks/useJump.js';
 
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
 };
 
-let post_progress = false;
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
-    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -71,6 +68,7 @@ const ArticleDetail = ({navigation, route}) => {
     const zanRef = useRef(null);
     const collectRef = useRef(null);
     const fr = route.params?.fr;
+    const post_progress = useRef(false);
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -325,7 +323,7 @@ const ArticleDetail = ({navigation, route}) => {
                 }
                 return true;
             });
-            if (route.params?.article_id && !post_progress) {
+            if (route.params?.article_id && !post_progress.current) {
                 postProgress({
                     article_id: route.params?.article_id,
                     latency: Date.now() - timeRef.current,
@@ -333,7 +331,7 @@ const ArticleDetail = ({navigation, route}) => {
                     article_progress: 100,
                     fr,
                 });
-                post_progress = true;
+                post_progress.current = true;
             }
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData, fr]);

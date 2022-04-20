@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -54,6 +54,8 @@ export default function DetailAccount({route, navigation}) {
                         poid: data.poid,
                         period: p,
                         type: t,
+                        fr: route.params?.fr,
+                        risk_level: route?.params?.risk_level,
                     }).then((resp) => {
                         setChartData(resp.result);
                         setChart(resp.result.yield_info.chart);
@@ -82,6 +84,8 @@ export default function DetailAccount({route, navigation}) {
                         poid: res.result.poid,
                         period: res.result.period,
                         type: 1,
+                        fr: route.params?.fr,
+                        risk_level: route?.params?.risk_level,
                     }).then((resp) => {
                         if (resp.code === '000000') {
                             setChartData(resp.result);
@@ -98,6 +102,7 @@ export default function DetailAccount({route, navigation}) {
                 upid: route?.params?.upid,
                 fr: route.params?.fr,
                 amount: route?.params?.amount,
+                risk_level: route?.params?.risk_level,
             })
                 .then((res) => {
                     setLoading(false);
@@ -148,6 +153,8 @@ export default function DetailAccount({route, navigation}) {
                             poid: res.result.poid,
                             period: res.result.period,
                             type: 1,
+                            fr: route.params?.fr,
+                            risk_level: route?.params?.risk_level,
                         }).then((resp) => {
                             setChartData(resp.result);
                             setChart(resp.result.yield_info.chart);

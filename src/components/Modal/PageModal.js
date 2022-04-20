@@ -2,7 +2,11 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
+<<<<<<< HEAD
+ * @LastEditTime: 2022-04-13 15:41:07
+=======
  * @LastEditTime: 2022-04-12 19:26:05
+>>>>>>> master
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -242,6 +246,7 @@ export default class PageModal extends Component {
     cancel = () => {
         if (!this.state.hide) {
             this.out();
+            this.props.onClose && this.props.onClose();
             if (this.props.backButtonClose && Platform.OS === 'android')
                 BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }
