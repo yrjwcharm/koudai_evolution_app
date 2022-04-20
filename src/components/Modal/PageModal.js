@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 19:34:53
+ * @LastEditTime: 2022-04-20 17:49:58
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -218,7 +218,6 @@ export default class PageModal extends Component {
         }).start(() => {
             this.setState({hide: true});
             this.state.offset.setValue(0);
-            this.state.opacity.setValue(0);
         });
     };
 

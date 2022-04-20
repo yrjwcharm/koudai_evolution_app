@@ -2,7 +2,7 @@
  * @Date: 2022-04-15 11:59:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-19 19:49:07
+ * @LastEditTime: 2022-04-20 17:54:44
  * @Description:点赞
  */
 /*
@@ -21,6 +21,7 @@ import http from '../../../services';
 const Like = ({favor_num, favor_status, comment_id, style}) => {
     const [favorNum, setFavorNum] = useState(favor_num);
     const [favorStatus, setFavorStatus] = useState(favor_status);
+    const [autoPlay, setAutoPlay] = useState(false);
     const zanRef = useRef();
     const onFavor = () => {
         http.post('/community/article/comment/like/20210101', {is_like: favorStatus ? 0 : 1, comment_id: comment_id});
@@ -28,6 +29,7 @@ const Like = ({favor_num, favor_status, comment_id, style}) => {
             return favorStatus ? --preNum : ++preNum;
         });
         setFavorStatus((pre_status) => {
+            setAutoPlay(true);
             zanRef.current.play();
             return !pre_status;
         });
@@ -38,9 +40,9 @@ const Like = ({favor_num, favor_status, comment_id, style}) => {
             <LottieView
                 ref={zanRef}
                 loop={false}
-                autoPlay
+                autoPlay={autoPlay}
                 source={
-                    favorStatus
+                    (autoPlay ? favorStatus : !favorStatus)
                         ? require('../../../assets/animation/zanActive.json')
                         : require('../../../assets/animation/zan.json')
                 }

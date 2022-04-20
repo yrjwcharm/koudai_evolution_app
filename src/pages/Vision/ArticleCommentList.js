@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-19 18:26:42
+ * @LastEditTime: 2022-04-20 17:57:10
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -121,18 +121,16 @@ const ArticleCommentList = ({navigation, route}) => {
                 renderItem={({item, index}) => {
                     return <CommentItem key={index} data={item} style={{marginBottom: px(9)}} />;
                 }}
-                ListEmptyComponent={() =>
-                    refreshing && (
-                        <View style={[{height: px(40)}, Style.flexCenter]}>
-                            <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
-                                暂无评论&nbsp;
-                                <Text style={{color: Colors.btnColor}} onPress={commentInput}>
-                                    我来写一条
-                                </Text>
+                ListEmptyComponent={() => (
+                    <View style={[{height: px(40)}, Style.flexCenter]}>
+                        <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                            暂无评论&nbsp;
+                            <Text style={{color: Colors.btnColor}} onPress={commentInput}>
+                                我来写一条
                             </Text>
-                        </View>
-                    )
-                }
+                        </Text>
+                    </View>
+                )}
                 ListFooterComponent={!refreshing && commentList.length > 0 && ListFooterComponent}
                 data={commentList}
                 onEndReached={() => {

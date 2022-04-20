@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-19 18:12:16
+ * @LastEditTime: 2022-04-20 17:59:35
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -439,6 +439,8 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
+                                    ) : route.params.type == 2 ? (
+                                        <View style={{height: text(100)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )
@@ -503,7 +505,9 @@ const ArticleDetail = ({navigation, route}) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={handelComment}
+                            onPress={() => {
+                                handelComment(false);
+                            }}
                             style={[Style.flexCenter, {flex: 1}]}>
                             <FastImage
                                 style={{height: px(24), width: px(24), marginBottom: px(-4)}}
