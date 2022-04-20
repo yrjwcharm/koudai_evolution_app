@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2022-04-08 14:28:46
+ * @LastEditTime: 2022-04-13 10:48:48
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -28,7 +28,7 @@ const BottomDesc = (props) => {
             <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
                 {props?.fix_img ? (
                     Array.isArray(props.fix_img) ? (
-                        Array.isArray.map((item, idx) => (
+                        props.fix_img.map((item, idx) => (
                             <FastImage
                                 key={idx}
                                 resizeMode={FastImage.resizeMode.contain}

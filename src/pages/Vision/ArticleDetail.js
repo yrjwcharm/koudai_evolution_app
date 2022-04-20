@@ -233,9 +233,9 @@ const ArticleDetail = ({navigation, route}) => {
                 Picker.hide();
             }
         });
+        let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
+        progress = progress > 100 ? 100 : progress;
         if (route?.params?.type !== 5 && route?.params?.type !== 2) {
-            let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
-            progress = progress > 100 ? 100 : progress;
             postProgress({
                 article_id: route.params?.article_id,
                 latency: Date.now() - timeRef.current,
@@ -244,25 +244,28 @@ const ArticleDetail = ({navigation, route}) => {
                 fr,
             });
         }
-        // // 提示弹窗
-        // http.get('/community/article/popup/20220406', {
-        //     article_id: route.params?.article_id,
-        //     done_status: data?.read_info?.done_status || +finishRead,
-        // }).then((res) => {
-        //     if (res.code === '000000') {
-        //         const result = res.result;
-        //         result &&
-        //             Modal.show({
-        //                 title: result.title,
-        //                 content: result.content,
-        //                 confirmText: result.confirm?.text,
-        //                 confirmCallBack: () => {
-        //                     jump(result.confirm?.url);
-        //                 },
-        //             });
-        //     }
-        // });
-    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr]);
+        // 提示弹窗
+        if (route?.params?.type !== 5) {
+            http.get('/community/article/popup/20220406', {
+                article_id: route.params?.article_id,
+                done_status: data?.read_info?.done_status || +finishRead,
+                article_progress: progress,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    const result = res.result;
+                    result &&
+                        Modal.show({
+                            title: result.title,
+                            content: result.content,
+                            confirmText: result.confirm?.text,
+                            confirmCallBack: () => {
+                                jump(result.confirm?.url);
+                            },
+                        });
+                }
+            });
+        }
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr, jump]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
