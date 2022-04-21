@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-28 16:27:19
+ * @LastEditTime: 2022-05-10 18:48:24
  * @Description:路由表
  */
 import React from 'react';
@@ -185,6 +185,7 @@ import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
+import Sign from '../pages/Assets/Sign';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -729,6 +730,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
+            <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
         </Stack.Navigator>
     );
 }
