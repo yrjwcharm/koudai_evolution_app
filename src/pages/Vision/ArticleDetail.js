@@ -11,11 +11,11 @@ import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {ShareModal} from '../../components/Modal';
+import {ShareModal, Modal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -34,6 +34,7 @@ import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
+import useJump from '../../components/hooks/useJump.js';
 
 const options = {
     enableVibrateFallback: true,
@@ -42,6 +43,7 @@ const options = {
 
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
+    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -598,7 +600,7 @@ const styles = StyleSheet.create({
     goTop: {
         position: 'absolute',
         right: px(16),
-        bottom: isIPhoneX ? 34 + px(40) : px(40),
+        bottom: isIphoneX ? 34 + px(40) : px(40),
         zIndex: 10,
     },
 });
