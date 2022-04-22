@@ -16,7 +16,7 @@ export default class RenderHtml extends Component {
     //   html: this.props.html
     // }
     render() {
-        const {numberOfLines = 10000, style} = this.props;
+        const {numberOfLines = 10000, style, nativeProps} = this.props;
         return (
             <HTML
                 ignoredStyles={[
@@ -36,6 +36,7 @@ export default class RenderHtml extends Component {
                 baseFontStyle={style}
                 source={{html: this.props.html}}
                 imagesMaxWidth={width - text(30)}
+                {...nativeProps}
             />
         );
     }

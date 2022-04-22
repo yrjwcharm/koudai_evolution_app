@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-21 15:58:28
+ * @LastEditTime: 2022-04-22 11:17:58
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,7 +11,7 @@ import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     goTop: {
         position: 'absolute',
         right: px(16),
-        bottom: isIPhoneX ? 34 + px(40) : px(40),
+        bottom: isIphoneX ? 34 + px(40) : px(40),
         zIndex: 10,
     },
 });

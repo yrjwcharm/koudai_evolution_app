@@ -6,7 +6,7 @@
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Linking, AppState} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -21,6 +21,7 @@ import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import {updateAccount} from '../../redux/actions/accountInfo.js';
 import {deleteModal} from '../../redux/actions/modalInfo';
+import http from '../../services/index.js';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -94,6 +95,26 @@ const Settings = ({navigation}) => {
                         });
                     },
                 });
+            } else if (item.type === 'encourage') {
+                global.LogTool('Grade');
+                Linking.canOpenURL(item.url.path)
+                    .then((res) => {
+                        if (res) {
+                            Linking.openURL(item.url.path);
+                        } else if (item.url.path !== item.url.params.default_url) {
+                            Linking.canOpenURL(item.url.params.default_url).then((r) => {
+                                if (r) {
+                                    Linking.openURL(item.url.params.default_url);
+                                }
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                http.post('/mapi/set/encourage/20220412').then((res) => {
+                    console.log(res);
+                });
             } else {
                 if (item.type == 'about') {
                     setShowCircle((prev) => {
@@ -151,16 +172,25 @@ const Settings = ({navigation}) => {
                 setShowCircle(true);
             }
         });
-        Http.get('/mapi/config/20210101').then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
+        const handlerData = () => {
+            if (AppState.currentState === 'active') {
+                Http.get('/mapi/config/20210101').then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    }
+                });
             }
-        });
+        };
+        handlerData();
         Http.get('/share/common/info/20210101', {scene: 'share_lcmf'}).then((res) => {
             if (res.code === '000000') {
                 setShareContent(res.result);
             }
         });
+        AppState.addEventListener('change', handlerData);
+        return () => {
+            AppState.removeEventListener('change', handlerData);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
@@ -229,7 +259,7 @@ const Settings = ({navigation}) => {
                                                     </Text>
                                                 ) : null}
 
-                                                {item.type == 'about' && showCircle ? (
+                                                {(item.type == 'about' && showCircle) || item.show_circle ? (
                                                     <View style={styles.circle} />
                                                 ) : null}
                                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />

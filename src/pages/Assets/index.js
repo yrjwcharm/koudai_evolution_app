@@ -1170,7 +1170,9 @@ function HomeScreen({navigation, route}) {
                                     }}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                    {index == 3 && showCircle ? <View style={styles.circle} /> : null}
+                                    {(index == 3 && showCircle) || item.show_circle ? (
+                                        <View style={styles.circle} />
+                                    ) : null}
                                 </TouchableOpacity>
                             );
                         })}
