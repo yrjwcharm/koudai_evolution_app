@@ -18,8 +18,8 @@ const WalletAutoRechargeDetail = ({navigation, route}) => {
         let historyRoutes = navigation.dangerouslyGetState?.()?.routes || [];
         historyRoutes.forEach((item) => {
             if (item.name === 'PortfolioAssets') {
-                global.LogTool('FixedPlanDetail_Planrecord_BabyRecharge_Introduction');
-            } else if (item.name === 'DetailAccount') {
+                global.LogTool('FixedPlanAssets_Planrecord_BabyRecharge_Introduction');
+            } else if (item.name === 'DetailFixed') {
                 global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Introduction');
             }
         });
