@@ -2,7 +2,7 @@
  * @Date: 2022-04-15 11:59:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-20 17:54:44
+ * @LastEditTime: 2022-04-22 16:14:09
  * @Description:点赞
  */
 /*
@@ -53,5 +53,11 @@ const Like = ({favor_num, favor_status, comment_id, style}) => {
 };
 export default Like;
 const styles = StyleSheet.create({
-    zan_text: {fontFamily: Font.numRegular, fontSize: px(11), color: Colors.lightBlackColor, right: -px(14)},
+    zan_text: {
+        fontFamily: Font.numRegular,
+        fontSize: px(11),
+        color: Colors.lightBlackColor,
+        right: -px(14),
+        top: px(2),
+    },
 });

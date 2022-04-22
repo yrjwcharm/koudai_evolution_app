@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:05:29
+ * @LastEditTime: 2022-04-22 16:13:12
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -531,13 +531,13 @@ const ArticleDetail = ({navigation, route}) => {
                             onPress={() => {
                                 handelComment(false);
                             }}
-                            style={[Style.flexCenter, {flex: 1}]}>
+                            style={[Style.flexCenter, {flex: 1, left: px(2)}]}>
                             <FastImage
-                                style={{height: px(24), width: px(24), marginBottom: px(-4)}}
+                                style={{height: px(22), width: px(22), marginBottom: px(-4)}}
                                 source={require('../../assets/img/vision/commentIcon.png')}
                             />
                             {data.comment_num > 0 ? (
-                                <Text style={[styles.iconText, {top: px(-7), left: px(34)}]}>{data.comment_num}</Text>
+                                <Text style={[styles.iconText, {top: px(-8), left: px(34)}]}>{data.comment_num}</Text>
                             ) : null}
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         position: 'absolute',
         textAlign: 'left',
-        left: px(32),
+        left: px(31),
         top: 0,
     },
     finishText: {
