@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-20 17:57:10
+ * @LastEditTime: 2022-04-22 16:05:48
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -176,7 +176,7 @@ const ArticleCommentList = ({navigation, route}) => {
 export default ArticleCommentList;
 
 const styles = StyleSheet.create({
-    con: {flex: 1, backgroundColor: '#fff', padding: px(16)},
+    con: {flex: 1, backgroundColor: '#fff', padding: px(16), paddingRight: px(18)},
     input: {
         paddingHorizontal: px(20),
         marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
