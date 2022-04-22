@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 16:10:29
+ * @LastEditTime: 2022-04-22 16:33:31
  * @Description:评论内容体
  */
 import {StyleSheet, Text, View} from 'react-native';
@@ -16,7 +16,7 @@ const CommentItem = ({data, style, key}) => {
         return (
             <View key={_key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
                 <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
-                <View style={[{flex: 1}]}>
+                <View style={[{flex: 1, top: -px(2)}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
                         <Text style={styles.name}>{_data?.user_info?.nickname}</Text>
                         {_data.id != 0 ? (
