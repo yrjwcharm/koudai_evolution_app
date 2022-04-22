@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-11-09 11:25:38
- * @LastEditors: dx
+ * @LastEditTime: 2022-03-31 15:39:11
+ * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
@@ -57,12 +57,14 @@ export class AssetsConfigDetail extends Component {
     }
     init = () => {
         const {amount} = this.state;
-        const {poid, upid, scene} = this.props.route.params || {};
+        const {poid, upid, scene, fr, risk_level} = this.props.route.params || {};
 
         Http.get(scene === 'adviser' ? '/adviser/asset_deploy/20210923' : '/portfolio/asset_deploy/20210101', {
             amount,
             poid,
             upid,
+            fr,
+            risk_level,
         }).then((res) => {
             if (res.code === '000000') {
                 this.setState({data: res.result});

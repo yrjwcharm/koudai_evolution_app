@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 20:27:56
+ * @LastEditTime: 2022-04-14 17:40:28
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -21,6 +21,7 @@ import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
 import Html from '../../../components/RenderHtml';
+import GuideTips from '../../../components/GuideTips';
 
 export default function DetailAccount({route, navigation}) {
     const [data, setData] = useState({});
@@ -289,6 +290,9 @@ export default function DetailAccount({route, navigation}) {
                     <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             )}
+            {data?.guide_tip ? (
+                <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(120)}} />
+            ) : null}
             {Object.keys(data).length > 0 && <FixedBtn btns={data.btns} activeOpacity={1} />}
         </View>
     );

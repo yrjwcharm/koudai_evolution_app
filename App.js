@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-08 13:22:10
+ * @LastEditTime: 2022-04-22 11:02:22
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -177,18 +177,15 @@ function App(props) {
 
     React.useEffect(() => {
         setGlobalErrorHandler((error, isFatal) => {
-            console.log('global error：', error, isFatal);
-            alert('global error：' + JSON.stringify(error) + isFatal);
+            if (__DEV__) {
+                console.log('global error：', error, isFatal);
+            } else {
+                http.post('/mapi/report/app_log/20210101', {
+                    error: error,
+                });
+            }
         }, true);
-        global.ErrorUtils.setGlobalHandler((error) => {
-            console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
-            console.log(error, error.name, error.message);
-            http.post('/mapi/report/app_log/20210101', {
-                error: JSON.stringify(error),
-                error_type: error.name,
-                error_msg: error.message,
-            });
-        }, true);
+
         //厂商通道收到 push
         DeviceEventEmitter.addListener('jdeeplink', (e) => {
             store.dispatch(updateUserInfo({pushRoute: JSON.parse(e.extras)?.route}));
@@ -471,6 +468,44 @@ function App(props) {
         } else if (modal.type === 'add_wechat_guide') {
             options = generateOptions(modal);
             type = 'slide';
+        } else if (modal.type === 'encourage') {
+            global.LogTool('GradeWindows');
+            options = {
+                ...options,
+                confirm: true,
+                confirmText: modal.confirm?.text || '',
+                isTouchMaskToClose: false,
+                backButtonClose: false,
+                cancelCallBack: () => {
+                    global.LogTool('GradeWindows_No');
+                    http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
+                        console.log(res);
+                    });
+                },
+                confirmCallBack: () => {
+                    global.LogTool('GradeWindows_Yes');
+                    Linking.canOpenURL(modal.confirm.url.path)
+                        .then((res) => {
+                            if (res) {
+                                Linking.openURL(modal.confirm.url.path);
+                            } else if (modal.confirm.url.path !== modal.confirm.url.params.default_url) {
+                                Linking.canOpenURL(modal.confirm.url.params.default_url).then((r) => {
+                                    if (r) {
+                                        Linking.openURL(modal.confirm.url.params.default_url);
+                                    }
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                    http.post('/mapi/set/encourage/20220412', {action_scene: 1}).then((res) => {
+                        console.log(res);
+                    });
+                },
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+            };
         }
         if (modal.type) {
             Modal.show(options, type);

@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-17 17:14:16
+ * @LastEditTime: 2022-04-13 16:34:09
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -181,6 +181,23 @@ export const baseAreaChart = (
         }
       });
     };
+    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.risk_trans)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.risk_trans?.position)},
+        content: ${JSON.stringify(tag_position?.risk_trans?.name)},
+        limitInPlot:true,
+        background: {
+          fill: '#EB7121',
+          padding: 2,
+        },
+        pointStyle: {
+          fill: '#EB7121'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
+        }
+      });
+    };
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position.splitTag)}){
       if(${JSON.stringify(tag_position.splitTag?.showSplatLine)}==true){
         chart.guide().line({ // 绘制辅助线
@@ -260,6 +277,8 @@ export const baseAreaChart = (
           return '#E74949';
         }else if (val === 3) {
             return '#0051CC';
+         }else if(val===4){
+           return '#EB7121';
          }
       },
       stroke: '#fff',

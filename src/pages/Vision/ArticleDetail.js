@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-20 17:59:35
+ * @LastEditTime: 2022-04-22 11:05:29
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {ShareModal} from '../../components/Modal';
+import {ShareModal, Modal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -35,6 +35,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
+import useJump from '../../components/hooks/useJump.js';
 
 const options = {
     enableVibrateFallback: true,
@@ -43,6 +44,7 @@ const options = {
 
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
+    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -242,9 +244,9 @@ const ArticleDetail = ({navigation, route}) => {
                 Picker.hide();
             }
         });
+        let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
+        progress = progress > 100 ? 100 : progress;
         if (route?.params?.type !== 5 && route?.params?.type !== 2) {
-            let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
-            progress = progress > 100 ? 100 : progress;
             postProgress({
                 article_id: route.params?.article_id,
                 latency: Date.now() - timeRef.current,
@@ -253,7 +255,28 @@ const ArticleDetail = ({navigation, route}) => {
                 fr,
             });
         }
-    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr]);
+        // 提示弹窗
+        if (route?.params?.type !== 5) {
+            http.get('/community/article/popup/20220406', {
+                article_id: route.params?.article_id,
+                done_status: data?.read_info?.done_status || +finishRead,
+                article_progress: progress,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    const result = res.result;
+                    result &&
+                        Modal.show({
+                            title: result.title,
+                            content: result.content,
+                            confirmText: result.confirm?.text,
+                            confirmCallBack: () => {
+                                jump(result.confirm?.url);
+                            },
+                        });
+                }
+            });
+        }
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr, jump]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);

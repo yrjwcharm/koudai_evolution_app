@@ -2,11 +2,8 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-20 17:49:58
+ * @LastEditTime: 2022-04-22 11:04:27
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
- */
-/**
- * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
 import {
@@ -31,9 +28,10 @@ export default class PageModal extends Component {
         super(props);
         this.state = {
             offset: new Animated.Value(0),
+            opacity: new Animated.Value(0),
             hide: true,
             keyboardHeight: 0,
-            containerHeight: height,
+            containerHeight: height, //容器
             containerWidth: width,
             height: height, //内容高度
         };
@@ -160,7 +158,7 @@ export default class PageModal extends Component {
                                 translateY: this.state.offset.interpolate({
                                     inputRange: [0, 1, 2],
                                     outputRange: [
-                                        this.state.containerHeight,
+                                        height,
                                         this.state.containerHeight - this.state.height,
                                         this.state.containerHeight - this.state.height - this.state.keyboardHeight,
                                     ],

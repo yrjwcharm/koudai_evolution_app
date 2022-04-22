@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-02 15:23:49
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-20 17:39:27
  * @Description: 购买定投
  */
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {
     ActivityIndicator,
     View,
@@ -38,9 +38,7 @@ import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
-import _ from 'lodash';
 import memoize from 'memoize-one';
-let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -74,6 +72,7 @@ class TradeBuy extends Component {
             largeTip: '',
             deltaHeight: 0,
             autoChargeStatus: false,
+            is_continue_buy: false,
         };
         this.plan_id = this.props.route?.params?.plan_id || '';
         this.show_risk_disclosure = true;
@@ -114,12 +113,16 @@ class TradeBuy extends Component {
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
-                    // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
-                    if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
-                        if (res.result?.pop_risk_disclosure) {
-                            this.showRiskDisclosure(res.result);
-                        }
-                    } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
+                    // this.props.modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
+                    if (
+                        this.props.isFocused &&
+                        res.result?.risk_disclosure &&
+                        res.result?.pop_risk_disclosure &&
+                        this.show_risk_disclosure &&
+                        !this.props.modalRef
+                    ) {
+                        this.showRiskDisclosure(res.result);
+                    } else if (this.props.isFocused && res.result?.risk_pop && !this.props.modalRef) {
                         this.showRishPop(res.result);
                     }
                     this.setState(
@@ -181,11 +184,11 @@ class TradeBuy extends Component {
                     </View>
                 );
             },
-            confirmCallBack: () => {
-                if (this.props.isFocused && data.risk_pop) {
-                    this.showRishPop(data);
-                }
-            },
+            // confirmCallBack: () => {
+            //     if (this.props.isFocused && data.risk_pop) {
+            //         this.showRishPop(data);
+            //     }
+            // },
             confirmText: '关闭',
             countdown: data.risk_disclosure.countdown,
             isTouchMaskToClose: false,
@@ -207,6 +210,7 @@ class TradeBuy extends Component {
     showRishPop = (data) => {
         Modal.show({
             cancelCallBack: () => {
+                global.LogTool('RiskWarningWindows_No');
                 if (data.risk_pop.cancel?.act == 'back') {
                     this.props.navigation.goBack();
                 } else if (data.risk_pop.cancel?.act == 'jump') {
@@ -216,8 +220,14 @@ class TradeBuy extends Component {
             cancelText: data.risk_pop.cancel.text,
             confirm: true,
             confirmCallBack: () => {
-                if (data.risk_pop.confirm.url) {
-                    this.props.jump(data.risk_pop.confirm.url);
+                global.LogTool('RiskWarningWindows_Yes');
+                this.setState({is_continue_buy: true});
+                if (data.risk_pop.confirm?.act == 'back') {
+                    this.props.navigation.goBack();
+                } else if (data.risk_pop.confirm?.act == 'jump') {
+                    this.props.jump(data.risk_pop.confirm?.url);
+                } else if (data.risk_pop.confirm?.act == 'pop_risk_disclosure') {
+                    this.showRiskDisclosure(data);
                 }
             },
             confirmText: data.risk_pop.confirm.text,
@@ -238,30 +248,36 @@ class TradeBuy extends Component {
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
         if (type == 0) {
-            this.plan(this.state.amount).then((buy_id) => {
-                http.post('/trade/buy/do/20210101', {
-                    poid,
-                    buy_id: buy_id || this.state.planData.buy_id || '',
-                    amount: this.state.amount,
-                    password,
-                    trade_method: bank?.pay_type,
-                    pay_method: bank.pay_method || '',
-                    page_type: this.props.route.params.page_type || '',
-                }).then((res) => {
+            this.plan(this.state.amount)
+                .then((buy_id) => {
+                    http.post('/trade/buy/do/20210101', {
+                        poid,
+                        buy_id: buy_id || this.state.planData.buy_id || '',
+                        amount: this.state.amount,
+                        password,
+                        trade_method: bank?.pay_type,
+                        pay_method: bank.pay_method || '',
+                        page_type: this.props.route.params.page_type || '',
+                        is_continue_buy: this.state.is_continue_buy,
+                    }).then((res) => {
+                        Toast.hide(toast);
+                        if (res.code === '000000') {
+                            this.props.navigation.navigate('TradeProcessing', res.result);
+                        } else {
+                            Toast.show(res.message, {
+                                onHidden: () => {
+                                    if (res.code === 'TA2803') {
+                                        this.passwordModal.show();
+                                    }
+                                },
+                            });
+                        }
+                    });
+                })
+                .catch((err) => {
                     Toast.hide(toast);
-                    if (res.code === '000000') {
-                        this.props.navigation.navigate('TradeProcessing', res.result);
-                    } else {
-                        Toast.show(res.message, {
-                            onHidden: () => {
-                                if (res.code === 'TA2803') {
-                                    this.passwordModal.show();
-                                }
-                            },
-                        });
-                    }
+                    Toast.show(err);
                 });
-            });
         } else {
             http.post('/trade/fix_invest/do/20210101', {
                 poid,
@@ -289,13 +305,8 @@ class TradeBuy extends Component {
      * @param {*} plan
      * @return {*}
      */
-    // plan_timer = null;
     plan = (amount) => {
-        // this.plan_timer && clearTimeout(this.plan_timer);
         const {isLargeAmount, largeAmount, bankSelect} = this.state;
-        // this.plan_timer = setTimeout(()=>{
-
-        // })
         return new Promise((resove, reject) => {
             let bank = isLargeAmount ? largeAmount : bankSelect || '';
             const params = {
@@ -315,7 +326,7 @@ class TradeBuy extends Component {
                         // buyBtnCanClick: false,
                         errTip: data.message,
                     });
-                    reject();
+                    reject(data.message);
                 }
             });
         });
@@ -1272,32 +1283,34 @@ function WithHooks(props) {
     const jump = useJump();
     const userInfo = useSelector((state) => state.userInfo);
     const isFocused = useIsFocused();
+    const [modal, setModal] = useState('');
     useFocusEffect(
         React.useCallback(() => {
             const {anti_pop} = userInfo.toJS();
-            _modalRef = '';
+            setModal('');
             if (anti_pop) {
-                _modalRef = Modal.show({
+                const _modal = Modal.show({
                     title: anti_pop.title,
                     content: anti_pop.content,
                     confirm: true,
                     isTouchMaskToClose: false,
                     cancelCallBack: () => {
-                        _modalRef = '';
+                        setModal('');
                         props.navigation.goBack();
                     },
                     confirmCallBack: () => {
-                        _modalRef = '';
+                        setModal('');
                         jump(anti_pop.confirm_action?.url);
                     },
                     cancelText: anti_pop.cancel_action?.text,
                     confirmText: anti_pop.confirm_action?.text,
                 });
+                setModal(_modal);
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
-    return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} />;
+    return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} modalRef={modal} />;
 }
 const styles = StyleSheet.create({
     title: {

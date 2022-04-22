@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-06 17:47:46
+ * @LastEditTime: 2022-04-22 11:06:19
  * @Description:路由表
  */
 import React from 'react';
@@ -19,6 +19,7 @@ import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
+import VerifyCodeQA from '../pages/Auth/VerifyCodeQA'; // 收不到短信验证码
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
 import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
@@ -175,6 +176,7 @@ import Live from '../pages/Vision/Live'; //直播详情页
 import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
 import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
+import RiskAdjustTool from '../pages/Assets/RiskAdjustTool'; //风险等级调整工具
 import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
@@ -712,6 +714,7 @@ export default function AppStack() {
             <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
             <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
+            <Stack.Screen name="RiskAdjustTool" component={RiskAdjustTool} options={{title: ''}} />
             <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
             <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
             <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
@@ -723,6 +726,7 @@ export default function AppStack() {
                 component={ArticleCommentList}
                 options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
             />
+            <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
