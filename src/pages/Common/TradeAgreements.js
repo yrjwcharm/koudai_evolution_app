@@ -2,7 +2,7 @@
  * @Date: 2021-03-06 12:00:27
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 17:50:46
+ * @LastEditTime: 2022-04-22 11:51:44
  * @Description: 基金组合协议和产品概要
  */
 import React, {useEffect, useState} from 'react';
@@ -23,7 +23,7 @@ const TradeAgreements = ({navigation, route}) => {
         const params = fund_codes ? {fund_codes} : {poid, type};
         http.get(url, params).then((res) => {
             if (res.code === '000000') {
-                navigation.setOptions({title: res.result.title});
+                navigation.setOptions({title: res.result.title || '基金组合协议'});
                 setData(res.result);
             }
         });

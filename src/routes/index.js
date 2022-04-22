@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 10:48:01
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-22 11:51:48
  * @Description:路由表
  */
 import React from 'react';
@@ -390,7 +390,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: ''}} />
             <Stack.Screen name="Agreement" component={Agreement} options={{title: ''}} />
-            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: '基金组合协议'}} />
+            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: ''}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
