@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 16:13:12
+ * @LastEditTime: 2022-04-24 14:29:07
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -438,7 +438,7 @@ const ArticleDetail = ({navigation, route}) => {
                             }}
                             renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                             startInLoadingState
-                            style={{height: webviewHeight}}
+                            style={{height: webviewHeight, opacity: 0.99}}
                             textZoom={100}
                         />
                         {finishLoad && Object.keys(data).length > 0 && (
@@ -491,7 +491,9 @@ const ArticleDetail = ({navigation, route}) => {
                                     {commentData?.list?.length > 0 ? (
                                         <>
                                             {commentData?.list?.map((item, index) => (
-                                                <CommentItem data={item} style={{marginBottom: px(9)}} key={index} />
+                                                <View key={item.id}>
+                                                    <CommentItem data={item} style={{marginBottom: px(9)}} />
+                                                </View>
                                             ))}
                                             <View style={[{height: px(40)}, Style.flexCenter]}>
                                                 {commentData?.list?.length >= 10 && commentData.has_more ? (

@@ -2,7 +2,7 @@
  * @Date: 2022-04-06 17:26:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 16:05:48
+ * @LastEditTime: 2022-04-24 14:40:45
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -25,6 +25,7 @@ const ArticleCommentList = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
     const article_id = route?.params?.article_id;
     const comment_id = route?.params?.comment_id;
     const show_modal = route?.params?.show_modal == undefined ? true : route?.params?.show_modal;
@@ -34,6 +35,7 @@ const ArticleCommentList = ({navigation, route}) => {
             page,
             comment_id,
         }).then((res) => {
+            setLoading(false);
             setRefreshing(false);
             setHasMore(res.result.has_more);
             if (page != 1) {
@@ -76,7 +78,7 @@ const ArticleCommentList = ({navigation, route}) => {
     const publish = () => {
         http.post('/community/article/comment/add/20210101', {article_id, content}).then((res) => {
             if (res.code == '000000') {
-                inputModal.current.hide();
+                inputModal.current.cancel();
                 setContent('');
                 Modal.show({
                     title: '提示',
@@ -121,16 +123,18 @@ const ArticleCommentList = ({navigation, route}) => {
                 renderItem={({item, index}) => {
                     return <CommentItem key={index} data={item} style={{marginBottom: px(9)}} />;
                 }}
-                ListEmptyComponent={() => (
-                    <View style={[{height: px(40)}, Style.flexCenter]}>
-                        <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
-                            暂无评论&nbsp;
-                            <Text style={{color: Colors.btnColor}} onPress={commentInput}>
-                                我来写一条
+                ListEmptyComponent={() =>
+                    !loading && (
+                        <View style={[{height: px(40)}, Style.flexCenter]}>
+                            <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                                暂无评论&nbsp;
+                                <Text style={{color: Colors.btnColor}} onPress={commentInput}>
+                                    我来写一条
+                                </Text>
                             </Text>
-                        </Text>
-                    </View>
-                )}
+                        </View>
+                    )
+                }
                 ListFooterComponent={!refreshing && commentList.length > 0 && ListFooterComponent}
                 data={commentList}
                 onEndReached={() => {

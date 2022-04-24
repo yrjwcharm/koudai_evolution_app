@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:04:27
+ * @LastEditTime: 2022-04-24 14:41:25
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 import React, {Component} from 'react';
@@ -241,7 +241,9 @@ export default class PageModal extends Component {
 
     hide = () => {
         if (!this.state.hide) {
-            this.setState({hide: true}, this.out);
+            this.out();
+            if (this.props.backButtonClose && Platform.OS === 'android')
+                BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }
     };
 }

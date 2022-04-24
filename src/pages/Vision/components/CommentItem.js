@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 16:33:31
+ * @LastEditTime: 2022-04-24 14:28:39
  * @Description:评论内容体
  */
 import {StyleSheet, Text, View} from 'react-native';
@@ -14,7 +14,7 @@ import Like from './Like';
 const CommentItem = ({data, style, key}) => {
     const renderContent = (_data, _style, _key) => {
         return (
-            <View key={_key} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
+            <View key={_data.id} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
                 <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
                 <View style={[{flex: 1, top: -px(2)}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
@@ -35,7 +35,7 @@ const CommentItem = ({data, style, key}) => {
         );
     };
     return (
-        <View style={style} key={key}>
+        <View style={style}>
             {renderContent(data, {marginBottom: px(11)})}
             {data?.children?.map((item, index) => {
                 return renderContent(item, {marginLeft: px(42), marginBottom: px(11), index});
