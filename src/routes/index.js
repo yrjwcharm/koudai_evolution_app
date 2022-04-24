@@ -35,7 +35,7 @@ import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合�
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
-import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
+import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投  此名称在WalletAutoRechargeDetail有判断
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
@@ -85,7 +85,7 @@ import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
-import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页 此名称在WalletAutoRechargeDetail有判断
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买

@@ -16,13 +16,17 @@ const WalletAutoRechargeDetail = ({navigation, route}) => {
     useEffect(() => {
         navigation.setOptions({title: route.params.title});
         let historyRoutes = navigation.dangerouslyGetState?.()?.routes || [];
-        historyRoutes.forEach((item) => {
+        const list = historyRoutes;
+        for (let i = list.length - 1; i >= 0; i--) {
+            const item = list[i];
             if (item.name === 'PortfolioAssets') {
                 global.LogTool('FixedPlanAssets_Planrecord_BabyRecharge_Introduction');
-            } else if (item.name === 'DetailFixed') {
+                return;
+            } else if (item.name === 'TradeBuy') {
                 global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Introduction');
+                return;
             }
-        });
+        }
     }, [navigation, route]);
 
     const getData = () => {
