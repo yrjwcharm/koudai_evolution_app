@@ -2,10 +2,10 @@
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 15:33:08
+ * @LastEditTime: 2022-04-24 15:35:25
  * @Description:投顾服务签约
  */
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CheckBox from '../../components/CheckBox';
 import _ from 'lodash';

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 15:02:48
+ * @LastEditTime: 2022-04-24 16:06:06
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -639,6 +639,9 @@ function HomeScreen({navigation}) {
                                 activeOpacity={0.9}
                                 onPress={() => {
                                     notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
+                                    if (notice?.system?.action == 'Sign' && signData) {
+                                        bottomModal.current.show();
+                                    }
                                     jump(notice?.system?.url);
                                 }}>
                                 <Animated.View
@@ -1475,11 +1478,7 @@ const styles = StyleSheet.create({
         top: px(14),
     },
     light_text: {fontSize: px(13), lineHeight: px(17), color: Colors.lightBlackColor},
-    border_bottom: {
-        borderColor: Colors.lineColor,
-        borderBottomWidth: 0.5,
-        paddingVertical: px(12),
-    },
+
     point_text: {
         textAlign: 'center',
         color: '#fff',
