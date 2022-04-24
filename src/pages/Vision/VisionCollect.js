@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 16:06:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 19:22:45
+ * @LastEditTime: 2022-04-18 15:47:43
  * @Description:收藏 历史
  */
 
@@ -44,6 +44,7 @@ const VisionCollect = ({navigation}) => {
                 <CommonView tabLabel="收藏" scene="collect" type={'collect'} />
                 <CommonView tabLabel="赞过" scene="collect" type={'favor'} />
                 <CommonView tabLabel="历史" scene="collect" type={'history'} />
+                <CommonView tabLabel="评论" scene="collect" type={'comment'} />
             </ScrollableTabView>
         </LinearGradient>
     );

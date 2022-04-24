@@ -2,7 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
+<<<<<<< HEAD
  * @LastEditTime: 2022-04-22 11:17:58
+=======
+ * @LastEditTime: 2022-04-24 14:29:07
+>>>>>>> master
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -25,7 +29,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderCate from './components/RenderCate.js';
-import LinearGradient from 'react-native-linear-gradient';
 import RenderTitle from './components/RenderTitle';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
 import Picker from 'react-native-picker';
@@ -34,6 +37,8 @@ import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
+import RenderInteract from './components/RenderInteract';
+import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
 
 const options = {
@@ -66,6 +71,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [favor_status, setFavorStatus] = useState(false);
     const [collect_status, setCollectStatus] = useState(false);
     const [collect_num, setCollectNum] = useState(0);
+    const [commentData, setCommentData] = useState({});
     const zanRef = useRef(null);
     const collectRef = useRef(null);
     const fr = route.params?.fr;
@@ -92,6 +98,11 @@ const ArticleDetail = ({navigation, route}) => {
             http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
                 setRecommendData(result.result);
             });
+            http.get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1}).then(
+                (res) => {
+                    setCommentData(res.result);
+                }
+            );
         },
         [route, fr]
     );
@@ -225,7 +236,11 @@ const ArticleDetail = ({navigation, route}) => {
         [data, collect_status]
     );
     const postProgress = useCallback((params) => {
-        http.post('/community/article/progress/20210101', params || {});
+        http.post('/community/article/progress/20210101', params || {}).then((res) => {
+            if (res.code == '000000' && res.result?.add_rational_num > 0) {
+                Toast.show('理性值+' + res.result.add_rational_num);
+            }
+        });
     }, []);
     const back = useCallback(() => {
         Picker.isPickerShow((res) => {
@@ -297,6 +312,14 @@ const ArticleDetail = ({navigation, route}) => {
                 ) : null;
             },
         });
+        if (route?.params?.comment_id) {
+            setTimeout(() => {
+                navigation.navigate('ArticleCommentList', {
+                    comment_id: route?.params?.comment_id,
+                    article_id: route?.params?.article_id,
+                });
+            }, 500);
+        }
     }, [navigation, hasNet, route]);
     useEffect(() => {
         if (route?.params?.type !== 5) {
@@ -315,16 +338,7 @@ const ArticleDetail = ({navigation, route}) => {
             setShowGoTop(false);
         }
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
-            setFinishRead((prev) => {
-                if (!prev) {
-                    if (route.params?.article_id) {
-                        dispatch(
-                            updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))})
-                        );
-                    }
-                }
-                return true;
-            });
+            setFinishRead(true);
             if (route.params?.article_id && !post_progress.current) {
                 postProgress({
                     article_id: route.params?.article_id,
@@ -360,6 +374,9 @@ const ArticleDetail = ({navigation, route}) => {
         Picker.hide();
         setShowMask(false);
     };
+    const handelComment = (show_modal) => {
+        navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id, show_modal});
+    };
     return (
         <View style={[styles.container]}>
             {hasNet ? (
@@ -378,7 +395,7 @@ const ArticleDetail = ({navigation, route}) => {
                         style={{flex: 1}}
                         onScroll={onScroll}
                         scrollIndicatorInsets={{right: 1}}
-                        scrollEventThrottle={16}>
+                        scrollEventThrottle={100}>
                         <ShareModal
                             ctrl={
                                 route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link
@@ -425,7 +442,7 @@ const ArticleDetail = ({navigation, route}) => {
                             }}
                             renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                             startInLoadingState
-                            style={{height: webviewHeight}}
+                            style={{height: webviewHeight, opacity: 0.99}}
                             textZoom={100}
                         />
                         {finishLoad && Object.keys(data).length > 0 && (
@@ -449,98 +466,135 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
+                                    ) : route.params.type == 2 ? (
+                                        <View style={{height: text(100)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )
                                 ) : (
                                     <View style={{height: text(20)}} />
                                 )}
-                                <View
-                                    style={[
-                                        Style.flexRow,
-                                        {paddingBottom: Object.keys(recommendData).length > 0 ? 0 : text(64)},
-                                    ]}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => onFavor('normal')}
-                                        style={[Style.flexCenter, {flex: 1}]}>
-                                        <LottieView
-                                            ref={zanRef}
-                                            loop={false}
-                                            autoPlay
-                                            source={
-                                                favor_status
-                                                    ? require('../../assets/animation/zanActive.json')
-                                                    : require('../../assets/animation/zan.json')
-                                            }
-                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
-                                        />
 
-                                        <Text style={styles.finishText}>{`点赞${favor_num >= 0 ? favor_num : 0}`}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => onCollect('normal')}
-                                        style={[Style.flexCenter, {flex: 1}]}>
-                                        <LottieView
-                                            ref={collectRef}
-                                            loop={false}
-                                            autoPlay
-                                            source={
-                                                collect_status
-                                                    ? require('../../assets/animation/collect.json')
-                                                    : require('../../assets/animation/collectActive.json')
-                                            }
-                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
-                                        />
-
-                                        <Text style={styles.finishText}>{`收藏${
-                                            collect_num >= 0 ? collect_num : 0
-                                        }`}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            setMore(false);
-                                            shareModal.current.show();
-                                        }}
-                                        style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
-                                        <Image
-                                            source={require('../../assets/img/article/share.png')}
-                                            style={[
-                                                styles.actionIcon,
-                                                {width: px(20), height: px(20), marginBottom: px(4)},
-                                            ]}
-                                        />
-                                        <Text style={styles.finishText}>{'分享'}</Text>
-                                    </TouchableOpacity>
-                                </View>
                                 {Object.keys(recommendData).length > 0 ? (
-                                    <LinearGradient
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 0, y: 0.2}}
-                                        colors={['#fff', '#F5F6F8']}>
-                                        <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
-                                            <RenderTitle title={recommendData?.portfolios?.title} />
-                                            {recommendData?.portfolios?.list?.map((item, index) => {
-                                                return (
-                                                    <PortfolioCard
-                                                        data={item}
-                                                        key={index}
-                                                        style={{marginBottom: text(12)}}
-                                                    />
-                                                );
-                                            })}
-                                            <RenderTitle title={recommendData?.articles?.title} />
-                                            {recommendData?.articles?.list?.map((item, index) => {
-                                                return RenderCate(item, {marginBottom: text(12)}, 'article');
-                                            })}
-                                        </View>
-                                    </LinearGradient>
+                                    <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
+                                        <RenderTitle title={recommendData?.portfolios?.title} />
+                                        {recommendData?.portfolios?.list?.map((item, index) => {
+                                            return <PortfolioCard data={item} key={index} style={styles.cardStye} />;
+                                        })}
+                                        <RenderTitle title={recommendData?.articles?.title} />
+                                        {recommendData?.articles?.list?.map((item, index) => {
+                                            return RenderCate(item, styles.cardStye, 'article');
+                                        })}
+                                    </View>
                                 ) : null}
+                                {/* 问答 */}
+                                <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
+                                {/* 评论 */}
+                                <RenderTitle title={'评论'} style={{paddingLeft: px(16)}} />
+                                <View style={{padding: px(16)}}>
+                                    {commentData?.list?.length > 0 ? (
+                                        <>
+                                            {commentData?.list?.map((item, index) => (
+                                                <View key={item.id}>
+                                                    <CommentItem data={item} style={{marginBottom: px(9)}} />
+                                                </View>
+                                            ))}
+                                            <View style={[{height: px(40)}, Style.flexCenter]}>
+                                                {commentData?.list?.length >= 10 && commentData.has_more ? (
+                                                    <Text
+                                                        style={[styles.footnote, {color: Colors.btnColor}]}
+                                                        onPress={() => {
+                                                            handelComment(false);
+                                                        }}>
+                                                        查看全部评论
+                                                    </Text>
+                                                ) : (
+                                                    <Text style={styles.footnote}>已显示全部评论</Text>
+                                                )}
+                                            </View>
+                                        </>
+                                    ) : (
+                                        <View style={[{height: px(40)}, Style.flexCenter]}>
+                                            <Text style={styles.footnote}>
+                                                暂无评论&nbsp;
+                                                <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                                    我来写一条
+                                                </Text>
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
                             </>
                         )}
                     </ScrollView>
+                    {/* footer */}
+                    <View style={[styles.footer, Style.flexRow]}>
+                        <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={handelComment}>
+                            <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                handelComment(false);
+                            }}
+                            style={[Style.flexCenter, {flex: 1, left: px(2)}]}>
+                            <FastImage
+                                style={{height: px(22), width: px(22), marginBottom: px(-4)}}
+                                source={require('../../assets/img/vision/commentIcon.png')}
+                            />
+                            {data.comment_num > 0 ? (
+                                <Text style={[styles.iconText, {top: px(-8), left: px(34)}]}>{data.comment_num}</Text>
+                            ) : null}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onFavor('normal')}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <LottieView
+                                ref={zanRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    favor_status
+                                        ? require('../../assets/animation/zanActive.json')
+                                        : require('../../assets/animation/zan.json')
+                                }
+                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                            />
+
+                            <Text style={styles.iconText}>{`${favor_num >= 0 ? favor_num : 0}`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onCollect('normal')}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <LottieView
+                                ref={collectRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    collect_status
+                                        ? require('../../assets/animation/collect.json')
+                                        : require('../../assets/animation/collectActive.json')
+                                }
+                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                            />
+
+                            <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                setMore(false);
+                                shareModal.current.show();
+                            }}
+                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
+                            <Image
+                                source={require('../../assets/img/article/share.png')}
+                                style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                            />
+                        </TouchableOpacity>
+                    </View>
                     {!userInfo.is_login && <LoginMask />}
                 </>
             ) : (
@@ -581,6 +635,15 @@ const styles = StyleSheet.create({
         height: text(80),
         marginBottom: text(4),
     },
+    iconText: {
+        fontSize: Font.textSm,
+        lineHeight: text(17),
+        color: Colors.lightBlackColor,
+        position: 'absolute',
+        textAlign: 'left',
+        left: px(31),
+        top: 0,
+    },
     finishText: {
         fontSize: Font.textH3,
         lineHeight: text(17),
@@ -600,8 +663,29 @@ const styles = StyleSheet.create({
     goTop: {
         position: 'absolute',
         right: px(16),
-        bottom: isIphoneX ? 34 + px(40) : px(40),
+        bottom: isIphoneX() ? 34 + px(60) : px(60),
         zIndex: 10,
+    },
+    footer: {
+        paddingHorizontal: px(16),
+        borderColor: '#DDDDDD',
+        borderTopWidth: 0.5,
+        backgroundColor: '#fff',
+        paddingTop: px(8),
+        paddingBottom: px(20),
+    },
+    footer_content: {
+        height: px(31),
+        backgroundColor: '#F3F5F8',
+        borderRadius: px(16),
+        width: px(151),
+        justifyContent: 'center',
+        paddingLeft: px(16),
+    },
+    cardStye: {
+        marginBottom: text(12),
+        borderWidth: 0.5,
+        borderColor: '#ddd',
     },
 });
 

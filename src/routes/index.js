@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:18:21
+ * @LastEditTime: 2022-04-24 18:17:49
  * @Description:路由表
  */
 import React from 'react';
@@ -35,7 +35,7 @@ import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合�
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
-import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
+import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投  此名称在WalletAutoRechargeDetail有判断
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
@@ -85,7 +85,7 @@ import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
-import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页 此名称在WalletAutoRechargeDetail有判断
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
@@ -181,10 +181,11 @@ import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
 import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
-import CommentList from '../pages/Portfolio/CommentList'; // 评论列表
+import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
 import Sign from '../pages/Assets/Sign';
 import RiskDisclosure from '../pages/Assets/RiskDisclosure'; // 风险揭示书
+import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -391,7 +392,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: ''}} />
             <Stack.Screen name="Agreement" component={Agreement} options={{title: ''}} />
-            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: '基金组合协议'}} />
+            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: ''}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
@@ -724,6 +725,11 @@ export default function AppStack() {
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
             <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
             <Stack.Screen name="RiskDisclosure" component={RiskDisclosure} options={{title: ''}} />
+            <Stack.Screen
+                name="ArticleCommentList"
+                component={ArticleCommentList}
+                options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+            />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
         </Stack.Navigator>
     );
