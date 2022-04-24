@@ -2,75 +2,113 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-21 16:07:34
+ * @LastEditTime: 2022-04-24 18:15:18
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
+import {useJump} from '../../components/hooks';
+import HTML from '../../components/RenderHtml';
+import Loading from '../Portfolio/components/PageLoading';
+import {PasswordModal} from '../../components/Password';
+import Toast from '../../components/Toast';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 
-export default ({navigation}) => {
-    const [data, setData] = useState([]);
-    const scrollHeight = useRef();
+export default ({navigation, route}) => {
+    const jump = useJump();
+    const [data, setData] = useState({});
+    const {processing_info = {}, risk_disclosure = []} = data;
+    const {content = '', url = ''} = processing_info;
+    const [button, setButton] = useState({disabled: true, text: ''});
+    const {disabled, text} = button;
+    const [ticking, setTicking] = useState(true); // 是否正在倒计时
+    const countdownRef = useRef(10);
+    const timeRef = useRef();
+    const passwordRef = useRef();
+    const {poids} = route.params;
 
     useEffect(() => {
-        navigation.setOptions({title: '风险揭示书'});
-        setData([
-            {
-                content: `尊敬的投资者：\n请您认真阅读本风险揭示书，了解基金投顾服务的风险，慎重决定是否接受服务。如您对风险揭示书的任何内容存在疑问，请勿进行后续操作。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。`,
-                status: 0,
-                title: '珠海盈米基金销售有限公司',
-            },
-            {
-                content: `尊敬的投资者：\n请您认真阅读本风险揭示书，了解基金投顾服务的风险，慎重决定是否接受服务。如您对风险揭示书的任何内容存在疑问，请勿进行后续操作。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。`,
-                status: 0,
-                title: '珠海盈米基金销售有限公司',
-            },
-            {
-                content: `尊敬的投资者：\n请您认真阅读本风险揭示书，了解基金投顾服务的风险，慎重决定是否接受服务。如您对风险揭示书的任何内容存在疑问，请勿进行后续操作。\n一、您在接受基金投顾服务前，须了解基金投顾服务的含义。基金投顾服务指盈米基金TMP平台向您提供资产配置和投资建议， 您自主决定是否接受的服务，并需独立承担投资风险。`,
-                status: 0,
-                title: '珠海盈米基金销售有限公司',
-            },
-        ]);
+        http.get('/advisor/need_sign/info/20220422', {poids}).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '风险揭示书'});
+                countdownRef.current = res.result.countdown;
+                setButton({disabled: true, text: `${countdownRef.current}s后确认`});
+                const {risk_disclosure: arr = []} = res.result;
+                arr.forEach((item) => (item.status = 0));
+                setData(res.result);
+            }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /** @name 滚动阅读内容 */
+    useEffect(() => {
+        timeRef.current = setInterval(() => {
+            if (countdownRef.current <= 1) {
+                clearInterval(timeRef.current);
+                setTicking(false);
+            } else {
+                countdownRef.current -= 1;
+                setButton({disabled: true, text: `${countdownRef.current}s后确认`});
+            }
+        }, 1000);
+        return () => {
+            clearInterval(timeRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        const {risk_disclosure: arr = []} = data;
+        if (!ticking) {
+            const finishRead = arr.every((item) => item.status === 2);
+            setButton({disabled: !finishRead, text: finishRead ? '确认' : '请阅读完成后确认'});
+        }
+    }, [data, ticking]);
+
+    /** @name 滚动阅读内容 @description status 0 未读 1 未读完 2 已读 */
     const onScroll = (e, index) => {
         const {
             contentOffset: {y},
             contentSize: {height: height1},
             layoutMeasurement: {height: height2},
         } = e;
-        const _data = [...data];
-        if (_data[index].status === 2) {
+        const _data = {...data};
+        const {risk_disclosure: arr = []} = _data;
+        if (arr[index].status === 2) {
             return false;
         }
-        if (_data[index].status === 0) {
-            _data[index].status = 1;
+        if (arr[index].status === 0) {
+            arr[index].status = 1;
         }
         if (y === height1 - height2) {
-            _data[index].status = 2;
+            arr[index].status = 2;
         }
         setData(_data);
     };
 
-    return (
+    /** @name 点击确认签约，完成输入交易密码 */
+    const onSubmit = (password) => {
+        http.post('/adviser/sign/20210923', {password, poids}).then((res) => {
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    navigation.go(-2);
+                }, 1000);
+            }
+        });
+    };
+
+    return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
+            <TouchableOpacity activeOpacity={url ? 0.8 : 1} onPress={() => jump(url)} style={styles.tipsCon}>
+                <Text style={styles.tips}>{content}</Text>
+            </TouchableOpacity>
             <ScrollView bounces={false} style={{flex: 1}}>
-                <View style={styles.tipsCon}>
-                    <Text style={styles.tips}>
-                        {
-                            '请您阅读以下风险揭示书，阅读完成后才可以确认签约，您可以通过截屏或录屏方式，保存投顾服务相关信息。'
-                        }
-                    </Text>
-                </View>
                 <View style={styles.contentBox}>
-                    {data?.map?.((item, index) => {
+                    {risk_disclosure?.map?.((item, index) => {
                         return (
                             <View key={item + index} style={[styles.itemBox, {marginTop: index === 0 ? 0 : px(12)}]}>
                                 <View style={[Style.flexBetween, {paddingHorizontal: Space.padding}]}>
@@ -98,34 +136,28 @@ export default ({navigation}) => {
                                 </View>
                                 <ScrollView
                                     bounces={false}
-                                    onLayout={(e) => {
-                                        scrollHeight.current = e.nativeEvent.layout.height;
-                                    }}
                                     onScroll={(e) => onScroll(e.nativeEvent, index)}
                                     scrollEventThrottle={100}
                                     style={styles.itemContentBox}>
-                                    <Text
-                                        onLayout={(e) => {
-                                            const {height} = e.nativeEvent.layout;
-                                            if (height <= scrollHeight.current) {
-                                                const _data = [...data];
-                                                _data[index].status = 2;
-                                                setData(_data);
-                                            }
-                                        }}
-                                        style={styles.itemContent}>
-                                        {item.content}
-                                    </Text>
+                                    <HTML html={item.content} style={styles.itemContent} />
                                 </ScrollView>
                             </View>
                         );
                     })}
                 </View>
+                <PasswordModal onDone={onSubmit} ref={passwordRef} />
             </ScrollView>
             <View style={{backgroundColor: '#fff'}}>
-                <Button style={styles.button} title="确认" />
+                <Button
+                    disabled={disabled}
+                    onPress={() => passwordRef.current?.show?.()}
+                    style={styles.button}
+                    title={text}
+                />
             </View>
         </View>
+    ) : (
+        <Loading />
     );
 };
 
