@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:50:13
+ * @LastEditTime: 2022-05-10 18:53:06
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -21,7 +21,6 @@ import Image from 'react-native-fast-image';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-snap-carousel';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -106,6 +105,7 @@ function HomeScreen({navigation}) {
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
         getSignData();
+
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
                 setHoldingData(res.result);
@@ -116,6 +116,7 @@ function HomeScreen({navigation}) {
                 setUserBasicInfo(res.result);
             }
             !userInfo.is_login && setLoading(false);
+            getSignData();
             setRefreshing(false);
         });
         if (userInfo.is_login) {
@@ -492,7 +493,7 @@ function HomeScreen({navigation}) {
                             />
                             {signData?.desc
                                 ? signData.desc?.map((item, index) => (
-                                      <>
+                                      <View key={index}>
                                           <Text style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
                                               {item?.title}
                                           </Text>
@@ -502,7 +503,7 @@ function HomeScreen({navigation}) {
                                                   style={{fontSize: px(13), lineHeight: px(20)}}
                                               />
                                           </View>
-                                      </>
+                                      </View>
                                   ))
                                 : null}
                             <View style={{height: px(30)}} />
