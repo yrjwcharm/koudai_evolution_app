@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 11:19:56
+ * @LastEditTime: 2022-04-24 15:02:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -121,7 +121,7 @@ function HomeScreen({navigation}) {
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
         refresh === 'refresh' && setHideMsg(false);
-        getSignData();
+
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
                 setHoldingData(res.result);
@@ -132,6 +132,7 @@ function HomeScreen({navigation}) {
                 setUserBasicInfo(res.result);
             }
             !userInfo.is_login && setLoading(false);
+            getSignData();
             setRefreshing(false);
         });
         if (userInfo.is_login) {
@@ -508,7 +509,7 @@ function HomeScreen({navigation}) {
                             />
                             {signData?.desc
                                 ? signData.desc?.map((item, index) => (
-                                      <>
+                                      <View key={index}>
                                           <Text style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
                                               {item?.title}
                                           </Text>
@@ -518,7 +519,7 @@ function HomeScreen({navigation}) {
                                                   style={{fontSize: px(13), lineHeight: px(20)}}
                                               />
                                           </View>
-                                      </>
+                                      </View>
                                   ))
                                 : null}
                             <View style={{height: px(30)}} />
