@@ -159,6 +159,7 @@ const Index = (props) => {
             setAll(res.result.all);
         });
     }, []);
+
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>

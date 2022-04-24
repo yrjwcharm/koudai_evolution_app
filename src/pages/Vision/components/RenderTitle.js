@@ -2,7 +2,7 @@
  * @Date: 2021-06-07 10:49:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 19:22:39
+ * @LastEditTime: 2022-04-18 16:51:20
  * @Description:
  */
 import React from 'react';
@@ -23,6 +23,7 @@ const RenderTitle = (props) => {
                     marginBottom: px(12),
                     marginTop: px(4),
                 },
+                props.style,
             ]}>
             <View style={Style.flexRow}>
                 <Text style={styles.large_title}>{props.title}</Text>

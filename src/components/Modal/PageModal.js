@@ -2,15 +2,8 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
-<<<<<<< HEAD
- * @LastEditTime: 2022-04-13 15:41:07
-=======
- * @LastEditTime: 2022-04-12 19:26:05
->>>>>>> master
+ * @LastEditTime: 2022-04-24 14:41:25
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
- */
-/**
- * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
 import {
@@ -120,9 +113,9 @@ export default class PageModal extends Component {
                 onPress={() => {
                     this.props.isTouchMaskToClose && this.cancel();
                 }}>
-                <Animated.View importantForAccessibility="no" style={[styles.absolute, {opacity: this.state.opacity}]}>
+                <View importantForAccessibility="no" style={[styles.absolute]}>
                     <View style={[styles.absolute, styles.mask]} />
-                </Animated.View>
+                </View>
             </TouchableWithoutFeedback>
         );
     };
@@ -202,20 +195,12 @@ export default class PageModal extends Component {
 
     //显示动画
     in = () => {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                easing: Easing.elastic(0.8), //一个用于定义曲线的渐变函数
-                duration: this.props.animateDuration,
-                toValue: 1, //动画的最终值
-                useNativeDriver: true,
-            }),
-            Animated.timing(this.state.offset, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 1,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
+        Animated.timing(this.state.offset, {
+            easing: Easing.elastic(0.8),
+            duration: this.props.animateDuration,
+            toValue: 1,
+            useNativeDriver: true,
+        }).start(() => {
             if (this.props.backButtonClose && Platform.OS === 'android')
                 BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         });
@@ -223,20 +208,12 @@ export default class PageModal extends Component {
 
     //隐藏动画
     out = () => {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 0,
-                useNativeDriver: true,
-            }),
-            Animated.timing(this.state.offset, {
-                easing: Easing.elastic(0.8),
-                duration: this.props.animateDuration,
-                toValue: 0,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
+        Animated.timing(this.state.offset, {
+            easing: Easing.elastic(0.8),
+            duration: this.props.animateDuration,
+            toValue: 0,
+            useNativeDriver: true,
+        }).start(() => {
             this.setState({hide: true});
             this.state.offset.setValue(0);
         });
@@ -246,7 +223,6 @@ export default class PageModal extends Component {
     cancel = () => {
         if (!this.state.hide) {
             this.out();
-            this.props.onClose && this.props.onClose();
             if (this.props.backButtonClose && Platform.OS === 'android')
                 BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }
@@ -265,14 +241,16 @@ export default class PageModal extends Component {
 
     hide = () => {
         if (!this.state.hide) {
-            this.setState({hide: true}, this.out);
+            this.out();
+            if (this.props.backButtonClose && Platform.OS === 'android')
+                BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
         }
     };
 }
 
 const styles = StyleSheet.create({
     transparent: {
-        zIndex: 2,
+        zIndex: 10,
         backgroundColor: 'rgba(0,0,0,0)',
     },
     absolute: {

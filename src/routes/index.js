@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-22 11:51:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-24 18:09:06
  * @Description:路由表
  */
 import React from 'react';
@@ -20,7 +20,6 @@ import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
 import VerifyCodeQA from '../pages/Auth/VerifyCodeQA'; // 收不到短信验证码
-
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
 import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
@@ -36,7 +35,7 @@ import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合�
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
-import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
+import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投  此名称在WalletAutoRechargeDetail有判断
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
@@ -86,7 +85,7 @@ import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
-import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页 此名称在WalletAutoRechargeDetail有判断
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
@@ -182,8 +181,9 @@ import LiveLand from '../pages/Vision/LiveLand'; // 直播落地页
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
 import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
-import CommentList from '../pages/Portfolio/CommentList'; // 评论列表
+import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
+import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -721,6 +721,11 @@ export default function AppStack() {
             <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
             <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+            <Stack.Screen
+                name="ArticleCommentList"
+                component={ArticleCommentList}
+                options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+            />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
         </Stack.Navigator>
     );
