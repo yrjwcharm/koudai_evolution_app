@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 16:06:06
+ * @LastEditTime: 2022-04-24 18:30:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -490,12 +490,7 @@ function HomeScreen({navigation}) {
             renderLoading()
         ) : !showGesture ? (
             <View style={styles.container}>
-                <PageModal
-                    style={{height: px(530)}}
-                    tabbar={true}
-                    ref={bottomModal}
-                    title={signData?.title}
-                    onClose={() => {}}>
+                <PageModal style={{height: px(530)}} ref={bottomModal} title={signData?.title} onClose={() => {}}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
