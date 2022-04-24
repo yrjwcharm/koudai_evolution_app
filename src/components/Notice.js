@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-05 15:59:36
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-10 18:54:28
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';

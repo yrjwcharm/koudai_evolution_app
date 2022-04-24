@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-24 17:58:37
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-24 18:40:32
  * @Description:投顾服务签约
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -159,4 +159,5 @@ const styles = StyleSheet.create({
         padding: px(16),
         marginBottom: px(12),
     },
+    light_text: {fontSize: px(13), lineHeight: px(17), color: Colors.lightBlackColor},
 });
