@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 20:55:49
+ * @LastEditTime: 2022-04-24 11:19:56
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -49,13 +49,9 @@ import smile1 from '../../assets/personal/smile1.gif';
 import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
-import CheckBox from '../../components/CheckBox';
 import Notice from '../../components/Notice';
-import _ from 'lodash';
 import FastImage from 'react-native-fast-image';
-import Toast from '../../components/Toast/Toast.js';
-import PasswordModal from '../../components/Password/PasswordModal.js';
-function HomeScreen({navigation, route}) {
+function HomeScreen({navigation}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
@@ -79,10 +75,6 @@ function HomeScreen({navigation, route}) {
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
     const bottomModal = useRef(null);
-    const [signSelectData, setSignSelectData] = useState([]);
-    const [signTimer, setSignTimer] = useState(8);
-    const passwordModal = useRef();
-    const sign_intervalt_timer = useRef('');
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -119,23 +111,20 @@ function HomeScreen({navigation, route}) {
     };
     //获取签约数据
     const getSignData = () => {
-        http.get('adviser/get_need_sign_list/20210923').then((data) => {
-            setSignTimer(data?.result?.risk_disclosure?.countdown);
-            setSignData(data.result);
-            bottomModal?.current?.show();
-            startTimer();
+        http.get('adviser/need_sign/pop/20220422').then((data) => {
+            setSignData(data.result?.sign);
+            if (data?.result?.auto_pop) {
+                bottomModal?.current?.show();
+            }
         });
     };
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
         refresh === 'refresh' && setHideMsg(false);
+        getSignData();
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
                 setHoldingData(res.result);
-                if (res.result?.is_need_sign == 1 && !sign_intervalt_timer.current) {
-                    sign_intervalt_timer.current = 1;
-                    getSignData();
-                }
             }
         });
         http.get('/asset/common/20210101').then((res) => {
@@ -183,19 +172,7 @@ function HomeScreen({navigation, route}) {
             });
         }
     };
-    //签约计时器
-    const startTimer = () => {
-        sign_intervalt_timer.current = setInterval(() => {
-            setSignTimer((time) => {
-                if (time > 0) {
-                    return --time;
-                } else {
-                    sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
-                    return 0;
-                }
-            });
-        }, 1000);
-    };
+
     // 展示渠道弹窗
     const showChannelModal = (_modalData) => {
         Modal.show({
@@ -246,46 +223,18 @@ function HomeScreen({navigation, route}) {
             title: _modalData.title,
         });
     };
-    //checkBox 选中
-    const checkBoxClick = (check, poid) => {
-        //选中
-        if (check) {
-            if (poid) {
-                setSignSelectData((prev) => {
-                    return [...prev, poid];
-                });
-            } else {
-                setSignSelectData((prev) => {
-                    let poids = signData?.plan_list?.map((item) => {
-                        return item.poid;
-                    });
-                    return [...new Set([...prev, ...poids])];
-                });
-            }
-        } else {
-            //非选中
-            if (poid) {
-                setSignSelectData((prev) => {
-                    let data = [...prev];
-                    _.remove(data, function (_poid) {
-                        return _poid === poid;
-                    });
-                    return data;
-                });
-            } else {
-                setSignSelectData([]);
-            }
-        }
-    };
+
     //签约
-    const handleSign = (password) => {
-        http.post('adviser/sign/20210923', {poids: signSelectData, password}).then((res) => {
-            Toast.show(res.message);
-            if (res.code === '000000') {
-                setTimeout(() => {
-                    bottomModal?.current?.hide();
-                }, 1000);
-            }
+    const handleCancleSign = () => {
+        Modal.show({
+            title: signData?.cancel?.title,
+            content: signData?.cancel?.content,
+            confirm: true,
+            cancelText: '再想一想',
+            confirmText: '确认',
+            confirmCallBack: () => {
+                bottomModal.current.hide();
+            },
         });
     };
     const reportSurvey = (answer) => {
@@ -363,7 +312,6 @@ function HomeScreen({navigation, route}) {
         });
         return () => {
             listener();
-            sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
         };
     }, []);
     const renderLoading = () => {
@@ -541,134 +489,62 @@ function HomeScreen({navigation, route}) {
             renderLoading()
         ) : !showGesture ? (
             <View style={styles.container}>
-                <PasswordModal ref={passwordModal} onDone={handleSign} />
                 <PageModal
                     style={{height: px(530)}}
                     tabbar={true}
                     ref={bottomModal}
                     title={signData?.title}
-                    onClose={() => {
-                        sign_intervalt_timer.current && clearInterval(sign_intervalt_timer.current);
-                        sign_intervalt_timer.current = null;
-                    }}>
+                    onClose={() => {}}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
                             bounces={false}
                             style={{
-                                paddingHorizontal: px(16),
-                                paddingTop: px(20),
+                                padding: px(16),
                             }}>
-                            <HTML html={signData?.desc} style={styles.light_text} />
-                            {signData?.risk_disclosure?.title ? (
-                                <>
-                                    <Text style={{fontSize: px(18), fontWeight: '700', marginVertical: px(12)}}>
-                                        {signData?.risk_disclosure?.title}
-                                    </Text>
-                                    <View style={styles.sign_scrollview}>
-                                        <ScrollView
-                                            nestedScrollEnabled={true}
-                                            style={{
-                                                flex: 1,
-                                                paddingRight: px(12),
-                                            }}>
-                                            <HTML
-                                                html={signData?.risk_disclosure?.content}
-                                                style={{fontSize: px(13), lineHeight: px(20)}}
-                                            />
-                                        </ScrollView>
-                                    </View>
-                                </>
-                            ) : null}
-                            <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
-                                <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
-                                    <View style={Style.flexRow}>
-                                        <CheckBox
-                                            checked={signSelectData?.length == signData?.plan_list?.length}
-                                            style={{marginRight: px(6)}}
-                                            onChange={(value) => {
-                                                checkBoxClick(value);
-                                            }}
-                                        />
-                                        <Text style={{fontSize: px(16), fontWeight: '700'}}>全选</Text>
-                                    </View>
-                                    <Text style={{fontSize: px(16)}}>
-                                        {signSelectData?.length}/{signData?.plan_list?.length}
-                                    </Text>
-                                </View>
-                                {signData?.plan_list?.map((item, index) => {
-                                    return (
-                                        <View key={index} style={styles.border_bottom}>
-                                            <Text style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
-                                                {item?.name}
-                                                {item?.sub_name ? (
-                                                    <Text style={{fontWeight: '400', fontSize: px(12)}}>
-                                                        {item.sub_name}
-                                                    </Text>
-                                                ) : null}
-                                            </Text>
-
-                                            {item?.adviser_cost_desc ? (
-                                                <Text style={[styles.light_text, {marginBottom: px(6)}]}>
-                                                    {item.adviser_cost_desc}
-                                                </Text>
-                                            ) : null}
-                                            <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
-                                                <CheckBox
-                                                    checked={signSelectData?.includes(item?.poid)}
-                                                    style={{marginRight: px(6)}}
-                                                    onChange={(value) => {
-                                                        checkBoxClick(value, item.poid);
-                                                    }}
-                                                />
-                                                <Text style={[styles.light_text, {flex: 1}]}>
-                                                    {item?.desc}
-                                                    {item?.link_name}
-                                                    <Text>
-                                                        {item?.link_list?.map((link, _index) => (
-                                                            <Text
-                                                                style={{color: Colors.btnColor}}
-                                                                key={_index}
-                                                                onPress={() => {
-                                                                    if (link?.url) {
-                                                                        jump(link?.url);
-                                                                    }
-                                                                }}>
-                                                                {link?.text}
-                                                                {item?.link_list?.length > 1 &&
-                                                                _index == item?.link_list?.length - 2 ? (
-                                                                    <Text style={styles.light_text}>和</Text>
-                                                                ) : _index == item?.link_list?.length - 1 ? (
-                                                                    ''
-                                                                ) : (
-                                                                    '、'
-                                                                )}
-                                                            </Text>
-                                                        ))}
-                                                        {item?.desc_end ? (
-                                                            <Text style={styles.light_text}>{item?.desc_end}</Text>
-                                                        ) : null}
-                                                    </Text>
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    );
-                                })}
-                            </TouchableOpacity>
-                        </ScrollView>
-                        {signData?.button ? (
-                            <Button
-                                disabled={signData?.plan_list?.length !== signSelectData.length || signTimer > 0}
-                                style={{
-                                    marginHorizontal: px(16),
-                                }}
-                                onPress={_.debounce(() => {
-                                    passwordModal?.current?.show();
-                                }, 500)}
-                                title={
-                                    signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
-                                }
+                            <HTML
+                                html={signData?.content}
+                                style={{fontSize: px(13), color: Colors.defaultColor, lineHeight: px(20)}}
                             />
+                            {signData?.desc
+                                ? signData.desc?.map((item, index) => (
+                                      <>
+                                          <Text style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
+                                              {item?.title}
+                                          </Text>
+                                          <View style={styles.sign_scrollview}>
+                                              <HTML
+                                                  html={item?.content}
+                                                  style={{fontSize: px(13), lineHeight: px(20)}}
+                                              />
+                                          </View>
+                                      </>
+                                  ))
+                                : null}
+                            <View style={{height: px(30)}} />
+                        </ScrollView>
+                        {signData?.cancel ? (
+                            <View style={[Style.flexBetween, {marginHorizontal: px(16), paddingTop: px(8)}]}>
+                                <Button
+                                    type={'minor'}
+                                    style={{
+                                        flex: 1,
+                                        marginRight: px(12),
+                                    }}
+                                    onPress={handleCancleSign}
+                                    title={signData?.cancel?.cancel?.text}
+                                />
+                                <Button
+                                    style={{
+                                        flex: 1,
+                                    }}
+                                    onPress={() => {
+                                        bottomModal.current.hide();
+                                        jump(signData?.cancel?.confirm?.url);
+                                    }}
+                                    title={signData?.cancel?.confirm?.text}
+                                />
+                            </View>
                         ) : null}
                     </View>
                 </PageModal>
@@ -1617,11 +1493,9 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
     },
     sign_scrollview: {
-        height: px(146),
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
-        padding: px(12),
-        paddingRight: 0,
+        padding: px(16),
     },
 });
 export default HomeScreen;
