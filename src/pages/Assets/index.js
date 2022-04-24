@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:53:06
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-24 16:06:06
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1463,11 +1463,7 @@ const styles = StyleSheet.create({
         top: px(14),
     },
     light_text: {fontSize: px(13), lineHeight: px(17), color: Colors.lightBlackColor},
-    border_bottom: {
-        borderColor: Colors.lineColor,
-        borderBottomWidth: 0.5,
-        paddingVertical: px(12),
-    },
+
     point_text: {
         textAlign: 'center',
         color: '#fff',
