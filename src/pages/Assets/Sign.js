@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 15:35:25
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-24 17:58:37
  * @Description:投顾服务签约
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -142,7 +142,7 @@ const Sign = ({navigation}) => {
                     title={signData.title}
                     disabled={signSelectData.length == 0}
                     onPress={() => {
-                        navigation.navigate('RiskDisclosure', {poids: setSignSelectData});
+                        navigation.navigate('RiskDisclosure', {poids: signSelectData});
                     }}
                 />
             </>
