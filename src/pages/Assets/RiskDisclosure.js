@@ -65,6 +65,9 @@ export default ({navigation, route}) => {
         if (!ticking) {
             const finishRead = arr.every((item) => item.status === 2);
             setButton({disabled: !finishRead, text: finishRead ? '确认' : '请阅读完成后确认'});
+            if (finishRead) {
+                global.LogTool('Riskpage_read');
+            }
         }
     }, [data, ticking]);
 
@@ -96,6 +99,7 @@ export default ({navigation, route}) => {
             Toast.hide(loading);
             Toast.show(res.message);
             if (res.code === '000000') {
+                global.LogTool('Completiontime_yes');
                 setTimeout(() => {
                     navigation.pop(2);
                 }, 1000);
@@ -163,7 +167,10 @@ export default ({navigation, route}) => {
             <View style={{backgroundColor: '#fff'}}>
                 <Button
                     disabled={disabled}
-                    onPress={() => passwordRef.current?.show?.()}
+                    onPress={() => {
+                        global.LogTool('Riskpage_butto');
+                        passwordRef.current?.show?.();
+                    }}
                     style={styles.button}
                     title={text}
                 />
