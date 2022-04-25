@@ -13,7 +13,14 @@ import {
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
 import Octicons from 'react-native-vector-icons/Octicons';
-import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
+import {
+    deviceWidth as width,
+    deviceHeight as height,
+    px as text,
+    px,
+    countdownTool,
+    resolveTimeStemp,
+} from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
 import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
@@ -66,6 +73,7 @@ export default class MyModal extends Component {
             guide_pop_button: this.props?.data?.button?.text || '开启通知',
             countdown: this.props.countdown || 0,
             appState: AppState.currentState,
+            countdownArr: [],
         };
     }
 
@@ -132,11 +140,22 @@ export default class MyModal extends Component {
                 });
             }, 1000);
         }
+        if (this.props.remainingTime) {
+            this.cancelCountdown = countdownTool({
+                callback: (resetTime) => {
+                    const c = resolveTimeStemp(+resetTime);
+                    this.setState({countdownArr: c});
+                },
+                immediate: true,
+                timeStemp: this.props.remainingTime,
+            });
+        }
     }
     componentWillUnmount() {
         if (isAndroid7) {
             AppState.removeEventListener('change', this.handleAppStateChange);
         }
+        this.cancelCountdown && this.cancelCountdown();
     }
     handleAppStateChange = (nextAppState) => {
         this.setState({appState: nextAppState});
@@ -209,6 +228,22 @@ export default class MyModal extends Component {
                                         <Text style={styles.imgTip}>{this.props.content.tip}</Text>
                                     </View>
                                 </View>
+                            </View>
+                        ) : null}
+                        {this.state.countdownArr?.length > 0 ? (
+                            <View style={[Style.flexRowCenter, styles.countdownBox]}>
+                                <Text style={styles.countdownTitle}>{'倒计时'}</Text>
+                                {this.state.countdownArr.map((item, index) => {
+                                    const unitArr = ['天', '时', '分', '秒'];
+                                    return (
+                                        <View key={index} style={Style.flexRow}>
+                                            <View style={styles.countdownTextBox}>
+                                                <Text style={styles.countdownText}>{item}</Text>
+                                            </View>
+                                            <Text style={styles.countdownUnit}>{unitArr[index]}</Text>
+                                        </View>
+                                    );
+                                })}
                             </View>
                         ) : null}
                     </TouchableOpacity>
@@ -584,5 +619,35 @@ const styles = StyleSheet.create({
         color: Colors.btnColor,
         lineHeight: px(20),
         fontFamily: Font.numFontFamily,
+    },
+    countdownBox: {
+        position: 'absolute',
+        right: 0,
+        bottom: px(40),
+        left: 0,
+    },
+    countdownTitle: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: '#fff',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
+    countdownTextBox: {
+        marginHorizontal: px(4),
+        paddingVertical: px(2),
+        paddingHorizontal: px(3),
+        borderRadius: px(2),
+        backgroundColor: '#fff',
+    },
+    countdownText: {
+        fontSize: Font.textH3,
+        lineHeight: px(14),
+        color: '#EB3F2C',
+        fontFamily: Font.numFontFamily,
+    },
+    countdownUnit: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#fff',
     },
 });
