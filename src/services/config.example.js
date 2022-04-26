@@ -1,12 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
-<<<<<<< HEAD
- * @LastEditTime: 2022-04-22 11:05:50
-=======
- * @LastEditTime: 2022-04-08 18:10:50
->>>>>>> master
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-26 18:50:21
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
