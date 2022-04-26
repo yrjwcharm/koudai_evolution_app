@@ -3,7 +3,7 @@
  * @Author: dx
  * @LastEditors: yhc
 <<<<<<< HEAD
- * @LastEditTime: 2022-04-22 11:17:58
+ * @LastEditTime: 2022-04-26 15:25:41
 =======
  * @LastEditTime: 2022-04-24 14:29:07
 >>>>>>> master
@@ -466,8 +466,6 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
-                                    ) : route.params.type == 2 ? (
-                                        <View style={{height: text(100)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )

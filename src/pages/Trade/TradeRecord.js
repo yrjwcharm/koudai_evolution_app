@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-06 15:35:59
+ * @LastEditTime: 2022-04-26 11:41:38
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -19,7 +19,7 @@ import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {debounce} from 'lodash';
-const trade_type = [0, 3, 5, 6, 4, 7];
+const trade_type = [0, -1, -35, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
     const [page, setPage] = useState(1);
@@ -274,10 +274,10 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="购买" style={styles.container}>
+                    <View tabLabel="投顾" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="定投" style={styles.container}>
+                    <View tabLabel="申购" style={styles.container}>
                         {renderContent()}
                     </View>
                     <View tabLabel={route.params?.adjust_name || '调仓'} style={styles.container}>
