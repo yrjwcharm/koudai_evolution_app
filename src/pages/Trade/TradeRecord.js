@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-26 11:41:38
+ * @LastEditTime: 2022-04-26 23:20:29
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -96,7 +96,9 @@ const TradeRecord = ({route, navigation}) => {
     useFocusEffect(
         useCallback(() => {
             if (refresh) {
+                offset.current = '';
                 getData(1);
+                setPage(1);
             }
         }, [refresh])
     );
@@ -111,12 +113,13 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
     const onRefresh = () => {
+        offset.current = '';
         getData(1, 'toast');
         setPage(1);
-        offset.current = '';
         // setPage(1);
     };
     const changeTab = (obj) => {
+        offset.current = '';
         setData([]);
         setHasMore(false);
         setActiveTab((active) => {
@@ -124,7 +127,6 @@ const TradeRecord = ({route, navigation}) => {
             return obj.i;
         });
         setPage(1);
-        offset.current = '';
     };
 
     const tradeStuatusColor = (status) => {
