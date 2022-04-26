@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
-import Octicons from 'react-native-vector-icons/Octicons';
+// import Octicons from 'react-native-vector-icons/Octicons';
 import {
     deviceWidth as width,
     deviceHeight as height,
@@ -216,18 +216,10 @@ export default class MyModal extends Component {
                         {this.props.content ? (
                             <View style={styles.diyContent}>
                                 <Text style={styles.imgTitle}>{this.props.content.title}</Text>
-                                <Text style={styles.imgText}>{this.props.content.text}</Text>
-                                <View style={[Style.flexCenter]}>
-                                    <Octicons
-                                        name={'triangle-up'}
-                                        size={20}
-                                        style={{marginVertical: text(-5)}}
-                                        color={'#FFE9C7'}
-                                    />
-                                    <View style={[Style.flexCenter, styles.imgTipBox]}>
-                                        <Text style={styles.imgTip}>{this.props.content.tip}</Text>
-                                    </View>
+                                <View style={{marginTop: text(12), minHeight: text(60)}}>
+                                    <Text style={styles.imgText}>{this.props.content.text}</Text>
                                 </View>
+                                <Text style={styles.imgTip}>{this.props.content.tip}</Text>
                             </View>
                         ) : null}
                         {this.state.countdownArr?.length > 0 ? (
@@ -566,16 +558,14 @@ const styles = StyleSheet.create({
         fontSize: text(20),
         lineHeight: text(28),
         color: Colors.defaultColor,
-        fontWeight: '600',
-        marginBottom: text(14),
+        fontWeight: Platform.select({android: '700', ios: '600'}),
     },
     imgText: {
         fontSize: Font.textH2,
-        lineHeight: text(22),
-        color: Colors.lightBlackColor,
+        lineHeight: text(20),
+        color: '#292D39',
         textAlign: 'center',
         maxWidth: text(215),
-        marginBottom: text(14),
     },
     imgTipBox: {
         width: text(222),
@@ -584,9 +574,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFE9C7',
     },
     imgTip: {
+        marginTop: text(27),
         fontSize: text(13),
         lineHeight: text(18),
-        color: '#A17328',
+        color: '#923808',
     },
     guideTitle: {
         fontSize: px(18),

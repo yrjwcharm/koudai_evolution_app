@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:02:22
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-26 14:39:21
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -408,6 +408,7 @@ function App(props) {
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
                 imgHeight: modal.imgHeight,
+                remainingTime: modal.remaining_time || 0,
             };
             if (modal.type === 'diy_image') {
                 options.content = {
