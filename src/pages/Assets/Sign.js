@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:40:32
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-25 18:17:52
  * @Description:投顾服务签约
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -142,6 +142,7 @@ const Sign = ({navigation}) => {
                     title={signData.title}
                     disabled={signSelectData.length == 0}
                     onPress={() => {
+                        global.LogTool('Selectcombine_button');
                         navigation.navigate('RiskDisclosure', {poids: signSelectData});
                     }}
                 />
