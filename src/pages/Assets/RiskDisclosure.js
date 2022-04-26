@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-24 19:03:43
+ * @LastEditTime: 2022-04-26 18:28:43
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -66,9 +66,11 @@ export default ({navigation, route}) => {
             const finishRead = arr.every((item) => item.status === 2);
             setButton({disabled: !finishRead, text: finishRead ? '确认' : '请阅读完成后确认'});
             if (finishRead) {
+                http.post('/advisor/action/report/20220422', {action: 'read', poids});
                 global.LogTool('Riskpage_read');
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, ticking]);
 
     /** @name 滚动阅读内容 @description status 0 未读 1 未读完 2 已读 */
@@ -169,6 +171,7 @@ export default ({navigation, route}) => {
                     disabled={disabled}
                     onPress={() => {
                         global.LogTool('Riskpage_butto');
+                        http.post('/advisor/action/report/20220422', {action: 'confirm', poids});
                         passwordRef.current?.show?.();
                     }}
                     style={styles.button}
