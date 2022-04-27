@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-27 18:40:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-04-27 21:42:53
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -499,10 +499,13 @@ function HomeScreen({navigation}) {
                             />
                             {signData?.desc
                                 ? signData.desc?.map((item, index) => (
-                                      <View key={index}>
-                                          <Text style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
-                                              {item?.title}
-                                          </Text>
+                                      <View key={index} style={{marginBottom: px(12)}}>
+                                          {item?.title ? (
+                                              <Text
+                                                  style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
+                                                  {item?.title}
+                                              </Text>
+                                          ) : null}
                                           <View style={styles.sign_scrollview}>
                                               <HTML
                                                   html={item?.content}

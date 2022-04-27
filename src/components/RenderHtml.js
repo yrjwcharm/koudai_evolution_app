@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 21:26:16
+ * @LastEditTime: 2022-04-27 22:01:57
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -22,9 +22,13 @@ const RenderHtml = (props) => {
     const renderers = {
         alink: {
             wrapper: 'Text',
-            renderer: (htmlAttribs, children, convertedCSSStyles, passProps) => (
-                <Text onPress={() => jump(JSON.parse(htmlAttribs.url))}>{children}</Text>
-            ),
+            renderer: (htmlAttribs, children, convertedCSSStyles, passProps) => {
+                return (
+                    <Text key={children[0][0].key} onPress={() => jump(JSON.parse(htmlAttribs.url))}>
+                        {children}
+                    </Text>
+                );
+            },
         },
     };
     return (
