@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-27 12:23:47
+ * @LastEditTime: 2022-04-27 18:40:21
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -530,7 +530,7 @@ function HomeScreen({navigation}) {
                                         flex: 1,
                                     }}
                                     onPress={() => {
-                                        // bottomModal.current.hide();
+                                        bottomModal.current.hide();
                                         jump(signData?.cancel?.confirm?.url);
                                     }}
                                     title={signData?.cancel?.confirm?.text}
