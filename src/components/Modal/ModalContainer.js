@@ -22,7 +22,7 @@ import {
     resolveTimeStemp,
 } from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
-import HTML from './Html';
+import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
 import {Button} from '../Button';
 import FastImage from 'react-native-fast-image';

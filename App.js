@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:46:01
+ * @LastEditTime: 2022-05-10 18:57:22
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -49,7 +49,7 @@ import {debounce} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
 import {useStateChange} from './src/components/hooks';
-
+import {navigationRef} from './src/components/hooks/RootNavigation';
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -156,7 +156,6 @@ export const generateOptions = (modal) => {
 };
 
 function App(props) {
-    const navigationRef = useRef();
     const routeNameRef = useRef();
     const homeShowModal = useRef(true);
     const onStateChange = useStateChange({homeShowModal, store});
