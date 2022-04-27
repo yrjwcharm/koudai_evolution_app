@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 14:41:25
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-27 12:18:17
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 import React, {Component} from 'react';
@@ -44,6 +44,7 @@ export default class PageModal extends Component {
         confirmText: '',
         children: <Text />,
         isTouchMaskToClose: true, //点击蒙层是否能关闭
+        beforeClose: async () => true, // 关闭前的回调
         onClose: () => {}, //关闭的回掉
         confirmClick: () => {}, //确认按钮的回掉
         backButtonClose: false,
@@ -220,11 +221,9 @@ export default class PageModal extends Component {
     };
 
     //取消
-    cancel = () => {
-        if (!this.state.hide) {
-            this.out();
-            if (this.props.backButtonClose && Platform.OS === 'android')
-                BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    cancel = async () => {
+        if (await this.props.beforeClose?.()) {
+            this.hide();
         }
     };
 
