@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:30:54
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-27 12:23:47
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -211,15 +211,21 @@ function HomeScreen({navigation}) {
 
     //签约
     const handleCancleSign = () => {
-        Modal.show({
-            title: signData?.cancel?.title,
-            content: signData?.cancel?.content,
-            confirm: true,
-            cancelText: '再想一想',
-            confirmText: '确认',
-            confirmCallBack: () => {
-                bottomModal.current.hide();
-            },
+        return new Promise((resolve) => {
+            Modal.show({
+                title: signData?.cancel?.title,
+                content: signData?.cancel?.content,
+                confirm: true,
+                cancelText: '再想一想',
+                confirmText: '确认',
+                confirmCallBack: () => {
+                    bottomModal.current.hide();
+                    resolve(false);
+                },
+                cancelCallBack: () => {
+                    resolve(false);
+                },
+            });
         });
     };
     const reportSurvey = (answer) => {
@@ -474,7 +480,12 @@ function HomeScreen({navigation}) {
             renderLoading()
         ) : !showGesture ? (
             <View style={styles.container}>
-                <PageModal style={{height: px(530)}} ref={bottomModal} title={signData?.title} onClose={() => {}}>
+                <PageModal
+                    style={{height: px(530)}}
+                    ref={bottomModal}
+                    title={signData?.title}
+                    beforeClose={handleCancleSign}
+                    onClose={() => {}}>
                     <View style={{flex: 1, paddingBottom: px(12)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <ScrollView
@@ -519,7 +530,7 @@ function HomeScreen({navigation}) {
                                         flex: 1,
                                     }}
                                     onPress={() => {
-                                        bottomModal.current.hide();
+                                        // bottomModal.current.hide();
                                         jump(signData?.cancel?.confirm?.url);
                                     }}
                                     title={signData?.cancel?.confirm?.text}
