@@ -2,14 +2,14 @@
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 22:01:57
+ * @LastEditTime: 2022-04-27 22:53:01
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
 import React from 'react';
 import {Dimensions, Text} from 'react-native';
 import {px as text} from '../utils/appUtil';
-import {useJump} from './hooks';
+// import {useJump} from './hooks';
 import {Colors} from '../common/commonStyle';
 const width = Dimensions.get('window').width;
 
@@ -18,15 +18,14 @@ const tagsStyles = {
 };
 const RenderHtml = (props) => {
     const {numberOfLines = 10000, style, nativeProps} = props;
-    const jump = useJump();
+    // const jump = useJump();
     const renderers = {
         alink: {
             wrapper: 'Text',
             renderer: (htmlAttribs, children, convertedCSSStyles, passProps) => {
                 return (
-                    <Text key={children[0][0].key} onPress={() => jump(JSON.parse(htmlAttribs.url))}>
-                        {children}
-                    </Text>
+                    // onPress={() => jump(JSON.parse(htmlAttribs.url))}
+                    <Text key={children[0][0].key}>{children}</Text>
                 );
             },
         },
