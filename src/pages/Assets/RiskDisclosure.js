@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-26 18:28:43
+ * @LastEditTime: 2022-04-27 17:36:41
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -88,7 +88,7 @@ export default ({navigation, route}) => {
         if (arr[index].status === 0) {
             arr[index].status = 1;
         }
-        if (y === height1 - height2) {
+        if (height1 - height2 - y <= px(20)) {
             arr[index].status = 2;
         }
         setData(_data);
