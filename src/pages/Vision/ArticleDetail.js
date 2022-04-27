@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 19:23:46
+ * @LastEditTime: 2022-04-27 18:34:35
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -408,39 +408,42 @@ const ArticleDetail = ({navigation, route}) => {
                             title={data?.title}
                             needLogin={!userInfo.is_login}
                         />
-                        <RNWebView
-                            javaScriptEnabled
-                            onMessage={onMessage}
-                            allowsFullscreenVideo={false}
-                            allowsInlineMediaPlayback={true}
-                            ref={webviewRef}
-                            onLoadEnd={async () => {
-                                webviewRef.current.postMessage(
-                                    JSON.stringify({
-                                        did: global.did,
-                                    })
-                                );
-                                if (data.feedback_status == 1) {
-                                    setTimeout(() => {
-                                        webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
-                                    }, 800);
-                                }
-                            }}
-                            scalesPageToFit={Platform.select({ios: true, android: false})}
-                            source={{
-                                uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
-                            }}
-                            onError={(err) => {
-                                console.log(err, 'object111');
-                            }}
-                            onHttpError={(err) => {
-                                console.log(err, 'object');
-                            }}
-                            renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
-                            startInLoadingState
-                            style={{height: webviewHeight, opacity: 0.99}}
-                            textZoom={100}
-                        />
+                        <View>
+                            <RNWebView
+                                javaScriptEnabled
+                                onMessage={onMessage}
+                                allowsFullscreenVideo={false}
+                                allowsInlineMediaPlayback={true}
+                                ref={webviewRef}
+                                onLoadEnd={async () => {
+                                    webviewRef.current.postMessage(
+                                        JSON.stringify({
+                                            did: global.did,
+                                        })
+                                    );
+                                    if (data.feedback_status == 1) {
+                                        setTimeout(() => {
+                                            webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
+                                        }, 800);
+                                    }
+                                }}
+                                scalesPageToFit={Platform.select({ios: true, android: false})}
+                                source={{
+                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
+                                }}
+                                onError={(err) => {
+                                    console.log(err, 'object111');
+                                }}
+                                onHttpError={(err) => {
+                                    console.log(err, 'object');
+                                }}
+                                renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
+                                startInLoadingState
+                                style={{height: webviewHeight, opacity: 0.99999}}
+                                textZoom={100}
+                            />
+                        </View>
+
                         {finishLoad && Object.keys(data).length > 0 && (
                             <>
                                 {route?.params?.type !== 5 ? (
@@ -462,6 +465,8 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
+                                    ) : route.params.type == 2 ? (
+                                        <View style={{height: text(120)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )
