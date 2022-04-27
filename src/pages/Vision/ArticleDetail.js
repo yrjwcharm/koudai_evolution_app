@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 14:29:07
+ * @LastEditTime: 2022-04-27 16:48:50
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -462,8 +462,6 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
-                                    ) : route.params.type == 2 ? (
-                                        <View style={{height: text(100)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )
