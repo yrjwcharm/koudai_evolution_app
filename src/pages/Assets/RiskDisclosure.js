@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-27 17:36:41
+ * @LastEditTime: 2022-04-27 21:40:07
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -153,6 +153,7 @@ export default ({navigation, route}) => {
                                         </View>
                                         <ScrollView
                                             bounces={false}
+                                            nestedScrollEnabled
                                             onScroll={(e) => onScroll(e.nativeEvent, index)}
                                             scrollEventThrottle={100}
                                             style={styles.itemContentBox}>
