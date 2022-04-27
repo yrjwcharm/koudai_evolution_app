@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-26 23:20:29
+ * @LastEditTime: 2022-04-27 19:00:53
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -239,7 +239,7 @@ const TradeRecord = ({route, navigation}) => {
         return (
             <FlatList
                 data={data}
-                ListEmptyComponent={!loading && <EmptyTip text={'暂无交易记录'} />}
+                ListEmptyComponent={!loading && <EmptyTip text={'暂无记录'} />}
                 renderItem={renderItem}
                 ListFooterComponent={!loading && data?.length > 0 && ListFooterComponent}
                 keyExtractor={(item, index) => index.toString()}
