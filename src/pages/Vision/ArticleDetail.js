@@ -15,7 +15,7 @@ import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {Modal, ShareModal} from '../../components/Modal';
+import {ShareModal, Modal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -44,6 +44,7 @@ const options = {
 
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
+    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -72,7 +73,6 @@ const ArticleDetail = ({navigation, route}) => {
     const collectRef = useRef(null);
     const fr = route.params?.fr;
     const post_progress = useRef(false);
-    const jump = useJump();
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -408,39 +408,42 @@ const ArticleDetail = ({navigation, route}) => {
                             title={data?.title}
                             needLogin={!userInfo.is_login}
                         />
-                        <RNWebView
-                            javaScriptEnabled
-                            onMessage={onMessage}
-                            allowsFullscreenVideo={false}
-                            allowsInlineMediaPlayback={true}
-                            ref={webviewRef}
-                            onLoadEnd={async () => {
-                                webviewRef.current.postMessage(
-                                    JSON.stringify({
-                                        did: global.did,
-                                    })
-                                );
-                                if (data.feedback_status == 1) {
-                                    setTimeout(() => {
-                                        webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
-                                    }, 800);
-                                }
-                            }}
-                            scalesPageToFit={Platform.select({ios: true, android: false})}
-                            source={{
-                                uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
-                            }}
-                            onError={(err) => {
-                                console.log(err, 'object111');
-                            }}
-                            onHttpError={(err) => {
-                                console.log(err, 'object');
-                            }}
-                            renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
-                            startInLoadingState
-                            style={{height: webviewHeight, opacity: 0.99}}
-                            textZoom={100}
-                        />
+                        <View>
+                            <RNWebView
+                                javaScriptEnabled
+                                onMessage={onMessage}
+                                allowsFullscreenVideo={false}
+                                allowsInlineMediaPlayback={true}
+                                ref={webviewRef}
+                                onLoadEnd={async () => {
+                                    webviewRef.current.postMessage(
+                                        JSON.stringify({
+                                            did: global.did,
+                                        })
+                                    );
+                                    if (data.feedback_status == 1) {
+                                        setTimeout(() => {
+                                            webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
+                                        }, 800);
+                                    }
+                                }}
+                                scalesPageToFit={Platform.select({ios: true, android: false})}
+                                source={{
+                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
+                                }}
+                                onError={(err) => {
+                                    console.log(err, 'object111');
+                                }}
+                                onHttpError={(err) => {
+                                    console.log(err, 'object');
+                                }}
+                                renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
+                                startInLoadingState
+                                style={{height: webviewHeight, opacity: 0.99}}
+                                textZoom={100}
+                            />
+                        </View>
+
                         {finishLoad && Object.keys(data).length > 0 && (
                             <>
                                 {route?.params?.type !== 5 ? (
