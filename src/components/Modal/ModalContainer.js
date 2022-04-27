@@ -15,7 +15,7 @@ import Image from 'react-native-fast-image';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
-import HTML from './Html';
+import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
 import {Button} from '../Button';
 import FastImage from 'react-native-fast-image';

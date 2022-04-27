@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:02:22
+ * @LastEditTime: 2022-04-27 23:10:06
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -52,7 +52,7 @@ import {throttle, debounce, cloneDeep} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
 import * as WeChat from 'react-native-wechat-lib';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
-
+import {navigationRef} from './src/components/hooks/RootNavigation';
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -159,7 +159,6 @@ export const generateOptions = (modal) => {
 };
 
 function App(props) {
-    const navigationRef = useRef();
     const routeNameRef = useRef();
     const userInfoRef = useRef({});
     const homeShowModal = useRef(true);
