@@ -2,10 +2,10 @@
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-26 18:29:03
+ * @LastEditTime: 2022-04-27 18:40:58
  * @Description:投顾服务签约
  */
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {Platform, StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CheckBox from '../../components/CheckBox';
 import _ from 'lodash';
@@ -74,7 +74,8 @@ const Sign = ({navigation}) => {
                             />
                             <Text style={{fontSize: px(16), fontWeight: '700'}}>全选</Text>
                         </View>
-                        <Text style={{fontSize: px(12), fontFamily: Font.numMedium}}>
+                        <Text style={{fontSize: px(12), fontWeight: Platform.select({android: '700', ios: '500'})}}>
+                            {`您已选择${signSelectData?.length}个组合 `}
                             {signSelectData?.length}/{signData?.plan_list?.length}
                         </Text>
                     </View>
