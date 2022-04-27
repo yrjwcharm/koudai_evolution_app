@@ -439,7 +439,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                                 startInLoadingState
-                                style={{height: webviewHeight, opacity: 0.99}}
+                                style={{height: webviewHeight, opacity: 0.99999}}
                                 textZoom={100}
                             />
                         </View>
@@ -465,6 +465,8 @@ const ArticleDetail = ({navigation, route}) => {
                                                 {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                             </Text>
                                         </View>
+                                    ) : route.params.type == 2 ? (
+                                        <View style={{height: text(120)}} />
                                     ) : (
                                         <View style={{height: text(161)}} />
                                     )
