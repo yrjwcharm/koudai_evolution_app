@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 17:19:23
+ * @LastEditTime: 2022-04-27 17:30:58
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -13,7 +13,7 @@ import {useJump} from './hooks';
 const width = Dimensions.get('window').width;
 
 const tagsStyles = {
-    alink: {color: 'red'},
+    alink: {color: 'green'},
 };
 
 export default class RenderHtml extends Component {
@@ -34,7 +34,7 @@ export default class RenderHtml extends Component {
                     // 'default-src',
                     // 'loadingIndicatorSrc',
                 ]}
-                debug={false}
+                debug={true}
                 defaultTextProps={{
                     allowFontScaling: false,
                     numberOfLines,
@@ -48,7 +48,7 @@ export default class RenderHtml extends Component {
                     alink: (htmlAttribs, children, convertedCSSStyles, passProps) => (
                         <Text onPress={() => alert(JSON.parse(htmlAttribs.url).path)}>{children}</Text>
                     ),
-                    wrapper: 'Text',
+                    // wrapper: 'Text',
                 }}
             />
         );
