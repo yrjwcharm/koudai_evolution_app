@@ -474,7 +474,7 @@ export default function AppStack() {
                     headerShown: false,
                 }}
             />
-            <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: '交易订单详情'}} />
+            <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: ''}} />
             <Stack.Screen name="FundRanking" component={FundRanking} options={{title: '基金排名'}} />
             <Stack.Screen name="FundTradeTime" component={FundTradeTime} options={{title: '交易时间说明'}} />
             <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
