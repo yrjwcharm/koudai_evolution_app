@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-26 18:03:09
+ * @LastEditTime: 2022-04-28 10:48:43
  * @Description: 体验金首页
  */
 
@@ -134,7 +134,8 @@ const ExperienceGold = ({navigation}) => {
                         <Button
                             activeOpacity={1}
                             title={data?.part1?.button?.title}
-                            disabled={false}
+                            disabled={data?.part1?.button?.available === 0}
+                            disabledColor={Colors.bgColor}
                             color={'#D7AF74'}
                             style={styles.useBtn}
                             textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
