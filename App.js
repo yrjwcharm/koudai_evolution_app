@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:57:22
+ * @LastEditTime: 2022-05-10 18:59:51
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -286,8 +286,16 @@ function App(props) {
                                 let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
                                 let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
                                 let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
+                                let cate_id = getRouteNameId(currentRoute, 'ArticleList', 'id');
                                 let currentRoutePageId =
-                                    currentRouteName + article_id + cu_plan_id + poid + scene + type + assetPoid;
+                                    currentRouteName +
+                                    article_id +
+                                    cu_plan_id +
+                                    poid +
+                                    scene +
+                                    type +
+                                    assetPoid +
+                                    cate_id;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {
