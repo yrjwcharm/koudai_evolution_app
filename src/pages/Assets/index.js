@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-05 15:24:51
+ * @LastEditTime: 2022-05-05 15:40:19
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -62,7 +62,6 @@ function HomeScreen({navigation, route}) {
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [newMes, setNewmessage] = useState(0);
-    const [hideMsg, setHideMsg] = useState(false);
     const [showEye, setShowEye] = useState('true');
     const [holdingData, setHoldingData] = useState({});
     const [userBasicInfo, setUserBasicInfo] = useState({});
@@ -115,7 +114,6 @@ function HomeScreen({navigation, route}) {
     };
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
-        refresh === 'refresh' && setHideMsg(false);
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
                 setHoldingData(res.result);
@@ -744,7 +742,7 @@ function HomeScreen({navigation, route}) {
                         <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
                         {/* 系统通知 */}
-                        {!hideMsg && notice?.system_list?.length > 0
+                        {notice?.system_list?.length > 0
                             ? notice?.system_list?.map((system, index, arr) => (
                                   <TouchableOpacity
                                       key={index}
