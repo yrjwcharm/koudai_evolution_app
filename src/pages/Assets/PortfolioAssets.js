@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-05 14:43:18
+ * @LastEditTime: 2022-05-05 16:02:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -629,7 +629,18 @@ export default function PortfolioAssets(props) {
                         }}
                     />
                 }>
-                {data?.processing_list && <Notice content={data?.processing_list} />}
+                {data?.processing_list && (
+                    <Notice
+                        content={data?.processing_list}
+                        onPress={(index) => {
+                            let signIndex = data?.processing_list.findIndex((_item) => _item.action == 'Sign');
+                            if (signIndex == index) {
+                                //签约弹窗
+                                signModal?.current?.show();
+                            }
+                        }}
+                    />
+                )}
                 <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>

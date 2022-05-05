@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-05 15:16:12
+ * @LastEditTime: 2022-05-05 15:59:36
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
@@ -36,6 +36,8 @@ export default function Notice(props) {
                                 props.style,
                             ]}
                             onPress={() => {
+                                props.onPress && props.onPress();
+
                                 item?.log_id && global.LogTool(item?.log_id);
                                 jump(item?.button?.url);
                             }}>
@@ -63,6 +65,7 @@ export default function Notice(props) {
                         props.style,
                     ]}
                     onPress={() => {
+                        props.onPress && props.onPress();
                         props.content?.log_id && global.LogTool(props.content?.log_id);
                         jump(props.content?.url);
                     }}>

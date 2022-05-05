@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-05 15:40:19
+ * @LastEditTime: 2022-05-05 15:52:23
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -749,6 +749,11 @@ function HomeScreen({navigation, route}) {
                                       activeOpacity={0.9}
                                       style={styles.systemMsgContainer}
                                       onPress={() => {
+                                          let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
+                                          if (signIndex == index && signData) {
+                                              //签约弹窗
+                                              bottomModal?.current?.show();
+                                          }
                                           system?.log_id && global.LogTool(system?.log_id);
                                           jump(system?.button?.url);
                                       }}>
