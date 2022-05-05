@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:09:06
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-28 16:27:19
  * @Description:路由表
  */
 import React from 'react';
@@ -184,6 +184,7 @@ import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级�
 import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
+import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -727,6 +728,7 @@ export default function AppStack() {
                 options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
             />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
+            <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-26 14:39:21
+ * @LastEditTime: 2022-05-10 18:46:01
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -13,10 +13,8 @@ import {
     StatusBar,
     Platform,
     BackHandler,
-    Linking,
     UIManager,
     AppState,
-    Image,
     View,
     ImageBackground,
     Text,
@@ -39,19 +37,18 @@ import http from './src/services';
 import Storage from './src/utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
-import {deleteModal, updateModal} from './src/redux/actions/modalInfo';
 import {Modal} from './src/components/Modal';
 import {Button} from './src/components/Button';
 import UnderlineText from './src/components/UnderlineText';
-import {px, px as text, deviceWidth} from './src/utils/appUtil';
+import {px, deviceWidth} from './src/utils/appUtil';
 import {Colors, Font, Style} from './src/common/commonStyle';
 import saveImg from './src/utils/saveImg';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
-import {throttle, debounce, cloneDeep} from 'lodash';
+import {debounce} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
-import * as WeChat from 'react-native-wechat-lib';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
+import {useStateChange} from './src/components/hooks';
 
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
@@ -161,8 +158,8 @@ export const generateOptions = (modal) => {
 function App(props) {
     const navigationRef = useRef();
     const routeNameRef = useRef();
-    const userInfoRef = useRef({});
     const homeShowModal = useRef(true);
+    const onStateChange = useStateChange({homeShowModal, store});
     let lastBackPressed = '';
     const onBackAndroid = () => {
         if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
@@ -237,283 +234,6 @@ function App(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    React.useEffect(() => {
-        var listener = '';
-        setTimeout(() => {
-            listener = store.subscribe(() => {
-                const next = store.getState().userInfo.toJS();
-                const prev = userInfoRef.current;
-                if (!next.hotRefreshData) {
-                    if (
-                        (!prev.is_login && next.is_login) ||
-                        (!prev.has_account && next.has_account) ||
-                        (!prev.buy_status && next.buy_status) ||
-                        (!prev.buy_status_for_vision && next.buy_status_for_vision)
-                    ) {
-                        getModalData();
-                    }
-                }
-                if (prev.is_login) {
-                    showGesture(next).then((res) => {
-                        if (!res) {
-                            homeShowModal.current = true;
-                            onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
-                        } else {
-                            homeShowModal.current = false;
-                        }
-                    });
-                }
-                userInfoRef.current = cloneDeep(next);
-            });
-        }, 100);
-        return () => listener && listener();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const showGesture = async (userinfo) => {
-        const res = await Storage.get('gesturePwd');
-        if (res && res[`${userinfo.uid}`]) {
-            const result = await Storage.get('openGesturePwd');
-            if (result && result[`${userinfo.uid}`]) {
-                if (userinfo.is_login && !userinfo.verifyGesture) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    };
-    const onStateChange = React.useCallback(
-        (currentRouteName, show) => {
-            const modalInfo = store.getState().modalInfo.toJS();
-            if (Object.keys(modalInfo).length > 0) {
-                if (modalInfo.page) {
-                    if (modalInfo.page?.includes(currentRouteName)) {
-                        if (currentRouteName === 'Home') {
-                            if (show) {
-                                showModal(modalInfo);
-                            }
-                        } else {
-                            showModal(modalInfo);
-                        }
-                    }
-                } else {
-                    if (currentRouteName === 'Index') {
-                        showModal(modalInfo);
-                    }
-                }
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    );
-    const getModalData = () => {
-        http.get('/common/layer/20210101').then((res) => {
-            if (res.code === '000000') {
-                if (res.result.image) {
-                    Image.getSize(res.result.image, (w, h) => {
-                        const height = Math.floor(h / (w / (res.result.device_width ? deviceWidth : text(280))));
-                        res.result.imgHeight = height || text(375);
-                        if (res.result.page) {
-                            if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
-                                showModal(res.result);
-                            } else {
-                                store.dispatch(updateModal(res.result));
-                            }
-                        } else {
-                            if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
-                                showModal(res.result);
-                            } else {
-                                store.dispatch(updateModal(res.result));
-                            }
-                        }
-                    });
-                } else {
-                    if (res.result.page) {
-                        if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
-                            showModal(res.result);
-                        } else {
-                            store.dispatch(updateModal(res.result));
-                        }
-                    } else {
-                        if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
-                            showModal(res.result);
-                        } else {
-                            store.dispatch(updateModal(res.result));
-                        }
-                    }
-                }
-            }
-        });
-    };
-    const jump = (navigation, url, type = 'navigate') => {
-        if (url) {
-            if (url.type === 2) {
-                Linking.canOpenURL(url.path)
-                    .then((supported) => {
-                        if (!supported) {
-                            return Toast.show('您的设备不支持打开网址');
-                        }
-                        return Linking.openURL(url.path);
-                    })
-                    .catch((err) => Toast.show(err));
-            } else if (url.type === 3) {
-                navigation[type]('OpenPdf', {url: url.path});
-            } else if (url.type == 5) {
-                WeChat.isWXAppInstalled().then((isInstalled) => {
-                    if (isInstalled) {
-                        WeChat.launchMiniProgram({
-                            userName: url?.params?.app_id,
-                            miniProgramType: 0,
-                            path: url.path,
-                        });
-                    } else {
-                        Toast.show('请安装微信');
-                    }
-                });
-            } else {
-                navigation[type](url.path, url.params || {});
-            }
-        }
-    };
-    const showModal = throttle((modal) => {
-        if (modal.log_id) {
-            http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-            global.LogTool('campaignPopup', navigationRef.current.getCurrentRoute().name, modal.log_id);
-        }
-        let options = {
-            confirmCallBack: () => {
-                if (modal.confirm?.act === 'back') {
-                    navigationRef.current?.goBack?.();
-                } else if (modal.confirm?.act === 'jump') {
-                    jump(navigationRef.current, modal.confirm?.url || '');
-                } else {
-                    jump(navigationRef.current, modal.confirm?.url || modal.url || '');
-                }
-                modal.log_id &&
-                    global.LogTool('campaignPopupStart', navigationRef.current.getCurrentRoute().name, modal.log_id);
-            },
-            id: modal.log_id,
-            isTouchMaskToClose: modal.touch_close,
-        };
-        let type = 'fade';
-        if (modal.type === 'image' || modal.type === 'diy_image') {
-            options = {
-                ...options,
-                type: 'image',
-                imageUrl: modal.image,
-                imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: modal.imgHeight,
-                remainingTime: modal.remaining_time || 0,
-            };
-            if (modal.type === 'diy_image') {
-                options.content = {
-                    title: modal.title,
-                    text: modal.content,
-                    tip: modal.tip,
-                };
-            }
-        } else if (modal.type === 'alert_image' || modal.type === 'confirm') {
-            options = {
-                ...options,
-                confirm: modal.cancel ? true : false,
-                confirmText: modal.confirm?.text || '',
-                cancelCallBack: () => {
-                    if (modal.cancel?.act === 'back') {
-                        navigationRef.current?.goBack?.();
-                    } else if (modal.cancel?.act === 'jump') {
-                        jump(navigationRef.current, modal.cancel?.url || '');
-                    } else {
-                        jump(navigationRef.current, modal.cancel?.url || '');
-                    }
-                },
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-            };
-            if (modal.type === 'alert_image') {
-                options.customTitleView = (
-                    <Image
-                        source={{uri: modal.image}}
-                        style={{
-                            width: text(280),
-                            height: modal.imgHeight,
-                            borderTopRightRadius: 8,
-                            borderTopLeftRadius: 8,
-                        }}
-                    />
-                );
-            }
-            if (modal.type === 'confirm') {
-                options.title = modal.title || '';
-            }
-        } else if (modal.type === 'user_guide') {
-            options = {
-                ...options,
-                confirmCallBack: () => {
-                    global.LogTool('copyBindAccountStart');
-                    Linking.canOpenURL('weixin://').then((supported) => {
-                        if (supported) {
-                            Linking.openURL('weixin://');
-                        } else {
-                            Toast.show('请先安装微信');
-                        }
-                    });
-                },
-                data: modal,
-                type: 'user_guide',
-            };
-        } else if (modal.type === 'add_wechat_guide') {
-            options = generateOptions(modal);
-            type = 'slide';
-        } else if (modal.type === 'encourage') {
-            global.LogTool('GradeWindows');
-            options = {
-                ...options,
-                confirm: true,
-                confirmText: modal.confirm?.text || '',
-                isTouchMaskToClose: false,
-                backButtonClose: false,
-                cancelCallBack: () => {
-                    global.LogTool('GradeWindows_No');
-                    http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
-                        console.log(res);
-                    });
-                },
-                confirmCallBack: () => {
-                    global.LogTool('GradeWindows_Yes');
-                    Linking.canOpenURL(modal.confirm.url.path)
-                        .then((res) => {
-                            if (res) {
-                                Linking.openURL(modal.confirm.url.path);
-                            } else if (modal.confirm.url.path !== modal.confirm.url.params.default_url) {
-                                Linking.canOpenURL(modal.confirm.url.params.default_url).then((r) => {
-                                    if (r) {
-                                        Linking.openURL(modal.confirm.url.params.default_url);
-                                    }
-                                });
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                    http.post('/mapi/set/encourage/20220412', {action_scene: 1}).then((res) => {
-                        console.log(res);
-                    });
-                },
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-            };
-        }
-        if (modal.type) {
-            Modal.show(options, type);
-        }
-        store.dispatch(deleteModal());
-    }, 10000);
-
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
@@ -560,7 +280,7 @@ function App(props) {
                                 const previousRoutePageId = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
                                 let currentRoute = navigationRef.current.getCurrentRoute();
-                                onStateChange(currentRouteName, homeShowModal.current);
+                                onStateChange(currentRouteName, homeShowModal.current, navigationRef);
                                 let article_id = getRouteNameId(currentRoute, 'ArticleDetail', 'article_id');
                                 let cu_plan_id = getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id');
                                 let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
