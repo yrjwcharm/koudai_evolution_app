@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-14 17:58:18
+ * @LastEditTime: 2022-05-05 14:43:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -629,9 +629,7 @@ export default function PortfolioAssets(props) {
                         }}
                     />
                 }>
-                {data?.processing_info && (
-                    <Notice content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}} />
-                )}
+                {data?.processing_list && <Notice content={data?.processing_list} />}
                 <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>

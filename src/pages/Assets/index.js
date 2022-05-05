@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-15 20:55:49
+ * @LastEditTime: 2022-05-05 15:24:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -95,20 +95,7 @@ function HomeScreen({navigation, route}) {
         let y = event.nativeEvent.contentOffset.y;
         setScrollY(y);
     };
-    // 隐藏系统消息
-    const hideSystemMsg = useCallback(() => {
-        global.LogTool('click', 'hideSystemMsg');
-        Animated.timing(fadeAnim, {
-            toValue: 0,
-            duration: 500,
-            useNativeDriver: true,
-        }).start((a) => {
-            if (a.finished) {
-                setHideMsg(true);
-                LayoutAnimation.linear();
-            }
-        });
-    }, [fadeAnim]);
+
     // 显示|隐藏金额信息
     const toggleEye = () => {
         setShowEye((show) => {
@@ -757,39 +744,43 @@ function HomeScreen({navigation, route}) {
                         <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
                         {/* 系统通知 */}
-                        {!hideMsg && notice?.system ? (
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={() => {
-                                    notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
-                                    jump(notice?.system?.url);
-                                }}>
-                                <Animated.View
-                                    style={[
-                                        styles.systemMsgContainer,
-                                        Style.flexBetween,
-                                        {
-                                            opacity: fadeAnim,
-                                            paddingRight: notice?.system?.button ? text(16) : text(38),
-                                        },
-                                    ]}>
-                                    <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
-
-                                    {notice?.system?.button ? (
-                                        <View style={styles.btn}>
-                                            <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
-                                        </View>
-                                    ) : (
-                                        <TouchableOpacity
-                                            style={styles.closeSystemMsg}
-                                            activeOpacity={0.8}
-                                            onPress={hideSystemMsg}>
-                                            <EvilIcons name={'close'} size={22} color={Colors.yellow} />
-                                        </TouchableOpacity>
-                                    )}
-                                </Animated.View>
-                            </TouchableOpacity>
-                        ) : null}
+                        {!hideMsg && notice?.system_list?.length > 0
+                            ? notice?.system_list?.map((system, index, arr) => (
+                                  <TouchableOpacity
+                                      key={index}
+                                      activeOpacity={0.9}
+                                      style={styles.systemMsgContainer}
+                                      onPress={() => {
+                                          system?.log_id && global.LogTool(system?.log_id);
+                                          jump(system?.button?.url);
+                                      }}>
+                                      <Animated.View
+                                          style={[
+                                              Style.flexBetween,
+                                              {
+                                                  opacity: fadeAnim,
+                                                  paddingTop: text(8),
+                                                  paddingBottom: text(12),
+                                              },
+                                              arr.length > 1 && index != arr.length - 1
+                                                  ? {
+                                                        borderBottomColor: '#F7CFB2',
+                                                        borderBottomWidth: 0.5,
+                                                    }
+                                                  : {},
+                                          ]}>
+                                          <Text style={styles.systemMsgText} numberOfLines={arr.length > 1 ? 2 : 100}>
+                                              {system?.desc}
+                                          </Text>
+                                          {system?.button ? (
+                                              <View style={styles.btn}>
+                                                  <Text style={styles.btn_text}>{system?.button?.text}</Text>
+                                              </View>
+                                          ) : null}
+                                      </Animated.View>
+                                  </TouchableOpacity>
+                              ))
+                            : null}
                         {/* 资产信息 */}
                         <View style={[styles.summaryTitle, Style.flexCenter]}>
                             <Text style={styles.summaryKey}>总资产(元)</Text>
@@ -1255,21 +1246,15 @@ const styles = StyleSheet.create({
     },
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
-        paddingTop: text(8),
-        paddingBottom: text(12),
-        paddingRight: text(38),
-        paddingLeft: Space.marginAlign,
+
+        paddingHorizontal: Space.marginAlign,
     },
     systemMsgText: {
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.yellow,
         textAlign: 'justify',
-    },
-    closeSystemMsg: {
-        position: 'absolute',
-        right: text(12),
-        top: text(10),
+        flex: 1,
     },
     summaryTitle: {
         flexDirection: 'row',
@@ -1581,6 +1566,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(5),
         paddingHorizontal: text(10),
         backgroundColor: '#FF7D41',
+        marginLeft: px(12),
     },
     btn_text: {
         fontWeight: '600',
