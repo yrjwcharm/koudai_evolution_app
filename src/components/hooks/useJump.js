@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-17 18:38:23
+ * @LastEditTime: 2022-05-05 16:13:05
  * @Description: 自定义跳转钩子
  */
 import {useRef} from 'react';
@@ -11,7 +11,7 @@ import {Linking} from 'react-native';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
 import http from '../../services';
-import {generateOptions} from '../../../App';
+import {generateOptions} from './useStateChange';
 import * as WeChat from 'react-native-wechat-lib';
 function useJump() {
     const navigation = useNavigation();
