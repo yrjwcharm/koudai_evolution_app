@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-29 18:25:22
+ * @LastEditTime: 2022-05-06 18:51:58
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -89,12 +89,12 @@ export default ({navigation, route}) => {
         _options[j].count += 1;
         const total = _options.reduce((prev, curr) => prev + curr.count, 0);
         let totalPercent = 0;
-        _options.slice(0, -1).forEach((item) => {
+        _options.forEach((item, index) => {
             const percent = Math.round((item.count / total) * 100);
-            totalPercent += percent;
+            totalPercent += j === index ? 0 : percent;
             item.rate = percent + '%';
         });
-        _options[_options.length - 1].rate = 100 - totalPercent + '%';
+        _options[j].rate = 100 - totalPercent + '%';
         _questions[i].answered = true;
         _questions[i].selected = j;
         http.post('/common/communicate/upload/20220426', {

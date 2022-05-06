@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-29 18:25:12
+ * @LastEditTime: 2022-05-06 18:42:23
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -145,12 +145,12 @@ export const UserCommunication = forwardRef((props, ref) => {
         setSelected(index);
         const total = options.reduce((prev, curr) => prev + curr.count, 0) + 1;
         let totalPercent = 0;
-        const _rateArr = options.slice(0, -1).map((item, idx) => {
+        const _rateArr = options.map((item, idx) => {
             const percent = Math.round(((idx === index ? item.count + 1 : item.count) / total) * 100);
-            totalPercent += percent;
+            totalPercent += idx === index ? 0 : percent;
             return percent + '%';
         });
-        _rateArr.push(100 - totalPercent + '%');
+        _rateArr.splice(index, 1, 100 - totalPercent + '%');
         setRate(_rateArr);
         http.post('/common/communicate/upload/20220426', {
             communicate_id,
