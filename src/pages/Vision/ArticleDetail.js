@@ -2,11 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:58:17
+ * @LastEditTime: 2022-05-10 19:01:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -15,7 +15,7 @@ import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import {ShareModal, Modal} from '../../components/Modal';
+import {Modal, PageModal, ShareModal} from '../../components/Modal';
 import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
@@ -36,7 +36,6 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
-
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -69,10 +68,14 @@ const ArticleDetail = ({navigation, route}) => {
     const [collect_status, setCollectStatus] = useState(false);
     const [collect_num, setCollectNum] = useState(0);
     const [commentData, setCommentData] = useState({});
+    const inputModal = useRef();
+    const inputRef = useRef();
+    const [content, setContent] = useState('');
     const zanRef = useRef(null);
     const collectRef = useRef(null);
     const fr = route.params?.fr;
     const post_progress = useRef(false);
+    const inputMaxLength = 500;
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -373,6 +376,23 @@ const ArticleDetail = ({navigation, route}) => {
     const handelComment = (show_modal) => {
         navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id, show_modal});
     };
+    //发布评论
+    const publish = () => {
+        http.post('/community/article/comment/add/20210101', {article_id: route.params?.article_id, content}).then(
+            (res) => {
+                if (res.code == '000000') {
+                    inputModal.current.cancel();
+                    setContent('');
+                    Modal.show({
+                        title: '提示',
+                        content: res.result.message,
+                    });
+                } else {
+                    Toast.show(res.message);
+                }
+            }
+        );
+    };
     return (
         <View style={[styles.container]}>
             {hasNet ? (
@@ -526,9 +546,44 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </ScrollView>
+                    <PageModal ref={inputModal} title="写评论" style={{height: px(370)}} backButtonClose={true}>
+                        <TextInput
+                            ref={inputRef}
+                            value={content}
+                            multiline={true}
+                            style={styles.input}
+                            onChangeText={(value) => {
+                                setContent(value);
+                            }}
+                            maxLength={inputMaxLength}
+                            textAlignVertical="top"
+                            placeholder="我来聊两句..."
+                        />
+                        <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                            <View style={Style.flexRow}>
+                                <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                                    {content.length}/{inputMaxLength}
+                                </Text>
+                                <Button
+                                    title="发布"
+                                    disabled={content.length <= 0}
+                                    style={styles.button}
+                                    onPress={publish}
+                                />
+                            </View>
+                        </View>
+                    </PageModal>
                     {/* footer */}
                     <View style={[styles.footer, Style.flexRow]}>
-                        <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={handelComment}>
+                        <TouchableOpacity
+                            style={styles.footer_content}
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                inputModal.current.show();
+                                setTimeout(() => {
+                                    inputRef?.current?.focus();
+                                }, 100);
+                            }}>
                             <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -685,6 +740,19 @@ const styles = StyleSheet.create({
         marginBottom: text(12),
         borderWidth: 0.5,
         borderColor: '#ddd',
+    },
+    button: {
+        marginLeft: px(7),
+        borderRadius: px(18),
+        width: px(80),
+        height: px(36),
+    },
+    input: {
+        paddingHorizontal: px(20),
+        marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
+        height: px(215),
+        fontSize: px(14),
+        lineHeight: px(20),
     },
 });
 
