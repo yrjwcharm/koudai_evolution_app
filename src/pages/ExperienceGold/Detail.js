@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-28 10:48:43
+ * @LastEditTime: 2022-05-06 16:12:09
  * @Description: 体验金首页
  */
 
@@ -30,14 +30,14 @@ const ExperienceGold = ({navigation}) => {
         Http.get('/freefund/detail/20210101').then((res) => {
             if (res.code === '000000') {
                 setRefreshing(false);
-                if (res.result.part1?.time_countdown?.countdown) {
+                if (res.result.part1?.time_countdown?.remaining_time) {
                     cancelRef.current = countdownTool({
                         callback: (resetTime) => {
                             const c = resolveTimeStemp(+resetTime);
                             setCountdown(c);
                         },
                         immediate: true,
-                        timeStemp: res.result.part1?.time_countdown?.countdown,
+                        timeStemp: res.result.part1?.time_countdown?.remaining_time,
                     });
                 }
                 setData(res.result);
@@ -271,7 +271,7 @@ const ExperienceGold = ({navigation}) => {
                                 <View style={[Style.flexRow, styles.yieldBox]}>
                                     <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
                                         <Text>{_item.ratio}</Text>
-                                        <Text style={{fontSize: text(18)}}>{'%'}</Text>
+                                        {/* <Text style={{fontSize: text(18)}}>{'%'}</Text> */}
                                     </Text>
                                     <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>{_item.ratio_desc}</Text>
                                 </View>
