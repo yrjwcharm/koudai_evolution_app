@@ -136,12 +136,17 @@ export const UserCommunication = forwardRef((props, ref) => {
     const [answered, setAnswered] = useState(false);
     const [rateArr, setRate] = useState([]);
     const [selected, setSelected] = useState();
+    const clickRef = useRef(true);
 
     useImperativeHandle(ref, () => ({
         getStatus: () => answered,
     }));
 
     const onSelect = (index) => {
+        if (!clickRef.current) {
+            return false;
+        }
+        clickRef.current = false;
         setSelected(index);
         const total = options.reduce((prev, curr) => prev + curr.count, 0) + 1;
         let totalPercent = 0;
@@ -165,6 +170,9 @@ export const UserCommunication = forwardRef((props, ref) => {
             } else {
                 Toast.show(res.message);
             }
+            setTimeout(() => {
+                clickRef.current = true;
+            }, 1000);
         });
     };
 

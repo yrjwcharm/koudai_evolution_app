@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-07 16:45:29
+ * @LastEditTime: 2022-05-07 17:43:49
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -40,6 +40,7 @@ export default ({navigation, route}) => {
     const scrollViewRef = useRef();
     const listener = useRef();
     const {communicate_id, type} = route.params;
+    const clickRef = useRef(true);
 
     useEffect(() => {
         listener.current = navigation.addListener('beforeRemove', (e) => {
@@ -83,6 +84,10 @@ export default ({navigation, route}) => {
 
     const onSelect = (i, j) => {
         // console.log(i, j);
+        if (!clickRef.current) {
+            return false;
+        }
+        clickRef.current = false;
         const _data = {...data};
         const {communicate_question: _questions} = _data;
         const {question_options: _options} = _questions[i];
@@ -119,12 +124,13 @@ export default ({navigation, route}) => {
                 }
                 setData(_data);
                 LayoutAnimation.linear();
-                setTimeout(() => {
-                    scrollViewRef.current?.scrollToEnd?.({animated: true});
-                }, 1000);
             } else {
                 Toast.show(res.message);
             }
+            setTimeout(() => {
+                scrollViewRef.current?.scrollToEnd?.({animated: true});
+                clickRef.current = true;
+            }, 1000);
         });
     };
 
