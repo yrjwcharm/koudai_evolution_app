@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-06 18:51:58
+ * @LastEditTime: 2022-05-07 16:45:29
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -196,6 +196,7 @@ export default ({navigation, route}) => {
                                                             answered && selected === j
                                                                 ? {color: Colors.brandColor}
                                                                 : {},
+                                                            answered ? {maxWidth: px(240)} : {},
                                                         ]}>
                                                         {content}
                                                         {selected === j ? '（已选）' : ''}
@@ -285,7 +286,6 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(18),
         color: Colors.defaultColor,
-        maxWidth: px(240),
     },
     finishText: {
         marginTop: px(12),

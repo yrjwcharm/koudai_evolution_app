@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-06 18:42:23
+ * @LastEditTime: 2022-05-07 17:24:41
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -161,11 +161,11 @@ export const UserCommunication = forwardRef((props, ref) => {
         }).then((res) => {
             if (res.code === '000000') {
                 setAnswered(true);
+                LayoutAnimation.linear();
             } else {
                 Toast.show(res.message);
             }
         });
-        LayoutAnimation.linear();
     };
 
     return (
@@ -200,6 +200,7 @@ export const UserCommunication = forwardRef((props, ref) => {
                                 style={[
                                     styles.optionText,
                                     answered && selected === index ? {color: Colors.brandColor} : {},
+                                    answered ? {maxWidth: px(240)} : {},
                                 ]}>
                                 {content}
                                 {selected === index ? '（已选）' : ''}
@@ -552,6 +553,16 @@ function useStateChange({homeShowModal, store}) {
                 onClose: () => {
                     if (!userCommunicationRef.current?.getStatus()) {
                         Modal.showLayer(<Layer options={options} type={type} />);
+                        Modal.show({
+                            title: '温馨提示',
+                            content: '是否确认退出本次调研？',
+                            confirm: true,
+                            cancelCallBack: () => {
+                                Modal.show(options, type);
+                            },
+                            isTouchMaskToClose: false,
+                            backButtonClose: false,
+                        });
                     } else {
                         Modal.hideLayer();
                     }
@@ -699,7 +710,6 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(22),
         color: Colors.defaultColor,
-        maxWidth: px(240),
     },
     layer: {
         padding: px(8),
