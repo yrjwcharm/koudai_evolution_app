@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-27 12:18:17
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-06 18:35:43
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 import React, {Component} from 'react';
@@ -22,6 +22,7 @@ import {
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {px} from '../../utils/appUtil';
+import Mask from '../Mask';
 const {width, height} = Dimensions.get('window');
 export default class PageModal extends Component {
     constructor(props) {

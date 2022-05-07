@@ -546,7 +546,7 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </ScrollView>
-                    <PageModal ref={inputModal} title="写评论" style={{height: px(370)}} backButtonClose={true}>
+                    <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                         <TextInput
                             ref={inputRef}
                             value={content}
