@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-07 17:24:41
+ * @LastEditTime: 2022-05-09 14:58:58
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -542,10 +542,8 @@ function useStateChange({homeShowModal, store}) {
                                       onPress: () => {
                                           Modal.close();
                                           Modal.hideLayer();
-                                          global.layerOptions = options;
                                           navigation.navigate('UserCommunication', {
                                               communicate_id: modal.communicate_id,
-                                              type,
                                           });
                                       },
                                       text: modal.confirm.text,
@@ -560,7 +558,6 @@ function useStateChange({homeShowModal, store}) {
                 ),
                 onClose: () => {
                     if (!userCommunicationRef.current?.getStatus()) {
-                        Modal.showLayer(<Layer options={options} type={type} />);
                         Modal.show({
                             title: '温馨提示',
                             content: '是否确认退出本次调研？',
@@ -568,10 +565,15 @@ function useStateChange({homeShowModal, store}) {
                             cancelCallBack: () => {
                                 Modal.show(options, type);
                             },
+                            confirmCallBack: () => {
+                                global.layerOptions = {...options, page: modal.page};
+                                Modal.showLayer(<Layer options={options} type={type} />);
+                            },
                             isTouchMaskToClose: false,
                             backButtonClose: false,
                         });
                     } else {
+                        global.layerOptions = null;
                         Modal.hideLayer();
                     }
                 },
@@ -581,12 +583,12 @@ function useStateChange({homeShowModal, store}) {
         }
         if (modal.type) {
             if (modal.is_hide) {
+                global.layerOptions = {...options, page: modal.page};
                 Modal.showLayer(<Layer options={options} type={type} />);
             } else {
                 Modal.show(options, type);
             }
         }
-        // store.dispatch(deleteModal());
     }, 1000);
 
     const onStateChange = useCallback((currentRouteName, show, _navigationRef) => {
@@ -600,6 +602,14 @@ function useStateChange({homeShowModal, store}) {
             showModal(modal);
             store.dispatch(updateModal({modals: modalInfo.modals.slice(1)}));
         };
+        if (global.layerOptions) {
+            const {page} = global.layerOptions;
+            if (page?.includes?.(currentRouteName)) {
+                Modal.showLayer(<Layer options={global.layerOptions} />);
+            } else {
+                Modal.hideLayer();
+            }
+        }
         if (Object.keys(modal).length > 0) {
             if (modal.page) {
                 if (modal.page?.includes(currentRouteName)) {
