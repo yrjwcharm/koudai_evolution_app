@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-07 17:43:49
+ * @LastEditTime: 2022-05-09 10:21:53
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {Button} from '../../components/Button';
 import {Layer, useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
@@ -33,6 +34,7 @@ const fontWeightMedium = Platform.select({android: '700', ios: '500'});
 
 export default ({navigation, route}) => {
     const jump = useJump();
+    const netInfo = useNetInfo();
     const [data, setData] = useState({});
     const {button = {}, content: introContent = '', finish_content = '', communicate_question: questions = []} = data;
     const {text = '', url = ''} = button;
@@ -41,6 +43,12 @@ export default ({navigation, route}) => {
     const listener = useRef();
     const {communicate_id, type} = route.params;
     const clickRef = useRef(true);
+
+    useEffect(() => {
+        if (!netInfo.isConnected) {
+            Toast.show('网络异常，请稍后再试~');
+        }
+    }, [netInfo]);
 
     useEffect(() => {
         listener.current = navigation.addListener('beforeRemove', (e) => {
