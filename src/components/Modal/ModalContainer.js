@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     diyContent: {
         position: 'absolute',
         width: width,
-        paddingTop: text(29),
+        paddingTop: text(20),
         alignItems: 'center',
     },
     imgTitle: {
