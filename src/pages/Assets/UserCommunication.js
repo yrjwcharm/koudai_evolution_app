@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-09 15:04:35
+ * @LastEditTime: 2022-05-09 19:20:45
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -252,7 +252,7 @@ export default ({navigation, route}) => {
                 img={require('../../assets/img/emptyTip/noNetwork.png')}
                 text={'哎呀！网络出问题了'}
                 desc={'网络不给力，请检查您的网络设置'}
-                style={{paddingTop: insets.top + text(100), paddingBottom: text(60)}}
+                style={{paddingTop: insets.top + px(100), paddingBottom: px(60)}}
             />
         </>
     );
