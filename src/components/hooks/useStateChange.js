@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 15:52:21
+ * @LastEditTime: 2022-05-10 18:31:02
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(30, 31, 32, 0.85)',
         position: 'absolute',
         right: 0,
-        bottom: px(130),
+        bottom: px(180),
     },
     layerIcon: {
         marginRight: px(2),
