@@ -536,7 +536,14 @@ const ArticleDetail = ({navigation, route}) => {
                                         <View style={[{height: px(40)}, Style.flexCenter]}>
                                             <Text style={styles.footnote}>
                                                 暂无评论&nbsp;
-                                                <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                                <Text
+                                                    style={{color: Colors.btnColor}}
+                                                    onPress={() => {
+                                                        inputModal.current.show();
+                                                        setTimeout(() => {
+                                                            inputRef?.current?.focus();
+                                                        }, 100);
+                                                    }}>
                                                     我来写一条
                                                 </Text>
                                             </Text>
