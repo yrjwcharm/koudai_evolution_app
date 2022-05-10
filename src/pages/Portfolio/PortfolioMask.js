@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-05 16:52:03
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 19:10:14
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-10 14:43:55
  * @Description:组合详情页蒙层
  */
 import React, {useEffect, useState} from 'react';
@@ -14,15 +14,16 @@ import {Font, Colors} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 
-export default function PortfolioMask({navigation}) {
+export default function PortfolioMask({navigation, route}) {
     const [data, setData] = useState({});
     const jump = useJump();
     useEffect(() => {
-        http.get('/portfolio/mask/detail/20210601?plan_id=1').then((res) => {
+        http.get('/portfolio/mask/detail/20210601', {fr: route.params?.fr, plan_id: 1}).then((res) => {
             setData(res.result);
             navigation.setOptions({title: res.result.title});
         });
-    }, [navigation]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <View style={styles.con}>
             {data?.ratio_info?.length > 0 ? (
