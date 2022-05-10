@@ -60,7 +60,12 @@ const key = Platform.select({
     ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
     android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
 });
-global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
+
+if (process.env.NODE_ENV === 'development') { //调试中可看到网络请求
+    global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; 
+    global.WebSocket = global.originalWebSocket || global.WebSocket 
+}
+
 if (Platform.OS === 'android') {
     //启用安卓动画
     if (UIManager.setLayoutAnimationEnabledExperimental) {
