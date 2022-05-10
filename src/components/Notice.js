@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 17:13:52
+ * @LastEditTime: 2022-04-24 18:21:07
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
@@ -21,6 +21,7 @@ export default function Notice(props) {
                     activeOpacity={0.9}
                     style={[Style.flexBetween, styles.yellow_wrap_sty, props.style]}
                     onPress={() => {
+                        props.onPress && props.onPress();
                         props.content?.log_id && global.LogTool(props.content?.log_id);
                         jump(props.content?.url);
                     }}>

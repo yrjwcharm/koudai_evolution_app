@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:02:22
+ * @LastEditTime: 2022-04-29 12:53:19
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -52,7 +52,7 @@ import {throttle, debounce, cloneDeep} from 'lodash';
 import DeviceInfo from 'react-native-device-info';
 import * as WeChat from 'react-native-wechat-lib';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
-
+import {navigationRef} from './src/components/hooks/RootNavigation';
 global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -164,7 +164,6 @@ export const generateOptions = (modal) => {
 };
 
 function App(props) {
-    const navigationRef = useRef();
     const routeNameRef = useRef();
     const userInfoRef = useRef({});
     const homeShowModal = useRef(true);
@@ -571,8 +570,16 @@ function App(props) {
                                 let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
                                 let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
                                 let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
+                                let cate_id = getRouteNameId(currentRoute, 'ArticleList', 'id');
                                 let currentRoutePageId =
-                                    currentRouteName + article_id + cu_plan_id + poid + scene + type + assetPoid;
+                                    currentRouteName +
+                                    article_id +
+                                    cu_plan_id +
+                                    poid +
+                                    scene +
+                                    type +
+                                    assetPoid +
+                                    cate_id;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {

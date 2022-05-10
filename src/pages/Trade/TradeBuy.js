@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-20 17:39:27
+ * @LastEditTime: 2022-04-26 18:44:39
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -80,6 +80,10 @@ class TradeBuy extends Component {
     }
     getTab = async () => {
         const {poid} = this.state;
+        http.post('/advisor/action/report/20220422', {
+            action: 'select',
+            poids: [poid],
+        });
         let data = await http.get('/trade/set_tabs/20210101', {
             page_type: this.props.route.params.page_type || '',
             poid,
@@ -184,11 +188,15 @@ class TradeBuy extends Component {
                     </View>
                 );
             },
-            // confirmCallBack: () => {
-            //     if (this.props.isFocused && data.risk_pop) {
-            //         this.showRishPop(data);
-            //     }
-            // },
+            confirmCallBack: () => {
+                // if (this.props.isFocused && data.risk_pop) {
+                //     this.showRishPop(data);
+                // }
+                http.post('/advisor/action/report/20220422', {
+                    action: 'read',
+                    poids: [this.state.poid],
+                });
+            },
             confirmText: '关闭',
             countdown: data.risk_disclosure.countdown,
             isTouchMaskToClose: false,
@@ -433,6 +441,7 @@ class TradeBuy extends Component {
     buyClick = () => {
         const {type, data} = this.state;
         global.LogTool('buy');
+        http.post('/advisor/action/report/20220422', {action: 'confirm', poids: [this.state.poid]});
         Keyboard.dismiss();
         if (data?.buy_do_pop) {
             Modal.show({

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:09:06
+ * @LastEditTime: 2022-04-24 18:17:49
  * @Description:路由表
  */
 import React from 'react';
@@ -183,6 +183,8 @@ import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
 import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
 import CommentList from '../pages/Portfolio/CommentList'; // 产品评论列表
 import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
+import Sign from '../pages/Assets/Sign';
+import RiskDisclosure from '../pages/Assets/RiskDisclosure'; // 风险揭示书
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 const Stack = createStackNavigator();
 
@@ -472,7 +474,7 @@ export default function AppStack() {
                     headerShown: false,
                 }}
             />
-            <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: '交易订单详情'}} />
+            <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: ''}} />
             <Stack.Screen name="FundRanking" component={FundRanking} options={{title: '基金排名'}} />
             <Stack.Screen name="FundTradeTime" component={FundTradeTime} options={{title: '交易时间说明'}} />
             <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
@@ -721,6 +723,8 @@ export default function AppStack() {
             <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
             <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
             <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+            <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
+            <Stack.Screen name="RiskDisclosure" component={RiskDisclosure} options={{title: ''}} />
             <Stack.Screen
                 name="ArticleCommentList"
                 component={ArticleCommentList}

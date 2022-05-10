@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-09 17:12:06
+ * @LastEditTime: 2022-04-29 12:17:39
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -308,6 +308,7 @@ export default function Launch({navigation}) {
         });
     };
     const imageLoadEnd = () => {
+        global.LogTool('splashShowStart', adMes.id);
         SplashScreen.hide();
         timer.current = setInterval(() => {
             setTime((prev) => {

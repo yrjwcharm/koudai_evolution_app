@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-02-17 19:23:25
+ * @LastEditTime: 2022-04-28 15:07:37
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -56,6 +56,7 @@ const TradeRecordDetail = (props) => {
                         </TouchableOpacity>
                     ) : null;
                 },
+                title: res.result.title || '交易订单详情',
             });
             let expand = res.result.part2.map((item) => {
                 return item.expanded;
@@ -63,7 +64,7 @@ const TradeRecordDetail = (props) => {
             setShowMore(expand);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.navigation, txn_id, type, sub_type]);
+    }, [txn_id, type, sub_type]);
     useEffect(() => {
         getData();
     }, [getData, props.navigation]);
@@ -406,10 +407,13 @@ const TradeRecordDetail = (props) => {
                                         )}
                                         {item?.children?.body?.map((child, key) => (
                                             <View style={styles.fund_item} key={key}>
-                                                <View style={[Style.flexBetween, {marginBottom: px(4)}]}>
+                                                <TouchableOpacity
+                                                    onPress={() => jump(child.url)}
+                                                    activeOpacity={1}
+                                                    style={[Style.flexBetween, {marginBottom: px(4)}]}>
                                                     <Text style={styles.fund_name}>{child?.k}</Text>
                                                     <Text style={styles.fund_amount}>{child?.v}</Text>
-                                                </View>
+                                                </TouchableOpacity>
                                                 {child?.ds ? (
                                                     child?.ds?.map(
                                                         (_ds, _key) =>

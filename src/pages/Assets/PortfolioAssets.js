@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-14 17:58:18
+ * @LastEditTime: 2022-04-24 18:39:09
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -32,17 +32,16 @@ import {Chart} from '../../components/Chart';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
 import FitImage from 'react-native-fit-image';
-import {Modal, BottomModal} from '../../components/Modal';
+import {Modal, BottomModal, PageModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
 import FastImage from 'react-native-fast-image';
 import EmptyTip from '../../components/EmptyTip';
 import GuideTips from '../../components/GuideTips';
-import {throttle, debounce} from 'lodash';
+import {throttle} from 'lodash';
 import {Button} from '../../components/Button';
 import HTML from '../../components/RenderHtml';
-import Agreements from '../../components/Agreements';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -67,11 +66,7 @@ export default function PortfolioAssets(props) {
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
-    const [signTimer, setSignTimer] = useState(8);
-    const [signCheck, setSignCheck] = useState(false);
-    const sign_success_jump_url = useRef('');
-    const show_sign_focus_modal = useRef(false);
-    const intervalt_timer = useRef('');
+    const [signData, setSignData] = useState(null);
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -109,11 +104,21 @@ export default function PortfolioAssets(props) {
             .then((res) => {
                 setCard(res.result);
                 setLoading(false);
+                getSignData();
             })
             .catch(() => {
                 setLoading(false);
             });
     }, [props.route.params]);
+    //获取签约数据
+    const getSignData = () => {
+        http.get('adviser/need_sign/pop/20220422').then((data) => {
+            setSignData(data.result?.sign);
+            if (data?.result?.auto_pop) {
+                bottomModal?.current?.show();
+            }
+        });
+    };
     const getChartInfo = () => {
         setChartData([]);
         http.get('/position/chart/20210101', {
@@ -128,11 +133,6 @@ export default function PortfolioAssets(props) {
     };
     useFocusEffect(
         useCallback(() => {
-            //解决弹窗里跳转 返回再次弹出
-            if (card && show_sign_focus_modal.current) {
-                signModal?.current?.show();
-                startTimer();
-            }
             init();
             storage.get('portfolioAssets').then((res) => {
                 setShowEye(res ? res : 'true');
@@ -159,31 +159,7 @@ export default function PortfolioAssets(props) {
             onHide();
         }
     }, [chartData, loading]);
-    //签约计时器
-    const startTimer = () => {
-        intervalt_timer.current = setInterval(() => {
-            setSignTimer((time) => {
-                if (time > 0) {
-                    return --time;
-                } else {
-                    intervalt_timer.current && clearInterval(intervalt_timer.current);
-                    return time;
-                }
-            });
-        }, 1000);
-    };
-    //签约
-    const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: card?.adviser_info?.sign_po_ids}).then((res) => {
-            signModal.current.toastShow(res.message);
-            if (res.code === '000000') {
-                setTimeout(() => {
-                    signModal.current.hide();
-                    jump(sign_success_jump_url?.current);
-                }, 1000);
-            }
-        });
-    };
+
     const renderLoading = () => {
         return (
             <View
@@ -285,20 +261,7 @@ export default function PortfolioAssets(props) {
                     });
                 }
             } else {
-                if (
-                    (type == 'adjust' || type == 'transfer') &&
-                    !card?.adviser_info?.is_signed &&
-                    type != 'TradeRedeem'
-                ) {
-                    sign_success_jump_url.current = url;
-                    signModal?.current?.show();
-                    setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
-                    setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
-                    show_sign_focus_modal.current = true;
-                    startTimer();
-                } else {
-                    jump(url);
-                }
+                jump(url);
             }
         });
     };
@@ -311,6 +274,19 @@ export default function PortfolioAssets(props) {
         } else {
             scoreModal.current.show();
         }
+    };
+    //签约
+    const handleCancleSign = () => {
+        Modal.show({
+            title: signData?.cancel?.title,
+            content: signData?.cancel?.content,
+            confirm: true,
+            cancelText: '再想一想',
+            confirmText: '确认',
+            confirmCallBack: () => {
+                signModal.current.hide();
+            },
+        });
     };
     const renderBtn = () => {
         return (
@@ -630,7 +606,14 @@ export default function PortfolioAssets(props) {
                     />
                 }>
                 {data?.processing_info && (
-                    <Notice content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}} />
+                    <Notice
+                        content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}}
+                        onPress={() => {
+                            if (data?.processing_info?.action == 'Sign') {
+                                signModal.current.show();
+                            }
+                        }}
+                    />
                 )}
                 <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
@@ -907,82 +890,6 @@ export default function PortfolioAssets(props) {
                         </View>
                     </BottomModal>
                 )}
-                {card?.adviser_info && (
-                    <BottomModal
-                        style={{height: px(600), backgroundColor: '#fff'}}
-                        ref={signModal}
-                        title={card?.adviser_info?.title}
-                        onClose={() => {
-                            show_sign_focus_modal.current = false;
-                            intervalt_timer.current && clearInterval(intervalt_timer.current);
-                        }}>
-                        <View style={{flex: 1}}>
-                            {card?.adviser_info?.desc && <Notice content={{content: card?.adviser_info?.desc}} />}
-                            <ScrollView
-                                style={{
-                                    paddingHorizontal: px(16),
-                                    paddingTop: px(22),
-                                }}>
-                                <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
-                                    <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
-                                        {card?.adviser_info?.risk_disclosure?.title}
-                                    </Text>
-                                    {card?.adviser_info?.risk_disclosure?.content ? (
-                                        <HTML
-                                            html={card?.adviser_info?.risk_disclosure?.content}
-                                            style={styles.light_text}
-                                        />
-                                    ) : null}
-                                    {card?.adviser_info?.risk_disclosure2?.title ? (
-                                        <Text
-                                            style={{
-                                                fontSize: px(18),
-                                                fontWeight: '700',
-                                                marginTop: px(20),
-                                                marginBottom: px(12),
-                                            }}>
-                                            {card?.adviser_info?.risk_disclosure2?.title}
-                                        </Text>
-                                    ) : null}
-                                    {card?.adviser_info?.risk_disclosure2?.content ? (
-                                        <HTML
-                                            html={card?.adviser_info?.risk_disclosure2?.content}
-                                            style={styles.light_text}
-                                        />
-                                    ) : null}
-                                </TouchableOpacity>
-                            </ScrollView>
-                            <>
-                                {card?.adviser_info?.agreement_bottom ? (
-                                    <Agreements
-                                        style={{margin: px(16)}}
-                                        check={card?.adviser_info?.agreement_bottom?.default_agree}
-                                        data={card?.adviser_info?.agreement_bottom?.list}
-                                        onChange={(checkStatus) => setSignCheck(checkStatus)}
-                                        emitJump={() => {
-                                            signModal?.current?.hide();
-                                            setTimeout(() => {
-                                                show_sign_focus_modal.current = true;
-                                            }, 10);
-                                        }}
-                                    />
-                                ) : null}
-                                {card?.adviser_info?.button ? (
-                                    <Button
-                                        disabled={signTimer > 0 || !signCheck}
-                                        style={{marginHorizontal: px(20)}}
-                                        onPress={debounce(handleSign, 500)}
-                                        title={
-                                            signTimer > 0
-                                                ? signTimer + 's' + card?.adviser_info?.button?.text
-                                                : card?.adviser_info?.button?.text
-                                        }
-                                    />
-                                ) : null}
-                            </>
-                        </View>
-                    </BottomModal>
-                )}
 
                 <BottomModal ref={bottomModal} title={tip?.title}>
                     <View style={{padding: text(16)}}>
@@ -1011,6 +918,57 @@ export default function PortfolioAssets(props) {
                 </BottomModal>
                 <BottomDesc fix_img={data?.advisor_footer_img} />
             </ScrollView>
+            <PageModal style={{height: px(530)}} ref={signModal} title={signData?.title} onClose={() => {}}>
+                <View style={{flex: 1, paddingBottom: px(12)}}>
+                    {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
+                    <ScrollView
+                        bounces={false}
+                        style={{
+                            padding: px(16),
+                        }}>
+                        <HTML
+                            html={signData?.content}
+                            style={{fontSize: px(13), color: Colors.defaultColor, lineHeight: px(20)}}
+                        />
+                        {signData?.desc
+                            ? signData.desc?.map((item, index) => (
+                                  <View key={index}>
+                                      <Text style={{fontSize: px(16), fontWeight: '700', marginVertical: px(12)}}>
+                                          {item?.title}
+                                      </Text>
+                                      <View style={styles.sign_scrollview}>
+                                          <HTML html={item?.content} style={{fontSize: px(13), lineHeight: px(20)}} />
+                                      </View>
+                                  </View>
+                              ))
+                            : null}
+                        <View style={{height: px(30)}} />
+                    </ScrollView>
+                    {signData?.cancel ? (
+                        <View style={[Style.flexBetween, {marginHorizontal: px(16), paddingTop: px(8)}]}>
+                            <Button
+                                type={'minor'}
+                                style={{
+                                    flex: 1,
+                                    marginRight: px(12),
+                                }}
+                                onPress={handleCancleSign}
+                                title={signData?.cancel?.cancel?.text}
+                            />
+                            <Button
+                                style={{
+                                    flex: 1,
+                                }}
+                                onPress={() => {
+                                    signModal.current.hide();
+                                    jump(signData?.cancel?.confirm?.url);
+                                }}
+                                title={signData?.cancel?.confirm?.text}
+                            />
+                        </View>
+                    ) : null}
+                </View>
+            </PageModal>
             {data?.notice_bar ? (
                 <GuideTips
                     data={data?.notice_bar}
@@ -1343,5 +1301,10 @@ const styles = StyleSheet.create({
         lineHeight: text(16),
         color: '#fff',
         fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
+    sign_scrollview: {
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(6),
+        padding: px(16),
     },
 });
