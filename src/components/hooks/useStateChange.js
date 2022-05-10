@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 18:31:02
+ * @LastEditTime: 2022-05-10 19:12:47
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -225,7 +225,15 @@ export const UserCommunication = forwardRef((props, ref) => {
                 );
             })}
             {button ? <Button onPress={button.onPress} style={styles.userComButton} title={button.text} /> : null}
-            {options?.length > 0 && <View style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical}} />}
+            <View
+                style={{
+                    marginBottom: isIphoneX()
+                        ? options?.length > 0
+                            ? 34 + Space.marginVertical
+                            : 34
+                        : Space.marginVertical,
+                }}
+            />
         </ScrollView>
     );
 });
@@ -584,7 +592,7 @@ function useStateChange({homeShowModal, store}) {
                         Modal.hideLayer();
                     }
                 },
-                style: {minHeight: px(150)},
+                style: {minHeight: px(150), paddingBottom: 0},
                 title: modal.title,
             };
         }
