@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:37:23
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-10 17:37:13
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,10 @@ import http from '../../services';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast';
 import Storage from '../../utils/storage';
-import {getUserInfo} from '../../redux/actions/userInfo';
+import {resetVision} from '../../redux/actions/visionData';
+import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
+import {updateAccount} from '../../redux/actions/accountInfo';
+import {deleteModal} from '../../redux/actions/modalInfo';
 import {VerifyCodeModal} from '../../components/Modal';
 
 const AccountRemove = ({navigation, route}) => {
@@ -64,13 +67,34 @@ const AccountRemove = ({navigation, route}) => {
             if (value.length === 6) {
                 http.post('/passport/account/destroy/20210101', {
                     verify_code: value,
-                }).then((res) => {
+                }).then(async (res) => {
                     codeModal.current.toastShow(res.message);
                     if (res.code === '000000') {
                         global.LogTool('accountRemove', 'success');
                         codeModal.current.hide();
-                        Storage.delete('loginStatus');
+                        await Storage.delete('loginStatus');
+                        await Storage.delete('AD');
+                        dispatch(resetVision());
                         dispatch(getUserInfo());
+                        dispatch(
+                            updateUserInfo({
+                                phone: '',
+                                selectBank: '',
+                                bank_no: '',
+                                second: 60,
+                                name: '',
+                                id_no: '',
+                            })
+                        );
+                        dispatch(
+                            updateAccount({
+                                name: '',
+                                id_no: '',
+                            })
+                        );
+                        dispatch(deleteModal());
+                        global.layerOptions = null;
+                        Modal.hideLayer();
                         navigation.navigate('Index');
                     }
                 });
