@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 19:12:47
+ * @LastEditTime: 2022-05-10 19:49:41
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -557,6 +557,7 @@ function useStateChange({homeShowModal, store}) {
                                       onPress: () => {
                                           Modal.close();
                                           Modal.hideLayer();
+                                          global.layerOptions = {...options, page: modal.page};
                                           navigation.navigate('UserCommunication', {
                                               communicate_id: modal.communicate_id,
                                           });
