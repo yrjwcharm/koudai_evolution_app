@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-09 14:58:58
+ * @LastEditTime: 2022-05-10 13:11:16
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -13,6 +13,7 @@ import {
     LayoutAnimation,
     Linking,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -29,7 +30,7 @@ import UnderlineText from '../UnderlineText';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {updateModal} from '../../redux/actions/modalInfo';
 import http from '../../services';
-import {deviceWidth, px} from '../../utils/appUtil';
+import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import saveImg from '../../utils/saveImg';
 import Storage from '../../utils/storage';
 
@@ -177,7 +178,7 @@ export const UserCommunication = forwardRef((props, ref) => {
     };
 
     return (
-        <View style={styles.userComContainer}>
+        <ScrollView bounces={false} style={styles.userComContainer}>
             <Text style={styles.questionTitle}>{title}</Text>
             {options?.map((option, index) => {
                 const {option_content: content} = option;
@@ -208,18 +209,24 @@ export const UserCommunication = forwardRef((props, ref) => {
                                 style={[
                                     styles.optionText,
                                     answered && selected === index ? {color: Colors.brandColor} : {},
-                                    answered ? {maxWidth: px(240)} : {},
+                                    // answered ? {maxWidth: px(240)} : {},
+                                    {flexShrink: 1},
                                 ]}>
                                 {content}
                                 {selected === index ? '（已选）' : ''}
                             </Text>
-                            {answered && <Text style={styles.optionText}>{rateArr[index] || ''}</Text>}
+                            {answered && (
+                                <Text style={[styles.optionText, {marginLeft: Space.marginAlign}]}>
+                                    {rateArr[index] || ''}
+                                </Text>
+                            )}
                         </View>
                     </TouchableOpacity>
                 );
             })}
             {button ? <Button onPress={button.onPress} style={styles.userComButton} title={button.text} /> : null}
-        </View>
+            {options?.length > 0 && <View style={{marginBottom: isIphoneX() ? 34 : 0}} />}
+        </ScrollView>
     );
 });
 
@@ -703,6 +710,7 @@ const styles = StyleSheet.create({
         borderRadius: px(22.5),
     },
     userComContainer: {
+        maxHeight: (deviceHeight * 2) / 3 - px(54),
         padding: px(20),
         paddingBottom: px(12),
     },

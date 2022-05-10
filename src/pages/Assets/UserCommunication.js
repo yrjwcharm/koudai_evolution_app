@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-09 19:20:45
+ * @LastEditTime: 2022-05-10 13:13:29
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -71,7 +71,6 @@ export default ({navigation, route}) => {
                     backButtonClose: false,
                 });
             } else {
-                global.layerOptions = null;
                 navigation.dispatch(e.data.action);
             }
         });
@@ -133,15 +132,19 @@ export default ({navigation, route}) => {
                         });
                     }, 1000);
                 } else {
+                    global.layerOptions = null;
                     setFinished(true);
                 }
                 setData(_data);
-                LayoutAnimation.linear();
+                LayoutAnimation.linear(() => {
+                    setTimeout(() => {
+                        scrollViewRef.current?.scrollToEnd?.({animated: true});
+                    }, 500);
+                });
             } else {
                 Toast.show(res.message);
             }
             setTimeout(() => {
-                scrollViewRef.current?.scrollToEnd?.({animated: true});
                 clickRef.current = true;
             }, 1000);
         });
@@ -218,13 +221,20 @@ export default ({navigation, route}) => {
                                                                 answered && selected === j
                                                                     ? {color: Colors.brandColor}
                                                                     : {},
-                                                                answered ? {maxWidth: px(240)} : {},
+                                                                // answered ? {maxWidth: px(240)} : {},
+                                                                {flexShrink: 1},
                                                             ]}>
                                                             {content}
                                                             {selected === j ? '（已选）' : ''}
                                                         </Text>
                                                         {answered && (
-                                                            <Text style={styles.optionText}>{rate || ''}</Text>
+                                                            <Text
+                                                                style={[
+                                                                    styles.optionText,
+                                                                    {marginLeft: Space.marginAlign},
+                                                                ]}>
+                                                                {rate || ''}
+                                                            </Text>
                                                         )}
                                                     </View>
                                                 </TouchableOpacity>
