@@ -3,7 +3,7 @@
  * @Date: 2022-04-28 15:58:50
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 13:13:29
+ * @LastEditTime: 2022-05-10 20:28:03
  * @Description: 用户交流
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -152,7 +152,7 @@ export default ({navigation, route}) => {
 
     return hasNet ? (
         Object.keys(data || {}).length > 0 ? (
-            <ScrollView bounces={false} ref={scrollViewRef} style={styles.container}>
+            <ScrollView bounces={false} ref={scrollViewRef} scrollIndicatorInsets={{right: 1}} style={styles.container}>
                 <View style={styles.paddingBox}>
                     <LinearGradient
                         colors={['#DFECFF', '#fff']}

@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 19:49:41
+ * @LastEditTime: 2022-05-10 20:28:35
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -178,7 +178,7 @@ export const UserCommunication = forwardRef((props, ref) => {
     };
 
     return (
-        <ScrollView bounces={false} style={styles.userComContainer}>
+        <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.userComContainer}>
             <Text style={styles.questionTitle}>{title}</Text>
             {options?.map((option, index) => {
                 const {option_content: content} = option;
