@@ -127,7 +127,7 @@ const SERVER_URL = {
         H5: 'https://evolution-h5.licaimofang.com',
     },
     jhy: {
-        HTTP: ' http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/',
+        HTTP: 'http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.jinhongyu.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.jinhongyu.mofanglicai.com.cn:10080',
         H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn',
