@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 13:11:16
+ * @LastEditTime: 2022-05-10 15:52:21
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -225,7 +225,7 @@ export const UserCommunication = forwardRef((props, ref) => {
                 );
             })}
             {button ? <Button onPress={button.onPress} style={styles.userComButton} title={button.text} /> : null}
-            {options?.length > 0 && <View style={{marginBottom: isIphoneX() ? 34 : 0}} />}
+            {options?.length > 0 && <View style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical}} />}
         </ScrollView>
     );
 });
