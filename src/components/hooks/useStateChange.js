@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 20:28:35
+ * @LastEditTime: 2022-05-10 20:40:11
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -437,6 +437,7 @@ function useStateChange({homeShowModal, store}) {
             },
             id: modal.log_id,
             isTouchMaskToClose: modal.touch_close,
+            remainingTime: modal.remaining_time || 0,
         };
         let type = 'fade';
         if (modal.type === 'image' || modal.type === 'diy_image') {
