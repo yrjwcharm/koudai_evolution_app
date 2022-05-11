@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:10:01
+ * @LastEditTime: 2022-05-11 21:18:42
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -36,6 +36,7 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
+import DeviceInfo from 'react-native-device-info';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -459,7 +460,13 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                                 startInLoadingState
-                                style={{height: webviewHeight, opacity: 0.99999}}
+                                style={{
+                                    height: webviewHeight,
+                                    opacity:
+                                        DeviceInfo?.getBrand() == 'Xiaomi' && DeviceInfo?.getSystemVersion() >= '12'
+                                            ? 0.99
+                                            : 0.9999,
+                                }}
                                 textZoom={100}
                             />
                         </View>
