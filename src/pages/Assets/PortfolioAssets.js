@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:39:09
+ * @LastEditTime: 2022-05-11 14:36:04
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -605,12 +605,14 @@ export default function PortfolioAssets(props) {
                         }}
                     />
                 }>
-                {data?.processing_info && (
+                {data?.processing_list && (
                     <Notice
-                        content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}}
-                        onPress={() => {
-                            if (data?.processing_info?.action == 'Sign') {
-                                signModal.current.show();
+                        content={data?.processing_list}
+                        onPress={(index) => {
+                            let signIndex = data?.processing_list.findIndex((_item) => _item.action == 'Sign');
+                            if (signIndex == index) {
+                                //签约弹窗
+                                signModal?.current?.show();
                             }
                         }}
                     />

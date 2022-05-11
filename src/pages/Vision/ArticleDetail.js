@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-06 14:25:21
+ * @LastEditTime: 2022-05-11 11:10:01
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -536,7 +536,14 @@ const ArticleDetail = ({navigation, route}) => {
                                         <View style={[{height: px(40)}, Style.flexCenter]}>
                                             <Text style={styles.footnote}>
                                                 暂无评论&nbsp;
-                                                <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                                <Text
+                                                    style={{color: Colors.btnColor}}
+                                                    onPress={() => {
+                                                        inputModal.current.show();
+                                                        setTimeout(() => {
+                                                            inputRef?.current?.focus();
+                                                        }, 100);
+                                                    }}>
                                                     我来写一条
                                                 </Text>
                                             </Text>
@@ -546,7 +553,7 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </ScrollView>
-                    <PageModal ref={inputModal} title="写评论" style={{height: px(370)}} backButtonClose={true}>
+                    <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                         <TextInput
                             ref={inputRef}
                             value={content}

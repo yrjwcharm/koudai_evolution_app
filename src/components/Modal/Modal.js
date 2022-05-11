@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-25 15:55:37
+ * @LastEditTime: 2022-04-28 14:57:43
  * @Description:
  */
 /**
@@ -74,12 +74,44 @@ export default class Modal extends React.Component {
     }
     static close(options, type = 'fade') {
         destroy();
-        if (type === 'fade') {
-            global.rootSibling = new RootSibling(
-                <ModalRender {...options} isVisible={false} destroy={() => destroy()} />
-            );
+        if (options) {
+            if (type === 'fade') {
+                global.rootSibling = new RootSibling(
+                    <ModalRender {...options} isVisible={false} destroy={() => destroy()} />
+                );
+            } else {
+                global.rootSibling = new RootSibling(
+                    (
+                        <>
+                            <Mask />
+                            <BottomModal
+                                backdrop={false}
+                                destroy={() => destroy()}
+                                {...options}
+                                ref={(ref) => (this.bottomModal = ref)}
+                            />
+                        </>
+                    )
+                );
+            }
+        } else {
+            global.rootSibling = null;
         }
         return global.rootSibling;
+    }
+    static showLayer(layer) {
+        if (global.layer) {
+            global.layer.update(layer);
+        } else {
+            global.layer = new RootSibling(layer);
+        }
+        return global.layer;
+    }
+    static hideLayer() {
+        if (global.layer) {
+            global.layer.destroy();
+            global.layer = null;
+        }
     }
     componentWillUnmount() {
         destroy();
