@@ -1014,7 +1014,11 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
+<<<<<<< HEAD
 				MARKETING_VERSION = 6.6.8;
+=======
+				MARKETING_VERSION = 6.6.7;
+>>>>>>> master
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1164,7 +1168,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 66800;
+=======
+				CURRENT_PROJECT_VERSION = 66700;
+>>>>>>> master
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1226,7 +1234,11 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
+<<<<<<< HEAD
 				MARKETING_VERSION = 6.6.8;
+=======
+				MARKETING_VERSION = 6.6.7;
+>>>>>>> master
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1253,7 +1265,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 66800;
+=======
+				CURRENT_PROJECT_VERSION = 66700;
+>>>>>>> master
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (

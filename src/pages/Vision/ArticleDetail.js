@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-10 19:01:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-11 11:10:01
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -43,7 +43,6 @@ const options = {
 
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
-    const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
@@ -76,6 +75,7 @@ const ArticleDetail = ({navigation, route}) => {
     const fr = route.params?.fr;
     const post_progress = useRef(false);
     const inputMaxLength = 500;
+    const jump = useJump();
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
