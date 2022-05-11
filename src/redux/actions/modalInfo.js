@@ -2,7 +2,7 @@
  * @Date: 2021-11-01 15:04:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-01 15:11:17
+ * @LastEditTime: 2022-05-11 09:15:45
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -13,8 +13,9 @@ export const updateModal = (info) => {
     };
 };
 
-export const deleteModal = () => {
+export const deleteModal = (payload = '') => {
     return {
         type: actionTypes.DeleteModal,
+        payload,
     };
 };

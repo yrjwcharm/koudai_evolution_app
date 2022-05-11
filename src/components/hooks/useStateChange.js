@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-10 20:40:11
+ * @LastEditTime: 2022-05-11 10:25:03
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -22,13 +22,13 @@ import {
 import FastImage from 'react-native-fast-image';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import * as WeChat from 'react-native-wechat-lib';
-import {cloneDeep, throttle} from 'lodash';
+import {cloneDeep, debounce} from 'lodash';
 import {Button} from '../Button';
 import {Modal} from '../Modal';
 import Toast from '../Toast';
 import UnderlineText from '../UnderlineText';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {updateModal} from '../../redux/actions/modalInfo';
+import {deleteModal, updateModal} from '../../redux/actions/modalInfo';
 import http from '../../services';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import saveImg from '../../utils/saveImg';
@@ -180,7 +180,7 @@ export const UserCommunication = forwardRef((props, ref) => {
     return (
         <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.userComContainer}>
             <Text style={styles.questionTitle}>{title}</Text>
-            {options?.map((option, index) => {
+            {options?.map((option, index, arr) => {
                 const {option_content: content} = option;
                 return (
                     <TouchableOpacity
@@ -193,6 +193,7 @@ export const UserCommunication = forwardRef((props, ref) => {
                                 marginTop: index === 0 ? px(16) : px(12),
                                 borderColor: answered && selected !== index ? '#E2E4EA' : Colors.brandColor,
                             },
+                            index === arr.length - 1 ? {marginBottom: 34 + Space.marginVertical} : {},
                         ]}>
                         <View
                             style={[
@@ -225,15 +226,6 @@ export const UserCommunication = forwardRef((props, ref) => {
                 );
             })}
             {button ? <Button onPress={button.onPress} style={styles.userComButton} title={button.text} /> : null}
-            <View
-                style={{
-                    marginBottom: isIphoneX()
-                        ? options?.length > 0
-                            ? 34 + Space.marginVertical
-                            : 34
-                        : Space.marginVertical,
-                }}
-            />
         </ScrollView>
     );
 });
@@ -397,216 +389,217 @@ function useStateChange({homeShowModal, store}) {
                         });
                     })
                 );
-                const modal = arr[0] || {};
-                if (modal.page) {
-                    if (modal?.page?.includes(navigation?.getCurrentRoute?.()?.name)) {
+                store.dispatch(updateModal({modals: arr}));
+                const modal = arr[0];
+                if (modal) {
+                    if (modal.page?.includes(navigation?.getCurrentRoute?.()?.name)) {
                         showModal(modal);
-                        store.dispatch(updateModal({modals: arr.slice(1)}));
-                    } else {
-                        store.dispatch(updateModal({modals: arr}));
-                    }
-                } else {
-                    if (navigation?.getCurrentRoute?.()?.name === 'Index') {
+                    } else if (navigation?.getCurrentRoute?.()?.name === 'Index') {
                         showModal(modal);
-                        store.dispatch(updateModal({modals: arr.slice(1)}));
-                    } else {
-                        store.dispatch(updateModal({modals: arr}));
                     }
                 }
             }
         });
     };
 
-    const showModal = throttle((modal) => {
-        const navigation = navigationRef.current;
-        if (modal.log_id) {
-            http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-            global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, modal.log_id);
-        }
-        let options = {
-            confirmCallBack: () => {
-                if (modal.confirm?.act === 'back') {
-                    navigation?.goBack?.();
-                } else if (modal.confirm?.act === 'jump') {
-                    jump(modal.confirm?.url || '');
-                } else {
-                    jump(modal.confirm?.url || modal.url || '');
+    const showModal = useCallback(
+        debounce(
+            (modal) => {
+                const navigation = navigationRef.current;
+                if (modal.log_id) {
+                    http.post('/common/layer/click/20210801', {log_id: modal.log_id});
+                    global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, modal.log_id);
                 }
-                modal.log_id &&
-                    global.LogTool('campaignPopupStart', navigation?.getCurrentRoute?.()?.name, modal.log_id);
-            },
-            id: modal.log_id,
-            isTouchMaskToClose: modal.touch_close,
-            remainingTime: modal.remaining_time || 0,
-        };
-        let type = 'fade';
-        if (modal.type === 'image' || modal.type === 'diy_image') {
-            options = {
-                ...options,
-                type: 'image',
-                imageUrl: modal.image,
-                imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: modal.imgHeight,
-            };
-            if (modal.type === 'diy_image') {
-                options.content = {
-                    title: modal.title,
-                    text: modal.content,
-                    tip: modal.tip,
-                };
-            }
-        } else if (modal.type === 'alert_image' || modal.type === 'confirm') {
-            options = {
-                ...options,
-                confirm: modal.cancel ? true : false,
-                confirmText: modal.confirm?.text || '',
-                cancelCallBack: () => {
-                    if (modal.cancel?.act === 'back') {
-                        navigation?.goBack?.();
-                    } else if (modal.cancel?.act === 'jump') {
-                        jump(modal.cancel?.url || '');
-                    } else {
-                        jump(modal.cancel?.url || '');
-                    }
-                },
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-            };
-            if (modal.type === 'alert_image') {
-                options.customTitleView = (
-                    <FastImage
-                        source={{uri: modal.image}}
-                        style={{
-                            width: px(280),
-                            height: modal.imgHeight,
-                            borderTopRightRadius: 8,
-                            borderTopLeftRadius: 8,
-                        }}
-                    />
-                );
-            }
-            if (modal.type === 'confirm') {
-                options.title = modal.title || '';
-            }
-        } else if (modal.type === 'user_guide') {
-            options = {
-                ...options,
-                confirmCallBack: () => {
-                    global.LogTool('copyBindAccountStart');
-                    Linking.canOpenURL('weixin://').then((supported) => {
-                        if (supported) {
-                            Linking.openURL('weixin://');
+                let options = {
+                    confirmCallBack: () => {
+                        if (modal.confirm?.act === 'back') {
+                            navigation?.goBack?.();
+                        } else if (modal.confirm?.act === 'jump') {
+                            jump(modal.confirm?.url || '');
                         } else {
-                            Toast.show('请先安装微信');
+                            jump(modal.confirm?.url || modal.url || '');
                         }
-                    });
-                },
-                data: modal,
-                type: 'user_guide',
-            };
-        } else if (modal.type === 'add_wechat_guide') {
-            options = generateOptions(modal);
-            type = 'slide';
-        } else if (modal.type === 'encourage') {
-            global.LogTool('GradeWindows');
-            options = {
-                ...options,
-                confirm: true,
-                confirmText: modal.confirm?.text || '',
-                isTouchMaskToClose: false,
-                backButtonClose: false,
-                cancelCallBack: () => {
-                    global.LogTool('GradeWindows_No');
-                    http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
-                        console.log(res);
-                    });
-                },
-                confirmCallBack: () => {
-                    global.LogTool('GradeWindows_Yes');
-                    Linking.canOpenURL(modal.confirm.url.path)
-                        .then((res) => {
-                            if (res) {
-                                Linking.openURL(modal.confirm.url.path);
-                            } else if (modal.confirm.url.path !== modal.confirm.url.params.default_url) {
-                                Linking.canOpenURL(modal.confirm.url.params.default_url).then((r) => {
-                                    if (r) {
-                                        Linking.openURL(modal.confirm.url.params.default_url);
-                                    }
-                                });
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                    http.post('/mapi/set/encourage/20220412', {action_scene: 1}).then((res) => {
-                        console.log(res);
-                    });
-                },
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-            };
-        } else if (modal.type === 'communicate_single' || modal.type === 'communicate_multiple') {
-            type = 'slide';
-            delete options.confirmCallBack;
-            options = {
-                ...options,
-                children: (
-                    <UserCommunication
-                        button={
-                            modal.confirm
-                                ? {
-                                      onPress: () => {
-                                          Modal.close();
-                                          Modal.hideLayer();
-                                          global.layerOptions = {...options, page: modal.page};
-                                          navigation.navigate('UserCommunication', {
-                                              communicate_id: modal.communicate_id,
-                                          });
-                                      },
-                                      text: modal.confirm.text,
-                                  }
-                                : ''
-                        }
-                        communicate_id={modal.communicate_id}
-                        question={modal.communicate_question}
-                        ref={userCommunicationRef}
-                        title={modal.content}
-                    />
-                ),
-                onClose: () => {
-                    if (!userCommunicationRef.current?.getStatus()) {
-                        Modal.show({
-                            title: '温馨提示',
-                            content: '是否确认退出本次调研？',
-                            confirm: true,
-                            cancelCallBack: () => {
-                                Modal.show(options, type);
-                            },
-                            confirmCallBack: () => {
-                                global.layerOptions = {...options, page: modal.page};
-                                Modal.showLayer(<Layer options={options} type={type} />);
-                            },
-                            isTouchMaskToClose: false,
-                            backButtonClose: false,
-                        });
-                    } else {
-                        global.layerOptions = null;
-                        Modal.hideLayer();
+                        modal.log_id &&
+                            global.LogTool('campaignPopupStart', navigation?.getCurrentRoute?.()?.name, modal.log_id);
+                    },
+                    id: modal.log_id,
+                    isTouchMaskToClose: modal.touch_close,
+                    remainingTime: modal.remaining_time || 0,
+                };
+                let type = 'fade';
+                if (modal.type === 'image' || modal.type === 'diy_image') {
+                    options = {
+                        ...options,
+                        type: 'image',
+                        imageUrl: modal.image,
+                        imgWidth: modal.device_width ? deviceWidth : 0,
+                        imgHeight: modal.imgHeight,
+                    };
+                    if (modal.type === 'diy_image') {
+                        options.content = {
+                            title: modal.title,
+                            text: modal.content,
+                            tip: modal.tip,
+                        };
                     }
-                },
-                style: {minHeight: px(150), paddingBottom: 0},
-                title: modal.title,
-            };
-        }
-        if (modal.type) {
-            if (modal.is_hide) {
-                global.layerOptions = {...options, page: modal.page};
-                Modal.showLayer(<Layer options={options} type={type} />);
-            } else {
-                Modal.show(options, type);
-            }
-        }
-    }, 1000);
+                } else if (modal.type === 'alert_image' || modal.type === 'confirm') {
+                    options = {
+                        ...options,
+                        confirm: modal.cancel ? true : false,
+                        confirmText: modal.confirm?.text || '',
+                        cancelCallBack: () => {
+                            if (modal.cancel?.act === 'back') {
+                                navigation?.goBack?.();
+                            } else if (modal.cancel?.act === 'jump') {
+                                jump(modal.cancel?.url || '');
+                            } else {
+                                jump(modal.cancel?.url || '');
+                            }
+                        },
+                        cancelText: modal.cancel?.text || '',
+                        content: modal.content || '',
+                    };
+                    if (modal.type === 'alert_image') {
+                        options.customTitleView = (
+                            <FastImage
+                                source={{uri: modal.image}}
+                                style={{
+                                    width: px(280),
+                                    height: modal.imgHeight,
+                                    borderTopRightRadius: 8,
+                                    borderTopLeftRadius: 8,
+                                }}
+                            />
+                        );
+                    }
+                    if (modal.type === 'confirm') {
+                        options.title = modal.title || '';
+                    }
+                } else if (modal.type === 'user_guide') {
+                    options = {
+                        ...options,
+                        confirmCallBack: () => {
+                            global.LogTool('copyBindAccountStart');
+                            Linking.canOpenURL('weixin://').then((supported) => {
+                                if (supported) {
+                                    Linking.openURL('weixin://');
+                                } else {
+                                    Toast.show('请先安装微信');
+                                }
+                            });
+                        },
+                        data: modal,
+                        type: 'user_guide',
+                    };
+                } else if (modal.type === 'add_wechat_guide') {
+                    options = generateOptions(modal);
+                    type = 'slide';
+                } else if (modal.type === 'encourage') {
+                    global.LogTool('GradeWindows');
+                    options = {
+                        ...options,
+                        confirm: true,
+                        confirmText: modal.confirm?.text || '',
+                        isTouchMaskToClose: false,
+                        backButtonClose: false,
+                        cancelCallBack: () => {
+                            global.LogTool('GradeWindows_No');
+                            http.post('/mapi/set/encourage/20220412', {action_scene: 2}).then((res) => {
+                                console.log(res);
+                            });
+                        },
+                        confirmCallBack: () => {
+                            global.LogTool('GradeWindows_Yes');
+                            Linking.canOpenURL(modal.confirm.url.path)
+                                .then((res) => {
+                                    if (res) {
+                                        Linking.openURL(modal.confirm.url.path);
+                                    } else if (modal.confirm.url.path !== modal.confirm.url.params.default_url) {
+                                        Linking.canOpenURL(modal.confirm.url.params.default_url).then((r) => {
+                                            if (r) {
+                                                Linking.openURL(modal.confirm.url.params.default_url);
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
+                            http.post('/mapi/set/encourage/20220412', {action_scene: 1}).then((res) => {
+                                console.log(res);
+                            });
+                        },
+                        cancelText: modal.cancel?.text || '',
+                        content: modal.content || '',
+                    };
+                } else if (modal.type === 'communicate_single' || modal.type === 'communicate_multiple') {
+                    type = 'slide';
+                    delete options.confirmCallBack;
+                    options = {
+                        ...options,
+                        children: (
+                            <UserCommunication
+                                button={
+                                    modal.confirm
+                                        ? {
+                                              onPress: () => {
+                                                  Modal.close();
+                                                  Modal.hideLayer();
+                                                  global.layerOptions = {...options, page: modal.page};
+                                                  navigation.navigate('UserCommunication', {
+                                                      communicate_id: modal.communicate_id,
+                                                  });
+                                              },
+                                              text: modal.confirm.text,
+                                          }
+                                        : ''
+                                }
+                                communicate_id={modal.communicate_id}
+                                question={modal.communicate_question}
+                                ref={userCommunicationRef}
+                                title={modal.content}
+                            />
+                        ),
+                        onClose: () => {
+                            if (!userCommunicationRef.current?.getStatus()) {
+                                Modal.show({
+                                    title: '温馨提示',
+                                    content: '是否确认退出本次调研？',
+                                    confirm: true,
+                                    cancelCallBack: () => {
+                                        Modal.show(options, type);
+                                    },
+                                    confirmCallBack: () => {
+                                        global.layerOptions = {...options, page: modal.page};
+                                        Modal.showLayer(<Layer options={options} type={type} />);
+                                    },
+                                    isTouchMaskToClose: false,
+                                    backButtonClose: false,
+                                });
+                            } else {
+                                global.layerOptions = null;
+                                Modal.hideLayer();
+                            }
+                        },
+                        style: {minHeight: px(150), paddingBottom: 0},
+                        title: modal.title,
+                    };
+                }
+                if (modal.type) {
+                    if (modal.is_hide) {
+                        global.layerOptions = {...options, page: modal.page};
+                        Modal.showLayer(<Layer options={options} type={type} />);
+                    } else {
+                        Modal.show(options, type);
+                    }
+                    store.dispatch(deleteModal({log_id: modal.log_id, type: modal.type}));
+                }
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        []
+    );
 
     const onStateChange = useCallback((currentRouteName, show, _navigationRef) => {
         if (_navigationRef) {
@@ -614,11 +607,7 @@ function useStateChange({homeShowModal, store}) {
         }
         const modalInfo = store.getState().modalInfo.toJS();
         const {modals = []} = modalInfo || {};
-        const modal = modals[0] || {};
-        const fun = () => {
-            showModal(modal);
-            store.dispatch(updateModal({modals: modalInfo.modals.slice(1)}));
-        };
+        const modal = modals[0];
         if (global.layerOptions) {
             const {page} = global.layerOptions;
             if (page?.includes?.(currentRouteName)) {
@@ -627,21 +616,17 @@ function useStateChange({homeShowModal, store}) {
                 Modal.hideLayer();
             }
         }
-        if (Object.keys(modal).length > 0) {
-            if (modal.page) {
-                if (modal.page?.includes(currentRouteName)) {
-                    if (currentRouteName === 'Home') {
-                        if (show) {
-                            fun();
-                        }
-                    } else {
-                        fun();
+        if (modal) {
+            if (modal.page?.includes(currentRouteName)) {
+                if (currentRouteName === 'Home') {
+                    if (show) {
+                        showModal(modal);
                     }
+                } else {
+                    showModal(modal);
                 }
-            } else {
-                if (currentRouteName === 'Index') {
-                    fun();
-                }
+            } else if (currentRouteName === 'Index') {
+                showModal(modal);
             }
         }
     }, []);
@@ -763,7 +748,7 @@ const styles = StyleSheet.create({
     },
     userComButton: {
         margin: px(20),
-        marginBottom: 0,
+        marginBottom: isIphoneX() ? 34 : Space.marginVertical,
     },
 });
 
