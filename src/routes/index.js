@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:08:24
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-10 10:11:24
  * @Description:路由表
  */
 import React from 'react';
@@ -189,6 +189,7 @@ import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
+import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -737,6 +738,7 @@ export default function AppStack() {
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
+            <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
