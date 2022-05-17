@@ -395,6 +395,7 @@ function HomeScreen({navigation}) {
         ) : (
             <View style={[Style.flexRow, {marginBottom: text(10)}]}>
                 <Text style={[styles.accountName, portfolios ? styles.portfoliosName : {}]}>{item.name}</Text>
+                {item.anno ? <Text style={styles.anno}>{item.anno}</Text> : null}
                 {item.tag ? (
                     <Text style={{...styles.tag, backgroundColor: item.tag_color || Colors.red}}>{item.tag}</Text>
                 ) : null}
@@ -1354,6 +1355,11 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
+    anno: {
+        marginLeft: text(3),
+        lineHeight: text(10),
+        fontSize: px(8),
     },
     tag: {
         paddingHorizontal: text(6),
