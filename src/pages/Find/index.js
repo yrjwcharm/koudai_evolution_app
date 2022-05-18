@@ -17,6 +17,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard';
+import {signFile, signInit, signOrder} from '../PE/PEBridge';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -107,6 +108,19 @@ const Index = (props) => {
                             <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
+
+                            <Button
+                                onPress={() => {
+                                    signInit('JKL0KDu7iW3t3hA6jZePF5gKFZ0g', true);
+                                }}
+                            />
+                            <Button
+                                title="文件签署"
+                                onPress={() => {
+                                    // signOrder('sdtfg654', 'asdsa');
+                                    signFile('21c7d1ee-51c7-4302-bf1c-2c3d1687f141', '976159847450021888');
+                                }}
+                            />
                             {/* 今日推荐 */}
 
                             <>

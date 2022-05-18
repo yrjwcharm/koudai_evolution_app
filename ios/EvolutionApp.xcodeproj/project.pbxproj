@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,6 +32,13 @@
 		0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0080455E2591A5E20083350B /* SystemConfiguration.framework */; };
 		008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045602591A5F00083350B /* CoreTelephony.framework */; };
 		008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045622591A5FD0083350B /* libsqlite3.0.tbd */; };
+		008A34BD282E5E8000B4CD80 /* TTDSignSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34BB282E5E7F00B4CD80 /* TTDSignSDK.framework */; };
+		008A34BE282E5E8000B4CD80 /* TTDSignSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */; };
+		008A34C4283200AC00B4CD80 /* SignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34C3283200AC00B4CD80 /* SignManager.m */; };
+		008A34CC28326FE100B4CD80 /* TTDQARecordResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34CA28326FE100B4CD80 /* TTDQARecordResource.bundle */; };
+		008A34CD2832704200B4CD80 /* TTDQARecordKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; };
+		008A34CE2832704200B4CD80 /* TTDQARecordKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		008A34D028334F6A00B4CD80 /* RecordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34CF28334F6900B4CD80 /* RecordManager.m */; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
 		00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		00E3FB5D27CE11F600FCFD34 /* PTRIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */; };
@@ -75,6 +82,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				008A34CE2832704200B4CD80 /* TTDQARecordKit.xcframework in Embed Frameworks */,
 				0049823627BB4FFA00A88DA1 /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -121,6 +129,14 @@
 		0080455E2591A5E20083350B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		008045602591A5F00083350B /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		008045622591A5FD0083350B /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		008A34BB282E5E7F00B4CD80 /* TTDSignSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TTDSignSDK.framework; sourceTree = "<group>"; };
+		008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TTDSignSDK.bundle; sourceTree = "<group>"; };
+		008A34C22832009000B4CD80 /* SignManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignManager.h; sourceTree = "<group>"; };
+		008A34C3283200AC00B4CD80 /* SignManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SignManager.m; sourceTree = "<group>"; };
+		008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = TTDQARecordKit.xcframework; sourceTree = "<group>"; };
+		008A34CA28326FE100B4CD80 /* TTDQARecordResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TTDQARecordResource.bundle; sourceTree = "<group>"; };
+		008A34CF28334F6900B4CD80 /* RecordManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecordManager.m; sourceTree = "<group>"; };
+		008A34D128334F7900B4CD80 /* RecordManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordManager.h; sourceTree = "<group>"; };
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* EvolutionAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EvolutionAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -179,8 +195,10 @@
 				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
 				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
+				008A34BD282E5E8000B4CD80 /* TTDSignSDK.framework in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
+				008A34CD2832704200B4CD80 /* TTDQARecordKit.xcframework in Frameworks */,
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */,
 				00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */,
@@ -257,6 +275,10 @@
 		13B07FAE1A68108700A75B9A /* EvolutionApp */ = {
 			isa = PBXGroup;
 			children = (
+				008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */,
+				008A34BB282E5E7F00B4CD80 /* TTDSignSDK.framework */,
+				008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */,
+				008A34CA28326FE100B4CD80 /* TTDQARecordResource.bundle */,
 				00E3FB5B27CE11F600FCFD34 /* PTRIDFA.h */,
 				00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */,
 				0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */,
@@ -275,6 +297,10 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				008A34C22832009000B4CD80 /* SignManager.h */,
+				008A34C3283200AC00B4CD80 /* SignManager.m */,
+				008A34CF28334F6900B4CD80 /* RecordManager.m */,
+				008A34D128334F7900B4CD80 /* RecordManager.h */,
 			);
 			name = EvolutionApp;
 			sourceTree = "<group>";
@@ -382,10 +408,12 @@
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EvolutionAppTests" */;
 			buildPhases = (
 				7A7A71F734430061E7F4A217 /* [CP] Check Pods Manifest.lock */,
+				BF11DFB80DF5A077A9958F04 /* [CP] Prepare Artifacts */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				FFB8305FDB3F5BC6F7A5E4AD /* [CP] Copy Pods Resources */,
+				C7776161E4650432CC58C46B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -403,6 +431,7 @@
 			buildPhases = (
 				0E59B0FE5A4D0CF3C584635C /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
+				D8F63166BC95DA013FFD4C3D /* [CP] Prepare Artifacts */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -410,6 +439,7 @@
 				24301CAB9234C7DE2FA1F31B /* [CP] Copy Pods Resources */,
 				008044E1259046430083350B /* Embed Frameworks */,
 				0003BA622602FB0E0010E86D /* ShellScript */,
+				152D224356CE5BA467E686B1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -521,6 +551,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				008A34CC28326FE100B4CD80 /* TTDQARecordResource.bundle in Resources */,
+				008A34BE282E5E8000B4CD80 /* TTDSignSDK.bundle in Resources */,
 				D07853A025B8050600274C2D /* DIN-Regular.otf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				D059087E25C260C000EFA6CA /* DIN-Medium.otf in Resources */,
@@ -622,54 +654,34 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		152D224356CE5BA467E686B1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		24301CAB9234C7DE2FA1F31B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -734,6 +746,57 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		BF11DFB80DF5A077A9958F04 /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C7776161E4650432CC58C46B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D8F63166BC95DA013FFD4C3D /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -777,49 +840,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -842,6 +868,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0016AC36277B276D00E78FBC /* NSObject+MJClass.m in Sources */,
+				008A34D028334F6A00B4CD80 /* RecordManager.m in Sources */,
 				0016AC38277B276D00E78FBC /* MJPropertyKey.m in Sources */,
 				0016AC3C277B276D00E78FBC /* IDCardModel.m in Sources */,
 				0016AC31277B276D00E78FBC /* NSObject+MJKeyValue.m in Sources */,
@@ -854,6 +881,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				0016AC32277B276D00E78FBC /* MJProperty.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				008A34C4283200AC00B4CD80 /* SignManager.m in Sources */,
 				0016AC37277B276D00E78FBC /* NSString+MJExtension.m in Sources */,
 				0016AC35277B276D00E78FBC /* NSObject+MJProperty.m in Sources */,
 			);
@@ -938,7 +966,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
@@ -1017,7 +1048,10 @@
 				);
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
@@ -1047,7 +1081,11 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = EvolutionAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1074,7 +1112,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1102,7 +1143,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1128,7 +1173,11 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = EvolutionAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1149,7 +1198,11 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = EvolutionAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1229,7 +1282,10 @@
 				);
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
@@ -1317,7 +1373,10 @@
 				);
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
@@ -1353,7 +1412,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1382,7 +1444,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1410,7 +1475,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1438,7 +1507,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "EvolutionApp-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1501,7 +1574,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
@@ -1557,7 +1633,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
