@@ -55,9 +55,15 @@ const BottomDesc = (props) => {
                     )
                 ) : null}
             </View>
-            <View style={styles.item}>
-                <FastImage resizeMode={FastImage.resizeMode.contain} source={{uri: data?.img}} style={[styles.img]} />
-            </View>
+            {data?.img && (
+                <View style={styles.item}>
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={{uri: data?.img}}
+                        style={[styles.img]}
+                    />
+                </View>
+            )}
             {data?.sale_service ? (
                 <View style={{alignItems: 'center'}}>
                     <FastImage
