@@ -294,7 +294,7 @@ const AccProfit = ({intelligent, poid}) => {
                             </Text>
                             {/* <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} /> */}
                             {item.tag ? (
-                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(03)}}>
+                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(3)}}>
                                     <Text style={styles.tag}>{item.tag}</Text>
                                 </View>
                             ) : null}
