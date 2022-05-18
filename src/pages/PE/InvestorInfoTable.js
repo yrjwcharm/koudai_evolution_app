@@ -2,22 +2,21 @@
  * @Date: 2022-05-11 15:34:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-12 14:40:39
+ * @LastEditTime: 2022-05-18 15:48:26
  * @Description: 投资者信息表
  */
-import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Picker from 'react-native-picker';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {times} from 'lodash';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {FormItem} from './IdentityAssertion';
+import {Colors, Font, Space} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Mask from '../../components/Mask';
 import Loading from '../Portfolio/components/PageLoading';
-import http from '../../services';
+// import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 
 export default ({navigation}) => {
@@ -26,78 +25,6 @@ export default ({navigation}) => {
     const [showMask, setShowMask] = useState(false);
     const {button = {}, list = []} = data;
     const {text, url} = button;
-    const inputArr = useRef([]);
-
-    const renderItem = (item, index) => {
-        const {input_type, label, max_length, options, placeholder, tips, type, value} = item;
-        return (
-            <View key={item + index} style={[styles.itemBox, {borderTopWidth: index !== 0 ? Space.borderWidth : 0}]}>
-                <TouchableOpacity
-                    activeOpacity={type === 'radio' || type === 'text' ? 1 : 0.8}
-                    onPress={() => onPress(item, index)}
-                    style={[Style.flexBetween, {height: '100%'}]}>
-                    <View style={Style.flexRow}>
-                        <Text style={styles.itemLabel}>{label}</Text>
-                        {tips ? (
-                            <TouchableOpacity activeOpacity={0.8} style={{marginLeft: px(2)}}>
-                                <EvilIcons color={'#999999'} name={'question'} size={22} />
-                            </TouchableOpacity>
-                        ) : null}
-                    </View>
-                    <View style={[Style.flexRow, {flexShrink: 1}]}>
-                        {type === 'text' || type === 'datepicker' || type === 'picker' ? (
-                            <Text
-                                style={[
-                                    styles.itemLabel,
-                                    {color: type === 'text' ? Colors.lightGrayColor : Colors.defaultColor},
-                                ]}>
-                                {value}
-                            </Text>
-                        ) : null}
-                        {type === 'radio'
-                            ? options?.map?.((option, i) => {
-                                  return (
-                                      <TouchableOpacity
-                                          activeOpacity={0.8}
-                                          key={option + i}
-                                          onPress={() => onChange(index, option.value)}
-                                          style={[Style.flexRow, {marginLeft: i === 0 ? 0 : px(36)}]}>
-                                          <MaterialCommunityIcons
-                                              color={value === option.value ? '#D7AF74' : '#979797'}
-                                              name={
-                                                  value === option.value
-                                                      ? 'checkbox-marked-circle'
-                                                      : 'checkbox-blank-circle-outline'
-                                              }
-                                              size={px(15)}
-                                          />
-                                          <Text style={[styles.itemLabel, {marginLeft: px(6)}]}>{option.label}</Text>
-                                      </TouchableOpacity>
-                                  );
-                              })
-                            : null}
-                        {type === 'input' ? (
-                            <TextInput
-                                keyboardType={input_type}
-                                maxLength={max_length}
-                                onChangeText={(_text) => onChange(index, _text)}
-                                placeholder={placeholder}
-                                placeholderTextColor={'#BDC2CC'}
-                                ref={(ref) => {
-                                    inputArr.current[index] = ref;
-                                }}
-                                style={styles.inputStyle}
-                                value={value}
-                            />
-                        ) : null}
-                        {type === 'datepicker' || type === 'picker' ? (
-                            <EvilIcons color={Colors.lightGrayColor} name="chevron-right" size={24} />
-                        ) : null}
-                    </View>
-                </TouchableOpacity>
-            </View>
-        );
-    };
 
     const onChange = (index, value) => {
         const _data = {...data};
@@ -105,39 +32,6 @@ export default ({navigation}) => {
         _list[index].value = value;
         _data.list = _list;
         setData(_data);
-    };
-
-    const onPress = (item, index) => {
-        const {label, options, type, value} = item;
-        if (type === 'input') {
-            const input = inputArr.current[index];
-            !input?.isFocused?.() && input?.focus?.();
-        } else if (type === 'picker') {
-            Keyboard.dismiss();
-            setShowMask(true);
-            Picker.init({
-                pickerTitleColor: [31, 36, 50, 1],
-                pickerTitleText: `请选择${label}`,
-                pickerCancelBtnText: '取消',
-                pickerConfirmBtnText: '确定',
-                pickerBg: [255, 255, 255, 1],
-                pickerToolBarBg: [249, 250, 252, 1],
-                pickerData: options.map((_item) => _item.label),
-                pickerFontColor: [33, 33, 33, 1],
-                pickerRowHeight: 36,
-                pickerConfirmBtnColor: [0, 81, 204, 1],
-                pickerCancelBtnColor: [128, 137, 155, 1],
-                selectedValue: options.filter((_item) => _item.label === value).map((_item) => _item.label),
-                pickerTextEllipsisLen: 100,
-                wheelFlex: [1, 1],
-                onPickerCancel: () => setShowMask(false),
-                onPickerConfirm: (pickedValue, pickedIndex) => {
-                    onChange(index, pickedValue[0]);
-                    setShowMask(false);
-                },
-            });
-            Picker.show();
-        }
     };
 
     const hidePicker = () => {
@@ -251,9 +145,23 @@ export default ({navigation}) => {
                 extraScrollHeight={px(100)}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
-                <View style={styles.contentBox}>{list?.map?.((item, index) => renderItem(item, index))}</View>
+                <View style={styles.contentBox}>
+                    {list?.map?.((item, index) => (
+                        <View
+                            key={item + index}
+                            style={[styles.itemBox, {borderTopWidth: index !== 0 ? Space.borderWidth : 0}]}>
+                            <FormItem data={item} onChange={(val) => onChange(index, val)} setShowMask={setShowMask} />
+                        </View>
+                    ))}
+                </View>
             </KeyboardAwareScrollView>
-            <FixedButton onPress={() => jump(url)} title={text} />
+            <FixedButton
+                color="#EDDBC5"
+                disabledColor="#EDDBC5"
+                onPress={() => jump(url)}
+                style={{backgroundColor: '#D7AF74'}}
+                title={text}
+            />
         </View>
     ) : (
         <Loading />

@@ -190,6 +190,11 @@ import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交�
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
+import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
+import ObjectChoose from '../pages/PE/ObjectChoose'; // 特定对象选择
+import QuestionAnswer from '../pages/PE/QuestionAnswer'; // 私募问答
+import UploadMaterial from '../pages/PE/UploadMaterial'; // 投资者证明材料上传
+import PrivateReview from '../pages/PE/PrivateReview'; // 私募审核页面
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -739,6 +744,11 @@ export default function AppStack() {
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
+            <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
+            <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
+            <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
+            <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
+            <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
