@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-29 16:57:05
+ * @LastEditTime: 2022-05-18 14:55:42
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -43,7 +43,7 @@ export default class FixedButton extends Component {
     }
     render() {
         const {check, keyboardHeight} = this.state;
-        const {agreement, disabled, heightChange, suffix = ''} = this.props;
+        const {agreement, disabled, heightChange, suffix = '', checkIcon} = this.props;
         return (
             <Animated.View style={[styles.bottom, {bottom: keyboardHeight}]}>
                 {agreement ? (
@@ -55,6 +55,7 @@ export default class FixedButton extends Component {
                             data={agreement?.list}
                             onChange={(checkStatus) => this.setState({check: checkStatus})}
                             suffix={suffix}
+                            checkIcon={checkIcon}
                         />
                     </View>
                 ) : null}

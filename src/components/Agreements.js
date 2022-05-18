@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:49:45
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-18 14:54:12
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -27,6 +27,7 @@ function Agreements(props) {
         isHide = false,
         emitJump, //通知父组建跳转
         suffix = '',
+        checkIcon = require('../assets/img/login/checked.png'),
     } = props;
     const jumpPage = (item) => {
         if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
@@ -51,7 +52,7 @@ function Agreements(props) {
     // let container = <Icon name={source} size={px(18)} color="#0052CD" />;
     const imgStyle = {width: px(15), height: px(15), marginTop: px(1.5)};
     const container = checked ? (
-        <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+        <Image source={checkIcon} style={imgStyle} />
     ) : (
         <View
             style={{

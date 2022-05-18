@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-22 14:42:54
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-18 11:11:08
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -34,14 +34,13 @@ const PrivateApply = (props) => {
             setData(res.result);
         });
     }, [fund_code, poid, scene]);
-    const onLayout = useCallback(
-        (index, e) => {
-            const arr = [...heightArr];
+    const onLayout = (index, e) => {
+        setHeightArr((prev) => {
+            const arr = [...prev];
             arr[index] = e.nativeEvent.layout.height;
-            setHeightArr(arr);
-        },
-        [heightArr]
-    );
+            return arr;
+        });
+    };
     const btnClick = () => {
         props.navigation.navigate('Home');
     };

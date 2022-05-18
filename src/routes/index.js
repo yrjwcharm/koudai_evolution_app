@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-11 17:02:22
+ * @LastEditTime: 2022-05-18 10:51:15
  * @Description:路由表
  */
 import React from 'react';
@@ -188,6 +188,11 @@ import RiskDisclosure from '../pages/Assets/RiskDisclosure'; // 风险揭示书
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
+import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
+import ObjectChoose from '../pages/PE/ObjectChoose'; // 特定对象选择
+import QuestionAnswer from '../pages/PE/QuestionAnswer'; // 私募问答
+import UploadMaterial from '../pages/PE/UploadMaterial'; // 投资者证明材料上传
+import PrivateReview from '../pages/PE/PrivateReview'; // 私募审核页面
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -735,6 +740,11 @@ export default function AppStack() {
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
+            <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
+            <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
+            <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
+            <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
+            <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
