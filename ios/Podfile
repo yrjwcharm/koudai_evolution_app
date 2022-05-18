@@ -10,7 +10,9 @@ target 'EvolutionApp' do
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
-
+  pod 'AFNetworking' , '~> 4.0'
+  pod 'SVProgressHUD'
+  pod 'AgoraRtcEngine_iOS', '~> 3.4.7'
   target 'EvolutionAppTests' do
     inherit! :complete
     # Pods for testing

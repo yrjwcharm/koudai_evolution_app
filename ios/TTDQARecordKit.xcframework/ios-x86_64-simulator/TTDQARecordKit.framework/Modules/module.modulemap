@@ -1,0 +1,6 @@
+framework module TTDQARecordKit {
+  umbrella header "TTDQARecordKit.h"
+
+  export *
+  module * { export * }
+}
