@@ -12,7 +12,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {px as text} from '../../utils/appUtil';
+import {px, px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Modal} from '../../components/Modal';
@@ -288,10 +288,13 @@ const AccProfit = ({intelligent, poid}) => {
                             // jump(item.url);
                         }}>
                         <View style={Style.flexRow}>
-                            <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>{item.name}</Text>
+                            <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>
+                                {item.name}
+                                {item.anno && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
+                            </Text>
                             {/* <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} /> */}
                             {item.tag ? (
-                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(8)}}>
+                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(03)}}>
                                     <Text style={styles.tag}>{item.tag}</Text>
                                 </View>
                             ) : null}
