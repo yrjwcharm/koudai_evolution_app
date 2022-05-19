@@ -51,6 +51,15 @@ RCT_EXPORT_METHOD(signFile:(NSString *)fileId userNo:(NSString *)userNo) {
   });
 }
 
+//文件预览页面
+RCT_EXPORT_METHOD(previewFile:(NSString *)bucketName ObjectKey:(NSString *)ObjectKey title:(NSString *)title btnText:(NSString *)btnText) {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [TTDSignSDK shareSDK].signVCShowType = TTDSignVCShowTypePresent;
+        UIViewController *vc = [[TTDSignSDK shareSDK] getPreviewVcWithBucketName:bucketName objectKey:ObjectKey previewTitle:title previewButtonTitle:btnText delegate:self];
+        
+    [[self findVisibleViewController] presentViewController:vc animated:YES completion:nil];
+  });
+}
 #pragma mark 私有方法
 
 - (UIViewController *)findVisibleViewController {

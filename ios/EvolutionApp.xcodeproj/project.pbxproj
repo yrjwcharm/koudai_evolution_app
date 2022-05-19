@@ -36,7 +36,7 @@
 		008A34BE282E5E8000B4CD80 /* TTDSignSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */; };
 		008A34C4283200AC00B4CD80 /* SignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34C3283200AC00B4CD80 /* SignManager.m */; };
 		008A34CC28326FE100B4CD80 /* TTDQARecordResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34CA28326FE100B4CD80 /* TTDQARecordResource.bundle */; };
-		008A34CD2832704200B4CD80 /* TTDQARecordKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; };
+		008A34CD2832704200B4CD80 /* TTDQARecordKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		008A34CE2832704200B4CD80 /* TTDQARecordKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		008A34D028334F6A00B4CD80 /* RecordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34CF28334F6900B4CD80 /* RecordManager.m */; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
@@ -198,7 +198,6 @@
 				008A34BD282E5E8000B4CD80 /* TTDSignSDK.framework in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
-				008A34CD2832704200B4CD80 /* TTDQARecordKit.xcframework in Frameworks */,
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */,
 				00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */,
@@ -1228,7 +1227,7 @@
 				CURRENT_PROJECT_VERSION = 67400;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
