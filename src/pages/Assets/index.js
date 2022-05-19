@@ -438,36 +438,50 @@ function HomeScreen({navigation}) {
             return (
                 <>
                     {(item.portfolios && item.portfolios.length === 1) || item.id === 11 ? (
-                        <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
-                            {renderProfit(item.id === 11 ? item : item.portfolios[0], item.id)}
-                            <FontAwesome
-                                name={'angle-right'}
-                                size={20}
-                                color={Colors.darkGrayColor}
-                                style={{transform: [{translateY: text(-4)}]}}
-                            />
-                        </View>
+                        <>
+                            <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
+                                {renderProfit(item.id === 11 ? item : item.portfolios[0], item.id)}
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={20}
+                                    color={Colors.darkGrayColor}
+                                    style={{transform: [{translateY: text(-4)}]}}
+                                />
+                            </View>
+                            {item.portfolios?.[0]?.intro ? (
+                                <View style={styles.introWrap}>
+                                    <Text style={styles.introText}>{item.portfolios?.[0]?.intro}</Text>
+                                </View>
+                            ) : null}
+                        </>
                     ) : (
                         item.portfolios.map((po, i) => {
                             return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    key={`portfolio${po.poid}`}
-                                    style={Style.flexRow}
-                                    onPress={() => {
-                                        global.LogTool('assetsProductStart', po.poid);
-                                        jump(po.url);
-                                    }}>
-                                    <View
-                                        style={[
-                                            styles.portfolio,
-                                            i === item.portfolios.length - 1 ? {paddingBottom: 0} : {},
-                                        ]}>
-                                        {renderTitle(po, true)}
-                                        {renderProfit(po)}
-                                    </View>
-                                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                                </TouchableOpacity>
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        key={`portfolio${po.poid}`}
+                                        style={Style.flexRow}
+                                        onPress={() => {
+                                            global.LogTool('assetsProductStart', po.poid);
+                                            jump(po.url);
+                                        }}>
+                                        <View
+                                            style={[
+                                                styles.portfolio,
+                                                i === item.portfolios.length - 1 ? {paddingBottom: 0} : {},
+                                            ]}>
+                                            {renderTitle(po, true)}
+                                            {renderProfit(po)}
+                                        </View>
+                                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                                    </TouchableOpacity>
+                                    {po.intro ? (
+                                        <View style={styles.introWrap}>
+                                            <Text style={styles.introText}>{po.intro}</Text>
+                                        </View>
+                                    ) : null}
+                                </>
                             );
                         })
                     )}
@@ -1496,6 +1510,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
         padding: px(16),
+    },
+    introWrap: {
+        marginTop: px(13),
+        backgroundColor: '#F5F6F8',
+        padding: px(12),
+    },
+    introText: {
+        fontSize: px(12),
+        color: '#9AA1B2',
+        lineHeight: px(14),
     },
 });
 export default HomeScreen;
