@@ -2,7 +2,7 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-18 11:44:41
+ * @LastEditTime: 2022-05-19 16:05:43
  * @Description:签约桥接
  */
 import {func} from 'prop-types';
@@ -49,6 +49,10 @@ export function signFile(filedId, userNo) {
     SignManager.signFile(filedId, userNo);
 }
 
+//文件预览
+export function signPreview(bucketName, ObjectKey, title, btnText) {
+    SignManager.previewFile(bucketName, ObjectKey, title, btnText);
+}
 //双录初始化
 export function recordInit(appid, isDebug, callback) {
     if (Platform.OS === 'ios') {

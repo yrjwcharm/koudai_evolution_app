@@ -38,7 +38,7 @@ public class RecordModule extends ReactContextBaseJavaModule {
     //  初始化
     @ReactMethod
     public void init(String appid, Boolean isDebug, Callback successCallBack,Callback errorCallBack){
-        TtdQARecordSDK.getInstance().initSDK(reactContext,appid,isDebug, new IQARecordInitListener() {
+        TtdQARecordSDK.getInstance().initSDK(getCurrentActivity(),appid,isDebug, new IQARecordInitListener() {
             @Override
             public void onSuccess() {
                 runOnUiThread(new Runnable() {
@@ -79,7 +79,7 @@ public class RecordModule extends ReactContextBaseJavaModule {
         data.setTalkings(entities);
         data.setSerialNo(serialNo);
         data.setTtdOrderNo(ttdOrderNo);
-        int result = TtdQARecordSDK.getInstance().startRecord(reactContext, data, new IRecordEventHandler() {
+        int result = TtdQARecordSDK.getInstance().startRecord(getCurrentActivity(), data, new IRecordEventHandler() {
             @Override
             public void onComplate(RecordEntity data, int endType) {
                 successCallback.invoke(data.getSerialNo(),data.getTtdOrderNo());

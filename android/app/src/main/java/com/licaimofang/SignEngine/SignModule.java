@@ -135,7 +135,7 @@ public class SignModule extends ReactContextBaseJavaModule {
     }
     //文件预览
     @ReactMethod
-    public void previewOrderFiles(String bucketName,String ObjectKey,String title,String btnText){
+    public void previewFile(String bucketName,String ObjectKey,String title,String btnText){
         TtdSignEngine.previewFile(getCurrentActivity(), bucketName,ObjectKey,title,btnText);
     }
 }
