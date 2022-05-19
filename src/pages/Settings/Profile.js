@@ -58,8 +58,9 @@ const Profile = ({navigation}) => {
     };
     useEffect(() => {
         NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            init();
-            http.post('/file_sign/sign_done/20220510', {fileId: res.fileId});
+            http.post('/file_sign/sign_done/20220510', {fileId: res.fileId}).then(() => {
+                init();
+            });
         });
     }, []);
     const onPress = useCallback(
