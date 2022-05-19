@@ -31,7 +31,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {LowBuyAreaChart} from '../../components/Chart/chartOptions';
 import {useFocusEffect} from '@react-navigation/native';
 import Toast from '../../components/Toast';
-import {BottomModal} from '../../components/Modal';
+import {PageModal} from '../../components/Modal';
 import Agreements from '../../components/Agreements';
 import Notice from '../../components/Notice';
 import {debounce} from 'lodash';
@@ -821,7 +821,7 @@ const LowBuySignalExplain = ({route}) => {
                 />
             }
             {data?.adviser_sign && (
-                <BottomModal
+                <PageModal
                     style={{height: px(600), backgroundColor: '#fff'}}
                     ref={signModal}
                     title={data?.adviser_sign?.title}
@@ -829,7 +829,7 @@ const LowBuySignalExplain = ({route}) => {
                         show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {data?.adviser_sign?.desc && <Notice content={{content: data?.adviser_sign?.desc}} />}
                         <ScrollView
                             style={{
@@ -892,7 +892,7 @@ const LowBuySignalExplain = ({route}) => {
                             ) : null}
                         </>
                     </View>
-                </BottomModal>
+                </PageModal>
             )}
         </View>
     );

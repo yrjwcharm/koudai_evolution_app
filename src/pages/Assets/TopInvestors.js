@@ -22,7 +22,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Agreements from '../../components/Agreements';
 import http from '../../services';
 import Notice from '../../components/Notice';
-import {BottomModal} from '../../components/Modal';
+import {PageModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import URI from 'urijs';
 import {baseURL} from '../../services/config';
@@ -382,7 +382,7 @@ const TopInvestors = ({route}) => {
                 }}
             />
             {data?.adviser_sign && (
-                <BottomModal
+                <PageModal
                     style={{height: px(600), backgroundColor: '#fff'}}
                     ref={signModal}
                     title={data?.adviser_sign?.title}
@@ -390,7 +390,7 @@ const TopInvestors = ({route}) => {
                         show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {data?.adviser_sign?.desc && <Notice content={{content: data?.adviser_sign?.desc}} />}
                         <ScrollView
                             style={{
@@ -453,7 +453,7 @@ const TopInvestors = ({route}) => {
                             ) : null}
                         </>
                     </View>
-                </BottomModal>
+                </PageModal>
             )}
         </View>
     ) : showEmpty ? (
