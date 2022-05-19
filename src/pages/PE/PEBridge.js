@@ -2,7 +2,7 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-19 16:05:43
+ * @LastEditTime: 2022-05-19 18:57:41
  * @Description:签约桥接
  */
 import {func} from 'prop-types';
@@ -13,7 +13,13 @@ const {SignManager, RecordManager} = NativeModules;
 /**
  * 暴露给JS的原生类对象，通过该对象进行JS和原生模块的交互
  */
-// export const NativeReadCardEmitter = new NativeEventEmitter(ReadCardManager);
+export const NativeSignManagerEmitter = new NativeEventEmitter(SignManager);
+/**
+ * 回掉事件名
+ */
+export const MethodObj = {
+    signFileSuccess: 'signFileSuccess', //签署成功
+};
 
 /**
  * 签署初始化

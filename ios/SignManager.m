@@ -11,11 +11,20 @@
 #import <React/RCTLog.h>
 #import "AppDelegate.h"
 #import <React/RCTUtils.h>
+//签署成功
+#define method_signFileSuccess @"signFileSuccess"
 
 @implementation SignManager;
 RCT_EXPORT_MODULE();
-
 #pragma mark JS 调用 OC
+
+/**
+ 针对本SDK，此为回调事件
+ */
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[method_signFileSuccess];
+}
 /// 初始化方法
 RCT_EXPORT_METHOD(init:(NSString *)appId isDebug:(int)isDebug) {
   // Override point for customization after application launch.
@@ -60,6 +69,32 @@ RCT_EXPORT_METHOD(previewFile:(NSString *)bucketName ObjectKey:(NSString *)Objec
     [[self findVisibleViewController] presentViewController:vc animated:YES completion:nil];
   });
 }
+
+//MARK: 自定义文件签署成功回调
+-(void)signFileSuccess:(TTDSignSDK *)signSdk responseInfo:(NSDictionary *)dic
+{
+    /// @param dic 签署成功信息
+    /// {
+    ///     fileId;     //文件ID
+    ///     backetName; //获取文件的name
+    ///     objectKey;  //获取文件的key
+    ///     url;        //文件URL
+    ///     pdfPage;    //文件页码
+    ///     investorState;  //投资者签署状态。1，已签署 0,待签署
+    ///     manageState;    //管理人签署状态。1，已签署 0,待签署
+    ///     plannerState;   //理财经理签署状态。1，已签署 0,待签署
+    /// }
+    NSLog(@"自定义文件签署成功 %@",dic);
+  [self sendEventWithName:method_signFileSuccess body:dic];
+//    [self performSelector:@selector(alertMessage:) withObject:[NSString stringWithFormat:@"%@",dic] afterDelay:0.3];
+}
+//MARK: SDK报错关闭回调
+-(void)onError:(TTDSignSDK *)signSdk errorCode:(TTDErrorCode)errorCode errorMsg:(NSString *)errorMsg
+{
+    NSLog(@"onError %ld, %@",(long)errorCode,errorMsg);
+//    [self performSelector:@selector(alertErrorMessage:) withObject:errorMsg afterDelay:1];
+}
+
 #pragma mark 私有方法
 
 - (UIViewController *)findVisibleViewController {
