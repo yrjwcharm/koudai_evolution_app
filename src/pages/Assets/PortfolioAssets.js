@@ -709,21 +709,23 @@ export default function PortfolioAssets(props) {
                     )}
                 </View>
 
-                {/* 广告位 */}
-                {data?.ad_info && (
-                    <TouchableOpacity onPress={() => jump(data?.ad_info?.url)}>
-                        <FitImage
-                            source={{
-                                uri: data?.ad_info?.img,
-                            }}
-                            resizeMode="contain"
-                            style={{marginBottom: text(10)}}
-                        />
-                    </TouchableOpacity>
-                )}
-
                 <View style={styles.padding_sty}>
                     {Object.keys(card || {}).length > 0 && data.scene !== 'adviser' && renderBtn() /* 按钮 */}
+                    {data?.ad_info ? (
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                global.LogTool('ppage_banner', data.title);
+                                jump(data?.ad_info?.url);
+                            }}>
+                            <FastImage
+                                source={{
+                                    uri: data?.ad_info?.cover,
+                                }}
+                                style={styles.ad_info}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                     {/* 反洗钱上传 */}
                     {data?.notice_info && (
                         <View style={[Style.flexRow, styles.upload_card_sty]}>
@@ -1153,6 +1155,11 @@ const styles = StyleSheet.create({
         paddingVertical: text(6),
         borderRadius: text(20),
         marginRight: text(10),
+    },
+    ad_info: {
+        height: px(60),
+        borderRadius: 8,
+        marginTop: px(12),
     },
     title_sty: {
         color: '#1F2432',
