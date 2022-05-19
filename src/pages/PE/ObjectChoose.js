@@ -1,171 +1,235 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-18 12:46:02
+ * @LastEditTime: 2022-05-19 17:41:49
  * @Description: 特定对象选择
  */
-import React, {useEffect, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+    DeviceEventEmitter,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-import {Modal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
-// import http from '../../services';
+import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
+import {debounce} from 'lodash';
+import {useFocusEffect} from '@react-navigation/native';
+import {FormItem} from './IdentityAssertion';
+import Toast from '../../components/Toast';
+import {Modal} from '../../components/Modal';
 
-const PopupContent = ({data}) => {
-    const {button: popupButton = {}, default_select, options = [], tips: popupTips = ''} = data;
+export const PopupContent = ({data, refresh = () => {}}) => {
+    const {button: popupButton = {}, default_select, tip: popupTips = '', type} = data;
     const {text} = popupButton;
     const [selected, setSelected] = useState();
+    const [oldPwd, setOldPwd] = useState('');
+    const [pwd, setPwd] = useState('');
+    const [confirmPwd, setConfirmPwd] = useState('');
+
+    const onSubmit = useCallback(
+        debounce(
+            () => {
+                const urlObj = {
+                    choose_object: '/private_fund/submit_qualified_target/20220510',
+                    sign_password: '/private_fund/set_sign_password/20220510',
+                };
+                const paramsObj = {
+                    choose_object: {investor_type: selected},
+                    sign_password: {old_password: oldPwd, password: pwd, re_password: confirmPwd},
+                };
+                http.post(urlObj[type], paramsObj[type]).then((res) => {
+                    if (res.code === '000000') {
+                        refresh();
+                        res.result.message && Toast.show(res.result.message);
+                    } else {
+                        Modal.bottomModal && Modal.bottomModal.toastShow(res.message);
+                    }
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [confirmPwd, oldPwd, pwd, selected]
+    );
 
     useEffect(() => {
-        setSelected(default_select);
-    }, [default_select]);
+        if (type === 'choose_object') {
+            setSelected(default_select);
+        }
+    }, [default_select, type]);
 
-    return (
-        <View style={styles.popContainer}>
-            {options.map((option, index) => {
-                const {content, id, title} = option;
-                return (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        key={option + index}
-                        onPress={() => setSelected(id)}
-                        style={[styles.optionBox, {marginTop: index === 0 ? 0 : px(12)}]}>
-                        <View style={Style.flexRow}>
-                            <View style={[styles.radioIconBox, {borderWidth: selected !== id ? Space.borderWidth : 0}]}>
-                                {selected === id ? (
-                                    <Image source={require('../../assets/img/fof/check.png')} style={styles.checked} />
-                                ) : null}
-                            </View>
-                            <Text style={styles.optionTitle}>{title}</Text>
+    switch (type) {
+        case 'choose_object':
+            const {options = []} = data;
+            return (
+                <View style={styles.popContainer}>
+                    {options.map((option, index) => {
+                        const {content, name, value} = option;
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={option + index}
+                                onPress={() => setSelected(value)}
+                                style={[styles.optionBox, {marginTop: index === 0 ? 0 : px(12)}]}>
+                                <View style={Style.flexRow}>
+                                    <View
+                                        style={[
+                                            styles.radioIconBox,
+                                            {borderWidth: selected !== value ? Space.borderWidth : 0},
+                                        ]}>
+                                        {selected === value ? (
+                                            <Image
+                                                source={require('../../assets/img/fof/check.png')}
+                                                style={styles.checked}
+                                            />
+                                        ) : null}
+                                    </View>
+                                    <Text style={styles.optionTitle}>{name}</Text>
+                                </View>
+                                <Text style={styles.optionContent}>{content}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                    <Text style={styles.popupTips}>{popupTips}</Text>
+                    <Button
+                        color="#EDDBC5"
+                        disabled={!options.some((item) => item.value === selected)}
+                        disabledColor="#EDDBC5"
+                        onPress={onSubmit}
+                        style={styles.popupButton}
+                        title={text}
+                    />
+                </View>
+            );
+        case 'sign_password':
+            const {old_password, password, re_password} = data;
+            return (
+                <View style={styles.popContainer}>
+                    <Text style={[styles.popupTips, {marginTop: px(4)}]}>{popupTips}</Text>
+                    {old_password ? (
+                        <View style={[Style.flexRow, styles.inputBox, {marginTop: Space.marginVertical}]}>
+                            <View style={styles.divider} />
+                            <Text style={styles.inputLabel}>{old_password.name}</Text>
+                            <TextInput
+                                autoFocus
+                                keyboardType="number-pad"
+                                maxLength={6}
+                                onChangeText={(val) => setOldPwd(val)}
+                                placeholder={old_password.placeholder}
+                                placeholderTextColor={'#BDC2CC'}
+                                secureTextEntry={true}
+                                style={styles.inputStyle}
+                                textContentType={'password'}
+                                value={oldPwd}
+                            />
                         </View>
-                        <Text style={styles.optionContent}>{content}</Text>
-                    </TouchableOpacity>
-                );
-            })}
-            <Text style={styles.popupTips}>{popupTips}</Text>
-            <Button
-                color="#EDDBC5"
-                disabledColor="#EDDBC5"
-                onPress={() => {}}
-                style={styles.popupButton}
-                title={text}
-            />
-        </View>
-    );
+                    ) : null}
+                    {password ? (
+                        <View style={[Style.flexRow, styles.inputBox, {marginTop: Space.marginVertical}]}>
+                            <View style={styles.divider} />
+                            <Text style={styles.inputLabel}>{password.name}</Text>
+                            <TextInput
+                                autoFocus={!old_password}
+                                keyboardType="number-pad"
+                                maxLength={6}
+                                onChangeText={(val) => setPwd(val)}
+                                placeholder={password.placeholder}
+                                placeholderTextColor={'#BDC2CC'}
+                                secureTextEntry={true}
+                                style={styles.inputStyle}
+                                textContentType={'password'}
+                                value={pwd}
+                            />
+                        </View>
+                    ) : null}
+                    {re_password ? (
+                        <View style={[Style.flexRow, styles.inputBox]}>
+                            <View style={styles.divider} />
+                            <Text style={styles.inputLabel}>{re_password.name}</Text>
+                            <TextInput
+                                keyboardType="number-pad"
+                                maxLength={6}
+                                onChangeText={(val) => setConfirmPwd(val)}
+                                placeholder={re_password.placeholder}
+                                placeholderTextColor={'#BDC2CC'}
+                                secureTextEntry={true}
+                                style={styles.inputStyle}
+                                textContentType={'password'}
+                                value={confirmPwd}
+                            />
+                        </View>
+                    ) : null}
+                    <Button
+                        color="#EDDBC5"
+                        disabled={
+                            !(
+                                password &&
+                                pwd.length === 6 &&
+                                ((re_password && confirmPwd.length === 6) || !re_password)
+                            )
+                        }
+                        disabledColor="#EDDBC5"
+                        onPress={onSubmit}
+                        style={styles.popupButton}
+                        title={text}
+                    />
+                </View>
+            );
+        default:
+            return null;
+    }
 };
 
 export default ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {button = {}, list = [], tips} = data;
+    const {button = {}, list = [], desc: tips} = data;
+
+    const init = () => {
+        http.get('/private_fund/qualified_target/20220510').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '特定对象选择'});
+                setData(res.result);
+            }
+        });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
 
     useEffect(() => {
-        navigation.setOptions({title: '特定对象选择'});
-        setData({
-            button: {
-                text: '完成',
-                url: '',
-            },
-            list: [
-                {
-                    action: 'popup',
-                    label: '自然人',
-                    popup: {
-                        button: {
-                            text: '确定',
-                        },
-                        default_select: 1,
-                        options: [
-                            {
-                                content:
-                                    '1、金融资产不低于300万元或者最近三年个人年收入不低于50万元的个人\n2、普通投资者在信息告知、风险警示、适当性匹配等方面享有特别保护',
-                                id: 1,
-                                title: '普通投资者',
-                            },
-                            {
-                                content:
-                                    '同时符合下列条件的自然人：\n1、金融资产不低于500万元人民币，或者最近3年个人年均收入不低于50万元人民币\n2、具有2年以上证券、基金、期货、黄金、外汇等投资经历，或者具有2年以上金融产品设计、投资、风险管理及相关工作经历的自然人投资者，或者属于《证券期货投资者适当性管理办法》第八条第（一）款所规定的专业投资者的高级管理人员、获得职业资格认证的从事金融相关业务的注册会计师和律师',
-                                id: 2,
-                                title: '专业投资者',
-                            },
-                        ],
-                        tips: '*请根据您的实际情况确认所属的类型，后续需要提供相应的证明资料。',
-                    },
-                    status: 0,
-                    text: '未完成',
-                },
-                {
-                    action: 'jump',
-                    label: '电子签名约定书',
-                    status: 0,
-                    text: '未完成',
-                    url: '',
-                },
-                {
-                    action: 'jump',
-                    label: '合格投资者承诺',
-                    status: 0,
-                    text: '未完成',
-                    url: '',
-                },
-                {
-                    action: 'jump',
-                    label: '风险测评',
-                    status: 1,
-                    text: '已完成',
-                    url: '',
-                },
-            ],
-            tips: '*根据合规要求，查看私募产品前，请完成以下步骤。',
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        const listener = DeviceEventEmitter.addListener('refresh', init);
+        return () => {
+            listener?.remove?.();
+        };
     }, []);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
-                <Text style={styles.tips}>{tips}</Text>
+                {tips ? <Text style={styles.tips}>{tips}</Text> : null}
                 <View style={styles.partBox}>
                     {list.map((item, index) => {
-                        const {action, label, popup, status, text, url} = item;
                         return (
                             <View
                                 key={item + index}
                                 style={[styles.itemBox, {borderTopWidth: index !== 0 ? Space.borderWidth : 0}]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        if (action === 'jump') {
-                                            jump(url);
-                                        } else if (action === 'popup') {
-                                            Modal.show(
-                                                {
-                                                    children: <PopupContent data={popup} />,
-                                                    title: '请选择是普通投资者还是专业投资者',
-                                                },
-                                                'slide'
-                                            );
-                                        }
-                                    }}
-                                    style={[Style.flexBetween, {height: '100%'}]}>
-                                    <Text style={styles.itemText}>{label}</Text>
-                                    <View style={Style.flexRow}>
-                                        <Text
-                                            style={[
-                                                styles.itemText,
-                                                {color: status === 0 ? Colors.red : Colors.lightGrayColor},
-                                            ]}>
-                                            {text}
-                                        </Text>
-                                        <EvilIcons color={Colors.lightGrayColor} name="chevron-right" size={24} />
-                                    </View>
-                                </TouchableOpacity>
+                                <FormItem data={item} />
                             </View>
                         );
                     })}
@@ -173,6 +237,7 @@ export default ({navigation}) => {
             </ScrollView>
             <Button
                 color="#EDDBC5"
+                disabled={button.avail === 0}
                 disabledColor="#EDDBC5"
                 onPress={() => jump(button.url)}
                 style={styles.button}
@@ -263,5 +328,37 @@ const styles = StyleSheet.create({
     popupButton: {
         marginTop: px(20),
         backgroundColor: '#D7AF74',
+    },
+    inputBox: {
+        marginTop: px(12),
+        paddingHorizontal: Space.padding,
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.bgColor,
+        height: px(50),
+    },
+    inputLabel: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.descColor,
+        minWidth: px(64),
+    },
+    inputStyle: {
+        marginLeft: Space.marginAlign,
+        paddingTop: px(4),
+        paddingLeft: px(12),
+        height: '100%',
+        flex: 1,
+        flexShrink: 1,
+        fontSize: Font.textH1,
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+    },
+    divider: {
+        width: px(1),
+        height: px(12),
+        backgroundColor: Colors.descColor,
+        position: 'absolute',
+        top: px(19),
+        left: px(95),
     },
 });

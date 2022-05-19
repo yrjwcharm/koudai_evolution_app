@@ -2,11 +2,12 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-09 10:17:21
+ * @LastEditTime: 2022-05-19 16:54:41
  * @Description: 底部弹窗
  */
-import React, {useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet, Platform} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, Keyboard, View, Text, Modal, TouchableOpacity, StyleSheet, Platform} from 'react-native';
+import Picker from 'react-native-picker';
 import PropTypes from 'prop-types';
 import {constants} from './util';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
@@ -34,6 +35,7 @@ const BottomModal = React.forwardRef((props, ref) => {
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastText, setToastText] = useState('');
+    const keyboardHeight = useRef(new Animated.Value(0)).current;
     const show = () => {
         setVisible(true);
     };
@@ -58,6 +60,33 @@ const BottomModal = React.forwardRef((props, ref) => {
             onHidden && onHidden();
         }, duration);
     };
+    // 键盘调起
+    const keyboardWillShow = (e) => {
+        Animated.timing(keyboardHeight, {
+            toValue: e.endCoordinates.height,
+            duration: e.duration,
+            useNativeDriver: false,
+        }).start();
+    };
+    // 键盘隐藏
+    const keyboardWillHide = (e) => {
+        Animated.timing(keyboardHeight, {
+            toValue: 0,
+            duration: e.duration,
+            useNativeDriver: false,
+        }).start();
+    };
+    useEffect(() => {
+        Picker.hide();
+        Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+        Keyboard.addListener('keyboardWillHide', keyboardWillHide);
+        return () => {
+            Picker.hide();
+            Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
+            Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     React.useImperativeHandle(ref, () => {
         return {
             show: show,
@@ -76,25 +105,30 @@ const BottomModal = React.forwardRef((props, ref) => {
                 activeOpacity={1}
                 onPress={isTouchMaskToClose ? hide : () => {}}
                 style={[styles.container]}>
-                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={[styles.con, style]}>
-                    {header || (
-                        <View style={styles.header}>
-                            <TouchableOpacity style={styles.close} onPress={hide}>
-                                <Icon name={'close'} size={18} />
-                            </TouchableOpacity>
-                            <View style={{alignItems: 'center'}}>
-                                <Text style={styles.title}>{title}</Text>
-                                {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
-                            </View>
-                            {confirmText ? (
-                                <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
-                                    <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
+                <Animated.View style={{position: 'relative', bottom: keyboardHeight}}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={(e) => e.stopPropagation()}
+                        style={[styles.con, style]}>
+                        {header || (
+                            <View style={styles.header}>
+                                <TouchableOpacity style={styles.close} onPress={hide}>
+                                    <Icon name={'close'} size={18} />
                                 </TouchableOpacity>
-                            ) : null}
-                        </View>
-                    )}
-                    {children}
-                </TouchableOpacity>
+                                <View style={{alignItems: 'center'}}>
+                                    <Text style={styles.title}>{title}</Text>
+                                    {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
+                                </View>
+                                {confirmText ? (
+                                    <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>
+                                        <Text style={{fontSize: px(14), color: '#0051CC'}}>{confirmText}</Text>
+                                    </TouchableOpacity>
+                                ) : null}
+                            </View>
+                        )}
+                        {children}
+                    </TouchableOpacity>
+                </Animated.View>
                 <Modal
                     animationType={'fade'}
                     onRequestClose={() => setShowToast(false)}
