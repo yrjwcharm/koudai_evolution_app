@@ -2,21 +2,45 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-18 17:16:35
+ * @LastEditTime: 2022-05-19 14:55:47
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    DeviceEventEmitter,
+    PermissionsAndroid,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
+import ImagePicker from 'react-native-image-crop-picker';
+import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-import {SelectModal} from '../../components/Modal';
+import {Modal, SelectModal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
-import {isIphoneX, px} from '../../utils/appUtil';
-import {useFocusEffect} from '@react-navigation/native';
+import upload from '../../services/upload';
+import {isIphoneX, px, requestAuth} from '../../utils/appUtil';
+import {
+    androidHideLoading,
+    androidShowLoading,
+    detectNFCStatus,
+    enterToConfirmInfoPage,
+    enterToReadCardPage,
+    MethodObj,
+    NativeReadCardEmitter,
+    tokenCloudIdentityInit,
+} from '../CreateAccount/Account/TokenCloudBridge';
+import {debounce} from 'lodash';
 
 export default ({navigation}) => {
     const jump = useJump();
@@ -26,6 +50,326 @@ export default ({navigation}) => {
     const {btns = [], id_info = {}, materials = []} = data;
     const {back, desc: idDesc, front, title: idTitle} = id_info;
     const clickIndexRef = useRef('');
+    const nfcEnable = useRef(false);
+    const cardInfoRef = useRef({});
+    const toastRef = useRef('');
+    const uiconfig = useRef({
+        readTitle: '身份认证，立即开启',
+        readTitleColor: '#ff0000',
+        readBtnTextColor: '#FFFFFF',
+        readBtnBgColor: '#0000FF',
+        bottomTipText: '个人信息已加密保护',
+        bottomTipTextColor: '#333333',
+        sureMessageTextColor: '#FFFFFF',
+        sureMessageBgColor: '#0000FF',
+        bottomTipImageDrawableBase64: '112jiaaaa',
+        openNfcBtnBgColor: '#333333',
+        openNfcBtnTextColor: '#FFFFFF',
+    }).current;
+
+    // 点击上传身份证
+    const onPressIdUpload = (type) => {
+        clickIndexRef.current = type;
+        if (nfcEnable.current) {
+            // 检测NFC状态
+            detectNFCStatus((status) => {
+                if (status === 1 || status === 2) {
+                    setSelectData(['从相册中获取', '拍照', 'NFC读取身份证']);
+                } else if (status === 3 || status === 4) {
+                    setSelectData(['从相册中获取', '拍照']);
+                }
+                setVisible(true);
+            });
+        } else {
+            setVisible(true);
+        }
+    };
+
+    // 选择图片或相册
+    const onClickChoosePicture = () => {
+        try {
+            if (Platform.OS == 'android') {
+                requestAuth(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    () => openPicker('gallery'),
+                    () => blockCal('gallery')
+                );
+            } else {
+                requestAuth(
+                    PERMISSIONS.IOS.PHOTO_LIBRARY,
+                    () => openPicker('gallery'),
+                    () => blockCal('gallery')
+                );
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+    // 从相机中选择
+    const takePic = () => {
+        try {
+            if (Platform.OS == 'android') {
+                requestAuth(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    () => openPicker('camera'),
+                    () => blockCal('camera')
+                );
+            } else {
+                requestAuth(
+                    PERMISSIONS.IOS.CAMERA,
+                    () => openPicker('camera'),
+                    () => blockCal('camera')
+                );
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+    // 打开相册或相机
+    const openPicker = (action) => {
+        setTimeout(() => {
+            if (action === 'gallery') {
+                ImagePicker.openPicker({
+                    width: px(124),
+                    height: px(84),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
+            } else if (action === 'camera') {
+                ImagePicker.openCamera({
+                    width: px(124),
+                    height: px(84),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
+            }
+        }, 800);
+    };
+    // 权限提示弹窗
+    const blockCal = (action) => {
+        Modal.show({
+            title: '权限申请',
+            content: `${action === 'gallery' ? '相册' : '相机'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
+            confirm: true,
+            confirmText: '前往',
+            confirmCallBack: () => {
+                openSettings().catch(() => console.warn('无法打开设置'));
+            },
+        });
+    };
+    // 上传图片
+    const uploadImage = (file) => {
+        const toast = Toast.showLoading('正在上传');
+        const _data = {...data};
+        const type = _data?.materials[clickIndexRef.current]?.type;
+        upload(
+            '/private_fund/upload_material/20220510',
+            file,
+            [{type}],
+            (res) => {
+                Toast.hide(toast);
+                if (res?.code === '000000') {
+                    Toast.show('上传成功');
+                    ImagePicker.clean();
+                    if (_data?.materials[clickIndexRef.current]?.images) {
+                        _data.materials[clickIndexRef.current].images.push(res.result.url);
+                    } else {
+                        _data.materials[clickIndexRef.current].images = [res.result.url];
+                    }
+                    setData(_data);
+                } else {
+                    Toast.show(res?.message || '上传失败');
+                }
+            },
+            () => {
+                Toast.hide(toast);
+                Toast.show('上传失败');
+            }
+        );
+    };
+
+    // 读卡成功，获取到ReqID
+    const successReqidCallback = (reminder) => {
+        // iOS和安卓都有
+        const {reqId} = reminder;
+        // iOS由于系统原因，无hardwareId, iOS为null
+        http.get('/passport/tokencloud/element/20220117', {
+            req_id: reqId,
+        }).then((res) => {
+            if (res.code === '000000' && res.result && Object.keys(res.result).length) {
+                const cardInfo = res.result;
+                cardInfoRef.current = cardInfo;
+                // 请求9要素解码接口获取数据，转为json字符串处理进入确认信息页面
+                if (Platform.OS === 'ios') {
+                    // iOS
+                    setTimeout(() => {
+                        const infoString = JSON.stringify(cardInfo);
+                        enterToConfirmInfoPage(infoString);
+                    }, 300);
+                } else {
+                    // 安卓
+                    androidShowLoading();
+                    const infoString = JSON.stringify(cardInfo);
+                    androidHideLoading();
+                    enterToConfirmInfoPage(infoString);
+                }
+            }
+        });
+    };
+
+    //  读卡失败
+    //  @param errorCode 错误码
+    //  @param errorMessage 错误信息
+    //  - 10001: 读卡超时
+    //  - 10002: 读卡失败
+    //  - 10003: 设备不支持NFC
+    //  - 10004: 用户取消读卡操作，点击读卡页面左上角返回按钮
+    //  - 10005: 用户取消读卡操作, 3次取消读卡后，点击选择其他方式
+    const readCardFailed = (reminder) => {
+        console.log(reminder);
+    };
+
+    // 用户在确认信息页面返回获取到正反面图片
+    //  @param code 点击类型，0: 点击左上角返回按钮 1: 点击确认信息按钮
+    //  @param frontBitmapBase64Str 正面身份证照(头像页) base64
+    //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
+    //  @param fullBitmapBase64Str 正反面合成照片 base64
+    const confirmCardInfoCallback = async (reminder) => {
+        console.log(reminder.code);
+        if (reminder.code !== 0) {
+            toastRef.current = Toast.showLoading('正在上传');
+            try {
+                await base64Upload('front', reminder.frontBitmapBase64Str);
+                await base64Upload('back', reminder.backBitmapBase64Str);
+                Toast.show('上传成功');
+                const {name, idnum: id_no} = cardInfoRef.current;
+                DeviceEventEmitter.emit('upload', {name, id_no});
+            } catch (error) {
+                Toast.show(error);
+            }
+        }
+    };
+
+    //上传正反面base64照片
+    const base64Upload = (type, _data) => {
+        return new Promise((resolve, reject) => {
+            http.post('/mapi/identity/upload/20210101', {
+                file_con: _data,
+                desc: type,
+                ...cardInfoRef.current,
+                adapter: 1, //使用axios
+            }).then(async (res) => {
+                Toast.hide(toastRef.current);
+                if (res.code === '000000') {
+                    const tempData = {...data};
+                    if (type === 'front') {
+                        tempData.id_info.front = `data:image/png;base64,${_data}`;
+                    } else {
+                        tempData.id_info.back = `data:image/png;base64,${_data}`;
+                    }
+                    setData(tempData);
+                    resolve(1);
+                } else {
+                    reject(res.message);
+                }
+            });
+        });
+    };
+
+    //  确信页面页面加载异常
+    //  触发场景：传入数据在sdk内部解析失败，无法正确展示UI页面
+    const confirmCardFailed = (reminder) => {
+        console.log('数据加载异常', reminder);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            // 令牌云SDK初始化
+            tokenCloudIdentityInit(
+                '00DA2110281448486514',
+                0,
+                'eidcloudread.eidlink.com',
+                9989,
+                52302,
+                (status, errorCode) => {
+                    if (status === 0) {
+                        console.log('初始化成功');
+                    } else {
+                        console.log('初始化失败: ' + errorCode);
+                    }
+                }
+            );
+
+            // 读卡成功获取到reqid
+            const successReqidSubscription = NativeReadCardEmitter.addListener(
+                MethodObj.readCardSuccess,
+                (reminder) => {
+                    successReqidCallback(reminder);
+                }
+            );
+
+            // 读卡失败
+            const readCardFailedSubscription = NativeReadCardEmitter.addListener(
+                MethodObj.readCardFailed,
+                (reminder) => {
+                    readCardFailed(reminder);
+                }
+            );
+
+            // 确认信息成功
+            const confirmInfoSubscription = NativeReadCardEmitter.addListener(MethodObj.confirmCardInfo, (reminder) => {
+                confirmCardInfoCallback(reminder);
+            });
+
+            // 确认信息失败
+            const confirmInfoFailedSubscription = NativeReadCardEmitter.addListener(
+                MethodObj.confirmCardFailed,
+                (reminder) => {
+                    confirmCardFailed(reminder);
+                }
+            );
+
+            const subscription = DeviceEventEmitter.addListener(
+                'EventType',
+                debounce((uri) => {
+                    uploadImage({type: 'image/png', uri});
+                    // 刷新界面等
+                }, 500)
+            );
+            return () => {
+                subscription?.remove?.();
+                successReqidSubscription?.remove?.();
+                readCardFailedSubscription?.remove?.();
+                confirmInfoSubscription?.remove?.();
+                confirmInfoFailedSubscription?.remove?.();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -58,10 +402,7 @@ export default ({navigation}) => {
                             <View style={styles.uploadBox}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={() => {
-                                        clickIndexRef.current = 1;
-                                        setVisible(true);
-                                    }}
+                                    onPress={() => onPressIdUpload('front')}
                                     style={styles.imgBox}>
                                     <Image
                                         source={front ? {uri: front} : require('../../assets/img/fof/uploadID1.png')}
@@ -73,10 +414,7 @@ export default ({navigation}) => {
                             <View style={styles.uploadBox}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={() => {
-                                        clickIndexRef.current = 2;
-                                        setVisible(true);
-                                    }}
+                                    onPress={() => onPressIdUpload('back')}
                                     style={styles.imgBox}>
                                     <Image
                                         source={back ? {uri: back} : require('../../assets/img/fof/uploadID2.png')}
@@ -115,6 +453,8 @@ export default ({navigation}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
+                                            clickIndexRef.current = index;
+                                            setSelectData(['从相册中获取', '拍照']);
                                             setVisible(true);
                                         }}
                                         style={styles.imgBox}>
@@ -150,9 +490,14 @@ export default ({navigation}) => {
             <SelectModal
                 callback={(index) => {
                     if (index === 0) {
-                        console.log('从相册中获取');
+                        onClickChoosePicture();
                     } else if (index === 1) {
-                        console.log('拍照');
+                        takePic();
+                    } else if (index === 2) {
+                        setTimeout(() => {
+                            // 进入读卡页面
+                            enterToReadCardPage(JSON.stringify(uiconfig));
+                        }, 1000);
                     }
                 }}
                 closeModal={() => setVisible(false)}

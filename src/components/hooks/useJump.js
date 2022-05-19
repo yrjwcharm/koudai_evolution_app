@@ -2,17 +2,19 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-05 16:13:05
+ * @LastEditTime: 2022-05-19 16:37:19
  * @Description: 自定义跳转钩子
  */
-import {useRef} from 'react';
+import React, {useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {Linking} from 'react-native';
+import {DeviceEventEmitter, Linking} from 'react-native';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
 import http from '../../services';
 import {generateOptions} from './useStateChange';
+import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
+
 function useJump() {
     const navigation = useNavigation();
     const route = useRoute();
@@ -53,6 +55,23 @@ function useJump() {
                 if (popup.type === 'add_wechat_guide') {
                     const options = generateOptions(popup);
                     Modal.show(options, 'slide');
+                } else if (popup.type === 'choose_object' || popup.type === 'sign_password') {
+                    Modal.show(
+                        {
+                            children: (
+                                <PopupContent
+                                    data={popup}
+                                    refresh={() => {
+                                        Modal.close(null);
+                                        DeviceEventEmitter.emit('refresh');
+                                    }}
+                                />
+                            ),
+                            isTouchMaskToClose: popup.touch_close,
+                            title: popup.title,
+                        },
+                        'slide'
+                    );
                 } else {
                     Modal.show({
                         backButtonClose: false,
