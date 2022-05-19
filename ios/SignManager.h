@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SignManager : NSObject <RCTBridgeModule>
+@interface SignManager : RCTEventEmitter <RCTBridgeModule>
 
 @end
 
