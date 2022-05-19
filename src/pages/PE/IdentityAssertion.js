@@ -2,7 +2,7 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-18 15:46:49
+ * @LastEditTime: 2022-05-19 17:47:06
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -15,6 +15,7 @@ import qs from 'qs';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import HTML from '../../components/RenderHtml';
 import Mask from '../../components/Mask';
 import {Modal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
@@ -23,7 +24,7 @@ import {isIphoneX, px} from '../../utils/appUtil';
 
 export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
     const jump = useJump();
-    const {input_type, label, max_length, options, placeholder, status, suffix, tips, type, url = '', value} = data;
+    const {input_type, label, max_length, options, placeholder, suffix, tips, type, url = '', value} = data;
     const inputRef = useRef();
 
     const onPress = () => {
@@ -93,16 +94,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                             }
                             return (
                                 <>
-                                    <Text
-                                        style={[
-                                            styles.itemLabel,
-                                            {color: type === 'text' ? Colors.lightGrayColor : Colors.defaultColor},
-                                            type === 'jump'
-                                                ? {color: status === 0 ? Colors.red : Colors.lightGrayColor}
-                                                : {},
-                                        ]}>
-                                        {_label || value}
-                                    </Text>
+                                    <HTML html={_label || value} style={styles.itemLabel} />
                                     {type === 'text' ? null : (
                                         <EvilIcons color={Colors.lightGrayColor} name="chevron-right" size={24} />
                                     )}
