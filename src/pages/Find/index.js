@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Platform} from 'react-native';
 import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,7 +17,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard';
-import {signFile, signInit, signOrder} from '../PE/PEBridge';
+import {recordInit, signFile, signInit, signOrder, startRecord} from '../PE/PEBridge';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -108,17 +108,21 @@ const Index = (props) => {
                             <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
-
                             <Button
+                                title="双录"
                                 onPress={() => {
-                                    signInit('JKL0KDu7iW3t3hA6jZePF5gKFZ0g', true);
-                                }}
-                            />
-                            <Button
-                                title="文件签署"
-                                onPress={() => {
-                                    // signOrder('sdtfg654', 'asdsa');
-                                    signFile('21c7d1ee-51c7-4302-bf1c-2c3d1687f141', '976159847450021888');
+                                    http.get('/file_sign/video_record_param/20220510', {
+                                        fund_code: 'BBB',
+                                        order_id: 'aaa',
+                                    }).then((res) => {
+                                        const {app_id, questions, serial_number} = res.result;
+                                        recordInit(app_id, true, (mes) => {
+                                            console.log(mes);
+                                        });
+                                        setTimeout(() => {
+                                            startRecord(serial_number, '', questions);
+                                        }, 200);
+                                    });
                                 }}
                             />
                             {/* 今日推荐 */}

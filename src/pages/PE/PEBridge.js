@@ -2,7 +2,7 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-20 15:55:51
+ * @LastEditTime: 2022-05-20 18:07:38
  * @Description:签约桥接
  */
 import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
@@ -63,12 +63,12 @@ export function signPreview(bucketName, ObjectKey, title, btnText) {
 //双录初始化
 export function recordInit(appid, isDebug, callback) {
     if (Platform.OS === 'ios') {
-        RecordManager.init(appid, isDebug);
+        RecordManager.init(appid, !isDebug);
     } else {
-        RecordManager.init(appid, isDebug, callback);
+        RecordManager.init(appid, isDebug, callback, callback);
     }
 }
 //双录开始
 export function startRecord(serialNo, ttdOrderNo, talking) {
-    RecordManager.startRecord(serialNo, ttdOrderNo, talking);
+    RecordManager.startRecord(serialNo, ttdOrderNo, JSON.stringify(talking));
 }
