@@ -3,7 +3,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-19 20:42:08
+ * @LastEditTime: 2022-05-20 11:48:07
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -69,15 +69,21 @@ const Profile = ({navigation}) => {
             if (item?.id == 'signature' || item?.id == 'qdii') {
                 if (item?.val?.jump_url?.path == 'FileSignPrepare') {
                     //未签署
+                    let toast = Toast.showLoading();
                     http.get('/file_sign/get_sign_param/20220510', item?.val?.jump_url?.params).then((res) => {
                         if (res.code === '000000') {
                             const {userNo, appId, fileId} = res?.result;
                             if (appId && userNo && fileId) {
                                 signInit(appId, true);
                                 setTimeout(() => {
+                                    Toast.hide(toast);
                                     signFile(fileId, userNo);
                                 }, 200);
+                            } else {
+                                Toast.hide(toast);
                             }
+                        } else {
+                            Toast.hide(toast);
                         }
                     });
                 } else {
