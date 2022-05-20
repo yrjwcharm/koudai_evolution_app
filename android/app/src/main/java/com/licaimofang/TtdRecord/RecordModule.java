@@ -84,9 +84,6 @@ public class RecordModule extends ReactContextBaseJavaModule {
         int result = TtdQARecordSDK.getInstance().startRecord(getCurrentActivity(), data, new IRecordEventHandler() {
             @Override
             public void onComplate(RecordEntity data, int endType) {
-                WritableMap params = Arguments.createMap();
-                params.putString("serialNo", data.getSerialNo());
-                sentMessageToJs(reactContext, "recordSuccess", params);
                 MLog.d("startRecord", String.format("业务号：%1$s\n"
                                 +"妥妥递订单号：%2$s\n"
                                 +"录制结果：%3$s",
@@ -96,6 +93,10 @@ public class RecordModule extends ReactContextBaseJavaModule {
             }
             @Override
             public void onSuccess(String serialNo) {
+                WritableMap params = Arguments.createMap();
+                params.putString("serialNo", serialNo);
+                sentMessageToJs(reactContext, "recordSuccess", params);
+                MLog.d("serialNo", serialNo);
             }
         });
         if(result != 0){
