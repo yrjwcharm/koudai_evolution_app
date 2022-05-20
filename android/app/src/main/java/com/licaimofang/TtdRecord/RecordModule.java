@@ -3,12 +3,18 @@ package com.licaimofang.TtdRecord;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONArray;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.huawei.hms.common.internal.AnyClient;
 import com.licaimofang.readcard.utils.MLog;
 
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +73,7 @@ public class RecordModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void startRecord(String serialNo,String ttdOrderNo,String talking,Callback successCallback,Callback errorCallback) {
+    public void startRecord(String serialNo, String ttdOrderNo, String talking) {
         RecordEntity data = new RecordEntity();
 //        data.setSerialNo("ttd"+System.currentTimeMillis());
 //        QATalkingEntity[] talkings = new QATalkingEntity[1];
@@ -82,7 +88,9 @@ public class RecordModule extends ReactContextBaseJavaModule {
         int result = TtdQARecordSDK.getInstance().startRecord(getCurrentActivity(), data, new IRecordEventHandler() {
             @Override
             public void onComplate(RecordEntity data, int endType) {
-                successCallback.invoke(data.getSerialNo(),data.getTtdOrderNo());
+                WritableMap params = Arguments.createMap();
+                params.putString("serialNo", data.getSerialNo());
+                sentMessageToJs(reactContext, "recordSuccess", params);
                 MLog.d("startRecord", String.format("业务号：%1$s\n"
                                 +"妥妥递订单号：%2$s\n"
                                 +"录制结果：%3$s",
@@ -93,13 +101,24 @@ public class RecordModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onSuccess(String serialNo) {
-                successCallback.invoke(serialNo);
-
             }
         });
         if(result != 0){
-            errorCallback.invoke(result == 1002 ? "参数不正确（话术或业务号为空）" : "初始化未完成，请稍后");
             MLog.d("startRecord", result == 1002 ? "参数不正确（话术或业务号为空）" : "初始化未完成，请稍后");
         };
+    }
+    /**
+     * 发送消息事件到js页面
+     *
+     * @param reactContext ReactContext 对象
+     * @param eventName    事件名称
+     * @param params       事件携带的参数
+     */
+    private void sentMessageToJs(ReactContext reactContext,
+                                 String eventName,
+                                 @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }

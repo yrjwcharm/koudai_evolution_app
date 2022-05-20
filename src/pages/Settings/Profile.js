@@ -3,7 +3,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-20 11:48:07
+ * @LastEditTime: 2022-05-20 17:00:47
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -57,11 +57,12 @@ const Profile = ({navigation}) => {
         });
     };
     useEffect(() => {
-        NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            http.post('/file_sign/sign_done/20220510', {fileId: res.fileId}).then(() => {
+        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then(() => {
                 init();
             });
         });
+        return () => listener.remove();
     }, []);
     const onPress = useCallback(
         (item) => {
