@@ -2,13 +2,19 @@ package com.licaimofang.SignEngine;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import org.jetbrains.annotations.NotNull;
 
 import android.util.Log;
+
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.licaimofang.readcard.utils.BitmapUtil;
 import com.ttd.signstandardsdk.TTDFileSignStatus;
 import com.ttd.signstandardsdk.TtdSignEngine;
 import com.ttd.signstandardsdk.http.bean.FileInfo;
@@ -73,7 +79,9 @@ public class SignModule extends ReactContextBaseJavaModule {
                 Log.d("ttd", "investorState:" + fileInfo.getInvestorState());//投资者签署状态。1，已签署 0,待签署
                 Log.d("ttd", "manageState:" + fileInfo.getManageState());//管理人签署状态。1，已签署 0,待签署
                 Log.d("ttd", "plannerState:" + fileInfo.getPlannerState());//理财经理签署状态。1，已签署 0,待签署
-
+                WritableMap params = Arguments.createMap();
+                params.putString("fileId", fileInfo.getFileId());
+                sentMessageToJs(reactContext, "signFileSuccess", params);
                 ToastUtil.showShort(getCurrentActivity(), "签署成功");
             }
 
@@ -137,5 +145,20 @@ public class SignModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void previewFile(String bucketName,String ObjectKey,String title,String btnText){
         TtdSignEngine.previewFile(getCurrentActivity(), bucketName,ObjectKey,title,btnText);
+    }
+
+    /**
+     * 发送消息事件到js页面
+     *
+     * @param reactContext ReactContext 对象
+     * @param eventName    事件名称
+     * @param params       事件携带的参数
+     */
+    private void sentMessageToJs(ReactContext reactContext,
+                                 String eventName,
+                                 @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }
