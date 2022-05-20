@@ -9,9 +9,18 @@
 #import <React/RCTLog.h>
 #import "AppDelegate.h"
 #import <React/RCTUtils.h>
+//签署成功
+#define method_recordSuccess @"recordSuccess"
 @implementation RecordManager;
 RCT_EXPORT_MODULE();
 
+/**
+ 针对本SDK，此为回调事件
+ */
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[method_recordSuccess];
+}
 /// 初始化方法
 RCT_EXPORT_METHOD(init:(NSString *)appId isDebug:(int)isDebug) {
   // 输⼊ App ID ，环境 并初始化TTDQARecordKit
@@ -40,6 +49,8 @@ RCT_EXPORT_METHOD(startRecord:(NSString *)serialNo ttdOrderNo:(NSString *)ttdOrd
 //MARK: - TTDQARecordDelegate
 - (void)ttdQARecordSuccess:(NSString *)serialNo {
     NSLog(@"%@ 录制成功",serialNo);
+  NSDictionary *dataDict = @{@"serialNo": serialNo};
+  [self sendEventWithName:method_recordSuccess body:dataDict];
 }
 
 -(void)ttdQARecordEndWithType:(TTDRecordEndType)signEndType

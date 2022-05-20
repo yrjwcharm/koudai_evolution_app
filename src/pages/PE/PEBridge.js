@@ -2,10 +2,9 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-19 18:57:41
+ * @LastEditTime: 2022-05-20 15:55:51
  * @Description:签约桥接
  */
-import {func} from 'prop-types';
 import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 
 // iOS和iOS暴露出的类：读卡
@@ -14,11 +13,13 @@ const {SignManager, RecordManager} = NativeModules;
  * 暴露给JS的原生类对象，通过该对象进行JS和原生模块的交互
  */
 export const NativeSignManagerEmitter = new NativeEventEmitter(SignManager);
+export const NativeRecordManagerEmitter = new NativeEventEmitter(RecordManager);
 /**
  * 回掉事件名
  */
 export const MethodObj = {
     signFileSuccess: 'signFileSuccess', //签署成功
+    recordSuccess: 'recordSuccess', //双录成功
 };
 
 /**
@@ -68,10 +69,6 @@ export function recordInit(appid, isDebug, callback) {
     }
 }
 //双录开始
-export function startRecord(serialNo, ttdOrderNo, successCallback, errorCallback) {
-    if (Platform.OS == 'android') {
-        RecordManager.startRecord(serialNo, ttdOrderNo, successCallback, errorCallback);
-    } else {
-        RecordManager.startRecord(serialNo, ttdOrderNo);
-    }
+export function startRecord(serialNo, ttdOrderNo, talking) {
+    RecordManager.startRecord(serialNo, ttdOrderNo, talking);
 }
