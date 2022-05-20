@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-20 17:00:47
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-20 19:09:04
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -33,7 +33,7 @@ import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
-import {signFile, signInit, NativeSignManagerEmitter, MethodObj} from '../PE/PEBridge.js';
+import {NativeSignManagerEmitter, MethodObj} from '../PE/PEBridge.js';
 
 const Profile = ({navigation}) => {
     const dispatch = useDispatch();
@@ -67,30 +67,7 @@ const Profile = ({navigation}) => {
     const onPress = useCallback(
         (item) => {
             global.LogTool('click', item.key);
-            if (item?.id == 'signature' || item?.id == 'qdii') {
-                if (item?.val?.jump_url?.path == 'FileSignPrepare') {
-                    //未签署
-                    let toast = Toast.showLoading();
-                    http.get('/file_sign/get_sign_param/20220510', item?.val?.jump_url?.params).then((res) => {
-                        if (res.code === '000000') {
-                            const {userNo, appId, fileId} = res?.result;
-                            if (appId && userNo && fileId) {
-                                signInit(appId, true);
-                                setTimeout(() => {
-                                    Toast.hide(toast);
-                                    signFile(fileId, userNo);
-                                }, 200);
-                            } else {
-                                Toast.hide(toast);
-                            }
-                        } else {
-                            Toast.hide(toast);
-                        }
-                    });
-                } else {
-                    jump(item.val?.jump_url);
-                }
-            } else if (item.val?.type === 'jump') {
+            if (item.val?.type === 'jump') {
                 if (item.key === '绑定微信') {
                     WeChat.isWXAppInstalled().then((isInstalled) => {
                         if (isInstalled) {

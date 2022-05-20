@@ -2,14 +2,13 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 20:54:49
+ * @LastEditTime: 2022-05-20 19:21:57
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
 import {StyleSheet, Dimensions, View, Linking, Alert, ActivityIndicator} from 'react-native';
 import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
-import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 import {Colors, Style} from '../../common/commonStyle';
 

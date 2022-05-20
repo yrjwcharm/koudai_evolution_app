@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-19 16:37:19
+ * @LastEditTime: 2022-05-20 19:16:17
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -14,6 +14,7 @@ import http from '../../services';
 import {generateOptions} from './useStateChange';
 import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
+import {recordInit, signFile, signInit, startRecord} from '../../pages/PE/PEBridge';
 
 function useJump() {
     const navigation = useNavigation();
@@ -101,6 +102,34 @@ function useJump() {
                     http.post('/common/layer/click/20210801', {log_id: popup.log_id});
                     global.LogTool('campaignPopup', route.name, popup.log_id);
                 }
+            } else if (url.type === 7) {
+                const toast = Toast.showLoading();
+                http.get(url.path, url.params).then((res) => {
+                    if (res.code === '000000') {
+                        const {app_id, file_id, questions, serial_number, user_no} = res.result;
+                        if (app_id && file_id && user_no) {
+                            signInit(app_id, true, (mes) => {
+                                console.log(mes);
+                            });
+                            setTimeout(() => {
+                                Toast.hide(toast);
+                                signFile(file_id, user_no);
+                            }, 200);
+                        } else if (app_id && questions && serial_number) {
+                            recordInit(app_id, true, (mes) => {
+                                console.log(mes);
+                            });
+                            setTimeout(() => {
+                                startRecord(serial_number, '', questions);
+                            }, 200);
+                        } else {
+                            Toast.hide(toast);
+                        }
+                    } else {
+                        Toast.hide(toast);
+                        Toast.show(res.message);
+                    }
+                });
             } else {
                 navigation[type](url.path, url.params || {});
             }

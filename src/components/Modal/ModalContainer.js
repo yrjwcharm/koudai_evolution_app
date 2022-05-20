@@ -66,6 +66,7 @@ export default class MyModal extends Component {
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.onCountdownChange = this.props.onCountdownChange; // 监听倒计时变换
         this.intensifyCancel = this.props.intensifyCancel;
+        this.confirmTextColor = this.props.confirmTextColor || Colors.btnColor;
         this.state = {
             isVisible: this.props.isVisible || false,
             imgHeight: props.imgHeight || 0,
@@ -301,7 +302,7 @@ export default class MyModal extends Component {
                             <Text
                                 style={[
                                     styles.centerBtnText,
-                                    {color: this.intensifyCancel ? Colors.lightGrayColor : Colors.btnColor},
+                                    {color: this.intensifyCancel ? Colors.lightGrayColor : this.confirmTextColor},
                                 ]}>
                                 {this.confirmText}
                             </Text>
@@ -314,7 +315,7 @@ export default class MyModal extends Component {
                         onPress={this.confirm.bind(this)}>
                         <Text
                             style={{
-                                color: Colors.btnColor,
+                                color: this.confirmTextColor,
                                 fontSize: text(16),
                             }}>
                             {this.state.countdown ? (

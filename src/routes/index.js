@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-10 10:11:24
+ * @LastEditTime: 2022-06-10 10:13:01
  * @Description:路由表
  */
 import React from 'react';
@@ -195,6 +195,8 @@ import ObjectChoose from '../pages/PE/ObjectChoose'; // 特定对象选择
 import QuestionAnswer from '../pages/PE/QuestionAnswer'; // 私募问答
 import UploadMaterial from '../pages/PE/UploadMaterial'; // 投资者证明材料上传
 import PrivateReview from '../pages/PE/PrivateReview'; // 私募审核页面
+import PEQuestionnaire from '../pages/PE/PEQuestionnaire'; // 私募风险测评
+import PEQuestionnaireResult from '../pages/PE/PEQuestionnaireResult'; // 私募风险评测结果页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -749,6 +751,8 @@ export default function AppStack() {
             <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
             <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
             <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
+            <Stack.Screen name="PEQuestionnaire" component={PEQuestionnaire} options={{title: ''}} />
+            <Stack.Screen name="PEQuestionnaireResult" component={PEQuestionnaireResult} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
