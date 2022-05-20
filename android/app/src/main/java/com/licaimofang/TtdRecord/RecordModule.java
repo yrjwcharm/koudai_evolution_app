@@ -25,6 +25,7 @@ import com.ttd.qarecordlib.IRecordEventHandler;
 import com.ttd.qarecordlib.QATalkingEntity;
 import com.ttd.qarecordlib.RecordEntity;
 import com.ttd.qarecordlib.TtdQARecordSDK;
+import com.ttd.signstandardsdk.utils.ToastUtil;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
@@ -75,13 +76,8 @@ public class RecordModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void startRecord(String serialNo, String ttdOrderNo, String talking) {
         RecordEntity data = new RecordEntity();
-//        data.setSerialNo("ttd"+System.currentTimeMillis());
-//        QATalkingEntity[] talkings = new QATalkingEntity[1];
-//        talkings[0] =  new QATalkingEntity("您是否确认购买某某产品并已确认风险？",null);
-
         List<QATalkingEntity> list = JSONArray.parseArray(talking,QATalkingEntity.class);
         QATalkingEntity[] entities = list.toArray(new QATalkingEntity[list.size()]);
-
         data.setTalkings(entities);
         data.setSerialNo(serialNo);
         data.setTtdOrderNo(ttdOrderNo);
@@ -98,12 +94,12 @@ public class RecordModule extends ReactContextBaseJavaModule {
                         TextUtils.isEmpty(data.getTtdOrderNo()) ? "未设置": data.getTtdOrderNo(),
                         endType == 0 ? "成功" : (endType == 1 ? "失败" : "取消")));
             }
-
             @Override
             public void onSuccess(String serialNo) {
             }
         });
         if(result != 0){
+            ToastUtil.showShort(getCurrentActivity(), result == 1002 ? "参数不正确（话术或业务号为空）" : "初始化未完成，请稍后");
             MLog.d("startRecord", result == 1002 ? "参数不正确（话术或业务号为空）" : "初始化未完成，请稍后");
         };
     }
