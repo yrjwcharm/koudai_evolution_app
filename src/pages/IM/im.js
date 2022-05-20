@@ -19,9 +19,8 @@ import {
     ActivityIndicator,
     TouchableHighlight,
     Linking,
-    DeviceInfo,
 } from 'react-native';
-
+import DeviceInfo from 'react-native-device-info';
 import {ChatScreen} from '../../components/IM';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {isIphoneX, px, requestAuth, deviceWidth, deviceHeight} from '../../utils/appUtil';
