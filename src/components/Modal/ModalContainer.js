@@ -63,6 +63,7 @@ export default class MyModal extends Component {
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.onCountdownChange = this.props.onCountdownChange; // 监听倒计时变换
+        this.confirmTextColor = this.props.confirmTextColor || Colors.btnColor;
         this.state = {
             isVisible: this.props.isVisible || false,
             imgHeight: props.imgHeight || 0,
@@ -290,7 +291,9 @@ export default class MyModal extends Component {
                             activeOpacity={1}
                             style={[Style.flexCenter, styles.centerBtn]}
                             onPress={this.confirm.bind(this)}>
-                            <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>{this.confirmText}</Text>
+                            <Text style={[styles.centerBtnText, {color: this.confirmTextColor}]}>
+                                {this.confirmText}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 ) : (
@@ -300,7 +303,7 @@ export default class MyModal extends Component {
                         onPress={this.confirm.bind(this)}>
                         <Text
                             style={{
-                                color: Colors.btnColor,
+                                color: this.confirmTextColor,
                                 fontSize: text(16),
                             }}>
                             {this.state.countdown ? (

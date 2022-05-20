@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-11 10:25:03
+ * @LastEditTime: 2022-05-20 15:09:41
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -392,8 +392,10 @@ function useStateChange({homeShowModal, store}) {
                 store.dispatch(updateModal({modals: arr}));
                 const modal = arr[0];
                 if (modal) {
-                    if (modal.page?.includes(navigation?.getCurrentRoute?.()?.name)) {
-                        showModal(modal);
+                    if (modal.page && modal.page.length > 0) {
+                        if (modal.page.includes(navigation?.getCurrentRoute?.()?.name)) {
+                            showModal(modal);
+                        }
                     } else if (navigation?.getCurrentRoute?.()?.name === 'Index') {
                         showModal(modal);
                     }
@@ -617,13 +619,15 @@ function useStateChange({homeShowModal, store}) {
             }
         }
         if (modal) {
-            if (modal.page?.includes(currentRouteName)) {
-                if (currentRouteName === 'Home') {
-                    if (show) {
+            if (modal.page && modal.page.length > 0) {
+                if (modal.page.includes(currentRouteName)) {
+                    if (currentRouteName === 'Home') {
+                        if (show) {
+                            showModal(modal);
+                        }
+                    } else {
                         showModal(modal);
                     }
-                } else {
-                    showModal(modal);
                 }
             } else if (currentRouteName === 'Index') {
                 showModal(modal);

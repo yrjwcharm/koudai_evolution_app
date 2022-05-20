@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-19 17:41:49
+ * @LastEditTime: 2022-05-20 18:48:43
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -29,6 +29,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {FormItem} from './IdentityAssertion';
 import Toast from '../../components/Toast';
 import {Modal} from '../../components/Modal';
+import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
 export const PopupContent = ({data, refresh = () => {}}) => {
     const {button: popupButton = {}, default_select, tip: popupTips = '', type} = data;
@@ -126,7 +127,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                                 autoFocus
                                 keyboardType="number-pad"
                                 maxLength={6}
-                                onChangeText={(val) => setOldPwd(val)}
+                                onChangeText={(val) => setOldPwd(val.replace(/\D/g, ''))}
                                 placeholder={old_password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
                                 secureTextEntry={true}
@@ -144,7 +145,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                                 autoFocus={!old_password}
                                 keyboardType="number-pad"
                                 maxLength={6}
-                                onChangeText={(val) => setPwd(val)}
+                                onChangeText={(val) => setPwd(val).replace(/\D/g, '')}
                                 placeholder={password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
                                 secureTextEntry={true}
@@ -161,7 +162,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                             <TextInput
                                 keyboardType="number-pad"
                                 maxLength={6}
-                                onChangeText={(val) => setConfirmPwd(val)}
+                                onChangeText={(val) => setConfirmPwd(val).replace(/\D/g, '')}
                                 placeholder={re_password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
                                 secureTextEntry={true}
@@ -211,6 +212,22 @@ export default ({navigation}) => {
             init();
         }, [])
     );
+
+    useEffect(() => {
+        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                if (resp.code === '000000') {
+                    Toast.show(resp.message || '签署成功');
+                    init();
+                } else {
+                    Toast.show(resp.message || '签署失败');
+                }
+            });
+        });
+        return () => {
+            listener.remove();
+        };
+    }, []);
 
     useEffect(() => {
         const listener = DeviceEventEmitter.addListener('refresh', init);
