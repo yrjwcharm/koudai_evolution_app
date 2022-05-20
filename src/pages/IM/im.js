@@ -19,6 +19,7 @@ import {
     ActivityIndicator,
     TouchableHighlight,
     Linking,
+    DeviceInfo,
 } from 'react-native';
 
 import {ChatScreen} from '../../components/IM';
@@ -464,6 +465,7 @@ const IM = (props) => {
         params.to = 'S';
         params.entry = props.route?.params?.entry;
         params.data = content;
+        params.version = DeviceInfo.getVersion();
         return JSON.stringify(params);
     };
     const loadHistory = () => {
