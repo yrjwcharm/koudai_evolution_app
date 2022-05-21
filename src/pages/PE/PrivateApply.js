@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2022-05-18 11:11:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-21 20:23:40
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -27,7 +27,7 @@ const PrivateApply = (props) => {
     const scrollRef = useRef(null);
 
     const init = useCallback(() => {
-        http.get(`/pe/${scene || 'redeem'}/20210101`, {
+        http.get(`/private_fund/${scene}_flow/20220510`, {
             fund_code: fund_code,
             poid: poid,
         }).then((res) => {
@@ -37,7 +37,7 @@ const PrivateApply = (props) => {
     const onLayout = (index, e) => {
         setHeightArr((prev) => {
             const arr = [...prev];
-            arr[index] = e.nativeEvent.layout.height;
+            arr[index] = e.nativeEvent?.layout?.height;
             return arr;
         });
     };
@@ -56,6 +56,40 @@ const PrivateApply = (props) => {
             });
         }
     }, [data, props]);
+    const gernerateIcon = (status) => {
+        switch (status) {
+            case 1:
+                return {
+                    color: '#D7AF74',
+                    name: 'checkbox-blank-circle-outline',
+                };
+            case 2:
+                return {
+                    color: '#CCD0DB',
+                    name: 'checkbox-blank-circle',
+                };
+            case 3:
+                return {
+                    color: '#D7AF74',
+                    name: 'clock-time-four-outline',
+                };
+            case 4:
+                return {
+                    color: '#D7AF74',
+                    name: 'alert-circle-outline',
+                };
+            case 5:
+                return {
+                    color: '#D7AF74',
+                    name: 'check-circle',
+                };
+            default:
+                return {
+                    color: '#D7AF74',
+                    name: 'checkbox-blank-circle-outline',
+                };
+        }
+    };
     return (
         <View style={[styles.container, {paddingBottom: isIphoneX() ? text(85) : text(51)}]}>
             <ScrollView
@@ -63,7 +97,7 @@ const PrivateApply = (props) => {
                 ref={scrollRef}
                 onContentSizeChange={() => scrollRef.current.scrollToEnd({animated: true})}>
                 {Object.keys(data).length > 0 &&
-                    data.flow_list.map((item, index, arr) => {
+                    data?.items.map((item, index, arr) => {
                         return (
                             <View
                                 key={index}
@@ -71,15 +105,9 @@ const PrivateApply = (props) => {
                                 onLayout={(e) => onLayout(index, e)}>
                                 <View style={[styles.icon]}>
                                     <MaterialCommunityIcons
-                                        name={item.status === 1 ? 'check-circle' : 'checkbox-blank-circle'}
+                                        name={gernerateIcon(item.status).name}
                                         size={20}
-                                        color={
-                                            item.status === 1
-                                                ? Colors.green
-                                                : item.status === 2
-                                                ? Colors.green
-                                                : '#CCD0DB'
-                                        }
+                                        color={gernerateIcon(item.status).color}
                                     />
                                 </View>
                                 <View style={[styles.contentBox]}>
@@ -93,14 +121,14 @@ const PrivateApply = (props) => {
                                         <View style={{flex: 1}}>
                                             <View style={[styles.processTitle, Style.flexBetween]}>
                                                 <Text numberOfLines={1} style={[styles.desc]}>
-                                                    {item.key}
+                                                    {item.title}
                                                 </Text>
                                                 {item?.text_button && (
                                                     <TouchableOpacity
                                                         activeOpacity={0.8}
                                                         onPress={() => {
                                                             if (item.text_button.type === 'copy') {
-                                                                Clipboard.setString(item.vals.join('\n'));
+                                                                Clipboard.setString(item.desc.join('\n'));
                                                                 Toast.show('复制成功');
                                                             } else {
                                                                 jump(item.text_button.url);
@@ -112,9 +140,9 @@ const PrivateApply = (props) => {
                                                     </TouchableOpacity>
                                                 )}
                                             </View>
-                                            {item.vals && (
+                                            {item.desc && (
                                                 <View style={[styles.moreInfo]}>
-                                                    {item.vals?.map((val, i) => {
+                                                    {item.desc?.map((val, i) => {
                                                         return (
                                                             <Html
                                                                 key={val + i}
@@ -138,7 +166,7 @@ const PrivateApply = (props) => {
                                         )}
                                     </View>
                                 </View>
-                                {index !== data.flow_list.length - 1 && (
+                                {index !== data?.items?.length - 1 && (
                                     <View
                                         style={[
                                             styles.line,
