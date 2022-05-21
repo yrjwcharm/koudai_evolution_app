@@ -8,7 +8,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text, px} from '../../utils/appUtil.js';
+import {px as text, px, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
@@ -23,6 +23,7 @@ import HTML from '../../components/RenderHtml';
 import CheckBox from '../../components/CheckBox';
 import {useJump} from '../../components/hooks';
 import _ from 'lodash';
+import {PasswordModal} from '../../components/Password';
 const AddBankCard = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const [, setSecond] = useState(0);
@@ -47,6 +48,7 @@ const AddBankCard = ({navigation, route}) => {
     const [signTimer, setSignTimer] = useState(8);
     const [signSelectData, setSignSelectData] = useState([]);
     const intervalt_timer = useRef('');
+    const passwordRef = useRef(null);
     const jump = useJump();
     const onInputCardNum = useCallback(
         (value) => {
@@ -278,9 +280,11 @@ const AddBankCard = ({navigation, route}) => {
             }
         }
     };
-    //签约
-    const handleSign = () => {
-        http.post('/adviser/sign/20210923', {poids: signSelectData}).then((res) => {
+    /** @name 点击确认签约，完成输入交易密码 */
+    const onSubmit = (password) => {
+        const loading1 = Toast.showLoading('签约中...');
+        http.post('/adviser/sign/20210923', {password, poids: signSelectData}).then((res) => {
+            Toast.hide(loading1);
             Toast.show(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {
@@ -398,7 +402,7 @@ const AddBankCard = ({navigation, route}) => {
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                         navigation.goBack();
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                         <View
                             style={{
@@ -516,7 +520,9 @@ const AddBankCard = ({navigation, route}) => {
                             <Button
                                 disabled={signTimer > 0 || !signSelectData?.length > 0}
                                 style={{marginTop: px(12), marginHorizontal: px(16)}}
-                                onPress={_.debounce(handleSign, 500)}
+                                onPress={() => {
+                                    passwordRef.current?.show?.();
+                                }}
                                 title={
                                     signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
                                 }
@@ -525,6 +531,7 @@ const AddBankCard = ({navigation, route}) => {
                     </View>
                 </PageModal>
             )}
+            <PasswordModal onDone={onSubmit} ref={passwordRef} />
         </>
     );
 };
@@ -533,6 +540,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        paddingBottom: isIphoneX() ? px(85) : px(51),
     },
     input: {
         marginTop: text(12),
