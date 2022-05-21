@@ -17,7 +17,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard';
-import {recordInit, signFile, signInit, signOrder, startRecord} from '../PE/PEBridge';
+import {recordInit, startRecord} from '../PE/PEBridge';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -116,9 +116,7 @@ const Index = (props) => {
                                         order_id: 'aaa',
                                     }).then((res) => {
                                         const {app_id, questions, serial_number} = res.result;
-                                        recordInit(app_id, true, (mes) => {
-                                            console.log(mes);
-                                        });
+                                        recordInit(app_id, true, (mes) => {});
                                         setTimeout(() => {
                                             startRecord(serial_number, '', questions);
                                         }, 200);

@@ -2,7 +2,7 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-20 18:07:38
+ * @LastEditTime: 2022-05-21 12:27:44
  * @Description:签约桥接
  */
 import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
@@ -28,22 +28,13 @@ export const MethodObj = {
  * @param isDebug 是否开启调试
  * @param callback 回调
  */
-export function signInit(appid, isDebug, callback) {
+export function signInit(appid, isDebug) {
     if (Platform.OS === 'ios') {
         // envCode 1 测试 0 生产
         SignManager.init(appid, isDebug ? 1 : 0);
     } else if (Platform.OS === 'android') {
         // 安卓
-        SignManager.init(
-            appid,
-            isDebug,
-            () => {
-                callback(0, 0);
-            },
-            (errorCode) => {
-                callback(1, errorCode);
-            }
-        );
+        SignManager.init(appid, isDebug);
     }
 }
 //  订单签署
