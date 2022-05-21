@@ -38,7 +38,7 @@ public class SignModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void init(String appid, boolean isDebug, Callback successCallBack, Callback errorCallBack) {
+    public void init(String appid, boolean isDebug) {
         TtdSignEngine.init(appid,isDebug,new CallBackListener() {
             /**
              * 基金合同签署成功的回调
@@ -61,7 +61,6 @@ public class SignModule extends ReactContextBaseJavaModule {
                         Log.d("ttd", "理财师风险揭示书签署成功后当前的订单状态:" + orderStatus);
                         break;
                 }
-                successCallBack.invoke(signStatus);
                 for(ResultInfo resultInfo: resultInfoList){
                     Log.d("ttd", "签署成功的文件:" + resultInfo.getUrl()); //只有补充协议可能有多个的情况
                 }
