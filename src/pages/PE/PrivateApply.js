@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-21 20:23:40
+ * @LastEditTime: 2022-05-21 20:29:55
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,6 +19,7 @@ import Html from '../../components/RenderHtml';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
+import {MethodObj, NativeRecordManagerEmitter} from './PEBridge';
 const PrivateApply = (props) => {
     const {fund_code, poid, scene} = props.route.params || {};
     const jump = useJump();
@@ -44,6 +45,13 @@ const PrivateApply = (props) => {
     const btnClick = () => {
         props.navigation.navigate('Home');
     };
+    useEffect(() => {
+        NativeRecordManagerEmitter.addListener(MethodObj.recordSuccess, (res) => {
+            http.post('/file_sign/video_record_done/20220510', {serial_number: res.serialNo}).then(() => {
+                init();
+            });
+        });
+    }, [init]);
     useFocusEffect(
         useCallback(() => {
             init();
