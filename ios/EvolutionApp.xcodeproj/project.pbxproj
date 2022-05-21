@@ -26,7 +26,7 @@
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
 		0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; };
 		0049823627BB4FFA00A88DA1 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		0062A28D2838DDBC006666F6 /* TTDQARecordKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; };
+		0062A28D2838DDBC006666F6 /* TTDQARecordKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		0062A28E2838DDBC006666F6 /* TTDQARecordKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34C928326FE100B4CD80 /* TTDQARecordKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045532591A5B30083350B /* libRCTWeChat.a */; };
 		008045552591A5CD0083350B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB7F258B442700501EA5 /* libz.tbd */; };
