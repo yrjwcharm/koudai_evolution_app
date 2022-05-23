@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-06 14:25:21
+ * @LastEditTime: 2022-05-11 21:18:42
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -36,6 +36,7 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
+import DeviceInfo from 'react-native-device-info';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -459,7 +460,13 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                                 startInLoadingState
-                                style={{height: webviewHeight, opacity: 0.99999}}
+                                style={{
+                                    height: webviewHeight,
+                                    opacity:
+                                        DeviceInfo?.getBrand() == 'Xiaomi' && DeviceInfo?.getSystemVersion() >= '12'
+                                            ? 0.99
+                                            : 0.9999,
+                                }}
                                 textZoom={100}
                             />
                         </View>
@@ -536,7 +543,14 @@ const ArticleDetail = ({navigation, route}) => {
                                         <View style={[{height: px(40)}, Style.flexCenter]}>
                                             <Text style={styles.footnote}>
                                                 暂无评论&nbsp;
-                                                <Text style={{color: Colors.btnColor}} onPress={handelComment}>
+                                                <Text
+                                                    style={{color: Colors.btnColor}}
+                                                    onPress={() => {
+                                                        inputModal.current.show();
+                                                        setTimeout(() => {
+                                                            inputRef?.current?.focus();
+                                                        }, 100);
+                                                    }}>
                                                     我来写一条
                                                 </Text>
                                             </Text>
@@ -546,7 +560,7 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </ScrollView>
-                    <PageModal ref={inputModal} title="写评论" style={{height: px(370)}} backButtonClose={true}>
+                    <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                         <TextInput
                             ref={inputRef}
                             value={content}

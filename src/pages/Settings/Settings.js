@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-03-30 17:44:35
+ * @LastEditTime: 2022-05-08 17:20:25
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -90,6 +90,8 @@ const Settings = ({navigation}) => {
                                     })
                                 );
                                 dispatch(deleteModal());
+                                global.layerOptions = null;
+                                Modal.hideLayer();
                                 navigation.replace('Login');
                             }
                         });

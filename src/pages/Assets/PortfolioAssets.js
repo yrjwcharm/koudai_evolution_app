@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 18:39:09
+ * @LastEditTime: 2022-05-11 14:36:04
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -605,12 +605,14 @@ export default function PortfolioAssets(props) {
                         }}
                     />
                 }>
-                {data?.processing_info && (
+                {data?.processing_list && (
                     <Notice
-                        content={{...data?.processing_info, log_id: 'FixedPlanAssets_TopBar'}}
-                        onPress={() => {
-                            if (data?.processing_info?.action == 'Sign') {
-                                signModal.current.show();
+                        content={data?.processing_list}
+                        onPress={(index) => {
+                            let signIndex = data?.processing_list.findIndex((_item) => _item.action == 'Sign');
+                            if (signIndex == index) {
+                                //签约弹窗
+                                signModal?.current?.show();
                             }
                         }}
                     />
@@ -707,21 +709,23 @@ export default function PortfolioAssets(props) {
                     )}
                 </View>
 
-                {/* 广告位 */}
-                {data?.ad_info && (
-                    <TouchableOpacity onPress={() => jump(data?.ad_info?.url)}>
-                        <FitImage
-                            source={{
-                                uri: data?.ad_info?.img,
-                            }}
-                            resizeMode="contain"
-                            style={{marginBottom: text(10)}}
-                        />
-                    </TouchableOpacity>
-                )}
-
                 <View style={styles.padding_sty}>
                     {Object.keys(card || {}).length > 0 && data.scene !== 'adviser' && renderBtn() /* 按钮 */}
+                    {data?.ad_info ? (
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                global.LogTool('ppage_banner', data.title);
+                                jump(data?.ad_info?.url);
+                            }}>
+                            <FastImage
+                                source={{
+                                    uri: data?.ad_info?.cover,
+                                }}
+                                style={styles.ad_info}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                     {/* 反洗钱上传 */}
                     {data?.notice_info && (
                         <View style={[Style.flexRow, styles.upload_card_sty]}>
@@ -1151,6 +1155,11 @@ const styles = StyleSheet.create({
         paddingVertical: text(6),
         borderRadius: text(20),
         marginRight: text(10),
+    },
+    ad_info: {
+        height: px(60),
+        borderRadius: 8,
+        marginTop: px(12),
     },
     title_sty: {
         color: '#1F2432',

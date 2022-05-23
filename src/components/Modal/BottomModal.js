@@ -2,16 +2,16 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-01-04 15:18:03
+ * @LastEditTime: 2022-05-09 10:17:21
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Modal, TouchableOpacity, StyleSheet, Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import {constants} from './util';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Font, Style} from '../../common/commonStyle';
+import {Colors, Font, Style} from '../../common/commonStyle';
 import Mask from '../Mask';
 const BottomModal = React.forwardRef((props, ref) => {
     const {
@@ -150,9 +150,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        fontSize: px(16),
-        color: '#333333',
-        fontWeight: '500',
+        fontSize: Font.textH1,
+        color: Colors.defaultColor,
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     sub_title: {
         fontSize: px(13),

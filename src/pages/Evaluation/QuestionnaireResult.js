@@ -1,15 +1,15 @@
 /*
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 11:07:28
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-10 14:47:04
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font, Space} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import http from '../../services';
 import {Button} from '../../components/Button';
@@ -23,12 +23,13 @@ const QuestionnaireResult = () => {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        http.get('/questionnaire/result/20210101', {upid: route.params?.upid}).then((res) => {
+        http.get('/questionnaire/result/20210101', {fr: route.params?.fr, upid: route.params?.upid}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
         });
-    }, [route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     useEffect(() => {
         if (data.top_button) {
             navigation.setOptions({

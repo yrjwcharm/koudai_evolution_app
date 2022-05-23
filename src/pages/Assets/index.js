@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 21:42:53
+ * @LastEditTime: 2022-05-11 11:05:23
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -14,7 +14,6 @@ import {
     StyleSheet,
     TouchableOpacity,
     StatusBar,
-    LayoutAnimation,
     RefreshControl,
     Platform,
 } from 'react-native';
@@ -22,7 +21,6 @@ import Image from 'react-native-fast-image';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-snap-carousel';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -58,7 +56,6 @@ function HomeScreen({navigation}) {
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [newMes, setNewmessage] = useState(0);
-    const [hideMsg, setHideMsg] = useState(false);
     const [showEye, setShowEye] = useState('true');
     const [holdingData, setHoldingData] = useState({});
     const [userBasicInfo, setUserBasicInfo] = useState({});
@@ -87,20 +84,7 @@ function HomeScreen({navigation}) {
         let y = event.nativeEvent.contentOffset.y;
         setScrollY(y);
     };
-    // 隐藏系统消息
-    const hideSystemMsg = useCallback(() => {
-        global.LogTool('click', 'hideSystemMsg');
-        Animated.timing(fadeAnim, {
-            toValue: 0,
-            duration: 500,
-            useNativeDriver: true,
-        }).start((a) => {
-            if (a.finished) {
-                setHideMsg(true);
-                LayoutAnimation.linear();
-            }
-        });
-    }, [fadeAnim]);
+
     // 显示|隐藏金额信息
     const toggleEye = () => {
         setShowEye((show) => {
@@ -120,7 +104,7 @@ function HomeScreen({navigation}) {
     };
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
-        refresh === 'refresh' && setHideMsg(false);
+        getSignData();
 
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
@@ -411,6 +395,7 @@ function HomeScreen({navigation}) {
         ) : (
             <View style={[Style.flexRow, {marginBottom: text(10)}]}>
                 <Text style={[styles.accountName, portfolios ? styles.portfoliosName : {}]}>{item.name}</Text>
+                {item.anno ? <Text style={styles.anno}>{item.anno}</Text> : null}
                 {item.tag ? (
                     <Text style={{...styles.tag, backgroundColor: item.tag_color || Colors.red}}>{item.tag}</Text>
                 ) : null}
@@ -453,36 +438,50 @@ function HomeScreen({navigation}) {
             return (
                 <>
                     {(item.portfolios && item.portfolios.length === 1) || item.id === 11 ? (
-                        <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
-                            {renderProfit(item.id === 11 ? item : item.portfolios[0], item.id)}
-                            <FontAwesome
-                                name={'angle-right'}
-                                size={20}
-                                color={Colors.darkGrayColor}
-                                style={{transform: [{translateY: text(-4)}]}}
-                            />
-                        </View>
+                        <>
+                            <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
+                                {renderProfit(item.id === 11 ? item : item.portfolios[0], item.id)}
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={20}
+                                    color={Colors.darkGrayColor}
+                                    style={{transform: [{translateY: text(-4)}]}}
+                                />
+                            </View>
+                            {item.portfolios?.[0]?.intro ? (
+                                <View style={styles.introWrap}>
+                                    <Text style={styles.introText}>{item.portfolios?.[0]?.intro}</Text>
+                                </View>
+                            ) : null}
+                        </>
                     ) : (
                         item.portfolios.map((po, i) => {
                             return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    key={`portfolio${po.poid}`}
-                                    style={Style.flexRow}
-                                    onPress={() => {
-                                        global.LogTool('assetsProductStart', po.poid);
-                                        jump(po.url);
-                                    }}>
-                                    <View
-                                        style={[
-                                            styles.portfolio,
-                                            i === item.portfolios.length - 1 ? {paddingBottom: 0} : {},
-                                        ]}>
-                                        {renderTitle(po, true)}
-                                        {renderProfit(po)}
-                                    </View>
-                                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                                </TouchableOpacity>
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        key={`portfolio${po.poid}`}
+                                        style={Style.flexRow}
+                                        onPress={() => {
+                                            global.LogTool('assetsProductStart', po.poid);
+                                            jump(po.url);
+                                        }}>
+                                        <View
+                                            style={[
+                                                styles.portfolio,
+                                                i === item.portfolios.length - 1 ? {paddingBottom: 0} : {},
+                                            ]}>
+                                            {renderTitle(po, true)}
+                                            {renderProfit(po)}
+                                        </View>
+                                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                                    </TouchableOpacity>
+                                    {po.intro ? (
+                                        <View style={styles.introWrap}>
+                                            <Text style={styles.introText}>{po.intro}</Text>
+                                        </View>
+                                    ) : null}
+                                </>
                             );
                         })
                     )}
@@ -643,42 +642,48 @@ function HomeScreen({navigation}) {
                         <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
                         {/* 系统通知 */}
-                        {!hideMsg && notice?.system ? (
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={() => {
-                                    notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
-                                    if (notice?.system?.action == 'Sign' && signData) {
-                                        bottomModal.current.show();
-                                    }
-                                    jump(notice?.system?.url);
-                                }}>
-                                <Animated.View
-                                    style={[
-                                        styles.systemMsgContainer,
-                                        Style.flexBetween,
-                                        {
-                                            opacity: fadeAnim,
-                                            paddingRight: notice?.system?.button ? text(16) : text(38),
-                                        },
-                                    ]}>
-                                    <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
-
-                                    {notice?.system?.button ? (
-                                        <View style={styles.btn}>
-                                            <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
-                                        </View>
-                                    ) : (
-                                        <TouchableOpacity
-                                            style={styles.closeSystemMsg}
-                                            activeOpacity={0.8}
-                                            onPress={hideSystemMsg}>
-                                            <EvilIcons name={'close'} size={22} color={Colors.yellow} />
-                                        </TouchableOpacity>
-                                    )}
-                                </Animated.View>
-                            </TouchableOpacity>
-                        ) : null}
+                        {notice?.system_list?.length > 0
+                            ? notice?.system_list?.map((system, index, arr) => (
+                                  <TouchableOpacity
+                                      key={index}
+                                      activeOpacity={0.9}
+                                      style={styles.systemMsgContainer}
+                                      onPress={() => {
+                                          let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
+                                          if (signIndex == index && signData) {
+                                              //签约弹窗
+                                              bottomModal?.current?.show();
+                                          }
+                                          system?.log_id && global.LogTool(system?.log_id);
+                                          jump(system?.button?.url);
+                                      }}>
+                                      <Animated.View
+                                          style={[
+                                              Style.flexBetween,
+                                              {
+                                                  opacity: fadeAnim,
+                                                  paddingTop: text(8),
+                                                  paddingBottom: text(12),
+                                              },
+                                              arr.length > 1 && index != arr.length - 1
+                                                  ? {
+                                                        borderBottomColor: '#F7CFB2',
+                                                        borderBottomWidth: 0.5,
+                                                    }
+                                                  : {},
+                                          ]}>
+                                          <Text style={styles.systemMsgText} numberOfLines={arr.length > 1 ? 2 : 100}>
+                                              {system?.desc}
+                                          </Text>
+                                          {system?.button ? (
+                                              <View style={styles.btn}>
+                                                  <Text style={styles.btn_text}>{system?.button?.text}</Text>
+                                              </View>
+                                          ) : null}
+                                      </Animated.View>
+                                  </TouchableOpacity>
+                              ))
+                            : null}
                         {/* 资产信息 */}
                         <View style={[styles.summaryTitle, Style.flexCenter]}>
                             <Text style={styles.summaryKey}>总资产(元)</Text>
@@ -1144,21 +1149,15 @@ const styles = StyleSheet.create({
     },
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
-        paddingTop: text(8),
-        paddingBottom: text(12),
-        paddingRight: text(38),
-        paddingLeft: Space.marginAlign,
+
+        paddingHorizontal: Space.marginAlign,
     },
     systemMsgText: {
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.yellow,
         textAlign: 'justify',
-    },
-    closeSystemMsg: {
-        position: 'absolute',
-        right: text(12),
-        top: text(10),
+        flex: 1,
     },
     summaryTitle: {
         flexDirection: 'row',
@@ -1371,6 +1370,11 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
+    anno: {
+        marginLeft: text(3),
+        lineHeight: text(10),
+        fontSize: px(8),
+    },
     tag: {
         paddingHorizontal: text(6),
         paddingVertical: text(2),
@@ -1470,6 +1474,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(5),
         paddingHorizontal: text(10),
         backgroundColor: '#FF7D41',
+        marginLeft: px(12),
     },
     btn_text: {
         fontWeight: '600',
@@ -1505,6 +1510,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
         padding: px(16),
+    },
+    introWrap: {
+        marginTop: px(13),
+        backgroundColor: '#F5F6F8',
+        padding: px(12),
+    },
+    introText: {
+        fontSize: px(12),
+        color: '#9AA1B2',
+        lineHeight: px(14),
     },
 });
 export default HomeScreen;

@@ -1188,6 +1188,7 @@ class TradeBuy extends Component {
                 </BottomModal>
                 <BankCardModal
                     data={pay_methods || []}
+                    type={data.add_payment_disable ? 'hidden' : ''}
                     select={this.state.bankSelectIndex}
                     ref={(ref) => {
                         this.bankCard = ref;

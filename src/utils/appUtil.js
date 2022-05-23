@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-02 10:41:36
+ * @LastEditors: dx
+ * @LastEditTime: 2022-04-25 17:19:27
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -277,6 +277,82 @@ function once(fn) {
     };
 }
 
+/**
+ * 解析时间戳
+ * @param {number} timeStemp - 毫秒数
+ * @returns {Array} - [天，时，分，秒]
+ */
+const resolveTimeStemp = (timeStemp) => {
+    if (!timeStemp || timeStemp <= 0) return [];
+    const AllSeconds = Math.round(timeStemp / 1000);
+    const Seconds = AllSeconds % 60;
+    const AllMinutes = (AllSeconds - Seconds) / 60;
+    const Minutes = AllMinutes % 60;
+    const AllHours = (AllMinutes - Minutes) / 60;
+    const Hours = AllHours % 24;
+    const Days = (AllHours - Hours) / 24;
+    return [
+        Days.toString().padStart(2, '0'),
+        Hours.toString().padStart(2, '0'),
+        Minutes.toString().padStart(2, '0'),
+        Seconds.toString().padStart(2, '0'),
+    ];
+};
+
+/*
+ * 倒计时工具 - 可有效的控制执行误差在5毫秒浮动
+ * @param {object} option -  配置项
+ * @param {number} option.timeStemp - 时间戳，毫秒
+ * @param {number} [option.interval=1000] - 间隔时间, 默认1000毫秒
+ * @param {boolean} [option.immediate=false] - 是否立即执行回调
+ * @param {Function} [option.callback] - 回调
+ * @returns {() => void} cancel 停止计时器
+ * 注（一定注意）：不管是使用此工具还是自己写，回调的整体执行时间都不应该超过interval
+ * 由于js引擎对于加载损耗的优化策略，页面在显示和隐藏时会有更多的误差，需要在页面显示时重新执行
+ */
+const countdownTool = function ({
+    timeStemp,
+    interval: originalInterval = 1000,
+    immediate = false,
+    callback = (time) => undefined,
+}) {
+    if (!timeStemp || timeStemp <= 0 || timeStemp < originalInterval) return callback(0);
+
+    let stop = false;
+    const cancel = () => {
+        stop = true;
+    };
+
+    let curIdx = 1;
+    let interval = originalInterval;
+
+    if (immediate) callback(timeStemp);
+
+    let ct = Date.now();
+    countdown(interval);
+    function countdown(_interval) {
+        if (stop) return;
+        let timer = setTimeout(function () {
+            clearTimeout(timer);
+
+            let resetTime = timeStemp - originalInterval * curIdx;
+            if (resetTime < 0) resetTime = 0;
+            callback(resetTime);
+            if (!resetTime) return;
+
+            curIdx++;
+
+            let ct2 = Date.now();
+            let deviation = ct2 - _interval - ct;
+            if (deviation >= originalInterval || deviation <= 0) deviation = 5;
+            ct = Date.now();
+            countdown(originalInterval - deviation - (ct - ct2));
+        }, _interval);
+    }
+
+    return cancel;
+};
+
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -305,4 +381,6 @@ export {
     debounce,
     parseQuery,
     once,
+    resolveTimeStemp,
+    countdownTool,
 };
