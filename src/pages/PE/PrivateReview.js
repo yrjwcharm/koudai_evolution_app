@@ -2,7 +2,7 @@
  * @Date: 2022-05-18 10:32:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 15:29:04
+ * @LastEditTime: 2022-05-23 18:42:51
  * @Description: 私募审核页面
  */
 import React, {useEffect, useState} from 'react';
@@ -18,22 +18,14 @@ import {isIphoneX, px} from '../../utils/appUtil';
 export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {button: {text, url} = {}, desc, icon, title} = data;
+    const {button: {text, url} = {}, desc, icon, status} = data;
 
     useEffect(() => {
         http.get('/private_fund/investor_audit_result/20220510', route.params).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '特定对象认证审核'});
+                setData(res.result);
             }
-        });
-        setData({
-            button: {
-                text: '确定',
-                url: '',
-            },
-            desc: '预计1-2个工作日，请您耐心等待，审核结果会通过App系统消息和手机短信进行通知。',
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2022/05/im_happy_icon.png',
-            title: '认证审核中',
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -43,7 +35,7 @@ export default ({navigation, route}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                 <View style={styles.topPart}>
                     <Image source={{uri: icon}} style={styles.icon} />
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.title}>{status}</Text>
                     <Text style={styles.desc}>{desc}</Text>
                 </View>
             </ScrollView>

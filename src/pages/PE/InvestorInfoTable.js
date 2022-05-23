@@ -35,7 +35,7 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
-                const params = {order_id: route.params.order_id || 1};
+                const params = {order_id: route.params.order_id || ''};
                 const {info: _list = []} = data;
                 _list.forEach((item) => (params[item.id] = item.value));
                 http.post('/private_fund/submit_investor_info/20220510', params).then((res) => {
@@ -65,7 +65,7 @@ export default ({navigation, route}) => {
     };
 
     useEffect(() => {
-        http.get('/private_fund/investor_info/20220510', {order_id: route.params.order_id || 1}).then((res) => {
+        http.get('/private_fund/investor_info/20220510', {order_id: route.params.order_id || ''}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '投资者信息表'});
                 setData(res.result);

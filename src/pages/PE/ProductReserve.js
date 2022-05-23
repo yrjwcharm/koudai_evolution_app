@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 17:35:46
+ * @LastEditTime: 2022-05-23 19:15:45
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -39,8 +39,8 @@ export default ({navigation, route}) => {
             sign: '/private_fund/double_record/file_sign_info/20220510',
         };
         http.get(obj[route.params.scene || 'appointment'], {
-            fund_code: route.params.fund_code || 'SVF805',
-            order_id: route.params.order_id || 1,
+            fund_code: route.params.fund_code || '',
+            order_id: route.params.order_id || '',
         }).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '产品预约'});
@@ -61,7 +61,7 @@ export default ({navigation, route}) => {
             () => {
                 switch (route.params.scene) {
                     case 'appointment':
-                        const params = {fund_code: route.params.fund_code || 'SVF805'};
+                        const params = {fund_code: route.params.fund_code || ''};
                         const {info: _parts = []} = data;
                         _parts.forEach((part) => part.list?.forEach((item) => (params[item.id] = item.value)));
                         http.post('/private_fund/appointment_do/20220510', params).then((res) => {
@@ -72,11 +72,15 @@ export default ({navigation, route}) => {
                         });
                         break;
                     case 'read':
-                        jump(button.url);
+                        if (data.isDone) {
+                            jump(button.url);
+                        } else {
+                            Toast.show('请您自助双录前先阅读完待签署文件');
+                        }
                         break;
                     case 'sign':
                         http.post('/private_fund/investor_audit/20220510', {
-                            order_id: route.params.order_id || 1,
+                            order_id: route.params.order_id || '',
                             type: 2,
                         }).then((res) => {
                             if (res.code === '000000') {

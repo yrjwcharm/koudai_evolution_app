@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 09:59:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 14:33:35
+ * @LastEditTime: 2022-05-23 19:15:30
  * @Description: 匹配告知
  */
 import React, {useEffect, useState} from 'react';
@@ -24,7 +24,8 @@ export default ({navigation, route}) => {
     useEffect(() => {
         let timer;
         http.get('/private_fund/double_record/match_notification/20220510', {
-            fund_code: route.params.fund_code || 'SVF805',
+            fund_code: route.params.fund_code || '',
+            order_id: route.params.order_id || '',
         }).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '匹配告知'});
