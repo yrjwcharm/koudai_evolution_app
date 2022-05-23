@@ -2,11 +2,12 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-19 17:47:06
+ * @LastEditTime: 2022-05-21 15:39:27
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Image from 'react-native-fast-image';
 import Picker from 'react-native-picker';
@@ -24,18 +25,22 @@ import {isIphoneX, px} from '../../utils/appUtil';
 
 export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
     const jump = useJump();
-    const {input_type, label, max_length, options, placeholder, suffix, tips, type, url = '', value} = data;
+    const {input_type, label, max_length, options, placeholder, suffix, tip: tips, type, url = '', value} = data;
     const inputRef = useRef();
+    const [open, setOpen] = useState(false);
+    const inputMask = useRef();
 
     const onPress = () => {
         if (type === 'bankcard') {
             showBankCardModal && showBankCardModal();
+        } else if (type === 'date') {
+            setOpen(true);
         } else if (type === 'input') {
             const input = inputRef.current;
             !input?.isFocused?.() && input?.focus?.();
         } else if (type === 'jump') {
             jump(url);
-        } else if (type === 'picker') {
+        } else if (type === 'select') {
             Keyboard.dismiss();
             setShowMask(true);
             Picker.init({
@@ -83,12 +88,12 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                 {(() => {
                     switch (type) {
                         case 'bankcard':
-                        case 'datepicker':
+                        case 'date':
                         case 'jump':
-                        case 'picker':
+                        case 'select':
                         case 'text':
                             let _label = '';
-                            if (type === 'picker') {
+                            if (type === 'select') {
                                 const i = options.findIndex((v) => v.value === value);
                                 _label = options[i]?.label || '';
                             }
@@ -106,12 +111,18 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                                     <TextInput
                                         keyboardType={input_type}
                                         maxLength={max_length}
+                                        onBlur={() => {
+                                            inputMask.current?.setNativeProps({style: {display: 'flex'}});
+                                        }}
                                         onChangeText={(_text) => onChange(_text)}
+                                        onFocus={() => {
+                                            inputMask.current?.setNativeProps({style: {display: 'none'}});
+                                        }}
                                         placeholder={placeholder}
                                         placeholderTextColor={'#BDC2CC'}
                                         ref={inputRef}
                                         style={styles.inputStyle}
-                                        value={value}
+                                        value={`${value}`}
                                     />
                                     {suffix ? (
                                         <Text
@@ -150,6 +161,30 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                     }
                 })()}
             </View>
+            {type === 'input' ? (
+                <TouchableOpacity activeOpacity={0.8} onPress={onPress} ref={inputMask} style={styles.inputMask} />
+            ) : null}
+            {type === 'date' ? (
+                <DatePicker
+                    androidVariant="iosClone"
+                    cancelText="取消"
+                    confirmText="确定"
+                    date={new Date(value)}
+                    modal
+                    mode="date"
+                    onCancel={() => setOpen(false)}
+                    onConfirm={(date) => {
+                        onChange(
+                            `${date.getFullYear()} / ${date.getMonth() + 1 < 10 ? '0' : ''}${date.getMonth() + 1} / ${
+                                date.getDate() < 10 ? '0' : ''
+                            }${date.getDate()}`
+                        );
+                        setOpen(false);
+                    }}
+                    open={open}
+                    title={`请选择${label}`}
+                />
+            ) : null}
         </TouchableOpacity>
     );
 };
@@ -510,6 +545,15 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: px(16),
         color: Colors.defaultColor,
+        minWidth: px(100),
+        textAlign: 'right',
+    },
+    inputMask: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
     },
     inputBox: {
         marginTop: Space.marginVertical,

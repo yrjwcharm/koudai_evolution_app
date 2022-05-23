@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 18:48:43
+ * @LastEditTime: 2022-05-23 15:27:05
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -172,20 +172,22 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                             />
                         </View>
                     ) : null}
-                    <Button
-                        color="#EDDBC5"
-                        disabled={
-                            !(
-                                password &&
-                                pwd.length === 6 &&
-                                ((re_password && confirmPwd.length === 6) || !re_password)
-                            )
-                        }
-                        disabledColor="#EDDBC5"
-                        onPress={onSubmit}
-                        style={styles.popupButton}
-                        title={text}
-                    />
+                    {text ? (
+                        <Button
+                            color="#EDDBC5"
+                            disabled={
+                                !(
+                                    password &&
+                                    pwd.length === 6 &&
+                                    ((re_password && confirmPwd.length === 6) || !re_password)
+                                )
+                            }
+                            disabledColor="#EDDBC5"
+                            onPress={onSubmit}
+                            style={styles.popupButton}
+                            title={text}
+                        />
+                    ) : null}
                 </View>
             );
         default:
@@ -252,14 +254,19 @@ export default ({navigation}) => {
                     })}
                 </View>
             </ScrollView>
-            <Button
-                color="#EDDBC5"
-                disabled={button.avail === 0}
-                disabledColor="#EDDBC5"
-                onPress={() => jump(button.url)}
-                style={styles.button}
-                title={button.text}
-            />
+            {button.text ? (
+                <Button
+                    color="#EDDBC5"
+                    disabled={button.avail === 0}
+                    disabledColor="#EDDBC5"
+                    onPress={() => {
+                        jump(button.url);
+                        Toast.show('恭喜您完成特定对象确认，可点击私募产品进行查看');
+                    }}
+                    style={styles.button}
+                    title={button.text}
+                />
+            ) : null}
         </View>
     ) : (
         <Loading />

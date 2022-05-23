@@ -2,10 +2,10 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-19 14:55:47
+ * @LastEditTime: 2022-05-21 18:12:05
  * @Description: 投资者证明材料上传
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
     DeviceEventEmitter,
     PermissionsAndroid,
@@ -42,12 +42,12 @@ import {
 } from '../CreateAccount/Account/TokenCloudBridge';
 import {debounce} from 'lodash';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [visible, setVisible] = useState(false);
     const [selectData, setSelectData] = useState(['从相册中获取', '拍照']);
-    const {btns = [], id_info = {}, materials = []} = data;
+    const {button = {}, id_info = {}, materials = []} = data;
     const {back, desc: idDesc, front, title: idTitle} = id_info;
     const clickIndexRef = useRef('');
     const nfcEnable = useRef(false);
@@ -66,6 +66,12 @@ export default ({navigation}) => {
         openNfcBtnBgColor: '#333333',
         openNfcBtnTextColor: '#FFFFFF',
     }).current;
+
+    const finished = useMemo(() => {
+        const {id_info: _id_info = {}, materials: _materials = []} = data;
+        const filled = _materials.every((item) => item.images?.length > 0);
+        return _id_info.front && _id_info.back && filled;
+    }, [data]);
 
     // 点击上传身份证
     const onPressIdUpload = (type) => {
@@ -111,13 +117,19 @@ export default ({navigation}) => {
             if (Platform.OS == 'android') {
                 requestAuth(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
-                    () => openPicker('camera'),
+                    () =>
+                        typeof clickIndexRef.current === 'number'
+                            ? openPicker('camera')
+                            : jump({path: 'Camera', params: {index: clickIndexRef.current === 'front' ? 1 : 2}}),
                     () => blockCal('camera')
                 );
             } else {
                 requestAuth(
                     PERMISSIONS.IOS.CAMERA,
-                    () => openPicker('camera'),
+                    () =>
+                        typeof clickIndexRef.current === 'number'
+                            ? openPicker('camera')
+                            : jump({path: 'Camera', params: {index: clickIndexRef.current === 'front' ? 1 : 2}}),
                     () => blockCal('camera')
                 );
             }
@@ -185,20 +197,26 @@ export default ({navigation}) => {
     const uploadImage = (file) => {
         const toast = Toast.showLoading('正在上传');
         const _data = {...data};
-        const type = _data?.materials[clickIndexRef.current]?.type;
+        const type =
+            typeof clickIndexRef.current === 'number' ? _data?.materials[clickIndexRef.current]?.type : 'id_card';
+        console.log(file);
         upload(
-            '/private_fund/upload_material/20220510',
+            type === 'id_card' ? '/mapi/identity/upload/20210101' : '/private_fund/upload_material/20220510',
             file,
-            [{type}],
+            [type === 'id_card' ? {data: clickIndexRef.current, name: 'desc'} : {data: `${type}`, name: 'type'}],
             (res) => {
                 Toast.hide(toast);
                 if (res?.code === '000000') {
                     Toast.show('上传成功');
                     ImagePicker.clean();
-                    if (_data?.materials[clickIndexRef.current]?.images) {
-                        _data.materials[clickIndexRef.current].images.push(res.result.url);
+                    if (type === 'id_card') {
+                        _data.id_info[clickIndexRef.current] = res.result.url;
                     } else {
-                        _data.materials[clickIndexRef.current].images = [res.result.url];
+                        if (_data?.materials[clickIndexRef.current]?.images) {
+                            _data.materials[clickIndexRef.current].images.push(res.result.url);
+                        } else {
+                            _data.materials[clickIndexRef.current].images = [res.result.url];
+                        }
                     }
                     setData(_data);
                 } else {
@@ -305,6 +323,26 @@ export default ({navigation}) => {
     const confirmCardFailed = (reminder) => {
         console.log('数据加载异常', reminder);
     };
+
+    const onSubmit = useCallback(
+        debounce(
+            () => {
+                const params = {materials: {}, order_id: route.params.order_id || 1};
+                const {materials: _materials = []} = data;
+                _materials.forEach((item) => (params.materials[item.type] = item.images));
+                params.materials = JSON.stringify(params.materials);
+                http.post('/private_fund/submit_certification_material/20220510', params).then((res) => {
+                    if (res.code === '000000') {
+                        navigation.goBack();
+                    }
+                    Toast.show(res.message);
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [data]
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -426,10 +464,12 @@ export default ({navigation}) => {
                         </View>
                     </View>
                 ) : null}
-                {materials.map((item, index) => {
-                    const {desc, images = [], title} = item;
+                {materials.map((item, index, arr) => {
+                    const {desc, images = [], max = 6, title} = item;
                     return (
-                        <View key={item + index} style={styles.partBox}>
+                        <View
+                            key={item + index}
+                            style={[styles.partBox, {marginBottom: index === arr.length - 1 ? px(20) : 0}]}>
                             {title ? <Text style={styles.partTitle}>{'资产证明或收入证明材料（必填）'}</Text> : null}
                             {desc ? <Text style={styles.partDesc}>{desc}</Text> : null}
                             <View style={styles.uploadBoxWrap}>
@@ -438,7 +478,15 @@ export default ({navigation}) => {
                                         <View key={img + i} style={[styles.uploadBox, {justifyContent: 'center'}]}>
                                             <View style={styles.displayBox}>
                                                 <Image source={{uri: img}} style={styles.displayImg} />
-                                                <TouchableOpacity activeOpacity={0.8} style={styles.deleteIcon}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        const _data = {...data};
+                                                        const temp = _data.materials[index].images;
+                                                        temp.splice(i, 1);
+                                                        setData(_data);
+                                                    }}
+                                                    style={styles.deleteIcon}>
                                                     <AntDesign
                                                         color={Colors.defaultColor}
                                                         name="closecircle"
@@ -449,44 +497,41 @@ export default ({navigation}) => {
                                         </View>
                                     );
                                 })}
-                                <View style={styles.uploadBox}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            clickIndexRef.current = index;
-                                            setSelectData(['从相册中获取', '拍照']);
-                                            setVisible(true);
-                                        }}
-                                        style={styles.imgBox}>
-                                        <Image
-                                            source={require('../../assets/img/fof/upload.png')}
-                                            style={styles.uploadID}
-                                        />
-                                    </TouchableOpacity>
-                                    <Text style={styles.uploadTips}>{'点击上传'}</Text>
-                                </View>
+                                {images.length === max ? null : (
+                                    <View style={styles.uploadBox}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                clickIndexRef.current = index;
+                                                setSelectData(['从相册中获取', '拍照']);
+                                                setVisible(true);
+                                            }}
+                                            style={styles.imgBox}>
+                                            <Image
+                                                source={require('../../assets/img/fof/upload.png')}
+                                                style={styles.uploadID}
+                                            />
+                                        </TouchableOpacity>
+                                        <Text style={styles.uploadTips}>{'点击上传'}</Text>
+                                    </View>
+                                )}
                             </View>
                         </View>
                     );
                 })}
             </ScrollView>
-            <View style={[Style.flexRow, styles.bottomBtn]}>
-                {btns.map((btn, index) => {
-                    const {text, url} = btn;
-                    return (
-                        <Button
-                            color={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
-                            disabledColor={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
-                            key={btn + index}
-                            onPress={() => jump(url)}
-                            style={btns.length > 1 && index === 0 ? styles.prevBtn : styles.nextBtn}
-                            textStyle={btns.length > 1 ? styles.btnText : undefined}
-                            title={text}
-                            type={btns.length > 1 && index === 0 ? 'minor' : 'primary'}
-                        />
-                    );
-                })}
-            </View>
+            {button.text ? (
+                <View style={[Style.flexRow, styles.bottomBtn]}>
+                    <Button
+                        color={'#EDDBC5'}
+                        disabled={button.avail === 0 || !finished}
+                        disabledColor={'#EDDBC5'}
+                        onPress={onSubmit}
+                        style={styles.nextBtn}
+                        title={button.text}
+                    />
+                </View>
+            ) : null}
             <SelectModal
                 callback={(index) => {
                     if (index === 0) {
@@ -566,7 +611,6 @@ const styles = StyleSheet.create({
     displayBox: {
         width: px(124),
         height: px(84),
-        // backgroundColor: '#797E8B',
     },
     displayImg: {
         width: '100%',
