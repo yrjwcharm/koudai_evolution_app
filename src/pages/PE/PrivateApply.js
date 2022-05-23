@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-21 20:29:55
+ * @LastEditTime: 2022-05-23 12:15:44
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -36,9 +36,10 @@ const PrivateApply = (props) => {
         });
     }, [fund_code, poid, scene]);
     const onLayout = (index, e) => {
+        let height = e?.nativeEvent?.layout?.height;
         setHeightArr((prev) => {
             const arr = [...prev];
-            arr[index] = e.nativeEvent?.layout?.height;
+            arr[index] = height;
             return arr;
         });
     };
@@ -169,7 +170,7 @@ const PrivateApply = (props) => {
                                                 title={item.button.text}
                                                 style={styles.buttonSty}
                                                 textStyle={styles.buttonTextSty}
-                                                onPress={() => jump(item.button.url)}
+                                                onPress={() => jump(item.button.url, 'push')}
                                             />
                                         )}
                                     </View>
