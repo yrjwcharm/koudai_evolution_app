@@ -72,7 +72,7 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
-                const params = {order_id: route.params.order_id || 1};
+                const params = {order_id: route.params.order_id || ''};
                 params.answer_list = JSON.stringify(
                     data?.questions?.map((item) => {
                         return {answer: item.selected, question_id: item.id, extra: item.info || ''};
@@ -92,7 +92,7 @@ export default ({navigation, route}) => {
     );
 
     useEffect(() => {
-        http.get('/private_fund/investor_info_question/20220510', {order_id: route.params.order_id || 1}).then(
+        http.get('/private_fund/investor_info_question/20220510', {order_id: route.params.order_id || ''}).then(
             (res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '私募问答'});

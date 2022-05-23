@@ -2,28 +2,18 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 16:23:10
+ * @LastEditTime: 2022-05-23 19:11:09
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-    DeviceEventEmitter,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
-import {debounce} from 'lodash';
 import Toast from '../../components/Toast';
 import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
@@ -31,6 +21,10 @@ export default ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {button = {}, list = [], desc: tips} = data;
+
+    const finished = useMemo(() => {
+        return data.list.every((item) => item.show);
+    }, [data]);
 
     useEffect(() => {
         const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
@@ -50,10 +44,55 @@ export default ({navigation}) => {
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
+            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
+                {tips ? <Text style={[styles.tips, {marginTop: Space.marginVertical}]}>{tips}</Text> : null}
+            </ScrollView>
+            {list.map((item, index, arr) => {
+                const {button: btn, name, password_content, show = false} = item;
+                return (
+                    <View
+                        key={item + index}
+                        style={[
+                            Style.flexBetween,
+                            styles.partBox,
+                            {
+                                marginTop: index === 0 ? px(12) : Space.marginVertical,
+                                marginBottom:
+                                    index === arr.length - 1 ? (isIphoneX() ? 34 : px(16) + (px(45) + px(20))) : 0,
+                            },
+                        ]}>
+                        <View>
+                            <Text style={styles.tips}>{name}</Text>
+                            <Text
+                                style={[
+                                    styles.content,
+                                    {marginTop: px(8), color: show ? Colors.defaultColor : '#BDC2CC'},
+                                ]}>
+                                {show ? password_content : '点击查看按钮后可显示'}
+                            </Text>
+                        </View>
+                        {btn && btn.text ? (
+                            <Button
+                                color="#EDDBC5"
+                                disabled={btn.avail === 0 || show}
+                                disabledColor="#BDC2CC"
+                                onPress={() => {
+                                    const _data = {...data};
+                                    _data.list[index].show = true;
+                                    setData(_data);
+                                }}
+                                style={styles.partButton}
+                                textStyle={styles.partBtnText}
+                                title={btn.text}
+                            />
+                        ) : null}
+                    </View>
+                );
+            })}
             {button.text ? (
                 <Button
                     color="#EDDBC5"
-                    disabled={button.avail === 0}
+                    disabled={button.avail === 0 || !finished}
                     disabledColor="#EDDBC5"
                     onPress={() => jump(button.url)}
                     style={styles.button}
@@ -76,17 +115,30 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
     },
     tips: {
-        marginTop: Space.marginVertical,
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.descColor,
     },
     partBox: {
-        marginTop: px(12),
-        marginBottom: isIphoneX() ? 34 + px(45) + px(16) : px(45) + px(16) * 2,
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+        height: px(83),
+    },
+    content: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+    },
+    partButton: {
+        paddingHorizontal: px(8),
+        borderRadius: px(4),
+        height: px(24),
+        backgroundColor: '#D7AF74',
+    },
+    partBtnText: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
     },
     button: {
         position: 'absolute',

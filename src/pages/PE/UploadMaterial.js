@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-21 18:12:05
+ * @LastEditTime: 2022-05-23 18:41:07
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -327,7 +327,7 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
-                const params = {materials: {}, order_id: route.params.order_id || 1};
+                const params = {materials: {}, order_id: route.params.order_id || ''};
                 const {materials: _materials = []} = data;
                 _materials.forEach((item) => (params.materials[item.type] = item.images));
                 params.materials = JSON.stringify(params.materials);
@@ -411,7 +411,9 @@ export default ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            http.get('/private_fund/certification_material_info/20220510', {order_id: 1}).then((res) => {
+            http.get('/private_fund/certification_material_info/20220510', {
+                order_id: route.params.order_id || '',
+            }).then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '投资者证明材料上传'});
                     setData({

@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 15:34:31
+ * @LastEditTime: 2022-05-23 18:58:17
  * @Description: 合格投资者认证
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -16,6 +16,7 @@ import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 import {useFocusEffect} from '@react-navigation/native';
 import {FormItem} from './IdentityAssertion';
+import {debounce} from 'lodash';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -24,23 +25,33 @@ export default ({navigation, route}) => {
     const partBox = useRef();
 
     const init = () => {
-        http.get('/private_fund/investor_certification_info/20220510').then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({title: res.result.title || '合格投资者认证'});
-                setData(res.result);
-            }
-        });
-    };
-
-    const onSubmit = () => {
-        http.post('/private_fund/investor_audit/20220510', {order_id: route.params.order_id || 1, type: 1}).then(
+        http.get('/private_fund/investor_certification_info/20220510', {order_id: route.params.order_id || ''}).then(
             (res) => {
                 if (res.code === '000000') {
-                    jump(res.result.url);
+                    navigation.setOptions({title: res.result.title || '合格投资者认证'});
+                    setData(res.result);
                 }
             }
         );
     };
+
+    const onSubmit = useCallback(
+        debounce(
+            () => {
+                http.post('/private_fund/investor_audit/20220510', {
+                    order_id: route.params.order_id || '',
+                    type: 1,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        jump(res.result.url);
+                    }
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [route.params]
+    );
 
     useFocusEffect(
         useCallback(() => {
