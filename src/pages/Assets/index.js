@@ -432,6 +432,26 @@ function HomeScreen({navigation}) {
         },
         [showEye]
     );
+    const renderGroupBulletin = (data) => {
+        return (
+            <LinearGradient
+                colors={['#FFF9F0', '#FFF2DC']}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={styles.groupBulletin}>
+                <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
+                <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.groupBulletinBtn}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}>
+                    <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                </TouchableOpacity>
+            </LinearGradient>
+        );
+    };
     // 渲染组合内容
     const renderPortfolios = useCallback(
         (item) => {
@@ -944,26 +964,43 @@ function HomeScreen({navigation}) {
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
-                            item.portfolios.length > 1 ? (
-                                <View
-                                    key={`account${item.id}`}
-                                    style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
-                                    {renderTitle(item)}
-                                    {renderPortfolios(item)}
-                                </View>
-                            ) : (
-                                <TouchableOpacity
-                                    key={`account0${item.id}`}
-                                    activeOpacity={0.8}
-                                    style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
-                                    onPress={() => {
-                                        global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
-                                        jump(item?.portfolios[0].url);
-                                    }}>
-                                    {renderTitle(item?.portfolios[0])}
-                                    {renderPortfolios(item)}
-                                </TouchableOpacity>
-                            )
+                            <>
+                                {item.portfolios.length > 1 ? (
+                                    <View
+                                        key={`account${item.id}`}
+                                        style={[
+                                            styles.account,
+                                            needAdjust(item) ? styles.needAdjust : {},
+                                            item.group_bulletin && {
+                                                borderBottomLeftRadius: 0,
+                                                borderBottomRightRadius: 0,
+                                            },
+                                        ]}>
+                                        {renderTitle(item)}
+                                        {renderPortfolios(item)}
+                                    </View>
+                                ) : (
+                                    <TouchableOpacity
+                                        key={`account0${item.id}`}
+                                        activeOpacity={0.8}
+                                        style={[
+                                            styles.account,
+                                            needAdjust(item) ? styles.needAdjust : {},
+                                            item.group_bulletin && {
+                                                borderBottomLeftRadius: 0,
+                                                borderBottomRightRadius: 0,
+                                            },
+                                        ]}
+                                        onPress={() => {
+                                            global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
+                                            jump(item?.portfolios[0].url);
+                                        }}>
+                                        {renderTitle(item?.portfolios[0])}
+                                        {renderPortfolios(item)}
+                                    </TouchableOpacity>
+                                )}
+                                {item.group_bulletin && renderGroupBulletin(item.group_bulletin)}
+                            </>
                         ) : (
                             <View key={`account1${item.id}`}>
                                 {item.id === 12 ? (
@@ -1520,6 +1557,37 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         color: '#9AA1B2',
         lineHeight: px(14),
+    },
+    groupBulletin: {
+        paddingTop: px(6),
+        paddingRight: px(16),
+        paddingBottom: px(12),
+        paddingLeft: px(8),
+        borderBottomLeftRadius: px(8),
+        borderBottomRightRadius: px(8),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: px(-12),
+        marginBottom: px(12),
+        marginHorizontal: Space.marginAlign,
+    },
+    groupBulletinTitle: {
+        fontWeight: '500',
+        color: '#121D3a',
+        lineHeight: px(18),
+        fontSize: px(13),
+    },
+    groupBulletinBtn: {
+        borderRadius: px(12),
+        backgroundColor: '#ff7d41',
+        paddingHorizontal: px(10),
+        paddingVertical: px(3),
+    },
+    groupBulletinBtnText: {
+        color: '#fff',
+        lineHeight: px(18),
+        fontSize: px(12),
     },
 });
 export default HomeScreen;
