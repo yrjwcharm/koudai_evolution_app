@@ -17,7 +17,6 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard';
-import {recordInit, startRecord} from '../PE/PEBridge';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -108,21 +107,7 @@ const Index = (props) => {
                             <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
-                            <Button
-                                title="双录"
-                                onPress={() => {
-                                    http.get('/file_sign/video_record_param/20220510', {
-                                        fund_code: 'BBB',
-                                        order_id: 'aaa',
-                                    }).then((res) => {
-                                        const {app_id, questions, serial_number} = res.result;
-                                        recordInit(app_id, true, (mes) => {});
-                                        setTimeout(() => {
-                                            startRecord(serial_number, '', questions);
-                                        }, 200);
-                                    });
-                                }}
-                            />
+
                             {/* 今日推荐 */}
 
                             <>
