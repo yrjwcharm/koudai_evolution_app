@@ -2,7 +2,7 @@
  * @Date: 2022-05-18 10:32:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-18 10:52:39
+ * @LastEditTime: 2022-05-23 15:29:04
  * @Description: 私募审核页面
  */
 import React, {useEffect, useState} from 'react';
@@ -12,16 +12,20 @@ import {Colors, Font, Space} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Loading from '../Portfolio/components/PageLoading';
-// import http from '../../services';
+import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {button: {text, url} = {}, desc, icon, title} = data;
 
     useEffect(() => {
-        navigation.setOptions({title: '特定对象认证审核'});
+        http.get('/private_fund/investor_audit_result/20220510', route.params).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '特定对象认证审核'});
+            }
+        });
         setData({
             button: {
                 text: '确定',

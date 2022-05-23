@@ -2,10 +2,10 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-17 15:50:29
+ * @LastEditTime: 2022-05-21 16:36:12
  * @Description: 私募问答
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Image from 'react-native-fast-image';
@@ -13,63 +13,93 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import {Modal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
-// import http from '../../services';
+import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
+import {debounce} from 'lodash';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {btns = [], list = [], tips} = data;
+    const {button: btns = [], questions: list = [], tip: tips} = data;
+
+    const finished = useMemo(() => {
+        const {questions = []} = data;
+        return questions.every((item) => {
+            const {info, show_extra, selected} = item;
+            if (show_extra) {
+                return selected !== undefined && info;
+            } else {
+                return selected !== undefined;
+            }
+        });
+    }, [data]);
 
     const onSelect = (questionIndex, option) => {
+        const {pop} = option;
         const _data = {...data};
-        const _list = _data.list;
-        _list[questionIndex].selected = option.value;
-        _list[questionIndex].show_area = option.show_area;
-        setData(_data);
+        const _list = _data.questions;
+        if (pop) {
+            const {cancel, confirm, content, title, type} = pop;
+            Modal.show({
+                backButtonClose: false,
+                cancelCallBack: () => {
+                    _list[questionIndex].selected = cancel.val;
+                    _list[questionIndex].show_extra = cancel.show_extra;
+                    setData(_data);
+                },
+                cancelText: cancel.text,
+                confirm: type === 'confirm',
+                confirmCallBack: () => {
+                    _list[questionIndex].selected = confirm.val;
+                    _list[questionIndex].show_extra = confirm.show_extra;
+                    setData(_data);
+                },
+                confirmText: confirm.text,
+                confirmTextColor: '#D7AF74',
+                content,
+                isTouchMaskToClose: false,
+                title,
+            });
+        } else {
+            _list[questionIndex].selected = option.val;
+            _list[questionIndex].show_extra = option.show_extra;
+            setData(_data);
+        }
     };
 
+    const onSubmit = useCallback(
+        debounce(
+            () => {
+                const params = {order_id: route.params.order_id || 1};
+                params.answer_list = JSON.stringify(
+                    data?.questions?.map((item) => {
+                        return {answer: item.selected, question_id: item.id, extra: item.info || ''};
+                    })
+                );
+                http.post('/private_fund/submit_investor_info_question/20220510', params).then((res) => {
+                    if (res.code === '000000') {
+                        navigation.goBack();
+                    }
+                    Toast.show(res.message);
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [data]
+    );
+
     useEffect(() => {
-        navigation.setOptions({title: '私募问答'});
-        setData({
-            btns: [
-                {
-                    text: '上一步',
-                    url: '',
-                },
-                {
-                    text: '提交',
-                    url: '',
-                },
-            ],
-            list: [
-                {
-                    options: [
-                        {label: '是', value: 1},
-                        {label: '否', value: 0},
-                    ],
-                    title:
-                        '私募基金投资者，最近20个交易日金融资产均不低于人民币300万元，或者最近3年个人年均收入不低于人民币50万元',
-                },
-                {
-                    options: [
-                        {label: '是', value: 1},
-                        {label: '否', value: 0},
-                    ],
-                    tips: '是否存在实际控制关系？',
-                    title: '是否存在实际控制关系？',
-                },
-                {
-                    options: [
-                        {label: '本人', value: 1},
-                        {label: '他人', show_area: 1, value: 2},
-                    ],
-                    title: '交易的实际收益人？',
-                },
-            ],
-            // tips: '*回访说明详细内容占位符。',
-        });
+        http.get('/private_fund/investor_info_question/20220510', {order_id: route.params.order_id || 1}).then(
+            (res) => {
+                if (res.code === '000000') {
+                    navigation.setOptions({title: res.result.title || '私募问答'});
+                    setData(res.result);
+                }
+            }
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -85,10 +115,10 @@ export default ({navigation}) => {
                     const {
                         info = '',
                         max_length = 300,
-                        options,
+                        option_list: options,
                         selected,
-                        show_area,
-                        tips: questionTips,
+                        show_extra,
+                        tip: questionTips,
                         title,
                     } = question;
                     return (
@@ -106,13 +136,19 @@ export default ({navigation}) => {
                                 {questionTips ? (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => Modal.show({content: questionTips, title: '提示'})}>
+                                        onPress={() =>
+                                            Modal.show({
+                                                confirmText: '确定',
+                                                content: questionTips.content,
+                                                title: '提示',
+                                            })
+                                        }>
                                         <Image source={require('../../assets/img/tip.png')} style={styles.tipsIcon} />
                                     </TouchableOpacity>
                                 ) : null}
                             </View>
                             {options.map((option, j) => {
-                                const {label, value} = option;
+                                const {desc: label, val: value} = option;
                                 return (
                                     <TouchableOpacity
                                         activeOpacity={selected === undefined ? 0.8 : 1}
@@ -139,7 +175,7 @@ export default ({navigation}) => {
                                     </TouchableOpacity>
                                 );
                             })}
-                            {show_area ? (
+                            {show_extra ? (
                                 <View style={styles.inputBox}>
                                     <TextInput
                                         keyboardType={'default'}
@@ -147,7 +183,7 @@ export default ({navigation}) => {
                                         multiline
                                         onChangeText={(_text) => {
                                             const _data = {...data};
-                                            const _list = _data.list;
+                                            const _list = _data.questions;
                                             _list[i].info = _text;
                                             setData(_data);
                                         }}
@@ -166,23 +202,32 @@ export default ({navigation}) => {
                     );
                 })}
             </KeyboardAwareScrollView>
-            <View style={[Style.flexRow, styles.bottomBtn]}>
-                {btns.map((btn, index) => {
-                    const {text, url} = btn;
-                    return (
-                        <Button
-                            color={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
-                            disabledColor={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
-                            key={btn + index}
-                            onPress={() => jump(url)}
-                            style={btns.length > 1 && index === 0 ? styles.prevBtn : styles.nextBtn}
-                            textStyle={btns.length > 1 ? styles.btnText : undefined}
-                            title={text}
-                            type={btns.length > 1 && index === 0 ? 'minor' : 'primary'}
-                        />
-                    );
-                })}
-            </View>
+            {btns.length > 0 ? (
+                <View style={[Style.flexRow, styles.bottomBtn]}>
+                    {btns.map((btn, index) => {
+                        const {text, url} = btn;
+                        return (
+                            <Button
+                                color={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
+                                disabled={index === 1 ? !finished : false}
+                                disabledColor={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
+                                key={btn + index}
+                                onPress={() => {
+                                    if (btns.length > 1 && index === 0) {
+                                        jump(url);
+                                    } else {
+                                        onSubmit();
+                                    }
+                                }}
+                                style={btns.length > 1 && index === 0 ? styles.prevBtn : styles.nextBtn}
+                                textStyle={btns.length > 1 ? styles.btnText : undefined}
+                                title={text}
+                                type={btns.length > 1 && index === 0 ? 'minor' : 'primary'}
+                            />
+                        );
+                    })}
+                </View>
+            ) : null}
         </View>
     ) : (
         <Loading />

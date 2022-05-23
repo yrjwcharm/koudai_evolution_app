@@ -2,29 +2,54 @@
  * @Date: 2022-05-11 15:34:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-18 15:48:26
+ * @LastEditTime: 2022-05-21 15:24:56
  * @Description: 投资者信息表
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Picker from 'react-native-picker';
-import {times} from 'lodash';
 import {FormItem} from './IdentityAssertion';
 import {Colors, Font, Space} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Mask from '../../components/Mask';
 import Loading from '../Portfolio/components/PageLoading';
-// import http from '../../services';
+import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
+import Toast from '../../components/Toast';
+import {debounce} from 'lodash';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [showMask, setShowMask] = useState(false);
-    const {button = {}, list = []} = data;
-    const {text, url} = button;
+    const {button = {}, info: list = []} = data;
+    const {avail, text} = button;
+
+    const finished = useMemo(() => {
+        const {info: _list = []} = data;
+        return _list.every((item) => item.value !== '');
+    }, [data]);
+
+    const onSubmit = useCallback(
+        debounce(
+            () => {
+                const params = {order_id: route.params.order_id || 1};
+                const {info: _list = []} = data;
+                _list.forEach((item) => (params[item.id] = item.value));
+                http.post('/private_fund/submit_investor_info/20220510', params).then((res) => {
+                    if (res.code === '000000') {
+                        jump(res.result.url, 'replace');
+                    }
+                    Toast.show(res.message);
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [data]
+    );
 
     const onChange = (index, value) => {
         const _data = {...data};
@@ -40,99 +65,11 @@ export default ({navigation}) => {
     };
 
     useEffect(() => {
-        navigation.setOptions({title: '投资者信息表'});
-        setData({
-            button: {
-                text: '下一步',
-                url: '',
-            },
-            list: [
-                {
-                    label: '姓名',
-                    type: 'text',
-                    value: '王某某',
-                },
-                {
-                    label: '证件类型',
-                    type: 'text',
-                    value: '身份证',
-                },
-                {
-                    label: '证件号',
-                    type: 'text',
-                    value: '11034565456789',
-                },
-                {
-                    label: '证件有效期是否为永久',
-                    options: [
-                        {label: '是', value: 1},
-                        {label: '否', value: 0},
-                    ],
-                    type: 'radio',
-                    value: 0,
-                },
-                {
-                    label: '证件有效期',
-                    type: 'datepicker',
-                    value: '2022 / 04 / 27',
-                },
-                {
-                    label: '性别',
-                    options: [
-                        {label: '男', value: 1},
-                        {label: '女', value: 2},
-                    ],
-                    type: 'picker',
-                    value: '请选择',
-                },
-                {
-                    label: '年龄',
-                    options: times(101)
-                        .slice(1)
-                        .map((n) => ({label: `${n}岁`, value: n})),
-                    type: 'picker',
-                    value: '请选择',
-                },
-                {
-                    input_type: 'phone-pad',
-                    label: '手机号',
-                    max_length: 11,
-                    placeholder: '请输入手机号',
-                    type: 'input',
-                    value: '',
-                },
-                {
-                    input_type: 'number-pad',
-                    label: '邮编',
-                    max_length: 6,
-                    placeholder: '请输入邮编',
-                    type: 'input',
-                    value: '',
-                },
-                {
-                    input_type: 'email-address',
-                    label: '电子邮箱',
-                    max_length: 100,
-                    placeholder: '请输入电子邮箱',
-                    type: 'input',
-                    value: '',
-                },
-                {
-                    input_type: 'default',
-                    label: '住址',
-                    max_length: 100,
-                    placeholder: '请输入住址',
-                    type: 'input',
-                    value: '',
-                },
-                {
-                    label: '税收居民身份',
-                    options: [],
-                    tips: '税收居民身份',
-                    type: 'picker',
-                    value: '请选择',
-                },
-            ],
+        http.get('/private_fund/investor_info/20220510', {order_id: route.params.order_id || 1}).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '投资者信息表'});
+                setData(res.result);
+            }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -155,13 +92,16 @@ export default ({navigation}) => {
                     ))}
                 </View>
             </KeyboardAwareScrollView>
-            <FixedButton
-                color="#EDDBC5"
-                disabledColor="#EDDBC5"
-                onPress={() => jump(url)}
-                style={{backgroundColor: '#D7AF74'}}
-                title={text}
-            />
+            {text ? (
+                <FixedButton
+                    color="#EDDBC5"
+                    disabled={avail === 0 || !finished}
+                    disabledColor="#EDDBC5"
+                    onPress={onSubmit}
+                    style={{backgroundColor: '#D7AF74'}}
+                    title={text}
+                />
+            ) : null}
         </View>
     ) : (
         <Loading />

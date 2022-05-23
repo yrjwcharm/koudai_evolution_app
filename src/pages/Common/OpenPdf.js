@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 19:21:57
+ * @LastEditTime: 2022-05-23 17:32:54
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
@@ -11,6 +11,7 @@ import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
 import Empty from '../../components/EmptyTip';
 import {Colors, Style} from '../../common/commonStyle';
+import http from '../../services';
 
 export default class OpenPdf extends Component {
     constructor(props) {
@@ -56,6 +57,10 @@ export default class OpenPdf extends Component {
                         source={{uri: url, cache: true}}
                         onLoadComplete={(numberOfPages, filePath) => {
                             // console.log(numberOfPages, filePath);
+                            const {order_id, postUrl, type} = this.props.route.params;
+                            if (postUrl) {
+                                http.post(postUrl, {order_id, type});
+                            }
                         }}
                         onPageChanged={(page) => {
                             // console.log(`current page: ${page}`);

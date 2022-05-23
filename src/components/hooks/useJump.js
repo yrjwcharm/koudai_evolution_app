@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 19:16:17
+ * @LastEditTime: 2022-05-23 15:23:49
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -14,7 +14,7 @@ import http from '../../services';
 import {generateOptions} from './useStateChange';
 import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
-import {recordInit, signFile, signInit, startRecord} from '../../pages/PE/PEBridge';
+import {recordInit, signFile, signInit, signPreview, startRecord} from '../../pages/PE/PEBridge';
 
 function useJump() {
     const navigation = useNavigation();
@@ -37,7 +37,7 @@ function useJump() {
                     })
                     .catch((err) => Toast.show(err));
             } else if (url.type === 3) {
-                navigation[type]('OpenPdf', {url: url.path});
+                navigation[type]('OpenPdf', {url: url.path, ...(url.params || {})});
             } else if (url.type == 5) {
                 WeChat.isWXAppInstalled().then((isInstalled) => {
                     if (isInstalled) {
@@ -106,7 +106,17 @@ function useJump() {
                 const toast = Toast.showLoading();
                 http.get(url.path, url.params).then((res) => {
                     if (res.code === '000000') {
-                        const {app_id, file_id, questions, serial_number, user_no} = res.result;
+                        const {
+                            app_id,
+                            btn_text,
+                            bucket_name,
+                            file_id,
+                            object_key,
+                            questions,
+                            serial_number,
+                            title,
+                            user_no,
+                        } = res.result;
                         if (app_id && file_id && user_no) {
                             signInit(app_id, true, (mes) => {
                                 console.log(mes);
@@ -120,7 +130,16 @@ function useJump() {
                                 console.log(mes);
                             });
                             setTimeout(() => {
+                                Toast.hide(toast);
                                 startRecord(serial_number, '', questions);
+                            }, 200);
+                        } else if (bucket_name && object_key) {
+                            signInit(app_id, true, (mes) => {
+                                console.log(mes);
+                            });
+                            setTimeout(() => {
+                                Toast.hide(toast);
+                                signPreview(bucket_name, object_key, title, btn_text);
                             }, 200);
                         } else {
                             Toast.hide(toast);
