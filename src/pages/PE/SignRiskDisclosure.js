@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 16:30:14
+ * @LastEditTime: 2022-05-24 21:18:43
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -15,7 +15,6 @@ import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Toast from '../../components/Toast';
-import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -36,22 +35,6 @@ export default ({navigation, route}) => {
                 setData(res.result);
             }
         });
-    }, []);
-
-    useEffect(() => {
-        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
-                if (resp.code === '000000') {
-                    Toast.show(resp.message || '签署成功');
-                    navigation.goBack();
-                } else {
-                    Toast.show(resp.message || '签署失败');
-                }
-            });
-        });
-        return () => {
-            listener.remove();
-        };
     }, []);
 
     return Object.keys(data).length > 0 ? (
