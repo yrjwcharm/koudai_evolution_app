@@ -3,11 +3,11 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 17:49:41
+ * @LastEditTime: 2022-05-24 21:37:21
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Platform, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Platform, ScrollView} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -139,20 +139,22 @@ const PrivateApply = (props) => {
                                                     {item.title}
                                                 </Text>
                                                 {item?.text_button && (
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.8}
+                                                    <Button
+                                                        color="#EDDBC5"
+                                                        disabled={item.text_button.avail === 0}
+                                                        disabledColor="#BDC2CC"
                                                         onPress={() => {
                                                             if (item.text_button.type === 'copy') {
-                                                                Clipboard.setString(item.desc.join('\n'));
+                                                                Clipboard.setString(item.text_button.content);
                                                                 Toast.show('复制成功');
                                                             } else {
                                                                 jump(item.text_button.url);
                                                             }
-                                                        }}>
-                                                        <Text style={{color: Colors.brandColor}}>
-                                                            {item?.text_button?.text}
-                                                        </Text>
-                                                    </TouchableOpacity>
+                                                        }}
+                                                        style={styles.partButton}
+                                                        textStyle={styles.partBtnText}
+                                                        title={item.text_button.text}
+                                                    />
                                                 )}
                                             </View>
                                             {item.desc && (
@@ -308,6 +310,16 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: '#fff',
+    },
+    partButton: {
+        paddingHorizontal: text(6),
+        borderRadius: text(4),
+        height: text(20),
+        backgroundColor: '#D7AF74',
+    },
+    partBtnText: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
     },
 });
 
