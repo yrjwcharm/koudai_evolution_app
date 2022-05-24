@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-23 12:15:44
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-24 17:49:41
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -20,6 +20,8 @@ import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import {MethodObj, NativeRecordManagerEmitter} from './PEBridge';
+import Loading from '../Portfolio/components/PageLoading';
+
 const PrivateApply = (props) => {
     const {fund_code, poid, scene} = props.route.params || {};
     const jump = useJump();
@@ -61,7 +63,7 @@ const PrivateApply = (props) => {
     useEffect(() => {
         if (data.title) {
             props.navigation.setOptions({
-                title: data.title,
+                title: data.title || '购买流程',
             });
         }
     }, [data, props]);
@@ -99,7 +101,7 @@ const PrivateApply = (props) => {
                 };
         }
     };
-    return (
+    return Object.keys(data).length > 0 ? (
         <View style={[styles.container, {paddingBottom: isIphoneX() ? text(85) : text(51)}]}>
             <ScrollView
                 style={[styles.processContainer]}
@@ -110,7 +112,11 @@ const PrivateApply = (props) => {
                         return (
                             <View
                                 key={index}
-                                style={[styles.processItem, index === arr.length - 1 ? {marginBottom: text(32)} : {}]}
+                                style={[
+                                    styles.processItem,
+                                    index === 0 ? {marginTop: Space.marginVertical} : {},
+                                    index === arr.length - 1 ? {marginBottom: text(32)} : {},
+                                ]}
                                 onLayout={(e) => onLayout(index, e)}>
                                 <View style={[styles.icon]}>
                                     <MaterialCommunityIcons
@@ -152,13 +158,13 @@ const PrivateApply = (props) => {
                                             {item.desc && (
                                                 <View style={[styles.moreInfo]}>
                                                     {item.desc?.map((val, i) => {
-                                                        return (
+                                                        return val ? (
                                                             <Html
                                                                 key={val + i}
                                                                 html={val}
                                                                 style={styles.moreInfoText}
                                                             />
-                                                        );
+                                                        ) : null;
                                                     })}
                                                 </View>
                                             )}
@@ -180,7 +186,8 @@ const PrivateApply = (props) => {
                                         style={[
                                             styles.line,
                                             {
-                                                height: heightArr[index] ? text(heightArr[index]) + 2 : text(52),
+                                                height: heightArr[index] || text(46),
+                                                backgroundColor: item.status === 5 ? '#D7AF74' : '#CCD0DB',
                                             },
                                         ]}
                                     />
@@ -196,6 +203,8 @@ const PrivateApply = (props) => {
                 color={'#CEA26B'}
             />
         </View>
+    ) : (
+        <Loading />
     );
 };
 
@@ -212,9 +221,8 @@ const styles = StyleSheet.create({
         paddingLeft: text(8),
     },
     processContainer: {
-        paddingLeft: text(8),
         flex: 1,
-        padding: Space.marginAlign,
+        paddingHorizontal: Space.padding,
     },
     processItem: {
         flexDirection: 'row',
@@ -268,6 +276,7 @@ const styles = StyleSheet.create({
         top: text(32),
         left: Platform.select({ios: text(8), android: text(9)}),
         width: text(1),
+        height: text(46),
         backgroundColor: '#CCD0DB',
         zIndex: 1,
     },

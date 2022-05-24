@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 10:14:31
+ * @LastEditTime: 2022-05-24 17:00:28
  * @Description:路由表
  */
 import React from 'react';
@@ -198,6 +198,7 @@ import PEQuestionnaireResult from '../pages/PE/PEQuestionnaireResult'; // 私募
 import InvestorCert from '../pages/PE/InvestorCert'; // 合格投资者认证
 import ProductReserve from '../pages/PE/ProductReserve'; // 私募产品预约
 import MatchNotification from '../pages/PE/MatchNotification'; // 匹配告知
+import SignRiskDisclosure from '../pages/PE/SignRiskDisclosure'; // 逐项确认
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -541,7 +542,7 @@ export default function AppStack() {
             <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
             <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
-            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
+            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: ''}} />
             <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
             <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
@@ -755,6 +756,7 @@ export default function AppStack() {
             <Stack.Screen name="InvestorCert" component={InvestorCert} options={{title: ''}} />
             <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
             <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
+            <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

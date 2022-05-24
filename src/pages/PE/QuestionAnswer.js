@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-21 16:36:12
+ * @LastEditTime: 2022-05-24 17:58:44
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -72,15 +72,28 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
-                const params = {order_id: route.params.order_id || ''};
+                const {fund_code, order_id, scene} = route.params;
+                const params = {fund_code: fund_code || '', order_id: order_id || ''};
                 params.answer_list = JSON.stringify(
                     data?.questions?.map((item) => {
                         return {answer: item.selected, question_id: item.id, extra: item.info || ''};
                     })
                 );
-                http.post('/private_fund/submit_investor_info_question/20220510', params).then((res) => {
+                const obj = {
+                    investorInfo: '/private_fund/submit_investor_info_question/20220510',
+                    return: '/private_fund/submit_return_visit/20220510',
+                };
+                http.post(obj[scene || 'investorInfo'], params).then((res) => {
                     if (res.code === '000000') {
-                        navigation.goBack();
+                        if (scene === 'investorInfo') {
+                            navigation.goBack();
+                        } else {
+                            jump(res.result.url);
+                        }
+                    } else {
+                        if (scene === 'return') {
+                            navigation.goBack();
+                        }
                     }
                     Toast.show(res.message);
                 });
@@ -88,18 +101,24 @@ export default ({navigation, route}) => {
             1000,
             {leading: true, trailing: false}
         ),
-        [data]
+        [data, route.params]
     );
 
     useEffect(() => {
-        http.get('/private_fund/investor_info_question/20220510', {order_id: route.params.order_id || ''}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    navigation.setOptions({title: res.result.title || '私募问答'});
-                    setData(res.result);
-                }
+        const {fund_code, order_id, scene} = route.params;
+        const obj = {
+            investorInfo: '/private_fund/investor_info_question/20220510',
+            return: '/private_fund/return_visit/20220510',
+        };
+        http.get(obj[scene || 'investorInfo'], {
+            fund_code: fund_code || '',
+            order_id: order_id || '',
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '私募问答'});
+                setData(res.result);
             }
-        );
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -153,7 +172,7 @@ export default ({navigation, route}) => {
                                     <TouchableOpacity
                                         activeOpacity={selected === undefined ? 0.8 : 1}
                                         key={option + j}
-                                        onPress={() => selected === undefined && onSelect(i, option)}
+                                        onPress={() => onSelect(i, option)}
                                         style={[
                                             styles.optionBox,
                                             {
