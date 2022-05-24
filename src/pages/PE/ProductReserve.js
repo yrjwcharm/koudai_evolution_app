@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 15:03:04
+ * @LastEditTime: 2022-05-24 20:52:54
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -131,7 +131,11 @@ export default ({navigation, route}) => {
             http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                 if (resp.code === '000000') {
                     Toast.show(resp.message || '签署成功');
-                    navigation.goBack();
+                    if (resp.result.type === 'back') {
+                        navigation.goBack();
+                    } else if (resp.result.type === 'refresh') {
+                        init();
+                    }
                 } else {
                     Toast.show(resp.message || '签署失败');
                 }
