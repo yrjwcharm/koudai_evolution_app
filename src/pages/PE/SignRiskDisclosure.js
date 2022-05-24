@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 15:48:40
+ * @LastEditTime: 2022-05-24 16:30:14
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -59,7 +59,7 @@ export default ({navigation, route}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
                 {tips ? <Text style={[styles.tips, {marginTop: Space.marginVertical}]}>{tips}</Text> : null}
                 {list.map((item, index, arr) => {
-                    const {button: btn, name, password_content, is_show = false} = item;
+                    const {button: btn, name, password_content, is_show = false, type} = item;
                     return (
                         <View
                             key={item + index}
@@ -88,10 +88,20 @@ export default ({navigation, route}) => {
                                     disabled={btn.avail === 0 || is_show}
                                     disabledColor="#BDC2CC"
                                     onPress={() => {
-                                        const _data = {...data};
-                                        _data.list[index].is_show = true;
-                                        _data.list[index].button.text = '已确认';
-                                        setData(_data);
+                                        http.post('/private_fund/double_record/risk_disclosure_read/20220510', {
+                                            fund_code: route.params.fund_code || '',
+                                            order_id: route.params.order_id || '',
+                                            type,
+                                        }).then((res) => {
+                                            if (res.code === '000000') {
+                                                const _data = {...data};
+                                                _data.list[index].is_show = true;
+                                                _data.list[index].button.text = '已确认';
+                                                setData(_data);
+                                            } else {
+                                                Toast.show(res.message);
+                                            }
+                                        });
                                     }}
                                     style={styles.partButton}
                                     textStyle={styles.partBtnText}
