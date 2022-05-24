@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 17:14:30
+ * @LastEditTime: 2022-05-24 17:49:41
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -158,13 +158,13 @@ const PrivateApply = (props) => {
                                             {item.desc && (
                                                 <View style={[styles.moreInfo]}>
                                                     {item.desc?.map((val, i) => {
-                                                        return (
+                                                        return val ? (
                                                             <Html
                                                                 key={val + i}
                                                                 html={val}
                                                                 style={styles.moreInfoText}
                                                             />
-                                                        );
+                                                        ) : null;
                                                     })}
                                                 </View>
                                             )}

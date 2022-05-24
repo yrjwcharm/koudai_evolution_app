@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 17:33:45
+ * @LastEditTime: 2022-05-24 17:58:44
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -72,7 +72,8 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
-                const params = {fund_code: route.params.fund_code || '', order_id: route.params.order_id || ''};
+                const {fund_code, order_id, scene} = route.params;
+                const params = {fund_code: fund_code || '', order_id: order_id || ''};
                 params.answer_list = JSON.stringify(
                     data?.questions?.map((item) => {
                         return {answer: item.selected, question_id: item.id, extra: item.info || ''};
@@ -82,9 +83,17 @@ export default ({navigation, route}) => {
                     investorInfo: '/private_fund/submit_investor_info_question/20220510',
                     return: '/private_fund/submit_return_visit/20220510',
                 };
-                http.post(obj[route.params.scene || 'investorInfo'], params).then((res) => {
+                http.post(obj[scene || 'investorInfo'], params).then((res) => {
                     if (res.code === '000000') {
-                        navigation.goBack();
+                        if (scene === 'investorInfo') {
+                            navigation.goBack();
+                        } else {
+                            jump(res.result.url);
+                        }
+                    } else {
+                        if (scene === 'return') {
+                            navigation.goBack();
+                        }
                     }
                     Toast.show(res.message);
                 });
@@ -96,13 +105,14 @@ export default ({navigation, route}) => {
     );
 
     useEffect(() => {
+        const {fund_code, order_id, scene} = route.params;
         const obj = {
             investorInfo: '/private_fund/investor_info_question/20220510',
             return: '/private_fund/return_visit/20220510',
         };
-        http.get(obj[route.params.scene || 'investorInfo'], {
-            fund_code: route.params.fund_code || '',
-            order_id: route.params.order_id || '',
+        http.get(obj[scene || 'investorInfo'], {
+            fund_code: fund_code || '',
+            order_id: order_id || '',
         }).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '私募问答'});
@@ -162,7 +172,7 @@ export default ({navigation, route}) => {
                                     <TouchableOpacity
                                         activeOpacity={selected === undefined ? 0.8 : 1}
                                         key={option + j}
-                                        onPress={() => selected === undefined && onSelect(i, option)}
+                                        onPress={() => onSelect(i, option)}
                                         style={[
                                             styles.optionBox,
                                             {
