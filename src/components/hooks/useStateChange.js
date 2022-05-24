@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 15:09:41
+ * @LastEditTime: 2022-05-24 11:40:48
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -413,6 +413,7 @@ function useStateChange({homeShowModal, store}) {
                     global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, modal.log_id);
                 }
                 let options = {
+                    backButtonClose: modal.back_close,
                     confirmCallBack: () => {
                         if (modal.confirm?.act === 'back') {
                             navigation?.goBack?.();

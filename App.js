@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:04:18
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-24 11:42:19
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -58,9 +58,10 @@ const key = Platform.select({
     android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
 });
 
-if (process.env.NODE_ENV === 'development') { //调试中可看到网络请求
-    global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; 
-    global.WebSocket = global.originalWebSocket || global.WebSocket 
+if (process.env.NODE_ENV === 'development') {
+    //调试中可看到网络请求
+    global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
+    global.WebSocket = global.originalWebSocket || global.WebSocket;
 }
 
 if (Platform.OS === 'android') {
