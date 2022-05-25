@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 19:34:42
+ * @LastEditTime: 2022-05-25 20:51:06
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -195,7 +195,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
     }
 };
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {button = {}, list = [], desc: tips} = data;
@@ -216,6 +216,9 @@ export default ({navigation}) => {
     );
 
     useEffect(() => {
+        if (route.params.fr === 'flow') {
+            return () => {};
+        }
         const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
             http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                 if (resp.code === '000000') {
