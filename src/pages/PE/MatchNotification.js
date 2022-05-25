@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 09:59:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 19:15:30
+ * @LastEditTime: 2022-05-25 14:16:17
  * @Description: 匹配告知
  */
 import React, {useEffect, useState} from 'react';
@@ -58,7 +58,7 @@ export default ({navigation, route}) => {
                     color="#EDDBC5"
                     disabled={button.avail === 0 || countdown > 0}
                     disabledColor="#EDDBC5"
-                    onPress={() => jump(button.url)}
+                    onPress={() => jump(button.url, 'replace')}
                     style={styles.button}
                     title={countdown > 0 ? `本人已知晓 (${countdown}s)` : button.text}
                 />
