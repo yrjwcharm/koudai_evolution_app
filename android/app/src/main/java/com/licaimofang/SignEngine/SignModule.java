@@ -81,7 +81,7 @@ public class SignModule extends ReactContextBaseJavaModule {
                 WritableMap params = Arguments.createMap();
                 params.putString("fileId", fileInfo.getFileId());
                 sentMessageToJs(reactContext, "signFileSuccess", params);
-                ToastUtil.showShort(getCurrentActivity(), "签署成功");
+//                ToastUtil.showShort(getCurrentActivity(), "签署成功");
             }
 
             @Override
