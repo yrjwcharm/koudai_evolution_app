@@ -2,11 +2,12 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 20:04:12
+ * @LastEditTime: 2022-05-25 21:31:34
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -18,6 +19,7 @@ import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 import {debounce} from 'lodash';
+import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -121,6 +123,31 @@ export default ({navigation, route}) => {
         init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>

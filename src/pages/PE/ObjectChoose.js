@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 20:51:06
+ * @LastEditTime: 2022-05-25 21:33:36
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -215,30 +215,29 @@ export default ({navigation, route}) => {
         }, [])
     );
 
-    useEffect(() => {
-        if (route.params.fr === 'flow') {
-            return () => {};
-        }
-        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
-                if (resp.code === '000000') {
-                    Toast.show(resp.message || '签署成功');
-                    if (resp.result.type === 'back') {
-                        navigation.goBack();
-                    } else if (resp.result.type === 'refresh') {
-                        init();
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
                     } else {
-                        init();
+                        Toast.show(resp.message || '签署失败');
                     }
-                } else {
-                    Toast.show(resp.message || '签署失败');
-                }
+                });
             });
-        });
-        return () => {
-            listener.remove();
-        };
-    }, []);
+            return () => {
+                listener.remove();
+            };
+        }, [])
+    );
 
     useEffect(() => {
         const listener = DeviceEventEmitter.addListener('refresh', init);

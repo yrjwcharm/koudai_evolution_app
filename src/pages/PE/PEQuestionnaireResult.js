@@ -2,11 +2,12 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 20:42:45
+ * @LastEditTime: 2022-05-25 21:30:13
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -15,6 +16,8 @@ import http from '../../services';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
+import Toast from '../../components/Toast';
+import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
 const PEQuestionnaireResult = () => {
     const jump = useJump();
@@ -47,6 +50,31 @@ const PEQuestionnaireResult = () => {
         init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     const handleJump = useCallback(
         (url) => {

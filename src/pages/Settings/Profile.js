@@ -3,7 +3,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 19:09:04
+ * @LastEditTime: 2022-05-25 21:34:03
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -56,25 +56,29 @@ const Profile = ({navigation}) => {
             }
         });
     };
-    useEffect(() => {
-        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
-                if (resp.code === '000000') {
-                    Toast.show(resp.message || '签署成功');
-                    if (resp.result.type === 'back') {
-                        navigation.goBack();
-                    } else if (resp.result.type === 'refresh') {
-                        init();
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
                     } else {
-                        init();
+                        Toast.show(resp.message || '签署失败');
                     }
-                } else {
-                    Toast.show(resp.message || '签署失败');
-                }
+                });
             });
-        });
-        return () => listener.remove();
-    }, []);
+            return () => {
+                listener.remove();
+            };
+        }, [])
+    );
     const onPress = useCallback(
         (item) => {
             global.LogTool('click', item.key);
