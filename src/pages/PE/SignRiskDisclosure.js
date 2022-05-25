@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 21:18:43
+ * @LastEditTime: 2022-05-25 14:21:32
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -14,7 +14,6 @@ import {useJump} from '../../components/hooks';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
-import Toast from '../../components/Toast';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -75,16 +74,11 @@ export default ({navigation, route}) => {
                                             fund_code: route.params.fund_code || '',
                                             order_id: route.params.order_id || '',
                                             type,
-                                        }).then((res) => {
-                                            if (res.code === '000000') {
-                                                const _data = {...data};
-                                                _data.list[index].is_show = true;
-                                                _data.list[index].button.text = '已确认';
-                                                setData(_data);
-                                            } else {
-                                                Toast.show(res.message);
-                                            }
                                         });
+                                        const _data = {...data};
+                                        _data.list[index].is_show = true;
+                                        _data.list[index].button.text = '已确认';
+                                        setData(_data);
                                     }}
                                     style={styles.partButton}
                                     textStyle={styles.partBtnText}
