@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 19:02:03
+ * @LastEditTime: 2022-05-25 17:26:53
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -26,7 +26,7 @@ const PEQuestionnaireResult = () => {
     const {button, desc, level, level_tip, logs = {}, tips} = data;
     const {list = [], th = [], title: logTitle} = logs;
 
-    useEffect(() => {
+    const init = () => {
         http.get('/private_fund/risk_evaluation_result/20220510', {fr: route.params?.fr || ''}).then((res) => {
             if (res.code === '000000') {
                 const {title, again_button} = res.result;
@@ -43,6 +43,10 @@ const PEQuestionnaireResult = () => {
                 setData(res.result);
             }
         });
+    };
+
+    useEffect(() => {
+        init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -51,7 +55,13 @@ const PEQuestionnaireResult = () => {
             http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                 if (resp.code === '000000') {
                     Toast.show(resp.message || '签署成功');
-                    navigation.goBack();
+                    if (resp.result.type === 'back') {
+                        navigation.goBack();
+                    } else if (resp.result.type === 'refresh') {
+                        init();
+                    } else {
+                        init();
+                    }
                 } else {
                     Toast.show(resp.message || '签署失败');
                 }
