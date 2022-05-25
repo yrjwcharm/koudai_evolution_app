@@ -2,18 +2,21 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 14:21:32
+ * @LastEditTime: 2022-05-25 21:47:56
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
+import {MethodObj, NativeSignManagerEmitter} from './PEBridge';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -24,7 +27,7 @@ export default ({navigation, route}) => {
         return data?.list?.every((item) => item.is_show);
     }, [data]);
 
-    useEffect(() => {
+    const init = () => {
         http.get('/private_fund/double_record/risk_disclosure/20220510', {
             fund_code: route.params.fund_code || '',
             order_id: route.params.order_id || '',
@@ -34,7 +37,35 @@ export default ({navigation, route}) => {
                 setData(res.result);
             }
         });
+    };
+
+    useEffect(() => {
+        init();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
