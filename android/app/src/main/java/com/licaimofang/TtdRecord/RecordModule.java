@@ -51,7 +51,7 @@ public class RecordModule extends ReactContextBaseJavaModule {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        successCallBack.invoke("初始化成功");
+                        successCallBack.invoke("success");
                         MLog.d("Record", "onSuccess-----");
                     }
                 });

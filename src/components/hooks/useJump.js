@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-23 15:23:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-25 19:58:57
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {DeviceEventEmitter, Linking} from 'react-native';
+import {DeviceEventEmitter, Linking, Platform} from 'react-native';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
 import http from '../../services';
@@ -126,13 +126,19 @@ function useJump() {
                                 signFile(file_id, user_no);
                             }, 200);
                         } else if (app_id && questions && serial_number) {
+                            //init安卓有回掉 ios没有
                             recordInit(app_id, true, (mes) => {
-                                console.log(mes);
+                                if (mes == 'success') {
+                                    Toast.hide(toast);
+                                    startRecord(serial_number, '', questions);
+                                }
                             });
-                            setTimeout(() => {
-                                Toast.hide(toast);
-                                startRecord(serial_number, '', questions);
-                            }, 200);
+                            if (Platform.OS == 'ios') {
+                                setTimeout(() => {
+                                    Toast.hide(toast);
+                                    startRecord(serial_number, '', questions);
+                                }, 200);
+                            }
                         } else if (bucket_name && object_key) {
                             signInit(app_id, true, (mes) => {
                                 console.log(mes);
