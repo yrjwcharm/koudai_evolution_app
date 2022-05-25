@@ -543,7 +543,7 @@ export default function AppStack() {
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
             <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
             <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />
-            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
+            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: ''}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: ''}} />
             <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
             <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />

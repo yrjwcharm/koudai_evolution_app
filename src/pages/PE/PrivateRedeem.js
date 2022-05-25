@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-20 16:08:07
- * @Description:私募赎回申请
+ * @Description: 私募赎回申请
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 17:28:41
+ * @LastEditTime: 2022-05-25 18:25:19
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -24,6 +24,7 @@ export default function PrivateRedeem({route, navigation}) {
             poid: route.params?.poid,
         }).then((res) => {
             if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '申请赎回'});
                 setData(res.result);
             }
         });
