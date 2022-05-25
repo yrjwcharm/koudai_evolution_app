@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 19:59:15
+ * @LastEditTime: 2022-05-25 20:04:12
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -17,7 +17,6 @@ import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
-import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 import {debounce} from 'lodash';
 
 export default ({navigation, route}) => {
@@ -120,29 +119,6 @@ export default ({navigation, route}) => {
 
     useEffect(() => {
         init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
-            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
-                if (resp.code === '000000') {
-                    Toast.show(resp.message || '签署成功');
-                    if (resp.result.type === 'back') {
-                        navigation.goBack();
-                    } else if (resp.result.type === 'refresh') {
-                        init();
-                    } else {
-                        init();
-                    }
-                } else {
-                    Toast.show(resp.message || '签署失败');
-                }
-            });
-        });
-        return () => {
-            listener.remove();
-        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
