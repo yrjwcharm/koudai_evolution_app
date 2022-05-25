@@ -11,11 +11,9 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
     const [feedbackState, setFeedback] = useState(
         body.type === 'icon' ? body?.items?.find((item) => item.is_selected) : null
     );
-    const [opinions, setOpinions] = useState(
-        body.type === 'select' ? body?.items?.filter((item) => item.is_selected) : []
-    );
+    const [opinions, setOpinions] = useState(body?.items?.filter?.((item) => item.is_selected) || []);
     const [footerBtnState, setFooterBtnActive] = useState(null);
-    const [opinionsTimeEnd, setOpinionsTimeEnd] = useState(false);
+    const [opinionsTimeEnd, setOpinionsTimeEnd] = useState(opinions.length > 0);
 
     const opinionsTime = useRef(message?.body?.select_submit_time || defaultTime);
     const opinionsTimer = useRef(null);
