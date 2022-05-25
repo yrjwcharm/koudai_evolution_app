@@ -8,8 +8,12 @@ const defaultTime = 3000;
 const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
     const jump = useJump();
     const {header, body, footer} = message?.content?.result || message?.content?.data || {};
-    const [feedbackState, setFeedback] = useState(null);
-    const [opinions, setOpinions] = useState([]);
+    const [feedbackState, setFeedback] = useState(
+        body.type === 'icon' ? body?.items?.find((item) => item.is_selected) : null
+    );
+    const [opinions, setOpinions] = useState(
+        body.type === 'select' ? body?.items?.filter((item) => item.is_selected) : []
+    );
     const [footerBtnState, setFooterBtnActive] = useState(null);
     const [opinionsTimeEnd, setOpinionsTimeEnd] = useState(false);
 
@@ -18,7 +22,10 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
 
     const handlerFeedback = (obj) => {
         setFeedback(obj);
-        wsSend('BPR', obj);
+        wsSend('BPR', {
+            ...obj,
+            message_id: message.content.message_id,
+        });
     };
     const handlerOpinions = (obj) => {
         if (opinionsTimer.current) {
@@ -36,10 +43,10 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
                 setOpinionsTimeEnd(true);
                 clearInterval(opinionsTimer.current);
                 setOpinions((arr) => {
-                    wsSend(
-                        'BWR',
-                        arr.map((item) => item.value)
-                    );
+                    wsSend('BWR', {
+                        message_id: message.content.message_id,
+                        labels: arr.map((item) => item.value),
+                    });
                     return arr;
                 });
             }
