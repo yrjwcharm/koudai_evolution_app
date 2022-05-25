@@ -1577,12 +1577,16 @@ const styles = StyleSheet.create({
         color: '#121D3a',
         lineHeight: px(18),
         fontSize: px(13),
+        paddingTop: px(6),
+        marginHorizontal: px(8),
+        flex: 1,
     },
     groupBulletinBtn: {
         borderRadius: px(12),
         backgroundColor: '#ff7d41',
         paddingHorizontal: px(10),
         paddingVertical: px(3),
+        minWidth: px(45),
     },
     groupBulletinBtnText: {
         color: '#fff',
