@@ -3,12 +3,12 @@
  * @Date: 2021-02-20 16:08:07
  * @Description: 私募赎回申请
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 18:44:30
+ * @LastEditTime: 2022-05-25 19:17:32
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, inputInt} from '../../utils/appUtil';
+import {px as text, onlyNumber} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import Toast from '../../components/Toast';
@@ -26,6 +26,7 @@ export default function PrivateRedeem({route, navigation}) {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '申请赎回'});
                 setAmount(`${res.result.amount}`);
+                setEnable(res.result.amount ? false : true);
                 setData(res.result);
             }
         });
@@ -65,10 +66,10 @@ export default function PrivateRedeem({route, navigation}) {
             setEnable(true);
             return;
         }
-        if (_amount >= data.share.share) {
+        if (parseFloat(_amount) > parseFloat(data.share.share)) {
             setAmount(data.share.share.toString());
         } else {
-            setAmount(inputInt(_amount));
+            setAmount(onlyNumber(_amount));
         }
         setEnable(false);
     };
@@ -89,7 +90,7 @@ export default function PrivateRedeem({route, navigation}) {
                                 style={{height: text(50), fontSize: text(26), flex: 1}}
                                 placeholder={data.placeholder}
                                 placeholderTextColor={Colors.placeholderColor}
-                                keyboardType={'number-pad'}
+                                keyboardType={'numeric'}
                                 onChangeText={onInput}
                                 value={amount}
                             />
