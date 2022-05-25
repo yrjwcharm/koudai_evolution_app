@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 19:36:36
+ * @LastEditTime: 2022-05-25 19:59:15
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -103,11 +103,7 @@ export default ({navigation, route}) => {
                 };
                 http.post(obj[scene || 'investorInfo'], params).then((res) => {
                     if (res.code === '000000') {
-                        if (scene === 'investorInfo') {
-                            navigation.goBack();
-                        } else {
-                            jump(res.result.url);
-                        }
+                        jump(res.result.url);
                     } else {
                         if (scene === 'return') {
                             navigation.goBack();
