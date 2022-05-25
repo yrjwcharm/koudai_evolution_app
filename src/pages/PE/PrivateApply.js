@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 21:37:21
+ * @LastEditTime: 2022-05-25 10:34:35
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,7 +20,7 @@ import Html from '../../components/RenderHtml';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
-import {MethodObj, NativeRecordManagerEmitter} from './PEBridge';
+import {MethodObj, NativeRecordManagerEmitter, NativeSignManagerEmitter} from './PEBridge';
 import Loading from '../Portfolio/components/PageLoading';
 
 const PrivateApply = (props) => {
@@ -54,11 +55,11 @@ const PrivateApply = (props) => {
                 init();
             });
         });
-    }, [init]);
+    }, []);
     useFocusEffect(
         useCallback(() => {
             init();
-        }, [init])
+        }, [])
     );
     useEffect(() => {
         if (data.title) {
@@ -67,6 +68,27 @@ const PrivateApply = (props) => {
             });
         }
     }, [data, props]);
+    useEffect(() => {
+        const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+            http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                if (resp.code === '000000') {
+                    Toast.show(resp.message || '签署成功');
+                    if (resp.result.type === 'back') {
+                        props.navigation.goBack();
+                    } else if (resp.result.type === 'refresh') {
+                        init();
+                    } else {
+                        init();
+                    }
+                } else {
+                    Toast.show(resp.message || '签署失败');
+                }
+            });
+        });
+        return () => {
+            listener.remove();
+        };
+    }, []);
     const gernerateIcon = (status) => {
         switch (status) {
             case 1:
