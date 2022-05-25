@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-24 18:25:43
+ * @LastEditTime: 2022-05-25 19:36:36
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -36,6 +36,23 @@ export default ({navigation, route}) => {
             }
         });
     }, [data]);
+
+    const init = () => {
+        const {fund_code, order_id, scene} = route.params;
+        const obj = {
+            investorInfo: '/private_fund/investor_info_question/20220510',
+            return: '/private_fund/return_visit/20220510',
+        };
+        http.get(obj[scene || 'investorInfo'], {
+            fund_code: fund_code || '',
+            order_id: order_id || '',
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '私募问答'});
+                setData(res.result);
+            }
+        });
+    };
 
     const onSelect = (questionIndex, option) => {
         const {pop} = option;
@@ -106,20 +123,7 @@ export default ({navigation, route}) => {
     );
 
     useEffect(() => {
-        const {fund_code, order_id, scene} = route.params;
-        const obj = {
-            investorInfo: '/private_fund/investor_info_question/20220510',
-            return: '/private_fund/return_visit/20220510',
-        };
-        http.get(obj[scene || 'investorInfo'], {
-            fund_code: fund_code || '',
-            order_id: order_id || '',
-        }).then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({title: res.result.title || '私募问答'});
-                setData(res.result);
-            }
-        });
+        init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -128,7 +132,13 @@ export default ({navigation, route}) => {
             http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                 if (resp.code === '000000') {
                     Toast.show(resp.message || '签署成功');
-                    navigation.goBack();
+                    if (resp.result.type === 'back') {
+                        navigation.goBack();
+                    } else if (resp.result.type === 'refresh') {
+                        init();
+                    } else {
+                        init();
+                    }
                 } else {
                     Toast.show(resp.message || '签署失败');
                 }
