@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 10:34:35
+ * @LastEditTime: 2022-05-26 15:30:37
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -95,13 +95,13 @@ const PrivateApply = (props) => {
         switch (status) {
             case 1:
                 return {
-                    color: '#D7AF74',
-                    name: 'checkbox-blank-circle-outline',
+                    color: '#E9EAEF',
+                    name: 'checkbox-blank-circle',
                 };
             case 2:
                 return {
-                    color: '#CCD0DB',
-                    name: 'checkbox-blank-circle',
+                    color: '#D7AF74',
+                    name: 'checkbox-blank-circle-outline',
                 };
             case 3:
                 return {
