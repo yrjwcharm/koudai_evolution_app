@@ -12,7 +12,7 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
         body.type === 'icon' ? body?.items?.find((item) => item.is_selected) : null
     );
     const [opinions, setOpinions] = useState(body?.items?.filter?.((item) => item.is_selected) || []);
-    const [footerBtnState, setFooterBtnActive] = useState(null);
+    const [footerBtnState, setFooterBtnActive] = useState(footer?.is_selected ? footer : null);
     const [opinionsTimeEnd, setOpinionsTimeEnd] = useState(opinions.length > 0);
 
     const opinionsTime = useRef(message?.body?.select_submit_time || defaultTime);
@@ -71,7 +71,10 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
         if (obj.type === 'button_jump') {
             jump(obj.jump.url);
         } else if (obj.type === 'button_continue') {
-            reconnect(true);
+            wsSend('BPR', {
+                ...obj,
+                message_id: message.content.message_id,
+            });
         }
     };
 
