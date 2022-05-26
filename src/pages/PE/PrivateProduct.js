@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-18 17:21:32
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @Desc:私募产品公告
- * @LastEditTime: 2021-07-23 14:21:51
+ * @LastEditTime: 2022-05-26 15:41:42
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';
@@ -117,9 +117,13 @@ export default function PrivateAssets(props) {
                             <View style={[styles.Wrapper, Style.flexCenter]}>
                                 <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
                                     <Text style={styles.card_title}>{data.fund_name}</Text>
-                                    <View style={styles.card_tag}>
-                                        <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>{data.fund_stage}</Text>
-                                    </View>
+                                    {data.fund_stage ? (
+                                        <View style={styles.card_tag}>
+                                            <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>
+                                                {data.fund_stage}
+                                            </Text>
+                                        </View>
+                                    ) : null}
                                 </View>
                                 <Text style={styles.card_desc}>{data.fund_remark}</Text>
                                 <View style={Style.flexRow}>
