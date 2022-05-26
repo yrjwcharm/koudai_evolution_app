@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-20 19:26:27
+ * @LastEditTime: 2022-05-26 14:15:29
  * @Description: 私募风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,8 +20,9 @@ import {
 import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {deviceHeight, isIphoneX, px, px as text} from '../../utils/appUtil';
+import {deviceHeight, isIphoneX, px} from '../../utils/appUtil';
 import http from '../../services';
+import HTML from '../../components/RenderHtml';
 import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {debounce} from 'lodash';
@@ -203,7 +204,7 @@ const PEQuestionnaire = () => {
                                             style={[
                                                 styles.optionItem,
                                                 answers[current] === item.id ? styles.acOption : {},
-                                                index === 0 ? {marginTop: text(24)} : {},
+                                                index === 0 ? {marginTop: px(24)} : {},
                                             ]}
                                             onPress={() => jumpNext(item)}>
                                             <Text
@@ -217,7 +218,7 @@ const PEQuestionnaire = () => {
                                     );
                                 })}
                             {current !== 0 && (
-                                <View style={[Style.flexRow, {marginTop: text(24)}]}>
+                                <View style={[Style.flexRow, {marginTop: px(24)}]}>
                                     <Text
                                         style={styles.preBtn}
                                         onPress={() => {
@@ -229,7 +230,9 @@ const PEQuestionnaire = () => {
                                 </View>
                             )}
                             {current === questions.length - 1 && endTips ? (
-                                <Text style={styles.endTips}>{endTips}</Text>
+                                <View style={{marginTop: px(24)}}>
+                                    <HTML html={endTips} style={styles.endTips} />
+                                </View>
                             ) : null}
                         </View>
                     </View>
@@ -249,51 +252,51 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     tipBox: {
-        paddingVertical: text(12),
+        paddingVertical: px(12),
         paddingHorizontal: Space.padding,
         backgroundColor: '#FFF5E5',
     },
     tipText: {
-        fontSize: text(13),
-        lineHeight: text(18),
+        fontSize: px(13),
+        lineHeight: px(18),
         color: '#EB7121',
     },
     progressBar: {
         backgroundColor: 'transparent',
-        height: text(6),
+        height: px(6),
     },
     curStyle: {
-        paddingTop: text(24),
-        paddingBottom: text(8),
+        paddingTop: px(24),
+        paddingBottom: px(8),
         alignItems: 'flex-end',
     },
     current: {
-        fontSize: text(40),
-        lineHeight: text(47),
+        fontSize: px(40),
+        lineHeight: px(47),
         color: '#D7AF74',
         fontFamily: Font.numFontFamily,
     },
     total: {
-        fontSize: text(20),
-        lineHeight: text(24),
+        fontSize: px(20),
+        lineHeight: px(24),
         color: Colors.lightGrayColor,
         fontFamily: Font.numFontFamily,
-        marginBottom: text(6),
-        marginLeft: text(4),
+        marginBottom: px(6),
+        marginLeft: px(4),
     },
     questionTitle: {
-        fontSize: text(20),
-        lineHeight: text(28),
+        fontSize: px(20),
+        lineHeight: px(28),
         color: Colors.defaultColor,
         fontWeight: '600',
     },
     optionItem: {
-        marginTop: text(12),
-        paddingVertical: text(26),
-        paddingHorizontal: text(20),
+        marginTop: px(12),
+        paddingVertical: px(26),
+        paddingHorizontal: px(20),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
-        borderWidth: text(1),
+        borderWidth: px(1),
         borderColor: '#fff',
     },
     acOption: {
@@ -301,7 +304,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         fontSize: Font.textH1,
-        lineHeight: text(22),
+        lineHeight: px(22),
         color: Colors.defaultColor,
     },
     acOptionText: {
@@ -309,14 +312,13 @@ const styles = StyleSheet.create({
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     preBtn: {
-        fontSize: text(13),
-        lineHeight: text(18),
+        fontSize: px(13),
+        lineHeight: px(18),
         color: Colors.lightGrayColor,
     },
     endTips: {
-        marginTop: text(24),
         fontSize: Font.textH3,
-        lineHeight: text(17),
+        lineHeight: px(17),
         color: Colors.lightGrayColor,
     },
 });
