@@ -9,12 +9,15 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
 import Notice from '../../components/Notice';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, px, isIphoneX} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import LinearGradient from 'react-native-linear-gradient';
+import {useJump} from '../../components/hooks';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
+    const jump = useJump();
     useEffect(() => {
         Http.get('/bank/asset/list/20210101').then((res) => {
             setData(res.result);
@@ -27,6 +30,26 @@ export default function BankList({navigation, route}) {
         } else {
             navigation.navigate(url.path, url.params);
         }
+    };
+    const renderGroupBulletin = (data) => {
+        return (
+            <LinearGradient
+                colors={['#FFF9F0', '#FFF2DC']}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={styles.groupBulletin}>
+                <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
+                <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.groupBulletinBtn}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}>
+                    <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                </TouchableOpacity>
+            </LinearGradient>
+        );
     };
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
@@ -46,41 +69,44 @@ export default function BankList({navigation, route}) {
                                 key={_index + '_pro'}>
                                 {_pro.products.map((_p, _i) => {
                                     return (
-                                        <TouchableOpacity
-                                            activeOpacity={1}
-                                            style={[
-                                                styles.card_sty,
-                                                {borderBottomWidth: _i < _pro.products.length - 1 ? 0.5 : 0},
-                                            ]}
-                                            onPress={() => jumpTo(_p.url)}
-                                            key={_i + '_p'}>
-                                            <View style={{flex: 1}}>
-                                                <View style={{flexDirection: 'row'}}>
-                                                    <Image
-                                                        source={{
-                                                            uri: _p.logo,
-                                                        }}
-                                                        resizeMode="contain"
-                                                        style={{
-                                                            height: text(16),
-                                                            minWidth: '20%',
-                                                        }}
-                                                    />
-                                                    <Text style={styles.title_sty}>| {_p.prod_name}</Text>
-                                                </View>
-                                                <View style={[Style.flexRow, {paddingTop: text(12)}]}>
-                                                    <View style={{width: '50%'}}>
-                                                        <Text style={styles.desc_sty}>总金额</Text>
-                                                        <Text style={styles.num_sty}>{_p.amount}</Text>
+                                        <>
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                style={[
+                                                    styles.card_sty,
+                                                    {borderBottomWidth: _i < _pro.products.length - 1 ? 0.5 : 0},
+                                                ]}
+                                                onPress={() => jumpTo(_p.url)}
+                                                key={_i + '_p'}>
+                                                <View style={{flex: 1}}>
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <Image
+                                                            source={{
+                                                                uri: _p.logo,
+                                                            }}
+                                                            resizeMode="contain"
+                                                            style={{
+                                                                height: text(16),
+                                                                minWidth: '20%',
+                                                            }}
+                                                        />
+                                                        <Text style={styles.title_sty}>| {_p.prod_name}</Text>
                                                     </View>
-                                                    <View style={{width: '50%'}}>
-                                                        <Text style={styles.desc_sty}>累计收益</Text>
-                                                        <Text style={styles.num_sty}>{_p.profit_acc}</Text>
+                                                    <View style={[Style.flexRow, {paddingTop: text(12)}]}>
+                                                        <View style={{width: '50%'}}>
+                                                            <Text style={styles.desc_sty}>总金额</Text>
+                                                            <Text style={styles.num_sty}>{_p.amount}</Text>
+                                                        </View>
+                                                        <View style={{width: '50%'}}>
+                                                            <Text style={styles.desc_sty}>累计收益</Text>
+                                                            <Text style={styles.num_sty}>{_p.profit_acc}</Text>
+                                                        </View>
                                                     </View>
                                                 </View>
-                                            </View>
-                                            <AntDesign name={'right'} size={12} color={Colors.descColor} />
-                                        </TouchableOpacity>
+                                                <AntDesign name={'right'} size={12} color={Colors.descColor} />
+                                            </TouchableOpacity>
+                                            {_p.group_bulletin && renderGroupBulletin(_p.group_bulletin)}
+                                        </>
                                     );
                                 })}
                             </View>
@@ -114,5 +140,38 @@ const styles = StyleSheet.create({
         fontSize: text(14),
         fontFamily: Font.numFontFamily,
         paddingTop: text(6),
+    },
+    groupBulletin: {
+        paddingTop: px(6),
+        paddingRight: px(16),
+        paddingBottom: px(12),
+        paddingLeft: px(8),
+        borderBottomLeftRadius: px(8),
+        borderBottomRightRadius: px(8),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: px(12),
+    },
+    groupBulletinTitle: {
+        fontWeight: '500',
+        color: '#121D3a',
+        lineHeight: px(18),
+        fontSize: px(13),
+        paddingTop: px(6),
+        marginHorizontal: px(8),
+        flex: 1,
+    },
+    groupBulletinBtn: {
+        borderRadius: px(12),
+        backgroundColor: '#ff7d41',
+        paddingHorizontal: px(10),
+        paddingVertical: px(3),
+        minWidth: px(45),
+    },
+    groupBulletinBtnText: {
+        color: '#fff',
+        lineHeight: px(18),
+        fontSize: px(12),
     },
 });
