@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 21:31:34
+ * @LastEditTime: 2022-05-26 16:53:13
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -199,7 +199,7 @@ export default ({navigation, route}) => {
                                     <TouchableOpacity
                                         activeOpacity={selected === undefined ? 0.8 : 1}
                                         key={option + j}
-                                        onPress={() => onSelect(i, option)}
+                                        onPress={() => selected !== value && onSelect(i, option)}
                                         style={[
                                             styles.optionBox,
                                             {
