@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-29 12:17:39
+ * @LastEditTime: 2022-05-26 17:54:52
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -204,8 +204,14 @@ export default function Launch({navigation}) {
             global.oaid = oaid || '';
         });
     };
+    // 获取ios 归因数据
+    const getAdData = async () => {
+        let data = await PTRIDFA.getAdData();
+        console.log(data);
+    };
     const init = () => {
         Platform.OS == 'ios' ? getIdfa() : getOaid();
+        Platform.OS == 'ios' && getAdData();
         heartBeat();
         setInterval(() => {
             heartBeat();
