@@ -2,7 +2,7 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-21 15:39:27
+ * @LastEditTime: 2022-05-26 16:57:09
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -48,6 +48,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                 pickerTitleText: `请选择${label}`,
                 pickerCancelBtnText: '取消',
                 pickerConfirmBtnText: '确定',
+                pickerToolBarFontSize: Font.textH3,
                 pickerBg: [255, 255, 255, 1],
                 pickerToolBarBg: [249, 250, 252, 1],
                 pickerData: options.map((_item) => _item.label),

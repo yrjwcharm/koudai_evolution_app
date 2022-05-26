@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-26 15:30:37
+ * @LastEditTime: 2022-05-26 16:55:34
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -45,9 +45,6 @@ const PrivateApply = (props) => {
             arr[index] = height;
             return arr;
         });
-    };
-    const btnClick = () => {
-        props.navigation.navigate('Home');
     };
     useEffect(() => {
         NativeRecordManagerEmitter.addListener(MethodObj.recordSuccess, (res) => {
@@ -198,6 +195,7 @@ const PrivateApply = (props) => {
                                         {item.button && (
                                             <Button
                                                 color={'#D7AF74'}
+                                                disabledColor={'#BDC2CC'}
                                                 disabled={!item.button.avail}
                                                 title={item.button.text}
                                                 style={styles.buttonSty}
@@ -222,12 +220,15 @@ const PrivateApply = (props) => {
                         );
                     })}
             </ScrollView>
-            <FixedButton
-                title={'完成'}
-                style={{...styles.btn_sty, backgroundColor: '#CEA26B'}}
-                onPress={() => btnClick()}
-                color={'#CEA26B'}
-            />
+            {data.button?.text ? (
+                <FixedButton
+                    title={data.button.text}
+                    style={{...styles.btn_sty, backgroundColor: '#D7AF74'}}
+                    onPress={() => jump(data.button.url)}
+                    color={'#D7AF74'}
+                    disabledColor={'#D7AF74'}
+                />
+            ) : null}
         </View>
     ) : (
         <Loading />
