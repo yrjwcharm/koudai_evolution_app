@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:35:40
+ * @LastEditTime: 2022-05-27 18:02:38
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -218,7 +218,9 @@ const PrivateApply = (props) => {
                 <FixedButton
                     title={data.button.text}
                     style={{...styles.btn_sty, backgroundColor: '#D7AF74'}}
-                    onPress={() => jump(data.button.url)}
+                    onPress={() =>
+                        jump(data.button.url, data.button.url.path === 'PrivateApply' ? 'replace' : 'navigate')
+                    }
                     color={'#D7AF74'}
                     disabledColor={'#D7AF74'}
                 />
