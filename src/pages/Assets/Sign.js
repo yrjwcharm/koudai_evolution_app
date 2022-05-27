@@ -158,7 +158,7 @@ const Sign = ({navigation}) => {
                                             }}
                                             thumbColor={'#fff'}
                                             trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
-                                            value={!!item?.auto_adjust.status}
+                                            value={!!item?.auto_adjust?.status}
                                             style={{transform: [{scale: 0.6}]}}
                                         />
                                     ) : null}
@@ -175,7 +175,7 @@ const Sign = ({navigation}) => {
                                         {item?.desc}
                                         {item?.link_name}
                                         <Text>
-                                            {item?.[item.auto_adjust.status ? 'link_list' : 'link_list2']?.map(
+                                            {item?.[item?.auto_adjust?.status ? 'link_list' : 'link_list2']?.map(
                                                 (link, _index, arr) => (
                                                     <Text
                                                         style={{color: Colors.btnColor}}
