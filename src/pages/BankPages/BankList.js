@@ -32,7 +32,7 @@ export default function BankList({navigation, route}) {
         }
     };
     const renderGroupBulletin = (data) => {
-        let content = data.content?.slice?.(0, 45);
+        let content = data.content?.slice?.(0, 38);
         return (
             <LinearGradient
                 colors={['#FFF9F0', '#FFF2DC']}
