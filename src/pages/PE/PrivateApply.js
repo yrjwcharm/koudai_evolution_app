@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 14:52:27
+ * @LastEditTime: 2022-05-27 16:35:40
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -20,7 +20,7 @@ import Html from '../../components/RenderHtml';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
-import {MethodObj, NativeRecordManagerEmitter, NativeSignManagerEmitter} from './PEBridge';
+import {MethodObj, NativeSignManagerEmitter} from './PEBridge';
 import Loading from '../Portfolio/components/PageLoading';
 
 const iconObj = {
@@ -52,13 +52,6 @@ const PrivateApply = (props) => {
             return arr;
         });
     };
-    useEffect(() => {
-        NativeRecordManagerEmitter.addListener(MethodObj.recordSuccess, (res) => {
-            http.post('/file_sign/video_record_done/20220510', {serial_number: res.serialNo}).then(() => {
-                init();
-            });
-        });
-    }, []);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -74,8 +67,10 @@ const PrivateApply = (props) => {
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                     if (resp.code === '000000') {
+                        Toast.hide(toast);
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {
                             props.navigation.goBack();
@@ -258,7 +253,7 @@ const styles = StyleSheet.create({
     icon: {
         width: text(16),
         height: text(16),
-        marginTop: text(14),
+        marginTop: Platform.select({android: text(16), ios: text(14)}),
         marginRight: text(8),
         position: 'relative',
         zIndex: 2,
@@ -335,7 +330,7 @@ const styles = StyleSheet.create({
     },
     buttonTextSty: {
         fontSize: Font.textH2,
-        lineHeight: text(20),
+        lineHeight: text(18),
         color: '#fff',
     },
     partButton: {

@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 11:51:32
+ * @LastEditTime: 2022-05-27 16:35:18
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -54,7 +54,9 @@ const PEQuestionnaireResult = () => {
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    Toast.hide(toast);
                     if (resp.code === '000000') {
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {

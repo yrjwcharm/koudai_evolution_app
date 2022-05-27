@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 14:51:15
+ * @LastEditTime: 2022-05-27 16:31:26
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -20,7 +20,7 @@ import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Toast from '../../components/Toast';
 import {debounce} from 'lodash';
-import {MethodObj, NativeSignManagerEmitter} from './PEBridge';
+import {MethodObj, NativeRecordManagerEmitter, NativeSignManagerEmitter} from './PEBridge';
 
 export default ({navigation, route}) => {
     const jump = useJump();
@@ -129,7 +129,9 @@ export default ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    Toast.hide(toast);
                     if (resp.code === '000000') {
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {
@@ -141,6 +143,40 @@ export default ({navigation, route}) => {
                         }
                     } else {
                         Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            const {fund_code, order_id} = route.params;
+            const listener = NativeRecordManagerEmitter.addListener(MethodObj.recordSuccess, (res) => {
+                const toast = Toast.showLoading();
+                http.post('/file_sign/video_record_done/20220510', {
+                    fund_code,
+                    order_id,
+                    serial_number: res.serialNo,
+                }).then((resp) => {
+                    Toast.hide(toast);
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '双录成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else if (resp.result.type === 'jump') {
+                            jump(resp.result.url, 'replace');
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '双录失败');
                     }
                 });
             });
