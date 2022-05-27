@@ -4,14 +4,14 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-26 16:55:34
+ * @LastEditTime: 2022-05-27 14:52:27
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, Text, Platform, ScrollView} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services';
 import {FixedButton, Button} from '../../components/Button';
@@ -22,6 +22,12 @@ import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import {MethodObj, NativeRecordManagerEmitter, NativeSignManagerEmitter} from './PEBridge';
 import Loading from '../Portfolio/components/PageLoading';
+
+const iconObj = {
+    3: require('../../assets/img/fof/waiting.png'),
+    4: require('../../assets/img/fof/warning.png'),
+    5: require('../../assets/img/fof/check.png'),
+};
 
 const PrivateApply = (props) => {
     const {fund_code, poid, scene} = props.route.params || {};
@@ -88,43 +94,12 @@ const PrivateApply = (props) => {
             };
         }, [])
     );
-    const gernerateIcon = (status) => {
-        switch (status) {
-            case 1:
-                return {
-                    color: '#E9EAEF',
-                    name: 'checkbox-blank-circle',
-                };
-            case 2:
-                return {
-                    color: '#D7AF74',
-                    name: 'checkbox-blank-circle-outline',
-                };
-            case 3:
-                return {
-                    color: '#D7AF74',
-                    name: 'clock-time-four-outline',
-                };
-            case 4:
-                return {
-                    color: '#D7AF74',
-                    name: 'alert-circle-outline',
-                };
-            case 5:
-                return {
-                    color: '#D7AF74',
-                    name: 'check-circle',
-                };
-            default:
-                return {
-                    color: '#D7AF74',
-                    name: 'checkbox-blank-circle-outline',
-                };
-        }
-    };
+
     return Object.keys(data).length > 0 ? (
         <View style={[styles.container, {paddingBottom: isIphoneX() ? text(85) : text(51)}]}>
             <ScrollView
+                bounces={false}
+                scrollIndicatorInsets={{right: 1}}
                 style={[styles.processContainer]}
                 ref={scrollRef}
                 onContentSizeChange={() => scrollRef.current.scrollToEnd({animated: true})}>
@@ -139,12 +114,17 @@ const PrivateApply = (props) => {
                                     index === arr.length - 1 ? {marginBottom: text(32)} : {},
                                 ]}
                                 onLayout={(e) => onLayout(index, e)}>
-                                <View style={[styles.icon]}>
-                                    <MaterialCommunityIcons
-                                        name={gernerateIcon(item.status).name}
-                                        size={20}
-                                        color={gernerateIcon(item.status).color}
-                                    />
+                                <View
+                                    style={[
+                                        styles.icon,
+                                        {
+                                            borderWidth: item.status === 2 ? px(1) : 0,
+                                            backgroundColor: item.status === 1 ? '#E9EAEF' : '#fff',
+                                        },
+                                    ]}>
+                                    {[3, 4, 5].includes(item.status) ? (
+                                        <Image source={iconObj[item.status]} style={{width: '100%', height: '100%'}} />
+                                    ) : null}
                                 </View>
                                 <View style={[styles.contentBox]}>
                                     <FontAwesome
@@ -155,15 +135,17 @@ const PrivateApply = (props) => {
                                     />
                                     <View style={[Style.flexRow, styles.content]}>
                                         <View style={{flex: 1}}>
-                                            <View style={[styles.processTitle, Style.flexBetween]}>
-                                                <Text numberOfLines={1} style={[styles.desc]}>
+                                            <View style={Style.flexBetween}>
+                                                <Text
+                                                    numberOfLines={1}
+                                                    style={[styles.desc, item.status === 3 ? {color: Colors.red} : {}]}>
                                                     {item.title}
                                                 </Text>
                                                 {item?.text_button && (
                                                     <Button
                                                         color="#EDDBC5"
                                                         disabled={item.text_button.avail === 0}
-                                                        disabledColor="#BDC2CC"
+                                                        disabledColor="#EDDBC5"
                                                         onPress={() => {
                                                             if (item.text_button.type === 'copy') {
                                                                 Clipboard.setString(item.text_button.content);
@@ -172,9 +154,16 @@ const PrivateApply = (props) => {
                                                                 jump(item.text_button.url);
                                                             }
                                                         }}
-                                                        style={styles.partButton}
-                                                        textStyle={styles.partBtnText}
+                                                        style={{
+                                                            ...styles.partButton,
+                                                            backgroundColor: item.status === 5 ? '#fff' : '#D7AF74',
+                                                        }}
+                                                        textStyle={{
+                                                            ...styles.partBtnText,
+                                                            color: item.status === 5 ? '#D7AF74' : '#fff',
+                                                        }}
                                                         title={item.text_button.text}
+                                                        type={item.status === 5 ? 'minor' : 'primary'}
                                                     />
                                                 )}
                                             </View>
@@ -194,15 +183,25 @@ const PrivateApply = (props) => {
                                         </View>
                                         {item.button && (
                                             <Button
-                                                color={'#D7AF74'}
-                                                disabledColor={'#BDC2CC'}
+                                                color={'#EDDBC5'}
+                                                disabledColor={'#EDDBC5'}
                                                 disabled={!item.button.avail}
                                                 title={item.button.text}
-                                                style={styles.buttonSty}
-                                                textStyle={styles.buttonTextSty}
+                                                style={{
+                                                    ...styles.buttonSty,
+                                                    backgroundColor: item.status === 5 ? '#fff' : '#D7AF74',
+                                                }}
+                                                textStyle={{
+                                                    ...styles.buttonTextSty,
+                                                    color: item.status === 5 ? '#D7AF74' : '#fff',
+                                                }}
+                                                type={item.status === 5 ? 'minor' : 'primary'}
                                                 onPress={() => jump(item.button.url, 'push')}
                                             />
                                         )}
+                                        {item.status === 3 ? (
+                                            <Text style={[styles.desc, {color: Colors.red}]}>待审核</Text>
+                                        ) : null}
                                     </View>
                                 </View>
                                 {index !== data?.items?.length - 1 && (
@@ -257,12 +256,14 @@ const styles = StyleSheet.create({
         marginBottom: text(12),
     },
     icon: {
-        // width: text(16),
-        // height: text(16),
-        marginTop: text(16),
+        width: text(16),
+        height: text(16),
+        marginTop: text(14),
         marginRight: text(8),
         position: 'relative',
         zIndex: 2,
+        borderColor: '#D7AF74',
+        borderRadius: text(16),
     },
     contentBox: {
         paddingLeft: text(6),
@@ -272,8 +273,8 @@ const styles = StyleSheet.create({
     content: {
         backgroundColor: '#fff',
         borderRadius: Space.borderRadius,
-        paddingVertical: text(14),
-        paddingHorizontal: Space.marginAlign,
+        paddingVertical: text(12),
+        paddingHorizontal: Space.padding,
     },
     processTitle: {
         flexDirection: 'row',
@@ -300,8 +301,8 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        top: text(32),
-        left: Platform.select({ios: text(8), android: text(9)}),
+        top: text(28),
+        left: Platform.select({ios: text(7.7), android: text(7)}),
         width: text(1),
         height: text(46),
         backgroundColor: '#CCD0DB',
@@ -321,15 +322,16 @@ const styles = StyleSheet.create({
     },
     caret_sty: {
         position: 'absolute',
-        top: text(10),
+        top: text(8),
         left: text(-2),
         zIndex: 1,
     },
     buttonSty: {
-        height: text(26),
-        paddingHorizontal: text(12),
+        height: text(24),
+        paddingHorizontal: text(8),
         backgroundColor: '#D7AF74',
-        borderRadius: text(13),
+        borderRadius: text(4),
+        borderColor: '#D7AF74',
     },
     buttonTextSty: {
         fontSize: Font.textH2,

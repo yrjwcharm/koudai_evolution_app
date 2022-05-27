@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-26 14:15:29
+ * @LastEditTime: 2022-05-27 15:02:28
  * @Description: 私募风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -41,6 +41,7 @@ const PEQuestionnaire = () => {
     const [answers, setAnswers] = useState([]);
     const [tips, setTips] = useState('');
     const [endTips, setEndTips] = useState('');
+    const listener = useRef();
 
     const init = () => {
         http.get('/questionnaire/start/20210101', {plan_id: route.params?.plan_id, fr: route.params?.fr}).then(
@@ -71,11 +72,16 @@ const PEQuestionnaire = () => {
                     } = res.result.pop;
                     Modal.show({
                         title,
-                        backButtonClose: false,
                         content,
                         confirmText: btnText,
                         confirmTextColor: '#D7AF74',
                         isTouchMaskToClose: false,
+                        onCloseCallBack: () => {
+                            listener.current?.();
+                            setTimeout(() => {
+                                navigation.goBack();
+                            });
+                        },
                     });
                 }
                 setTips(res.result.tip);
@@ -146,7 +152,7 @@ const PEQuestionnaire = () => {
         }, [])
     );
     useEffect(() => {
-        const listener = navigation.addListener('beforeRemove', (e) => {
+        listener.current = navigation.addListener('beforeRemove', (e) => {
             if (e.data.action.type === 'GO_BACK' || e.data.action.type === 'POP') {
                 e.preventDefault();
                 // Prompt the user before leaving the screen
@@ -164,7 +170,7 @@ const PEQuestionnaire = () => {
             }
         });
         return () => {
-            listener();
+            listener.current?.();
         };
     }, [navigation, route]);
 
