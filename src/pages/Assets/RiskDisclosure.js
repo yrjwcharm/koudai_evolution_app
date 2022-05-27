@@ -29,7 +29,7 @@ export default ({navigation, route}) => {
     const countdownRef = useRef(10);
     const timeRef = useRef();
     const passwordRef = useRef();
-    const {poids} = route.params;
+    const {poids, auto_poids, manual_poids} = route.params;
 
     useEffect(() => {
         http.get('/advisor/need_sign/info/20220422', {poids}).then((res) => {
@@ -97,7 +97,7 @@ export default ({navigation, route}) => {
     /** @name 点击确认签约，完成输入交易密码 */
     const onSubmit = (password) => {
         const loading = Toast.showLoading('签约中...');
-        http.post('/adviser/sign/20210923', {password, poids}).then((res) => {
+        http.post('/adviser/sign/20210923', {password, poids, auto_poids, manual_poids}).then((res) => {
             Toast.hide(loading);
             Toast.show(res.message);
             if (res.code === '000000') {
