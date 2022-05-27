@@ -69,6 +69,10 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
     const handlerFooterBtn = (obj) => {
         setFooterBtnActive(obj);
         if (obj.type === 'button_jump') {
+            wsSend('BWR', {
+                message_id: message.content.message_id,
+                ...obj,
+            });
             jump(obj.jump.url);
         } else if (obj.type === 'button_continue') {
             wsSend('BPR', {

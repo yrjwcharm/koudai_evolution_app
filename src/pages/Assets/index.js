@@ -440,7 +440,9 @@ function HomeScreen({navigation}) {
                 end={{x: 0, y: 1}}
                 style={styles.groupBulletin}>
                 <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
-                <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                <Text style={styles.groupBulletinTitle} numberOfLines={2}>
+                    {data.title}
+                </Text>
                 <TouchableOpacity
                     activeOpacity={0.9}
                     style={styles.groupBulletinBtn}

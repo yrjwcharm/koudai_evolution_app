@@ -32,21 +32,39 @@ export default function BankList({navigation, route}) {
         }
     };
     const renderGroupBulletin = (data) => {
+        let content = data.content?.slice?.(0, 45);
         return (
             <LinearGradient
                 colors={['#FFF9F0', '#FFF2DC']}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.groupBulletin}>
-                <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
-                <Text style={styles.groupBulletinTitle}>{data.title}</Text>
                 <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={styles.groupBulletinBtn}
+                    activeOpacity={0.8}
+                    style={styles.groupBulletinTop}
                     onPress={() => {
                         jump(data.jumpUrl);
                     }}>
-                    <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                    <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
+                    <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}
+                    style={styles.groupBulletinBottom}>
+                    <Text style={styles.groupBulletinBottomContent}>
+                        {content}
+                        {content.length > 44 ? '...' : ''}
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.groupBulletinBtnTextWrapper}
+                        onPress={() => {
+                            jump(data.jumpUrl);
+                        }}>
+                        <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                    </TouchableOpacity>
                 </TouchableOpacity>
             </LinearGradient>
         );
@@ -148,30 +166,39 @@ const styles = StyleSheet.create({
         paddingLeft: px(8),
         borderBottomLeftRadius: px(8),
         borderBottomRightRadius: px(8),
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: px(12),
+    },
+    groupBulletinTop: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     groupBulletinTitle: {
         fontWeight: '500',
         color: '#121D3a',
         lineHeight: px(18),
         fontSize: px(13),
-        paddingTop: px(6),
-        marginHorizontal: px(8),
+        marginLeft: px(8),
+        marginTop: px(5),
         flex: 1,
     },
-    groupBulletinBtn: {
-        borderRadius: px(12),
-        backgroundColor: '#ff7d41',
-        paddingHorizontal: px(10),
-        paddingVertical: px(3),
-        minWidth: px(45),
+    groupBulletinBottom: {
+        marginTop: px(6),
+        paddingLeft: px(8),
+    },
+    groupBulletinBottomContent: {
+        fontSize: px(12),
+        color: '#545968',
+        lineHeight: px(17),
+    },
+    groupBulletinBtnTextWrapper: {
+        borderBottomColor: '#0051cc',
+        borderBottomWidth: 1,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
     },
     groupBulletinBtnText: {
-        color: '#fff',
-        lineHeight: px(18),
         fontSize: px(12),
+        color: '#0051cc',
     },
 });

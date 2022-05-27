@@ -297,11 +297,21 @@ export default function PortfolioAssets(props) {
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.groupBulletin}>
-                <View style={styles.groupBulletinTop}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.groupBulletinTop}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}>
                     <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
                     <Text style={styles.groupBulletinTitle}>{data.title}</Text>
-                </View>
-                <View style={styles.groupBulletinBottom}>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}
+                    style={styles.groupBulletinBottom}>
                     <Text style={styles.groupBulletinBottomContent}>
                         {content}
                         {content.length > 44 ? '...' : ''}
@@ -313,7 +323,7 @@ export default function PortfolioAssets(props) {
                         }}>
                         <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
                     </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
             </LinearGradient>
         );
     };
