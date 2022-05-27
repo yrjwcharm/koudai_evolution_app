@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 18:02:38
+ * @LastEditTime: 2022-05-27 18:08:04
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
         borderRadius: text(4),
         height: text(20),
         backgroundColor: '#D7AF74',
+        borderColor: '#D7AF74',
     },
     partBtnText: {
         fontSize: Font.textSm,
