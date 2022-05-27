@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 21:47:56
+ * @LastEditTime: 2022-05-27 16:36:14
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -46,7 +46,9 @@ export default ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    Toast.hide(toast);
                     if (resp.code === '000000') {
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {

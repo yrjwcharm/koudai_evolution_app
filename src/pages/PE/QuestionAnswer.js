@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-26 16:53:13
+ * @LastEditTime: 2022-05-27 16:36:00
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -127,7 +127,9 @@ export default ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    Toast.hide(toast);
                     if (resp.code === '000000') {
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {
