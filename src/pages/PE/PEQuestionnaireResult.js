@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:35:18
+ * @LastEditTime: 2022-05-27 19:49:00
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -17,6 +17,7 @@ import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast';
+import Loading from '../Portfolio/components/PageLoading';
 import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 
 const PEQuestionnaireResult = () => {
@@ -182,7 +183,9 @@ const PEQuestionnaireResult = () => {
                 />
             ) : null}
         </View>
-    ) : null;
+    ) : (
+        <Loading />
+    );
 };
 
 const styles = StyleSheet.create({
