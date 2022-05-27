@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:31:26
+ * @LastEditTime: 2022-05-27 18:09:42
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -229,6 +229,9 @@ export default ({navigation, route}) => {
             <View style={[Style.flexRow, styles.btnBox]}>
                 {button2.text ? (
                     <Button
+                        color="#BDC2CC"
+                        disabled={button2.avail === 0}
+                        disabledColor="#BDC2CC"
                         onPress={() => jump(button2.url)}
                         style={styles.prevButton}
                         textStyle={styles.btnText}
