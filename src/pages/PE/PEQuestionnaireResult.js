@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 21:30:13
+ * @LastEditTime: 2022-05-27 11:51:32
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -170,7 +170,15 @@ const PEQuestionnaireResult = () => {
                     ) : null}
                 </View>
             </ScrollView>
-            {button ? <Button title={button.text} onPress={() => jump(button.url)} style={styles.button} /> : null}
+            {button ? (
+                <Button
+                    color="#EDDBC5"
+                    disabledColor="#EDDBC5"
+                    title={button.text}
+                    onPress={() => jump(button.url)}
+                    style={styles.button}
+                />
+            ) : null}
         </View>
     ) : null;
 };

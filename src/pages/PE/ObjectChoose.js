@@ -3,10 +3,10 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 21:33:36
+ * @LastEditTime: 2022-05-27 11:56:27
  * @Description: 特定对象选择
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     DeviceEventEmitter,
     Platform,
@@ -38,6 +38,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
     const [oldPwd, setOldPwd] = useState('');
     const [pwd, setPwd] = useState('');
     const [confirmPwd, setConfirmPwd] = useState('');
+    const inputArr = useRef([]);
 
     const onSubmit = useCallback(
         debounce(
@@ -70,6 +71,23 @@ export const PopupContent = ({data, refresh = () => {}}) => {
             setSelected(default_select);
         }
     }, [default_select, type]);
+
+    useEffect(() => {
+        if (type === 'sign_password') {
+            let input;
+            if (data.old_password) {
+                input = inputArr.current[0];
+            } else if (data.password) {
+                input = inputArr.current[1];
+            }
+            const isFocused = input?.isFocused?.();
+            if (!isFocused) {
+                setTimeout(() => {
+                    input?.focus?.();
+                }, 300);
+            }
+        }
+    }, [data, type]);
 
     switch (type) {
         case 'choose_object':
@@ -124,12 +142,12 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                             <View style={styles.divider} />
                             <Text style={styles.inputLabel}>{old_password.name}</Text>
                             <TextInput
-                                autoFocus
                                 keyboardType="number-pad"
                                 maxLength={6}
                                 onChangeText={(val) => setOldPwd(val.replace(/\D/g, ''))}
                                 placeholder={old_password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
+                                ref={(ref) => (inputArr.current[0] = ref)}
                                 secureTextEntry={true}
                                 style={styles.inputStyle}
                                 textContentType={'password'}
@@ -142,12 +160,12 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                             <View style={styles.divider} />
                             <Text style={styles.inputLabel}>{password.name}</Text>
                             <TextInput
-                                autoFocus={!old_password}
                                 keyboardType="number-pad"
                                 maxLength={6}
-                                onChangeText={(val) => setPwd(val).replace(/\D/g, '')}
+                                onChangeText={(val) => setPwd(val.replace(/\D/g, ''))}
                                 placeholder={password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
+                                ref={(ref) => (inputArr.current[1] = ref)}
                                 secureTextEntry={true}
                                 style={styles.inputStyle}
                                 textContentType={'password'}
@@ -162,7 +180,7 @@ export const PopupContent = ({data, refresh = () => {}}) => {
                             <TextInput
                                 keyboardType="number-pad"
                                 maxLength={6}
-                                onChangeText={(val) => setConfirmPwd(val).replace(/\D/g, '')}
+                                onChangeText={(val) => setConfirmPwd(val.replace(/\D/g, ''))}
                                 placeholder={re_password.placeholder}
                                 placeholderTextColor={'#BDC2CC'}
                                 secureTextEntry={true}

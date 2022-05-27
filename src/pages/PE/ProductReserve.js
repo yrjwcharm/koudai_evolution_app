@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-25 21:41:35
+ * @LastEditTime: 2022-05-27 14:51:15
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -10,7 +10,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {FormItem} from './IdentityAssertion';
-import {Colors, Font, Space} from '../../common/commonStyle';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import {Modal} from '../../components/Modal';
@@ -25,7 +25,7 @@ import {MethodObj, NativeSignManagerEmitter} from './PEBridge';
 export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {button = {}, info: parts = [], tip: tips} = data;
+    const {button = {}, button2 = {}, info: parts = [], tip: tips} = data;
     const popupRef = useRef(true);
 
     const finished = useMemo(() => {
@@ -190,16 +190,28 @@ export default ({navigation, route}) => {
                     </View>
                 ) : null}
             </KeyboardAwareScrollView>
-            {button.text ? (
-                <Button
-                    color="#EDDBC5"
-                    disabled={button.avail === 0 || !finished}
-                    disabledColor="#EDDBC5"
-                    onPress={onSubmit}
-                    style={styles.button}
-                    title={button.text}
-                />
-            ) : null}
+            <View style={[Style.flexRow, styles.btnBox]}>
+                {button2.text ? (
+                    <Button
+                        onPress={() => jump(button2.url)}
+                        style={styles.prevButton}
+                        textStyle={styles.btnText}
+                        title={button2.text}
+                        type={'minor'}
+                    />
+                ) : null}
+                {button.text ? (
+                    <Button
+                        color="#EDDBC5"
+                        disabled={button.avail === 0 || !finished}
+                        disabledColor="#EDDBC5"
+                        onPress={onSubmit}
+                        style={styles.nextButton}
+                        textStyle={button2.text ? styles.btnText : {}}
+                        title={button.text}
+                    />
+                ) : null}
+            </View>
         </View>
     ) : (
         <Loading />
@@ -237,11 +249,22 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: Colors.lightGrayColor,
     },
-    button: {
+    btnBox: {
         position: 'absolute',
         right: px(16),
         bottom: isIphoneX() ? 34 : px(16),
         left: px(16),
+    },
+    prevButton: {
+        marginRight: px(12),
+        width: px(166),
+    },
+    nextButton: {
+        flex: 1,
         backgroundColor: '#D7AF74',
+    },
+    btnText: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
     },
 });

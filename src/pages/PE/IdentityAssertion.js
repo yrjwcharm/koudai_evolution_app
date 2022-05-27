@@ -2,7 +2,7 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-26 16:57:09
+ * @LastEditTime: 2022-05-27 12:18:11
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -48,7 +48,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                 pickerTitleText: `请选择${label}`,
                 pickerCancelBtnText: '取消',
                 pickerConfirmBtnText: '确定',
-                pickerToolBarFontSize: Font.textH3,
+                pickerToolBarFontSize: Font.textH1,
                 pickerBg: [255, 255, 255, 1],
                 pickerToolBarBg: [249, 250, 252, 1],
                 pickerData: options.map((_item) => _item.label),
@@ -100,7 +100,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                             }
                             return (
                                 <>
-                                    <HTML html={_label || value} style={styles.itemLabel} />
+                                    <HTML html={_label || value || '请选择'} style={styles.itemLabel} />
                                     {type === 'text' ? null : (
                                         <EvilIcons color={Colors.lightGrayColor} name="chevron-right" size={24} />
                                     )}
