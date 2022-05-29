@@ -30,7 +30,7 @@ import Praise from '../../../components/Praise';
 import {throttle} from 'lodash';
 import {BottomModal} from '../../../components/Modal';
 import {withErrorBoundary} from 'react-native-error-helper';
-
+import GuideTips from '../../../components/GuideTips';
 function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
@@ -742,6 +742,9 @@ function DetailAccount({route, navigation}) {
                     </View>
                     <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
+            ) : null}
+            {data?.guide_tip ? (
+                <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(120)}} />
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
             <BottomModal ref={bottomModal} title={tipsDataOfBottomModal?.title}>
