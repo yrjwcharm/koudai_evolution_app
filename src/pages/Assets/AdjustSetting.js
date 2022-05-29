@@ -11,13 +11,13 @@ const AdjustSetting = ({navigation, route}) => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        http.get('/adviser/adjust/detail/20220526').then((res) => {
+        http.get('/adviser/adjust/detail/20220526', {poid: route?.params?.poid}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title});
                 setData(res.result);
             }
         });
-    }, [navigation]);
+    }, [navigation, route]);
 
     return data ? (
         <ScrollView style={styles.container}>
