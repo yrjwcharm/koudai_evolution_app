@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Switch, ScrollView, StyleSheet, Text,TouchableOpacity} from 'react-native';
+import {View, Switch, ScrollView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import http from '../../services';
 import {px} from '../../utils/appUtil';
 import Loading from '../Portfolio/components/PageLoading';
 import Html from '../../components/RenderHtml';
 import {useJump} from '../../components/hooks';
 
-const AdjustSetting = ({navigation,route}) => {
+const AdjustSetting = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
 
@@ -30,8 +30,8 @@ const AdjustSetting = ({navigation,route}) => {
                             path: data.url,
                             params: {
                                 poid: route?.params?.poid,
-                                status: data?.auto_adjust?.status
-                            }
+                                status: data?.auto_adjust?.status,
+                            },
                         });
                     }}>
                     <Text style={styles.cardText}>{data?.auto_adjust?.text}</Text>
@@ -44,7 +44,7 @@ const AdjustSetting = ({navigation,route}) => {
                 </TouchableOpacity>
                 <Text style={styles.tips}>{data.tips}</Text>
                 {data.tip_list.map((item, idx) => (
-                    <View style={{marginTop: px(idx ? 20 : 0)}}>
+                    <View key={idx} style={{marginTop: px(idx ? 20 : 0)}}>
                         <Html html={item} style={{fontSize: px(12), color: '#545968', lineHeight: px(20)}} />
                     </View>
                 ))}

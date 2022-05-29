@@ -42,6 +42,7 @@ import GuideTips from '../../components/GuideTips';
 import {throttle} from 'lodash';
 import {Button} from '../../components/Button';
 import HTML from '../../components/RenderHtml';
+import ReasonListDialog from './components/ReasonListDialog.js';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -64,6 +65,7 @@ export default function PortfolioAssets(props) {
     const scoreModal = React.useRef();
     const signModal = React.useRef(null);
     const jump = useJump();
+    const [reasonListDialogPropsAndVisible, setReasonListDialogPropsAndVisible] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const [signData, setSignData] = useState(null);
@@ -284,7 +286,7 @@ export default function PortfolioAssets(props) {
             cancelText: '再想一想',
             confirmText: '确认',
             confirmCallBack: () => {
-                signModal.current.hide();
+                setReasonListDialogPropsAndVisible({signModal});
             },
         });
     };
@@ -1014,6 +1016,14 @@ export default function PortfolioAssets(props) {
                     })}
                 </View>
             ) : null}
+            {reasonListDialogPropsAndVisible && (
+                <ReasonListDialog
+                    close={() => {
+                        setReasonListDialogPropsAndVisible(null);
+                    }}
+                    {...reasonListDialogPropsAndVisible}
+                />
+            )}
         </View>
     );
 }

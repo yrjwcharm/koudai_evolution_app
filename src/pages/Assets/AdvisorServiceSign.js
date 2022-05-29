@@ -21,11 +21,14 @@ const AdvisorServiceSign = ({navigation, route}) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title});
                 setData(res.result);
-                setCountdown(res.result.count_down);
+                setCountdown(res.result?.count_down || 0);
                 timer.current = setInterval(() => {
                     setCountdown((val) => {
                         let newVal = val - 1;
-                        if (newVal <= 0) clearInterval(timer.current);
+                        if (newVal <= 0) {
+                            clearInterval(timer.current);
+                            newVal = 0;
+                        }
                         return newVal;
                     });
                 }, 1000);
@@ -39,9 +42,10 @@ const AdvisorServiceSign = ({navigation, route}) => {
 
     const onSubmit = (password) => {
         const loading1 = Toast.showLoading('签约中...');
+        http.post('/advisor/action/report/20220422', {action: ['read', 'confirm'], poids: route?.params?.poid});
         http.post('/adviser/adjust/settings/20220526', {
             password,
-            poid: route?.params.poid,
+            poid: route?.params?.poid,
             status: route?.params.status,
         }).then((res) => {
             Toast.hide(loading1);
