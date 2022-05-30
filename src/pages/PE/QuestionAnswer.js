@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:36:00
+ * @LastEditTime: 2022-05-30 11:19:54
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -24,7 +24,7 @@ import {NativeSignManagerEmitter, MethodObj} from './PEBridge';
 export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {button: btns = [], questions: list = [], tip: tips} = data;
+    const {button: btns = [], questions: list = [], desc: tips} = data;
 
     const finished = useMemo(() => {
         const {questions = []} = data;
@@ -105,10 +105,6 @@ export default ({navigation, route}) => {
                 http.post(obj[scene || 'investorInfo'], params).then((res) => {
                     if (res.code === '000000') {
                         jump(res.result.url);
-                    } else {
-                        if (scene === 'return') {
-                            navigation.goBack();
-                        }
                     }
                     Toast.show(res.message);
                 });
@@ -257,7 +253,7 @@ export default ({navigation, route}) => {
                         return (
                             <Button
                                 color={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
-                                disabled={index === 1 ? !finished : false}
+                                disabled={(btns.length > 1 && index === 1) || btns.length === 1 ? !finished : false}
                                 disabledColor={btns.length > 1 && index === 0 ? undefined : '#EDDBC5'}
                                 key={btn + index}
                                 onPress={() => {
