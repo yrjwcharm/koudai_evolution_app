@@ -2,10 +2,10 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 15:20:54
+ * @LastEditTime: 2022-05-30 18:05:21
  * @Description: 投资者证明材料上传
  */
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     DeviceEventEmitter,
     PermissionsAndroid,
@@ -19,6 +19,7 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -141,24 +142,40 @@ export default ({navigation, route}) => {
     const openPicker = (action) => {
         setTimeout(() => {
             if (action === 'gallery') {
-                ImagePicker.openPicker({
-                    width: px(124),
-                    height: px(84),
-                    cropping: true,
-                    cropperChooseText: '选择',
-                    cropperCancelText: '取消',
-                    loadingLabelText: '加载中',
-                })
-                    .then((image) => {
-                        uploadImage({
-                            fileName: image.filename,
-                            type: image.mime,
-                            uri: image.path,
+                if (typeof clickIndexRef.current === 'string') {
+                    setTimeout(() => {
+                        launchImageLibrary({quality: 0.5}, (response) => {
+                            if (response.didCancel) {
+                                console.log('User cancelled image picker');
+                            } else if (response.error) {
+                                console.log('ImagePicker Error: ', response.error);
+                            } else if (response.customButton) {
+                                console.log('User tapped custom button: ', response.customButton);
+                            } else if (response.assets) {
+                                uploadImage(response.assets[0]);
+                            }
                         });
+                    }, 100);
+                } else {
+                    ImagePicker.openPicker({
+                        width: px(124),
+                        height: px(84),
+                        cropping: true,
+                        cropperChooseText: '选择',
+                        cropperCancelText: '取消',
+                        loadingLabelText: '加载中',
                     })
-                    .catch((err) => {
-                        console.warn(err);
-                    });
+                        .then((image) => {
+                            uploadImage({
+                                fileName: image.filename,
+                                type: image.mime,
+                                uri: image.path,
+                            });
+                        })
+                        .catch((err) => {
+                            console.warn(err);
+                        });
+                }
             } else if (action === 'camera') {
                 ImagePicker.openCamera({
                     width: px(124),
@@ -199,7 +216,7 @@ export default ({navigation, route}) => {
         const _data = {...data};
         const type =
             typeof clickIndexRef.current === 'number' ? _data?.materials[clickIndexRef.current]?.type : 'id_card';
-        console.log(file);
+        // console.log(file, type);
         upload(
             type === 'id_card' ? '/mapi/identity/upload/20210101' : '/private_fund/upload_material/20220510',
             file,
@@ -344,6 +361,20 @@ export default ({navigation, route}) => {
         [data]
     );
 
+    useEffect(() => {
+        const subscription = DeviceEventEmitter.addListener(
+            'EventType',
+            debounce((uri) => {
+                uploadImage({type: 'image/png', uri});
+                // 刷新界面等
+            }, 500)
+        );
+        return () => {
+            subscription?.remove?.();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useFocusEffect(
         useCallback(() => {
             // 令牌云SDK初始化
@@ -390,16 +421,7 @@ export default ({navigation, route}) => {
                     confirmCardFailed(reminder);
                 }
             );
-
-            const subscription = DeviceEventEmitter.addListener(
-                'EventType',
-                debounce((uri) => {
-                    uploadImage({type: 'image/png', uri});
-                    // 刷新界面等
-                }, 500)
-            );
             return () => {
-                subscription?.remove?.();
                 successReqidSubscription?.remove?.();
                 readCardFailedSubscription?.remove?.();
                 confirmInfoSubscription?.remove?.();
