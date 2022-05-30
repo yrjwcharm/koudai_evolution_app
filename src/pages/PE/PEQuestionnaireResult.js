@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 19:49:00
+ * @LastEditTime: 2022-05-30 19:56:25
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -32,16 +32,15 @@ const PEQuestionnaireResult = () => {
         http.get('/private_fund/risk_evaluation_result/20220510', {fr: route.params?.fr || ''}).then((res) => {
             if (res.code === '000000') {
                 const {title, again_button} = res.result;
-                if (again_button) {
-                    navigation.setOptions({
-                        headerRight: () => (
+                navigation.setOptions({
+                    headerRight: () =>
+                        again_button ? (
                             <TouchableOpacity activeOpacity={0.8} onPress={() => handleJump(again_button.url)}>
                                 <Text style={styles.top_button}>{again_button.text}</Text>
                             </TouchableOpacity>
-                        ),
-                        title: title || '评测结果',
-                    });
-                }
+                        ) : null,
+                    title: title || '评测结果',
+                });
                 setData(res.result);
             }
         });
