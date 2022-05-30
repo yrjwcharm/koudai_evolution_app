@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 18:09:42
+ * @LastEditTime: 2022-05-30 14:31:06
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -116,14 +116,16 @@ export default ({navigation, route}) => {
             } = pop;
             Modal.show({
                 title,
-                backButtonClose: false,
+                backButtonClose: true,
                 content,
                 confirmText: btnText,
                 confirmTextColor: '#D7AF74',
                 isTouchMaskToClose: false,
+                onCloseCallBack: () => navigation.goBack(),
             });
             popupRef.current = false;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     useFocusEffect(
@@ -191,6 +193,7 @@ export default ({navigation, route}) => {
         <View style={styles.container}>
             <KeyboardAwareScrollView
                 bounces={false}
+                enableOnAndroid
                 extraScrollHeight={px(100)}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>

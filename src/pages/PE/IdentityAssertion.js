@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-30 11:53:53
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-30 14:19:29
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -361,6 +361,7 @@ export default ({navigation}) => {
             {showMask && <Mask onClick={hidePicker} />}
             <KeyboardAwareScrollView
                 bounces={false}
+                enableOnAndroid
                 extraScrollHeight={px(100) + deltaHeight}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>

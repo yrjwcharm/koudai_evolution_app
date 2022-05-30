@@ -2,7 +2,7 @@
  * @Date: 2022-05-11 15:34:32
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-21 15:24:56
+ * @LastEditTime: 2022-05-30 14:28:27
  * @Description: 投资者信息表
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -79,6 +79,7 @@ export default ({navigation, route}) => {
             {showMask && <Mask onClick={hidePicker} />}
             <KeyboardAwareScrollView
                 bounces={false}
+                enableOnAndroid
                 extraScrollHeight={px(100)}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
