@@ -434,7 +434,7 @@ function HomeScreen({navigation}) {
     );
     const renderGroupBulletin = (item) => {
         const poid = item?.portfolios?.[0]?.poid || '';
-        const matchedKey = Object.keys(notice?.group_list).find((key) => {
+        const matchedKey = Object.keys(notice?.group_list || {}).find((key) => {
             let keyLength = key.length;
             return poid.slice(0, keyLength) === key;
         });
