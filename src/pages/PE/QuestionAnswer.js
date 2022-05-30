@@ -2,11 +2,11 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 14:19:47
+ * @LastEditTime: 2022-05-30 16:34:14
  * @Description: 私募问答
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Animated, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Image from 'react-native-fast-image';
@@ -25,6 +25,7 @@ export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {button: btns = [], questions: list = [], desc: tips} = data;
+    const keyboardHeight = useRef(new Animated.Value(0)).current;
 
     const finished = useMemo(() => {
         const {questions = []} = data;
@@ -115,6 +116,33 @@ export default ({navigation, route}) => {
         [data, route.params]
     );
 
+    // 键盘调起
+    const keyboardWillShow = (e) => {
+        Animated.timing(keyboardHeight, {
+            toValue: e.endCoordinates.height,
+            duration: e.duration,
+            useNativeDriver: false,
+        }).start();
+    };
+    // 键盘隐藏
+    const keyboardWillHide = (e) => {
+        Animated.timing(keyboardHeight, {
+            toValue: 0,
+            duration: e.duration,
+            useNativeDriver: false,
+        }).start();
+    };
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+        Keyboard.addListener('keyboardWillHide', keyboardWillHide);
+        return () => {
+            Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
+            Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
         init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,7 +180,7 @@ export default ({navigation, route}) => {
             <KeyboardAwareScrollView
                 bounces={false}
                 enableOnAndroid
-                extraScrollHeight={px(40)}
+                extraScrollHeight={px(40) + (isIphoneX() ? 34 : px(8)) + px(45) + px(8)}
                 scrollIndicatorInsets={{right: 1}}
                 style={styles.scrollView}>
                 {tips ? <Text style={[styles.tips, {marginTop: Space.marginVertical}]}>{tips}</Text> : null}
@@ -248,7 +276,7 @@ export default ({navigation, route}) => {
                 })}
             </KeyboardAwareScrollView>
             {btns.length > 0 ? (
-                <View style={[Style.flexRow, styles.bottomBtn]}>
+                <Animated.View style={[Style.flexRow, styles.bottomBtn, {bottom: keyboardHeight}]}>
                     {btns.map((btn, index) => {
                         const {text, url} = btn;
                         return (
@@ -271,7 +299,7 @@ export default ({navigation, route}) => {
                             />
                         );
                     })}
-                </View>
+                </Animated.View>
             ) : null}
         </View>
     ) : (
@@ -339,6 +367,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
         paddingBottom: isIphoneX() ? 34 : px(8),
         backgroundColor: '#fff',
+        position: 'relative',
     },
     prevBtn: {
         marginRight: px(12),
