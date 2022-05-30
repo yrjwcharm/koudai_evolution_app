@@ -4,11 +4,11 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2022-05-27 18:08:04
+ * @LastEditTime: 2022-05-30 21:01:43
  */
 
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, Text, Platform, ScrollView} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {StyleSheet, View, Text, Platform, ScrollView, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text, isIphoneX, px} from '../../utils/appUtil';
@@ -17,6 +17,7 @@ import http from '../../services';
 import {FixedButton, Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Html from '../../components/RenderHtml';
+import {Modal} from '../../components/Modal';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
@@ -30,20 +31,61 @@ const iconObj = {
 };
 
 const PrivateApply = (props) => {
-    const {fund_code, poid, scene} = props.route.params || {};
+    const {fund_code, order_id, poid, scene} = props.route.params || {};
     const jump = useJump();
     const [data, setData] = useState({});
     const [heightArr, setHeightArr] = useState([]);
     const scrollRef = useRef(null);
 
-    const init = useCallback(() => {
+    const init = () => {
         http.get(`/private_fund/${scene}_flow/20220510`, {
             fund_code: fund_code,
-            poid: poid,
+            poid: poid || '',
         }).then((res) => {
-            setData(res.result);
+            if (res.code === '000000') {
+                const {restart_button, title} = res.result;
+                props.navigation.setOptions({
+                    headerRight: () =>
+                        restart_button ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => showModal({...restart_button, order_id: res.result.order_id})}>
+                                <Text style={styles.top_button}>{restart_button.text}</Text>
+                            </TouchableOpacity>
+                        ) : null,
+                    title: title || '购买流程',
+                });
+                setData(res.result);
+            }
         });
-    }, [fund_code, poid, scene]);
+    };
+    const showModal = (restart_button) => {
+        const {order_id: _order_id, popup} = restart_button;
+        if (popup) {
+            const {back_close, cancel, confirm, content, title, touch_close} = popup;
+            Modal.show({
+                backButtonClose: back_close,
+                cancelText: cancel?.text,
+                content,
+                confirm: true,
+                confirmCallBack: () => {
+                    http.post('/private_fund/restart_flow/20220510', {
+                        fund_code,
+                        order_id: order_id || _order_id,
+                    }).then((res) => {
+                        Toast.show(res.message);
+                        if (res.code === '000000') {
+                            init();
+                        }
+                    });
+                },
+                confirmText: confirm?.text,
+                confirmTextColor: '#D7AF74',
+                isTouchMaskToClose: touch_close,
+                title,
+            });
+        }
+    };
     const onLayout = (index, e) => {
         let height = e?.nativeEvent?.layout?.height;
         setHeightArr((prev) => {
@@ -57,13 +99,6 @@ const PrivateApply = (props) => {
             init();
         }, [])
     );
-    useEffect(() => {
-        if (data.title) {
-            props.navigation.setOptions({
-                title: data.title || '购买流程',
-            });
-        }
-    }, [data, props]);
     useFocusEffect(
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
@@ -235,6 +270,12 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.bgColor,
         flex: 1,
+    },
+    top_button: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        paddingRight: Space.padding,
     },
     title: {
         fontSize: Font.textH2,

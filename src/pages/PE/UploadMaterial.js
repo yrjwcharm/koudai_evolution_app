@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-30 20:13:19
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-30 20:17:39
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -438,15 +438,7 @@ export default ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '投资者证明材料上传'});
-                    setData({
-                        ...res.result,
-                        btns: [
-                            {
-                                text: '提交',
-                                url: '',
-                            },
-                        ],
-                    });
+                    setData(res.result);
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
