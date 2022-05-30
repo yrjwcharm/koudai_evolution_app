@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 18:41:07
+ * @LastEditTime: 2022-05-30 15:20:54
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -472,7 +472,7 @@ export default ({navigation, route}) => {
                         <View
                             key={item + index}
                             style={[styles.partBox, {marginBottom: index === arr.length - 1 ? px(20) : 0}]}>
-                            {title ? <Text style={styles.partTitle}>{'资产证明或收入证明材料（必填）'}</Text> : null}
+                            {title ? <Text style={styles.partTitle}>{title}</Text> : null}
                             {desc ? <Text style={styles.partDesc}>{desc}</Text> : null}
                             <View style={styles.uploadBoxWrap}>
                                 {images.map((img, i) => {
