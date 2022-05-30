@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-30 18:28:44
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-30 20:13:19
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -227,12 +227,12 @@ export default ({navigation, route}) => {
                     Toast.show('上传成功');
                     ImagePicker.clean();
                     if (type === 'id_card') {
-                        _data.id_info[clickIndexRef.current] = res.result.url;
+                        _data.id_info[clickIndexRef.current] = file.uri;
                     } else {
                         if (_data?.materials[clickIndexRef.current]?.images) {
-                            _data.materials[clickIndexRef.current].images.push(res.result.url);
+                            _data.materials[clickIndexRef.current].images.push(file.uri);
                         } else {
-                            _data.materials[clickIndexRef.current].images = [res.result.url];
+                            _data.materials[clickIndexRef.current].images = [file.uri];
                         }
                     }
                     setData(_data);
