@@ -42,7 +42,6 @@ const AdvisorServiceSign = ({navigation, route}) => {
 
     const onSubmit = (password) => {
         const loading1 = Toast.showLoading('签约中...');
-        http.post('/advisor/action/report/20220422', {action: ['read', 'confirm'], poids: route?.params?.poid});
         http.post('/adviser/adjust/settings/20220526', {
             password,
             poid: route?.params?.poid,
@@ -51,6 +50,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
             Toast.hide(loading1);
             Toast.show(res.message);
             if (res.code === '000000') {
+                http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
                 const routes = navigation.dangerouslyGetState().routes;
                 const assetsRoute = routes[routes.length - 3];
                 navigation.navigate(assetsRoute.name, assetsRoute.params);
