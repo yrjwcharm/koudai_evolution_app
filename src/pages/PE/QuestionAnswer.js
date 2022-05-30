@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 11:19:54
+ * @LastEditTime: 2022-05-30 14:19:47
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -151,6 +151,7 @@ export default ({navigation, route}) => {
         <View style={styles.container}>
             <KeyboardAwareScrollView
                 bounces={false}
+                enableOnAndroid
                 extraScrollHeight={px(40)}
                 scrollIndicatorInsets={{right: 1}}
                 style={styles.scrollView}>
