@@ -18,7 +18,12 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                 Toast.hide(toast);
                 resolve?.(false);
                 if (res.code === '000000') {
-                    setData(res.result);
+                    if (!res.result?.[0]) {
+                        close?.();
+                        bottomModal.current.hide();
+                    } else {
+                        setData(res.result);
+                    }
                 } else {
                     bottomModal.current.hide();
                 }
@@ -119,9 +124,6 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                     }
                 },
             });
-        } else {
-            close?.();
-            bottomModal.current.hide();
         }
     }, [data, curRadio, inputVal, close, errMsg, resolve, bottomModal]);
 

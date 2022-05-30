@@ -285,6 +285,7 @@ export default function PortfolioAssets(props) {
             confirm: true,
             cancelText: '再想一想',
             confirmText: '确认',
+            intensifyCancel: true,
             confirmCallBack: () => {
                 setReasonListDialogPropsAndVisible({signModal});
             },
