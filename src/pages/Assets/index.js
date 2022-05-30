@@ -432,7 +432,14 @@ function HomeScreen({navigation}) {
         },
         [showEye]
     );
-    const renderGroupBulletin = (data) => {
+    const renderGroupBulletin = (item) => {
+        const poid = item?.portfolios?.[0]?.poid || '';
+        const matchedKey = Object.keys(notice?.group_list).find((key) => {
+            let keyLength = key.length;
+            return poid.slice(0, keyLength) === key;
+        });
+        if (!matchedKey) return null;
+        const data = notice?.group_list[matchedKey];
         return (
             <LinearGradient
                 colors={['#FFF9F0', '#FFF2DC']}
@@ -1001,7 +1008,7 @@ function HomeScreen({navigation}) {
                                         {renderPortfolios(item)}
                                     </TouchableOpacity>
                                 )}
-                                {item.group_bulletin && renderGroupBulletin(item.group_bulletin)}
+                                {renderGroupBulletin(item)}
                             </>
                         ) : (
                             <View key={`account1${item.id}`}>
