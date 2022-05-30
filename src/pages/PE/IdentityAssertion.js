@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 12:18:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-30 11:53:53
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -176,7 +176,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                     onCancel={() => setOpen(false)}
                     onConfirm={(date) => {
                         onChange(
-                            `${date.getFullYear()} / ${date.getMonth() + 1 < 10 ? '0' : ''}${date.getMonth() + 1} / ${
+                            `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? '0' : ''}${date.getMonth() + 1}-${
                                 date.getDate() < 10 ? '0' : ''
                             }${date.getDate()}`
                         );
