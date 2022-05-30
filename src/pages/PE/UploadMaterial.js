@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 18:05:21
+ * @LastEditTime: 2022-05-30 18:28:44
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -645,6 +645,8 @@ const styles = StyleSheet.create({
         top: px(-8),
         right: px(-8),
         zIndex: 1,
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(16),
     },
     bottomBtn: {
         paddingTop: px(8),
