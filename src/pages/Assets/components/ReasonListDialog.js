@@ -119,6 +119,9 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                     }
                 },
             });
+        } else {
+            close?.();
+            bottomModal.current.hide();
         }
     }, [data, curRadio, inputVal, close, errMsg, resolve, bottomModal]);
 

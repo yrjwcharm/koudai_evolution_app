@@ -35,7 +35,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
             }
         });
 
-        () => {
+        return () => {
             if (timer.current) clearInterval(timer.current);
         };
     }, [navigation, route]);
@@ -46,7 +46,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
         http.post('/adviser/adjust/settings/20220526', {
             password,
             poid: route?.params?.poid,
-            status: route?.params.status,
+            status: route?.params?.status,
         }).then((res) => {
             Toast.hide(loading1);
             Toast.show(res.message);
@@ -62,6 +62,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
         <>
             <ScrollView
                 scrollIndicatorInsets={{right: 1}}
+                bounces={false}
                 style={[styles.container, {paddingBottom: (isIphoneX() ? px(85) : px(51)) + deltaHeight}]}>
                 <View style={styles.tipsCon}>
                     <Text style={styles.tips}>{data.notice_bar}</Text>
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
         margin: px(16),
         borderRadius: px(6),
         backgroundColor: '#fff',
+        paddingBottom: px(20),
     },
     cardTitle: {
         textAlign: 'center',
