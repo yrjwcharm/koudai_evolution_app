@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-25 19:58:57
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-30 11:15:08
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -52,7 +52,10 @@ function useJump() {
                 });
             } else if (url.type === 6) {
                 // 弹出弹窗
-                const {popup} = url;
+                const {popup = {}} = url;
+                if (Object.keys(popup).length === 0) {
+                    return false;
+                }
                 if (popup.type === 'add_wechat_guide') {
                     const options = generateOptions(popup);
                     Modal.show(options, 'slide');
@@ -75,27 +78,27 @@ function useJump() {
                     );
                 } else {
                     Modal.show({
-                        backButtonClose: false,
+                        backButtonClose: popup.back_close,
                         cancelCallBack: () => {
-                            if (popup?.cancel?.action === 'back') {
+                            if (popup.cancel?.action === 'back') {
                                 navigation.goBack();
-                            } else if (popup?.cancel?.action === 'jump') {
-                                jump(popup?.cancel?.url);
+                            } else if (popup.cancel?.action === 'jump') {
+                                jump(popup.cancel?.url);
                             }
                         },
-                        cancelText: popup?.cancel?.text,
-                        confirm: popup?.cancel ? true : false,
+                        cancelText: popup.cancel?.text,
+                        confirm: popup.cancel ? true : false,
                         confirmCallBack: () => {
-                            if (popup?.confirm?.action === 'back') {
+                            if (popup.confirm?.action === 'back') {
                                 navigation.goBack();
-                            } else if (popup?.confirm?.action === 'jump') {
-                                jump(popup?.confirm?.url);
+                            } else if (popup.confirm?.action === 'jump') {
+                                jump(popup.confirm?.url);
                             }
                         },
-                        confirmText: popup?.confirm?.text,
-                        content: popup?.content,
-                        isTouchMaskToClose: false,
-                        title: popup?.title,
+                        confirmText: popup.confirm?.text,
+                        content: popup.content,
+                        isTouchMaskToClose: popup.touch_close,
+                        title: popup.title,
                     });
                 }
                 if (popup.log_id) {
