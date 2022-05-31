@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-31 15:54:26
+ * @LastEditTime: 2022-05-31 16:39:43
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -223,8 +223,8 @@ export default ({navigation, route}) => {
             file,
             type === 'id_card'
                 ? [
-                      {data: '1', name: 'type'},
                       {data: clickIndexRef.current, name: 'scene'},
+                      {data: '1', name: 'type'},
                   ]
                 : [{data: `${type}`, name: 'type'}],
             (res) => {
@@ -233,12 +233,12 @@ export default ({navigation, route}) => {
                     Toast.show('上传成功');
                     ImagePicker.clean();
                     if (type === 'id_card') {
-                        _data.id_info[clickIndexRef.current] = file.uri;
+                        _data.id_info[clickIndexRef.current] = res.result.url;
                     } else {
                         if (_data?.materials[clickIndexRef.current]?.images) {
-                            _data.materials[clickIndexRef.current].images.push(file.uri);
+                            _data.materials[clickIndexRef.current].images.push(res.result.url);
                         } else {
-                            _data.materials[clickIndexRef.current].images = [file.uri];
+                            _data.materials[clickIndexRef.current].images = [res.result.url];
                         }
                     }
                     setData(_data);
@@ -351,8 +351,9 @@ export default ({navigation, route}) => {
         debounce(
             () => {
                 const params = {materials: {}, order_id: route.params.order_id || ''};
-                const {materials: _materials = []} = data;
+                const {id_info: _id_info, materials: _materials = []} = data;
                 _materials.forEach((item) => (params.materials[item.type] = item.images));
+                params.materials[1] = [_id_info.front, _id_info.back];
                 params.materials = JSON.stringify(params.materials);
                 http.post('/private_fund/submit_certification_material/20220510', params).then((res) => {
                     if (res.code === '000000') {

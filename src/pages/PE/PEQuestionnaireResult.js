@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 19:56:25
+ * @LastEditTime: 2022-05-31 16:25:15
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -132,7 +132,7 @@ const PEQuestionnaireResult = () => {
                                             })}
                                         </View>
                                         {list.map((tr, i) => {
-                                            const {level: trLevel, time, button: trBtn} = tr;
+                                            const {level: trLevel, time, button: trBtn = {}} = tr;
                                             return (
                                                 <View
                                                     key={tr + i}
