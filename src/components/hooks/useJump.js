@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 11:15:08
+ * @LastEditTime: 2022-05-31 18:03:21
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -83,7 +83,7 @@ function useJump() {
                             if (popup.cancel?.action === 'back') {
                                 navigation.goBack();
                             } else if (popup.cancel?.action === 'jump') {
-                                jump(popup.cancel?.url);
+                                jump(popup.cancel?.url, type);
                             }
                         },
                         cancelText: popup.cancel?.text,
@@ -92,7 +92,7 @@ function useJump() {
                             if (popup.confirm?.action === 'back') {
                                 navigation.goBack();
                             } else if (popup.confirm?.action === 'jump') {
-                                jump(popup.confirm?.url);
+                                jump(popup.confirm?.url, type);
                             }
                         },
                         confirmText: popup.confirm?.text,
