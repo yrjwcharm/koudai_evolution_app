@@ -95,7 +95,7 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
                     <View style={styles.evaluateHeader}>
                         <Text style={styles.evaluateHeadText}>{header?.text || header?.value}</Text>
                     </View>
-                    <View style={styles.evaluateMiddle}>
+                    <View style={[styles.evaluateMiddle, {justifyContent: 'space-between'}]}>
                         {body?.type === 'icon'
                             ? body?.items?.map((item, idx) => (
                                   <TouchableOpacity
@@ -106,10 +106,6 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
                                       style={[
                                           styles.evaluateMiddleItem,
                                           {borderRadius: px(8)},
-                                          {
-                                              marginLeft: px(idx % 2 === 0 ? 0 : 11),
-                                              marginTop: px(idx > 1 ? 8 : 0),
-                                          },
                                           {
                                               backgroundColor:
                                                   feedbackState === item ? 'rgba(0, 81, 204, 0.08)' : '#fff',
@@ -145,7 +141,6 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
                                           styles.evaluateMiddleItem,
                                           {borderRadius: px(17)},
                                           {
-                                              marginLeft: px(idx % 2 === 0 ? 0 : 11),
                                               marginTop: px(idx > 1 ? 8 : 0),
                                           },
                                           {
