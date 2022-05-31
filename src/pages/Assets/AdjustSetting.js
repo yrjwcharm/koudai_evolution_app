@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, Switch, ScrollView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import http from '../../services';
 import {px} from '../../utils/appUtil';
@@ -6,10 +6,13 @@ import Loading from '../Portfolio/components/PageLoading';
 import Html from '../../components/RenderHtml';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import Toast from '../../components/Toast';
+import {PasswordModal} from '../../components/Password';
 
 const AdjustSetting = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
+    const passwordRef = useRef(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -22,36 +25,46 @@ const AdjustSetting = ({navigation, route}) => {
         }, [navigation, route])
     );
 
+    const handlerCellClick = () => {
+        if (data?.auto_adjust?.need_sign) {
+            jump({
+                path: data.url,
+                params: {
+                    poid: route?.params?.poid,
+                    status: +!data?.auto_adjust?.status,
+                },
+            });
+        } else {
+            passwordRef.current?.show?.();
+        }
+    };
+
+    const onSubmit = (password) => {
+        const loading1 = Toast.showLoading('签约中...');
+        http.post('/adviser/adjust/settings/20220526', {
+            password,
+            poid: route?.params?.poid,
+            status: +!data?.auto_adjust?.status,
+        }).then((res) => {
+            Toast.hide(loading1);
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                navigation.goBack();
+            }
+        });
+    };
+
     return data ? (
         <ScrollView style={styles.container}>
             <View style={{padding: px(16), paddingBottom: px(80)}}>
-                <TouchableOpacity
-                    style={styles.card}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        jump({
-                            path: data.url,
-                            params: {
-                                poid: route?.params?.poid,
-                                status: +!data?.auto_adjust?.status,
-                            },
-                        });
-                    }}>
+                <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={handlerCellClick}>
                     <Text style={styles.cardText}>{data?.auto_adjust?.text}</Text>
                     <Switch
                         ios_backgroundColor={'#CCD0DB'}
                         thumbColor={'#fff'}
                         trackColor={{false: '#CCD0DB', true: '#0051CC'}}
                         value={!!data?.auto_adjust?.status}
-                        onChange={() => {
-                            jump({
-                                path: data.url,
-                                params: {
-                                    poid: route?.params?.poid,
-                                    status: +!data?.auto_adjust?.status,
-                                },
-                            });
-                        }}
+                        onChange={handlerCellClick}
                     />
                 </TouchableOpacity>
                 <Text style={styles.tips}>{data.tips}</Text>
@@ -61,6 +74,7 @@ const AdjustSetting = ({navigation, route}) => {
                     </View>
                 ))}
             </View>
+            <PasswordModal onDone={onSubmit} ref={passwordRef} />
         </ScrollView>
     ) : (
         <Loading />
