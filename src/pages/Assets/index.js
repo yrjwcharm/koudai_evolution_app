@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-24 15:25:54
+ * @LastEditTime: 2022-05-31 17:03:55
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -666,7 +666,7 @@ function HomeScreen({navigation}) {
                                                   numberOfLines={arr.length > 1 ? 2 : 100}>
                                                   {system?.desc}
                                               </Text>
-                                              {system?.button ? (
+                                              {system?.button?.text ? (
                                                   <View style={styles.btn}>
                                                       <Text style={styles.btn_text}>{system?.button?.text}</Text>
                                                   </View>
@@ -944,14 +944,14 @@ function HomeScreen({navigation}) {
                             return item.portfolios ? (
                                 item.portfolios.length > 1 ? (
                                     <View
-                                        key={`account${item.id}`}
+                                        key={item.poid}
                                         style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
                                         {renderTitle(item)}
                                         {renderPortfolios(item)}
                                     </View>
                                 ) : (
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
+                                        key={item.poid}
                                         activeOpacity={0.8}
                                         style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
                                         onPress={() => {
