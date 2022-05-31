@@ -31,6 +31,7 @@ import {throttle} from 'lodash';
 import {BottomModal} from '../../../components/Modal';
 import {withErrorBoundary} from 'react-native-error-helper';
 import GuideTips from '../../../components/GuideTips';
+
 function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
