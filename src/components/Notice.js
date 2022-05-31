@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 14:36:28
+ * @LastEditTime: 2022-05-31 17:05:00
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
@@ -45,7 +45,7 @@ export default function Notice(props) {
                                     {item?.desc}
                                 </Text>
                             </View>
-                            {item?.button ? (
+                            {item?.button?.text ? (
                                 <View style={styles.btn}>
                                     <Text style={styles.btn_text}>{item?.button?.text}</Text>
                                 </View>
