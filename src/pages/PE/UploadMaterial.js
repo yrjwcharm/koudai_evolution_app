@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-30 20:13:19
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-31 16:39:43
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -34,7 +34,7 @@ import {isIphoneX, px, requestAuth} from '../../utils/appUtil';
 import {
     androidHideLoading,
     androidShowLoading,
-    detectNFCStatus,
+    // detectNFCStatus,
     enterToConfirmInfoPage,
     enterToReadCardPage,
     MethodObj,
@@ -51,7 +51,7 @@ export default ({navigation, route}) => {
     const {button = {}, id_info = {}, materials = []} = data;
     const {back, desc: idDesc, front, title: idTitle} = id_info;
     const clickIndexRef = useRef('');
-    const nfcEnable = useRef(false);
+    // const nfcEnable = useRef(false);
     const cardInfoRef = useRef({});
     const toastRef = useRef('');
     const uiconfig = useRef({
@@ -77,19 +77,20 @@ export default ({navigation, route}) => {
     // 点击上传身份证
     const onPressIdUpload = (type) => {
         clickIndexRef.current = type;
-        if (nfcEnable.current) {
-            // 检测NFC状态
-            detectNFCStatus((status) => {
-                if (status === 1 || status === 2) {
-                    setSelectData(['从相册中获取', '拍照', 'NFC读取身份证']);
-                } else if (status === 3 || status === 4) {
-                    setSelectData(['从相册中获取', '拍照']);
-                }
-                setVisible(true);
-            });
-        } else {
-            setVisible(true);
-        }
+        // if (nfcEnable.current) {
+        //     // 检测NFC状态
+        //     detectNFCStatus((status) => {
+        //         if (status === 1 || status === 2) {
+        //             setSelectData(['从相册中获取', '拍照', 'NFC读取身份证']);
+        //         } else if (status === 3 || status === 4) {
+        //             setSelectData(['从相册中获取', '拍照']);
+        //         }
+        //         setVisible(true);
+        //     });
+        // } else {
+        //     setVisible(true);
+        // }
+        setVisible(true);
     };
 
     // 选择图片或相册
@@ -218,21 +219,26 @@ export default ({navigation, route}) => {
             typeof clickIndexRef.current === 'number' ? _data?.materials[clickIndexRef.current]?.type : 'id_card';
         // console.log(file, type);
         upload(
-            type === 'id_card' ? '/mapi/identity/upload/20210101' : '/private_fund/upload_material/20220510',
+            '/private_fund/upload_material/20220510',
             file,
-            [type === 'id_card' ? {data: clickIndexRef.current, name: 'desc'} : {data: `${type}`, name: 'type'}],
+            type === 'id_card'
+                ? [
+                      {data: clickIndexRef.current, name: 'scene'},
+                      {data: '1', name: 'type'},
+                  ]
+                : [{data: `${type}`, name: 'type'}],
             (res) => {
                 Toast.hide(toast);
                 if (res?.code === '000000') {
                     Toast.show('上传成功');
                     ImagePicker.clean();
                     if (type === 'id_card') {
-                        _data.id_info[clickIndexRef.current] = file.uri;
+                        _data.id_info[clickIndexRef.current] = res.result.url;
                     } else {
                         if (_data?.materials[clickIndexRef.current]?.images) {
-                            _data.materials[clickIndexRef.current].images.push(file.uri);
+                            _data.materials[clickIndexRef.current].images.push(res.result.url);
                         } else {
-                            _data.materials[clickIndexRef.current].images = [file.uri];
+                            _data.materials[clickIndexRef.current].images = [res.result.url];
                         }
                     }
                     setData(_data);
@@ -345,8 +351,9 @@ export default ({navigation, route}) => {
         debounce(
             () => {
                 const params = {materials: {}, order_id: route.params.order_id || ''};
-                const {materials: _materials = []} = data;
+                const {id_info: _id_info, materials: _materials = []} = data;
                 _materials.forEach((item) => (params.materials[item.type] = item.images));
+                params.materials[1] = [_id_info.front, _id_info.back];
                 params.materials = JSON.stringify(params.materials);
                 http.post('/private_fund/submit_certification_material/20220510', params).then((res) => {
                     if (res.code === '000000') {
@@ -438,15 +445,7 @@ export default ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '投资者证明材料上传'});
-                    setData({
-                        ...res.result,
-                        btns: [
-                            {
-                                text: '提交',
-                                url: '',
-                            },
-                        ],
-                    });
+                    setData(res.result);
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
