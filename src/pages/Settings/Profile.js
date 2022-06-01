@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:36:28
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-01 18:53:23
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -217,7 +217,7 @@ const Profile = ({navigation}) => {
     }, [iptVal]);
 
     useEffect(() => {
-        const listener = DeviceEventEmitter.addListener('refresh', init);
+        const listener = DeviceEventEmitter.addListener('sign_password_refresh', init);
         return () => {
             listener?.remove?.();
         };
