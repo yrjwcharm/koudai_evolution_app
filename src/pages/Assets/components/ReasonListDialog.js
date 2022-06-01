@@ -40,6 +40,7 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
             Modal.show({
                 clickClose: false,
                 isTouchMaskToClose: false,
+                backButtonClose: false,
                 confirmText: '确认退出',
                 children: () => {
                     return (
