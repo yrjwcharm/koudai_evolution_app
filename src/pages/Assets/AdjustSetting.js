@@ -20,6 +20,12 @@ const AdjustSetting = ({navigation, route}) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title});
                     setData(res.result);
+                } else {
+                    Toast.show(res.message, {
+                        onHidden: () => {
+                            navigation.goBack();
+                        },
+                    });
                 }
             });
         }, [navigation, route])
@@ -69,8 +75,11 @@ const AdjustSetting = ({navigation, route}) => {
                 </TouchableOpacity>
                 <Text style={styles.tips}>{data.tips}</Text>
                 {data.tip_list?.map((item, idx) => (
-                    <View key={idx} style={{marginTop: px(idx ? 20 : 0)}}>
-                        <Html html={item} style={{fontSize: px(12), color: '#545968', lineHeight: px(20)}} />
+                    <View
+                        key={idx}
+                        style={{marginTop: px(idx ? 8 : 0), flexDirection: 'row', paddingHorizontal: px(8)}}>
+                        <Text style={styles.tipText}>{idx + 1}. </Text>
+                        <Text style={[styles.tipText, {flex: 1}]}>{item}</Text>
                     </View>
                 ))}
             </View>
@@ -95,17 +104,23 @@ const styles = StyleSheet.create({
         paddingVertical: px(18),
     },
     cardText: {
-        fontSize: px(14),
+        fontSize: px(16),
         lineHeight: px(20),
         color: '#545968',
+        fontWeight: '500',
     },
     tips: {
-        fontSize: px(14),
-        lineHeight: px(20),
+        fontSize: px(22),
+        lineHeight: px(34),
         fontWeight: '500',
         color: '#121D3A',
         marginTop: px(20),
-        marginBottom: px(6),
+        marginBottom: px(16),
+    },
+    tipText: {
+        fontSize: px(14),
+        color: '#121d3a',
+        lineHeight: px(28),
     },
 });
 export default AdjustSetting;
