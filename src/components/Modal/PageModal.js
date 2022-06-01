@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:04:55
+ * @LastEditTime: 2022-06-01 17:30:05
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 import React, {Component} from 'react';
@@ -73,8 +73,8 @@ export default class PageModal extends Component {
         }).start();
     };
     componentWillUnmount() {
-        Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow);
-        Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide);
+        Keyboard.removeListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', this.keyboardWillShow);
+        Keyboard.removeListener(Platform.OS == 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', this.keyboardWillHide);
         if (this.props.backButtonClose && Platform.OS === 'android')
             BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
