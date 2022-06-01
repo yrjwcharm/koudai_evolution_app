@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 14:31:06
+ * @LastEditTime: 2022-06-01 19:16:56
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -85,7 +85,7 @@ export default ({navigation, route}) => {
                             type: 2,
                         }).then((res) => {
                             if (res.code === '000000') {
-                                jump(res.result.url);
+                                jump(res.result.url, 'replace');
                             }
                         });
                         break;
