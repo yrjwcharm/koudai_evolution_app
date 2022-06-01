@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2022-05-30 21:01:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-01 19:30:08
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -270,6 +270,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.bgColor,
         flex: 1,
+        borderColor: '#fff',
+        borderWidth: 0.5,
     },
     top_button: {
         fontSize: Font.textH2,
