@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-31 16:25:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-01 17:14:45
  * @Description: 私募风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -166,7 +166,7 @@ const PEQuestionnaireResult = () => {
                         ) : null}
                     </View>
                     {tips ? (
-                        <View style={{marginTop: Space.marginVertical}}>
+                        <View style={{marginTop: Space.marginVertical, marginBottom: px(40)}}>
                             <HTML html={tips} style={styles.tips} />
                         </View>
                     ) : null}
@@ -264,10 +264,10 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     button: {
-        position: 'absolute',
-        right: px(16),
-        left: px(16),
-        bottom: isIphoneX() ? 34 : px(20),
+        // position: 'absolute',
+
+        marginHorizontal: px(16),
+        marginBottom: isIphoneX() ? 34 : px(20),
         backgroundColor: '#D7AF74',
     },
 });
