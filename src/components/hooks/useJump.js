@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-31 18:03:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-01 18:52:39
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -67,7 +67,7 @@ function useJump() {
                                     data={popup}
                                     refresh={() => {
                                         Modal.close(null);
-                                        DeviceEventEmitter.emit('refresh');
+                                        DeviceEventEmitter.emit('sign_password_refresh');
                                     }}
                                 />
                             ),

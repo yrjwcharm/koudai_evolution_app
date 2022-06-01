@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:34:52
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-01 18:53:10
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -260,7 +260,7 @@ export default ({navigation, route}) => {
     );
 
     useEffect(() => {
-        const listener = DeviceEventEmitter.addListener('refresh', init);
+        const listener = DeviceEventEmitter.addListener('sign_password_refresh', init);
         return () => {
             listener?.remove?.();
         };
