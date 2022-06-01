@@ -26,6 +26,10 @@ const AdvisorServiceSign = ({navigation, route}) => {
                     setCountdown((val) => {
                         let newVal = val - 1;
                         if (newVal <= 0) {
+                            http.post('/advisor/action/report/20220422', {
+                                action: 'read',
+                                poids: route?.params?.poid,
+                            });
                             clearInterval(timer.current);
                             newVal = 0;
                         }
