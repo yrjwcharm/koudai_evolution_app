@@ -3,7 +3,7 @@
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-23 18:58:17
+ * @LastEditTime: 2022-06-01 19:15:31
  * @Description: 合格投资者认证
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -43,7 +43,7 @@ export default ({navigation, route}) => {
                     type: 1,
                 }).then((res) => {
                     if (res.code === '000000') {
-                        jump(res.result.url);
+                        jump(res.result.url, 'replace');
                     }
                 });
             },

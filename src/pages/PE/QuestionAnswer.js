@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 16:34:14
+ * @LastEditTime: 2022-06-01 19:22:29
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -107,7 +107,7 @@ export default ({navigation, route}) => {
                     if (res.code === '000000') {
                         jump(res.result.url);
                     }
-                    Toast.show(res.message);
+                    res.message && Toast.show(res.message);
                 });
             },
             1000,
