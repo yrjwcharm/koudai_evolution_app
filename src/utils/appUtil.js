@@ -314,7 +314,7 @@ const countdownTool = function ({
     timeStemp,
     interval: originalInterval = 1000,
     immediate = false,
-    callback = (_) => 0,
+    callback = (time) => undefined,
 }) {
     if (!timeStemp || timeStemp <= 0 || timeStemp < originalInterval) return callback(0);
 

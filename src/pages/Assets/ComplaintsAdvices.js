@@ -17,7 +17,7 @@ import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 import {Modal} from '../../components/Modal';
 
-const ComplaintsAdvices = ({navigation}) => {
+const ComplaintsAdvices = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [type, setType] = useState(0);
     const [sortList, setSortList] = useState([]);
@@ -116,17 +116,17 @@ const ComplaintsAdvices = ({navigation}) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '投诉建议'});
                 setData(res.result);
-                setType(res.result.active);
+                const isRouteParamsType = route.params?.type || route.params?.type === 0;
+                setType(isRouteParamsType ? route.params?.type : res.result.active);
                 setSortList(res.result.type_cates[res.result.active].items);
+                setSort(
+                    isRouteParamsType
+                        ? res.result.type_cates[route.params?.type].items.find((item) => item.key === route.params.key)
+                        : res.result.type_cates[res.result.active].items[0]
+                );
             }
         });
-    }, [navigation]);
-    useEffect(() => {
-        if (data.type_cates) {
-            setSortList(data.type_cates[type].items);
-            setSort(data.type_cates[type].items[0]);
-        }
-    }, [data, type]);
+    }, [navigation, route]);
     useEffect(() => {
         Picker.hide();
         Keyboard.addListener('keyboardWillShow', keyboardWillShow);
@@ -157,6 +157,8 @@ const ComplaintsAdvices = ({navigation}) => {
                                         onPress={() => {
                                             global.LogTool('click', item.type);
                                             setType(index);
+                                            setSortList(data.type_cates[index].items);
+                                            setSort(data.type_cates[index].items[0]);
                                         }}>
                                         <View style={[Style.flexCenter, styles.radioBox]}>
                                             {type === index && <View style={styles.radio} />}

@@ -73,6 +73,7 @@ export default class MyModal extends Component {
             subPop: '',
             guide_pop_button: this.props?.data?.button?.text || '开启通知',
             countdown: this.props.countdown || 0,
+            countdownText: this.props.countdownText || '关闭',
             appState: AppState.currentState,
             countdownArr: [],
         };
@@ -308,7 +309,8 @@ export default class MyModal extends Component {
                             }}>
                             {this.state.countdown ? (
                                 <Text>
-                                    {this.state.countdown}s<Text style={{color: Colors.defaultColor}}>后关闭</Text>
+                                    {this.state.countdown}s
+                                    <Text style={{color: Colors.defaultColor}}>后{this.state.countdownText}</Text>
                                 </Text>
                             ) : (
                                 this.confirmText

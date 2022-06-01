@@ -22,12 +22,12 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Agreements from '../../components/Agreements';
 import http from '../../services';
 import Notice from '../../components/Notice';
-import {BottomModal} from '../../components/Modal';
+import {PageModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import URI from 'urijs';
 import {baseURL} from '../../services/config';
-import {debounce} from 'lodash';
 import {Modal} from '../../components/Modal';
+import {PasswordModal} from '../../components/Password';
 
 const LoadingWebview = () => {
     return (
@@ -57,6 +57,8 @@ const TopInvestors = ({route}) => {
     const intervalt_timer = useRef('');
     const hotChartRef = useRef(null);
     const panelChartRef = useRef(null);
+    const passwordRef = useRef(null);
+
     const init = () => {
         http.get('/signal/niuren/detail/20220214', {poid: route.params?.poid}).then((res) => {
             if (res.code === '000000') {
@@ -103,10 +105,12 @@ const TopInvestors = ({route}) => {
             });
         }, 1000);
     };
-    //签约
-    const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: data?.adviser_sign?.sign_po_ids}).then((res) => {
-            signModal.current.toastShow(res.message);
+    /** @name 点击确认签约，完成输入交易密码 */
+    const onSubmit = (password) => {
+        const loading1 = Toast.showLoading('签约中...');
+        http.post('/adviser/sign/20210923', {password, poids: data?.adviser_sign?.sign_po_ids}).then((res) => {
+            Toast.hide(loading1);
+            Toast.show(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
@@ -115,6 +119,7 @@ const TopInvestors = ({route}) => {
             }
         });
     };
+
     const handlerOpenFlow = (val) => {
         if (!data.adviser_sign?.is_signed) {
             setSignCheck(data?.adviser_sign?.agreement_bottom?.default_agree);
@@ -382,7 +387,7 @@ const TopInvestors = ({route}) => {
                 }}
             />
             {data?.adviser_sign && (
-                <BottomModal
+                <PageModal
                     style={{height: px(600), backgroundColor: '#fff'}}
                     ref={signModal}
                     title={data?.adviser_sign?.title}
@@ -390,7 +395,7 @@ const TopInvestors = ({route}) => {
                         show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {data?.adviser_sign?.desc && <Notice content={{content: data?.adviser_sign?.desc}} />}
                         <ScrollView
                             style={{
@@ -443,7 +448,9 @@ const TopInvestors = ({route}) => {
                                 <Button
                                     disabled={signTimer > 0 || !signCheck}
                                     style={{marginHorizontal: px(20)}}
-                                    onPress={debounce(handleSign, 500)}
+                                    onPress={() => {
+                                        passwordRef.current?.show?.();
+                                    }}
                                     title={
                                         signTimer > 0
                                             ? signTimer + 's' + data?.adviser_sign?.button?.text
@@ -453,8 +460,9 @@ const TopInvestors = ({route}) => {
                             ) : null}
                         </>
                     </View>
-                </BottomModal>
+                </PageModal>
             )}
+            <PasswordModal onDone={onSubmit} ref={passwordRef} />
         </View>
     ) : showEmpty ? (
         <Empty img={require('../../assets/img/emptyTip/noSignal.png')} text={'页面不存在'} />

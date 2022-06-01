@@ -6,23 +6,33 @@
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet} from 'react-native';
 import {deviceWidth, px, px as text} from '../utils/appUtil';
 import {Colors, Space} from '../common/commonStyle';
 import FastImage from 'react-native-fast-image';
-import {useSelector} from 'react-redux';
 import {useJump} from './hooks';
-
+import {useRoute, useFocusEffect} from '@react-navigation/native';
+import http from '../services';
 const BottomDesc = (props) => {
-    const userInfo = useSelector((store) => store.userInfo);
+    const route = useRoute();
+    const [data, setData] = useState(null);
     const {style} = props;
     const jump = useJump();
-    const [type, setType] = useState(userInfo.toJS().po_ver === 0 ? 'ym' : 'xy');
-    useEffect(() => {
-        setType(userInfo.toJS().po_ver === 0 ? 'ym' : 'xy');
-    }, [userInfo]);
+
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/mapi/app/footer/20220518', {
+                name: route.name,
+                params: JSON.stringify(route.params),
+            }).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            });
+        }, [route])
+    );
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
             <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
@@ -45,23 +55,23 @@ const BottomDesc = (props) => {
                     )
                 ) : null}
             </View>
-            <View style={styles.item}>
-                <FastImage
-                    resizeMode={FastImage.resizeMode.contain}
-                    source={{uri: userInfo.toJS()[type + '_footer_config']?.img}}
-                    style={[styles.img]}
-                />
-            </View>
-            {userInfo.toJS()[type + '_footer_config']?.sale_service ? (
+            {data?.img && (
+                <View style={styles.item}>
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={{uri: data?.img}}
+                        style={[styles.img]}
+                    />
+                </View>
+            )}
+            {data?.sale_service ? (
                 <View style={{alignItems: 'center'}}>
                     <FastImage
                         resizeMode={FastImage.resizeMode.contain}
                         source={require('../assets/img/bottomDescLeft.png')}
                         style={{position: 'absolute', left: px(10), height: text(10), width: px(78), top: px(4)}}
                     />
-                    <Text style={[styles.text, {textAlign: 'center', position: 'relative'}]}>
-                        {userInfo.toJS()[type + '_footer_config']?.sale_service}
-                    </Text>
+                    <Text style={[styles.text, {textAlign: 'center', position: 'relative'}]}>{data?.sale_service}</Text>
                     <FastImage
                         resizeMode={FastImage.resizeMode.contain}
                         source={require('../assets/img/bottomDescRight.png')}
@@ -70,22 +80,20 @@ const BottomDesc = (props) => {
                 </View>
             ) : null}
             <View style={styles.item}>
-                <Text style={[styles.text]}>{userInfo.toJS()[type + '_footer_config']?.sale_credential?.text}</Text>
-                {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url ? (
+                <Text style={[styles.text]}>{data?.sale_credential?.text}</Text>
+                {data?.sale_credential?.url ? (
                     <Text
                         style={styles.button}
                         onPress={() => {
                             global.LogTool('bottomDesc');
-                            jump(userInfo.toJS()[type + '_footer_config']?.sale_credential?.url);
+                            jump(data?.sale_credential?.url);
                         }}>
-                        {userInfo.toJS()[type + '_footer_config']?.sale_credential?.tip}
+                        {data?.sale_credential?.tip}
                     </Text>
                 ) : null}
             </View>
             <View style={styles.item}>
-                <Text style={[styles.text, {color: '#B8C1D3', marginTop: text(8)}]}>
-                    {userInfo.toJS()[type + '_footer_config']?.reminder}
-                </Text>
+                <Text style={[styles.text, {color: '#B8C1D3', marginTop: text(8)}]}>{data?.reminder}</Text>
             </View>
         </View>
     );

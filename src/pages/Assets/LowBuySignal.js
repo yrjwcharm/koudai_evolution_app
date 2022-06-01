@@ -31,10 +31,10 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {LowBuyAreaChart} from '../../components/Chart/chartOptions';
 import {useFocusEffect} from '@react-navigation/native';
 import Toast from '../../components/Toast';
-import {BottomModal} from '../../components/Modal';
+import {PageModal} from '../../components/Modal';
+import {PasswordModal} from '../../components/Password';
 import Agreements from '../../components/Agreements';
 import Notice from '../../components/Notice';
-import {debounce} from 'lodash';
 import {Modal} from '../../components/Modal';
 
 const LoadingComponent = () => {
@@ -108,6 +108,7 @@ const LowBuySignalExplain = ({route}) => {
     const signModal = useRef(null);
     const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef(null);
+    const passwordRef = useRef(null);
 
     const panResponder = useRef(
         PanResponder.create({
@@ -247,10 +248,13 @@ const LowBuySignalExplain = ({route}) => {
             });
         }, 1000);
     };
-    //签约
-    const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: data?.adviser_sign?.sign_po_ids}).then((res) => {
-            signModal.current.toastShow(res.message);
+
+    /** @name 点击确认签约，完成输入交易密码 */
+    const onSubmit = (password) => {
+        const loading1 = Toast.showLoading('签约中...');
+        http.post('/adviser/sign/20210923', {password, poids: data?.adviser_sign?.sign_po_ids}).then((res) => {
+            Toast.hide(loading1);
+            Toast.show(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
@@ -821,7 +825,7 @@ const LowBuySignalExplain = ({route}) => {
                 />
             }
             {data?.adviser_sign && (
-                <BottomModal
+                <PageModal
                     style={{height: px(600), backgroundColor: '#fff'}}
                     ref={signModal}
                     title={data?.adviser_sign?.title}
@@ -829,7 +833,7 @@ const LowBuySignalExplain = ({route}) => {
                         show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, paddingBottom: px(20)}}>
                         {data?.adviser_sign?.desc && <Notice content={{content: data?.adviser_sign?.desc}} />}
                         <ScrollView
                             style={{
@@ -882,7 +886,9 @@ const LowBuySignalExplain = ({route}) => {
                                 <Button
                                     disabled={signTimer > 0 || !signCheck}
                                     style={{marginHorizontal: px(20)}}
-                                    onPress={debounce(handleSign, 500)}
+                                    onPress={() => {
+                                        passwordRef.current?.show?.();
+                                    }}
                                     title={
                                         signTimer > 0
                                             ? signTimer + 's' + data?.adviser_sign?.button?.text
@@ -892,8 +898,9 @@ const LowBuySignalExplain = ({route}) => {
                             ) : null}
                         </>
                     </View>
-                </BottomModal>
+                </PageModal>
             )}
+            <PasswordModal onDone={onSubmit} ref={passwordRef} />
         </View>
     );
 };

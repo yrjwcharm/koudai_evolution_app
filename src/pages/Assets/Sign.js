@@ -10,18 +10,58 @@ import React, {useEffect, useState} from 'react';
 import CheckBox from '../../components/CheckBox';
 import _ from 'lodash';
 import http from '../../services';
-import {Colors, Font, Style} from '../../common/commonStyle';
+import {Colors, Style} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
 import {useJump} from '../../components/hooks';
 import {Button} from '../../components/Button';
 import RenderHtml from '../../components/RenderHtml';
+import {Modal} from '../../components/Modal';
+import FastImage from 'react-native-fast-image';
 const Sign = ({navigation}) => {
     const [signSelectData, setSignSelectData] = useState([]);
     const [signData, setSignData] = useState(null);
     const jump = useJump();
+    const showSignNotice = (data) => {
+        Modal.show({
+            children: () => {
+                return (
+                    <View>
+                        <ScrollView
+                            bounces={false}
+                            style={{
+                                marginTop: px(12),
+                                paddingHorizontal: px(20),
+                                maxHeight: px(375),
+                            }}>
+                            <Text style={{fontSize: px(14), color: '#545968', lineHeight: px(21)}}>{data.content}</Text>
+                            <FastImage
+                                source={{uri: data.img}}
+                                style={{width: px(241), height: px(128), marginVertical: px(16)}}
+                                resizeMode="contain"
+                            />
+                        </ScrollView>
+                    </View>
+                );
+            },
+            confirmCallBack: () => {
+                http.post('/adviser/confirm/split_hbzs/20220516', {}).then((res) => {
+                    console.log(res);
+                });
+            },
+            confirmText: data.button?.text,
+            countdown: data.countdown,
+            countdownText: '确认',
+            isTouchMaskToClose: false,
+            onCloseCallBack: () => navigation.goBack(),
+            title: data.title,
+        });
+    };
     useEffect(() => {
         http.get('adviser/get_need_sign_list/20210923').then((res) => {
             setSignData(res.result);
+            if (res.result?.hbzs_pop?.content) {
+                showSignNotice(res.result?.hbzs_pop);
+            }
             navigation.setOptions({title: res.result.title});
         });
     }, [navigation]);

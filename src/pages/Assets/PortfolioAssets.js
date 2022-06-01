@@ -42,6 +42,7 @@ import GuideTips from '../../components/GuideTips';
 import {throttle} from 'lodash';
 import {Button} from '../../components/Button';
 import HTML from '../../components/RenderHtml';
+import LinearGradient from 'react-native-linear-gradient';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -288,121 +289,166 @@ export default function PortfolioAssets(props) {
             },
         });
     };
+    const renderGroupBulletin = (data) => {
+        let content = data.content?.slice?.(0, 45);
+        return (
+            <LinearGradient
+                colors={['#FFF9F0', '#FFF2DC']}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={styles.groupBulletin}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.groupBulletinTop}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}>
+                    <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
+                    <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        jump(data.jumpUrl);
+                    }}
+                    style={styles.groupBulletinBottom}>
+                    <Text style={styles.groupBulletinBottomContent}>
+                        {content}
+                        {content.length > 44 ? '...' : ''}
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.groupBulletinBtnTextWrapper}
+                        onPress={() => {
+                            jump(data.jumpUrl);
+                        }}>
+                        <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                    </TouchableOpacity>
+                </TouchableOpacity>
+            </LinearGradient>
+        );
+    };
     const renderBtn = () => {
         return (
-            <View style={styles.plan_card_sty}>
-                <View style={Style.flexBetween}>
-                    <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
-                        <View style={{marginRight: text(8)}}>
-                            <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+            <>
+                <View
+                    style={[
+                        styles.plan_card_sty,
+                        card.group_bulletin && {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
+                    ]}>
+                    <View style={Style.flexBetween}>
+                        <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
+                            <View style={{marginRight: text(8)}}>
+                                <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+                            </View>
+                            {card?.title_info?.popup ? (
+                                <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
+                                    <FastImage
+                                        style={{width: text(16), height: text(16)}}
+                                        source={require('../../assets/img/tip.png')}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
                         </View>
-                        {card?.title_info?.popup ? (
-                            <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
-                                <FastImage
-                                    style={{width: text(16), height: text(16)}}
-                                    source={require('../../assets/img/tip.png')}
-                                />
+                        {card.is_plan && card.update_button ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(card.update_button.url)}
+                                style={[Style.flexCenter, styles.updateBtn, {borderColor: card.update_button.color}]}>
+                                <Text style={[styles.updateText, {color: card.update_button.color}]}>
+                                    {card.update_button.text}
+                                </Text>
                             </TouchableOpacity>
                         ) : null}
                     </View>
-                    {card.is_plan && card.update_button ? (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => jump(card.update_button.url)}
-                            style={[Style.flexCenter, styles.updateBtn, {borderColor: card.update_button.color}]}>
-                            <Text style={[styles.updateText, {color: card.update_button.color}]}>
-                                {card.update_button.text}
-                            </Text>
-                        </TouchableOpacity>
+                    {card.is_plan && card.score_update_time ? (
+                        <Text style={styles.updateTime}>{card.score_update_time}</Text>
                     ) : null}
-                </View>
-                {card.is_plan && card.score_update_time ? (
-                    <Text style={styles.updateTime}>{card.score_update_time}</Text>
-                ) : null}
-                {card?.desc ? (
-                    <View style={{marginVertical: px(12)}}>
-                        <Html style={styles.plan_desc_sty} html={card?.desc} />
-                    </View>
-                ) : null}
+                    {card?.desc ? (
+                        <View style={{marginVertical: px(12)}}>
+                            <Html style={styles.plan_desc_sty} html={card?.desc} />
+                        </View>
+                    ) : null}
 
-                {/* {card?.notice ? (
+                    {/* {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
                         <Text style={styles.blue_text_style}>{card?.notice}</Text>
                     </View>
                 ) : null} */}
-                {card?.notice_info ? (
-                    <View style={{marginBottom: text(24)}}>
-                        <View style={styles.noticeSty}>
-                            <Image
-                                source={require('../../assets/personal/noticeArrow.png')}
-                                style={[
-                                    styles.noticeArrow,
-                                    card.notice_info.arrow_position === 'middle'
-                                        ? styles.center
-                                        : card.notice_info.arrow_position === 'right'
-                                        ? styles.right
-                                        : {},
-                                ]}
-                            />
-                            <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
+                    {card?.notice_info ? (
+                        <View style={{marginBottom: text(24)}}>
+                            <View style={styles.noticeSty}>
+                                <Image
+                                    source={require('../../assets/personal/noticeArrow.png')}
+                                    style={[
+                                        styles.noticeArrow,
+                                        card.notice_info.arrow_position === 'middle'
+                                            ? styles.center
+                                            : card.notice_info.arrow_position === 'right'
+                                            ? styles.right
+                                            : {},
+                                    ]}
+                                />
+                                <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
+                            </View>
                         </View>
-                    </View>
-                ) : null}
-                <View style={Style.flexBetween}>
-                    {card?.button_list?.map?.((_button, _index, arr) => {
-                        return (
-                            <TouchableOpacity
-                                key={_index + '_button'}
-                                onPress={() => {
-                                    global.LogTool(_button.action, props.route?.params?.poid);
-                                    accountJump(_button.url, _button.action);
-                                }}
-                                disabled={_button.avail == 0}
-                                activeOpacity={1}
-                                style={{
-                                    borderColor: Colors.descColor,
-                                    borderWidth:
-                                        _index == arr.length - 1 && _button.avail !== 0 ? Space.borderWidth : 0,
-                                    borderRadius: text(6),
-                                    backgroundColor:
-                                        _button.avail !== 0
-                                            ? _index == arr.length - 1
-                                                ? '#fff'
-                                                : '#0051CC'
-                                            : '#C7D8F0',
-                                    flex: 1,
-                                    marginRight: _index < card?.button_list?.length - 1 ? text(10) : 0,
-                                    height: text(40),
-                                    justifyContent: 'center',
-                                }}>
-                                <Text
+                    ) : null}
+                    <View style={Style.flexBetween}>
+                        {card?.button_list?.map?.((_button, _index, arr) => {
+                            return (
+                                <TouchableOpacity
+                                    key={_index + '_button'}
+                                    onPress={() => {
+                                        global.LogTool(_button.action, props.route?.params?.poid);
+                                        accountJump(_button.url, _button.action);
+                                    }}
+                                    disabled={_button.avail == 0}
+                                    activeOpacity={1}
                                     style={{
-                                        textAlign: 'center',
-                                        fontSize: px(14),
-                                        color:
-                                            _index == arr.length - 1
-                                                ? _button.avail == 0
+                                        borderColor: Colors.descColor,
+                                        borderWidth:
+                                            _index == arr.length - 1 && _button.avail !== 0 ? Space.borderWidth : 0,
+                                        borderRadius: text(6),
+                                        backgroundColor:
+                                            _button.avail !== 0
+                                                ? _index == arr.length - 1
                                                     ? '#fff'
-                                                    : '#545968'
-                                                : '#fff',
+                                                    : '#0051CC'
+                                                : '#C7D8F0',
+                                        flex: 1,
+                                        marginRight: _index < card?.button_list?.length - 1 ? text(10) : 0,
+                                        height: text(40),
+                                        justifyContent: 'center',
                                     }}>
-                                    {_button.text}
-                                </Text>
-                                {_button.tips ? (
-                                    <View style={styles.superscriptBox}>
-                                        <Text style={styles.superscript}>{_button.tips}</Text>
-                                    </View>
-                                ) : null}
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-                {card?.tip ? (
-                    <View style={{marginTop: text(20)}}>
-                        <Text style={styles.cardTips}>{card?.tip}</Text>
+                                    <Text
+                                        style={{
+                                            textAlign: 'center',
+                                            fontSize: px(14),
+                                            color:
+                                                _index == arr.length - 1
+                                                    ? _button.avail == 0
+                                                        ? '#fff'
+                                                        : '#545968'
+                                                    : '#fff',
+                                        }}>
+                                        {_button.text}
+                                    </Text>
+                                    {_button.tips ? (
+                                        <View style={styles.superscriptBox}>
+                                            <Text style={styles.superscript}>{_button.tips}</Text>
+                                        </View>
+                                    ) : null}
+                                </TouchableOpacity>
+                            );
+                        })}
                     </View>
-                ) : null}
-            </View>
+                    {card?.tip ? (
+                        <View style={{marginTop: text(20)}}>
+                            <Text style={styles.cardTips}>{card?.tip}</Text>
+                        </View>
+                    ) : null}
+                </View>
+                {card.group_bulletin && renderGroupBulletin(card.group_bulletin)}
+            </>
         );
     };
     const renderChart = () => {
@@ -709,21 +755,23 @@ export default function PortfolioAssets(props) {
                     )}
                 </View>
 
-                {/* 广告位 */}
-                {data?.ad_info && (
-                    <TouchableOpacity onPress={() => jump(data?.ad_info?.url)}>
-                        <FitImage
-                            source={{
-                                uri: data?.ad_info?.img,
-                            }}
-                            resizeMode="contain"
-                            style={{marginBottom: text(10)}}
-                        />
-                    </TouchableOpacity>
-                )}
-
                 <View style={styles.padding_sty}>
                     {Object.keys(card || {}).length > 0 && data.scene !== 'adviser' && renderBtn() /* 按钮 */}
+                    {data?.ad_info ? (
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                global.LogTool('ppage_banner', data.title);
+                                jump(data?.ad_info?.url);
+                            }}>
+                            <FastImage
+                                source={{
+                                    uri: data?.ad_info?.cover,
+                                }}
+                                style={styles.ad_info}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                     {/* 反洗钱上传 */}
                     {data?.notice_info && (
                         <View style={[Style.flexRow, styles.upload_card_sty]}>
@@ -1154,6 +1202,11 @@ const styles = StyleSheet.create({
         borderRadius: text(20),
         marginRight: text(10),
     },
+    ad_info: {
+        height: px(60),
+        borderRadius: 8,
+        marginTop: px(12),
+    },
     title_sty: {
         color: '#1F2432',
         fontSize: Font.textH1,
@@ -1308,5 +1361,46 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F6F8',
         borderRadius: px(6),
         padding: px(16),
+    },
+    groupBulletin: {
+        paddingTop: px(6),
+        paddingRight: px(16),
+        paddingBottom: px(12),
+        paddingLeft: px(8),
+        borderBottomLeftRadius: px(8),
+        borderBottomRightRadius: px(8),
+    },
+    groupBulletinTop: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    groupBulletinTitle: {
+        fontWeight: '500',
+        color: '#121D3a',
+        lineHeight: px(18),
+        fontSize: px(13),
+        marginLeft: px(8),
+        marginTop: px(6),
+        flex: 1,
+    },
+    groupBulletinBottom: {
+        marginTop: px(6),
+        paddingLeft: px(8),
+    },
+    groupBulletinBottomContent: {
+        fontSize: px(12),
+        color: '#545968',
+        lineHeight: px(17),
+    },
+    groupBulletinBtnTextWrapper: {
+        borderBottomColor: '#0051cc',
+        borderBottomWidth: 1,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+    },
+    groupBulletinBtnText: {
+        fontSize: px(12),
+        color: '#0051cc',
     },
 });

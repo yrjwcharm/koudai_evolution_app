@@ -4,6 +4,7 @@ import TextMessage from './TextMessage';
 import ImageMessage from './ImageMessage';
 import VideoMessage from './VideoMessage';
 import VoiceMessage from './VoiceMessage';
+import EvaluateMessage from './EvaluateMessage';
 import {EMOJIS_DATA} from '../source/emojis';
 import Html from '../../../RenderHtml';
 const {width} = Dimensions.get('window');
@@ -15,6 +16,7 @@ const PATTERNS = {
 };
 
 export default class ChatItem extends PureComponent {
+    static displayName = 'ChatItem';
     constructor(props) {
         super(props);
         this.state = {
@@ -301,6 +303,15 @@ export default class ChatItem extends PureComponent {
                 return (
                     this.props.renderQuestionMessage &&
                     this.props.renderQuestionMessage({isOpen, isSelf, message, index: parseInt(rowId)})
+                );
+            case 'evaluate':
+                return (
+                    <EvaluateMessage
+                        message={message}
+                        rowId={parseInt(rowId, 10)}
+                        wsSend={this.props.wsSend}
+                        reconnect={this.props.reconnect}
+                    />
                 );
             case 'textButton':
                 return (
