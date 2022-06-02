@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 16:36:14
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-02 21:18:31
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -22,10 +22,6 @@ export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {button = {}, list = [], desc: tips} = data;
-
-    const finished = useMemo(() => {
-        return data?.list?.every((item) => item.is_show);
-    }, [data]);
 
     const init = () => {
         http.get('/private_fund/double_record/risk_disclosure/20220510', {
@@ -74,12 +70,11 @@ export default ({navigation, route}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
                 {tips ? <Text style={[styles.tips, {marginTop: Space.marginVertical}]}>{tips}</Text> : null}
                 {list.map((item, index, arr) => {
-                    const {button: btn, name, password_content, is_show = false, type} = item;
+                    const {button: btn, desc, type} = item;
                     return (
                         <View
                             key={item + index}
                             style={[
-                                Style.flexBetween,
                                 styles.partBox,
                                 {
                                     marginTop: index === 0 ? px(12) : Space.marginVertical,
@@ -87,33 +82,27 @@ export default ({navigation, route}) => {
                                         index === arr.length - 1 ? (isIphoneX() ? 34 : px(16) + (px(45) + px(20))) : 0,
                                 },
                             ]}>
-                            <View>
-                                <Text style={styles.tips}>{name}</Text>
-                                <Text
-                                    style={[
-                                        styles.content,
-                                        {marginTop: px(8), color: is_show ? Colors.defaultColor : '#BDC2CC'},
-                                    ]}>
-                                    {is_show ? password_content : '点击查看按钮后可显示'}
-                                </Text>
-                            </View>
+                            <Text style={styles.content}>{desc}</Text>
                             {btn && btn.text ? (
                                 <Button
-                                    color="#EDDBC5"
-                                    disabled={btn.avail === 0 || is_show}
+                                    color={'#EDDBC5'}
+                                    disabled={btn.avail === 0}
                                     disabledColor="#BDC2CC"
                                     onPress={() => {
                                         http.post('/private_fund/double_record/risk_disclosure_read/20220510', {
                                             fund_code: route.params.fund_code || '',
                                             order_id: route.params.order_id || '',
                                             type,
+                                        }).then(() => {
+                                            init();
                                         });
-                                        const _data = {...data};
-                                        _data.list[index].is_show = true;
-                                        _data.list[index].button.text = '已确认';
-                                        setData(_data);
                                     }}
-                                    style={styles.partButton}
+                                    style={[
+                                        styles.partButton,
+                                        {
+                                            backgroundColor: btn.avail == 2 ? '#eadbc7' : '#D7AF74',
+                                        },
+                                    ]}
                                     textStyle={styles.partBtnText}
                                     title={btn.text}
                                 />
@@ -121,11 +110,12 @@ export default ({navigation, route}) => {
                         </View>
                     );
                 })}
+                <View style={{height: px(30)}} />
             </ScrollView>
             {button.text ? (
                 <Button
                     color="#EDDBC5"
-                    disabled={button.avail === 0 || !finished}
+                    disabled={button.avail === 0}
                     disabledColor="#EDDBC5"
                     onPress={() => jump(button.url)}
                     style={styles.button}
@@ -153,31 +143,30 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     partBox: {
-        paddingHorizontal: Space.padding,
+        padding: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
-        height: px(83),
+        alignItems: 'flex-end',
     },
     content: {
-        fontSize: Font.textH1,
-        lineHeight: px(22),
+        fontSize: px(12),
+        lineHeight: px(20),
         color: Colors.defaultColor,
     },
     partButton: {
+        marginTop: px(12),
         paddingHorizontal: px(8),
         borderRadius: px(4),
         height: px(24),
-        backgroundColor: '#D7AF74',
+        // backgroundColor: '#D7AF74',
     },
     partBtnText: {
         fontSize: Font.textH3,
         lineHeight: px(17),
     },
     button: {
-        position: 'absolute',
-        right: px(16),
         bottom: isIphoneX() ? 34 : px(16),
-        left: px(16),
+        marginHorizontal: px(16),
         backgroundColor: '#D7AF74',
     },
 });

@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-01 17:30:21
+ * @LastEditTime: 2022-06-02 17:13:34
  * @Description: 底部弹窗
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -78,12 +78,12 @@ const BottomModal = React.forwardRef((props, ref) => {
     };
     useEffect(() => {
         Picker.hide();
-        Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', keyboardWillShow);
-        Keyboard.addListener(Platform.OS == 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', keyboardWillHide);
+        Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+        Keyboard.addListener('keyboardWillHide', keyboardWillHide);
         return () => {
             Picker.hide();
-            Keyboard.removeListener(Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', keyboardWillShow);
-            Keyboard.removeListener(Platform.OS == 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', keyboardWillHide);
+            Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
+            Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

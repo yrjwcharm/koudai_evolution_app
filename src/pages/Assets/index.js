@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-01 15:11:19
+ * @LastEditTime: 2022-06-02 21:20:14
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -486,10 +486,9 @@ function HomeScreen({navigation}) {
                     ) : (
                         item.portfolios.map((po, i) => {
                             return (
-                                <>
+                                <View key={`portfolio${po.poid}`}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        key={`portfolio${po.poid}`}
                                         style={Style.flexRow}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', po.poid);
@@ -510,7 +509,7 @@ function HomeScreen({navigation}) {
                                             <Text style={styles.introText}>{po.intro}</Text>
                                         </View>
                                     ) : null}
-                                </>
+                                </View>
                             );
                         })
                     )}
@@ -986,7 +985,7 @@ function HomeScreen({navigation}) {
                         {/* 持仓组合 */}
                         {holdingData?.accounts?.map((item, index, arr) => {
                             return item.portfolios ? (
-                                <>
+                                <View key={index}>
                                     {item.portfolios.length > 1 ? (
                                         <View
                                             key={item.poid}
@@ -1025,7 +1024,7 @@ function HomeScreen({navigation}) {
                                         </TouchableOpacity>
                                     )}
                                     {renderGroupBulletin(item)}
-                                </>
+                                </View>
                             ) : (
                                 <View key={`account1${item.id}`}>
                                     {item.id === 12 ? (
