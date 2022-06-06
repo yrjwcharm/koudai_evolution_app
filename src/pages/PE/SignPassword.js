@@ -1,14 +1,14 @@
 /*
  * @Date: 2022-06-06 16:18:56
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-06 16:46:37
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-06 16:54:23
  * @Description: 设置签署密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {FixedButton} from '../../components/Button';
+import {Button} from '../../components/Button';
 import http from '../../services';
 import {px} from '../../utils/appUtil';
 import {debounce} from 'lodash';
@@ -119,7 +119,7 @@ const SignPassword = ({navigation, route}) => {
                 </View>
             ) : null}
             {button.text ? (
-                <FixedButton
+                <Button
                     color="#EDDBC5"
                     disabled={
                         !(password && pwd.length === 6 && ((re_password && confirmPwd.length === 6) || !re_password))
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#D7AF74',
+        marginTop: px(40),
     },
     inputBox: {
         marginTop: px(12),
