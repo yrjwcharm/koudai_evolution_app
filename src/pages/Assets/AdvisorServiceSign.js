@@ -44,9 +44,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
         };
     }, [navigation, route]);
 
-    const onSubmit = async (password) => {
-        let rs = await http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
-        if (rs?.code !== '000000') return Toast.show(rs.message);
+    const onSubmit = (password) => {
         const loading1 = Toast.showLoading('确认中...');
         http.post('/adviser/adjust/settings/20220526', {
             password,
@@ -82,6 +80,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
                     title={`${countdown ? countdown + '秒后' : ''}${data.button.text}`}
                     disabled={!!countdown}
                     onPress={() => {
+                        http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
                         passwordRef.current?.show?.();
                     }}
                     heightChange={(height) => setDeltaHeight(height)}
