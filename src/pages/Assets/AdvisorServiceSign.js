@@ -47,7 +47,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
     const onSubmit = async (password) => {
         let rs = await http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
         if (rs?.code !== '000000') return Toast.show(rs.message);
-        const loading1 = Toast.showLoading('签约中...');
+        const loading1 = Toast.showLoading();
         http.post('/adviser/adjust/settings/20220526', {
             password,
             poid: route?.params?.poid,
