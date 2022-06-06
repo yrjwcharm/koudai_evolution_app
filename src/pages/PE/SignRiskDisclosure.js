@@ -1,15 +1,15 @@
 /*
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-06 12:16:51
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-10 10:21:48
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font, Space} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast';

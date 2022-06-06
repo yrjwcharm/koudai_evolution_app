@@ -2,9 +2,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
- * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-01 19:30:08
+ * @Description: 私募流程页
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-06 10:44:22
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -103,9 +103,9 @@ const PrivateApply = (props) => {
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
                 const toast = Toast.showLoading();
-                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId, page: 'PrivateApply'}).then((resp) => {
+                    Toast.hide(toast);
                     if (resp.code === '000000') {
-                        Toast.hide(toast);
                         Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {
                             props.navigation.goBack();
