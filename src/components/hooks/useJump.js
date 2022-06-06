@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-01 18:52:39
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-06 18:57:58
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -159,6 +159,7 @@ function useJump() {
                     }
                 });
             } else {
+                url.toast && Toast.show(url.toast);
                 navigation[type](url.path, url.params || {});
             }
             setTimeout(() => {
