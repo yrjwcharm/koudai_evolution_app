@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-10 10:16:54
+ * @LastEditTime: 2022-06-10 10:22:41
  * @Description:路由表
  */
 import React from 'react';
@@ -201,6 +201,7 @@ import InvestorCert from '../pages/PE/InvestorCert'; // 合格投资者认证
 import ProductReserve from '../pages/PE/ProductReserve'; // 私募产品预约
 import MatchNotification from '../pages/PE/MatchNotification'; // 匹配告知
 import SignRiskDisclosure from '../pages/PE/SignRiskDisclosure'; // 逐项确认
+import SignPassword from '../pages/PE/SignPassword'; // 设置签署密码
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -761,6 +762,7 @@ export default function AppStack() {
             <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
             <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
             <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
+            <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
