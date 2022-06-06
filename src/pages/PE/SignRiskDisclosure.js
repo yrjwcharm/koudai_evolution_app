@@ -2,7 +2,7 @@
  * @Date: 2022-05-23 15:43:21
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-02 21:18:31
+ * @LastEditTime: 2022-06-06 12:16:51
  * @Description: 逐项确认
  */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -89,6 +89,7 @@ export default ({navigation, route}) => {
                                     disabled={btn.avail === 0}
                                     disabledColor="#BDC2CC"
                                     onPress={() => {
+                                        if (btn.avail == 2) return;
                                         http.post('/private_fund/double_record/risk_disclosure_read/20220510', {
                                             fund_code: route.params.fund_code || '',
                                             order_id: route.params.order_id || '',
