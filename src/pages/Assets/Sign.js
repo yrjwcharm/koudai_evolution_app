@@ -215,25 +215,7 @@ const Sign = ({navigation}) => {
                     onPress={() => {
                         global.LogTool('Selectcombine_button');
                         http.post('/advisor/action/report/20220422', {action: 'select', poids: signSelectData});
-                        console.log({
-                            poids: signSelectData,
-                            auto_poids: signData.plan_list.reduce((memo, item) => {
-                                if (signSelectData.includes(item.poid) && item?.auto_adjust?.status) {
-                                    memo.push(item.poid);
-                                }
-                                return memo;
-                            }, []),
-                            manual_poids: signData.plan_list.reduce((memo, item) => {
-                                if (signSelectData.includes(item.poid) && item?.auto_adjust?.status == 0) {
-                                    memo.push(item.poid);
-                                }
-                                return memo;
-                            }, []),
-                        });
 
-                        // .filter((item) => signSelectData.includes(item.poid))
-                        // .filter((item) => item?.auto_adjust?.status)
-                        // .map((item) => item.poid)
                         navigation.navigate('RiskDisclosure', {
                             poids: signSelectData,
                             auto_poids: signData.plan_list.reduce((memo, item) => {
