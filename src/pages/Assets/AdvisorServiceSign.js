@@ -44,7 +44,9 @@ const AdvisorServiceSign = ({navigation, route}) => {
         };
     }, [navigation, route]);
 
-    const onSubmit = (password) => {
+    const onSubmit = async (password) => {
+        let rs = await http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
+        if (rs?.code !== '000000') return Toast.show(rs.message);
         const loading1 = Toast.showLoading('签约中...');
         http.post('/adviser/adjust/settings/20220526', {
             password,
@@ -54,7 +56,6 @@ const AdvisorServiceSign = ({navigation, route}) => {
             Toast.hide(loading1);
             Toast.show(res.message);
             if (res.code === '000000') {
-                http.post('/advisor/action/report/20220422', {action: 'confirm', poids: route?.params?.poid});
                 const routes = navigation.dangerouslyGetState().routes;
                 const assetsRoute = routes[routes.length - 3];
                 navigation.navigate(assetsRoute.name, assetsRoute.params);
@@ -63,11 +64,8 @@ const AdvisorServiceSign = ({navigation, route}) => {
     };
 
     return data ? (
-        <>
-            <ScrollView
-                scrollIndicatorInsets={{right: 1}}
-                bounces={false}
-                style={[styles.container, {paddingBottom: (isIphoneX() ? px(85) : px(51)) + deltaHeight}]}>
+        <View style={[styles.container, {paddingBottom: (isIphoneX() ? px(85) : px(51)) + deltaHeight}]}>
+            <ScrollView scrollIndicatorInsets={{right: 1}} bounces={false} style={{flex: 1}}>
                 <View style={styles.tipsCon}>
                     <Text style={styles.tips}>{data.notice_bar}</Text>
                 </View>
@@ -90,7 +88,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
                 />
             )}
             <PasswordModal onDone={onSubmit} ref={passwordRef} />
-        </>
+        </View>
     ) : (
         <Loading />
     );
@@ -99,7 +97,7 @@ const AdvisorServiceSign = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        color: '#F5F6F8',
+        backgroundColor: '#F5F6F8',
     },
     tipsCon: {
         paddingVertical: px(9),
@@ -127,7 +125,8 @@ const styles = StyleSheet.create({
     },
     cardContent: {
         paddingHorizontal: px(16),
-        height: px(350),
+        minHeight: px(210),
+        maxHeight: px(320),
     },
 });
 

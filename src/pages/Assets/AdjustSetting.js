@@ -61,7 +61,7 @@ const AdjustSetting = ({navigation, route}) => {
     };
 
     return data ? (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} scrollIndicatorInsets={{right: 1}}>
             <View style={{padding: px(16), paddingBottom: px(80)}}>
                 <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={handlerCellClick}>
                     <Text style={styles.cardText}>{data?.auto_adjust?.text}</Text>
