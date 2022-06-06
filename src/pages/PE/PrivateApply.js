@@ -4,7 +4,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description: 私募流程页
  * @LastEditors: dx
- * @LastEditTime: 2022-06-06 10:44:22
+ * @LastEditTime: 2022-06-06 18:10:21
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -31,7 +31,7 @@ const iconObj = {
 };
 
 const PrivateApply = (props) => {
-    const {fund_code, order_id, poid, scene} = props.route.params || {};
+    const {fr, fund_code, order_id, poid, scene} = props.route.params || {};
     const jump = useJump();
     const [data, setData] = useState({});
     const [heightArr, setHeightArr] = useState([]);
@@ -39,10 +39,12 @@ const PrivateApply = (props) => {
 
     const init = () => {
         http.get(`/private_fund/${scene}_flow/20220510`, {
+            fr: fr || '',
             fund_code: fund_code,
             poid: poid || '',
         }).then((res) => {
             if (res.code === '000000') {
+                res.result.toast && Toast.show(res.result.toast);
                 const {restart_button, title} = res.result;
                 props.navigation.setOptions({
                     headerRight: () =>

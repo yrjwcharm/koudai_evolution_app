@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-05-16 13:55:10
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-01 18:53:10
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-06 18:09:36
  * @Description: 特定对象选择
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -219,8 +219,9 @@ export default ({navigation, route}) => {
     const {button = {}, list = [], desc: tips} = data;
 
     const init = () => {
-        http.get('/private_fund/qualified_target/20220510').then((res) => {
+        http.get('/private_fund/qualified_target/20220510', route.params).then((res) => {
             if (res.code === '000000') {
+                res.result.toast && Toast.show(res.result.toast);
                 navigation.setOptions({title: res.result.title || '特定对象选择'});
                 setData(res.result);
             }
