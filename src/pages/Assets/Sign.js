@@ -221,7 +221,7 @@ const Sign = ({navigation}) => {
                                 .filter((item) => item?.auto_adjust?.status)
                                 .map((item) => item.poid),
                             manual_poids: signData.plan_list
-                                .filter((item) => !item?.auto_adjust?.status)
+                                .filter((item) => item?.auto_adjust?.status == 0)
                                 .map((item) => item.poid),
                         });
                     }}
