@@ -76,9 +76,7 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                                             {curRadio === idx ? (
                                                 item.can_input ? (
                                                     <TextInput
-                                                        multiline
                                                         maxLength={item.input_limit}
-                                                        blurOnSubmit={true}
                                                         keyboardType="default"
                                                         autoCorrect={false}
                                                         autoCapitalize={'none'}

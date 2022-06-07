@@ -10,6 +10,7 @@ import {
     Clipboard,
     Platform,
     KeyboardAvoidingView,
+    Keyboard,
 } from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
@@ -452,6 +453,7 @@ export default class MyModal extends Component {
                                 this.props.onCloseCallBack && this.props.onCloseCallBack();
                                 this.setModalVisiable(false);
                             }
+                            Keyboard.dismiss();
                         }}>
                         <View style={styles.mask} />
                     </TouchableWithoutFeedback>
