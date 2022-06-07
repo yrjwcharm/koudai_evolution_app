@@ -9,6 +9,7 @@ import {
     Linking,
     Clipboard,
     Platform,
+    KeyboardAvoidingView,
 } from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
@@ -258,7 +259,7 @@ export default class MyModal extends Component {
     };
     renderDefaultModal = () => {
         return (
-            <View style={[Style.flexCenter, styles.container]}>
+            <KeyboardAvoidingView behavior={'padding'} style={[Style.flexCenter, styles.container]}>
                 {/* 是否自定义头部 */}
                 {this.customTitleView ? (
                     this.customTitleView
@@ -326,7 +327,7 @@ export default class MyModal extends Component {
                         </Text>
                     </TouchableOpacity>
                 )}
-            </View>
+            </KeyboardAvoidingView>
         );
     };
     renderGuideModal = () => {

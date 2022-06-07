@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import Toast from '../../../components/Toast/Toast.js';
 import Radio from '../../../components/Radio.js';
@@ -9,8 +9,8 @@ import {px} from '../../../utils/appUtil.js';
 const ReasonListDialog = ({resolve, bottomModal, close}) => {
     const [curRadio, setCurRadio] = useState(null);
     const [data, setData] = useState(null);
-    const [inputVal, setInputVal] = useState('');
     const [errMsg, setErrMsg] = useState('');
+    const inputVal = useRef('');
     useEffect(() => {
         const toast = Toast.showLoading();
         http.get('/adviser/unsign/reason/list/20220526')
@@ -76,9 +76,13 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                                             {curRadio === idx ? (
                                                 item.can_input ? (
                                                     <TextInput
-                                                        value={inputVal}
                                                         multiline
                                                         maxLength={item.input_limit}
+                                                        blurOnSubmit={true}
+                                                        keyboardType="default"
+                                                        autoCorrect={false}
+                                                        autoCapitalize={'none'}
+                                                        returnKeyType="next"
                                                         underlineColorAndroid="transparent"
                                                         style={{
                                                             backgroundColor: '#E9EAEF',
@@ -88,7 +92,7 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                                                             marginTop: px(8),
                                                         }}
                                                         onChangeText={(val) => {
-                                                            setInputVal(val);
+                                                            inputVal.current = val;
                                                             setErrMsg('');
                                                         }}
                                                     />
@@ -107,14 +111,14 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                 confirmCallBack: () => {
                     if (curRadio === null || curRadio === undefined) {
                         setErrMsg('请选择签约原因');
-                    } else if (data[curRadio].can_input && !inputVal) {
+                    } else if (data[curRadio].can_input && !inputVal.current) {
                         setErrMsg('请输入签约原因');
                     } else {
                         let params = {
                             value: data[curRadio]?.value,
                         };
                         if (data[curRadio].can_input) {
-                            params.detail = inputVal;
+                            params.detail = inputVal.current;
                         }
                         http.post('/adviser/unsign/reason/submit/20220526', params);
                         setErrMsg('');
@@ -126,7 +130,7 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                 },
             });
         }
-    }, [data, curRadio, inputVal, close, errMsg, resolve, bottomModal]);
+    }, [data, curRadio, close, errMsg, resolve, bottomModal]);
 
     return null;
 };
