@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-01 19:22:29
+ * @LastEditTime: 2022-06-08 18:04:42
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -160,6 +160,8 @@ export default ({navigation, route}) => {
                             navigation.goBack();
                         } else if (resp.result.type === 'refresh') {
                             init();
+                        } else if (resp.result.type === 'jump') {
+                            jump(res.result.url);
                         } else {
                             init();
                         }
