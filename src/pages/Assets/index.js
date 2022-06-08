@@ -49,6 +49,8 @@ import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
 import Notice from '../../components/Notice';
 import FastImage from 'react-native-fast-image';
+import ReasonListDialog from './components/ReasonListDialog.js';
+
 function HomeScreen({navigation}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -71,6 +73,7 @@ function HomeScreen({navigation}) {
     const [loading, setLoading] = useState(true);
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
+    const [reasonListDialogPropsAndVisible, setReasonListDialogPropsAndVisible] = useState(null);
     const bottomModal = useRef(null);
     const moodEnumRef = useRef({
         1: calm,
@@ -218,9 +221,9 @@ function HomeScreen({navigation}) {
                 confirm: true,
                 cancelText: '再想一想',
                 confirmText: '确认',
+                intensifyCancel: true,
                 confirmCallBack: () => {
-                    bottomModal.current.hide();
-                    resolve(false);
+                    setReasonListDialogPropsAndVisible({resolve, bottomModal});
                 },
                 cancelCallBack: () => {
                     resolve(false);
@@ -1119,6 +1122,14 @@ function HomeScreen({navigation}) {
                     </View>
                     <BottomDesc />
                 </ScrollView>
+                {reasonListDialogPropsAndVisible && (
+                    <ReasonListDialog
+                        close={() => {
+                            setReasonListDialogPropsAndVisible(null);
+                        }}
+                        {...reasonListDialogPropsAndVisible}
+                    />
+                )}
             </View>
         ) : (
             // 手势密码

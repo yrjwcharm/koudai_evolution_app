@@ -9,6 +9,8 @@ import {
     Linking,
     Clipboard,
     Platform,
+    KeyboardAvoidingView,
+    Keyboard,
 } from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
@@ -63,6 +65,7 @@ export default class MyModal extends Component {
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.onCountdownChange = this.props.onCountdownChange; // 监听倒计时变换
+        this.intensifyCancel = this.props.intensifyCancel;
         this.state = {
             isVisible: this.props.isVisible || false,
             imgHeight: props.imgHeight || 0,
@@ -257,7 +260,7 @@ export default class MyModal extends Component {
     };
     renderDefaultModal = () => {
         return (
-            <View style={[Style.flexCenter, styles.container]}>
+            <KeyboardAvoidingView behavior={'padding'} style={[Style.flexCenter, styles.container]}>
                 {/* 是否自定义头部 */}
                 {this.customTitleView ? (
                     this.customTitleView
@@ -282,7 +285,11 @@ export default class MyModal extends Component {
                             style={[styles.centerBtn, Style.flexCenter]}
                             activeOpacity={1}
                             onPress={this.cancel.bind(this)}>
-                            <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
+                            <Text
+                                style={[
+                                    styles.centerBtnText,
+                                    {color: this.intensifyCancel ? Colors.btnColor : Colors.lightGrayColor},
+                                ]}>
                                 {this.cancelText}
                             </Text>
                         </TouchableOpacity>
@@ -291,7 +298,13 @@ export default class MyModal extends Component {
                             activeOpacity={1}
                             style={[Style.flexCenter, styles.centerBtn]}
                             onPress={this.confirm.bind(this)}>
-                            <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>{this.confirmText}</Text>
+                            <Text
+                                style={[
+                                    styles.centerBtnText,
+                                    {color: this.intensifyCancel ? Colors.lightGrayColor : Colors.btnColor},
+                                ]}>
+                                {this.confirmText}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 ) : (
@@ -315,7 +328,7 @@ export default class MyModal extends Component {
                         </Text>
                     </TouchableOpacity>
                 )}
-            </View>
+            </KeyboardAvoidingView>
         );
     };
     renderGuideModal = () => {
@@ -440,6 +453,7 @@ export default class MyModal extends Component {
                                 this.props.onCloseCallBack && this.props.onCloseCallBack();
                                 this.setModalVisiable(false);
                             }
+                            Keyboard.dismiss();
                         }}>
                         <View style={styles.mask} />
                     </TouchableWithoutFeedback>

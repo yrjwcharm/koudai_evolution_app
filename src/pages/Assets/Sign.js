@@ -5,8 +5,8 @@
  * @LastEditTime: 2022-04-27 18:40:58
  * @Description:投顾服务签约
  */
-import {Platform, StyleSheet, Text, View, ScrollView} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Platform, StyleSheet, Text, View, ScrollView, Switch} from 'react-native';
+import React, {useEffect, useReducer, useState} from 'react';
 import CheckBox from '../../components/CheckBox';
 import _ from 'lodash';
 import http from '../../services';
@@ -21,6 +21,7 @@ const Sign = ({navigation}) => {
     const [signSelectData, setSignSelectData] = useState([]);
     const [signData, setSignData] = useState(null);
     const jump = useJump();
+    const [, forceUpdate] = useReducer((x) => x + 1, 1);
     const showSignNotice = (data) => {
         Modal.show({
             children: () => {
@@ -122,18 +123,46 @@ const Sign = ({navigation}) => {
                     {signData?.plan_list?.map((item, index) => {
                         return (
                             <View key={index} style={styles.card}>
-                                <Text style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
-                                    {item?.name}
-                                    {item?.sub_name ? (
-                                        <Text style={{fontWeight: '400', fontSize: px(12)}}>{item.sub_name}</Text>
-                                    ) : null}
-                                </Text>
-
-                                {item?.adviser_cost_desc ? (
-                                    <Text style={[styles.light_text, {marginBottom: px(6)}]}>
-                                        {item.adviser_cost_desc}
+                                <View style={Style.flexBetween}>
+                                    <Text style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
+                                        {item?.name}
+                                        {item?.sub_name ? (
+                                            <Text style={{fontWeight: '400', fontSize: px(12)}}>{item.sub_name}</Text>
+                                        ) : null}
                                     </Text>
-                                ) : null}
+                                    {item?.auto_adjust ? (
+                                        <Text
+                                            style={{
+                                                fontSize: px(12),
+                                                lineHeight: px(17),
+                                                fontWeight: '400',
+                                                color: '#121d3a',
+                                            }}>
+                                            {item?.auto_adjust.text}
+                                        </Text>
+                                    ) : null}
+                                </View>
+
+                                <View style={Style.flexBetween}>
+                                    {item?.adviser_cost_desc ? (
+                                        <Text style={[styles.light_text, {marginBottom: px(6)}]}>
+                                            {item.adviser_cost_desc}
+                                        </Text>
+                                    ) : null}
+                                    {item?.auto_adjust ? (
+                                        <Switch
+                                            ios_backgroundColor={'#CCD0DB'}
+                                            onValueChange={(val) => {
+                                                signData.plan_list[index].auto_adjust.status = +val;
+                                                forceUpdate();
+                                            }}
+                                            thumbColor={'#fff'}
+                                            trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                                            value={!!item?.auto_adjust?.status}
+                                            style={{transform: [{scale: 0.6}]}}
+                                        />
+                                    ) : null}
+                                </View>
                                 <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
                                     <CheckBox
                                         checked={signSelectData?.includes(item?.poid)}
@@ -146,26 +175,27 @@ const Sign = ({navigation}) => {
                                         {item?.desc}
                                         {item?.link_name}
                                         <Text>
-                                            {item?.link_list?.map((link, _index) => (
-                                                <Text
-                                                    style={{color: Colors.btnColor}}
-                                                    key={_index}
-                                                    onPress={() => {
-                                                        if (link?.url) {
-                                                            jump(link?.url);
-                                                        }
-                                                    }}>
-                                                    {link?.text}
-                                                    {item?.link_list?.length > 1 &&
-                                                    _index == item?.link_list?.length - 2 ? (
-                                                        <Text style={styles.light_text}>和</Text>
-                                                    ) : _index == item?.link_list?.length - 1 ? (
-                                                        ''
-                                                    ) : (
-                                                        '、'
-                                                    )}
-                                                </Text>
-                                            ))}
+                                            {item?.[item?.auto_adjust?.status ? 'link_list' : 'link_list2']?.map(
+                                                (link, _index, arr) => (
+                                                    <Text
+                                                        style={{color: Colors.btnColor}}
+                                                        key={_index}
+                                                        onPress={() => {
+                                                            if (link?.url) {
+                                                                jump(link?.url);
+                                                            }
+                                                        }}>
+                                                        {link?.text}
+                                                        {arr?.length > 1 && _index == arr?.length - 2 ? (
+                                                            <Text style={styles.light_text}>和</Text>
+                                                        ) : _index == arr?.length - 1 ? (
+                                                            ''
+                                                        ) : (
+                                                            '、'
+                                                        )}
+                                                    </Text>
+                                                )
+                                            )}
                                             {item?.desc_end ? (
                                                 <Text style={styles.light_text}>{item?.desc_end}</Text>
                                             ) : null}
@@ -185,7 +215,22 @@ const Sign = ({navigation}) => {
                     onPress={() => {
                         global.LogTool('Selectcombine_button');
                         http.post('/advisor/action/report/20220422', {action: 'select', poids: signSelectData});
-                        navigation.navigate('RiskDisclosure', {poids: signSelectData});
+
+                        navigation.navigate('RiskDisclosure', {
+                            poids: signSelectData,
+                            auto_poids: signData.plan_list.reduce((memo, item) => {
+                                if (signSelectData.includes(item.poid) && item?.auto_adjust?.status) {
+                                    memo.push(item.poid);
+                                }
+                                return memo;
+                            }, []),
+                            manual_poids: signData.plan_list.reduce((memo, item) => {
+                                if (signSelectData.includes(item.poid) && item?.auto_adjust?.status == 0) {
+                                    memo.push(item.poid);
+                                }
+                                return memo;
+                            }, []),
+                        });
                     }}
                 />
             </>
