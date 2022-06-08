@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-08 18:04:42
+ * @LastEditTime: 2022-06-08 19:20:11
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -104,10 +104,13 @@ export default ({navigation, route}) => {
                     return: '/private_fund/submit_return_visit/20220510',
                 };
                 http.post(obj[scene || 'investorInfo'], params).then((res) => {
+                    const toast = res.message ? Toast.show(res.message) : '';
                     if (res.code === '000000') {
-                        jump(res.result.url);
+                        setTimeout(() => {
+                            Toast.hide(toast);
+                            jump(res.result.url);
+                        }, 1500);
                     }
-                    res.message && Toast.show(res.message);
                 });
             },
             1000,
@@ -155,13 +158,16 @@ export default ({navigation, route}) => {
                 http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
                     Toast.hide(toast);
                     if (resp.code === '000000') {
-                        Toast.show(resp.message || '签署成功');
+                        const _toast = Toast.show(resp.message || '签署成功');
                         if (resp.result.type === 'back') {
                             navigation.goBack();
                         } else if (resp.result.type === 'refresh') {
                             init();
                         } else if (resp.result.type === 'jump') {
-                            jump(res.result.url);
+                            setTimeout(() => {
+                                Toast.hide(_toast);
+                                jump(resp.result.url);
+                            }, 1500);
                         } else {
                             init();
                         }
