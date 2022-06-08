@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-30 15:12:04
+ * @LastEditTime: 2022-06-08 17:11:27
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -207,9 +207,7 @@ export default function Launch({navigation}) {
     // 获取ios 归因数据
     const getAdData = async () => {
         let data = await PTRIDFA.getAdData();
-        if (data) {
-            http.post('mapi/upload/apple_ad/20220530', data);
-        }
+        http.post('mapi/upload/apple_ad/20220530', data);
     };
     const init = () => {
         Platform.OS == 'ios' ? getIdfa() : getOaid();
