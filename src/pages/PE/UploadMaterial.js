@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-31 16:39:43
+ * @LastEditTime: 2022-06-09 10:08:29
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -67,6 +67,7 @@ export default ({navigation, route}) => {
         openNfcBtnBgColor: '#333333',
         openNfcBtnTextColor: '#FFFFFF',
     }).current;
+    const dataRef = useRef(); // 缓存一下页面数据
 
     const finished = useMemo(() => {
         const {id_info: _id_info = {}, materials: _materials = []} = data;
@@ -116,6 +117,9 @@ export default ({navigation, route}) => {
     // 从相机中选择
     const takePic = () => {
         try {
+            if (typeof clickIndexRef.current === 'string') {
+                dataRef.current = {...data};
+            }
             if (Platform.OS == 'android') {
                 requestAuth(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -445,7 +449,7 @@ export default ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '投资者证明材料上传'});
-                    setData(res.result);
+                    setData(dataRef.current || res.result);
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
