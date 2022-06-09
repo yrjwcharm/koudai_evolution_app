@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-06 16:40:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-09 19:12:46
  * @Description:路由表
  */
 import React from 'react';
@@ -229,7 +229,6 @@ export default function AppStack() {
             initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
-                ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
                     return (
                         <Feather
