@@ -231,7 +231,6 @@ export default function AppStack() {
             initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
-                ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
                     return (
                         <Feather
