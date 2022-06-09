@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-06 18:57:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-09 17:00:12
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -107,57 +107,62 @@ function useJump() {
                 }
             } else if (url.type === 7) {
                 const toast = Toast.showLoading();
-                http.get(url.path, url.params).then((res) => {
-                    if (res.code === '000000') {
-                        const {
-                            app_id,
-                            btn_text,
-                            bucket_name,
-                            file_id,
-                            object_key,
-                            questions,
-                            serial_number,
-                            title,
-                            user_no,
-                        } = res.result;
-                        if (app_id && file_id && user_no) {
-                            signInit(app_id, true, (mes) => {
-                                console.log(mes);
-                            });
-                            setTimeout(() => {
-                                Toast.hide(toast);
-                                signFile(file_id, user_no);
-                            }, 200);
-                        } else if (app_id && questions && serial_number) {
-                            //init安卓有回掉 ios没有
-                            recordInit(app_id, true, (mes) => {
-                                if (mes == 'success') {
-                                    Toast.hide(toast);
-                                    startRecord(serial_number, '', questions);
-                                }
-                            });
-                            if (Platform.OS == 'ios') {
+                http.get(url.path, url.params)
+                    .then((res) => {
+                        if (res.code === '000000') {
+                            const {
+                                app_id,
+                                btn_text,
+                                bucket_name,
+                                file_id,
+                                object_key,
+                                questions,
+                                serial_number,
+                                title,
+                                user_no,
+                                isDebug = false,
+                            } = res.result;
+                            if (app_id && file_id && user_no) {
+                                signInit(app_id, isDebug, (mes) => {
+                                    console.log(mes);
+                                });
                                 setTimeout(() => {
                                     Toast.hide(toast);
-                                    startRecord(serial_number, '', questions);
+                                    signFile(file_id, user_no);
                                 }, 200);
-                            }
-                        } else if (bucket_name && object_key) {
-                            signInit(app_id, true, (mes) => {
-                                console.log(mes);
-                            });
-                            setTimeout(() => {
+                            } else if (app_id && questions && serial_number) {
+                                //init安卓有回掉 ios没有
+                                recordInit(app_id, isDebug, (mes) => {
+                                    if (mes == 'success') {
+                                        Toast.hide(toast);
+                                        startRecord(serial_number, '', questions);
+                                    }
+                                });
+                                if (Platform.OS == 'ios') {
+                                    setTimeout(() => {
+                                        Toast.hide(toast);
+                                        startRecord(serial_number, '', questions);
+                                    }, 200);
+                                }
+                            } else if (bucket_name && object_key) {
+                                signInit(app_id, isDebug, (mes) => {
+                                    console.log(mes);
+                                });
+                                setTimeout(() => {
+                                    Toast.hide(toast);
+                                    signPreview(bucket_name, object_key, title, btn_text);
+                                }, 200);
+                            } else {
                                 Toast.hide(toast);
-                                signPreview(bucket_name, object_key, title, btn_text);
-                            }, 200);
+                            }
                         } else {
                             Toast.hide(toast);
+                            Toast.show(res.message);
                         }
-                    } else {
+                    })
+                    .catch(() => {
                         Toast.hide(toast);
-                        Toast.show(res.message);
-                    }
-                });
+                    });
             } else {
                 url.toast && Toast.show(url.toast);
                 navigation[type](url.path, url.params || {});
