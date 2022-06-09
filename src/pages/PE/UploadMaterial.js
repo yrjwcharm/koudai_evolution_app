@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-09 10:08:29
+ * @LastEditTime: 2022-06-09 11:58:03
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -163,9 +163,9 @@ export default ({navigation, route}) => {
                     }, 100);
                 } else {
                     ImagePicker.openPicker({
-                        width: px(124),
-                        height: px(84),
-                        cropping: true,
+                        // width: px(124),
+                        // height: px(84),
+                        // cropping: true,
                         cropperChooseText: '选择',
                         cropperCancelText: '取消',
                         loadingLabelText: '加载中',
@@ -183,9 +183,9 @@ export default ({navigation, route}) => {
                 }
             } else if (action === 'camera') {
                 ImagePicker.openCamera({
-                    width: px(124),
-                    height: px(84),
-                    cropping: true,
+                    // width: px(124),
+                    // height: px(84),
+                    // cropping: true,
                     cropperChooseText: '选择',
                     cropperCancelText: '取消',
                     loadingLabelText: '加载中',
