@@ -20,7 +20,7 @@ import {
     TouchableHighlight,
     Linking,
 } from 'react-native';
-
+import DeviceInfo from 'react-native-device-info';
 import {ChatScreen} from '../../components/IM';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {isIphoneX, px, requestAuth, deviceWidth, deviceHeight} from '../../utils/appUtil';
@@ -234,7 +234,13 @@ const IM = (props) => {
                         WS.current.send(handleMsgParams('AAR', 'success', _data.cmid));
                     }
                     break;
-
+                // 评价
+                case 'GMN':
+                case 'BPA':
+                    if (_data.data) {
+                        handleMessage(_data);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -256,9 +262,9 @@ const IM = (props) => {
         };
     };
     //断开重连
-    const reconnect = () => {
+    const reconnect = (type) => {
         //重新连接WebSocket
-        if (connect) {
+        if (connect && !type) {
             return;
         }
         initWebSocket('reconnect');
@@ -300,6 +306,9 @@ const IM = (props) => {
                     return 'Question';
                 case 'STA':
                     return 'system';
+                case 'GMN':
+                case 'BPA':
+                    return 'evaluate';
                 default:
                     return 'text';
             }
@@ -464,6 +473,7 @@ const IM = (props) => {
         params.to = 'S';
         params.entry = props.route?.params?.entry;
         params.data = content;
+        params.version = DeviceInfo.getVersion();
         return JSON.stringify(params);
     };
     const loadHistory = () => {
@@ -946,6 +956,8 @@ const IM = (props) => {
                 iphoneXBottomPadding={24}
                 containerBackgroundColor={Colors.inputBg}
                 sendMessage={sendMessage}
+                wsSend={wsSend}
+                reconnect={reconnect}
                 inputStyle={styles.inputStyle}
                 inputOutContainerStyle={{backgroundColor: '#F7F7F7'}}
                 usePopView={true} //长按消息选项

@@ -794,6 +794,8 @@ class ChatWindow extends PureComponent {
                                     ImageComponent={ImageComponent}
                                     ref={(e) => (this.messageItem = e)}
                                     user={this.props.userProfile}
+                                    wsSend={this.props.wsSend}
+                                    reconnect={this.props.reconnect}
                                     chatType={chatType}
                                     lastReadAt={this.props.lastReadAt}
                                     showIsRead={this.props.showIsRead}

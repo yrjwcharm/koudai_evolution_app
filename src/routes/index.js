@@ -187,6 +187,8 @@ import Sign from '../pages/Assets/Sign';
 import RiskDisclosure from '../pages/Assets/RiskDisclosure'; // 风险揭示书
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
+import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
+import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -733,6 +735,8 @@ export default function AppStack() {
             />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
+            <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
+            <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

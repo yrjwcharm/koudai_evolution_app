@@ -3,27 +3,13 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:04:18
+ * @LastEditTime: 2022-06-08 16:00:10
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {
-    StatusBar,
-    Platform,
-    BackHandler,
-    UIManager,
-    AppState,
-    View,
-    ImageBackground,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    DeviceEventEmitter,
-} from 'react-native';
-import FastImage from 'react-native-fast-image';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {StatusBar, Platform, BackHandler, UIManager, AppState, DeviceEventEmitter} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppStack from './src/routes';
@@ -37,12 +23,6 @@ import http from './src/services';
 import Storage from './src/utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
-import {Modal} from './src/components/Modal';
-import {Button} from './src/components/Button';
-import UnderlineText from './src/components/UnderlineText';
-import {px, deviceWidth} from './src/utils/appUtil';
-import {Colors, Font, Style} from './src/common/commonStyle';
-import saveImg from './src/utils/saveImg';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {debounce} from 'lodash';
@@ -58,9 +38,10 @@ const key = Platform.select({
     android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
 });
 
-if (process.env.NODE_ENV === 'development') { //调试中可看到网络请求
-    global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; 
-    global.WebSocket = global.originalWebSocket || global.WebSocket 
+if (process.env.NODE_ENV === 'development') {
+    //调试中可看到网络请求
+    global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
+    global.WebSocket = global.originalWebSocket || global.WebSocket;
 }
 
 if (Platform.OS === 'android') {
@@ -71,94 +52,6 @@ if (Platform.OS === 'android') {
 }
 
 const {store, persistor} = configStore();
-
-export const generateOptions = (modal) => {
-    return {
-        children: (
-            <>
-                <View style={Style.flexCenter}>
-                    <FastImage
-                        source={{
-                            uri: modal.qr_code,
-                        }}
-                        style={styles.qrcode}
-                    />
-                </View>
-                <Text style={styles.codeTips}>{'打开微信扫一扫二维码直接添加'}</Text>
-                <Button
-                    onPress={() => saveImg(modal.business_card, () => Modal.close({}, 'slide'))}
-                    style={styles.saveBtn}
-                    title="保存投顾二维码"
-                />
-            </>
-        ),
-        header: (
-            <ImageBackground
-                source={{
-                    uri: modal.bg_img,
-                }}
-                style={styles.modalBg}>
-                <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => Modal.close({}, 'slide')}
-                    style={[Style.flexCenter, styles.close]}>
-                    <AntDesign color={'#fff'} name="close" size={24} />
-                </TouchableOpacity>
-                <Text style={styles.modalTitle}>{modal.title}</Text>
-                <View style={[Style.flexRowCenter, {marginTop: px(8), position: 'relative'}]}>
-                    <Text style={styles.modalSubtitle}>您的</Text>
-                    <UnderlineText
-                        style={[
-                            styles.modalSubtitle,
-                            {
-                                fontWeight: Platform.select({
-                                    android: '700',
-                                    ios: '500',
-                                }),
-                            },
-                        ]}
-                        text={`专属投顾${modal.nick_name}，`}
-                        underlineWidthDelta={px(-5.5)}
-                    />
-                    <Text style={styles.modalSubtitle}>邀请您升级为</Text>
-                    <UnderlineText
-                        style={[
-                            styles.modalSubtitle,
-                            {
-                                fontWeight: Platform.select({
-                                    android: '700',
-                                    ios: '500',
-                                }),
-                            },
-                        ]}
-                        text={'专属一对一投顾服务'}
-                    />
-                </View>
-                <View style={{marginTop: px(34), paddingTop: px(24), paddingLeft: px(36)}}>
-                    {modal?.content_list?.map?.((item, index) => {
-                        return (
-                            <View
-                                key={item + index}
-                                style={{flexDirection: 'row', marginTop: index !== 0 ? px(12) : 0}}>
-                                <FastImage
-                                    source={{
-                                        uri: item.icon,
-                                    }}
-                                    style={styles.serviceIcon}
-                                />
-                                <View>
-                                    <Text style={styles.serviceTitle}>{item.content}</Text>
-                                    <Text style={styles.serviceDesc}>{item.content_desc}</Text>
-                                </View>
-                            </View>
-                        );
-                    })}
-                </View>
-            </ImageBackground>
-        ),
-        isTouchMaskToClose: modal.touch_close,
-    };
-};
 
 function App(props) {
     const routeNameRef = useRef();
@@ -317,77 +210,5 @@ function App(props) {
         </SafeAreaProvider>
     );
 }
-
-const styles = StyleSheet.create({
-    modalBg: {
-        width: deviceWidth,
-        height: px(388),
-        position: 'relative',
-    },
-    close: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: px(60),
-        height: px(60),
-    },
-    modalTitle: {
-        marginTop: px(44),
-        fontSize: px(22),
-        lineHeight: px(30),
-        color: '#fff',
-        fontWeight: Platform.select({android: '700', ios: '500'}),
-        textAlign: 'center',
-    },
-    modalSubtitle: {
-        fontSize: px(13),
-        lineHeight: px(18),
-        color: '#fff',
-        fontWeight: Platform.select({android: '100', ios: '300'}),
-        textAlign: 'center',
-    },
-    underline: {
-        position: 'absolute',
-        bottom: 0,
-        height: px(9),
-        backgroundColor: '#003FAC',
-    },
-    serviceIcon: {
-        marginTop: px(2),
-        marginRight: px(10),
-        width: px(16),
-        height: px(16),
-    },
-    serviceTitle: {
-        fontSize: Font.textH1,
-        lineHeight: px(20),
-        color: Colors.defaultColor,
-        fontWeight: Platform.select({android: '700', ios: '500'}),
-    },
-    serviceDesc: {
-        marginTop: px(2),
-        fontSize: Font.textH3,
-        lineHeight: px(17),
-        color: Colors.descColor,
-    },
-    qrcode: {
-        marginTop: px(14),
-        width: px(94),
-        height: px(94),
-    },
-    codeTips: {
-        marginTop: px(12),
-        fontSize: Font.textH3,
-        lineHeight: px(17),
-        color: Colors.descColor,
-        textAlign: 'center',
-    },
-    saveBtn: {
-        marginTop: px(20),
-        marginHorizontal: px(68),
-        marginBottom: px(28),
-        borderRadius: px(22.5),
-    },
-});
 
 export default App;
