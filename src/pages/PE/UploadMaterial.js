@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-09 11:58:03
+ * @LastEditTime: 2022-06-09 14:22:53
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -18,8 +18,7 @@ import {
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -147,59 +146,29 @@ export default ({navigation, route}) => {
     const openPicker = (action) => {
         setTimeout(() => {
             if (action === 'gallery') {
-                if (typeof clickIndexRef.current === 'string') {
-                    setTimeout(() => {
-                        launchImageLibrary({quality: 0.5}, (response) => {
-                            if (response.didCancel) {
-                                console.log('User cancelled image picker');
-                            } else if (response.error) {
-                                console.log('ImagePicker Error: ', response.error);
-                            } else if (response.customButton) {
-                                console.log('User tapped custom button: ', response.customButton);
-                            } else if (response.assets) {
-                                uploadImage(response.assets[0]);
-                            }
-                        });
-                    }, 100);
-                } else {
-                    ImagePicker.openPicker({
-                        // width: px(124),
-                        // height: px(84),
-                        // cropping: true,
-                        cropperChooseText: '选择',
-                        cropperCancelText: '取消',
-                        loadingLabelText: '加载中',
-                    })
-                        .then((image) => {
-                            uploadImage({
-                                fileName: image.filename,
-                                type: image.mime,
-                                uri: image.path,
-                            });
-                        })
-                        .catch((err) => {
-                            console.warn(err);
-                        });
-                }
+                launchImageLibrary({mediaType: 'photo', quality: 0.5}, (response) => {
+                    if (response.didCancel) {
+                        console.log('User cancelled image picker');
+                    } else if (response.error) {
+                        console.log('ImagePicker Error: ', response.error);
+                    } else if (response.customButton) {
+                        console.log('User tapped custom button: ', response.customButton);
+                    } else if (response.assets) {
+                        uploadImage(response.assets[0]);
+                    }
+                });
             } else if (action === 'camera') {
-                ImagePicker.openCamera({
-                    // width: px(124),
-                    // height: px(84),
-                    // cropping: true,
-                    cropperChooseText: '选择',
-                    cropperCancelText: '取消',
-                    loadingLabelText: '加载中',
-                })
-                    .then((image) => {
-                        uploadImage({
-                            fileName: image.filename,
-                            type: image.mime,
-                            uri: image.path,
-                        });
-                    })
-                    .catch((err) => {
-                        console.warn(err);
-                    });
+                launchCamera({mediaType: 'photo', quality: 0.5}, (response) => {
+                    if (response.didCancel) {
+                        console.log('User cancelled camera');
+                    } else if (response.error) {
+                        console.log('Camera Error: ', response.error);
+                    } else if (response.customButton) {
+                        console.log('User tapped custom button: ', response.customButton);
+                    } else if (response.assets) {
+                        uploadImage(response.assets[0]);
+                    }
+                });
             }
         }, 800);
     };
@@ -235,7 +204,6 @@ export default ({navigation, route}) => {
                 Toast.hide(toast);
                 if (res?.code === '000000') {
                     Toast.show('上传成功');
-                    ImagePicker.clean();
                     if (type === 'id_card') {
                         _data.id_info[clickIndexRef.current] = res.result.url;
                     } else {
