@@ -2,7 +2,7 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-05-30 14:19:29
+ * @LastEditTime: 2022-06-10 16:03:51
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -18,21 +18,34 @@ import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
 import Mask from '../../components/Mask';
-import {Modal} from '../../components/Modal';
+import {BankCardModal, Modal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
 // import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
 
 export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
     const jump = useJump();
-    const {input_type, label, max_length, options, placeholder, suffix, tip: tips, type, url = '', value} = data;
+    const {
+        input_type,
+        label,
+        max_length,
+        options,
+        pay_methods = [],
+        placeholder,
+        suffix,
+        tip: tips,
+        type,
+        url = '',
+        value,
+    } = data;
     const inputRef = useRef();
     const [open, setOpen] = useState(false);
     const inputMask = useRef();
+    const bankcardModal = useRef();
 
     const onPress = () => {
         if (type === 'bankcard') {
-            showBankCardModal && showBankCardModal();
+            bankcardModal.current?.show?.();
         } else if (type === 'date') {
             setOpen(true);
         } else if (type === 'input') {
@@ -94,6 +107,10 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                         case 'select':
                         case 'text':
                             let _label = '';
+                            if (type === 'bankcard') {
+                                const i = pay_methods.findIndex((v) => v.pay_method === value);
+                                _label = `${pay_methods[i].bank_name} (${pay_methods[i].bank_no})`;
+                            }
                             if (type === 'select') {
                                 const i = options.findIndex((v) => v.value === value);
                                 _label = options[i]?.label || '';
@@ -184,6 +201,16 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                     }}
                     open={open}
                     title={`请选择${label}`}
+                />
+            ) : null}
+            {type === 'bankcard' ? (
+                <BankCardModal
+                    data={pay_methods}
+                    onDone={(select) => {
+                        onChange(select.pay_method);
+                    }}
+                    ref={bankcardModal}
+                    select={pay_methods.findIndex((item) => item.pay_method === value)}
                 />
             ) : null}
         </TouchableOpacity>
