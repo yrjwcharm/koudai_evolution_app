@@ -13,7 +13,7 @@ import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/index'; //资产页
-import PKHome from '../pages/PK/Home'; // PK首页
+import PKHome from '../pages/PK/pages/Home'; // PK首页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';

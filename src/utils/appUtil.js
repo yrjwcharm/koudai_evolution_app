@@ -299,7 +299,7 @@ const resolveTimeStemp = (timeStemp) => {
     ];
 };
 
-/*
+/**
  * 倒计时工具 - 可有效的控制执行误差在5毫秒浮动
  * @param {object} option -  配置项
  * @param {number} option.timeStemp - 时间戳，毫秒
