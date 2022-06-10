@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-08 17:11:27
+ * @LastEditTime: 2022-06-10 11:04:29
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -38,7 +38,7 @@ import JPush from 'jpush-react-native';
 import {getAppMetaData} from 'react-native-get-channel';
 import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
-
+import DeviceInfo from 'react-native-device-info';
 const {PTRIDFA, OAIDModule} = NativeModules;
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
@@ -109,6 +109,13 @@ export default function Launch({navigation}) {
             confirmText: '同意',
             cancelText: '拒绝',
         });
+    };
+    const getSystemMes = async () => {
+        global.did = DeviceInfo.getUniqueId();
+        global.deviceId = DeviceInfo.getDeviceId();
+        global.brandName = DeviceInfo.getBrand();
+        global.systemVersion = DeviceInfo.getSystemVersion();
+        global.getDeviceName = await DeviceInfo.getDeviceName();
     };
     const initJpush = () => {
         JPush.init();
@@ -210,6 +217,7 @@ export default function Launch({navigation}) {
         http.post('mapi/upload/apple_ad/20220530', data);
     };
     const init = () => {
+        getSystemMes();
         Platform.OS == 'ios' ? getIdfa() : getOaid();
         Platform.OS == 'ios' && getAdData();
         heartBeat();
