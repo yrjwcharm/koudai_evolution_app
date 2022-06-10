@@ -11,7 +11,8 @@
 #import <UIKit/UIKit.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/ASIdentifierManager.h>
-
+#import <AdServices/AdServices.h>
+#import <iAd/iAd.h>
 @implementation PTRIDFA
 
 RCT_EXPORT_MODULE()
@@ -50,5 +51,68 @@ RCT_EXPORT_METHOD(getIDFA:(RCTPromiseResolveBlock)resolve
     }
     
 }
-
+//获取归因token data
+RCT_EXPORT_METHOD(getAdData:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 14.3, *)) {
+           NSError *error;
+           NSString *token = [AAAttribution attributionTokenWithError:&error];
+           NSLog(@"token: %@", token);
+           if (token != nil) {
+             [self sendToken:[self getANullableString:@"token" content:token]
+               completeBlock:^(NSDictionary *attrData) {
+               resolve(attrData);}];
+           }
+       } else {
+         // 老版本请求
+            if ([[ADClient sharedClient] respondsToSelector:@selector(requestAttributionDetailsWithBlock:)]) {
+                NSLog(@"LogAds：iAd called");
+                [[ADClient sharedClient] requestAttributionDetailsWithBlock:^(NSDictionary *attrData, NSError *error) {
+                  resolve(attrData);
+                }];
+           }
+       }
+  
+    
+}
+/** 读取可能为空的字符串*/
+-(nullable NSString *)getANullableString:(NSString *)desc content:(NSString *)content{
+    if(content == nil){
+        return @"";
+    }
+    return [NSString stringWithFormat:@"%@", content];
+}
+ 
+/** 发送归因token得到数据 */
+-(void)sendToken:(NSString *)token completeBlock:(void(^)(NSDictionary* data))completeBlock{
+    NSString *url = [NSString stringWithFormat:@"https://api-adservices.apple.com/api/v1/"];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+    request.HTTPMethod = @"POST";
+    [request addValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+    NSData* postData = [token dataUsingEncoding:NSUTF8StringEncoding];
+    [request setHTTPBody:postData];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary * result = NULL;
+        if (error) {
+             //请求失败
+            NSLog(@"请求失败LogAds：sendToken ERR");
+            if (completeBlock) {
+                NSMutableDictionary *nulldict = [NSMutableDictionary dictionary];
+                completeBlock(nulldict);
+            }
+        }else{
+            // 请求成功
+            NSLog(@"请求成功");
+            NSError *resError;
+            NSMutableDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&resError];
+            result = [[NSDictionary alloc] initWithDictionary:resDic];
+            if (completeBlock) {
+                completeBlock(result);
+            }
+        }
+    }];
+    [dataTask resume];
+}
 @end

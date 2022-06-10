@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-09 19:12:46
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-10 10:22:41
  * @Description:路由表
  */
 import React from 'react';
@@ -187,6 +187,8 @@ import Sign from '../pages/Assets/Sign';
 import RiskDisclosure from '../pages/Assets/RiskDisclosure'; // 风险揭示书
 import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评论列表
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
+import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
+import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
 import ObjectChoose from '../pages/PE/ObjectChoose'; // 特定对象选择
@@ -745,6 +747,8 @@ export default function AppStack() {
             />
             <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
+            <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
+            <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
             <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />

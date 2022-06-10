@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-09 17:00:12
+ * @LastEditTime: 2022-06-10 15:46:38
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -129,7 +129,7 @@ function useJump() {
                                 setTimeout(() => {
                                     Toast.hide(toast);
                                     signFile(file_id, user_no);
-                                }, 200);
+                                }, 500);
                             } else if (app_id && questions && serial_number) {
                                 //init安卓有回掉 ios没有
                                 recordInit(app_id, isDebug, (mes) => {
@@ -142,7 +142,7 @@ function useJump() {
                                     setTimeout(() => {
                                         Toast.hide(toast);
                                         startRecord(serial_number, '', questions);
-                                    }, 200);
+                                    }, 500);
                                 }
                             } else if (bucket_name && object_key) {
                                 signInit(app_id, isDebug, (mes) => {
@@ -151,7 +151,7 @@ function useJump() {
                                 setTimeout(() => {
                                     Toast.hide(toast);
                                     signPreview(bucket_name, object_key, title, btn_text);
-                                }, 200);
+                                }, 500);
                             } else {
                                 Toast.hide(toast);
                             }

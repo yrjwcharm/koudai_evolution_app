@@ -21,6 +21,8 @@
 		0016AC3C277B276D00E78FBC /* IDCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2E277B276C00E78FBC /* IDCardModel.m */; };
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
+		003BA83E283F5DEF0092FCDD /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 003BA83D283F5DEF0092FCDD /* AdServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		003BA840283F5E1E0092FCDD /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 003BA83F283F5E1E0092FCDD /* iAd.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
 		0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; };
 		0049823627BB4FFA00A88DA1 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -32,13 +34,14 @@
 		0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0080455E2591A5E20083350B /* SystemConfiguration.framework */; };
 		008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045602591A5F00083350B /* CoreTelephony.framework */; };
 		008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045622591A5FD0083350B /* libsqlite3.0.tbd */; };
+		008961B22853225200B9A820 /* AgoraRtcKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008961B12853225200B9A820 /* AgoraRtcKit.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		008A34BD282E5E8000B4CD80 /* TTDSignSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008A34BB282E5E7F00B4CD80 /* TTDSignSDK.framework */; };
 		008A34BE282E5E8000B4CD80 /* TTDSignSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */; };
 		008A34C4283200AC00B4CD80 /* SignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34C3283200AC00B4CD80 /* SignManager.m */; };
 		008A34CC28326FE100B4CD80 /* TTDQARecordResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 008A34CA28326FE100B4CD80 /* TTDQARecordResource.bundle */; };
 		008A34D028334F6A00B4CD80 /* RecordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 008A34CF28334F6900B4CD80 /* RecordManager.m */; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
-		00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */; };
+		00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		00E3FB5D27CE11F600FCFD34 /* PTRIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */; };
 		0C140D6F06EEF82032CEB527 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FF701FCEC3967D78711580 /* libPods-EvolutionApp-tvOSTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -118,6 +121,8 @@
 		002DFB85258B443100501EA5 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EvolutionApp.entitlements; path = EvolutionApp/EvolutionApp.entitlements; sourceTree = "<group>"; };
+		003BA83D283F5DEF0092FCDD /* AdServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdServices.framework; path = System/Library/Frameworks/AdServices.framework; sourceTree = SDKROOT; };
+		003BA83F283F5E1E0092FCDD /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		0048D3E3271D757400F2CD34 /* iot.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = iot.p12; sourceTree = "<group>"; };
 		0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		008045532591A5B30083350B /* libRCTWeChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTWeChat.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +130,7 @@
 		0080455E2591A5E20083350B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		008045602591A5F00083350B /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		008045622591A5FD0083350B /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		008961B12853225200B9A820 /* AgoraRtcKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AgoraRtcKit.xcframework; path = Pods/AgoraRtcEngine_iOS/AgoraRtcKit.xcframework; sourceTree = "<group>"; };
 		008A34BB282E5E7F00B4CD80 /* TTDSignSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TTDSignSDK.framework; sourceTree = "<group>"; };
 		008A34BC282E5E8000B4CD80 /* TTDSignSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TTDSignSDK.bundle; sourceTree = "<group>"; };
 		008A34C22832009000B4CD80 /* SignManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignManager.h; sourceTree = "<group>"; };
@@ -186,6 +192,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				008961B22853225200B9A820 /* AgoraRtcKit.xcframework in Frameworks */,
+				003BA840283F5E1E0092FCDD /* iAd.framework in Frameworks */,
+				003BA83E283F5DEF0092FCDD /* AdServices.framework in Frameworks */,
 				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
 				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
@@ -302,6 +311,9 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				008961B12853225200B9A820 /* AgoraRtcKit.xcframework */,
+				003BA83F283F5E1E0092FCDD /* iAd.framework */,
+				003BA83D283F5DEF0092FCDD /* AdServices.framework */,
 				00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */,
 				D07216DD27717393006AFA8D /* libJPush.a */,
 				D07216DB27717293006AFA8D /* libswiftWebKit.tbd */,
@@ -980,7 +992,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 67000;
+				CURRENT_PROJECT_VERSION = 67400;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1043,7 +1055,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 6.7.1;
+				MARKETING_VERSION = 6.7.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1212,10 +1224,10 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 67000;
+				CURRENT_PROJECT_VERSION = 67400;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1277,7 +1289,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 6.7.1;
+				MARKETING_VERSION = 6.7.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1304,7 +1316,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 67000;
+				CURRENT_PROJECT_VERSION = 67400;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1368,7 +1380,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 6.7.1;
+				MARKETING_VERSION = 6.7.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
