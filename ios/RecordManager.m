@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import <React/RCTUtils.h>
 #import "MJExtension.h"
+#import "SVProgressHUD.h"
 //签署成功
 #define method_recordSuccess @"recordSuccess"
 @implementation RecordManager;
@@ -48,7 +49,12 @@ RCT_EXPORT_METHOD(startRecord:(NSString *)serialNo ttdOrderNo:(NSString *__nulla
   
       [[TTDQARecordKit sharedTTDQARecordKit] setFaceCheckEnabeld:YES];
       // 开始录制
-      [[TTDQARecordKit sharedTTDQARecordKit] startVideoRecordWithSerialNo:serialNo ttdOrderNo:ttdOrderNo];
+      int result = [[TTDQARecordKit sharedTTDQARecordKit] startVideoRecordWithSerialNo:serialNo ttdOrderNo:ttdOrderNo];
+    if (result != 0) {
+          // 弹提示
+          [SVProgressHUD showInfoWithStatus:@"双录正在初始化"];
+      }
+
   });
   }
 //MARK: - TTDQARecordDelegate
