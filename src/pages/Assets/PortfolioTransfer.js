@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 19:04:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 19:43:11
+ * @LastEditTime: 2022-06-13 23:38:07
  * @Description: 组合转投页面
  */
 import React, {useCallback, useMemo, useState} from 'react';
@@ -69,7 +69,7 @@ export default ({navigation}) => {
             () => {
                 const needSign = selectedData.selected?.filter?.((item) => item.need_sign) || [];
                 if (needSign.length > 0) {
-                    const from_poids = needSign.map((item) => item.from_poid);
+                    const from_poids = selectedData.selected?.map((item) => item.from_poid);
                     const poids = needSign.map((item) => item.to_poid);
                     navigation.navigate('Sign', {from_poids, poids});
                 } else {
