@@ -2,10 +2,10 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-09 14:22:53
+ * @LastEditTime: 2022-06-13 12:18:12
  * @Description: 投资者证明材料上传
  */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
     DeviceEventEmitter,
     PermissionsAndroid,
@@ -23,7 +23,6 @@ import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
-import {useJump} from '../../components/hooks';
 import {Modal, SelectModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
@@ -43,7 +42,6 @@ import {
 import {debounce} from 'lodash';
 
 export default ({navigation, route}) => {
-    const jump = useJump();
     const [data, setData] = useState({});
     const [visible, setVisible] = useState(false);
     const [selectData, setSelectData] = useState(['从相册中获取', '拍照']);
@@ -66,7 +64,6 @@ export default ({navigation, route}) => {
         openNfcBtnBgColor: '#333333',
         openNfcBtnTextColor: '#FFFFFF',
     }).current;
-    const dataRef = useRef(); // 缓存一下页面数据
 
     const finished = useMemo(() => {
         const {id_info: _id_info = {}, materials: _materials = []} = data;
@@ -116,25 +113,16 @@ export default ({navigation, route}) => {
     // 从相机中选择
     const takePic = () => {
         try {
-            if (typeof clickIndexRef.current === 'string') {
-                dataRef.current = {...data};
-            }
             if (Platform.OS == 'android') {
                 requestAuth(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
-                    () =>
-                        typeof clickIndexRef.current === 'number'
-                            ? openPicker('camera')
-                            : jump({path: 'Camera', params: {index: clickIndexRef.current === 'front' ? 1 : 2}}),
+                    () => openPicker('camera'),
                     () => blockCal('camera')
                 );
             } else {
                 requestAuth(
                     PERMISSIONS.IOS.CAMERA,
-                    () =>
-                        typeof clickIndexRef.current === 'number'
-                            ? openPicker('camera')
-                            : jump({path: 'Camera', params: {index: clickIndexRef.current === 'front' ? 1 : 2}}),
+                    () => openPicker('camera'),
                     () => blockCal('camera')
                 );
             }
@@ -340,20 +328,6 @@ export default ({navigation, route}) => {
         [data]
     );
 
-    useEffect(() => {
-        const subscription = DeviceEventEmitter.addListener(
-            'EventType',
-            debounce((uri) => {
-                uploadImage({type: 'image/png', uri});
-                // 刷新界面等
-            }, 500)
-        );
-        return () => {
-            subscription?.remove?.();
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useFocusEffect(
         useCallback(() => {
             // 令牌云SDK初始化
@@ -417,7 +391,7 @@ export default ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '投资者证明材料上传'});
-                    setData(dataRef.current || res.result);
+                    setData(res.result);
                 }
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
