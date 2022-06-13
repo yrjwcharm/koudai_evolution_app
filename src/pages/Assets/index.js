@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 15:26:58
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-15 15:32:43
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -74,7 +74,7 @@ function HomeScreen({navigation}) {
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
     const [reasonListDialogPropsAndVisible, setReasonListDialogPropsAndVisible] = useState(null);
-    const bottomModal = useRef(null);
+    const signModal = useRef(null);
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -101,7 +101,7 @@ function HomeScreen({navigation}) {
         http.get('adviser/need_sign/pop/20220422').then((data) => {
             setSignData(data.result?.sign);
             if (data?.result?.auto_pop) {
-                bottomModal?.current?.show();
+                signModal?.current?.show();
             }
         });
     };
@@ -215,20 +215,25 @@ function HomeScreen({navigation}) {
     //签约
     const handleCancleSign = () => {
         return new Promise((resolve) => {
-            Modal.show({
-                title: signData?.cancel?.title,
-                content: signData?.cancel?.content,
-                confirm: true,
-                cancelText: '再想一想',
-                confirmText: '确认',
-                intensifyCancel: true,
-                confirmCallBack: () => {
-                    setReasonListDialogPropsAndVisible({resolve, bottomModal});
-                },
-                cancelCallBack: () => {
-                    resolve(false);
-                },
-            });
+            if (signData?.cancel?.content) {
+                Modal.show({
+                    title: signData.cancel.title,
+                    content: signData.cancel.content,
+                    confirm: true,
+                    cancelText: '再想一想',
+                    confirmText: '确认',
+                    intensifyCancel: true,
+                    confirmCallBack: () => {
+                        setReasonListDialogPropsAndVisible({resolve, signModal});
+                    },
+                    cancelCallBack: () => {
+                        resolve(false);
+                    },
+                });
+            } else {
+                signModal.current.hide();
+                resolve(true);
+            }
         });
     };
     const reportSurvey = (answer) => {
@@ -493,7 +498,7 @@ function HomeScreen({navigation}) {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         key={`portfolio${po.poid}`}
-                                        style={Style.flexRow}
+                                        style={[Style.flexRow, po.avail === 0 ? {backgroundColor: '#E9EAEF'} : {}]}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', po.poid);
                                             jump(po.url);
@@ -529,7 +534,7 @@ function HomeScreen({navigation}) {
             <View style={styles.container}>
                 <PageModal
                     style={{height: px(530)}}
-                    ref={bottomModal}
+                    ref={signModal}
                     title={signData?.title}
                     beforeClose={handleCancleSign}
                     onClose={() => {}}>
@@ -580,7 +585,7 @@ function HomeScreen({navigation}) {
                                         flex: 1,
                                     }}
                                     onPress={() => {
-                                        bottomModal.current.hide();
+                                        signModal.current.hide();
                                         jump(signData?.cancel?.confirm?.url);
                                     }}
                                     title={signData?.cancel?.confirm?.text}
@@ -681,10 +686,12 @@ function HomeScreen({navigation}) {
                                       activeOpacity={0.9}
                                       style={styles.systemMsgContainer}
                                       onPress={() => {
-                                          let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
-                                          if (signIndex == index && signData) {
+                                          let signIndex = arr.findIndex((_item) =>
+                                              ['Sign', 'PortfolioTransfer'].includes(_item.action)
+                                          );
+                                          if (signIndex === index && signData?.content) {
                                               //签约弹窗
-                                              bottomModal?.current?.show();
+                                              signModal?.current?.show();
                                           }
                                           system?.log_id && global.LogTool(system?.log_id);
                                           jump(system?.button?.url);
@@ -976,7 +983,7 @@ function HomeScreen({navigation}) {
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
-                            <>
+                            <View key={item.id}>
                                 {item.portfolios.length > 1 ? (
                                     <View
                                         key={item.poid}
@@ -1002,6 +1009,7 @@ function HomeScreen({navigation}) {
                                                 borderBottomLeftRadius: 0,
                                                 borderBottomRightRadius: 0,
                                             },
+                                            item?.portfolios[0].avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
                                         ]}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
@@ -1012,7 +1020,7 @@ function HomeScreen({navigation}) {
                                     </TouchableOpacity>
                                 )}
                                 {renderGroupBulletin(item)}
-                            </>
+                            </View>
                         ) : (
                             <View key={item.poid}>
                                 {item.id === 12 ? (

@@ -140,7 +140,6 @@ const Index = (props) => {
             setHasNet(state.isConnected);
         });
         return () => listener();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

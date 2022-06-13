@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 14:36:04
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-15 14:33:19
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -31,7 +31,6 @@ import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
-import FitImage from 'react-native-fit-image';
 import {Modal, BottomModal, PageModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
@@ -115,9 +114,9 @@ export default function PortfolioAssets(props) {
     }, [props.route.params]);
     //获取签约数据
     const getSignData = () => {
-        http.get('adviser/need_sign/pop/20220422').then((data) => {
-            setSignData(data.result?.sign);
-            if (data?.result?.auto_pop) {
+        http.get('adviser/need_sign/pop/20220422', {poid: props.route.params.poid}).then((res) => {
+            setSignData(res.result?.sign);
+            if (res?.result?.auto_pop) {
                 bottomModal?.current?.show();
             }
         });
@@ -280,20 +279,30 @@ export default function PortfolioAssets(props) {
     };
     //签约
     const handleCancleSign = () => {
-        Modal.show({
-            title: signData?.cancel?.title,
-            content: signData?.cancel?.content,
-            confirm: true,
-            cancelText: '再想一想',
-            confirmText: '确认',
-            intensifyCancel: true,
-            confirmCallBack: () => {
-                setReasonListDialogPropsAndVisible({signModal});
-            },
+        return new Promise((resolve) => {
+            if (signData?.cancel?.content) {
+                Modal.show({
+                    title: signData.cancel.title,
+                    content: signData.cancel.content,
+                    confirm: true,
+                    cancelText: '再想一想',
+                    confirmText: '确认',
+                    intensifyCancel: true,
+                    confirmCallBack: () => {
+                        setReasonListDialogPropsAndVisible({resolve, signModal});
+                    },
+                    cancelCallBack: () => {
+                        resolve(false);
+                    },
+                });
+            } else {
+                signModal.current.hide();
+                resolve(true);
+            }
         });
     };
-    const renderGroupBulletin = (data) => {
-        let content = data.content?.slice?.(0, 45);
+    const renderGroupBulletin = (_data) => {
+        let content = _data.content?.slice?.(0, 45);
         return (
             <LinearGradient
                 colors={['#FFF9F0', '#FFF2DC']}
@@ -658,8 +667,10 @@ export default function PortfolioAssets(props) {
                     <Notice
                         content={data?.processing_list}
                         onPress={(index) => {
-                            let signIndex = data?.processing_list.findIndex((_item) => _item.action == 'Sign');
-                            if (signIndex == index) {
+                            let signIndex = data?.processing_list.findIndex((_item) =>
+                                ['Sign', 'PortfolioTransfer'].includes(_item.action)
+                            );
+                            if (signIndex === index && signData?.content) {
                                 //签约弹窗
                                 signModal?.current?.show();
                             }
@@ -740,19 +751,20 @@ export default function PortfolioAssets(props) {
                                 <Text style={{fontSize: text(12), color: '#fff'}}>
                                     {data?.progress_bar?.range_text[0]}
                                 </Text>
-                                <View style={Style.flexRowCenter}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}
+                                    style={Style.flexRowCenter}>
                                     <Text style={{fontSize: text(12), color: '#fff'}}>
                                         {data?.progress_bar?.range_text[1]}
                                     </Text>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}>
+                                    <View>
                                         <FastImage
                                             style={{width: text(12), height: text(12), marginLeft: text(4)}}
                                             source={require('../../assets/img/tip.png')}
                                         />
-                                    </TouchableOpacity>
-                                </View>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </>
                     )}
@@ -971,8 +983,13 @@ export default function PortfolioAssets(props) {
                 </BottomModal>
                 <BottomDesc fix_img={data?.advisor_footer_img} />
             </ScrollView>
-            <PageModal style={{height: px(530)}} ref={signModal} title={signData?.title} onClose={() => {}}>
-                <View style={{flex: 1, paddingBottom: px(12)}}>
+            <PageModal
+                beforeClose={handleCancleSign}
+                style={{height: px(530)}}
+                ref={signModal}
+                title={signData?.title}
+                onClose={() => {}}>
+                <View style={{flex: 1, paddingBottom: isIphoneX() ? 34 : px(12)}}>
                     {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                     <ScrollView
                         bounces={false}

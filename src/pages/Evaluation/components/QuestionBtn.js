@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-02 14:31:45
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-22 11:04:37
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-15 11:57:40
  * @Description:答题按钮
  */
 import React from 'react';
@@ -19,7 +19,9 @@ export default function QuestionBtn(props) {
                     activeOpacity={1}
                     onPress={onPress}
                     style={[styles.ques_btn, Style.flexCenter, style]}>
-                    <Text style={[styles.btn_text, textStyle]}>{button?.text || '查看详情'}</Text>
+                    <Text style={[styles.btn_text, textStyle, {backgroundColor: 'transparent'}]}>
+                        {button?.text || '查看详情'}
+                    </Text>
                 </TouchableOpacity>
             </Animatable.View>
         </View>
