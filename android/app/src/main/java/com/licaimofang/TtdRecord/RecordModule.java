@@ -75,6 +75,7 @@ public class RecordModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startRecord(String serialNo, String ttdOrderNo, String talking) {
+        TtdQARecordSDK.getInstance().setFaceCheckEnabel(true);
         RecordEntity data = new RecordEntity();
         List<QATalkingEntity> list = JSONArray.parseArray(talking,QATalkingEntity.class);
         QATalkingEntity[] entities = list.toArray(new QATalkingEntity[list.size()]);
