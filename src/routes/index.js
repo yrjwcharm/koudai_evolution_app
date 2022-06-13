@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:08:24
+ * @LastEditTime: 2022-06-13 10:10:37
  * @Description:路由表
  */
 import React from 'react';
@@ -189,7 +189,7 @@ import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
-
+import Search from '../pages/PK/pages/Search'; //搜索
 // v7新页面 Start
 // v7新页面 End
 const Stack = createStackNavigator();
@@ -218,7 +218,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="Launch"
+            initialRouteName="Search"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
@@ -741,6 +741,7 @@ export default function AppStack() {
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             {/* v7新页面 Start */}
+            <Stack.Screen name="Search" component={Search} options={{title: '', headerShown: false}} />
             {/* v7新页面 End */}
         </Stack.Navigator>
     );
