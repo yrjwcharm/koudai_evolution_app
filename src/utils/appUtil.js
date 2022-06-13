@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-25 17:19:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-13 15:22:04
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -352,6 +352,12 @@ const countdownTool = function ({
 
     return cancel;
 };
+// 数组删除一个或多个 index:从第几个开始 length:删除几个,默认为1,可不传
+const arrDelete = (arr, index, length = 1) => {
+    let tempArr = arr;
+    arr.splice(index, length);
+    return tempArr;
+};
 
 //获取安全区域高度
 // function getStatusBarHeight() {
@@ -383,4 +389,5 @@ export {
     once,
     resolveTimeStemp,
     countdownTool,
+    arrDelete,
 };

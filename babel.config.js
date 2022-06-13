@@ -1,9 +1,25 @@
 module.exports = {
     presets: ['module:metro-react-native-babel-preset'],
+    plugins: [
+        [
+            'babel-plugin-root-import',
+            {
+                rootPathSuffix: 'src',
+            },
+        ],
+    ],
     env: {
         production: {
-            plugins: ['transform-remove-console'],
+            plugins: [
+                'transform-remove-console',
+                [
+                    'babel-plugin-root-import',
+                    {
+                        rootPathPrefix: '@',
+                        rootPathSuffix: 'src',
+                    },
+                ],
+            ],
         },
     },
-    // plugins: ["transform-decorators-legacy"]
 };
