@@ -6,7 +6,7 @@ import http from '../../../services/index.js';
 import {Modal} from '../../../components/Modal';
 import {px} from '../../../utils/appUtil.js';
 
-const ReasonListDialog = ({resolve, bottomModal, close}) => {
+const ReasonListDialog = ({resolve, signModal, close}) => {
     const [curRadio, setCurRadio] = useState(null);
     const [data, setData] = useState(null);
     const [errMsg, setErrMsg] = useState('');
@@ -20,19 +20,20 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                 if (res.code === '000000') {
                     if (!res.result?.[0]) {
                         close?.();
-                        bottomModal.current.hide();
+                        signModal.current.hide();
                     } else {
                         setData(res.result);
                     }
                 } else {
-                    bottomModal.current.hide();
+                    signModal.current.hide();
                 }
             })
             .catch((_) => {
                 Toast.hide(toast);
                 resolve?.(false);
-                bottomModal.current.hide();
+                signModal.current.hide();
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -123,12 +124,12 @@ const ReasonListDialog = ({resolve, bottomModal, close}) => {
                         Modal.close();
                         close?.();
                         resolve?.(false);
-                        bottomModal.current.hide();
+                        signModal.current.hide();
                     }
                 },
             });
         }
-    }, [data, curRadio, close, errMsg, resolve, bottomModal]);
+    }, [data, curRadio, close, errMsg, resolve, signModal]);
 
     return null;
 };

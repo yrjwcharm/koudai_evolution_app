@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 21:29:51
+ * @LastEditTime: 2022-06-14 00:06:52
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -74,7 +74,7 @@ function HomeScreen({navigation}) {
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
     const [reasonListDialogPropsAndVisible, setReasonListDialogPropsAndVisible] = useState(null);
-    const bottomModal = useRef(null);
+    const signModal = useRef(null);
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -101,7 +101,7 @@ function HomeScreen({navigation}) {
         http.get('adviser/need_sign/pop/20220422').then((data) => {
             setSignData(data.result?.sign);
             if (data?.result?.auto_pop) {
-                bottomModal?.current?.show();
+                signModal?.current?.show();
             }
         });
     };
@@ -223,7 +223,7 @@ function HomeScreen({navigation}) {
                 confirmText: '确认',
                 intensifyCancel: true,
                 confirmCallBack: () => {
-                    setReasonListDialogPropsAndVisible({resolve, bottomModal});
+                    setReasonListDialogPropsAndVisible({resolve, signModal});
                 },
                 cancelCallBack: () => {
                     resolve(false);
@@ -529,7 +529,7 @@ function HomeScreen({navigation}) {
             <View style={styles.container}>
                 <PageModal
                     style={{height: px(530)}}
-                    ref={bottomModal}
+                    ref={signModal}
                     title={signData?.title}
                     beforeClose={handleCancleSign}
                     onClose={() => {}}>
@@ -580,7 +580,7 @@ function HomeScreen({navigation}) {
                                         flex: 1,
                                     }}
                                     onPress={() => {
-                                        bottomModal.current.hide();
+                                        signModal.current.hide();
                                         jump(signData?.cancel?.confirm?.url);
                                     }}
                                     title={signData?.cancel?.confirm?.text}
@@ -684,7 +684,7 @@ function HomeScreen({navigation}) {
                                           let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
                                           if (signIndex == index && signData) {
                                               //签约弹窗
-                                              bottomModal?.current?.show();
+                                              signModal?.current?.show();
                                           }
                                           system?.log_id && global.LogTool(system?.log_id);
                                           jump(system?.button?.url);

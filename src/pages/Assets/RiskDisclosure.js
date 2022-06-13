@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 20:49:53
+ * @LastEditTime: 2022-06-13 23:53:57
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -117,11 +117,13 @@ export default ({navigation, route}) => {
                     Toast.hide(transfering);
                     Toast.show(res.message);
                     if (res.code === '000000') {
-                        if (need_sign) {
-                            navigation.pop(3);
-                        } else {
-                            navigation.pop(2);
-                        }
+                        setTimeout(() => {
+                            if (need_sign) {
+                                navigation.pop(3);
+                            } else {
+                                navigation.pop(2);
+                            }
+                        }, 2000);
                     }
                 })
                 .catch((res) => {
