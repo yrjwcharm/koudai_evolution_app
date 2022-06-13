@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 18:51:23
+ * @LastEditTime: 2022-06-14 00:31:09
  * @Description:投顾服务签约
  */
 import {Platform, StyleSheet, Text, View, ScrollView, Switch} from 'react-native';
@@ -18,7 +18,7 @@ import RenderHtml from '../../components/RenderHtml';
 import {Modal} from '../../components/Modal';
 import FastImage from 'react-native-fast-image';
 const Sign = ({navigation, route}) => {
-    const {from_poids = [], poids: _poids = []} = route.params;
+    const {from_poids = [], poids: _poids = [], to_poids = []} = route.params;
     const [signSelectData, setSignSelectData] = useState([]);
     const [signData, setSignData] = useState(null);
     const jump = useJump();
@@ -213,7 +213,10 @@ const Sign = ({navigation, route}) => {
                 <Button
                     style={{marginHorizontal: px(20), marginBottom: px(20)}}
                     title={signData.title}
-                    disabled={signSelectData.length == 0}
+                    disabled={
+                        signSelectData.length == 0 ||
+                        (to_poids.length > 0 && signSelectData.length < signData?.plan_list?.length)
+                    }
                     onPress={() => {
                         global.LogTool('Selectcombine_button');
                         http.post('/advisor/action/report/20220422', {action: 'select', poids: signSelectData});
@@ -233,6 +236,7 @@ const Sign = ({navigation, route}) => {
                                 return memo;
                             }, []),
                             from_poids,
+                            to_poids,
                         });
                     }}
                 />

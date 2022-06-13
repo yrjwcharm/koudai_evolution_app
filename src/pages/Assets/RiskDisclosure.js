@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 23:53:57
+ * @LastEditTime: 2022-06-14 00:29:09
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -29,10 +29,10 @@ export default ({navigation, route}) => {
     const countdownRef = useRef(10);
     const timeRef = useRef();
     const passwordRef = useRef();
-    const {poids, auto_poids, from_poids, manual_poids, need_sign = true} = route.params;
+    const {poids, auto_poids, from_poids, manual_poids, need_sign = true, to_poids = []} = route.params;
 
     useEffect(() => {
-        http.get('/advisor/need_sign/info/20220422', {poids}).then((res) => {
+        http.get('/advisor/need_sign/info/20220422', {poids: to_poids.length > 0 ? to_poids : poids}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '风险揭示书'});
                 countdownRef.current = res.result.countdown;
@@ -133,7 +133,12 @@ export default ({navigation, route}) => {
         };
         if (need_sign) {
             const loading = Toast.showLoading('签约中...');
-            http.post('/adviser/sign/20210923', {password, poids, auto_poids, manual_poids}).then((res) => {
+            http.post('/adviser/sign/20210923', {
+                password,
+                poids: to_poids.length > 0 ? to_poids : poids,
+                auto_poids,
+                manual_poids,
+            }).then((res) => {
                 Toast.hide(loading);
                 Toast.show(res.message);
                 if (res.code === '000000') {

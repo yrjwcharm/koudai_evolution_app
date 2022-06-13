@@ -2,12 +2,11 @@
  * @Date: 2022-06-10 19:04:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 23:38:07
+ * @LastEditTime: 2022-06-14 00:33:42
  * @Description: 组合转投页面
  */
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -68,10 +67,11 @@ export default ({navigation}) => {
         debounce(
             () => {
                 const needSign = selectedData.selected?.filter?.((item) => item.need_sign) || [];
+                const to_poids = selectedData.selected?.map((item) => item.to_poid);
                 if (needSign.length > 0) {
                     const from_poids = selectedData.selected?.map((item) => item.from_poid);
                     const poids = needSign.map((item) => item.to_poid);
-                    navigation.navigate('Sign', {from_poids, poids});
+                    navigation.navigate('Sign', {from_poids, poids, to_poids});
                 } else {
                     const from_poids = selectedData.selected?.map?.((item) => item.from_poid) || [];
                     const poids = selectedData.selected?.map?.((item) => item.to_poid) || [];
@@ -81,6 +81,7 @@ export default ({navigation}) => {
                         manual_poids: [],
                         need_sign: false,
                         poids,
+                        to_poids,
                     });
                 }
             },
@@ -90,17 +91,15 @@ export default ({navigation}) => {
         [selectedData]
     );
 
-    useFocusEffect(
-        useCallback(() => {
-            http.get('/advisor/need_sign/trans3/20220613').then((res) => {
-                if (res.code === '000000') {
-                    navigation.setOptions({title: res.result.title || '组合转投'});
-                    setData(res.result);
-                }
-            });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
+    useEffect(() => {
+        http.get('/advisor/need_sign/trans3/20220613').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '组合转投'});
+                setData(res.result);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
