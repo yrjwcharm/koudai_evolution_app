@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 14:36:04
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-13 23:48:00
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -31,7 +31,6 @@ import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
-import FitImage from 'react-native-fit-image';
 import {Modal, BottomModal, PageModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
@@ -115,9 +114,9 @@ export default function PortfolioAssets(props) {
     }, [props.route.params]);
     //获取签约数据
     const getSignData = () => {
-        http.get('adviser/need_sign/pop/20220422').then((data) => {
-            setSignData(data.result?.sign);
-            if (data?.result?.auto_pop) {
+        http.get('adviser/need_sign/pop/20220422', {poid: props.route.params.poid}).then((res) => {
+            setSignData(res.result?.sign);
+            if (res?.result?.auto_pop) {
                 bottomModal?.current?.show();
             }
         });
@@ -292,8 +291,8 @@ export default function PortfolioAssets(props) {
             },
         });
     };
-    const renderGroupBulletin = (data) => {
-        let content = data.content?.slice?.(0, 45);
+    const renderGroupBulletin = (_data) => {
+        let content = _data.content?.slice?.(0, 45);
         return (
             <LinearGradient
                 colors={['#FFF9F0', '#FFF2DC']}
