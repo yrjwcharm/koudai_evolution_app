@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:05:23
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-13 21:29:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -493,7 +493,7 @@ function HomeScreen({navigation}) {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         key={`portfolio${po.poid}`}
-                                        style={Style.flexRow}
+                                        style={[Style.flexRow, po.avail === 0 ? {backgroundColor: '#E9EAEF'} : {}]}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', po.poid);
                                             jump(po.url);
@@ -1002,6 +1002,7 @@ function HomeScreen({navigation}) {
                                                 borderBottomLeftRadius: 0,
                                                 borderBottomRightRadius: 0,
                                             },
+                                            item?.portfolios[0].avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
                                         ]}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');

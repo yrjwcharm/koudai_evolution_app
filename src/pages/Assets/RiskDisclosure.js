@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-04-27 21:40:07
+ * @LastEditTime: 2022-06-13 20:49:53
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -29,7 +29,7 @@ export default ({navigation, route}) => {
     const countdownRef = useRef(10);
     const timeRef = useRef();
     const passwordRef = useRef();
-    const {poids, auto_poids, manual_poids} = route.params;
+    const {poids, auto_poids, from_poids, manual_poids, need_sign = true} = route.params;
 
     useEffect(() => {
         http.get('/advisor/need_sign/info/20220422', {poids}).then((res) => {
@@ -96,17 +96,58 @@ export default ({navigation, route}) => {
 
     /** @name 点击确认签约，完成输入交易密码 */
     const onSubmit = (password) => {
-        const loading = Toast.showLoading('签约中...');
-        http.post('/adviser/sign/20210923', {password, poids, auto_poids, manual_poids}).then((res) => {
-            Toast.hide(loading);
-            Toast.show(res.message);
-            if (res.code === '000000') {
-                global.LogTool('Completiontime_yes');
-                setTimeout(() => {
-                    navigation.pop(2);
-                }, 1000);
-            }
-        });
+        const doTransfer = () => {
+            const transfering = Toast.showLoading('正在进行转投下单...');
+            const arr = from_poids
+                .join(',')
+                .split(',')
+                .map((poid) => () =>
+                    new Promise((resolve, reject) => {
+                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid}).then((res) => {
+                            if (res.code === '000000') {
+                                resolve(res);
+                            } else {
+                                reject(res);
+                            }
+                        });
+                    })
+                );
+            arr.reduce((prev, curr) => prev.then(curr), Promise.resolve())
+                .then((res) => {
+                    Toast.hide(transfering);
+                    Toast.show(res.message);
+                    if (res.code === '000000') {
+                        if (need_sign) {
+                            navigation.pop(3);
+                        } else {
+                            navigation.pop(2);
+                        }
+                    }
+                })
+                .catch((res) => {
+                    Toast.hide(transfering);
+                    Toast.show(res.message);
+                });
+        };
+        if (need_sign) {
+            const loading = Toast.showLoading('签约中...');
+            http.post('/adviser/sign/20210923', {password, poids, auto_poids, manual_poids}).then((res) => {
+                Toast.hide(loading);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    global.LogTool('Completiontime_yes');
+                    setTimeout(() => {
+                        if (from_poids) {
+                            doTransfer();
+                        } else {
+                            navigation.pop(2);
+                        }
+                    }, 2000);
+                }
+            });
+        } else {
+            doTransfer();
+        }
     };
 
     return Object.keys(data).length > 0 ? (

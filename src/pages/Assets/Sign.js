@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 16:13:56
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-27 18:40:58
+ * @LastEditTime: 2022-06-13 18:51:23
  * @Description:投顾服务签约
  */
 import {Platform, StyleSheet, Text, View, ScrollView, Switch} from 'react-native';
@@ -17,7 +17,8 @@ import {Button} from '../../components/Button';
 import RenderHtml from '../../components/RenderHtml';
 import {Modal} from '../../components/Modal';
 import FastImage from 'react-native-fast-image';
-const Sign = ({navigation}) => {
+const Sign = ({navigation, route}) => {
+    const {from_poids = [], poids: _poids = []} = route.params;
     const [signSelectData, setSignSelectData] = useState([]);
     const [signData, setSignData] = useState(null);
     const jump = useJump();
@@ -58,14 +59,15 @@ const Sign = ({navigation}) => {
         });
     };
     useEffect(() => {
-        http.get('adviser/get_need_sign_list/20210923').then((res) => {
+        http.get('/adviser/get_need_sign_list/20210923', {poids: _poids}).then((res) => {
             setSignData(res.result);
             if (res.result?.hbzs_pop?.content) {
                 showSignNotice(res.result?.hbzs_pop);
             }
             navigation.setOptions({title: res.result.title});
         });
-    }, [navigation]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     //checkBox 选中
     const checkBoxClick = (check, poid) => {
         //选中
@@ -230,6 +232,7 @@ const Sign = ({navigation}) => {
                                 }
                                 return memo;
                             }, []),
+                            from_poids,
                         });
                     }}
                 />
