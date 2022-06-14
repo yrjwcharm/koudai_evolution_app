@@ -109,8 +109,7 @@
     "postinstall-postinstall": "^2.1.0",
     "prop-types": "^15.7.2",
     "react-test-renderer": "16.13.1",
-    "redux-logger": "^3.0.6",
-    "babel-plugin-root-import": "^6.6.0"
+    "redux-logger": "^3.0.6"
   },
   "jest": {
     "preset": "react-native"
