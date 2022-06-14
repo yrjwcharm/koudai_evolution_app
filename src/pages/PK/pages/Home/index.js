@@ -14,6 +14,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import PKBtnTab from '../../components/PKBtnTab';
 import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
+import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
@@ -106,6 +107,7 @@ const PKHome = () => {
                 <BottomDesc />
             </ScrollView>
             <PKBall ref={PKBallRef} />
+            <PKCollectUserInterest />
         </LinearGradient>
     );
 };

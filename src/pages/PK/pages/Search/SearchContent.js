@@ -9,8 +9,8 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {px} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import collectActive from '@/assets/img/pk/pkcollectActive.png';
-import collect from '@/assets/img/pk/pkcollect.png';
+// import collectActive from '@/assets/img/pk/pkcollectActive.png';
+// import collect from '@/assets/img/pk/pkcollect.png';
 const SearchContent = () => {
     return (
         <View style={[styles.con, Style.flexBetween]}>
