@@ -92,7 +92,7 @@ const PrivateApply = (props) => {
         let height = e?.nativeEvent?.layout?.height;
         setHeightArr((prev) => {
             const arr = [...prev];
-            arr[index] = height;
+            arr[index] = height + 1;
             return arr;
         });
     };
