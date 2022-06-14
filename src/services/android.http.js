@@ -2,20 +2,18 @@
  * @Date: 2022-01-21 14:37:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-04-01 17:29:04
+ * @LastEditTime: 2022-06-10 11:20:07
  * @Description:
  */
 import {fetch} from 'react-native-ssl-request';
 import qs from 'qs';
 import {SERVER_URL, env} from './config';
 import Storage from '../utils/storage';
-import DeviceInfo from 'react-native-device-info';
 import {Platform} from 'react-native';
 
 const HTTP = async (method, url, body = {}) => {
     const loginStatus = await Storage.get('loginStatus');
 
-    const device = await DeviceInfo.getDeviceName();
     url = (url.slice(0, 8).includes('//') ? '' : SERVER_URL[env].HTTP) + url;
     url =
         url +
@@ -23,16 +21,16 @@ const HTTP = async (method, url, body = {}) => {
         qs.stringify({
             app: '4000',
             ts: new Date().getTime(),
-            did: DeviceInfo.getUniqueId(),
+            did: global.did,
             uid: loginStatus?.uid,
             utid: loginStatus?.utid,
             chn: global.channel,
             ver: global.ver,
             platform: Platform.OS,
-            device: device || '',
-            deviceId: DeviceInfo.getDeviceId(),
-            brandName: DeviceInfo.getBrand(),
-            systemVersion: DeviceInfo.getSystemVersion(),
+            device: global.getDeviceName || '',
+            deviceId: global.deviceId,
+            brandName: global.brandName,
+            systemVersion: global.systemVersion,
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
             oaid: global.oaid,
             currentViewPage: global.currentRoutePageId,
