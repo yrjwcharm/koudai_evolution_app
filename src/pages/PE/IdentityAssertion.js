@@ -2,7 +2,7 @@
  * @Date: 2022-05-13 13:01:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-10 16:03:51
+ * @LastEditTime: 2022-06-14 14:35:48
  * @Description: 个人税收居民身份声明
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -109,7 +109,7 @@ export const FormItem = ({data, onChange, setShowMask, showBankCardModal}) => {
                             let _label = '';
                             if (type === 'bankcard') {
                                 const i = pay_methods.findIndex((v) => v.pay_method === value);
-                                _label = `${pay_methods[i].bank_name} (${pay_methods[i].bank_no})`;
+                                _label = i !== -1 ? `${pay_methods[i].bank_name} (${pay_methods[i].bank_no})` : '';
                             }
                             if (type === 'select') {
                                 const i = options.findIndex((v) => v.value === value);
