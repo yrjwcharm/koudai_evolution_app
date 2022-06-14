@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-10 11:04:29
+ * @LastEditTime: 2022-06-14 12:06:51
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -214,6 +214,10 @@ export default function Launch({navigation}) {
     // 获取ios 归因数据
     const getAdData = async () => {
         let data = await PTRIDFA.getAdData();
+        //14.3 以下 {{}} 14.3以上的是{}
+        if (data && Object.values(data) && Object.values(data)[0] && typeof Object.values(data)[0] == 'object') {
+            data = Object.values(data)[0];
+        }
         http.post('mapi/upload/apple_ad/20220530', data);
     };
     const init = () => {
