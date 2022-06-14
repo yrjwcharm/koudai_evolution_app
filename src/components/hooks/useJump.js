@@ -1,13 +1,14 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-10 15:46:38
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-14 17:56:03
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {DeviceEventEmitter, Linking, Platform} from 'react-native';
+import {checkMultiple, openSettings, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
 import http from '../../services';
@@ -15,6 +16,19 @@ import {generateOptions} from './useStateChange';
 import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
 import {recordInit, signFile, signInit, signPreview, startRecord} from '../../pages/PE/PEBridge';
+
+// 权限提示弹窗
+const blockCal = (action) => {
+    Modal.show({
+        title: '权限申请',
+        content: `${action === 'camera' ? '相机' : '录音'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
+        confirm: true,
+        confirmText: '前往',
+        confirmCallBack: () => {
+            openSettings().catch(() => console.warn('无法打开设置'));
+        },
+    });
+};
 
 function useJump() {
     const navigation = useNavigation();
@@ -108,7 +122,7 @@ function useJump() {
             } else if (url.type === 7) {
                 const toast = Toast.showLoading();
                 http.get(url.path, url.params)
-                    .then((res) => {
+                    .then(async (res) => {
                         if (res.code === '000000') {
                             const {
                                 app_id,
@@ -132,17 +146,67 @@ function useJump() {
                                 }, 500);
                             } else if (app_id && questions && serial_number) {
                                 //init安卓有回掉 ios没有
-                                recordInit(app_id, isDebug, (mes) => {
-                                    if (mes == 'success') {
-                                        Toast.hide(toast);
-                                        startRecord(serial_number, '', questions);
+                                const grantedCallback = () => {
+                                    recordInit(app_id, isDebug, (mes) => {
+                                        if (mes == 'success') {
+                                            Toast.hide(toast);
+                                            startRecord(serial_number, '', questions);
+                                        }
+                                    });
+                                    if (Platform.OS == 'ios') {
+                                        setTimeout(() => {
+                                            Toast.hide(toast);
+                                            startRecord(serial_number, '', questions);
+                                        }, 500);
                                     }
+                                };
+                                const permissions = Platform.select({
+                                    android: [PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.ANDROID.RECORD_AUDIO],
+                                    ios: [PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.MICROPHONE],
                                 });
-                                if (Platform.OS == 'ios') {
-                                    setTimeout(() => {
-                                        Toast.hide(toast);
-                                        startRecord(serial_number, '', questions);
-                                    }, 500);
+                                const statuses = await checkMultiple(permissions);
+                                const arr = Object.entries(statuses);
+                                let flag = false;
+                                for (let i = 0; i < arr.length; i++) {
+                                    switch (arr[i][1]) {
+                                        case RESULTS.UNAVAILABLE:
+                                            console.log(
+                                                'This feature is not available (on this device / in this context)'
+                                            );
+                                            Toast.hide(toast);
+                                            flag = true;
+                                            break;
+                                        case RESULTS.DENIED:
+                                            const status = await request(arr[i][0]);
+                                            if (status === RESULTS.BLOCKED || status === RESULTS.DENIED) {
+                                                Toast.hide(toast);
+                                                flag = true;
+                                                blockCal(/CAMERA/.test(arr[i][0]) ? 'camera' : 'audio');
+                                            } else {
+                                                i === arr.length - 1 && grantedCallback();
+                                            }
+                                            break;
+                                        case RESULTS.LIMITED:
+                                            console.log('The permission is limited: some actions are possible');
+                                            i === arr.length - 1 && grantedCallback();
+                                            break;
+                                        case RESULTS.GRANTED:
+                                            console.log('The permission is granted');
+                                            i === arr.length - 1 && grantedCallback();
+                                            break;
+                                        case RESULTS.BLOCKED:
+                                            Toast.hide(toast);
+                                            flag = true;
+                                            blockCal(/CAMERA/.test(arr[i][0]) ? 'camera' : 'audio');
+                                            break;
+                                        default:
+                                            Toast.hide(toast);
+                                            flag = true;
+                                            break;
+                                    }
+                                    if (flag) {
+                                        break;
+                                    }
                                 }
                             } else if (bucket_name && object_key) {
                                 signInit(app_id, isDebug, (mes) => {
