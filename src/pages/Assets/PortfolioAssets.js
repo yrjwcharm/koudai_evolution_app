@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 23:48:00
+ * @LastEditTime: 2022-06-14 15:14:15
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -279,16 +279,26 @@ export default function PortfolioAssets(props) {
     };
     //签约
     const handleCancleSign = () => {
-        Modal.show({
-            title: signData?.cancel?.title,
-            content: signData?.cancel?.content,
-            confirm: true,
-            cancelText: '再想一想',
-            confirmText: '确认',
-            intensifyCancel: true,
-            confirmCallBack: () => {
-                setReasonListDialogPropsAndVisible({signModal});
-            },
+        return new Promise((resolve) => {
+            if (signData?.cancel?.content) {
+                Modal.show({
+                    title: signData.cancel.title,
+                    content: signData.cancel.content,
+                    confirm: true,
+                    cancelText: '再想一想',
+                    confirmText: '确认',
+                    intensifyCancel: true,
+                    confirmCallBack: () => {
+                        setReasonListDialogPropsAndVisible({resolve, signModal});
+                    },
+                    cancelCallBack: () => {
+                        resolve(false);
+                    },
+                });
+            } else {
+                signModal.current.hide();
+                resolve(true);
+            }
         });
     };
     const renderGroupBulletin = (_data) => {
@@ -657,7 +667,9 @@ export default function PortfolioAssets(props) {
                     <Notice
                         content={data?.processing_list}
                         onPress={(index) => {
-                            let signIndex = data?.processing_list.findIndex((_item) => _item.action == 'Sign');
+                            let signIndex = data?.processing_list.findIndex(
+                                (_item) => _item.action == 'Sign' || 'PortfolioTransfer'
+                            );
                             if (signIndex == index) {
                                 //签约弹窗
                                 signModal?.current?.show();
@@ -970,8 +982,13 @@ export default function PortfolioAssets(props) {
                 </BottomModal>
                 <BottomDesc fix_img={data?.advisor_footer_img} />
             </ScrollView>
-            <PageModal style={{height: px(530)}} ref={signModal} title={signData?.title} onClose={() => {}}>
-                <View style={{flex: 1, paddingBottom: px(12)}}>
+            <PageModal
+                beforeClose={handleCancleSign}
+                style={{height: px(530)}}
+                ref={signModal}
+                title={signData?.title}
+                onClose={() => {}}>
+                <View style={{flex: 1, paddingBottom: isIphoneX() ? 34 : px(12)}}>
                     {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                     <ScrollView
                         bounces={false}

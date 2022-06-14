@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 00:06:52
+ * @LastEditTime: 2022-06-14 15:16:25
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -215,20 +215,25 @@ function HomeScreen({navigation}) {
     //签约
     const handleCancleSign = () => {
         return new Promise((resolve) => {
-            Modal.show({
-                title: signData?.cancel?.title,
-                content: signData?.cancel?.content,
-                confirm: true,
-                cancelText: '再想一想',
-                confirmText: '确认',
-                intensifyCancel: true,
-                confirmCallBack: () => {
-                    setReasonListDialogPropsAndVisible({resolve, signModal});
-                },
-                cancelCallBack: () => {
-                    resolve(false);
-                },
-            });
+            if (signData?.cancel?.content) {
+                Modal.show({
+                    title: signData.cancel.title,
+                    content: signData.cancel.content,
+                    confirm: true,
+                    cancelText: '再想一想',
+                    confirmText: '确认',
+                    intensifyCancel: true,
+                    confirmCallBack: () => {
+                        setReasonListDialogPropsAndVisible({resolve, signModal});
+                    },
+                    cancelCallBack: () => {
+                        resolve(false);
+                    },
+                });
+            } else {
+                signModal.current.hide();
+                resolve(true);
+            }
         });
     };
     const reportSurvey = (answer) => {
@@ -681,7 +686,9 @@ function HomeScreen({navigation}) {
                                       activeOpacity={0.9}
                                       style={styles.systemMsgContainer}
                                       onPress={() => {
-                                          let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
+                                          let signIndex = arr.findIndex(
+                                              (_item) => _item.action == 'Sign' || 'PortfolioTransfer'
+                                          );
                                           if (signIndex == index && signData) {
                                               //签约弹窗
                                               signModal?.current?.show();
