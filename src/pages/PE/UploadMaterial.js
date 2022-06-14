@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-13 12:18:12
+ * @LastEditTime: 2022-06-14 15:47:30
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -134,29 +134,37 @@ export default ({navigation, route}) => {
     const openPicker = (action) => {
         setTimeout(() => {
             if (action === 'gallery') {
-                launchImageLibrary({mediaType: 'photo', quality: 0.5}, (response) => {
-                    if (response.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (response.error) {
-                        console.log('ImagePicker Error: ', response.error);
-                    } else if (response.customButton) {
-                        console.log('User tapped custom button: ', response.customButton);
-                    } else if (response.assets) {
-                        uploadImage(response.assets[0]);
-                    }
-                });
+                ImagePicker.openPicker({
+                    cropping: false,
+                    loadingLabelText: '加载中',
+                    mediaType: 'photo',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
             } else if (action === 'camera') {
-                launchCamera({mediaType: 'photo', quality: 0.5}, (response) => {
-                    if (response.didCancel) {
-                        console.log('User cancelled camera');
-                    } else if (response.error) {
-                        console.log('Camera Error: ', response.error);
-                    } else if (response.customButton) {
-                        console.log('User tapped custom button: ', response.customButton);
-                    } else if (response.assets) {
-                        uploadImage(response.assets[0]);
-                    }
-                });
+                ImagePicker.openCamera({
+                    cropping: false,
+                    loadingLabelText: '加载中',
+                    mediaType: 'photo',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
             }
         }, 800);
     };
