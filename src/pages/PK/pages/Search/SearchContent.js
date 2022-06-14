@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-13 17:24:30
+ * @LastEditTime: 2022-06-14 10:24:23
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -24,7 +24,7 @@ const SearchContent = () => {
             </View>
             <View style={Style.flexRow}>
                 <TouchableOpacity>
-                    <Image source={collect} style={{width: px(26), height: px(26)}} />
+                    {/* <Image source={collect} style={{width: px(26), height: px(26)}} /> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]}>
                     <Text style={{color: '#fff'}}>PK</Text>
