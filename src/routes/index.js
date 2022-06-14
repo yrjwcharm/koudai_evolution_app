@@ -218,7 +218,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="Search"
+            initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
