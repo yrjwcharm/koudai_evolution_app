@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:05:23
+ * @LastEditTime: 2022-06-15 15:19:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -979,7 +979,7 @@ function HomeScreen({navigation}) {
                             <>
                                 {item.portfolios.length > 1 ? (
                                     <View
-                                        key={`account${item.id}`}
+                                        key={item.poid}
                                         style={[
                                             styles.account,
                                             needAdjust(item) ? styles.needAdjust : {},
@@ -993,7 +993,7 @@ function HomeScreen({navigation}) {
                                     </View>
                                 ) : (
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
+                                        key={item.poid}
                                         activeOpacity={0.8}
                                         style={[
                                             styles.account,
@@ -1014,7 +1014,7 @@ function HomeScreen({navigation}) {
                                 {renderGroupBulletin(item)}
                             </>
                         ) : (
-                            <View key={`account1${item.id}`}>
+                            <View key={item.poid}>
                                 {item.id === 12 ? (
                                     <LinearGradient
                                         colors={['#33436D', '#121D3A']}
