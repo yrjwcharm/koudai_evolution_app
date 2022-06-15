@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-18 10:12:11
+ * @LastEditTime: 2022-06-18 10:13:21
  * @Description:路由表
  */
 import React from 'react';
@@ -217,7 +217,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="BlancedPortfolio"
+            initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,

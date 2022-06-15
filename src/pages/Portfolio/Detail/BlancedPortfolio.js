@@ -2,13 +2,13 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-14 18:06:21
+ * @LastEditTime: 2022-06-15 14:20:00
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
-import {px} from '../../../utils/appUtil';
-import {Colors, Space, Style} from '../../../common/commonStyle';
+import {deviceWidth, px} from '../../../utils/appUtil';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {useFocusEffect} from '@react-navigation/native';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
@@ -19,17 +19,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import LinearGradient from 'react-native-linear-gradient';
-const BlancedPortfolio = () => {
+import FitImage from 'react-native-fit-image';
+const BlancedPortfolio = ({navigation}) => {
     const [data, setData] = useState();
     const jump = useJump();
     const getData = (tab_type) => {
-        Http.get('http://127.0.0.1:4523/mock2/587315/24149366', {type: tab_type}).then((res) => {
+        Http.get('portfolio/account_balance_detail/20220614', {type: tab_type}).then((res) => {
+            navigation.setOptions({title: res.result.title});
             setData(res.result);
         });
     };
     useFocusEffect(
         useCallback(() => {
             getData();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
     return (
@@ -41,7 +44,25 @@ const BlancedPortfolio = () => {
                     ratio_info={data?.ratio_info}
                     line_drawback={data?.line_drawback}
                     bar={data?.bar}
+                    advantage={data?.advantage}
+                    chartParams={{
+                        upid: data?.upid,
+                        allocation_id: data?.allocation_id,
+                        period: data?.period,
+                        poid: data?.poid,
+                    }}
                 />
+                <View style={{paddingHorizontal: px(16), marginTop: px(12)}}>
+                    {data?.asset_intros?.map((img, index) => (
+                        <FitImage source={{uri: img}} key={index} />
+                    ))}
+                    <TouchableOpacity>
+                        <Text />
+                    </TouchableOpacity>
+                    <FitImage source={{uri: data?.signal_img}} />
+                    {/* 常见问题 */}
+                    <FitImage source={{uri: data?.qa_img}} style={{marginTop: px(12)}} />
+                </View>
                 {/* 底部菜单 */}
                 <View style={[styles.card_sty, {paddingVertical: 0}]}>
                     {data?.gather_info.map((_info, _idx) => {
@@ -82,9 +103,9 @@ const BlancedPortfolio = () => {
         </>
     );
 };
-const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar}) => {
+const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, chartParams}) => {
     const [active, setActive] = useState(0);
-    const [period, setPeriod] = useState('y3');
+    const [period, setPeriod] = useState();
     const [chartData, setChartData] = useState();
     const _tabClick = useRef(true);
     const [type, setType] = useState(1);
@@ -100,33 +121,28 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar}) => {
             tabClick.current = false;
             setChart([]);
             Http.get('/portfolio/yield_chart/20210101', {
-                // allocation_id: data.allocation_id,
-                // benchmark_id: data.benchmark_id,
-                // poid: data.poid,
-                period: p,
-                type: t,
+                ...chartParams,
+                period: period || p,
+                type: chartParams.type || t,
             }).then((resp) => {
                 _tabClick.current = true;
                 setChartData(resp.result);
-                setChart(resp.result.yield_info.chart);
+                setChart(resp.result?.yield_info.chart);
             });
         }
     };
     useEffect(() => {
         Http.get('/portfolio/yield_chart/20210101', {
-            // upid: route.params.upid,
-            // period: res.result.period,
-            // type: type,
-            // allocation_id: res.result.allocation_id,
-            // benchmark_id: res.result.benchmark_id,
-            // poid: route?.params?.poid,
+            ...chartParams,
+            period: chartParams.period,
+            type: chartParams.type,
         }).then((resp) => {
             setChartData(resp.result);
             setChart(resp.result.yield_info.chart);
         });
-    }, []);
+    }, [chartParams]);
     return (
-        <View style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
+        <View style={{backgroundColor: '#fff', paddingHorizontal: px(16), paddingTop: px(12)}}>
             {/* tab切换 */}
             <View style={[styles.tab_con, Style.flexBetween]}>
                 {tab_list
@@ -152,20 +168,31 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar}) => {
                     : null}
             </View>
             {/* 收益率 */}
-            <View style={Style.flexRow}>
-                <View style={{flex: 1}}>
-                    <Text style={[{fontSize: px(34), lineHeight: px(47), color: Colors.red}]}>
+            <View
+                style={[
+                    Style.flexRowCenter,
+                    {justifyContent: 'space-around', marginTop: px(24), alignItems: 'flex-end'},
+                ]}>
+                <View>
+                    <Text
+                        style={[
+                            {fontSize: px(34), lineHeight: px(47), color: Colors.red, fontFamily: Font.numFontFamily},
+                        ]}>
                         {ratio_info?.ratio_val}
                     </Text>
-                    <Html html={ratio_info?.ratio_desc} style={styles.radio_sty} />
+                    {ratio_info?.title && <Html html={ratio_info?.title} style={styles.radio_sty} />}
                 </View>
-                <View style={{flex: 1}}>
-                    <Text style={[{fontSize: px(26), lineHeight: px(36), color: Colors.defaultColor}]}>
+                <View>
+                    <Text
+                        style={[
+                            styles.line_drawback,
+                            {
+                                fontFamily: Font.numFontFamily,
+                            },
+                        ]}>
                         {line_drawback?.ratio_val}
                     </Text>
-                    <View style={Style.flexRowCenter}>
-                        <Html style={styles.radio_sty} html={line_drawback?.ratio_desc} />
-                    </View>
+                    <Html style={styles.radio_sty} html={line_drawback?.ratio_desc} />
                 </View>
             </View>
             {/* 标签label */}
@@ -173,57 +200,69 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar}) => {
                 <View style={[Style.flexRowCenter, {marginTop: px(16), flexWrap: 'wrap'}]}>
                     {ratio_info?.label?.map((item, index) => (
                         <View style={styles.tag} key={index}>
-                            <Text>{item}</Text>
+                            <Text style={{fontSize: px(11), color: Colors.lightBlackColor}}>{item}</Text>
                         </View>
                     ))}
                 </View>
             ) : null}
             {/* bar */}
-            <View style={{marginTop: px(20)}}>
-                <View style={[Style.flexRow, {marginBottom: px(6)}]}>
-                    <View style={[styles.left_bar, {width: '70%'}]} />
-                    <View style={[styles.right_bar, {width: '30%'}]} />
-                    <Image
-                        source={require('../../../assets/img/account/processlabel.png')}
-                        style={[{left: '68.5%'}, styles.bar_process_img]}
-                    />
-                </View>
-                <View style={Style.flexBetween}>
-                    <Text>12</Text>
-                    <Text>12</Text>
-                    <Text>12</Text>
-                </View>
-            </View>
-            <View style={{marginTop: px(20)}}>
-                <LinearGradient
-                    start={{x: 0, y: 0.3}}
-                    end={{x: 0, y: 1}}
-                    style={{borderRadius: 6}}
-                    colors={['#F5F6F8', '#FFFFFF']}>
-                    <View style={{padding: px(16)}}>
-                        <Html
-                            style={{
-                                lineHeight: px(20),
-                                fontSize: px(12),
-                                color: '#121D3A',
-                            }}
-                            html={
-                                '  更专注于中国市场的研究，尤其是股市和债市的择时，板块轮动，风格变化和基金的筛选。通过股债搭配和投资系统的择时策略，能更加灵活的捕捉市场机会获取超额收益。'
-                            }
+            {bar ? (
+                <View style={{marginTop: px(20)}}>
+                    <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                        <View style={[styles.left_bar, {width: bar?.left_round * (deviceWidth - px(32)) || '50%'}]} />
+                        <View style={[styles.right_bar, {width: bar?.right_round * (deviceWidth - px(32)) || '50%'}]} />
+                        <Image
+                            source={require('../../../assets/img/account/processlabel.png')}
+                            style={[
+                                {left: bar?.left_round * (deviceWidth - px(32)) - px(5) || '50%'},
+                                styles.bar_process_img,
+                            ]}
                         />
                     </View>
-                </LinearGradient>
-            </View>
+                    <View style={Style.flexBetween}>
+                        {bar?.bar_desc?.map((item, index) => (
+                            <Text
+                                key={index}
+                                style={{fontSize: px(12), color: index == 1 ? '#9AA0B1' : Colors.lightBlackColor}}>
+                                {' '}
+                                {item}
+                            </Text>
+                        ))}
+                    </View>
+                </View>
+            ) : null}
+            {/* 组合优势 */}
+            {advantage ? (
+                <View style={{marginTop: px(20)}}>
+                    <LinearGradient
+                        start={{x: 0, y: 0.3}}
+                        end={{x: 0, y: 1}}
+                        style={{borderRadius: 6}}
+                        colors={['#F5F6F8', '#FFFFFF']}>
+                        <View style={{padding: px(16)}}>
+                            <Image
+                                source={{uri: advantage?.title_img}}
+                                style={{height: px(15), width: px(118), marginBottom: px(3)}}
+                            />
+                            <Html
+                                style={{
+                                    lineHeight: px(20),
+                                    fontSize: px(12),
+                                    color: '#121D3A',
+                                }}
+                                html={advantage?.content}
+                            />
+                        </View>
+                    </LinearGradient>
+                    <Image
+                        source={{uri: advantage?.vs_img}}
+                        style={{height: px(100), width: px(343), marginTop: px(12)}}
+                    />
+                </View>
+            ) : null}
             {/* 图表 */}
             <RenderChart chartData={chartData} chart={chart} type={type} />
-            <View
-                style={{
-                    flexDirection: 'row',
-                    height: px(60),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#fff',
-                }}>
+            <View style={styles.chartTabCon}>
                 {/* 图表切换 */}
                 {chartData?.yield_info?.sub_tabs?.map((_item, _index, arr) => {
                     return (
@@ -307,5 +346,25 @@ const styles = StyleSheet.create({
         padding: Space.padding,
         marginHorizontal: Space.padding,
         marginTop: px(12),
+    },
+    line_drawback: {fontSize: px(26), lineHeight: px(36), color: Colors.defaultColor},
+    radio_sty: {
+        color: Colors.lightGrayColor,
+        fontSize: px(12),
+        lineHeight: px(17),
+    },
+    chartTabCon: {
+        flexDirection: 'row',
+        height: px(60),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+    },
+    btn_sty: {
+        borderWidth: 0.5,
+        borderColor: '#E2E4EA',
+        paddingHorizontal: px(12),
+        paddingVertical: px(5),
+        borderRadius: px(15),
     },
 });
