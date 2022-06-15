@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 15:14:15
+ * @LastEditTime: 2022-06-15 10:01:14
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -667,10 +667,10 @@ export default function PortfolioAssets(props) {
                     <Notice
                         content={data?.processing_list}
                         onPress={(index) => {
-                            let signIndex = data?.processing_list.findIndex(
-                                (_item) => _item.action == 'Sign' || 'PortfolioTransfer'
+                            let signIndex = data?.processing_list.findIndex((_item) =>
+                                ['Sign', 'PortfolioTransfer'].includes(_item.action)
                             );
-                            if (signIndex == index) {
+                            if (signIndex === index && signData?.content) {
                                 //签约弹窗
                                 signModal?.current?.show();
                             }

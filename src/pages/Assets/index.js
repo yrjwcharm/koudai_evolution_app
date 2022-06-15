@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 15:16:25
+ * @LastEditTime: 2022-06-15 09:59:35
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -686,10 +686,10 @@ function HomeScreen({navigation}) {
                                       activeOpacity={0.9}
                                       style={styles.systemMsgContainer}
                                       onPress={() => {
-                                          let signIndex = arr.findIndex(
-                                              (_item) => _item.action == 'Sign' || 'PortfolioTransfer'
+                                          let signIndex = arr.findIndex((_item) =>
+                                              ['Sign', 'PortfolioTransfer'].includes(_item.action)
                                           );
-                                          if (signIndex == index && signData) {
+                                          if (signIndex === index && signData?.content) {
                                               //签约弹窗
                                               signModal?.current?.show();
                                           }
