@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 15:19:51
+ * @LastEditTime: 2022-06-15 15:26:58
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1588,7 +1588,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: px(-12),
+        marginTop: px(-16),
         marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
     },
