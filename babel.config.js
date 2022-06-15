@@ -5,5 +5,15 @@ module.exports = {
             plugins: ['transform-remove-console'],
         },
     },
+    plugins: [
+        [
+            'babel-plugin-root-import',
+            {
+                root: __dirname,
+                rootPathPrefix: '~/',
+                rootPathSuffix: 'src/',
+            },
+        ],
+    ],
     // plugins: ["transform-decorators-legacy"]
 };
