@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 17:56:03
+ * @LastEditTime: 2022-06-15 19:22:13
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -15,7 +15,7 @@ import http from '../../services';
 import {generateOptions} from './useStateChange';
 import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
-import {recordInit, signFile, signInit, signPreview, startRecord} from '../../pages/PE/PEBridge';
+import {recordInit, signFile, signInit, signOrder, signPreview, startRecord} from '../../pages/PE/PEBridge';
 
 // 权限提示弹窗
 const blockCal = (action) => {
@@ -130,6 +130,8 @@ function useJump() {
                                 bucket_name,
                                 file_id,
                                 object_key,
+                                order_no,
+                                order_status,
                                 questions,
                                 serial_number,
                                 title,
@@ -143,6 +145,14 @@ function useJump() {
                                 setTimeout(() => {
                                     Toast.hide(toast);
                                     signFile(file_id, user_no);
+                                }, 500);
+                            } else if (order_no && order_status) {
+                                signInit(app_id, isDebug, (mes) => {
+                                    console.log(mes);
+                                });
+                                setTimeout(() => {
+                                    Toast.hide(toast);
+                                    signOrder(order_no, order_status);
                                 }, 500);
                             } else if (app_id && questions && serial_number) {
                                 //init安卓有回掉 ios没有
