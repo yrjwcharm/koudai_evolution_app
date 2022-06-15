@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 14:54:23
+ * @LastEditTime: 2022-06-15 15:12:25
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -324,6 +324,7 @@ const styles = StyleSheet.create({
     activeText: {
         fontSize: px(14),
         fontWeight: '700',
+        color:Colors.defaultColor,
     },
     tag: {
         paddingHorizontal: px(6),
