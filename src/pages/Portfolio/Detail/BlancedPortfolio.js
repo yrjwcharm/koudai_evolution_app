@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 14:20:00
+ * @LastEditTime: 2022-06-15 14:54:23
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -35,7 +35,7 @@ const BlancedPortfolio = ({navigation}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
-    return (
+    return data ? (
         <>
             <ScrollView>
                 <Header
@@ -50,18 +50,27 @@ const BlancedPortfolio = ({navigation}) => {
                         allocation_id: data?.allocation_id,
                         period: data?.period,
                         poid: data?.poid,
+                        benchmark_id: data?.benchmark_id,
                     }}
                 />
                 <View style={{paddingHorizontal: px(16), marginTop: px(12)}}>
                     {data?.asset_intros?.map((img, index) => (
                         <FitImage source={{uri: img}} key={index} />
                     ))}
-                    <TouchableOpacity>
-                        <Text />
-                    </TouchableOpacity>
-                    <FitImage source={{uri: data?.signal_img}} />
+                    {data?.detail_button ? (
+                        <TouchableOpacity
+                            style={[Style.flexRowCenter, styles.detail_button]}
+                            activeOpacity={0.9}
+                            onPress={() => jump(data?.detail_button?.url)}>
+                            <Text style={{color: Colors.btnColor, fontSize: px(12)}}>{data?.detail_button?.text}</Text>
+                            <AntDesign name={'right'} color={Colors.btnColor} size={12} />
+                        </TouchableOpacity>
+                    ) : null}
+                    {data?.signal_img ? (
+                        <FitImage source={{uri: data?.signal_img}} style={{marginTop: px(12)}} />
+                    ) : null}
                     {/* 常见问题 */}
-                    <FitImage source={{uri: data?.qa_img}} style={{marginTop: px(12)}} />
+                    {data?.qa_img ? <FitImage source={{uri: data?.qa_img}} style={{marginTop: px(12)}} /> : null}
                 </View>
                 {/* 底部菜单 */}
                 <View style={[styles.card_sty, {paddingVertical: 0}]}>
@@ -101,7 +110,7 @@ const BlancedPortfolio = ({navigation}) => {
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
         </>
-    );
+    ) : null;
 };
 const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, chartParams}) => {
     const [active, setActive] = useState(0);
@@ -132,6 +141,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
         }
     };
     useEffect(() => {
+        setPeriod(chartParams.period);
         Http.get('/portfolio/yield_chart/20210101', {
             ...chartParams,
             period: chartParams.period,
@@ -233,7 +243,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
             ) : null}
             {/* 组合优势 */}
             {advantage ? (
-                <View style={{marginTop: px(20)}}>
+                <View style={{marginVertical: px(20)}}>
                     <LinearGradient
                         start={{x: 0, y: 0.3}}
                         end={{x: 0, y: 1}}
@@ -366,5 +376,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
         paddingVertical: px(5),
         borderRadius: px(15),
+    },
+    detail_button: {
+        paddingVertical: px(14),
+        backgroundColor: '#fff',
+        borderBottomEndRadius: px(6),
+        borderBottomLeftRadius: px(6),
     },
 });

@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2022-06-15 14:33:19
+ * @LastEditTime: 2022-06-18 10:13:47
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -349,7 +349,13 @@ export default function PortfolioAssets(props) {
                     ]}>
                     <View style={Style.flexBetween}>
                         <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
-                            <View style={{marginRight: text(8)}}>
+                            <View style={[{marginRight: text(8)}, Style.flexRow]}>
+                                {card?.title_info?.icon ? (
+                                    <Image
+                                        source={{uri: card?.title_info?.icon}}
+                                        style={{width: px(20), height: px(20), marginRight: text(6)}}
+                                    />
+                                ) : null}
                                 <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
                             </View>
                             {card?.title_info?.popup ? (
