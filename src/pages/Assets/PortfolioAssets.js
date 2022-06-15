@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2022-06-15 10:01:14
+ * @LastEditTime: 2022-06-15 14:33:19
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -751,19 +751,20 @@ export default function PortfolioAssets(props) {
                                 <Text style={{fontSize: text(12), color: '#fff'}}>
                                     {data?.progress_bar?.range_text[0]}
                                 </Text>
-                                <View style={Style.flexRowCenter}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}
+                                    style={Style.flexRowCenter}>
                                     <Text style={{fontSize: text(12), color: '#fff'}}>
                                         {data?.progress_bar?.range_text[1]}
                                     </Text>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}>
+                                    <View>
                                         <FastImage
                                             style={{width: text(12), height: text(12), marginLeft: text(4)}}
                                             source={require('../../assets/img/tip.png')}
                                         />
-                                    </TouchableOpacity>
-                                </View>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </>
                     )}

@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 00:29:09
+ * @LastEditTime: 2022-06-15 14:22:41
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -103,16 +103,28 @@ export default ({navigation, route}) => {
                 .split(',')
                 .map((poid) => () =>
                     new Promise((resolve, reject) => {
-                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid}).then((res) => {
-                            if (res.code === '000000') {
-                                resolve(res);
-                            } else {
-                                reject(res);
-                            }
-                        });
+                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid})
+                            .then((res) => {
+                                if (res.code === '000000') {
+                                    resolve(res);
+                                } else {
+                                    reject(res);
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                reject({message: '转投失败，您的专属投顾将联系您，并为您解答原因并引导转投。'});
+                            });
                     })
                 );
-            arr.reduce((prev, curr) => prev.then(curr), Promise.resolve())
+            arr.reduce(
+                (prev, curr) =>
+                    prev.then(curr).catch((error) => {
+                        console.log(error);
+                        return {message: '转投失败，您的专属投顾将联系您，并为您解答原因并引导转投。'};
+                    }),
+                Promise.resolve()
+            )
                 .then((res) => {
                     Toast.hide(transfering);
                     Toast.show(res.message);
@@ -128,7 +140,7 @@ export default ({navigation, route}) => {
                 })
                 .catch((res) => {
                     Toast.hide(transfering);
-                    Toast.show(res.message);
+                    res.message && Toast.show(res.message);
                 });
         };
         if (need_sign) {

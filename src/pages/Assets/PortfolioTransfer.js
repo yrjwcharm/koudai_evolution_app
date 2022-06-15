@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 19:04:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 00:33:42
+ * @LastEditTime: 2022-06-15 11:15:05
  * @Description: 组合转投页面
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -117,7 +117,7 @@ export default ({navigation}) => {
                         <Text style={styles.title}>全选</Text>
                     </View>
                     <Text style={[styles.desc, {fontWeight: weightMedium}]}>
-                        {`您已选择${selectedData.selectedNum}个组合，转投金额(元)：`}
+                        {`您已选择${selectedData.selectedNum}个组合，预估转投金额(元)：`}
                         <Text style={{color: Colors.red}}>
                             {selectedData.selectedAmount > 0 ? formaNum(selectedData.selectedAmount) : 0}
                         </Text>
