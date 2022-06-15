@@ -29,6 +29,7 @@ const PKBtnTab = ({data = [], labelKey = '', valueKey = '', defaultActive = 0, o
             {data.map((item, idx) => (
                 <TouchableOpacity
                     activeOpacity={0.8}
+                    key={idx}
                     style={[
                         styles.btn,
                         {
