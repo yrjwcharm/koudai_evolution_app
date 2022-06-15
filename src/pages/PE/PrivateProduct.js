@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: dx
  * @Desc:私募产品公告
- * @LastEditTime: 2022-05-26 15:44:52
+ * @LastEditTime: 2022-06-15 16:20:09
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -95,7 +95,7 @@ export default function PrivateAssets(props) {
                 },
             });
         } else {
-            props.navigation.navigate(url.path, url.params);
+            jump(url);
         }
     };
     const ChangeTab = (i) => {
