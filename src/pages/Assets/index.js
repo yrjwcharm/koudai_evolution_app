@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-15 15:32:43
+ * @LastEditTime: 2022-06-16 14:35:12
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -983,7 +983,7 @@ function HomeScreen({navigation}) {
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
-                            <View key={item.id}>
+                            <View key={item.id + item.name}>
                                 {item.portfolios.length > 1 ? (
                                     <View
                                         key={item.poid}
