@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-15 19:22:13
+ * @LastEditTime: 2022-06-16 15:28:26
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -225,6 +225,9 @@ function useJump() {
                                 setTimeout(() => {
                                     Toast.hide(toast);
                                     signPreview(bucket_name, object_key, title, btn_text);
+                                    setTimeout(() => {
+                                        DeviceEventEmitter.emit('record_preview_refresh');
+                                    }, 500);
                                 }, 500);
                             } else {
                                 Toast.hide(toast);

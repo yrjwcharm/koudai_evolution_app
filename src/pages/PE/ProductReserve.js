@@ -2,11 +2,11 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-01 19:16:56
+ * @LastEditTime: 2022-06-16 15:27:54
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {DeviceEventEmitter, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {FormItem} from './IdentityAssertion';
@@ -148,6 +148,16 @@ export default ({navigation, route}) => {
                     }
                 });
             });
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('record_preview_refresh', init);
             return () => {
                 listener.remove();
             };
