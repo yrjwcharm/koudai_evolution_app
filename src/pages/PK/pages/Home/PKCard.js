@@ -34,6 +34,7 @@ const PKCard = () => {
                                 <Text style={styles.pkParamsItemTitle}>抗风险能力</Text>
                                 <View style={styles.pkParamsItemRate}>
                                     <PKParamRate value={88} color="#1A4FEB" />
+                                    <View style={{width: px(40)}} />
                                     <PKParamRate value={60} justifyContent="flex-end" color="#E74949" />
                                 </View>
                             </View>
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     priceRate: {
         marginTop: px(8),
         color: '#fff',
-        lineHeight: px(18),
+        lineHeight: px(28),
         fontWeight: '500',
         fontSize: px(20),
         fontFamily: Font.numFontFamily,
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
     },
     pkParamsItemRate: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     pkParamsTip: {

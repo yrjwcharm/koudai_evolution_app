@@ -1,50 +1,91 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {BottomModal, PageModal} from '../../../components/Modal';
-import {px} from '../../../utils/appUtil';
+import {isIphoneX, px} from '../../../utils/appUtil';
 import checkBtnIcon from '../../../components/IM/app/source/image/check.png';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import Mask from '~/components/Mask';
+import {Button} from '~/components/Button';
 
 const PKCollectUserInterest = ({}) => {
-    const tabBarHeight = useBottomTabBarHeight();
-
     const [data, setData] = useState(null);
-    const modalRef = useRef(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [checkedBtns, setCheckedBtns] = useState([]);
 
     useEffect(() => {
         setTimeout(() => {
-            setData([]);
-            modalRef.current?.show();
+            // setData([]);
+            // setModalVisible(true);
         }, 1000);
     }, []);
-    return data ? (
+
+    const cancel = () => {
+        setModalVisible(false);
+    };
+
+    const handlerCheckBtnsChange = (item) => {
+        let arr = [...checkedBtns];
+        let idx = arr.indexOf(item);
+        if (idx > -1) arr.splice(idx, 1);
+        else arr.push(item);
+        setCheckedBtns(arr);
+    };
+
+    return (
         <View style={styles.container}>
-            <BottomModal header={<Header />} ref={(el) => (modalRef.current = el)} style={{height: px(512)}}>
-                <ScrollView bounces={false} style={[styles.scrollWrap]} scrollIndicatorInsets={{right: 1}}>
-                    {[1, 2, 3].map((item, idx) => (
-                        <View key={idx} style={[styles.classifyWrap, {marginTop: idx > 0 ? px(40) : 0}]}>
-                            <View style={styles.classifyTitleWrap}>
-                                <View style={styles.classifyCircle} />
-                                <Text style={styles.classifyTitle}>大分类标题</Text>
-                            </View>
-                            <View style={styles.checkOptionWrap}>
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, idx) => (
-                                    <CheckBtn key={idx} style={{marginTop: idx > 2 ? px(20) : 0}} />
+            {/* 底层蒙层 */}
+            {modalVisible ? <Mask onClick={cancel} /> : null}
+            {/* 弹出层 */}
+            <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={cancel}>
+                <View style={{flex: 1, justifyContent: 'flex-end'}}>
+                    {/* 占位块 */}
+                    <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={cancel} />
+                    {/* 底部弹框 */}
+                    <View style={styles.content}>
+                        <Header />
+                        <ScrollView style={styles.scrollWrap} scrollIndicatorInsets={{right: 1}}>
+                            <View style={{paddingVertical: px(28), paddingHorizontal: px(36)}}>
+                                {[1, 2, 3].map((item, idx) => (
+                                    <View key={idx} style={[styles.classifyWrap, {marginTop: idx > 0 ? px(40) : 0}]}>
+                                        <View style={styles.classifyTitleWrap}>
+                                            <View style={styles.classifyCircle} />
+                                            <Text style={styles.classifyTitle}>大分类标题</Text>
+                                        </View>
+                                        <View style={styles.checkOptionWrap}>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, idx) => (
+                                                <CheckBtn
+                                                    key={idx}
+                                                    onChange={() => handlerCheckBtnsChange(item)}
+                                                    style={{marginTop: idx > 2 ? px(20) : 0}}
+                                                />
+                                            ))}
+                                        </View>
+                                    </View>
                                 ))}
                             </View>
+                        </ScrollView>
+                        <View style={styles.btnWrap}>
+                            <Button
+                                title={checkedBtns.length < 3 ? '至少选择3个类型/完成' : '确定'}
+                                disabled={checkedBtns.length < 3}
+                                onPress={() => {}}
+                            />
                         </View>
-                    ))}
-                </ScrollView>
-                {/* 垫脚 */}
-            </BottomModal>
+                    </View>
+                </View>
+            </Modal>
         </View>
-    ) : null;
+    );
 };
 
 const styles = StyleSheet.create({
     container: {},
+    content: {
+        backgroundColor: '#fff',
+        paddingBottom: isIphoneX() ? 34 : 20,
+        borderTopLeftRadius: px(12),
+        borderTopRightRadius: px(12),
+        height: px(512),
+    },
     headerWrap: {
         marginTop: px(38),
     },
@@ -59,11 +100,9 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         lineHeight: px(24),
         textAlign: 'center',
+        marginVertical: px(4),
     },
     scrollWrap: {
-        paddingVertical: px(32),
-        paddingHorizontal: px(36),
-        backgroundColor: 'red',
         flex: 1,
     },
     classifyWrap: {},
@@ -115,6 +154,10 @@ const styles = StyleSheet.create({
         width: px(8),
         height: px(6),
     },
+    btnWrap: {
+        paddingVertical: px(8),
+        paddingHorizontal: px(16),
+    },
 });
 export default PKCollectUserInterest;
 
@@ -127,10 +170,11 @@ const Header = () => {
     );
 };
 
-const CheckBtn = ({style}) => {
+const CheckBtn = ({style, onChange}) => {
     const [check, updCheck] = useState(false);
     const handlerPress = () => {
         updCheck((val) => !val);
+        onChange?.();
     };
     return (
         <TouchableOpacity

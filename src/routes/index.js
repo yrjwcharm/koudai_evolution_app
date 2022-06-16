@@ -189,8 +189,9 @@ import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
-import Search from '../pages/PK/pages/Search'; //搜索
 // v7新页面 Start
+import PKSearch from '../pages/PK/pages/Search'; //搜索
+import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -741,7 +742,8 @@ export default function AppStack() {
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             {/* v7新页面 Start */}
-            <Stack.Screen name="Search" component={Search} options={{title: '', headerShown: false}} />
+            <Stack.Screen name="PKSearch" component={PKSearch} options={{title: '', headerShown: false}} />
+            <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             {/* v7新页面 End */}
         </Stack.Navigator>
     );

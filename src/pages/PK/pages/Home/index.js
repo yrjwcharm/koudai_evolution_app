@@ -15,12 +15,14 @@ import PKBtnTab from '../../components/PKBtnTab';
 import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
 import PKCollectUserInterest from '../../components/PKCollectUserInterest';
+import {useJump} from '~/components/hooks';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const jump = useJump();
 
     const PKBallRef = useRef(null);
 
@@ -75,12 +77,18 @@ const PKHome = () => {
                 <View style={styles.topMenu}>
                     {[1, 2, 3, 4, 5].map((item, idx) => (
                         <View key={idx} style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
-                            <FastImage
-                                source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/06/public.png'}}
-                                resizeMode="contain"
-                                style={styles.topMenuIcon}
-                            />
-                            <Text style={styles.topMenuText}>公募基金</Text>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    jump({path: 'PKIntroduce'});
+                                }}>
+                                <FastImage
+                                    source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/06/public.png'}}
+                                    resizeMode="contain"
+                                    style={styles.topMenuIcon}
+                                />
+                                <Text style={styles.topMenuText}>公募基金</Text>
+                            </TouchableOpacity>
                         </View>
                     ))}
                 </View>
@@ -144,6 +152,7 @@ const styles = StyleSheet.create({
     topMenuIcon: {
         width: px(32),
         height: px(32),
+        alignSelf: 'center',
     },
     topMenuText: {
         marginTop: px(4),

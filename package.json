@@ -91,7 +91,8 @@
     "urijs": "^1.19.7"
   },
   "resolutions": {
-    "@react-native-community/viewpager": "^2.0.2"
+    "@react-native-community/viewpager": "^2.0.2",
+    "react-devtools-core": "4.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

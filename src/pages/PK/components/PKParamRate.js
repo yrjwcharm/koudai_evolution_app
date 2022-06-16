@@ -15,10 +15,10 @@ import {px} from '../../../utils/appUtil';
 const PKParamRate = ({total = 100, value = 0, color = '#9AA0B1', barsNum = 5, justifyContent = 'flex-start'}) => {
     const highLightNum = useMemo(() => {
         let barValue = Math.round(total / barsNum);
-        return Math.floor(value / barValue);
+        return Math.ceil(value / barValue);
     }, [total, value, barsNum]);
     return (
-        <View>
+        <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent}}>
                 <Text style={[styles.text, {color}]}>{value}</Text>
                 <Text style={[styles.text, {color: '#9AA0B1'}]}>/{total}</Text>
@@ -29,7 +29,11 @@ const PKParamRate = ({total = 100, value = 0, color = '#9AA0B1', barsNum = 5, ju
                         key={idx}
                         style={[
                             styles.bar,
-                            {marginLeft: idx > 0 ? 2 : 0, backgroundColor: idx < highLightNum ? color : '#E9EAEF'},
+                            {
+                                flex: 1,
+                                marginLeft: idx > 0 ? 2 : 0,
+                                backgroundColor: idx < highLightNum ? color : '#E9EAEF',
+                            },
                         ]}
                     />
                 ))}
@@ -47,9 +51,9 @@ const styles = StyleSheet.create({
         marginTop: px(2),
         flexDirection: 'row',
         alignItems: 'center',
+        flex: 1,
     },
     bar: {
-        width: px(20),
         height: px(4),
     },
 });
