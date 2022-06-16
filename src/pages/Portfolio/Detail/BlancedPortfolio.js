@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-16 17:29:47
+ * @LastEditTime: 2022-06-16 17:44:51
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -148,12 +148,13 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
         setPeriod(p);
         setType(t);
         if (p !== period) {
+            _tabClick.current = false;
             global.LogTool('portfolioDetailChartSwitch', p);
             tabClick.current = false;
             setChart([]);
             Http.get('/portfolio/yield_chart/20210101', {
                 ...chartParams,
-                period: period || p,
+                period: p,
                 type: chartParams.type || t,
             }).then((resp) => {
                 _tabClick.current = true;
@@ -293,7 +294,9 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
                 </View>
             ) : null}
             {/* 图表 */}
-            <RenderChart chartData={chartData} chart={chart} type={type} />
+            <View style={{marginHorizontal: px(-16)}}>
+                <RenderChart chartData={chartData} chart={chart} type={type} />
+            </View>
             <View style={styles.chartTabCon}>
                 {/* 图表切换 */}
                 {chartData?.yield_info?.sub_tabs?.map((_item, _index, arr) => {
