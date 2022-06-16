@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-16 14:35:12
+ * @LastEditTime: 2022-06-16 15:50:26
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -983,10 +983,9 @@ function HomeScreen({navigation}) {
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
-                            <View key={item.id + item.name}>
+                            <View key={item.id + item.name + index}>
                                 {item.portfolios.length > 1 ? (
                                     <View
-                                        key={item.poid}
                                         style={[
                                             styles.account,
                                             needAdjust(item) ? styles.needAdjust : {},
@@ -1000,7 +999,6 @@ function HomeScreen({navigation}) {
                                     </View>
                                 ) : (
                                     <TouchableOpacity
-                                        key={item.poid}
                                         activeOpacity={0.8}
                                         style={[
                                             styles.account,
@@ -1022,7 +1020,7 @@ function HomeScreen({navigation}) {
                                 {renderGroupBulletin(item)}
                             </View>
                         ) : (
-                            <View key={item.poid}>
+                            <View key={item.id + item.name + index}>
                                 {item.id === 12 ? (
                                     <LinearGradient
                                         colors={['#33436D', '#121D3A']}
