@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 15:12:25
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-16 15:13:44
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -20,6 +20,7 @@ import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import LinearGradient from 'react-native-linear-gradient';
 import FitImage from 'react-native-fit-image';
+import FastImage from 'react-native-fast-image';
 const BlancedPortfolio = ({navigation}) => {
     const [data, setData] = useState();
     const jump = useJump();
@@ -53,7 +54,7 @@ const BlancedPortfolio = ({navigation}) => {
                         benchmark_id: data?.benchmark_id,
                     }}
                 />
-                <View style={{paddingHorizontal: px(16), marginTop: px(12)}}>
+                <View style={{paddingHorizontal: px(16), marginTop: Space.marginVertical}}>
                     {data?.asset_intros?.map((img, index) => (
                         <FitImage source={{uri: img}} key={index} />
                     ))}
@@ -67,10 +68,29 @@ const BlancedPortfolio = ({navigation}) => {
                         </TouchableOpacity>
                     ) : null}
                     {data?.signal_img ? (
-                        <FitImage source={{uri: data?.signal_img}} style={{marginTop: px(12)}} />
+                        <FitImage source={{uri: data?.signal_img}} style={{marginTop: Space.marginVertical}} />
+                    ) : null}
+                    {data?.emo_msg ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => jump(data.emo_msg.button.url)}
+                            style={styles.emoBox}>
+                            <FastImage source={{uri: data.emo_msg.title}} style={styles.emoImg} />
+                            <Text numberOfLines={2} style={styles.emoText}>
+                                {data.emo_msg.content}
+                            </Text>
+                            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                <Text style={styles.emoCreated}>{data.emo_msg.created_at}</Text>
+                                <View style={styles.emoBtnBox}>
+                                    <Text style={styles.emoBtnText}>{data.emo_msg.button.text}</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
                     ) : null}
                     {/* 常见问题 */}
-                    {data?.qa_img ? <FitImage source={{uri: data?.qa_img}} style={{marginTop: px(12)}} /> : null}
+                    {data?.qa_img ? (
+                        <FitImage source={{uri: data?.qa_img}} style={{marginTop: Space.marginVertical}} />
+                    ) : null}
                 </View>
                 {/* 底部菜单 */}
                 <View style={[styles.card_sty, {paddingVertical: 0}]}>
@@ -324,7 +344,7 @@ const styles = StyleSheet.create({
     activeText: {
         fontSize: px(14),
         fontWeight: '700',
-        color:Colors.defaultColor,
+        color: Colors.defaultColor,
     },
     tag: {
         paddingHorizontal: px(6),
@@ -383,5 +403,38 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderBottomEndRadius: px(6),
         borderBottomLeftRadius: px(6),
+    },
+    emoBox: {
+        marginTop: Space.marginVertical,
+        padding: Space.padding,
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+    },
+    emoImg: {
+        width: px(88),
+        height: px(26),
+    },
+    emoText: {
+        marginTop: px(12),
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.defaultColor,
+    },
+    emoCreated: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.lightGrayColor,
+    },
+    emoBtnBox: {
+        paddingVertical: px(4),
+        paddingHorizontal: px(10),
+        borderRadius: px(12),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.brandColor,
+    },
+    emoBtnText: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.brandColor,
     },
 });
