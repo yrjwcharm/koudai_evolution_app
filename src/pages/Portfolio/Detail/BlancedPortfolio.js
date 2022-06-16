@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-16 15:13:44
+ * @LastEditTime: 2022-06-16 17:29:47
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -24,8 +24,10 @@ import FastImage from 'react-native-fast-image';
 const BlancedPortfolio = ({navigation}) => {
     const [data, setData] = useState();
     const jump = useJump();
+    const typeRef = useRef('');
     const getData = (tab_type) => {
-        Http.get('portfolio/account_balance_detail/20220614', {type: tab_type}).then((res) => {
+        Http.get('portfolio/account_balance_detail/20220614', {type: typeRef.current || tab_type}).then((res) => {
+            typeRef.current = tab_type;
             navigation.setOptions({title: res.result.title});
             setData(res.result);
         });
