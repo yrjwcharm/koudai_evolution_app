@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-17 11:41:15
+ * @LastEditTime: 2022-06-17 15:43:34
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -160,7 +160,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
             }).then((resp) => {
                 _tabClick.current = true;
                 setChartData(resp.result);
-                setChart(resp.result?.yield_info.chart);
+                setChart(resp.result?.yield_info?.chart);
             });
         }
     };
@@ -172,7 +172,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
             type: chartParams.type,
         }).then((resp) => {
             setChartData(resp.result);
-            setChart(resp.result.yield_info.chart);
+            setChart(resp.result?.yield_info?.chart);
         });
     }, [chartParams]);
     return (
@@ -295,36 +295,40 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
                 </View>
             ) : null}
             {/* 图表 */}
-            <View style={{marginHorizontal: px(-16)}}>
-                <RenderChart chartData={chartData} chart={chart} type={type} />
-            </View>
-            <View style={styles.chartTabCon}>
-                {/* 图表切换 */}
-                {chartData?.yield_info?.sub_tabs?.map((_item, _index, arr) => {
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            style={[
-                                styles.btn_sty,
-                                {
-                                    backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
-                                    borderWidth: period == _item.val ? 0 : 0.5,
-                                    marginRight: _index < arr.length - 1 ? px(10) : 0,
-                                },
-                            ]}
-                            key={_index}
-                            onPress={() => changeTab(_item.val, _item.type)}>
-                            <Text
-                                style={{
-                                    color: period == _item.val ? '#0051CC' : '#555B6C',
-                                    fontSize: px(12),
-                                }}>
-                                {_item.name}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            {chart?.length > 0 && (
+                <>
+                    <View style={{marginHorizontal: px(-16)}}>
+                        <RenderChart chartData={chartData} chart={chart} type={type} />
+                    </View>
+                    <View style={styles.chartTabCon}>
+                        {/* 图表切换 */}
+                        {chartData?.yield_info?.sub_tabs?.map((_item, _index, arr) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={[
+                                        styles.btn_sty,
+                                        {
+                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                            borderWidth: period == _item.val ? 0 : 0.5,
+                                            marginRight: _index < arr.length - 1 ? px(10) : 0,
+                                        },
+                                    ]}
+                                    key={_index}
+                                    onPress={() => changeTab(_item.val, _item.type)}>
+                                    <Text
+                                        style={{
+                                            color: period == _item.val ? '#0051CC' : '#555B6C',
+                                            fontSize: px(12),
+                                        }}>
+                                        {_item.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </>
+            )}
         </View>
     );
 };
