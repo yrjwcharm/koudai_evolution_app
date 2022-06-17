@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-16 17:44:51
+ * @LastEditTime: 2022-06-17 11:41:15
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -26,9 +26,10 @@ const BlancedPortfolio = ({navigation}) => {
     const jump = useJump();
     const typeRef = useRef('');
     const getData = (tab_type) => {
-        Http.get('portfolio/account_balance_detail/20220614', {type: typeRef.current || tab_type}).then((res) => {
-            typeRef.current = tab_type;
-            navigation.setOptions({title: res.result.title});
+        typeRef.current = tab_type || '';
+        global.LogTool(typeRef.current === 2 ? 'Blanced_Portfolio7030_Detail' : 'Blanced_Portfolio5050_Detail');
+        Http.get('portfolio/account_balance_detail/20220614', {type: typeRef.current}).then((res) => {
+            navigation.setOptions({title: res.result.title || '股债平衡组合'});
             setData(res.result);
         });
     };
