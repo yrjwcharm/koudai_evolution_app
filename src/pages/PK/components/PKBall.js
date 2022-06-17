@@ -4,8 +4,11 @@ import FastImage from 'react-native-fast-image';
 import {Font} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import * as Animatable from 'react-native-animatable';
+import {useJump} from '~/components/hooks';
 
 const PKBall = ({}, ref) => {
+    const jump = useJump();
+
     const [layoutType, updateLayoutType] = useState(1);
 
     const animatableRef = useRef(null);
@@ -38,12 +41,16 @@ const PKBall = ({}, ref) => {
         }, 2000);
     };
 
+    const handlerJump = () => {
+        jump({path: 'PKSelectProduct'});
+    };
+
     const handlerOnPush = () => {
         updateLayoutType(2);
         handlerExpand(px(205));
     };
     return (
-        <TouchableOpacity activeOpacity={0.9} style={styles.container}>
+        <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={handlerJump}>
             <Animatable.View
                 ref={animatableRef}
                 iterationCount={1}

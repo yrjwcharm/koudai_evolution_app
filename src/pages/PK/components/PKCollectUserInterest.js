@@ -13,8 +13,8 @@ const PKCollectUserInterest = ({}) => {
 
     useEffect(() => {
         setTimeout(() => {
-            // setData([]);
-            // setModalVisible(true);
+            setData([]);
+            setModalVisible(true);
         }, 1000);
     }, []);
 
@@ -44,19 +44,30 @@ const PKCollectUserInterest = ({}) => {
                         <Header />
                         <ScrollView style={styles.scrollWrap} scrollIndicatorInsets={{right: 1}}>
                             <View style={{paddingVertical: px(28), paddingHorizontal: px(36)}}>
-                                {[1, 2, 3].map((item, idx) => (
+                                {[1, 2, 3].map((itm, idx) => (
                                     <View key={idx} style={[styles.classifyWrap, {marginTop: idx > 0 ? px(40) : 0}]}>
                                         <View style={styles.classifyTitleWrap}>
                                             <View style={styles.classifyCircle} />
                                             <Text style={styles.classifyTitle}>大分类标题</Text>
                                         </View>
                                         <View style={styles.checkOptionWrap}>
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, idx) => (
-                                                <CheckBtn
-                                                    key={idx}
-                                                    onChange={() => handlerCheckBtnsChange(item)}
-                                                    style={{marginTop: idx > 2 ? px(20) : 0}}
-                                                />
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => (
+                                                <View>
+                                                    {index > 2 ? (
+                                                        <View
+                                                            style={{
+                                                                height: px(20),
+                                                            }}
+                                                        />
+                                                    ) : null}
+                                                    <CheckBtn
+                                                        key={index}
+                                                        onChange={() => handlerCheckBtnsChange(item)}
+                                                        style={{
+                                                            marginLeft: index % 3 === 0 ? 0 : px(19),
+                                                        }}
+                                                    />
+                                                </View>
                                             ))}
                                         </View>
                                     </View>
@@ -127,7 +138,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
     },
     checkBtnWrap: {
         width: px(88),

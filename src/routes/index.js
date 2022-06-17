@@ -192,6 +192,7 @@ import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾�
 // v7新页面 Start
 import PKSearch from '../pages/PK/pages/Search'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
+import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -744,6 +745,7 @@ export default function AppStack() {
             {/* v7新页面 Start */}
             <Stack.Screen name="PKSearch" component={PKSearch} options={{title: '', headerShown: false}} />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
+            <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
             {/* v7新页面 End */}
         </Stack.Navigator>
     );

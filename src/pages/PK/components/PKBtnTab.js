@@ -15,9 +15,17 @@ import {px} from '../../../utils/appUtil';
  * @param {number} [option.defaultActive] 默认选中的btn
  * @param {string} [option.valueKey] value key
  * @param {onChange} [option.onChange] change 事件
+ * @param {object} [option.btnDefaultStyle] 按钮默认样式
  * @returns
  */
-const PKBtnTab = ({data = [], labelKey = '', valueKey = '', defaultActive = 0, onChange}) => {
+const PKBtnTab = ({
+    data = [],
+    labelKey = '',
+    valueKey = '',
+    defaultActive = 0,
+    onChange,
+    btnDefaultStyle = {backgroundColor: '#fff'},
+}) => {
     const [active, setActive] = useState(data[defaultActive]);
     const handlerPress = (item, idx) => {
         if (item === active) return;
@@ -34,7 +42,7 @@ const PKBtnTab = ({data = [], labelKey = '', valueKey = '', defaultActive = 0, o
                         styles.btn,
                         {
                             marginLeft: idx > 0 ? px(12) : 0,
-                            backgroundColor: item === active ? '#DEE8FF' : '#fff',
+                            backgroundColor: item === active ? '#DEE8FF' : btnDefaultStyle.backgroundColor,
                         },
                     ]}
                     onPress={() => handlerPress(item, idx)}>
