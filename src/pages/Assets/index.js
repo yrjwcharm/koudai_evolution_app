@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-15 09:59:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-16 18:54:18
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -983,10 +983,9 @@ function HomeScreen({navigation}) {
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
-                            <>
+                            <View key={item.id + item.name + index}>
                                 {item.portfolios.length > 1 ? (
                                     <View
-                                        key={`account${item.id}`}
                                         style={[
                                             styles.account,
                                             needAdjust(item) ? styles.needAdjust : {},
@@ -1000,7 +999,6 @@ function HomeScreen({navigation}) {
                                     </View>
                                 ) : (
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
                                         activeOpacity={0.8}
                                         style={[
                                             styles.account,
@@ -1020,9 +1018,9 @@ function HomeScreen({navigation}) {
                                     </TouchableOpacity>
                                 )}
                                 {renderGroupBulletin(item)}
-                            </>
+                            </View>
                         ) : (
-                            <View key={`account1${item.id}`}>
+                            <View key={item.id + item.name + index}>
                                 {item.id === 12 ? (
                                     <LinearGradient
                                         colors={['#33436D', '#121D3A']}
@@ -1596,7 +1594,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: px(-12),
+        marginTop: px(-16),
         marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
     },

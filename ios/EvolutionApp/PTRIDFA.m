@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(getAdData:(RCTPromiseResolveBlock)resolve
                 [[ADClient sharedClient] requestAttributionDetailsWithBlock:^(NSDictionary *attrData, NSError *error) {
                   resolve(attrData);
                 }];
-           }
+           }  
        }
   
     
