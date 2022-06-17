@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-17 17:09:27
+ * @LastEditTime: 2022-06-17 20:19:40
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -55,6 +55,7 @@ const BlancedPortfolio = ({navigation}) => {
                         period: data?.period,
                         poid: data?.poid,
                         benchmark_id: data?.benchmark_id,
+                        show_chart: data?.show_chart,
                     }}
                 />
                 <View style={{paddingHorizontal: px(16), marginTop: Space.marginVertical}}>
@@ -126,6 +127,27 @@ const BlancedPortfolio = ({navigation}) => {
                         );
                     })}
                 </View>
+                {data?.advisor_tip ? (
+                    <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
+                        <Text style={styles.bottomTip}>
+                            {data?.advisor_tip.text}
+                            {data?.advisor_tip.agreements
+                                ? data?.advisor_tip.agreements?.map((item, index) => {
+                                      return (
+                                          <Text
+                                              key={index}
+                                              style={{color: Colors.btnColor}}
+                                              onPress={() => {
+                                                  jump(item.url);
+                                              }}>
+                                              {item?.title}
+                                          </Text>
+                                      );
+                                  })
+                                : null}
+                        </Text>
+                    </View>
+                ) : null}
                 <BottomDesc style={{marginTop: px(80)}} fix_img={data?.advisor_footer_img} />
             </ScrollView>
             {data?.guide_tip ? (
@@ -135,7 +157,7 @@ const BlancedPortfolio = ({navigation}) => {
         </>
     ) : null;
 };
-const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, chartParams}) => {
+const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, chartParams, show_chart = true}) => {
     const [active, setActive] = useState(0);
     const [period, setPeriod] = useState();
     const [chartData, setChartData] = useState();
@@ -295,7 +317,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
                 </View>
             ) : null}
             {/* 图表 */}
-            {chart?.length > 0 && (
+            {show_chart && (
                 <>
                     <View style={{marginHorizontal: px(-16)}}>
                         <RenderChart chartData={chartData} chart={chart} type={type} />
@@ -446,5 +468,10 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.brandColor,
+    },
+    bottomTip: {
+        fontSize: Font.textSm,
+        lineHeight: px(18),
+        color: '#B8C1D3',
     },
 });
