@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-15 14:22:41
+ * @LastEditTime: 2022-06-18 21:39:05
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -113,7 +113,7 @@ export default ({navigation, route}) => {
                             })
                             .catch((error) => {
                                 console.log(error);
-                                reject({message: '转投失败，您的专属投顾将联系您，并为您解答原因并引导转投。'});
+                                reject({message: '网络异常，请退出APP重试'});
                             });
                     })
                 );
@@ -121,7 +121,7 @@ export default ({navigation, route}) => {
                 (prev, curr) =>
                     prev.then(curr).catch((error) => {
                         console.log(error);
-                        return {message: '转投失败，您的专属投顾将联系您，并为您解答原因并引导转投。'};
+                        return error;
                     }),
                 Promise.resolve()
             )
