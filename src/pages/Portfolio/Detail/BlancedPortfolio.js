@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-17 20:19:40
+ * @LastEditTime: 2022-06-18 20:29:03
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -213,6 +213,7 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
                               style={[active == index && styles.activeButton, styles.button, Style.flexCenter]}
                               onPress={() => {
                                   setActive(index);
+                                  setChart([]);
                                   tabClick && tabClick(item.tab_type);
                               }}>
                               <Text
