@@ -74,6 +74,9 @@ const BlancedPortfolio = ({navigation}) => {
                     {data?.signal_img ? (
                         <FitImage source={{uri: data?.signal_img}} style={{marginTop: Space.marginVertical}} />
                     ) : null}
+                    {data?.intelligence_img ? (
+                        <FitImage source={{uri: data?.intelligence_img}} style={{marginTop: Space.marginVertical}} />
+                    ) : null}
                     {data?.emo_msg ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
