@@ -55,8 +55,9 @@ const BlancedPortfolio = ({navigation}) => {
                         period: data?.period,
                         poid: data?.poid,
                         benchmark_id: data?.benchmark_id,
-                        show_chart: data?.show_chart,
+                        // show_chart: data?.show_chart,
                     }}
+                    show_chart={data?.show_chart}
                 />
                 <View style={{paddingHorizontal: px(16), marginTop: Space.marginVertical}}>
                     {data?.asset_intros?.map((img, index) => (
