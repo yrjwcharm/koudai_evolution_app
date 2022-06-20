@@ -13,7 +13,7 @@
 #import <React/RCTUtils.h>
 //签署成功
 #define method_signFileSuccess @"signFileSuccess"
-
+#define method_signSuccess @"signSuccess"
 @implementation SignManager;
 RCT_EXPORT_MODULE();
 #pragma mark JS 调用 OC
@@ -23,7 +23,7 @@ RCT_EXPORT_MODULE();
  */
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[method_signFileSuccess];
+  return @[method_signFileSuccess,method_signSuccess];
 }
 /// 初始化方法
 RCT_EXPORT_METHOD(init:(NSString *)appId isDebug:(int)isDebug) {
@@ -69,7 +69,30 @@ RCT_EXPORT_METHOD(previewFile:(NSString *)bucketName ObjectKey:(NSString *)Objec
     [[self findVisibleViewController] presentViewController:vc animated:YES completion:nil];
   });
 }
-
+//MARK: 订单签署成功回调
+-(void)signSuccess:(TTDSignSDK *)signSdk signStatus:(NSInteger)signStatus orderStatus:(NSInteger)orderStatus resultInfo:(NSArray *)files
+{
+    /// @param signStatus 订单签署前的订单状态
+    /// @param orderStatus 订单签署后的订单状态
+    /// @param files 字典的数组
+    /// {
+    ///   url  -> string   (签署后文件url)
+    ///   bucketName  -> string   (文件bucket，一般与objectKey一起使用）
+    ///   objectKey -> string  (文件key，一般与bucketName一起使用)
+    ///   version -> string   (签署文件版本，用于标识补充协议)
+    /// }
+    NSLog(@"订单签署成功 %@",files);
+  NSDictionary *dataDict = @{
+    @"signStatus": @(signStatus),
+    @"orderStatus": @(orderStatus),
+  };
+  [self sendEventWithName:method_signSuccess body:dataDict];
+//  NSDictionary *dic = [NSDictionary new];
+//  [dic setObject:signStatus forKey:@"signStatus"];
+//  [dic setObject:orderStatus forKey:@"orderStatus"];
+//  [self sendEventWithName:method_signSuccess body:dic];
+//    [self performSelector:@selector(alertMessage:) withObject:[NSString stringWithFormat:@"%@",files] afterDelay:0.3];
+}
 //MARK: 自定义文件签署成功回调
 -(void)signFileSuccess:(TTDSignSDK *)signSdk responseInfo:(NSDictionary *)dic
 {

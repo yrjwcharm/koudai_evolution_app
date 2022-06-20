@@ -64,7 +64,11 @@ public class SignModule extends ReactContextBaseJavaModule {
                 for(ResultInfo resultInfo: resultInfoList){
                     Log.d("ttd", "签署成功的文件:" + resultInfo.getUrl()); //只有补充协议可能有多个的情况
                 }
-                ToastUtil.showShort(getCurrentActivity(), "签署成功");
+                WritableMap params = Arguments.createMap();
+                params.putString("signStatus", signStatus);
+                params.putString("orderStatus", orderStatus);
+                sentMessageToJs(reactContext, "signSuccess", params);
+                // ToastUtil.showShort(getCurrentActivity(), "签署成功");
 
             }
 

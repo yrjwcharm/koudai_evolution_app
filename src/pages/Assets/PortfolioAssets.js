@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 14:36:04
+ * @LastEditTime: 2022-06-20 14:25:53
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -31,7 +31,6 @@ import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
-import FitImage from 'react-native-fit-image';
 import {Modal, BottomModal, PageModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
