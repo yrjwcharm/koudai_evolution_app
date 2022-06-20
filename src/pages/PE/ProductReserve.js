@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 15:05:40
+ * @LastEditTime: 2022-06-20 15:07:52
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -148,7 +148,7 @@ export default ({navigation, route}) => {
                     }
                 });
             });
-            const orderListener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+            const orderListener = NativeSignManagerEmitter.addListener(MethodObj.signSuccess, (res) => {
                 const toast = Toast.showLoading();
                 http.post('/file_sign/sign_done/20220510', {order_id: global.order_id, ...res}).then((resp) => {
                     global.order_id = '';
