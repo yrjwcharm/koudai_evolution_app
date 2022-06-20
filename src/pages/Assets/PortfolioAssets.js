@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2022-06-18 10:13:47
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 17:27:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -313,15 +313,15 @@ export default function PortfolioAssets(props) {
                     activeOpacity={0.8}
                     style={styles.groupBulletinTop}
                     onPress={() => {
-                        jump(data.jumpUrl);
+                        jump(_data.jumpUrl);
                     }}>
-                    <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
-                    <Text style={styles.groupBulletinTitle}>{data.title}</Text>
+                    <Image source={{uri: _data.icon}} style={{width: px(42), height: px(42)}} />
+                    <Text style={styles.groupBulletinTitle}>{_data.title}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        jump(data.jumpUrl);
+                        jump(_data.jumpUrl);
                     }}
                     style={styles.groupBulletinBottom}>
                     <Text style={styles.groupBulletinBottomContent}>
@@ -331,9 +331,9 @@ export default function PortfolioAssets(props) {
                     <TouchableOpacity
                         style={styles.groupBulletinBtnTextWrapper}
                         onPress={() => {
-                            jump(data.jumpUrl);
+                            jump(_data.jumpUrl);
                         }}>
-                        <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
+                        <Text style={styles.groupBulletinBtnText}>{_data.jumpUrl?.text || '查看'}</Text>
                     </TouchableOpacity>
                 </TouchableOpacity>
             </LinearGradient>
