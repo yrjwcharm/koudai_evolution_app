@@ -2,7 +2,7 @@
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 15:07:52
+ * @LastEditTime: 2022-06-20 15:29:28
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -150,7 +150,7 @@ export default ({navigation, route}) => {
             });
             const orderListener = NativeSignManagerEmitter.addListener(MethodObj.signSuccess, (res) => {
                 const toast = Toast.showLoading();
-                http.post('/file_sign/sign_done/20220510', {order_id: global.order_id, ...res}).then((resp) => {
+                http.post('/file_sign/order_sign_done/20220510', {order_id: global.order_id, ...res}).then((resp) => {
                     global.order_id = '';
                     Toast.hide(toast);
                     if (resp.code === '000000') {

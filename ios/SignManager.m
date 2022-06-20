@@ -83,8 +83,8 @@ RCT_EXPORT_METHOD(previewFile:(NSString *)bucketName ObjectKey:(NSString *)Objec
     /// }
     NSLog(@"订单签署成功 %@",files);
   NSDictionary *dataDict = @{
-    @"signStatus": @(signStatus),
-    @"orderStatus": @(orderStatus),
+    @"sign_status": @(signStatus),
+    @"order_status": @(orderStatus),
   };
   [self sendEventWithName:method_signSuccess body:dataDict];
 //  NSDictionary *dic = [NSDictionary new];
