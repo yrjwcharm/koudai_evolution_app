@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-18 10:13:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 22:04:39
  * @Description:路由表
  */
 import React from 'react';
@@ -191,6 +191,7 @@ import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
 import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
 import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
+import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -741,6 +742,7 @@ export default function AppStack() {
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
+            <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

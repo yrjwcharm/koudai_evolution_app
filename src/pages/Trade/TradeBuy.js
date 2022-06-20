@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-26 18:44:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 22:39:51
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -1122,42 +1122,6 @@ class TradeBuy extends Component {
                 {type == 1 && this.render_deductionHint()}
                 {/* 买入明细 */}
                 {type == 0 && this.render_config()}
-
-                {data?.agreement && (
-                    <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                        购买即代表您已知悉该基金组合的
-                        <Text
-                            onPress={() => {
-                                this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
-                            }}
-                            style={{color: Colors.btnColor}}>
-                            基金服务协议
-                        </Text>
-                        、
-                        <Text
-                            style={{color: Colors.btnColor}}
-                            onPress={() => {
-                                this.jumpPage('TradeAgreements', {fund_codes: planData?.codes, type: this.state.type});
-                            }}>
-                            产品概要
-                        </Text>
-                        {this.state.data?.agreement?.map?.((item, index, arr) => {
-                            return (
-                                <Text key={item + index}>
-                                    {index === arr.length - 1 ? '和' : '、'}
-                                    <Text
-                                        onPress={() => {
-                                            this.props.jump(item.url);
-                                        }}
-                                        style={{color: Colors.btnColor}}>
-                                        {item?.name || item?.title}
-                                    </Text>
-                                </Text>
-                            );
-                        })}
-                        等内容
-                    </Text>
-                )}
                 {data.tips ? (
                     <View style={{padding: Space.padding, paddingTop: px(6)}}>
                         {data.tips.map?.((item, index) => {
@@ -1252,6 +1216,8 @@ class TradeBuy extends Component {
                         {button && (
                             <FixedButton
                                 agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
+                                otherAgreement={data?.agreement}
+                                otherParam={{fund_codes: this.state.planData?.codes, type: this.state.type}}
                                 title={button.text}
                                 disabled={
                                     button.avail == 0 ||
