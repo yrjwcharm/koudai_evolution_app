@@ -2,7 +2,7 @@
  * @Date: 2022-04-21 10:34:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-18 21:39:05
+ * @LastEditTime: 2022-06-20 18:00:23
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -156,7 +156,7 @@ export default ({navigation, route}) => {
                 if (res.code === '000000') {
                     global.LogTool('Completiontime_yes');
                     setTimeout(() => {
-                        if (from_poids) {
+                        if (from_poids?.length > 0) {
                             doTransfer();
                         } else {
                             navigation.pop(2);
