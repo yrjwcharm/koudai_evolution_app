@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-16 15:28:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 15:06:57
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -152,6 +152,7 @@ function useJump() {
                                 });
                                 setTimeout(() => {
                                     Toast.hide(toast);
+                                    global.order_id = order_no;
                                     signOrder(order_no, order_status);
                                 }, 500);
                             } else if (app_id && questions && serial_number) {

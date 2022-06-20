@@ -2,7 +2,7 @@
  * @Date: 2022-05-12 16:15:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-21 12:27:44
+ * @LastEditTime: 2022-06-20 14:50:54
  * @Description:签约桥接
  */
 import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
@@ -20,6 +20,7 @@ export const NativeRecordManagerEmitter = new NativeEventEmitter(RecordManager);
 export const MethodObj = {
     signFileSuccess: 'signFileSuccess', //签署成功
     recordSuccess: 'recordSuccess', //双录成功
+    signSuccess: 'signSuccess', //订单签署成功
 };
 
 /**

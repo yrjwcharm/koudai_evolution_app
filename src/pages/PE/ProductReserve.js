@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-16 15:27:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 15:05:40
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -148,8 +148,28 @@ export default ({navigation, route}) => {
                     }
                 });
             });
+            const orderListener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
+                http.post('/file_sign/sign_done/20220510', {order_id: global.order_id, ...res}).then((resp) => {
+                    global.order_id = '';
+                    Toast.hide(toast);
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
             return () => {
                 listener.remove();
+                orderListener.remove();
             };
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
