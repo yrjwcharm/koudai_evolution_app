@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-13 10:43:38
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-19 12:48:24
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -166,7 +166,15 @@ export default function WebView({route, navigation}) {
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
-                    onLoadEnd={async () => {
+                    onLoadEnd={async (e) => {
+                        // console.log(e.nativeEvent.title);
+                        if (route.params.title) {
+                            setTitle(route.params.title);
+                        } else if (route.params.hideTitle) {
+                            setTitle('');
+                        } else if (e.nativeEvent.title) {
+                            setTitle(e.nativeEvent.title);
+                        }
                         const loginStatus = await Storage.get('loginStatus');
                         // console.log(loginStatus);
                         webview.current.postMessage(
