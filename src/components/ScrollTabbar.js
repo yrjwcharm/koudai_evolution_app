@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-16 14:34:28
+ * @LastEditTime: 2022-06-21 23:15:18
  * @Description:
  */
 
@@ -69,7 +69,8 @@ class ScrollTabbar extends Component {
         const numberOfTabs = this.props.tabs.length;
         const underlineWidth = px(20);
         const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 4;
-        const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2 || 0;
+        // const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2 || 0;
+        const deLen = (this.tabsLayouts[this.props.activeTab]?.width - underlineWidth) / 2 || 0;
         const tabUnderlineStyle = {
             position: 'absolute',
             width: underlineWidth,
@@ -79,9 +80,15 @@ class ScrollTabbar extends Component {
             bottom: 6,
             left: deLen,
         };
+        const inputRange = [];
+        const outputRange = [];
+        for (var i = 0; i < numberOfTabs; i++) {
+            inputRange.push(i);
+            outputRange.push(this.tabsLayouts[i]?.left || 0);
+        }
         const translateX = this.props.scrollValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, containerWidth / numberOfTabs],
+            inputRange,
+            outputRange,
         });
         const scaleValue = (defaultScale) => {
             let arr = new Array(numberOfTabs * 2);

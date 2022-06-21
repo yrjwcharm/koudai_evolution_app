@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-13 10:10:37
+ * @LastEditTime: 2022-06-21 14:26:44
  * @Description:路由表
  */
 import React from 'react';
@@ -193,6 +193,7 @@ import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾�
 import PKSearch from '../pages/PK/pages/Search'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
+import Attention from '~/pages/Attention/pages'; //关注
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -220,7 +221,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="Launch"
+            initialRouteName="Attention"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
@@ -746,6 +747,7 @@ export default function AppStack() {
             <Stack.Screen name="PKSearch" component={PKSearch} options={{title: '', headerShown: false}} />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
+            <Stack.Screen name="Attention" component={Attention} options={{title: '关注'}} />
             {/* v7新页面 End */}
         </Stack.Navigator>
     );
