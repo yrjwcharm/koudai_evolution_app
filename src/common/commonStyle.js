@@ -1,11 +1,11 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-11 11:33:46
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-14 14:17:39
  * @Description:主题及公共样式表
  */
 
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {px, px as text} from '../utils/appUtil';
 export const Colors = {
     /** color **/
@@ -105,6 +105,7 @@ export const Font = {
     navRightTitleFont: text(14),
     // 占位符的默认字体大小
     placeholderFont: 13,
+    weightMedium: Platform.select({android: '700', ios: '500'}),
 };
 export const Style = StyleSheet.create({
     flexRowCenter: {
