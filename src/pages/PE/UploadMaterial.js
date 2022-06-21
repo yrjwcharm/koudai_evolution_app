@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-14 15:47:30
+ * @LastEditTime: 2022-06-21 15:44:48
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -318,17 +318,23 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
+                const toast = Toast.showLoading();
                 const params = {materials: {}, order_id: route.params.order_id || ''};
                 const {id_info: _id_info, materials: _materials = []} = data;
                 _materials.forEach((item) => (params.materials[item.type] = item.images));
                 params.materials[1] = [_id_info.front, _id_info.back];
                 params.materials = JSON.stringify(params.materials);
-                http.post('/private_fund/submit_certification_material/20220510', params).then((res) => {
-                    if (res.code === '000000') {
-                        navigation.goBack();
-                    }
-                    Toast.show(res.message);
-                });
+                http.post('/private_fund/submit_certification_material/20220510', params)
+                    .then((res) => {
+                        if (res.code === '000000') {
+                            navigation.goBack();
+                        }
+                        Toast.hide(toast);
+                        Toast.show(res.message);
+                    })
+                    .catch(() => {
+                        Toast.hide(toast);
+                    });
             },
             1000,
             {leading: true, trailing: false}

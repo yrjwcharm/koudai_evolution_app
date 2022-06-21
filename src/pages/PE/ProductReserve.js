@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-21 14:31:35
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 15:29:28
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-21 15:44:39
  * @Description: 私募产品预约
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -60,17 +60,24 @@ export default ({navigation, route}) => {
     const onSubmit = useCallback(
         debounce(
             () => {
+                let toast;
                 switch (route.params.scene) {
                     case 'appointment':
+                        toast = Toast.showLoading('预约中...');
                         const params = {fund_code: route.params.fund_code || ''};
                         const {info: _parts = []} = data;
                         _parts.forEach((part) => part.list?.forEach((item) => (params[item.id] = item.value)));
-                        http.post('/private_fund/appointment_do/20220510', params).then((res) => {
-                            if (res.code === '000000') {
-                                navigation.goBack();
-                            }
-                            Toast.show(res.message);
-                        });
+                        http.post('/private_fund/appointment_do/20220510', params)
+                            .then((res) => {
+                                Toast.hide(toast);
+                                Toast.show(res.message);
+                                if (res.code === '000000') {
+                                    navigation.goBack();
+                                }
+                            })
+                            .catch(() => {
+                                Toast.hide(toast);
+                            });
                         break;
                     case 'read':
                         if (data.isDone) {
@@ -80,14 +87,22 @@ export default ({navigation, route}) => {
                         }
                         break;
                     case 'sign':
+                        toast = Toast.showLoading();
                         http.post('/private_fund/investor_audit/20220510', {
                             order_id: route.params.order_id || '',
                             type: 2,
-                        }).then((res) => {
-                            if (res.code === '000000') {
-                                jump(res.result.url, 'replace');
-                            }
-                        });
+                        })
+                            .then((res) => {
+                                Toast.hide(toast);
+                                if (res.code === '000000') {
+                                    jump(res.result.url, 'replace');
+                                } else {
+                                    Toast.show(res.message);
+                                }
+                            })
+                            .catch(() => {
+                                Toast.hide(toast);
+                            });
                         break;
                     default:
                         break;
