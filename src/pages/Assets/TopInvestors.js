@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 17:01:19
+ * @LastEditTime: 2022-06-22 19:17:11
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -109,7 +109,7 @@ const TopInvestors = ({route}) => {
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
-                    jump(data.button.url);
+                    res.result?.auto_jump_url && jump(res.result?.auto_jump_url);
                 }, 1000);
             }
         });
