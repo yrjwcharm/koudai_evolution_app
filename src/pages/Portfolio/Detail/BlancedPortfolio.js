@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-18 20:29:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-22 19:55:58
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -21,10 +21,10 @@ import RenderChart from '../components/RenderChart';
 import LinearGradient from 'react-native-linear-gradient';
 import FitImage from 'react-native-fit-image';
 import FastImage from 'react-native-fast-image';
-const BlancedPortfolio = ({navigation}) => {
+const BlancedPortfolio = ({navigation, route}) => {
     const [data, setData] = useState();
     const jump = useJump();
-    const typeRef = useRef('');
+    const typeRef = useRef(route?.params?.tab_type);
     const getData = (tab_type) => {
         typeRef.current = tab_type || typeRef.current;
         global.LogTool(typeRef.current === 2 ? 'Blanced_Portfolio7030_Detail' : 'Blanced_Portfolio5050_Detail');

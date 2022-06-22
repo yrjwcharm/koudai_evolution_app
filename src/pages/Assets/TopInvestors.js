@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 19:17:11
+ * @LastEditTime: 2022-06-22 19:52:55
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -53,7 +53,6 @@ const TopInvestors = ({route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [autoFlowState, updateAutoFlowState] = useState(false);
     const signModal = React.useRef(null);
-    const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef('');
     const hotChartRef = useRef(null);
     const panelChartRef = useRef(null);
@@ -387,7 +386,6 @@ const TopInvestors = ({route}) => {
                     ref={signModal}
                     title={data?.adviser_sign?.title}
                     onClose={() => {
-                        show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
                     <View style={{flex: 1, paddingBottom: px(20)}}>
