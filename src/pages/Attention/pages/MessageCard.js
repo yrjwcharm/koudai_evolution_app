@@ -1,0 +1,82 @@
+/*
+ * @Date: 2022-06-21 14:39:44
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-21 20:21:31
+ * @Description:消息卡片
+ */
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {px} from '~/utils/appUtil';
+import {Colors, Style} from '~/common/commonStyle';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {useJump} from '~/components/hooks';
+const MessageCard = ({data}) => {
+    const {header, body, footer} = data;
+    const jump = useJump();
+    return (
+        <View>
+            <TouchableOpacity style={{marginBottom: px(12)}} onPress={() => jump(header?.right_btn?.url)}>
+                <Text>{header?.right_btn?.text}</Text>
+            </TouchableOpacity>
+            {body?.list?.map((_list, index) => (
+                <TouchableOpacity
+                    key={index}
+                    style={[styles.card, Style.flexRow]}
+                    activeOpacity={0.9}
+                    onPress={() => jump(_list.url)}>
+                    <View style={{flex: 1}}>
+                        <View style={Style.flexRow}>
+                            <View style={[styles.tag, {backgroundColor: _list?.type_color || 'red'}]}>
+                                <Text style={styles.tag_text}>{_list?.type_text}</Text>
+                            </View>
+                            <Text numberOfLines={1} style={styles.title}>
+                                {_list?.title}
+                            </Text>
+                        </View>
+                        <Text style={styles.content} numberOfLines={1}>
+                            {_list?.content}
+                        </Text>
+                    </View>
+                    <EvilIcons name={'chevron-right'} size={px(24)} />
+                </TouchableOpacity>
+            ))}
+            {footer?.link && (
+                <TouchableOpacity style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
+                    <Text style={{color: Colors.btnColor}}>{footer?.link?.text}</Text>
+                    <EvilIcons name={'chevron-right'} size={px(22)} color={Colors.btnColor} />
+                </TouchableOpacity>
+            )}
+        </View>
+    );
+};
+
+export default MessageCard;
+
+const styles = StyleSheet.create({
+    card: {
+        padding: px(12),
+        borderRadius: px(6),
+        backgroundColor: '#fff',
+        marginBottom: px(12),
+    },
+    title: {
+        color: '#121D3A',
+        fontWeight: '700',
+        fontSize: px(13),
+        lineHeight: px(18),
+        marginLeft: px(8),
+    },
+    content: {
+        color: '#545968',
+        fontSize: px(12),
+        lineHeight: px(17),
+        marginTop: px(5),
+    },
+    tag: {
+        borderRadius: px(6),
+        paddingHorizontal: px(6),
+        paddingVertical: px(3),
+    },
+    tag_text: {fontSize: px(11), lineHeight: px(16), color: '#fff'},
+});
