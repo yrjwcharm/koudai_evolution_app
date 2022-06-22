@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 10:28:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-08 19:20:11
+ * @LastEditTime: 2022-06-22 10:56:28
  * @Description: 私募问答
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -194,6 +194,7 @@ export default ({navigation, route}) => {
                 {tips ? <Text style={[styles.tips, {marginTop: Space.marginVertical}]}>{tips}</Text> : null}
                 {list.map((question, i, arr) => {
                     const {
+                        disabled = false,
                         info = '',
                         max_length = 300,
                         option_list: options,
@@ -232,9 +233,10 @@ export default ({navigation, route}) => {
                                 const {desc: label, val: value} = option;
                                 return (
                                     <TouchableOpacity
-                                        activeOpacity={selected === undefined ? 0.8 : 1}
+                                        activeOpacity={0.8}
+                                        disabled={selected === value || disabled}
                                         key={option + j}
-                                        onPress={() => selected !== value && onSelect(i, option)}
+                                        onPress={() => onSelect(i, option)}
                                         style={[
                                             styles.optionBox,
                                             {
@@ -248,7 +250,14 @@ export default ({navigation, route}) => {
                                         <Text
                                             style={[
                                                 styles.optionLabel,
-                                                {color: selected === value ? '#CEA26B' : Colors.defaultColor},
+                                                {
+                                                    color:
+                                                        selected === value
+                                                            ? '#CEA26B'
+                                                            : disabled
+                                                            ? Colors.lightGrayColor
+                                                            : Colors.defaultColor,
+                                                },
                                             ]}>
                                             {label}
                                             {selected === value ? '（已选）' : ''}
