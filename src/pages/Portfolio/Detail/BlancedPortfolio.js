@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 19:55:58
+ * @LastEditTime: 2022-06-22 20:40:56
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -43,6 +43,7 @@ const BlancedPortfolio = ({navigation, route}) => {
         <>
             <ScrollView>
                 <Header
+                    activeTab={route?.params?.tab_type}
                     tab_list={data?.tab_list}
                     tabClick={(tab_type) => getData(tab_type)}
                     ratio_info={data?.ratio_info}
@@ -161,8 +162,18 @@ const BlancedPortfolio = ({navigation, route}) => {
         </>
     ) : null;
 };
-const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, chartParams, show_chart = true}) => {
-    const [active, setActive] = useState(0);
+const Header = ({
+    activeTab,
+    tab_list,
+    tabClick,
+    ratio_info,
+    line_drawback,
+    bar,
+    advantage,
+    chartParams,
+    show_chart = true,
+}) => {
+    const [active, setActive] = useState(activeTab);
     const [period, setPeriod] = useState();
     const [chartData, setChartData] = useState();
     const _tabClick = useRef(true);
@@ -210,15 +221,15 @@ const Header = ({tab_list, tabClick, ratio_info, line_drawback, bar, advantage, 
                           <TouchableOpacity
                               key={index}
                               activeOpacity={0.9}
-                              style={[active == index && styles.activeButton, styles.button, Style.flexCenter]}
+                              style={[active == index + 1 && styles.activeButton, styles.button, Style.flexCenter]}
                               onPress={() => {
-                                  setActive(index);
+                                  setActive(item?.tab_type);
                                   setChart([]);
                                   tabClick && tabClick(item.tab_type);
                               }}>
                               <Text
                                   style={[
-                                      active == index
+                                      active == index + 1
                                           ? styles.activeText
                                           : {fontSize: px(12), color: Colors.lightBlackColor},
                                   ]}>
