@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 22:39:51
+ * @LastEditTime: 2022-06-22 16:53:56
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -1122,6 +1122,7 @@ class TradeBuy extends Component {
                 {type == 1 && this.render_deductionHint()}
                 {/* 买入明细 */}
                 {type == 0 && this.render_config()}
+
                 {data.tips ? (
                     <View style={{padding: Space.padding, paddingTop: px(6)}}>
                         {data.tips.map?.((item, index) => {

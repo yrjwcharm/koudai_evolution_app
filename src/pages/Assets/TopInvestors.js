@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-17 13:43:26
+ * @LastEditTime: 2022-06-22 17:01:19
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -72,11 +72,6 @@ const TopInvestors = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            //解决弹窗里跳转 返回再次弹出
-            if (data && show_sign_focus_modal.current) {
-                signModal?.current?.show();
-                startTimer();
-            }
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -438,10 +433,6 @@ const TopInvestors = ({route}) => {
                                     check={data?.adviser_sign?.agreement_bottom?.default_agree}
                                     data={data?.adviser_sign?.agreement_bottom?.list}
                                     onChange={(checkStatus) => setSignCheck(checkStatus)}
-                                    emitJump={() => {
-                                        signModal?.current?.hide();
-                                        show_sign_focus_modal.current = true;
-                                    }}
                                 />
                             ) : null}
                             {data?.adviser_sign?.button ? (

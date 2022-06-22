@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 14:36:28
+ * @LastEditTime: 2022-06-22 13:24:09
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
@@ -112,6 +112,6 @@ Notice.defaultProps = {
     isClose: false,
 };
 Notice.propTypes = {
-    content: PropTypes.object.isRequired,
+    content: PropTypes.isRequired,
     isClose: PropTypes.bool,
 };
