@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-10 19:04:49
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-15 11:15:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-22 17:26:53
  * @Description: 组合转投页面
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -134,7 +134,13 @@ export default ({navigation}) => {
                                     activeOpacity={0.8}
                                     onPress={() => jump(to_url)}
                                     style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                    <Text style={[styles.title, {color: Colors.brandColor}]}>{to}</Text>
+                                    <Text
+                                        style={[
+                                            styles.title,
+                                            {color: Colors.brandColor, flex: 1, textAlign: 'center'},
+                                        ]}>
+                                        {to}
+                                    </Text>
                                     <AntDesign color={Colors.brandColor} name="right" size={12} />
                                 </TouchableOpacity>
                             </View>

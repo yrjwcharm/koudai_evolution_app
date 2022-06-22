@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-15 15:06:23
+ * @LastEditTime: 2022-06-22 17:24:08
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -462,7 +462,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 startInLoadingState
                                 style={{
                                     height: webviewHeight,
-                                    opacity: DeviceInfo?.getSystemVersion() >= '12' ? 0.99 : 0.9999,
+                                    opacity: DeviceInfo?.getSystemVersion() >= '12' ? 0.99 : 0.99999,
                                 }}
                                 textZoom={100}
                             />
