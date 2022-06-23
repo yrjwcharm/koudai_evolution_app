@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-10 10:22:41
+<<<<<<< HEAD
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-23 10:07:59
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-20 22:04:39
+>>>>>>> master
  * @Description:路由表
  */
 import React from 'react';
@@ -202,6 +207,9 @@ import ProductReserve from '../pages/PE/ProductReserve'; // 私募产品预约
 import MatchNotification from '../pages/PE/MatchNotification'; // 匹配告知
 import SignRiskDisclosure from '../pages/PE/SignRiskDisclosure'; // 逐项确认
 import SignPassword from '../pages/PE/SignPassword'; // 设置签署密码
+import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
+import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
+import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -762,6 +770,9 @@ export default function AppStack() {
             <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
             <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
             <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
+            <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
+            <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
+            <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

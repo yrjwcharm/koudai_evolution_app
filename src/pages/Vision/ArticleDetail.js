@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 21:18:42
+ * @LastEditTime: 2022-06-22 20:58:53
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -462,10 +462,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 startInLoadingState
                                 style={{
                                     height: webviewHeight,
-                                    opacity:
-                                        DeviceInfo?.getBrand() == 'Xiaomi' && DeviceInfo?.getSystemVersion() >= '12'
-                                            ? 0.99
-                                            : 0.9999,
+                                    opacity: DeviceInfo?.getSystemVersion() >= '12' ? 0.99 : 0.9999,
                                 }}
                                 textZoom={100}
                             />
