@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-21 20:34:45
+ * @LastEditTime: 2022-06-23 17:03:36
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
@@ -17,7 +17,7 @@ const HotFund = ({data}) => {
     const {body, footer} = data;
     const jump = useJump();
     return (
-        <View>
+        <>
             <View style={styles.card}>
                 <View style={[Style.flexBetween, {flexWrap: 'wrap'}]}>
                     {body?.list?.map((item, index) => (
@@ -58,7 +58,7 @@ const HotFund = ({data}) => {
                     </TouchableOpacity>
                 ))}
             </View>
-        </View>
+        </>
     );
 };
 

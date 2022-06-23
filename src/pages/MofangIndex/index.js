@@ -302,6 +302,12 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
+                            <Button
+                                title="关注"
+                                onPress={() => {
+                                    props.navigation.navigate('Attention');
+                                }}
+                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
