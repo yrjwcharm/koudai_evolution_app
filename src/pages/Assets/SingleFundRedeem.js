@@ -58,7 +58,7 @@ const SingleFundRedeem = ({navigation, route}) => {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [navigation, route]);
 
     const getFee = async (share) => {
         try {
@@ -214,7 +214,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                             <View style={Style.flexRow}>
                                 <TextInput
                                     keyboardType="numeric"
-                                    style={[styles.inputStyle, {fontFamily: inputVal ? Font.numMedium : ''}]}
+                                    style={[styles.inputStyle, {fontFamily: inputVal ? Font.numMedium : null}]}
                                     placeholder={`最多可卖出${bankSelectObj.select?.max_share || 0}份`}
                                     placeholderTextColor={Colors.placeholderColor}
                                     onChangeText={onChangeText}
