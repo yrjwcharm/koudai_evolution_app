@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-21 15:44:48
+ * @LastEditTime: 2022-06-24 16:43:13
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -423,6 +423,7 @@ export default ({navigation, route}) => {
                             <View style={styles.uploadBox}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
+                                    disabled={button.avail === 0}
                                     onPress={() => onPressIdUpload('front')}
                                     style={styles.imgBox}>
                                     <Image
@@ -430,11 +431,12 @@ export default ({navigation, route}) => {
                                         style={styles.uploadID}
                                     />
                                 </TouchableOpacity>
-                                <Text style={styles.uploadTips}>{'点击拍摄/上传人像面'}</Text>
+                                {button.avail !== 0 && <Text style={styles.uploadTips}>{'点击拍摄/上传人像面'}</Text>}
                             </View>
                             <View style={styles.uploadBox}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
+                                    disabled={button.avail === 0}
                                     onPress={() => onPressIdUpload('back')}
                                     style={styles.imgBox}>
                                     <Image
@@ -442,7 +444,7 @@ export default ({navigation, route}) => {
                                         style={styles.uploadID}
                                     />
                                 </TouchableOpacity>
-                                <Text style={styles.uploadTips}>{'点击拍摄/上传国徽面'}</Text>
+                                {button.avail !== 0 && <Text style={styles.uploadTips}>{'点击拍摄/上传国徽面'}</Text>}
                             </View>
                         </View>
                     </View>
@@ -461,26 +463,28 @@ export default ({navigation, route}) => {
                                         <View key={img + i} style={[styles.uploadBox, {justifyContent: 'center'}]}>
                                             <View style={styles.displayBox}>
                                                 <Image source={{uri: img}} style={styles.displayImg} />
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    onPress={() => {
-                                                        const _data = {...data};
-                                                        const temp = _data.materials[index].images;
-                                                        temp.splice(i, 1);
-                                                        setData(_data);
-                                                    }}
-                                                    style={styles.deleteIcon}>
-                                                    <AntDesign
-                                                        color={Colors.defaultColor}
-                                                        name="closecircle"
-                                                        size={px(16)}
-                                                    />
-                                                </TouchableOpacity>
+                                                {button.avail !== 0 && (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() => {
+                                                            const _data = {...data};
+                                                            const temp = _data.materials[index].images;
+                                                            temp.splice(i, 1);
+                                                            setData(_data);
+                                                        }}
+                                                        style={styles.deleteIcon}>
+                                                        <AntDesign
+                                                            color={Colors.defaultColor}
+                                                            name="closecircle"
+                                                            size={px(16)}
+                                                        />
+                                                    </TouchableOpacity>
+                                                )}
                                             </View>
                                         </View>
                                     );
                                 })}
-                                {images.length === max ? null : (
+                                {images.length === max || button.avail === 0 ? null : (
                                     <View style={styles.uploadBox}>
                                         <TouchableOpacity
                                             activeOpacity={0.8}
