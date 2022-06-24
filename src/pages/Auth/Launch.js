@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 11:56:46
+ * @LastEditTime: 2022-06-24 12:38:49
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -39,7 +39,7 @@ import {getAppMetaData} from 'react-native-get-channel';
 import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
 import DeviceInfo from 'react-native-device-info';
-import CodePush from 'react-native-code-push';
+// import CodePush from 'react-native-code-push';
 const {PTRIDFA, OAIDModule} = NativeModules;
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -228,19 +228,19 @@ export default function Launch({navigation}) {
         http.post('mapi/upload/apple_ad/20220530', data);
     };
     //获取热更新信息
-    const getRemoteCodePush = () => {
-        CodePush.checkForUpdate(key)
-            .then((update) => {
-                if (!update) {
-                    dispatch(updateUserInfo({hotRefreshData: ''}));
-                } else {
-                    dispatch(updateUserInfo({hotRefreshData: update}));
-                }
-            })
-            .catch((res) => {
-                dispatch(updateUserInfo({hotRefreshData: ''}));
-            });
-    };
+    // const getRemoteCodePush = () => {
+    //     CodePush.checkForUpdate(key)
+    //         .then((update) => {
+    //             if (!update) {
+    //                 dispatch(updateUserInfo({hotRefreshData: ''}));
+    //             } else {
+    //                 dispatch(updateUserInfo({hotRefreshData: update}));
+    //             }
+    //         })
+    //         .catch((res) => {
+    //             dispatch(updateUserInfo({hotRefreshData: ''}));
+    //         });
+    // };
     const init = () => {
         getSystemMes();
         Platform.OS == 'ios' ? getIdfa() : getOaid();
@@ -250,7 +250,7 @@ export default function Launch({navigation}) {
             heartBeat();
         }, 60000);
         initJpush();
-        getRemoteCodePush();
+        // getRemoteCodePush();
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
 
         //显示引导页的时候不展示广告

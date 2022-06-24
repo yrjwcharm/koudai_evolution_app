@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-21 10:31:36
+ * @LastEditTime: 2022-06-24 12:42:46
  * @Description:
  */
 
@@ -16,7 +16,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.microsoft.codepush.react.CodePush;
+// import com.microsoft.codepush.react.CodePush;
 import com.theweflex.react.WeChatPackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -40,13 +40,13 @@ public class MainApplication extends Application implements ReactApplication {
             packages.add(new WeChatPackage());
             packages.add(new ReadCardPackage());
             packages.add(new OaidPackage());
-            CodePush.getJSBundleFile();
-            new CodePush(
-//                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging
-                   "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",    // production
-                    MainApplication.this,
-                    BuildConfig.DEBUG,
-                    "https://47.97.119.232/");
+//             CodePush.getJSBundleFile();
+//             new CodePush(
+// //                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging
+//                    "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",    // production
+//                     MainApplication.this,
+//                     BuildConfig.DEBUG,
+//                     "https://47.97.119.232/");
             //  packages.add(new RNExitAppPackage());
             return packages;
         }
@@ -56,10 +56,10 @@ public class MainApplication extends Application implements ReactApplication {
             return "index";
         }
 
-        @Override
-        protected String getJSBundleFile() {
-            return CodePush.getJSBundleFile();
-        }
+        // @Override
+        // protected String getJSBundleFile() {
+        //     return CodePush.getJSBundleFile();
+        // }
     };
 
     @Override
