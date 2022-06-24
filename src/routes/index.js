@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-24 11:18:01
+ * @LastEditTime: 2022-06-24 13:57:10
  * @Description:路由表
  */
 import React from 'react';
@@ -194,7 +194,7 @@ import PKSearch from '../pages/PK/pages/Search'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
 import Attention from '~/pages/Attention/Index'; //关注
-import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages'; // 公募基金首页
+import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages/Index'; // 公募基金首页
 import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
 import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
