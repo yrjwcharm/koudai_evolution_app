@@ -121,4 +121,45 @@ export default class http {
             return error;
         }
     }
+
+    axiosPostRequestCancel = null;
+    static uploadFiles(url, data, callBack, progressCallBack) {
+        let formData = new FormData();
+        let file = {
+            uri: data.uri,
+            type: 'application/octet-stream',
+            name: data.name,
+        };
+        formData.append('file', file);
+        let config = {
+            //添加请求头
+            headers: {'Content-Type': 'multipart/form-data'},
+            timeout: 600000,
+            //添加上传进度监听事件
+            onUploadProgress: (e) => {
+                let completeProgress = ((e.loaded / e.total) * 100) | 0;
+                progressCallBack && progressCallBack(completeProgress);
+            },
+            cancelToken: new axios.CancelToken(function executor(c) {
+                this.axiosPostRequestCancel = c; // 用于取消上传
+            }),
+        };
+
+        axios
+            .post(url, formData, config)
+            .then(function (response) {
+                callBack && callBack(true, response);
+            })
+            .catch(function (error) {
+                callBack && callBack(false);
+            });
+    }
+
+    /**
+     * [cancelAxiosRequest 取消axios post请求]
+     */
+    static cancelAxiosRequest() {
+        this.axiosPostRequestCancel && this.axiosPostRequestCancel('cancel');
+        this.axiosPostRequestCancel = null;
+    }
 }

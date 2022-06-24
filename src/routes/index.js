@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 10:31:17
+ * @LastEditTime: 2022-06-23 22:26:07
  * @Description:路由表
  */
 import React from 'react';
@@ -193,9 +193,10 @@ import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾�
 import PKSearch from '../pages/PK/pages/Search'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
-import Attention from '~/pages/Attention/pages/Index'; //关注
+import Attention from '~/pages/Attention/Index'; //关注
 import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages'; // 公募基金首页
 import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
+import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -752,6 +753,8 @@ export default function AppStack() {
             <Stack.Screen name="Attention" component={Attention} options={{title: '关注'}} />
             <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
             <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
+            <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
+
             {/* v7新页面 End */}
         </Stack.Navigator>
     );

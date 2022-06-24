@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 19:13:12
+ * @LastEditTime: 2022-06-24 10:20:56
  * @Description:关注
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -73,9 +73,7 @@ const Attention = ({navigation}) => {
                                         }}>
                                         <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
                                         {/* 账户持仓 */}
-                                        {index == 2 && followData?.header && (
-                                            <FollowTableHeader header={followData?.header} />
-                                        )}
+                                        {followData?.header && <FollowTableHeader header={followData?.header} />}
                                         <FollowTable data={followData} />
                                         <View style={Style.flexRow}>
                                             {tab?.button_list?.map((btn, dex) => (

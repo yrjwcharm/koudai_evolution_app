@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 17:17:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 17:35:10
+ * @LastEditTime: 2022-06-24 10:30:14
  * @Description:账户持仓
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -26,16 +26,19 @@ const FollowTableHeader = ({header}) => {
         });
     }, []);
     return (
-        <View>
+        <>
             <View style={[Style.flexBetween, {padding: px(16)}]}>
                 <View>
                     <TouchableOpacity style={Style.flexRow} activeOpacity={0.8} onPress={toggleEye}>
-                        <Text style={{fontSize: px(12), color: Colors.defaultColor}}>{header?.left?.text}</Text>
+                        <Text style={{fontSize: px(12), color: Colors.defaultColor}}>{header?.left?.text1?.value}</Text>
+                        <Text style={{fontSize: px(12), color: Colors.defaultColor}}>{header?.left?.text2?.value}</Text>
                         <TouchableOpacity activeOpacity={0.8} onPress={toggleEye} style={{marginLeft: px(9)}}>
                             <Feather name={showEye === 'true' ? 'eye' : 'eye-off'} size={16} />
                         </TouchableOpacity>
                     </TouchableOpacity>
-                    <Text style={styles.header_left_value}>{showEye == 'true' ? header?.left?.value : '****'}</Text>
+                    <Text style={styles.header_left_value}>
+                        {showEye == 'true' ? header?.left?.text3?.value : '****'}
+                    </Text>
                 </View>
                 <View style={{alignItems: 'flex-end'}}>
                     <View style={Style.flexRow}>
@@ -45,10 +48,16 @@ const FollowTableHeader = ({header}) => {
                                 color: Colors.defaultColor,
                                 marginRight: px(4),
                             }}>
-                            {header?.right?.text}
+                            {header?.right?.text1?.value}
                         </Text>
-                        <Text style={{fontFamily: Font.numFontFamily, fontSize: px(15)}}>
-                            {showEye == 'true' ? header?.right?.value : '****'}
+
+                        <Text
+                            style={{
+                                fontFamily: Font.numFontFamily,
+                                fontSize: px(15),
+                                color: header?.right?.text2?.color || '#000',
+                            }}>
+                            {showEye == 'true' ? header?.right?.text2?.value : '****'}
                         </Text>
                     </View>
                     <View style={[Style.flexRow, {marginTop: px(9)}]}>
@@ -58,16 +67,21 @@ const FollowTableHeader = ({header}) => {
                                 color: Colors.defaultColor,
                                 marginRight: px(4),
                             }}>
-                            {header?.right?.text}
+                            {header?.right?.text3?.value}
                         </Text>
-                        <Text style={{fontFamily: Font.numFontFamily, fontSize: px(15)}}>
-                            {showEye == 'true' ? header?.right?.value : '****'}
+                        <Text
+                            style={{
+                                fontFamily: Font.numFontFamily,
+                                fontSize: px(15),
+                                color: header?.right?.text4?.color || '#000',
+                            }}>
+                            {showEye == 'true' ? header?.right?.text4?.value : '****'}
                         </Text>
                     </View>
                 </View>
             </View>
             <View style={{height: px(8), backgroundColor: Colors.bgColor}} />
-        </View>
+        </>
     );
 };
 

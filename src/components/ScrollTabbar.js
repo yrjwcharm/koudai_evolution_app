@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-21 23:15:18
+ * @LastEditTime: 2022-06-24 10:29:19
  * @Description:
  */
 
@@ -50,7 +50,7 @@ class ScrollTabbar extends Component {
                 newX = 0;
             }
             this?._scrollTabBarView?.scrollTo({x: newX, animated: true});
-        }, 100);
+        }, 10);
     };
     measureTabContainer(evt) {
         const {width} = evt.nativeEvent.layout;

@@ -303,6 +303,12 @@ const Index = (props) => {
                                 )}
                             </View>
                             <Button
+                                title="识别上传"
+                                onPress={() => {
+                                    props.navigation.navigate('OCRHome');
+                                }}
+                            />
+                            <Button
                                 title="关注"
                                 onPress={() => {
                                     props.navigation.navigate('Attention');
