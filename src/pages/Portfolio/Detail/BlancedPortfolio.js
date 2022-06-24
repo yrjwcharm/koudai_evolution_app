@@ -2,7 +2,7 @@
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-06-24 14:19:15
+ * @LastEditTime: 2022-06-24 15:02:12
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -276,6 +276,7 @@ const Header = ({
                             <Html html={ratio_info.title} style={styles.radio_sty} />
                             {ratio_info.tips ? (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     onPress={() => {
                                         setTipsDataOfBottomModal(ratio_info.tips);
                                         bottomModal.current.show();
@@ -305,6 +306,7 @@ const Header = ({
                             <Html style={styles.radio_sty} html={line_drawback.ratio_desc} />
                             {line_drawback.tips ? (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     onPress={() => {
                                         setTipsDataOfBottomModal(line_drawback.tips);
                                         bottomModal.current.show();
