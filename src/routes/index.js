@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 22:04:39
+ * @LastEditTime: 2022-06-24 22:28:22
  * @Description:路由表
  */
 import React from 'react';
@@ -192,6 +192,7 @@ import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾�
 import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
 import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
+import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -743,6 +744,7 @@ export default function AppStack() {
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
+            <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
