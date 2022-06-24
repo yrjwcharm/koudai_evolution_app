@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-05-12 15:27:42
+ * @LastEditTime: 2022-06-24 12:19:42
  * @Description:
  */
 
@@ -47,7 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
             packages.add(new RecordPackage());
             CodePush.getJSBundleFile();
             new CodePush(
-//                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging
+                   //"umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging
                    "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",    // production
                     MainApplication.this,
                     BuildConfig.DEBUG,

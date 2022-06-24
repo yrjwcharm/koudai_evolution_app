@@ -115,6 +115,8 @@ PODS:
   - OpenSSL-Universal/Static (1.0.2.20)
   - Permission-Camera (3.0.0):
     - RNPermissions
+  - Permission-Microphone (3.0.0):
+    - RNPermissions
   - Permission-Notifications (3.0.0):
     - RNPermissions
   - Permission-PhotoLibrary (3.0.0):
@@ -488,6 +490,7 @@ DEPENDENCIES:
   - lottie-ios (from `../node_modules/lottie-ios`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
   - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
   - Picker (from `../node_modules/react-native-picker`)
@@ -603,6 +606,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/lottie-react-native"
   Permission-Camera:
     :path: "../node_modules/react-native-permissions/ios/Camera"
+  Permission-Microphone:
+    :path: "../node_modules/react-native-permissions/ios/Microphone"
   Permission-Notifications:
     :path: "../node_modules/react-native-permissions/ios/Notifications"
   Permission-PhotoLibrary:
@@ -755,6 +760,7 @@ SPEC CHECKSUMS:
   lottie-react-native: 9c11659dfd571028a2233fa53e332110651c4b25
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
+  Permission-Microphone: e426a115ddf9591e8c30c55ea2b28572d4cbd07e
   Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
   Permission-PhotoLibrary: cb9cdc1e3744e26ab404297a8e289d50c8ee27e8
   Picker: 37554355aef82a532ea95b71b6eeba66bc86182b
@@ -823,6 +829,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d23574dfc2fc1b3df24822e351fddd635ea537ba
+PODFILE CHECKSUM: 5078903df1eece15cee8b155e58cfc59ce547b5f
 
 COCOAPODS: 1.9.3

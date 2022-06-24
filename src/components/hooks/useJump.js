@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 15:06:57
+ * @LastEditTime: 2022-06-24 12:21:36
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -188,6 +188,7 @@ function useJump() {
                                             flag = true;
                                             break;
                                         case RESULTS.DENIED:
+                                            console.log('The permission is DENIED');
                                             const status = await request(arr[i][0]);
                                             if (status === RESULTS.BLOCKED || status === RESULTS.DENIED) {
                                                 Toast.hide(toast);
@@ -206,11 +207,13 @@ function useJump() {
                                             i === arr.length - 1 && grantedCallback();
                                             break;
                                         case RESULTS.BLOCKED:
+                                            console.log('The permission is BLOCKED');
                                             Toast.hide(toast);
                                             flag = true;
                                             blockCal(/CAMERA/.test(arr[i][0]) ? 'camera' : 'audio');
                                             break;
                                         default:
+                                            console.log('The permission is default');
                                             Toast.hide(toast);
                                             flag = true;
                                             break;
