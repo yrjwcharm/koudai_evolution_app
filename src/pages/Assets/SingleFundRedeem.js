@@ -360,6 +360,8 @@ const SingleFundRedeem = ({navigation, route}) => {
                 />
             ) : null}
             <BankCardModal
+                type={'hidden'}
+                title="请选择银行卡"
                 data={data.pay_methods || []}
                 select={bankSelectObj?.index}
                 ref={(ref) => {
