@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 22:26:07
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-24 11:18:01
  * @Description:路由表
  */
 import React from 'react';
@@ -197,6 +197,7 @@ import Attention from '~/pages/Attention/Index'; //关注
 import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages'; // 公募基金首页
 import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
 import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
+import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -754,7 +755,7 @@ export default function AppStack() {
             <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
             <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
-
+            <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
             {/* v7新页面 End */}
         </Stack.Navigator>
     );

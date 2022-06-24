@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-22 14:10:07
+ * @LastEditTime: 2022-06-23 13:32:36
  * @Description: 公募基金首页
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -13,9 +13,10 @@ import Swiper from 'react-native-swiper';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import BottomDesc from '~/components/BottomDesc';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
-import RenderPart from '../components/RenderPart';
+import {deviceWidth, px} from '~/utils/appUtil';
+import RenderPart from './RenderPart';
 
 /** @name 顶部菜单 */
 const TopMenu = () => {
@@ -128,28 +129,31 @@ const Index = ({navigation, route}) => {
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 0.2}}
                     style={styles.bottomContainer}>
-                    {[
-                        {
-                            items: [{type: 'rank_card'}, {type: 'rank_card'}, {type: 'rank_card'}],
-                            more: {text: '更多', url: ''},
-                            sub_title: '',
-                            tabs: [
-                                {key: '1', value: '高净值用户热门'},
-                                {key: '2', value: '牛人购买热卖'},
-                                {key: '3', value: '近一周交易量最大'},
-                            ],
-                            title: '魔方特色榜单',
-                        },
-                        {
-                            items: [{type: 'default_card'}, {type: 'default_card'}, {type: 'default_card'}],
-                            more: {text: '更多', url: ''},
-                            sub_title: '长期投资回报高',
-                            tabs: [],
-                            title: '追求收益',
-                        },
-                    ].map((item, index) => (
-                        <RenderPart data={item} key={index} />
-                    ))}
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        {[
+                            {
+                                items: [{type: 'rank_card'}, {type: 'rank_card'}, {type: 'rank_card'}],
+                                more: {text: '更多', url: ''},
+                                sub_title: '',
+                                tabs: [
+                                    {key: '1', value: '高净值用户热门'},
+                                    {key: '2', value: '牛人购买热卖'},
+                                    {key: '3', value: '近一周交易量最大'},
+                                ],
+                                title: '魔方特色榜单',
+                            },
+                            {
+                                items: [{type: 'default_card'}, {type: 'default_card'}, {type: 'default_card'}],
+                                more: {text: '更多', url: ''},
+                                sub_title: '长期投资回报高',
+                                tabs: [],
+                                title: '追求收益',
+                            },
+                        ].map((item, index) => (
+                            <RenderPart data={item} key={index} />
+                        ))}
+                    </View>
+                    <BottomDesc />
                 </LinearGradient>
             </ScrollView>
         </LinearGradient>
@@ -193,8 +197,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: px(-134),
         paddingTop: px(134),
-        paddingHorizontal: Space.padding,
-        paddingBottom: isIphoneX() ? 34 : px(20),
     },
     dotStyle: {
         borderRadius: px(5),
