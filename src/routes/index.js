@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-24 11:18:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-24 18:25:24
  * @Description:路由表
  */
 import React from 'react';
@@ -194,10 +194,14 @@ import PKSearch from '../pages/PK/pages/Search'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
 import Attention from '~/pages/Attention/Index'; //关注
-import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages'; // 公募基金首页
+import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages/Index'; // 公募基金首页
 import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
 import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
+import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
+import ImportOptionalFund from '~/pages/Attention/ImportOptionalFund'; //导入自选
+import EditFund from '~/pages/Attention/EditFund'; //基金编辑
+import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
 // v7新页面 End
 const Stack = createStackNavigator();
 
@@ -756,6 +760,11 @@ export default function AppStack() {
             <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
             <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
+            <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: ''}} />
+            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: ''}} />
+            <Stack.Screen name="EditFund" component={EditFund} options={{title: ''}} />
+            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: ''}} />
+
             {/* v7新页面 End */}
         </Stack.Navigator>
     );
