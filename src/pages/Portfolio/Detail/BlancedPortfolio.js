@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 20:40:56
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-24 14:19:15
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
@@ -15,6 +15,7 @@ import Http from '../../../services';
 import FixedBtn from '../components/FixedBtn';
 import GuideTips from '../../../components/GuideTips';
 import BottomDesc from '../../../components/BottomDesc';
+import {BottomModal} from '../../../components/Modal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
@@ -25,6 +26,8 @@ const BlancedPortfolio = ({navigation, route}) => {
     const [data, setData] = useState();
     const jump = useJump();
     const typeRef = useRef(route?.params?.tab_type);
+    const bottomModal = useRef(null);
+    const [tipsDataOfBottomModal, setTipsDataOfBottomModal] = useState({});
     const getData = (tab_type) => {
         typeRef.current = tab_type || typeRef.current;
         global.LogTool(typeRef.current === 2 ? 'Blanced_Portfolio7030_Detail' : 'Blanced_Portfolio5050_Detail');
@@ -59,6 +62,8 @@ const BlancedPortfolio = ({navigation, route}) => {
                         // show_chart: data?.show_chart,
                     }}
                     show_chart={data?.show_chart}
+                    setTipsDataOfBottomModal={setTipsDataOfBottomModal}
+                    bottomModal={bottomModal}
                 />
                 <View style={{paddingHorizontal: px(16), marginTop: Space.marginVertical}}>
                     {data?.asset_intros?.map((img, index) => (
@@ -155,6 +160,18 @@ const BlancedPortfolio = ({navigation, route}) => {
                 ) : null}
                 <BottomDesc style={{marginTop: px(80)}} fix_img={data?.advisor_footer_img} />
             </ScrollView>
+            <BottomModal ref={bottomModal} title={tipsDataOfBottomModal?.title}>
+                <View style={[{padding: px(16)}]}>
+                    {tipsDataOfBottomModal?.content?.map?.((item, index) => {
+                        return (
+                            <View key={item + index} style={{marginTop: index === 0 ? 0 : px(16)}}>
+                                {item.key ? <Text style={styles.tipTitle}>{item.key}:</Text> : null}
+                                <Html style={{lineHeight: px(18), fontSize: px(13)}} html={item.val} />
+                            </View>
+                        );
+                    })}
+                </View>
+            </BottomModal>
             {data?.guide_tip ? (
                 <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(120)}} />
             ) : null}
@@ -172,6 +189,8 @@ const Header = ({
     advantage,
     chartParams,
     show_chart = true,
+    setTipsDataOfBottomModal,
+    bottomModal,
 }) => {
     const [active, setActive] = useState(activeTab);
     const [period, setPeriod] = useState();
@@ -245,16 +264,33 @@ const Header = ({
                     Style.flexRowCenter,
                     {justifyContent: 'space-around', marginTop: px(24), alignItems: 'flex-end'},
                 ]}>
-                <View>
+                <View style={{alignItems: 'center'}}>
                     <Text
                         style={[
                             {fontSize: px(34), lineHeight: px(47), color: Colors.red, fontFamily: Font.numFontFamily},
                         ]}>
                         {ratio_info?.ratio_val}
                     </Text>
-                    {ratio_info?.title && <Html html={ratio_info?.title} style={styles.radio_sty} />}
+                    {ratio_info?.title && (
+                        <View style={Style.flexRowCenter}>
+                            <Html html={ratio_info.title} style={styles.radio_sty} />
+                            {ratio_info.tips ? (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTipsDataOfBottomModal(ratio_info.tips);
+                                        bottomModal.current.show();
+                                    }}
+                                    style={{marginLeft: px(4)}}>
+                                    <FastImage
+                                        style={{width: px(12), height: px(12)}}
+                                        source={require('../../../assets/img/tip.png')}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                    )}
                 </View>
-                <View>
+                <View style={{alignItems: 'center'}}>
                     <Text
                         style={[
                             styles.line_drawback,
@@ -264,7 +300,24 @@ const Header = ({
                         ]}>
                         {line_drawback?.ratio_val}
                     </Text>
-                    <Html style={styles.radio_sty} html={line_drawback?.ratio_desc} />
+                    {line_drawback?.ratio_desc ? (
+                        <View style={Style.flexRowCenter}>
+                            <Html style={styles.radio_sty} html={line_drawback.ratio_desc} />
+                            {line_drawback.tips ? (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTipsDataOfBottomModal(line_drawback.tips);
+                                        bottomModal.current.show();
+                                    }}
+                                    style={{marginLeft: px(4)}}>
+                                    <FastImage
+                                        style={{width: px(12), height: px(12)}}
+                                        source={require('../../../assets/img/tip.png')}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                    ) : null}
                 </View>
             </View>
             {/* 标签label */}
@@ -489,5 +542,11 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: px(18),
         color: '#B8C1D3',
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: px(20),
+        fontSize: px(14),
+        marginBottom: px(4),
     },
 });
