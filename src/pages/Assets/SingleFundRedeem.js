@@ -112,8 +112,14 @@ const SingleFundRedeem = ({navigation, route}) => {
         let newVal = handlerInputVal(val);
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
-        if (newVal > max) setErrText('转出金额大于当前页面所选银行卡可转出金额。');
-        if (newVal < min) setErrText('当前赎回份额小于最小赎回份额' + min);
+        if (newVal > max) {
+            setErrText('转出金额大于当前页面所选银行卡可转出金额。');
+        } else if (newVal < min) {
+            setErrText('当前赎回份额小于最小赎回份额' + min);
+        } else {
+            setErrText('');
+        }
+        
         setInputVal(newVal);
 
         // 防抖 获得手续费
