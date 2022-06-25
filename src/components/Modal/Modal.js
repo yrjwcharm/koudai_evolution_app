@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-02 21:34:45
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-25 15:17:07
  * @Description:
  */
 /**
@@ -15,6 +15,7 @@
           });
  */
 import React from 'react';
+import {Keyboard} from 'react-native';
 import RootSibling from 'react-native-root-siblings';
 import ModalRender from './ModalContainer';
 import BottomModal from './BottomModal';
@@ -70,6 +71,9 @@ export default class Modal extends React.Component {
         setTimeout(() => {
             this.bottomModal && this.bottomModal.show();
         }, 0);
+        setTimeout(() => {
+            Keyboard.dismiss();
+        }, 100);
         return global.rootSibling;
     }
     static close(options, type = 'fade') {

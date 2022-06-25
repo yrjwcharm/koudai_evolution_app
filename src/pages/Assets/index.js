@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 21:48:00
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-25 15:00:41
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -100,14 +100,16 @@ function HomeScreen({navigation}) {
     const getSignData = () => {
         http.get('adviser/need_sign/pop/20220422').then((data) => {
             setSignData(data.result?.sign);
-            if (data?.result?.auto_pop) {
-                signModal?.current?.show();
+            if (data.result?.auto_pop && data.result?.sign?.content) {
+                setTimeout(() => {
+                    signModal?.current?.show();
+                }, 1000);
             }
         });
     };
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
-        getSignData();
+        // getSignData();
 
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {

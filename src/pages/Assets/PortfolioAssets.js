@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 10:07:34
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-25 14:53:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -116,8 +116,10 @@ export default function PortfolioAssets(props) {
     const getSignData = () => {
         http.get('adviser/need_sign/pop/20220422', {poid: props.route.params.poid}).then((res) => {
             setSignData(res.result?.sign);
-            if (res?.result?.auto_pop) {
-                bottomModal?.current?.show();
+            if (res.result?.auto_pop && res.result?.sign?.content) {
+                setTimeout(() => {
+                    signModal?.current?.show();
+                }, 1000);
             }
         });
     };
