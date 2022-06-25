@@ -360,7 +360,7 @@ const SingleFundRedeem = ({navigation, route}) => {
             {data.button ? (
                 <FixedButton
                     title={data.button?.text}
-                    disabled={!(inputVal && !errText)}
+                    disabled={!(+inputVal && !errText)}
                     onPress={confirm}
                     heightChange={(height) => setBtnHeight(height)}
                 />
