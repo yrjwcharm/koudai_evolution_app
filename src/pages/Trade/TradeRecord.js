@@ -141,6 +141,13 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
 
+    const handlerName = (val = '') => {
+        if(val.length > 9) {
+            val = val.slice(0,5) + '...' + val.slice(-4)
+        }
+        return val
+    }
+
     const ListFooterComponent = () => {
         return (
             <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>
@@ -178,7 +185,7 @@ const TradeRecord = ({route, navigation}) => {
                                         {item?.type?.text}
                                     </Text>
                                 </View>
-                                <Text style={styles.title}>{item.name}</Text>
+                                <Text style={styles.title}>{handlerName(item.name)}</Text>
                             </View>
                             <Text style={styles.date}>{item.time}</Text>
                         </View>
