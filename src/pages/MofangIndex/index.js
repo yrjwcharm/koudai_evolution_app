@@ -28,15 +28,15 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import {updateUserInfo} from '../../redux/actions/userInfo';
-import UpdateCom from '../../components/UpdateCom';
+// import UpdateCom from '../../components/UpdateCom';
 import {useDispatch, useSelector} from 'react-redux';
 import GuideTips from '../../components/GuideTips';
-import CodePush from 'react-native-code-push';
+// import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
-let codePushOptions = {
-    checkFrequency: CodePush.CheckFrequency.MANUAL,
-};
+// let codePushOptions = {
+//     checkFrequency: CodePush.CheckFrequency.MANUAL,
+// };
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -777,7 +777,7 @@ const Index = (props) => {
                             </>
                         </LinearGradient>
                         <BottomDesc />
-                        <UpdateCom />
+                        {/* <UpdateCom /> */}
                     </ScrollView>
                     {data?.guide_tip ? (
                         <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(17)}} />
@@ -798,7 +798,7 @@ const Index = (props) => {
     );
 };
 
-export default CodePush(codePushOptions)(Index);
+export default Index;
 
 const styles = StyleSheet.create({
     container: {
