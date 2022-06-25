@@ -517,6 +517,7 @@ export default function PortfolioAssets(props) {
                             {card.ds_info.button ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
+                                    disabled={!card.ds_info?.button?.avail}
                                     onPress={() => {
                                         jump(card.ds_info.button.url);
                                     }}
