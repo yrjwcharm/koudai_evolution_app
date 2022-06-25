@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 11:53:48
+ * @LastEditTime: 2022-06-25 20:12:58
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -25,11 +25,9 @@ import NetInfo from '@react-native-community/netinfo';
 import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
 import BackgroundTimer from 'react-native-background-timer';
 import {debounce} from 'lodash';
-import DeviceInfo from 'react-native-device-info';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
 import {useStateChange} from './src/components/hooks';
 import {navigationRef} from './src/components/hooks/RootNavigation';
-global.ver = DeviceInfo.getVersion();
 
 if (process.env.NODE_ENV === 'development') {
     //调试中可看到网络请求

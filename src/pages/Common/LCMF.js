@@ -1,13 +1,12 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-14 11:41:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-25 20:05:17
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import {WebView as RNWebView} from 'react-native-webview';
@@ -143,7 +142,7 @@ export default function LCMF({route, navigation}) {
                                 webview.current.postMessage(
                                     JSON.stringify({
                                         ...loginStatus,
-                                        did: DeviceInfo.getUniqueId(),
+                                        did: global.did,
                                         timeStamp: timeStamp.current + '',
                                         ver: global.ver,
                                     })

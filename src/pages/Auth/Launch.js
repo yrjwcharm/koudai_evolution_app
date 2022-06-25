@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 12:38:49
+ * @LastEditTime: 2022-06-25 20:13:07
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -119,6 +119,7 @@ export default function Launch({navigation}) {
     };
     const getSystemMes = async () => {
         global.did = DeviceInfo.getUniqueId();
+        global.ver = DeviceInfo.getVersion();
         global.deviceId = DeviceInfo.getDeviceId();
         global.brandName = DeviceInfo.getBrand();
         global.systemVersion = DeviceInfo.getSystemVersion();
@@ -250,9 +251,7 @@ export default function Launch({navigation}) {
             heartBeat();
         }, 60000);
         initJpush();
-        // getRemoteCodePush();
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
-
         //显示引导页的时候不展示广告
         Storage.get('AppGuide').then((AppGuide) => {
             if (AppGuide) {
