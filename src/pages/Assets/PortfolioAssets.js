@@ -90,8 +90,8 @@ export default function PortfolioAssets(props) {
     const [fundDetail, setFundDetail] = useState(null);
     const [fundDetailLoading, setFundDetailLoading] = useState(false);
     const bottomBtns = useMemo(() => {
-        return [...(data?.core_buttons || []), ...(data?.extend_buttons || [])]
-    }, [data])
+        return [...(data?.core_buttons || []), ...(data?.extend_buttons || [])];
+    }, [data]);
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -758,13 +758,13 @@ export default function PortfolioAssets(props) {
                                                 ]}>
                                                 {item.name}
                                             </Text>
-                                            <Text
-                                                style={[
-                                                    fundDetailStyles.numStyle,
-                                                    {color: item.color || RatioColor[index]},
-                                                ]}>
-                                                {item.percent < 0.01 ? '<0.01' : item.percent}%
-                                            </Text>
+                                            {/*<Text*/}
+                                            {/*    style={[*/}
+                                            {/*        fundDetailStyles.numStyle,*/}
+                                            {/*        {color: item.color || RatioColor[index]},*/}
+                                            {/*    ]}>*/}
+                                            {/*    {item.percent < 0.01 ? '<0.01' : item.percent}%*/}
+                                            {/*</Text>*/}
                                         </View>
                                         {item?.funds?.map((fund, i, arr) => {
                                             return (
@@ -1035,48 +1035,51 @@ export default function PortfolioAssets(props) {
                     {/* 基金明细 */}
                     {data.need_ds && renderFundDetail()}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
-                    {
-                        bottomBtns?.[0] ? (
+                    {bottomBtns?.[0] ? (
                         <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
-                        {bottomBtns.map((_item, _index, arr) => {
-                            return _index % 4 == 0 && _index === arr.length - 1 ? null : (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{
-                                        alignItems: 'center',
-                                        width: (deviceWidth - px(16) * 2) / 4,
-                                        marginBottom: px(26),
-                                    }}
-                                    key={_index + '_item0'}
-                                    onPress={() => {
-                                        global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _item.id);
-                                        if (_item.red_point) {
-                                            http.get('/wechat/report/red_point/20210906');
-                                        }
-                                        jump(_item.url);
-                                    }}>
-                                    <View style={{position: 'relative'}}>
-                                        <FastImage
-                                            source={{
-                                                uri: _item.icon,
-                                            }}
-                                            resizeMode="contain"
-                                            style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                        />
-                                        {_item.red_point ? <View style={styles.redDot} /> : null}
-                                    </View>
-                                    <Text
-                                        style={[
-                                            styles.list_text_sty,
-                                            {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
-                                        ]}>
-                                        {_item.text}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>) : null
-                    }
+                            {bottomBtns.map((_item, _index, arr) => {
+                                return _index % 4 == 0 && _index === arr.length - 1 ? null : (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={{
+                                            alignItems: 'center',
+                                            width: (deviceWidth - px(16) * 2) / 4,
+                                            marginBottom: px(26),
+                                        }}
+                                        key={_index + '_item0'}
+                                        onPress={() => {
+                                            global.LogTool(
+                                                'assetsDetailIconsStart',
+                                                props.route?.params?.poid,
+                                                _item.id
+                                            );
+                                            if (_item.red_point) {
+                                                http.get('/wechat/report/red_point/20210906');
+                                            }
+                                            jump(_item.url);
+                                        }}>
+                                        <View style={{position: 'relative'}}>
+                                            <FastImage
+                                                source={{
+                                                    uri: _item.icon,
+                                                }}
+                                                resizeMode="contain"
+                                                style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                            />
+                                            {_item.red_point ? <View style={styles.redDot} /> : null}
+                                        </View>
+                                        <Text
+                                            style={[
+                                                styles.list_text_sty,
+                                                {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                            ]}>
+                                            {_item.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    ) : null}
                 </View>
                 {card?.is_plan ? (
                     <BottomModal ref={scoreModal} title={'资产健康分'} style={{height: text(400)}}>
