@@ -1,13 +1,12 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-19 12:48:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-25 20:30:22
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
 import Storage from '../../utils/storage';
@@ -180,7 +179,7 @@ export default function WebView({route, navigation}) {
                         webview.current.postMessage(
                             JSON.stringify({
                                 ...loginStatus,
-                                did: DeviceInfo.getUniqueId(),
+                                did: global.did,
                                 timeStamp: timeStamp.current + '',
                                 ver: global.ver,
                             })
