@@ -808,7 +808,7 @@ export default function PortfolioAssets(props) {
                                                                         fundDetailStyles.subTitle,
                                                                         {color: Colors.darkGrayColor},
                                                                     ]}>
-                                                                    {'净值(元)'}
+                                                                    {'净值'}
                                                                 </Text>
                                                                 <Text style={[fundDetailStyles.numStyle]}>
                                                                     {fund.nav}
