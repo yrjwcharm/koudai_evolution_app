@@ -515,15 +515,15 @@ export default function PortfolioAssets(props) {
                             style={[styles.mark, {justifyContent: 'flex-end'}]}
                             imageStyle={{borderRadius: px(6)}}>
                             {card.ds_info.button ? (
-                                <TouchableOpacity
+                                <Button
+                                    title={card.ds_info?.button?.text}
                                     activeOpacity={0.8}
                                     disabled={!card.ds_info?.button?.avail}
                                     onPress={() => {
                                         jump(card.ds_info.button.url);
                                     }}
-                                    style={styles.markBtn}>
-                                    <Text style={styles.markBtnText}>{card.ds_info.button.text}</Text>
-                                </TouchableOpacity>
+                                    style={styles.markBtn}
+                                />
                             ) : null}
                         </ImageBackground>
                     ) : null}
@@ -785,11 +785,15 @@ export default function PortfolioAssets(props) {
                                                         </View>
                                                         {fund.button ? (
                                                             <TouchableOpacity
-                                                                activeOpacity={0.8}
+                                                                activeOpacity={fund.button.avail ? 0.8 : 0.3}
                                                                 onPress={() => {
                                                                     jump(fund.button.url);
                                                                 }}
-                                                                style={fundDetailStyles.redeemBtn}>
+                                                                disabled={!fund.button.avail}
+                                                                style={[
+                                                                    fundDetailStyles.redeemBtn,
+                                                                    {opacity: fund.button.avail ? 1 : 0.3},
+                                                                ]}>
                                                                 <Text style={fundDetailStyles.redeemBtnText}>
                                                                     {fund.button.text}
                                                                 </Text>
