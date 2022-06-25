@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: px(34),
+        fontSize: px(32),
         letterSpacing: 2,
         padding: 0,
         margin: 0,
