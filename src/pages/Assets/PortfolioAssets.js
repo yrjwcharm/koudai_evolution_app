@@ -800,10 +800,10 @@ export default function PortfolioAssets(props) {
                                                                         fundDetailStyles.subTitle,
                                                                         {color: Colors.darkGrayColor},
                                                                     ]}>
-                                                                    {'占比'}
+                                                                    {'净值(元)'}
                                                                 </Text>
                                                                 <Text style={[fundDetailStyles.numStyle]}>
-                                                                    {fund.percent < 0.01 ? '<0.01' : fund.percent}%
+                                                                    {fund.nav}
                                                                 </Text>
                                                             </View>
                                                             <View style={Style.flexRow}>
