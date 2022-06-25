@@ -304,7 +304,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                                     />
                                     <View style={styles.bankCardItemDetailInfo}>
                                         <Text style={styles.bankCardItemDetailInfoName}>
-                                            {bankSelectObj.select?.bank_name}
+                                            {bankSelectObj.select?.bank_name}({bankSelectObj.select?.bank_no})
                                         </Text>
                                         <Text style={styles.bankCardItemDetailInfoDesc}>
                                             {bankSelectObj.select?.desc}
