@@ -6,7 +6,7 @@
  * @LastEditors: yhc
  * @LastEditTime: 2022-06-24 22:28:19
  */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
     View,
     Text,
@@ -89,6 +89,9 @@ export default function PortfolioAssets(props) {
     const [signData, setSignData] = useState(null);
     const [fundDetail, setFundDetail] = useState(null);
     const [fundDetailLoading, setFundDetailLoading] = useState(false);
+    const bottomBtns = useMemo(() => {
+        return [...(data?.core_buttons || []), ...(data?.extend_buttons || [])]
+    }, [data])
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -1031,8 +1034,10 @@ export default function PortfolioAssets(props) {
                     {/* 基金明细 */}
                     {data.need_ds && renderFundDetail()}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
-                    <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
-                        {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {
+                    {
+                        bottomBtns?.[0] ? (
+                        <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
+                        {bottomBtns.map((_item, _index, arr) => {
                             return _index % 4 == 0 && _index === arr.length - 1 ? null : (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -1069,7 +1074,8 @@ export default function PortfolioAssets(props) {
                                 </TouchableOpacity>
                             );
                         })}
-                    </View>
+                    </View>) : null
+                    }
                 </View>
                 {card?.is_plan ? (
                     <BottomModal ref={scoreModal} title={'资产健康分'} style={{height: text(400)}}>
