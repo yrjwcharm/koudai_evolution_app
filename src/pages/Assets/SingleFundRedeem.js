@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     },
     bankCardItemDetailIcon: {
         width: px(26),
-        height: px(23),
+        height: px(26),
     },
     bankCardItemDetailName: {
         fontSize: px(14),
