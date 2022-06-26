@@ -817,6 +817,9 @@ export default function PortfolioAssets(props) {
                                                                     ]}>
                                                                     {fund.profit}
                                                                 </Text>
+                                                                <Text style={[fundDetailStyles.numStyle]}>
+                                                                    ({fund.profit_date_raw})
+                                                                </Text>
                                                             </View>
                                                             <View style={Style.flexRow}>
                                                                 <Text
