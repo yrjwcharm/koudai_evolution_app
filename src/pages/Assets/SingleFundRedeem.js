@@ -115,7 +115,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         let all = bankSelectObj.select.all_share;
         if (newVal < min) {
             setErrText('当前赎回份额小于最小赎回份额' + min);
-        } else if (newVal > max && newVal <= all) {
+        } else if (newVal > max && newVal < all) {
             setErrText('剩余份额小于最小剩余份额');
         } else if (newVal > all) {
             setErrText('转出份额大于当前页面所选银行卡可卖出份额');
@@ -224,7 +224,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                                 <TextInput
                                     keyboardType="numeric"
                                     style={[styles.inputStyle, { fontFamily: Font.numMedium }]}
-                                    placeholder={`最多可卖出${bankSelectObj.select?.max_share || 0}份`}
+                                    placeholder={`最多可卖出${bankSelectObj.select?.all_share || 0}份`}
                                     placeholderTextColor={Colors.placeholderColor}
                                     onChangeText={onChangeText}
                                     value={inputVal}
@@ -255,7 +255,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                                     ]}
                                     onPress={() => {
                                         setActiveOption(item);
-                                        let rVal = bankSelectObj.select.max_share * item.percent;
+                                        let rVal = bankSelectObj.select.all_share * item.percent;
                                         let nrVal = rVal.toFixed(2) + '';
                                         setInputVal(nrVal);
                                         setErrText('');
