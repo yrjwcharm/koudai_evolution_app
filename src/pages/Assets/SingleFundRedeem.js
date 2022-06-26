@@ -257,6 +257,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                                         let rVal = bankSelectObj.select.max_share * item.percent;
                                         let nrVal = rVal.toFixed(2) + '';
                                         setInputVal(nrVal);
+                                        setErrText('');
                                         debounceGetFee(nrVal);
                                     }}>
                                     <Text
