@@ -123,6 +123,7 @@ const SingleFundRedeem = ({navigation, route}) => {
             setErrText('');
         }
         setInputVal(newVal);
+        setActiveOption(null);
 
         // 防抖 获得手续费
         debounceGetFee(newVal);
@@ -172,7 +173,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                 password,
             });
             if (res.code === '000000') {
-                Toast.show('操作成功');
+                Toast.show('赎回下单成功');
                 navigation.goBack();
             } else {
                 Toast.show(res.message);
