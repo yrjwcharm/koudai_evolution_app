@@ -76,6 +76,7 @@ const SingleFundRedeem = ({navigation, route}) => {
     };
 
     const debounceGetFee = (newVal) => {
+        setFeeText('');
         if (timer.current) {
             clearTimeout(timer.current);
             timer.current = null;
@@ -126,7 +127,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         setActiveOption(null);
 
         // 防抖 获得手续费
-        debounceGetFee(newVal);
+        if (newVal) debounceGetFee(newVal);
     };
 
     const confirm = async () => {
@@ -272,7 +273,9 @@ const SingleFundRedeem = ({navigation, route}) => {
                             ))}
                         </View>
                         <View style={styles.cardDesc}>
-                            <Html html={feeText} style={styles.serviceCharge} />
+                            {
+                              feeText && inputVal ? <Html html={feeText} style={styles.serviceCharge} /> : null
+                            }
                             <Html html={data.reminder} style={styles.reminder} />
                         </View>
                     </View>
