@@ -808,10 +808,14 @@ export default function PortfolioAssets(props) {
                                                                         fundDetailStyles.subTitle,
                                                                         {color: Colors.darkGrayColor},
                                                                     ]}>
-                                                                    {'净值'}
+                                                                    {'日收益(元)'}
                                                                 </Text>
-                                                                <Text style={[fundDetailStyles.numStyle]}>
-                                                                    {fund.nav}
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.numStyle,
+                                                                        {color: getColor(fund.profit)},
+                                                                    ]}>
+                                                                    {fund.profit}
                                                                 </Text>
                                                             </View>
                                                             <View style={Style.flexRow}>
