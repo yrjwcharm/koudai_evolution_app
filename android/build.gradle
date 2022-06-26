@@ -37,6 +37,11 @@ allprojects {
         mavenCentral()
         jcenter()
         maven { url 'https://www.jitpack.io' }
+        //签署
+        maven {url "http://peys.totodi.com:18081/nexus/content/repositories/android/"}
+        //双录
+        maven{url "http://peys.totodi.com:18081/nexus/content/repositories/releases/"}
         maven {url 'http://developer.huawei.com/repo/'}
+
     }
 }

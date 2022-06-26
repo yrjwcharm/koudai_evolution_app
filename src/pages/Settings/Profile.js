@@ -1,12 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 17:32:55
+ * @LastEditTime: 2022-06-02 17:13:58
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    DeviceEventEmitter,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,6 +33,7 @@ import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
+import {NativeSignManagerEmitter, MethodObj} from '../PE/PEBridge.js';
 
 const Profile = ({navigation}) => {
     const dispatch = useDispatch();
@@ -36,7 +47,7 @@ const Profile = ({navigation}) => {
     const [iptVal, setIptVal] = useState('');
     const iptValRef = useRef('');
 
-    const init = useCallback(() => {
+    const init = () => {
         http.get('/mapi/person/center/20210101', {}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result.menus || []);
@@ -44,7 +55,32 @@ const Profile = ({navigation}) => {
                 navigation.setOptions({title: res.result.title || '个人资料'});
             }
         });
-    }, [navigation]);
+    };
+    useFocusEffect(
+        useCallback(() => {
+            const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
+                const toast = Toast.showLoading();
+                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                    Toast.hide(toast);
+                    if (resp.code === '000000') {
+                        Toast.show(resp.message || '签署成功');
+                        if (resp.result.type === 'back') {
+                            navigation.goBack();
+                        } else if (resp.result.type === 'refresh') {
+                            init();
+                        } else {
+                            init();
+                        }
+                    } else {
+                        Toast.show(resp.message || '签署失败');
+                    }
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+        }, [])
+    );
     const onPress = useCallback(
         (item) => {
             global.LogTool('click', item.key);
@@ -134,43 +170,7 @@ const Profile = ({navigation}) => {
         Picker.hide();
         setShowMask(false);
     }, []);
-    // const onKeyPress = (e) => {
-    //     const {key} = e.nativeEvent;
-    //     // console.log(key);
-    //     const pos = iptVal.indexOf(key);
-    //     if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-    //         return false;
-    //     }
-    //     if (key === '.') {
-    //         setIptVal((prev) => {
-    //             if (prev === '') {
-    //                 return prev;
-    //             } else {
-    //                 if (pos !== -1) {
-    //                     return prev;
-    //                 } else {
-    //                     return prev + '.';
-    //                 }
-    //             }
-    //         });
-    //     } else if (key === '0') {
-    //         setIptVal((prev) => {
-    //             if (prev === '') {
-    //                 return prev + '0';
-    //             } else {
-    //                 if (prev === '0') {
-    //                     return prev;
-    //                 } else {
-    //                     return prev + '0';
-    //                 }
-    //             }
-    //         });
-    //     } else if (key === 'Backspace') {
-    //         setIptVal((prev) => prev.slice(0, prev.length - 1));
-    //     } else {
-    //         setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-    //     }
-    // };
+
     const confirmClick = useCallback(
         (item) => {
             // console.log(iptValRef.current);
@@ -203,16 +203,26 @@ const Profile = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             init();
-        }, [init])
+        }, [])
     );
+
     useEffect(() => {
         if (Object.keys(modalProps).length > 0) {
             inputModal.current.show();
         }
     }, [modalProps]);
+
     useEffect(() => {
         iptValRef.current = iptVal;
     }, [iptVal]);
+
+    useEffect(() => {
+        const listener = DeviceEventEmitter.addListener('sign_password_refresh', init);
+        return () => {
+            listener?.remove?.();
+        };
+    }, []);
+
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
@@ -325,7 +335,6 @@ const styles = StyleSheet.create({
         lineHeight: text(24),
         color: Colors.defaultColor,
         fontFamily: Font.numMedium,
-        fontWeight: '500',
     },
     desc: {
         fontSize: Font.textH3,

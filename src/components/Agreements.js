@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-20 21:39:09
+ * @LastEditTime: 2022-06-23 09:58:41
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -27,6 +27,7 @@ function Agreements(props) {
         isHide = false,
         emitJump, //通知父组建跳转
         suffix = '',
+        checkIcon = require('../assets/img/login/checked.png'),
         text1 = '',
         otherAgreement,
         otherParam,
@@ -54,7 +55,7 @@ function Agreements(props) {
     // let container = <Icon name={source} size={px(18)} color="#0052CD" />;
     const imgStyle = {width: px(15), height: px(15), marginTop: px(1.5)};
     const container = checked ? (
-        <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+        <Image source={checkIcon} style={imgStyle} />
     ) : (
         <View
             style={{

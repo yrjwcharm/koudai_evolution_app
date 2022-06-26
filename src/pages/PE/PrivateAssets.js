@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: dx
- * @LastEditTime: 2022-03-28 15:39:15
+ * @LastEditTime: 2022-05-26 14:51:44
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {
@@ -133,13 +133,18 @@ export default function PrivateAssets({navigation, route}) {
         }, [])
     );
     const redeemBtn = () => {
-        Modal.show({
-            confirm: true,
-            content: data.buttons[1].pop.content,
-            title: data.buttons[1].pop.title,
-            confirmText: '继续赎回',
-            confirmCallBack: () => jump(data?.buttons[1].url),
-        });
+        const {pop, url} = data.buttons[1] || {};
+        if (pop) {
+            Modal.show({
+                confirm: true,
+                content: pop.content,
+                title: pop.title,
+                confirmText: '继续赎回',
+                confirmCallBack: () => jump(url),
+            });
+        } else {
+            jump(url);
+        }
     };
 
     const getChartInfo = (_period) => {

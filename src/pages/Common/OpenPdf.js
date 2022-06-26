@@ -2,16 +2,16 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 20:54:49
+ * @LastEditTime: 2022-06-14 14:24:54
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
 import {StyleSheet, Dimensions, View, Linking, Alert, ActivityIndicator} from 'react-native';
 import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
-import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 import {Colors, Style} from '../../common/commonStyle';
+import http from '../../services';
 
 export default class OpenPdf extends Component {
     constructor(props) {
@@ -57,12 +57,16 @@ export default class OpenPdf extends Component {
                         source={{uri: url, cache: true}}
                         onLoadComplete={(numberOfPages, filePath) => {
                             // console.log(numberOfPages, filePath);
+                            const {order_id, postUrl, type} = this.props.route.params;
+                            if (postUrl) {
+                                http.post(postUrl, {order_id, type});
+                            }
                         }}
                         onPageChanged={(page) => {
                             // console.log(`current page: ${page}`);
                         }}
                         onError={(error) => {
-                            Toast.show(`${error}`);
+                            console.log(`${error}`);
                         }}
                         onPressLink={(uri) => {
                             // console.log(`Link presse: ${uri}`);

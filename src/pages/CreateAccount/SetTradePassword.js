@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: dx
- * @LastEditTime: 2022-04-18 10:59:47
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-05-26 11:49:35
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -95,7 +95,7 @@ const SetTradePassword = ({navigation, route}) => {
                                     }, 1000);
                                     return false;
                                 }
-                                Toast.show('设置密码成功，即将跳转到购买页面');
+                                Toast.show('设置密码成功，即将跳转');
                                 setTimeout(() => {
                                     if (data.result?.jump_url?.path) {
                                         navigation.replace(

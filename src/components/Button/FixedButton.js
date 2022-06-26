@@ -44,7 +44,7 @@ export default class FixedButton extends Component {
     }
     render() {
         const {check, keyboardHeight, showCheckTag} = this.state;
-        const {agreement, disabled, heightChange, suffix = '', otherAgreement, otherParam} = this.props;
+        const {agreement, disabled, heightChange, suffix = '', otherAgreement, otherParam, checkIcon} = this.props;
         return (
             <Animated.View style={[styles.bottom, {bottom: keyboardHeight}]}>
                 {agreement?.radio_text && showCheckTag ? (
@@ -71,6 +71,7 @@ export default class FixedButton extends Component {
                                 this.setState({showCheckTag: !checkStatus});
                             }}
                             suffix={suffix}
+                            checkIcon={checkIcon}
                         />
                     </View>
                 ) : null}

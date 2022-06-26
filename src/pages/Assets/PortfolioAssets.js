@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 22:28:19
+ * @LastEditTime: 2022-06-26 18:30:45
  */
 import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
@@ -151,8 +151,10 @@ export default function PortfolioAssets(props) {
     const getSignData = () => {
         http.get('adviser/need_sign/pop/20220422', {poid: props.route.params.poid}).then((res) => {
             setSignData(res.result?.sign);
-            if (res?.result?.auto_pop) {
-                bottomModal?.current?.show();
+            if (res.result?.auto_pop && res.result?.sign?.content) {
+                setTimeout(() => {
+                    signModal?.current?.show();
+                }, 1000);
             }
         });
     };

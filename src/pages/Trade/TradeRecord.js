@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-04-28 15:01:28
+ * @LastEditTime: 2022-05-27 11:28:25
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -67,23 +67,25 @@ const TradeRecord = ({route, navigation}) => {
         getData();
     }, [getData]);
     useEffect(() => {
-        http.get('/order/others/20210101', {fr: route?.params?.fr === 'mfb' ? 'wallet' : ''}).then((res) => {
-            if (res.code === '000000') {
-                res.result.adviser_fee &&
-                    navigation.setOptions({
-                        headerRight: () => (
-                            <>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[styles.topRightBtn, Style.flexCenter]}
-                                    onPress={() => jump(res.result.adviser_fee.url)}>
-                                    <Text style={styles.title}>{res.result.adviser_fee.text}</Text>
-                                </TouchableOpacity>
-                            </>
-                        ),
-                    });
+        http.get('/order/others/20210101', {fr: route?.params?.fr === 'mfb' ? 'wallet' : route.params.fr || ''}).then(
+            (res) => {
+                if (res.code === '000000') {
+                    res.result.adviser_fee &&
+                        navigation.setOptions({
+                            headerRight: () => (
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.topRightBtn, Style.flexCenter]}
+                                        onPress={() => jump(res.result.adviser_fee.url)}>
+                                        <Text style={styles.title}>{res.result.adviser_fee.text}</Text>
+                                    </TouchableOpacity>
+                                </>
+                            ),
+                        });
+                }
             }
-        });
+        );
     }, []);
     useEffect(() => {
         let listen = DeviceEventEmitter.addListener('cancleOrder', () => {

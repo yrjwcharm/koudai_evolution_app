@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-21 01:49:03
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-19 13:50:00
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -286,9 +286,7 @@ class UploadID extends Component {
         if (this.state.behindSource && this.state.frontSource) {
             setTimeout(() => {
                 this.props.getUserInfo();
-                if (this.props.modalInfo?.log_id === 'upload_identity_pop') {
-                    this.props.deleteModal();
-                }
+                this.props.deleteModal({log_id: 'upload_identity_pop'});
             }, 10);
         }
     };

@@ -2,12 +2,11 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-13 10:43:38
+ * @LastEditTime: 2022-06-25 20:30:22
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
 import Storage from '../../utils/storage';
@@ -166,13 +165,21 @@ export default function WebView({route, navigation}) {
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
-                    onLoadEnd={async () => {
+                    onLoadEnd={async (e) => {
+                        // console.log(e.nativeEvent.title);
+                        if (route.params.title) {
+                            setTitle(route.params.title);
+                        } else if (route.params.hideTitle) {
+                            setTitle('');
+                        } else if (e.nativeEvent.title) {
+                            setTitle(e.nativeEvent.title);
+                        }
                         const loginStatus = await Storage.get('loginStatus');
                         // console.log(loginStatus);
                         webview.current.postMessage(
                             JSON.stringify({
                                 ...loginStatus,
-                                did: DeviceInfo.getUniqueId(),
+                                did: global.did,
                                 timeStamp: timeStamp.current + '',
                                 ver: global.ver,
                             })

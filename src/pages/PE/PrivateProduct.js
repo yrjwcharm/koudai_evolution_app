@@ -1,12 +1,12 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-18 17:21:32
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @Desc:私募产品公告
- * @LastEditTime: 2021-07-23 14:21:51
+ * @LastEditTime: 2022-06-15 16:20:09
  */
 import React, {useState, useCallback} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -39,12 +39,12 @@ export default function PrivateAssets(props) {
         });
     }, [props.route]);
 
-    const renderContent = (index, data) => {
+    const renderContent = (index, _data) => {
         if (index === 0) {
             return (
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={{paddingHorizontal: text(16), flex: 1}}>
-                        {data?.content && <Html html={data?.content} />}
+                        {_data?.content && <Html html={_data?.content} />}
                     </View>
                 </View>
             );
@@ -52,18 +52,18 @@ export default function PrivateAssets(props) {
             return (
                 <>
                     <View style={[Style.flexRow, styles.item_list]}>
-                        <Text style={{flex: 1}}>{data?.content?.title}</Text>
-                        <Text>{data?.content?.subtitle}</Text>
+                        <Text style={{flex: 1}}>{_data?.content?.title}</Text>
+                        <Text>{_data?.content?.subtitle}</Text>
                     </View>
                     <View style={[Style.flexCenter]}>
-                        <Video url={data?.content?.video} />
+                        <Video url={_data?.content?.video} />
                     </View>
                 </>
             );
         } else if (index == 2) {
             return (
                 <>
-                    {data?.content.map((_i, _d) => {
+                    {_data?.content.map((_i, _d) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.9}
@@ -95,7 +95,7 @@ export default function PrivateAssets(props) {
                 },
             });
         } else {
-            props.navigation.navigate(url.path, url.params);
+            jump(url);
         }
     };
     const ChangeTab = (i) => {
@@ -117,9 +117,13 @@ export default function PrivateAssets(props) {
                             <View style={[styles.Wrapper, Style.flexCenter]}>
                                 <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
                                     <Text style={styles.card_title}>{data.fund_name}</Text>
-                                    <View style={styles.card_tag}>
-                                        <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>{data.fund_stage}</Text>
-                                    </View>
+                                    {data.fund_stage ? (
+                                        <View style={styles.card_tag}>
+                                            <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>
+                                                {data.fund_stage}
+                                            </Text>
+                                        </View>
+                                    ) : null}
                                 </View>
                                 <Text style={styles.card_desc}>{data.fund_remark}</Text>
                                 <View style={Style.flexRow}>

@@ -2,4 +2,5 @@
 	"editor.definitionLinkOpensInPeek": true,
 	"editor.tabSize": 2,
 	"editor.formatOnSave": false,
+	"java.configuration.updateBuildConfiguration": "interactive",
 }

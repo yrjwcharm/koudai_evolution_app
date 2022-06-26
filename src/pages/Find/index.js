@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Platform} from 'react-native';
 import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -108,6 +108,7 @@ const Index = (props) => {
                             <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
+
                             {/* 今日推荐 */}
 
                             <>

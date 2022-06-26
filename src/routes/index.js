@@ -1,8 +1,6 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 22:28:22
  * @Description:路由表
  */
 import React from 'react';
@@ -189,6 +187,19 @@ import ArticleCommentList from '../pages/Vision/ArticleCommentList'; //文章评
 import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交流
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
+import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
+import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
+import ObjectChoose from '../pages/PE/ObjectChoose'; // 特定对象选择
+import QuestionAnswer from '../pages/PE/QuestionAnswer'; // 私募问答
+import UploadMaterial from '../pages/PE/UploadMaterial'; // 投资者证明材料上传
+import PrivateReview from '../pages/PE/PrivateReview'; // 私募审核页面
+import PEQuestionnaire from '../pages/PE/PEQuestionnaire'; // 私募风险测评
+import PEQuestionnaireResult from '../pages/PE/PEQuestionnaireResult'; // 私募风险评测结果页
+import InvestorCert from '../pages/PE/InvestorCert'; // 合格投资者认证
+import ProductReserve from '../pages/PE/ProductReserve'; // 私募产品预约
+import MatchNotification from '../pages/PE/MatchNotification'; // 匹配告知
+import SignRiskDisclosure from '../pages/PE/SignRiskDisclosure'; // 逐项确认
+import SignPassword from '../pages/PE/SignPassword'; // 设置签署密码
 import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
 import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
@@ -224,7 +235,6 @@ export default function AppStack() {
             initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
-                ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
                     return (
                         <Feather
@@ -537,8 +547,8 @@ export default function AppStack() {
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
             <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
             <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />
-            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
-            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
+            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: ''}} />
+            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: ''}} />
             <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
             <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
@@ -743,6 +753,19 @@ export default function AppStack() {
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
+            <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
+            <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
+            <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
+            <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
+            <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
+            <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
+            <Stack.Screen name="PEQuestionnaire" component={PEQuestionnaire} options={{title: ''}} />
+            <Stack.Screen name="PEQuestionnaireResult" component={PEQuestionnaireResult} options={{title: ''}} />
+            <Stack.Screen name="InvestorCert" component={InvestorCert} options={{title: ''}} />
+            <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
+            <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
+            <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
+            <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
