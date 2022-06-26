@@ -275,7 +275,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                         </View>
                     </View>
                     <View style={styles.bankWrap}>
-                        <Text style={styles.bankTitle}>赎回至银行卡</Text>
+                        <Text style={styles.bankTitle}>赎回至{['银行卡', '魔方宝'][activeRatio]}</Text>
                         <View style={styles.bankCard}>
                             <View
                                 style={[
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: px(32),
+        fontSize: px(26),
         letterSpacing: 2,
         padding: 0,
         margin: 0,
