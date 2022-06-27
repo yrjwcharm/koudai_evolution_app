@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 18:07:23
+ * @LastEditTime: 2022-06-27 16:30:56
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -67,7 +67,7 @@ const FollowTable = ({data = {}, activeTab}) => {
                                                             <Text style={styles.th_line_desc}>{_item?.line?.desc}</Text>
                                                         ) : null}
                                                     </View>
-                                                    {_item?.support_sort && (
+                                                    {_item?.order_by_field && (
                                                         <Image
                                                             source={sort}
                                                             style={{width: px(6), height: px(12), marginLeft: px(2)}}

@@ -2,12 +2,12 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 18:19:51
+ * @LastEditTime: 2022-06-27 16:22:57
  * @Description:关注
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {getData, getFollowList} from './service';
+import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
 import {debounce, px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -17,6 +17,8 @@ import ScrollTabbar from '~/components/ScrollTabbar';
 import HeaderRight from './HeaderRight';
 import FollowTable from './FollowTable';
 import Feather from 'react-native-vector-icons/Feather';
+import http from '../../../services';
+import Toast from '../../../components/Toast';
 const Attention = ({navigation}) => {
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
@@ -40,6 +42,14 @@ const Attention = ({navigation}) => {
         let res = await getFollowList(params);
         setFollowData(res.result);
     };
+    //一键关注
+    const onFollow = async (params) => {
+        let res = await followAdd(params);
+        if (res.code == '000000') {
+            _getData();
+        }
+        Toast.show(res.message);
+    };
     useEffect(() => {
         getFollowData({item_type: activeTab});
     }, [activeTab]);
@@ -50,7 +60,7 @@ const Attention = ({navigation}) => {
                     {/* 消息卡片 */}
                     {data?.notice && <MessageCard data={data?.notice} />}
                     {/* 热门基金 */}
-                    {data?.hot_fund && <HotFund data={data?.hot_fund} />}
+                    {data?.hot_fund && <HotFund data={data?.hot_fund} onFollow={onFollow} />}
                 </View>
                 {/* 列表 */}
                 {data?.follow?.tabs && (
@@ -58,8 +68,6 @@ const Attention = ({navigation}) => {
                         <ScrollableTabView
                             prerenderingSiblingsNumber={3}
                             renderTabBar={() => <ScrollTabbar boxStyle={{paddingLeft: px(8)}} />}
-                            // contentProps={{height: scrollableTabViewHeight[activeTab] || 100}}
-
                             onChangeTab={onChangeTab}>
                             {data?.follow?.tabs?.map((tab, index) => (
                                 <View key={index} tabLabel={tab?.type_text}>
