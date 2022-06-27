@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 10:29:19
+ * @LastEditTime: 2022-06-27 12:33:09
  * @Description:
  */
 
@@ -70,7 +70,7 @@ class ScrollTabbar extends Component {
         const underlineWidth = px(20);
         const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 4;
         // const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2 || 0;
-        const deLen = (this.tabsLayouts[this.props.activeTab]?.width - underlineWidth) / 2 || 0;
+        const deLen = (this.tabsLayouts[this.props.activeTab]?.width - underlineWidth) / 2 || px(12);
         const tabUnderlineStyle = {
             position: 'absolute',
             width: underlineWidth,

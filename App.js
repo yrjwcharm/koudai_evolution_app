@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-08 16:00:10
+ * @LastEditTime: 2022-06-25 20:29:28
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -24,19 +24,10 @@ import Storage from './src/utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
 import BackgroundTimer from 'react-native-background-timer';
-import CodePush from 'react-native-code-push';
 import {debounce} from 'lodash';
-import DeviceInfo from 'react-native-device-info';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
 import {useStateChange} from './src/components/hooks';
 import {navigationRef} from './src/components/hooks/RootNavigation';
-global.ver = DeviceInfo.getVersion();
-const key = Platform.select({
-    // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
-    // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
-    ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
-    android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
-});
 
 if (process.env.NODE_ENV === 'development') {
     //调试中可看到网络请求
@@ -84,17 +75,6 @@ function App(props) {
         DeviceEventEmitter.addListener('jdeeplink', (e) => {
             store.dispatch(updateUserInfo({pushRoute: JSON.parse(e.extras)?.route}));
         });
-        CodePush.checkForUpdate(key)
-            .then((update) => {
-                if (!update) {
-                    store.dispatch(updateUserInfo({hotRefreshData: ''}));
-                } else {
-                    store.dispatch(updateUserInfo({hotRefreshData: update}));
-                }
-            })
-            .catch((res) => {
-                store.dispatch(updateUserInfo({hotRefreshData: ''}));
-            });
     }, []);
 
     React.useEffect(() => {

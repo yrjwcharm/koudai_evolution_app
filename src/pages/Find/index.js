@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Platform} from 'react-native';
 import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,6 +17,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard';
+import HTML from '../../components/RenderHtml';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -107,6 +108,7 @@ const Index = (props) => {
                             <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
+
                             {/* 今日推荐 */}
 
                             <>
@@ -141,15 +143,23 @@ const Index = (props) => {
                                                 {data?.recommend?.name}
                                             </Text>
                                             {data?.recommend?.labels && (
-                                                <Text style={styles.card_title_dexc}>
+                                                <View style={Style.flexRow}>
                                                     {data?.recommend?.labels.map((item, index) =>
                                                         index == 0 ? (
-                                                            <Text key={index}>{item}</Text>
+                                                            <HTML
+                                                                html={item}
+                                                                key={index}
+                                                                style={styles.card_title_dexc}
+                                                            />
                                                         ) : (
-                                                            <Text key={index}>｜{item}</Text>
+                                                            <HTML
+                                                                html={`｜${item}`}
+                                                                key={index}
+                                                                style={styles.card_title_dexc}
+                                                            />
                                                         )
                                                     )}
-                                                </Text>
+                                                </View>
                                             )}
                                         </View>
                                         <View style={[Style.flexBetween, {marginTop: px(8)}]}>

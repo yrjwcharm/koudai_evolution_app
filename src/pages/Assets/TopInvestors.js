@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-17 13:43:26
+ * @LastEditTime: 2022-06-22 19:52:55
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -53,7 +53,6 @@ const TopInvestors = ({route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [autoFlowState, updateAutoFlowState] = useState(false);
     const signModal = React.useRef(null);
-    const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef('');
     const hotChartRef = useRef(null);
     const panelChartRef = useRef(null);
@@ -72,11 +71,6 @@ const TopInvestors = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            //解决弹窗里跳转 返回再次弹出
-            if (data && show_sign_focus_modal.current) {
-                signModal?.current?.show();
-                startTimer();
-            }
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -114,7 +108,7 @@ const TopInvestors = ({route}) => {
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
-                    jump(data.button.url);
+                    res.result?.auto_jump_url && jump(res.result?.auto_jump_url);
                 }, 1000);
             }
         });
@@ -392,7 +386,6 @@ const TopInvestors = ({route}) => {
                     ref={signModal}
                     title={data?.adviser_sign?.title}
                     onClose={() => {
-                        show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
                     <View style={{flex: 1, paddingBottom: px(20)}}>
@@ -438,10 +431,6 @@ const TopInvestors = ({route}) => {
                                     check={data?.adviser_sign?.agreement_bottom?.default_agree}
                                     data={data?.adviser_sign?.agreement_bottom?.list}
                                     onChange={(checkStatus) => setSignCheck(checkStatus)}
-                                    emitJump={() => {
-                                        signModal?.current?.hide();
-                                        show_sign_focus_modal.current = true;
-                                    }}
                                 />
                             ) : null}
                             {data?.adviser_sign?.button ? (

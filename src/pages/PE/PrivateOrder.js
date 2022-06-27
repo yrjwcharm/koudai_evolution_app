@@ -1,14 +1,14 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 11:43:47
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @Desc:私募预约
- * @LastEditTime: 2022-03-23 17:51:28
+ * @LastEditTime: 2022-05-24 16:59:27
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Style} from '../../common//commonStyle';
-import {px as text, onlyNumber, inputInt, px} from '../../utils/appUtil';
+import {px as text, onlyNumber, inputInt} from '../../utils/appUtil';
 import Picker from 'react-native-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -86,14 +86,10 @@ export default class PrivateOrder extends Component {
     }
     _showDatePicker = () => {
         this.setState({showMask: true});
-        var year = '';
-        var month = '';
-        var day = '';
-        var dateStr = this.state.currentDate;
+        const dateStr = this.state.currentDate;
         //console.log('dateStr',dateStr)
-        year = dateStr.substring(0, 4);
-        month = parseInt(dateStr.substring(5, 7));
-        day = parseInt(dateStr.substring(8, 10));
+        const month = parseInt(dateStr.substring(5, 7), 10);
+        const day = parseInt(dateStr.substring(8, 10), 10);
         Picker.init({
             pickerTitleText: '时间选择',
             pickerCancelBtnText: '取消',
@@ -121,9 +117,9 @@ export default class PrivateOrder extends Component {
         });
         Picker.show();
     };
-    onInput = (text) => {
+    onInput = (_text) => {
         this.setState({
-            amount: text,
+            amount: _text,
         });
     };
     submitOrder = () => {
@@ -179,9 +175,9 @@ export default class PrivateOrder extends Component {
                                     placeholderTextColor={Colors.placeholderColor}
                                     style={{flex: 1, fontWeight: 'bold'}}
                                     value={amount}
-                                    onChangeText={(text) => {
+                                    onChangeText={(_text) => {
                                         this.setState({
-                                            amount: onlyNumber(text),
+                                            amount: onlyNumber(_text),
                                         });
                                     }}
                                 />
@@ -203,8 +199,8 @@ export default class PrivateOrder extends Component {
                                     value={phone}
                                     placeholderTextColor={Colors.placeholderColor}
                                     maxLength={11}
-                                    onChangeText={(phone) => {
-                                        this.setState({phone: inputInt(phone)});
+                                    onChangeText={(_phone) => {
+                                        this.setState({phone: inputInt(_phone)});
                                     }}
                                 />
                             </View>

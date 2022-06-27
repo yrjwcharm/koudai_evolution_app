@@ -106,7 +106,6 @@ const LowBuySignalExplain = ({route}) => {
     const chartRef = useRef(null);
     const panelChartRef = useRef(null);
     const signModal = useRef(null);
-    const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef(null);
     const passwordRef = useRef(null);
 
@@ -188,11 +187,6 @@ const LowBuySignalExplain = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            //解决弹窗里跳转 返回再次弹出
-            if (data && show_sign_focus_modal.current) {
-                signModal?.current?.show();
-                startTimer();
-            }
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -258,7 +252,7 @@ const LowBuySignalExplain = ({route}) => {
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
-                    jump(data.button.url);
+                    res.result?.auto_jump_url && jump(res.result?.auto_jump_url);
                 }, 1000);
             }
         });
@@ -830,7 +824,6 @@ const LowBuySignalExplain = ({route}) => {
                     ref={signModal}
                     title={data?.adviser_sign?.title}
                     onClose={() => {
-                        show_sign_focus_modal.current = false;
                         intervalt_timer.current && clearInterval(intervalt_timer.current);
                     }}>
                     <View style={{flex: 1, paddingBottom: px(20)}}>
@@ -876,10 +869,6 @@ const LowBuySignalExplain = ({route}) => {
                                     check={data?.adviser_sign?.agreement_bottom?.default_agree}
                                     data={data?.adviser_sign?.agreement_bottom?.list}
                                     onChange={(checkStatus) => setSignCheck(checkStatus)}
-                                    emitJump={() => {
-                                        signModal?.current?.hide();
-                                        show_sign_focus_modal.current = true;
-                                    }}
                                 />
                             ) : null}
                             {data?.adviser_sign?.button ? (

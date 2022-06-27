@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
-  "version": "6.7.3",
-  "versionCode": 67300,
+  "version": "6.7.7",
+  "versionCode": 67700,
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
@@ -43,6 +43,7 @@
     "react-native-camera": "^3.42.0",
     "react-native-code-push": "^6.4.1",
     "react-native-collapsible": "^1.5.3",
+    "react-native-date-picker": "^4.2.1",
     "react-native-device-info": "^7.0.2",
     "react-native-easy-chat-ui": "^0.4.14",
     "react-native-error-helper": "^0.2.2",

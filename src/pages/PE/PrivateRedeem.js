@@ -1,57 +1,75 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-20 16:08:07
- * @Description:私募赎回申请
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 10:38:17
+ * @Description: 私募赎回申请
+ * @LastEditors: dx
+ * @LastEditTime: 2022-05-25 19:17:32
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, inputInt} from '../../utils/appUtil';
+import {px as text, onlyNumber} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
-import {Modal} from '../../components/Modal';
+import Toast from '../../components/Toast';
+import {debounce} from 'lodash';
+
 export default function PrivateRedeem({route, navigation}) {
     const [data, setData] = useState({});
     const [amount, setAmount] = useState('');
     const [enable, setEnable] = useState(true);
     useEffect(() => {
-        Http.get('/pe/redeem_detail/20210101', {
+        Http.get('/private_fund/redeem_detail/20220510', {
             fund_code: route.params?.fund_code,
-            poid: route.params.poid,
-        }).then((res) => {
-            setData(res.result);
-        });
-    }, [route.params]);
-
-    const submitData = () => {
-        if (!amount) {
-            setEnable(true);
-        }
-        Http.post('/pe/do_redeem/20210101', {
-            fund_code: route.params?.fund_code,
-            poid: route.params.poid,
-            order_id: route.params.order_id,
-            share: amount,
+            poid: route.params?.poid,
         }).then((res) => {
             if (res.code === '000000') {
-                navigation.goBack();
-            } else {
-                Modal.show({content: res.message});
+                navigation.setOptions({title: res.result.title || '申请赎回'});
+                setAmount(`${res.result.amount}`);
+                setEnable(res.result.amount ? false : true);
+                setData(res.result);
             }
         });
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const submitData = useCallback(
+        debounce(
+            () => {
+                if (!amount) {
+                    setEnable(true);
+                }
+                const toast = Toast.showLoading('申请中...');
+                Http.post('/private_fund/redeem_submit/20220510', {
+                    fund_code: route.params?.fund_code,
+                    poid: route.params.poid,
+                    order_id: route.params.order_id,
+                    share: amount,
+                }).then((res) => {
+                    Toast.hide(toast);
+                    if (res.code === '000000') {
+                        Toast.show('申请成功');
+                        navigation.goBack();
+                    } else {
+                        Toast.show(res.message);
+                    }
+                });
+            },
+            1000,
+            {leading: true, trailing: false}
+        ),
+        [amount]
+    );
     const onInput = (_amount) => {
         if (!_amount) {
             setAmount('');
             setEnable(true);
             return;
         }
-        if (_amount >= data.share.share) {
+        if (parseFloat(_amount) > parseFloat(data.share.share)) {
             setAmount(data.share.share.toString());
         } else {
-            setAmount(inputInt(_amount));
+            setAmount(onlyNumber(_amount));
         }
         setEnable(false);
     };
@@ -72,7 +90,7 @@ export default function PrivateRedeem({route, navigation}) {
                                 style={{height: text(50), fontSize: text(26), flex: 1}}
                                 placeholder={data.placeholder}
                                 placeholderTextColor={Colors.placeholderColor}
-                                keyboardType={'number-pad'}
+                                keyboardType={'numeric'}
                                 onChangeText={onInput}
                                 value={amount}
                             />
@@ -115,14 +133,14 @@ export default function PrivateRedeem({route, navigation}) {
                     </View>
                 </ScrollView>
             )}
-            {data?.share?.button && (
+            {data?.button && (
                 <FixedButton
                     disabled={enable}
-                    title={data.share.button.text}
+                    title={data.button.text}
                     style={styles.btn_sty}
                     disabledColor={'#EDDBC5'}
-                    onPress={() => submitData()}
-                    color={'#CEA26B'}
+                    onPress={submitData}
+                    color={'#EDDBC5'}
                 />
             )}
         </View>

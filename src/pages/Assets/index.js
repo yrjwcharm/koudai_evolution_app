@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-11 11:05:23
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-25 15:00:41
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -74,7 +74,7 @@ function HomeScreen({navigation}) {
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
     const [reasonListDialogPropsAndVisible, setReasonListDialogPropsAndVisible] = useState(null);
-    const bottomModal = useRef(null);
+    const signModal = useRef(null);
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -100,14 +100,16 @@ function HomeScreen({navigation}) {
     const getSignData = () => {
         http.get('adviser/need_sign/pop/20220422').then((data) => {
             setSignData(data.result?.sign);
-            if (data?.result?.auto_pop) {
-                bottomModal?.current?.show();
+            if (data.result?.auto_pop && data.result?.sign?.content) {
+                setTimeout(() => {
+                    signModal?.current?.show();
+                }, 1000);
             }
         });
     };
     const init = (refresh) => {
         refresh === 'refresh' && setRefreshing(true);
-        getSignData();
+        // getSignData();
 
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
@@ -215,20 +217,25 @@ function HomeScreen({navigation}) {
     //签约
     const handleCancleSign = () => {
         return new Promise((resolve) => {
-            Modal.show({
-                title: signData?.cancel?.title,
-                content: signData?.cancel?.content,
-                confirm: true,
-                cancelText: '再想一想',
-                confirmText: '确认',
-                intensifyCancel: true,
-                confirmCallBack: () => {
-                    setReasonListDialogPropsAndVisible({resolve, bottomModal});
-                },
-                cancelCallBack: () => {
-                    resolve(false);
-                },
-            });
+            if (signData?.cancel?.content) {
+                Modal.show({
+                    title: signData.cancel.title,
+                    content: signData.cancel.content,
+                    confirm: true,
+                    cancelText: '再想一想',
+                    confirmText: '确认',
+                    intensifyCancel: true,
+                    confirmCallBack: () => {
+                        setReasonListDialogPropsAndVisible({resolve, signModal});
+                    },
+                    cancelCallBack: () => {
+                        resolve(false);
+                    },
+                });
+            } else {
+                signModal.current.hide();
+                resolve(true);
+            }
         });
     };
     const reportSurvey = (answer) => {
@@ -493,7 +500,7 @@ function HomeScreen({navigation}) {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         key={`portfolio${po.poid}`}
-                                        style={Style.flexRow}
+                                        style={[Style.flexRow, po.avail === 0 ? {backgroundColor: '#E9EAEF'} : {}]}
                                         onPress={() => {
                                             global.LogTool('assetsProductStart', po.poid);
                                             jump(po.url);
@@ -529,7 +536,7 @@ function HomeScreen({navigation}) {
             <View style={styles.container}>
                 <PageModal
                     style={{height: px(530)}}
-                    ref={bottomModal}
+                    ref={signModal}
                     title={signData?.title}
                     beforeClose={handleCancleSign}
                     onClose={() => {}}>
@@ -580,7 +587,7 @@ function HomeScreen({navigation}) {
                                         flex: 1,
                                     }}
                                     onPress={() => {
-                                        bottomModal.current.hide();
+                                        signModal.current.hide();
                                         jump(signData?.cancel?.confirm?.url);
                                     }}
                                     title={signData?.cancel?.confirm?.text}
@@ -589,6 +596,7 @@ function HomeScreen({navigation}) {
                         ) : null}
                     </View>
                 </PageModal>
+                <View style={styles.refreshBg} />
                 {/* 登录注册蒙层 */}
                 {!userInfo.is_login && <LoginMask />}
                 <Header
@@ -615,512 +623,532 @@ function HomeScreen({navigation}) {
                             onRefresh={() => userInfo.is_login && !showGesture && init('refresh')}
                         />
                     }>
-                    <View style={[styles.assetsContainer]}>
-                        {/* 用户头像 会员中心 */}
-                        <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
-                            <View style={[Style.flexRow, {flex: 1}]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={Style.flexRow}
-                                    onPress={() => {
-                                        global.LogTool('assetsAvatarStart');
-                                        navigation.navigate('Profile');
-                                    }}>
-                                    <Image
-                                        source={
-                                            userInfo.avatar
-                                                ? {uri: userInfo.avatar}
-                                                : require('../../assets/personal/usercenter.png')
-                                        }
-                                        style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
-                                    />
-                                    <Text style={styles.username}>
-                                        {userInfo.nickname ? userInfo.nickname : '****'}
-                                    </Text>
-                                </TouchableOpacity>
-                                {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
+                    <View style={{backgroundColor: Colors.bgColor}}>
+                        <View style={[styles.assetsContainer]}>
+                            {/* 用户头像 会员中心 */}
+                            <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
+                                <View style={[Style.flexRow, {flex: 1}]}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
-                                        <LinearGradient
-                                            colors={['#FFF6E8', '#FFE1B8']}
-                                            start={{x: 0, y: 0}}
-                                            end={{x: 1, y: 0}}
-                                            style={[styles.memberCenter, Style.flexRow]}>
-                                            <Text style={styles.memberText}>{userBasicInfo?.member_info?.title}</Text>
-                                            <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    global.LogTool('assetsNotificationCenter');
-                                    jump({path: 'RemindMessage'});
-                                }}
-                                style={{position: 'relative'}}>
-                                {newMes ? (
-                                    <View style={[styles.point_sty, Style.flexCenter]}>
-                                        <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
-                                    </View>
-                                ) : null}
-                                <Image
-                                    style={{width: text(32), height: text(32)}}
-                                    source={require('../../assets/personal/whiteMes.png')}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
-                        <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
-                        {/* 系统通知 */}
-                        {notice?.system_list?.length > 0
-                            ? notice?.system_list?.map((system, index, arr) => (
-                                  <TouchableOpacity
-                                      key={index}
-                                      activeOpacity={0.9}
-                                      style={styles.systemMsgContainer}
-                                      onPress={() => {
-                                          let signIndex = arr.findIndex((_item) => _item.action == 'Sign');
-                                          if (signIndex == index && signData) {
-                                              //签约弹窗
-                                              bottomModal?.current?.show();
-                                          }
-                                          system?.log_id && global.LogTool(system?.log_id);
-                                          jump(system?.button?.url);
-                                      }}>
-                                      <Animated.View
-                                          style={[
-                                              Style.flexBetween,
-                                              {
-                                                  opacity: fadeAnim,
-                                                  paddingTop: text(8),
-                                                  paddingBottom: text(12),
-                                              },
-                                              arr.length > 1 && index != arr.length - 1
-                                                  ? {
-                                                        borderBottomColor: '#F7CFB2',
-                                                        borderBottomWidth: 0.5,
-                                                    }
-                                                  : {},
-                                          ]}>
-                                          <Text style={styles.systemMsgText} numberOfLines={arr.length > 1 ? 2 : 100}>
-                                              {system?.desc}
-                                          </Text>
-                                          {system?.button ? (
-                                              <View style={styles.btn}>
-                                                  <Text style={styles.btn_text}>{system?.button?.text}</Text>
-                                              </View>
-                                          ) : null}
-                                      </Animated.View>
-                                  </TouchableOpacity>
-                              ))
-                            : null}
-                        {/* 资产信息 */}
-                        <View style={[styles.summaryTitle, Style.flexCenter]}>
-                            <Text style={styles.summaryKey}>总资产(元)</Text>
-                            <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
-                            <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
-                                <Ionicons
-                                    name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
-                                    size={16}
-                                    color={'rgba(255, 255, 255, 0.8)'}
-                                />
-                            </TouchableOpacity>
-                            {/* 体验金 */}
-                            {userBasicInfo?.free_fund && (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[styles.experienceGold, Style.flexRow]}
-                                    onPress={() => {
-                                        global.LogTool('click', 'free_fund');
-                                        jump(userBasicInfo?.free_fund?.url);
-                                    }}>
-                                    <Image
-                                        source={require('../../assets/personal/jinbi.png')}
-                                        style={{width: text(15), height: text(15)}}
-                                    />
-                                    <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
-                                    <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                        <Text style={{textAlign: 'center'}}>
-                            {showEye === 'true' ? (
-                                <>
-                                    <Text style={styles.amount}>
-                                        {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
-                                    </Text>
-                                    <Text style={{...styles.amount, fontSize: text(24)}}>
-                                        {holdingData?.summary?.amount?.split('.')[1] || '00'}
-                                    </Text>
-                                </>
-                            ) : (
-                                <Text style={styles.amount}>****</Text>
-                            )}
-                        </Text>
-                        {/* 小黄条 */}
-                        {notice?.trade && notice.trade.desc ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.tradeNotice, Style.flexCenter]}
-                                onPress={() => {
-                                    global.LogTool('click', 'tradeMsg');
-                                    jump(notice?.trade?.url);
-                                }}>
-                                <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
-                                <View style={[styles.noticeBox, Style.flexRow]}>
-                                    <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
-                                    <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                </View>
-                            </TouchableOpacity>
-                        ) : null}
-                        <View style={[styles.profitContainer, Style.flexRow]}>
-                            <View style={[Style.flexCenter, {flex: 1}]}>
-                                <Text style={styles.profitKey}>日收益</Text>
-                                <Text style={styles.profitVal}>
-                                    {showEye === 'true' ? holdingData?.summary?.profit || '0.00' : '****'}
-                                </Text>
-                            </View>
-                            <View style={[Style.flexCenter, {flex: 1}]}>
-                                <Text style={styles.profitKey}>累计收益</Text>
-                                <Text style={styles.profitVal}>
-                                    {showEye === 'true' ? holdingData?.summary?.profit_acc || '0.00' : '****'}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                    {/* 顶部菜单 */}
-                    <View style={[styles.topMenu, Style.flexRow]}>
-                        {userBasicInfo?.top_menus?.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        global.LogTool('assetsIconsStart', 'top_menus', item.id);
-                                        if (item.pop) {
-                                            Modal.show({
-                                                children: () => (
-                                                    <View style={styles.popContentBox}>
-                                                        <Text style={styles.popContent}>{item.pop.content}</Text>
-                                                    </View>
-                                                ),
-                                                confirmCallBack: () => jump(item.pop.confirm?.url),
-                                                confirmText: item.pop.confirm?.text,
-                                                title: item.pop.title,
-                                            });
-                                        } else {
-                                            if (item.is_new) {
-                                                http.post('/tool/menu/click/20211207', {id: item.id});
+                                        style={Style.flexRow}
+                                        onPress={() => {
+                                            global.LogTool('assetsAvatarStart');
+                                            navigation.navigate('Profile');
+                                        }}>
+                                        <Image
+                                            source={
+                                                userInfo.avatar
+                                                    ? {uri: userInfo.avatar}
+                                                    : require('../../assets/personal/usercenter.png')
                                             }
-                                            jump(item.url);
-                                        }
+                                            style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
+                                        />
+                                        <Text style={styles.username}>
+                                            {userInfo.nickname ? userInfo.nickname : '****'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
+                                            <LinearGradient
+                                                colors={['#FFF6E8', '#FFE1B8']}
+                                                start={{x: 0, y: 0}}
+                                                end={{x: 1, y: 0}}
+                                                style={[styles.memberCenter, Style.flexRow]}>
+                                                <Text style={styles.memberText}>
+                                                    {userBasicInfo?.member_info?.title}
+                                                </Text>
+                                                <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        global.LogTool('assetsNotificationCenter');
+                                        jump({path: 'RemindMessage'});
                                     }}
-                                    key={`topmenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                    <View style={{position: 'relative'}}>
-                                        <Image source={{uri: item?.icon}} style={styles.topMenuIcon} />
-                                        {item.is_new ? (
-                                            <View style={styles.newMenu}>
-                                                <Text style={styles.contentTagText}>{'新'}</Text>
-                                            </View>
-                                        ) : null}
-                                    </View>
-                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                    {/* 运营位 */}
-                    {userBasicInfo?.ad_info ? (
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() => {
-                                global.LogTool('capsuleStart', userBasicInfo?.ad_info?.id);
-                                jump(userBasicInfo?.ad_info?.url);
-                            }}>
-                            <FastImage
-                                source={{
-                                    uri: userBasicInfo?.ad_info?.cover,
-                                }}
-                                style={styles.ad_info}
-                            />
-                        </TouchableOpacity>
-                    ) : null}
-                    {/* 中控 */}
-                    {centerData.length > 0 &&
-                        (centerData[0]?.style === 1 ? (
-                            <View style={[Style.flexRow, styles.centerCtrl, {paddingLeft: text(7)}]}>
-                                <Image source={smile1} style={styles.robotSty1} />
-                                <View style={{flex: 1}}>
-                                    {centerData[0]?.title ? (
-                                        <View style={{marginBottom: text(2)}}>
-                                            <HTML html={centerData[0]?.title} style={styles.contentTitle} />
+                                    style={{position: 'relative'}}>
+                                    {newMes ? (
+                                        <View style={[styles.point_sty, Style.flexCenter]}>
+                                            <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
                                         </View>
                                     ) : null}
-                                    {centerData[0]?.content ? (
-                                        <HTML html={centerData[0]?.content} style={styles.contentText} />
-                                    ) : null}
-                                </View>
-                            </View>
-                        ) : (
-                            <LinearGradient
-                                colors={['#DEECFF', '#E2EEFF']}
-                                start={{x: 0, y: 0}}
-                                end={{x: 0, y: 1}}
-                                style={[styles.centerCtrl]}>
-                                {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
-                                <Image
-                                    source={moodEnumRef.current[centerData[page]?.mood || 1]}
-                                    style={styles.robotSty}
-                                />
-                                <Text
-                                    style={{
-                                        ...styles.noticeText,
-                                        color: Colors.defaultColor,
-                                        marginBottom: text(10),
-                                        marginLeft: text(60),
-                                    }}>
-                                    {`Hi，${userInfo.hold_info || userInfo.nickname || userInfo.mobile}`}
-                                </Text>
-                                {centerData.length > 1 && (
-                                    <Text style={styles.pageText}>
-                                        <Text style={styles.currentPage}>{page + 1}</Text>
-                                        <Text>/{centerData.length}</Text>
-                                    </Text>
-                                )}
-                                {centerData.length <= 1 &&
-                                    centerData.map((item, index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                onPress={() => {
-                                                    if (item.button) {
-                                                        global.LogTool('assetsConsoleStart', item.type);
-                                                        http.post('/asset/center_click/20210101', {
-                                                            id: item.id,
-                                                            type: item.type,
-                                                        });
-                                                        jump(item.button.url);
-                                                    }
-                                                }}
-                                                style={styles.contentBox}
-                                                key={item + index}>
-                                                {item.tag ? (
-                                                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
-                                                        <View
-                                                            style={[styles.contentTag, {backgroundColor: item.color}]}>
-                                                            <Text style={styles.contentTagText}>{item.tag}</Text>
-                                                        </View>
-                                                        {item.pub_date ? (
-                                                            <Text
-                                                                style={{
-                                                                    ...styles.contentTagText,
-                                                                    color: Colors.lightGrayColor,
-                                                                    fontWeight: '400',
-                                                                }}>
-                                                                {item.pub_date}
-                                                            </Text>
-                                                        ) : null}
-                                                    </View>
-                                                ) : null}
-                                                {item.title ? (
-                                                    <View style={{marginBottom: text(4)}}>
-                                                        <HTML
-                                                            html={item.title}
-                                                            numberOfLines={2}
-                                                            style={styles.contentTitle}
-                                                        />
-                                                    </View>
-                                                ) : null}
-                                                <HTML
-                                                    html={item.content}
-                                                    numberOfLines={3}
-                                                    style={styles.contentText}
-                                                />
-                                                {item.button ? (
-                                                    <View
-                                                        style={[
-                                                            Style.flexRowCenter,
-                                                            styles.checkBtn,
-                                                            {backgroundColor: item.color || Colors.red},
-                                                        ]}>
-                                                        <Text style={{...styles.noticeText, marginRight: text(4)}}>
-                                                            {item.button.text}
-                                                        </Text>
-                                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                                    </View>
-                                                ) : null}
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                {centerData.length > 1 && (
-                                    <Carousel
-                                        activeSlideAlignment={'start'}
-                                        data={centerData}
-                                        inactiveSlideOpacity={1}
-                                        inactiveSlideScale={0.9}
-                                        itemHeight={text(144)}
-                                        itemWidth={deviceWidth - text(79)}
-                                        loop={Platform.select({android: false, ios: true})}
-                                        onSnapToItem={(index) => setPage(index)}
-                                        ref={carouselRef}
-                                        removeClippedSubviews
-                                        renderItem={renderItem}
-                                        sliderHeight={text(144)}
-                                        sliderWidth={deviceWidth - text(44)}
+                                    <Image
+                                        style={{width: text(32), height: text(32)}}
+                                        source={require('../../assets/personal/whiteMes.png')}
                                     />
-                                )}
-                            </LinearGradient>
-                        ))}
-                    {/* 持仓组合 */}
-                    {holdingData?.accounts?.map((item, index, arr) => {
-                        return item.portfolios ? (
-                            <>
-                                {item.portfolios.length > 1 ? (
-                                    <View
-                                        key={`account${item.id}`}
-                                        style={[
-                                            styles.account,
-                                            needAdjust(item) ? styles.needAdjust : {},
-                                            item.group_bulletin && {
-                                                borderBottomLeftRadius: 0,
-                                                borderBottomRightRadius: 0,
-                                            },
-                                        ]}>
-                                        {renderTitle(item)}
-                                        {renderPortfolios(item)}
-                                    </View>
-                                ) : (
+                                </TouchableOpacity>
+                            </View>
+                            <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
+                            <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
+                            {/* 系统通知 */}
+                            {notice?.system_list?.length > 0
+                                ? notice?.system_list?.map((system, index, arr) => (
+                                      <TouchableOpacity
+                                          key={index}
+                                          activeOpacity={0.9}
+                                          style={styles.systemMsgContainer}
+                                          onPress={() => {
+                                              let signIndex = arr.findIndex((_item) =>
+                                                  ['Sign', 'PortfolioTransfer'].includes(_item.action)
+                                              );
+                                              if (signIndex === index && signData?.content) {
+                                                  //签约弹窗
+                                                  signModal?.current?.show();
+                                              }
+                                              system?.log_id && global.LogTool(system?.log_id);
+                                              jump(system?.button?.url);
+                                          }}>
+                                          <Animated.View
+                                              style={[
+                                                  Style.flexBetween,
+                                                  {
+                                                      opacity: fadeAnim,
+                                                      paddingTop: text(8),
+                                                      paddingBottom: text(12),
+                                                  },
+                                                  arr.length > 1 && index != arr.length - 1
+                                                      ? {
+                                                            borderBottomColor: '#F7CFB2',
+                                                            borderBottomWidth: 0.5,
+                                                        }
+                                                      : {},
+                                              ]}>
+                                              <Text
+                                                  style={styles.systemMsgText}
+                                                  numberOfLines={arr.length > 1 ? 2 : 100}>
+                                                  {system?.desc}
+                                              </Text>
+                                              {system?.button ? (
+                                                  <View style={styles.btn}>
+                                                      <Text style={styles.btn_text}>{system?.button?.text}</Text>
+                                                  </View>
+                                              ) : null}
+                                          </Animated.View>
+                                      </TouchableOpacity>
+                                  ))
+                                : null}
+                            {/* 资产信息 */}
+                            <View style={[styles.summaryTitle, Style.flexCenter]}>
+                                <Text style={styles.summaryKey}>总资产(元)</Text>
+                                <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
+                                <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
+                                    <Ionicons
+                                        name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                        size={16}
+                                        color={'rgba(255, 255, 255, 0.8)'}
+                                    />
+                                </TouchableOpacity>
+                                {/* 体验金 */}
+                                {userBasicInfo?.free_fund && (
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
                                         activeOpacity={0.8}
-                                        style={[
-                                            styles.account,
-                                            needAdjust(item) ? styles.needAdjust : {},
-                                            item.group_bulletin && {
-                                                borderBottomLeftRadius: 0,
-                                                borderBottomRightRadius: 0,
-                                            },
-                                        ]}
+                                        style={[styles.experienceGold, Style.flexRow]}
                                         onPress={() => {
-                                            global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
-                                            jump(item?.portfolios[0].url);
+                                            global.LogTool('click', 'free_fund');
+                                            jump(userBasicInfo?.free_fund?.url);
                                         }}>
-                                        {renderTitle(item?.portfolios[0])}
-                                        {renderPortfolios(item)}
+                                        <Image
+                                            source={require('../../assets/personal/jinbi.png')}
+                                            style={{width: text(15), height: text(15)}}
+                                        />
+                                        <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
+                                        <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
                                     </TouchableOpacity>
                                 )}
-                                {renderGroupBulletin(item)}
-                            </>
-                        ) : (
-                            <View key={`account1${item.id}`}>
-                                {item.id === 12 ? (
-                                    <LinearGradient
-                                        colors={['#33436D', '#121D3A']}
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 1, y: 0}}
-                                        style={[styles.account, {padding: 0}]}>
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[{padding: Space.padding}, Style.flexRow]}
-                                            onPress={() => {
-                                                global.LogTool('click', 'vip');
-                                                jump(item.url);
-                                            }}>
-                                            <View style={[{flex: 1}, Style.flexRow]}>
-                                                <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
-                                                    {item.name}
-                                                </Text>
-                                                <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
-                                                    {item.desc}
-                                                </Text>
-                                            </View>
-                                            <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
-                                        </TouchableOpacity>
-                                    </LinearGradient>
-                                ) : (
-                                    item.id === 11 && (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[styles.account]}
-                                            onPress={() => {
-                                                global.LogTool('click', 'insurance');
-                                                jump(item.url);
-                                            }}>
-                                            {renderTitle(item)}
-                                            {item.has_bought && renderPortfolios(item)}
-                                        </TouchableOpacity>
-                                    )
-                                )}
                             </View>
-                        );
-                    })}
-                    {/* 投顾 */}
-                    {userBasicInfo?.im_info && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[styles.iaInfo, Style.flexRow]}
-                            onPress={() => {
-                                global.LogTool('assetsCustomerServiceStart');
-                                jump(userBasicInfo?.im_info.url);
-                            }}>
-                            <View style={[Style.flexRow, {flex: 1}]}>
-                                <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
-                                <View>
-                                    <Text style={[styles.accountName, {marginBottom: text(4)}]}>
-                                        {userBasicInfo.im_info.name}
+                            <Text style={{textAlign: 'center'}}>
+                                {showEye === 'true' ? (
+                                    <>
+                                        <Text style={styles.amount}>
+                                            {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
+                                        </Text>
+                                        <Text style={{...styles.amount, fontSize: text(24)}}>
+                                            {holdingData?.summary?.amount?.split('.')[1] || '00'}
+                                        </Text>
+                                    </>
+                                ) : (
+                                    <Text style={styles.amount}>****</Text>
+                                )}
+                            </Text>
+                            {/* 小黄条 */}
+                            {notice?.trade && notice.trade.desc ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.tradeNotice, Style.flexCenter]}
+                                    onPress={() => {
+                                        global.LogTool('click', 'tradeMsg');
+                                        jump(notice?.trade?.url);
+                                    }}>
+                                    <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
+                                    <View style={[styles.noticeBox, Style.flexRow]}>
+                                        <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
+                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
+                                    </View>
+                                </TouchableOpacity>
+                            ) : null}
+                            <View style={[styles.profitContainer, Style.flexRow]}>
+                                <View style={[Style.flexCenter, {flex: 1}]}>
+                                    <Text style={styles.profitKey}>日收益</Text>
+                                    <Text style={styles.profitVal}>
+                                        {showEye === 'true' ? holdingData?.summary?.profit || '0.00' : '****'}
                                     </Text>
-                                    <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
+                                </View>
+                                <View style={[Style.flexCenter, {flex: 1}]}>
+                                    <Text style={styles.profitKey}>累计收益</Text>
+                                    <Text style={styles.profitVal}>
+                                        {showEye === 'true' ? holdingData?.summary?.profit_acc || '0.00' : '****'}
+                                    </Text>
                                 </View>
                             </View>
-                            <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                        </TouchableOpacity>
-                    )}
-                    {/* 早报 */}
-                    {userBasicInfo?.articles?.map((item, index) => {
-                        return (
+                        </View>
+                        {/* 顶部菜单 */}
+                        <View style={[styles.topMenu, Style.flexRow]}>
+                            {userBasicInfo?.top_menus?.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            global.LogTool('assetsIconsStart', 'top_menus', item.id);
+                                            if (item.pop) {
+                                                Modal.show({
+                                                    children: () => (
+                                                        <View style={styles.popContentBox}>
+                                                            <Text style={styles.popContent}>{item.pop.content}</Text>
+                                                        </View>
+                                                    ),
+                                                    confirmCallBack: () => jump(item.pop.confirm?.url),
+                                                    confirmText: item.pop.confirm?.text,
+                                                    title: item.pop.title,
+                                                });
+                                            } else {
+                                                if (item.is_new) {
+                                                    http.post('/tool/menu/click/20211207', {id: item.id});
+                                                }
+                                                jump(item.url);
+                                            }
+                                        }}
+                                        key={`topmenu${item.id}`}
+                                        style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
+                                        <View style={{position: 'relative'}}>
+                                            <Image source={{uri: item?.icon}} style={styles.topMenuIcon} />
+                                            {item.is_new ? (
+                                                <View style={styles.newMenu}>
+                                                    <Text style={styles.contentTagText}>{'新'}</Text>
+                                                </View>
+                                            ) : null}
+                                        </View>
+                                        <Text style={styles.topMenuTitle}>{item.title}</Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        {/* 运营位 */}
+                        {userBasicInfo?.ad_info ? (
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    global.LogTool('capsuleStart', userBasicInfo?.ad_info?.id);
+                                    jump(userBasicInfo?.ad_info?.url);
+                                }}>
+                                <FastImage
+                                    source={{
+                                        uri: userBasicInfo?.ad_info?.cover,
+                                    }}
+                                    style={styles.ad_info}
+                                />
+                            </TouchableOpacity>
+                        ) : null}
+                        {/* 中控 */}
+                        {centerData.length > 0 &&
+                            (centerData[0]?.style === 1 ? (
+                                <View style={[Style.flexRow, styles.centerCtrl, {paddingLeft: text(7)}]}>
+                                    <Image source={smile1} style={styles.robotSty1} />
+                                    <View style={{flex: 1}}>
+                                        {centerData[0]?.title ? (
+                                            <View style={{marginBottom: text(2)}}>
+                                                <HTML html={centerData[0]?.title} style={styles.contentTitle} />
+                                            </View>
+                                        ) : null}
+                                        {centerData[0]?.content ? (
+                                            <HTML html={centerData[0]?.content} style={styles.contentText} />
+                                        ) : null}
+                                    </View>
+                                </View>
+                            ) : (
+                                <LinearGradient
+                                    colors={['#DEECFF', '#E2EEFF']}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 0, y: 1}}
+                                    style={[styles.centerCtrl]}>
+                                    {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
+                                    <Image
+                                        source={moodEnumRef.current[centerData[page]?.mood || 1]}
+                                        style={styles.robotSty}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...styles.noticeText,
+                                            color: Colors.defaultColor,
+                                            marginBottom: text(10),
+                                            marginLeft: text(60),
+                                        }}>
+                                        {`Hi，${userInfo.hold_info || userInfo.nickname || userInfo.mobile}`}
+                                    </Text>
+                                    {centerData.length > 1 && (
+                                        <Text style={styles.pageText}>
+                                            <Text style={styles.currentPage}>{page + 1}</Text>
+                                            <Text>/{centerData.length}</Text>
+                                        </Text>
+                                    )}
+                                    {centerData.length <= 1 &&
+                                        centerData.map((item, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        if (item.button) {
+                                                            global.LogTool('assetsConsoleStart', item.type);
+                                                            http.post('/asset/center_click/20210101', {
+                                                                id: item.id,
+                                                                type: item.type,
+                                                            });
+                                                            jump(item.button.url);
+                                                        }
+                                                    }}
+                                                    style={styles.contentBox}
+                                                    key={item + index}>
+                                                    {item.tag ? (
+                                                        <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                                                            <View
+                                                                style={[
+                                                                    styles.contentTag,
+                                                                    {backgroundColor: item.color},
+                                                                ]}>
+                                                                <Text style={styles.contentTagText}>{item.tag}</Text>
+                                                            </View>
+                                                            {item.pub_date ? (
+                                                                <Text
+                                                                    style={{
+                                                                        ...styles.contentTagText,
+                                                                        color: Colors.lightGrayColor,
+                                                                        fontWeight: '400',
+                                                                    }}>
+                                                                    {item.pub_date}
+                                                                </Text>
+                                                            ) : null}
+                                                        </View>
+                                                    ) : null}
+                                                    {item.title ? (
+                                                        <View style={{marginBottom: text(4)}}>
+                                                            <HTML
+                                                                html={item.title}
+                                                                numberOfLines={2}
+                                                                style={styles.contentTitle}
+                                                            />
+                                                        </View>
+                                                    ) : null}
+                                                    <HTML
+                                                        html={item.content}
+                                                        numberOfLines={3}
+                                                        style={styles.contentText}
+                                                    />
+                                                    {item.button ? (
+                                                        <View
+                                                            style={[
+                                                                Style.flexRowCenter,
+                                                                styles.checkBtn,
+                                                                {backgroundColor: item.color || Colors.red},
+                                                            ]}>
+                                                            <Text style={{...styles.noticeText, marginRight: text(4)}}>
+                                                                {item.button.text}
+                                                            </Text>
+                                                            <FontAwesome
+                                                                name={'angle-right'}
+                                                                size={16}
+                                                                color={'#fff'}
+                                                            />
+                                                        </View>
+                                                    ) : null}
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    {centerData.length > 1 && (
+                                        <Carousel
+                                            activeSlideAlignment={'start'}
+                                            data={centerData}
+                                            inactiveSlideOpacity={1}
+                                            inactiveSlideScale={0.9}
+                                            itemHeight={text(144)}
+                                            itemWidth={deviceWidth - text(79)}
+                                            loop={Platform.select({android: false, ios: true})}
+                                            onSnapToItem={(index) => setPage(index)}
+                                            ref={carouselRef}
+                                            removeClippedSubviews
+                                            renderItem={renderItem}
+                                            sliderHeight={text(144)}
+                                            sliderWidth={deviceWidth - text(44)}
+                                        />
+                                    )}
+                                </LinearGradient>
+                            ))}
+                        {/* 持仓组合 */}
+                        {holdingData?.accounts?.map((item, index, arr) => {
+                            return item.portfolios ? (
+                                <View key={item.id + item.name + index}>
+                                    {item.portfolios.length > 1 ? (
+                                        <View
+                                            style={[
+                                                styles.account,
+                                                needAdjust(item) ? styles.needAdjust : {},
+                                                item.group_bulletin && {
+                                                    borderBottomLeftRadius: 0,
+                                                    borderBottomRightRadius: 0,
+                                                },
+                                            ]}>
+                                            {renderTitle(item)}
+                                            {renderPortfolios(item)}
+                                        </View>
+                                    ) : (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[
+                                                styles.account,
+                                                needAdjust(item) ? styles.needAdjust : {},
+                                                item.group_bulletin && {
+                                                    borderBottomLeftRadius: 0,
+                                                    borderBottomRightRadius: 0,
+                                                },
+                                                item?.portfolios[0].avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
+                                            ]}
+                                            onPress={() => {
+                                                global.LogTool(
+                                                    'assetsProductStart',
+                                                    item?.portfolios[0].poid || 'adviser'
+                                                );
+                                                jump(item?.portfolios[0].url);
+                                            }}>
+                                            {renderTitle(item?.portfolios[0])}
+                                            {renderPortfolios(item)}
+                                        </TouchableOpacity>
+                                    )}
+                                    {renderGroupBulletin(item)}
+                                </View>
+                            ) : (
+                                <View key={item.id + item.name + index}>
+                                    {item.id === 12 ? (
+                                        <LinearGradient
+                                            colors={['#33436D', '#121D3A']}
+                                            start={{x: 0, y: 0}}
+                                            end={{x: 1, y: 0}}
+                                            style={[styles.account, {padding: 0}]}>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                style={[{padding: Space.padding}, Style.flexRow]}
+                                                onPress={() => {
+                                                    global.LogTool('click', 'vip');
+                                                    jump(item.url);
+                                                }}>
+                                                <View style={[{flex: 1}, Style.flexRow]}>
+                                                    <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
+                                                        {item.name}
+                                                    </Text>
+                                                    <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
+                                                        {item.desc}
+                                                    </Text>
+                                                </View>
+                                                <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
+                                            </TouchableOpacity>
+                                        </LinearGradient>
+                                    ) : (
+                                        item.id === 11 && (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                style={[styles.account]}
+                                                onPress={() => {
+                                                    global.LogTool('click', 'insurance');
+                                                    jump(item.url);
+                                                }}>
+                                                {renderTitle(item)}
+                                                {item.has_bought && renderPortfolios(item)}
+                                            </TouchableOpacity>
+                                        )
+                                    )}
+                                </View>
+                            );
+                        })}
+                        {/* 投顾 */}
+                        {userBasicInfo?.im_info && (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                key={`article${index}`}
+                                style={[styles.iaInfo, Style.flexRow]}
                                 onPress={() => {
-                                    global.LogTool('click', 'article', item.title);
-                                    jump(item.url);
-                                }}
-                                style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
-                                <View style={{flex: 1}}>
-                                    <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
-                                    <Text style={styles.accountName}>{item?.desc}</Text>
+                                    global.LogTool('assetsCustomerServiceStart');
+                                    jump(userBasicInfo?.im_info.url);
+                                }}>
+                                <View style={[Style.flexRow, {flex: 1}]}>
+                                    <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
+                                    <View>
+                                        <Text style={[styles.accountName, {marginBottom: text(4)}]}>
+                                            {userBasicInfo.im_info.name}
+                                        </Text>
+                                        <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
+                                    </View>
                                 </View>
                                 <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                             </TouchableOpacity>
-                        );
-                    })}
-                    {/* 底部菜单 */}
-                    <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
-                        {userBasicInfo?.bottom_menus?.map((item, index) => {
+                        )}
+                        {/* 早报 */}
+                        {userBasicInfo?.articles?.map((item, index) => {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    key={`bottommenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}
+                                    key={`article${index}`}
                                     onPress={() => {
-                                        global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
-                                        if (index == 3 && showCircle) {
-                                            Storage.save('version' + userInfo.latest_version + 'setting_icon', true);
-                                        }
+                                        global.LogTool('click', 'article', item.title);
                                         jump(item.url);
-                                    }}>
-                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                    {(index == 3 && showCircle) || item.show_circle ? (
-                                        <View style={styles.circle} />
-                                    ) : null}
+                                    }}
+                                    style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
+                                    <View style={{flex: 1}}>
+                                        <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
+                                        <Text style={styles.accountName}>{item?.desc}</Text>
+                                    </View>
+                                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                                 </TouchableOpacity>
                             );
                         })}
+                        {/* 底部菜单 */}
+                        <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
+                            {userBasicInfo?.bottom_menus?.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        key={`bottommenu${item.id}`}
+                                        style={[Style.flexCenter, {flex: 1, height: '100%'}]}
+                                        onPress={() => {
+                                            global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
+                                            if (index == 3 && showCircle) {
+                                                Storage.save(
+                                                    'version' + userInfo.latest_version + 'setting_icon',
+                                                    true
+                                                );
+                                            }
+                                            jump(item.url);
+                                        }}>
+                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                        <Text style={styles.topMenuTitle}>{item.title}</Text>
+                                        {(index == 3 && showCircle) || item.show_circle ? (
+                                            <View style={styles.circle} />
+                                        ) : null}
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        <BottomDesc />
                     </View>
-                    <BottomDesc />
                 </ScrollView>
                 {reasonListDialogPropsAndVisible && (
                     <ReasonListDialog
@@ -1151,6 +1179,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    refreshBg: {
+        height: 500,
+        backgroundColor: Colors.brandColor,
+        position: 'absolute',
+        width: '100%',
+        top: 0,
     },
     header: {
         paddingHorizontal: Space.marginAlign,
@@ -1588,7 +1623,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: px(-12),
+        marginTop: px(-16),
         marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
     },

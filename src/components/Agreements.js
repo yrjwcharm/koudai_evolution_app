@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:49:45
+ * @LastEditTime: 2022-06-23 09:58:41
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -27,6 +27,10 @@ function Agreements(props) {
         isHide = false,
         emitJump, //通知父组建跳转
         suffix = '',
+        checkIcon = require('../assets/img/login/checked.png'),
+        text1 = '',
+        otherAgreement,
+        otherParam,
     } = props;
     const jumpPage = (item) => {
         if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
@@ -51,7 +55,7 @@ function Agreements(props) {
     // let container = <Icon name={source} size={px(18)} color="#0052CD" />;
     const imgStyle = {width: px(15), height: px(15), marginTop: px(1.5)};
     const container = checked ? (
-        <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+        <Image source={checkIcon} style={imgStyle} />
     ) : (
         <View
             style={{
@@ -89,6 +93,28 @@ function Agreements(props) {
                           );
                       })
                     : null}
+                {text1 ? <Text style={{...styles.text, color: Colors.descColor}}>{text1}</Text> : null}
+                {otherAgreement ? (
+                    <>
+                        <Text
+                            style={{color: Colors.btnColor}}
+                            onPress={() => {
+                                navigation.navigate('TradeAgreements', otherParam);
+                            }}>
+                            《产品概要》
+                        </Text>
+                        {otherAgreement?.map((_item, index, arr) => (
+                            <Text
+                                key={index}
+                                style={{color: Colors.btnColor}}
+                                onPress={() => {
+                                    jumpPage(_item);
+                                }}>
+                                《{_item?.title}》
+                            </Text>
+                        ))}
+                    </>
+                ) : null}
                 {suffix ? <Text style={{...styles.text, color: Colors.descColor}}>{suffix}</Text> : null}
             </Text>
         </View>

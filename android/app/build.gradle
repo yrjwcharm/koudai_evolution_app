@@ -154,8 +154,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 67300
-        versionName '6.7.3'
+        versionCode 67900
+        versionName '6.7.9'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
@@ -332,11 +332,12 @@ dependencies {
     implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.4'
     implementation 'com.huawei.hms:push:5.0.0.300'
     implementation 'cn.jiguang.sdk.plugin:xiaomi:4.2.8'
-    // implementation 'cn.jiguang.sdk.plugin:oppo:4.2.8'
-    // implementation 'cn.jiguang.sdk.plugin:vivo:4.2.8'
-    //https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-app-version-0000001074227861
     //厂商版本和JPush SDK版本保持一致
     implementation 'cn.jiguang.sdk.plugin:huawei:4.2.8'
+    implementation 'com.ttd.signstandardsdk:signSupport:2.0.10.8'
+    implementation 'com.ttd.tools:qarecord:1.1.0'
+    implementation files('libs\\codec.jar')
+
     
 }
 apply plugin: 'com.huawei.agconnect'

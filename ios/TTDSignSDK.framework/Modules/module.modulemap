@@ -1,0 +1,6 @@
+framework module TTDSignSDK {
+  umbrella header "TTDSignSDK.h"
+
+  export *
+  module * { export * }
+}

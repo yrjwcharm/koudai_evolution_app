@@ -5,7 +5,6 @@ import {SERVER_URL, env} from './config';
 import Storage from '../utils/storage';
 import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
-import DeviceInfo from 'react-native-device-info';
 import {Platform} from 'react-native';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -28,13 +27,11 @@ axios.interceptors.request.use(
         var uid = '';
         var utid = '';
         let result = await Storage.get('loginStatus');
-        let device = await DeviceInfo.getDeviceName();
         if (result) {
             token = result.access_token;
             uid = result.uid;
             utid = result.utid;
         }
-        global.did = DeviceInfo.getUniqueId();
         config.headers.Authorization = token;
         config.params = {
             app: '4000',
@@ -45,10 +42,10 @@ axios.interceptors.request.use(
             chn: global.channel,
             ver: global.ver,
             platform: Platform.OS,
-            device: device || '',
-            deviceId: DeviceInfo.getDeviceId(),
-            brandName: DeviceInfo.getBrand(),
-            systemVersion: DeviceInfo.getSystemVersion(),
+            device: global.getDeviceName || '',
+            deviceId: global.deviceId,
+            brandName: global.brandName,
+            systemVersion: global.systemVersion,
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
             idfa: global.idfa,
             oaid: global.oaid,
