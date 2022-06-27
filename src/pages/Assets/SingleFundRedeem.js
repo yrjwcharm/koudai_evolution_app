@@ -109,8 +109,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         }
     };
 
-    const onChangeText = (val) => {
-        let newVal = handlerInputVal(val);
+    const handlerErrText = (newVal) => {
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
         let all = bankSelectObj.select.all_share;
@@ -123,6 +122,12 @@ const SingleFundRedeem = ({navigation, route}) => {
         } else {
             setErrText('');
         }
+    }
+
+    const onChangeText = (val) => {
+        let newVal = handlerInputVal(val);
+        handlerErrText(newVal);
+        
         setInputVal(newVal);
         setActiveOption(null);
 
@@ -259,7 +264,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                                         let rVal = bankSelectObj.select.all_share * item.percent;
                                         let nrVal = rVal.toFixed(2) + '';
                                         setInputVal(nrVal);
-                                        setErrText('');
+                                        handlerErrText(nrVal);
                                         debounceGetFee(nrVal);
                                     }}>
                                     <Text
