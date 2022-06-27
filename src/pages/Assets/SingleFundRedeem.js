@@ -113,7 +113,9 @@ const SingleFundRedeem = ({navigation, route}) => {
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
         let all = bankSelectObj.select.all_share;
-        if (newVal < min) {
+        if(+newVal === +all){
+            setErrText('');
+        } else if (newVal < min) {
             setErrText('当前卖出份额小于最小卖出份额' + min);
         } else if (newVal > max && newVal < all) {
             setErrText('当前保留份额小于最小保留份额' + (all - max));
