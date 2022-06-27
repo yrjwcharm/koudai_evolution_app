@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-25 17:19:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-27 13:36:15
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -352,7 +352,30 @@ const countdownTool = function ({
 
     return cancel;
 };
+//判断两个版本号的大小 7.1.1 8.1.1
+const compareVersion = (v1, v2) => {
+    if (v1 == v2) {
+        return 0;
+    }
 
+    const vs1 = v1.split('.').map((a) => parseInt(a));
+    const vs2 = v2.split('.').map((a) => parseInt(a));
+
+    const length = Math.min(vs1.length, vs2.length);
+    for (let i = 0; i < length; i++) {
+        if (vs1[i] > vs2[i]) {
+            return 1;
+        } else if (vs1[i] < vs2[i]) {
+            return -1;
+        }
+    }
+
+    if (length == vs1.length) {
+        return -1;
+    } else {
+        return 1;
+    }
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -383,4 +406,5 @@ export {
     once,
     resolveTimeStemp,
     countdownTool,
+    compareVersion,
 };

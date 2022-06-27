@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 20:58:53
+ * @LastEditTime: 2022-06-27 13:38:33
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,7 +11,7 @@ import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px, isIphoneX} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px, isIphoneX, compareVersion} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
@@ -462,7 +462,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 startInLoadingState
                                 style={{
                                     height: webviewHeight,
-                                    opacity: DeviceInfo?.getSystemVersion() >= '12' ? 0.99 : 0.9999,
+                                    opacity: compareVersion(global.systemVersion, '12') > 0 ? 0.99 : 0.9999,
                                 }}
                                 textZoom={100}
                             />
