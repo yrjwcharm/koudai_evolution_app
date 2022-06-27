@@ -36,7 +36,6 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
-import DeviceInfo from 'react-native-device-info';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
