@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-22 20:31:34
+ * @LastEditTime: 2022-06-28 17:21:13
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -10,11 +10,14 @@ import {Platform, ScrollView, SectionList, StyleSheet, Text, TouchableOpacity, V
 import Image from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import sort from '~/assets/img/attention/sort.png';
+import sortUp from '~/assets/img/attention/sortUp.png';
+import sortDown from '~/assets/img/attention/sortDown.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Empty from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
-import TabBar from '~/components/TabBar';
+import TabBar from '~/components/ScrollTabbar';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {debounce} from 'lodash';
@@ -45,12 +48,12 @@ const FundList = () => {
                     <Text style={[styles.headerText, {marginLeft: px(40)}]}>{'基金名称'}</Text>
                 </View>
                 <TouchableOpacity activeOpacity={0.8} style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={[styles.headerText, {marginRight: px(4)}]}>{'净值'}</Text>
-                    <FontAwesome color={'#BDC2CC'} name={'unsorted'} size={12} />
+                    <Text style={styles.headerText}>{'净值'}</Text>
+                    <Image source={sort} style={styles.sortIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={[styles.headerText, {marginRight: px(4)}]}>{'近1年'}</Text>
-                    <FontAwesome color={Colors.red} name={'sort-desc'} size={12} />
+                    <Text style={styles.headerText}>{'近1年'}</Text>
+                    <Image source={sortDown} style={styles.sortIcon} />
                 </TouchableOpacity>
             </View>
         );
@@ -144,6 +147,8 @@ const Index = ({navigation, route}) => {
         {label: '黄金', value: 5},
         {label: '原油', value: 6},
         {label: '灵活配置', value: 7},
+        {label: '灵活配置', value: 8},
+        {label: '灵活配置', value: 9},
     ]);
     const [activeTab, setActiveTab] = useState(0);
     const [periods, setPeriods] = useState([
@@ -258,6 +263,11 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: Colors.descColor,
         textAlign: 'center',
+    },
+    sortIcon: {
+        marginLeft: px(2),
+        width: px(12),
+        height: px(12),
     },
     fundItem: {
         height: px(58),
