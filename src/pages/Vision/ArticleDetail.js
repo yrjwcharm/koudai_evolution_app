@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 20:58:53
+ * @LastEditTime: 2022-06-28 10:33:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -36,7 +36,6 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
-import DeviceInfo from 'react-native-device-info';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -462,7 +461,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 startInLoadingState
                                 style={{
                                     height: webviewHeight,
-                                    opacity: DeviceInfo?.getSystemVersion() >= '12' ? 0.99 : 0.9999,
+                                    opacity: global.systemVersion >= '12' ? 0.99 : 0.9999,
                                 }}
                                 textZoom={100}
                             />
