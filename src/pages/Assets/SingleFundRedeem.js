@@ -26,6 +26,7 @@ const SingleFundRedeem = ({navigation, route}) => {
     const [activeRatio, setActiveRatio] = useState(0);
     const [walletData, setWalletData] = useState(null);
     const [feeText, setFeeText] = useState('');
+    const [reminder, setReminder] = useState('');
 
     const bankCardRef = useRef(null);
     const timer = useRef(null);
@@ -70,6 +71,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                 pay_method: bankSelectObj.select.pay_method,
             });
             setFeeText(res?.result?.fee_text);
+            setReminder(res?.result?.reminder);
         } catch (error) {
             console.log(error);
         }
@@ -77,6 +79,7 @@ const SingleFundRedeem = ({navigation, route}) => {
 
     const debounceGetFee = (newVal) => {
         setFeeText('');
+        setReminder('');
         if (timer.current) {
             clearTimeout(timer.current);
             timer.current = null;
@@ -197,6 +200,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         setActiveOption(null);
         setErrText('');
         setFeeText('');
+        setReminder('');
     };
 
     return loading ? (
@@ -281,7 +285,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                         </View>
                         <View style={styles.cardDesc}>
                             {feeText && inputVal ? <Html html={feeText} style={styles.serviceCharge} /> : null}
-                            <Html html={data.reminder} style={styles.reminder} />
+                            {reminder && inputVal ? <Html html={reminder} style={styles.reminder} /> : null}
                         </View>
                     </View>
                     <View style={styles.bankWrap}>
