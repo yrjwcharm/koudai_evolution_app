@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 14:30:05
+ * @LastEditTime: 2022-06-28 21:23:46
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -28,7 +28,6 @@ import JPush from 'jpush-react-native';
 import {getAppMetaData} from 'react-native-get-channel';
 import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
-import DeviceInfo from 'react-native-device-info';
 // import CodePush from 'react-native-code-push';
 const {PTRIDFA, OAIDModule} = NativeModules;
 const key = Platform.select({
@@ -104,6 +103,7 @@ export default function Launch({navigation}) {
         });
     };
     const getSystemMes = async () => {
+        const DeviceInfo = require('react-native-device-info').default;
         global.did = DeviceInfo.getUniqueId();
         global.ver = DeviceInfo.getVersion();
         global.deviceId = DeviceInfo.getDeviceId();
