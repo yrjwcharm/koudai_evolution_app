@@ -113,7 +113,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
         let all = bankSelectObj.select.all_share;
-        if(+newVal === +all){
+        if (+newVal === +all) {
             setErrText('');
         } else if (newVal < min) {
             setErrText('当前卖出份额小于最小卖出份额' + min);
@@ -124,12 +124,12 @@ const SingleFundRedeem = ({navigation, route}) => {
         } else {
             setErrText('');
         }
-    }
+    };
 
     const onChangeText = (val) => {
         let newVal = handlerInputVal(val);
         handlerErrText(newVal);
-        
+
         setInputVal(newVal);
         setActiveOption(null);
 
@@ -231,7 +231,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                             <View style={Style.flexRow}>
                                 <TextInput
                                     keyboardType="numeric"
-                                    style={[styles.inputStyle, { fontFamily: Font.numMedium }]}
+                                    style={[styles.inputStyle, {fontFamily: Font.numMedium}]}
                                     placeholder={`最多可卖出${bankSelectObj.select?.all_share || 0}份`}
                                     placeholderTextColor={Colors.placeholderColor}
                                     onChangeText={onChangeText}
@@ -280,9 +280,7 @@ const SingleFundRedeem = ({navigation, route}) => {
                             ))}
                         </View>
                         <View style={styles.cardDesc}>
-                            {
-                              feeText && inputVal ? <Html html={feeText} style={styles.serviceCharge} /> : null
-                            }
+                            {feeText && inputVal ? <Html html={feeText} style={styles.serviceCharge} /> : null}
                             <Html html={data.reminder} style={styles.reminder} />
                         </View>
                     </View>
