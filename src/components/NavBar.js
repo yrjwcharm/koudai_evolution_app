@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-28 19:44:11
+ * @LastEditors: dx
+ * @LastEditTime: 2022-06-28 19:29:03
  * @Description:头部组件
  */
 
@@ -50,7 +50,7 @@ const NavBar = React.forwardRef((props, ref) => {
             const {name, onPress} = obj;
             if (Platform.OS === 'android') {
                 return (
-                    <TouchableNativeFeedback onPress={onPress} style={styles.btn}>
+                    <TouchableNativeFeedback activeOpacity={0.8} onPress={onPress} style={styles.btn}>
                         <Icon
                             name={name}
                             size={props?.fontStyle?.fontSize ? props.fontStyle.fontSize : px2dp(28)}
@@ -60,7 +60,7 @@ const NavBar = React.forwardRef((props, ref) => {
                 );
             } else {
                 return (
-                    <TouchableOpacity onPress={onPress} style={styles.btn}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={styles.btn}>
                         <Icon
                             name={name}
                             size={props?.fontStyle?.fontSize ? props.fontStyle.fontSize : px2dp(26)}

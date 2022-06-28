@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-23 13:32:36
+ * @LastEditTime: 2022-06-24 15:55:19
  * @Description: 公募基金首页
  */
 import React, {useEffect, useState} from 'react';
@@ -10,7 +10,7 @@ import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 're
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
@@ -104,7 +104,7 @@ const Index = ({navigation, route}) => {
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity activeOpacity={0.8} style={{marginRight: Space.marginAlign}}>
-                    <EvilIcons color={'#000'} name={'search'} size={24} />
+                    <Feather color={Colors.defaultColor} name={'search'} size={px(20)} />
                 </TouchableOpacity>
             ),
             title: '公募基金',
