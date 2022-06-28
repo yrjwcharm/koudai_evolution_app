@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 16:20:30
+ * @LastEditTime: 2022-06-27 23:11:05
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform} from 'react-native';
@@ -16,7 +16,11 @@ import {requestAuth} from '../../../utils/appUtil';
 import {Modal} from '../../../components/Modal';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {uploadFile} from './services';
-const index = () => {
+import Toast from '~/components/Toast';
+import {useDispatch} from 'react-redux';
+import {updateFundList} from '~/redux/actions/ocrFundList';
+const Index = ({navigation}) => {
+    const dispatch = useDispatch();
     // 选择相册
     const handleUpload = async () => {
         try {
@@ -45,12 +49,14 @@ const index = () => {
         }, 100);
     };
     const uploadImage = async (data) => {
-        const params = {
-            ...data,
-            name: data.fileName,
-        };
-        let res = await uploadFile(params);
-        console.log(res);
+        let res = await uploadFile(data, (e) => {
+            console.log(e);
+        });
+        Toast.show(res.message);
+        if (res.code === '000000') {
+            dispatch(updateFundList({ocrOwernList: res.result}));
+            navigation.navigate('ImportOwnerFund', {data: res.result});
+        }
     };
     const blockCal = () => {
         Modal.show({
@@ -79,7 +85,7 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;
 
 const styles = StyleSheet.create({
     con: {

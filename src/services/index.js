@@ -11,11 +11,17 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.baseURL = SERVER_URL[env].HTTP;
 axios.defaults.transformRequest = [
     function (data) {
-        let ret = '';
-        for (let it in data) {
-            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+        //文件上传
+        if (JSON.stringify(data)?.indexOf('_parts') > -1) {
+            return data;
+        } else {
+            //普通
+            let ret = '';
+            for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+            }
+            return ret;
         }
-        return ret;
     },
 ];
 // // axios拦截器
@@ -120,36 +126,35 @@ export default class http {
     }
 
     axiosPostRequestCancel = null;
-    static uploadFiles(url, data, callBack, progressCallBack) {
+    static async uploadFiles(url, data, progressCallBack) {
         let formData = new FormData();
         let file = {
             uri: data.uri,
-            type: 'application/octet-stream',
-            name: data.name,
+            type: data.type,
+            name: data.fileName,
         };
         formData.append('file', file);
         let config = {
             //添加请求头
-            headers: {'Content-Type': 'multipart/form-data'},
+            // 'Content-Type': 'multipart/form-data',
             timeout: 600000,
             //添加上传进度监听事件
             onUploadProgress: (e) => {
-                let completeProgress = ((e.loaded / e.total) * 100) | 0;
+                let completeProgress = (e.loaded / e.total) * 100 || 0;
                 progressCallBack && progressCallBack(completeProgress);
             },
             cancelToken: new axios.CancelToken(function executor(c) {
                 this.axiosPostRequestCancel = c; // 用于取消上传
             }),
         };
-
-        axios
-            .post(url, formData, config)
-            .then(function (response) {
-                callBack && callBack(true, response);
-            })
-            .catch(function (error) {
-                callBack && callBack(false);
-            });
+        try {
+            let toast = '';
+            let res = await axios.post(url, formData, config);
+            toast && Toast.hide(toast);
+            return res;
+        } catch (error) {
+            return error;
+        }
     }
 
     /**

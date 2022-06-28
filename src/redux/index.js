@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-01 15:01:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-27 22:52:41
  * @Description:
  */
 import {applyMiddleware, createStore, compose} from 'redux';
@@ -13,6 +13,7 @@ import UserReducer from './reducers/userReducer';
 import VisionReducer from './reducers/visionReducer';
 import AccountReducer from './reducers/accountReducer';
 import ModalReducer from './reducers/modalReducer';
+import ocrFundListReducer from './reducers/ocrFundListReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
 const persistConfig = {
@@ -34,6 +35,7 @@ const reducer = combineReducers({
     vision: VisionReducer,
     accountInfo: AccountReducer,
     modalInfo: ModalReducer,
+    ocrFund: ocrFundListReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

@@ -2,25 +2,62 @@
  * @Date: 2022-06-24 10:37:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 14:25:25
+ * @LastEditTime: 2022-06-27 23:14:34
  * @Description:导入持仓
  */
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
-import {Colors, Font} from '~/common/commonStyle';
-
-const index = () => {
+import {Colors, Font, Style} from '~/common/commonStyle';
+import EvilIcons from 'react-native-vector-icons/AntDesign';
+import {useSelector} from 'react-redux';
+const Index = ({route, navigation}) => {
+    // let data = useSelector((store) => store.ocrFund).get('ocrOwernList');
+    // console.log(data);
+    let data = route?.params?.data;
     return (
-        <View>
-            <TouchableOpacity style={styles.card} />
-        </View>
+        <ScrollView style={styles.con}>
+            {data?.map((item, index) => (
+                <TouchableOpacity
+                    key={index}
+                    style={styles.card}
+                    onPress={() => {
+                        navigation.navigate('EditOwnerFund', {data: item});
+                    }}>
+                    <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.code}>{item.code}</Text>
+                    </View>
+                    <View style={Style.flexRow}>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.label_title}>持有金额</Text>
+                            <Text style={styles.label_desc}>{item.amount}</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.label_title}>持有收益</Text>
+                            <Text style={{...styles.label_desc, color: item.yield > 0 ? Colors.red : Colors.green}}>
+                                {item.yield}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={[Style.flexRowCenter, {marginTop: px(6)}]}>
+                        <Text style={{color: Colors.btnColor, fontSize: px(12), marginRight: px(2)}}>编辑</Text>
+                        <EvilIcons name={'right'} size={px(8)} color={Colors.btnColor} />
+                    </View>
+                </TouchableOpacity>
+            ))}
+        </ScrollView>
     );
 };
 
-export default index;
+export default Index;
 
 const styles = StyleSheet.create({
+    con: {
+        backgroundColor: Colors.bgColor,
+        padding: px(16),
+        flex: 1,
+    },
     card: {
         backgroundColor: '#fff',
         borderRadius: px(6),
@@ -32,7 +69,7 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(18),
         color: Colors.defaultColor,
-        marginRight: px(2),
+        marginRight: px(4),
     },
     code: {
         fontSize: px(11),
