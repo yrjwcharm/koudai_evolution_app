@@ -121,7 +121,7 @@ const SingleFundRedeem = ({navigation, route}) => {
         } else if (newVal < min) {
             setErrText('当前卖出份额小于最小卖出份额' + min);
         } else if (newVal > max && newVal < all) {
-            setErrText('当前保留份额小于最小保留份额' + ((all * 100 - max * 100) / 100));
+            setErrText('当前保留份额小于最小保留份额' + ((all * 1000 - max * 1000) / 1000));
         } else if (newVal > all) {
             setErrText('卖出份额大于当前页面所选银行卡可卖出份额');
         } else {
