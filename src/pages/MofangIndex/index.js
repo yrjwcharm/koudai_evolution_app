@@ -308,6 +308,12 @@ const Index = (props) => {
                                 }}
                             />
                             <Button
+                                title="编辑基金"
+                                onPress={() => {
+                                    props.navigation.navigate('EditSortFund');
+                                }}
+                            />
+                            <Button
                                 title="关注"
                                 onPress={() => {
                                     props.navigation.navigate('Attention');

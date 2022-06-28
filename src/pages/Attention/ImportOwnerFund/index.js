@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:37:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 23:14:34
+ * @LastEditTime: 2022-06-28 16:32:58
  * @Description:导入持仓
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
@@ -11,42 +11,55 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
-const Index = ({route, navigation}) => {
-    // let data = useSelector((store) => store.ocrFund).get('ocrOwernList');
-    // console.log(data);
-    let data = route?.params?.data;
+import {FixedButton} from '~/components/Button';
+import {postImport} from './services';
+import Toast from '~/components/Toast';
+const Index = ({navigation}) => {
+    let data = useSelector((store) => store.ocrFund).toJS()?.ocrOwernList;
+    const handleImport = async () => {
+        let res = await postImport({items: data, item_type: 3});
+        Toast.show(res.message);
+        if (res.code === '000000') {
+            navigation.goBack();
+        }
+    };
     return (
-        <ScrollView style={styles.con}>
-            {data?.map((item, index) => (
-                <TouchableOpacity
-                    key={index}
-                    style={styles.card}
-                    onPress={() => {
-                        navigation.navigate('EditOwnerFund', {data: item});
-                    }}>
-                    <View style={[Style.flexRow, {marginBottom: px(8)}]}>
-                        <Text style={styles.title}>{item.name}</Text>
-                        <Text style={styles.code}>{item.code}</Text>
-                    </View>
-                    <View style={Style.flexRow}>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.label_title}>持有金额</Text>
-                            <Text style={styles.label_desc}>{item.amount}</Text>
+        <>
+            <ScrollView style={styles.con}>
+                {data?.map((item, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.card}
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            navigation.navigate('EditOwnerFund', {key: index});
+                        }}>
+                        <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                            <Text style={styles.title}>{item.name}</Text>
+                            <Text style={styles.code}>{item.code}</Text>
                         </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.label_title}>持有收益</Text>
-                            <Text style={{...styles.label_desc, color: item.yield > 0 ? Colors.red : Colors.green}}>
-                                {item.yield}
-                            </Text>
+                        <View style={Style.flexRow}>
+                            <View style={{flex: 1}}>
+                                <Text style={styles.label_title}>持有金额</Text>
+                                <Text style={styles.label_desc}>{item.amount}</Text>
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text style={styles.label_title}>持有收益</Text>
+                                <Text style={{...styles.label_desc, color: item.yield > 0 ? Colors.red : Colors.green}}>
+                                    {item.yield > 0 ? '+' : ''}
+                                    {item.yield}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
-                    <View style={[Style.flexRowCenter, {marginTop: px(6)}]}>
-                        <Text style={{color: Colors.btnColor, fontSize: px(12), marginRight: px(2)}}>编辑</Text>
-                        <EvilIcons name={'right'} size={px(8)} color={Colors.btnColor} />
-                    </View>
-                </TouchableOpacity>
-            ))}
-        </ScrollView>
+                        <View style={[Style.flexRowCenter, {marginTop: px(6)}]}>
+                            <Text style={{color: Colors.btnColor, fontSize: px(12), marginRight: px(2)}}>编辑</Text>
+                            <EvilIcons name={'right'} size={px(8)} color={Colors.btnColor} />
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+            <FixedButton title="立即导入" onPress={handleImport} />
+        </>
     );
 };
 

@@ -198,7 +198,7 @@ import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
 import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
 import ImportOptionalFund from '~/pages/Attention/ImportOptionalFund'; //导入自选
-import EditFund from '~/pages/Attention/EditFund'; //基金编辑
+import EditSortFund from '~/pages/Attention/EditSortFund'; //基金编辑
 import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
@@ -774,9 +774,9 @@ export default function AppStack() {
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
             <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
             <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: ''}} />
-            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: ''}} />
-            <Stack.Screen name="EditFund" component={EditFund} options={{title: ''}} />
-            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: ''}} />
+            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
+            <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
+            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
 
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
