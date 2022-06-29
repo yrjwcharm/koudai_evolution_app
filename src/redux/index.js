@@ -13,12 +13,9 @@ import UserReducer from './reducers/userReducer';
 import VisionReducer from './reducers/visionReducer';
 import AccountReducer from './reducers/accountReducer';
 import ModalReducer from './reducers/modalReducer';
-<<<<<<< HEAD
 import pkProductsReducer from './reducers/pk/pkProductsReducer';
 import pkPinningReducer from './reducers/pk/pkPinningReducer';
-=======
 import ocrFundListReducer from './reducers/ocrFundListReducer';
->>>>>>> 20351a36f944f231b358b4b2ce75414af9e85124
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
 const persistConfig = {
