@@ -70,7 +70,7 @@ import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
 import SetTarget from '../pages/FixedPortfolio/SetTarget'; //低估值设置目标
 import TradeRecord from '../pages/Trade/TradeRecord'; //交易记录
-import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
+// import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
 import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
 import FindDetail from '../pages/Find/findDetail'; //发现详情页
 import TradeRecordDetail from '../pages/Trade/TradeRecordDetail'; //交易记录详情
@@ -198,10 +198,12 @@ import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
 import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
 import ImportOptionalFund from '~/pages/Attention/ImportOptionalFund'; //导入自选
-import EditFund from '~/pages/Attention/EditFund'; //基金编辑
+import EditSortFund from '~/pages/Attention/EditSortFund'; //基金编辑
 import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
 import PKCompare from '../pages/PK/pages/Compare'; // pk对比
 import PrivatePlacement from '../pages/PE/PrivatePlacement'; // 私募
+import FundDetail from '~/pages/PublicOfferingOfFund/pages/FundDetail'; // 基金详情
+import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // 基金榜单
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -776,9 +778,9 @@ export default function AppStack() {
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
             <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
             <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: ''}} />
-            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: ''}} />
-            <Stack.Screen name="EditFund" component={EditFund} options={{title: ''}} />
-            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: ''}} />
+            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
+            <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
+            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
 
             <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
             <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
@@ -799,6 +801,7 @@ export default function AppStack() {
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
+            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

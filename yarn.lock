@@ -7535,6 +7535,11 @@ react-native-device-info@^7.0.2:
   resolved "https://registry.nlark.com/react-native-device-info/download/react-native-device-info-7.4.0.tgz"
   integrity sha1-aU3t38beD/cmj/Rj2EaT7pgMaDw=
 
+react-native-draggable-flatlist@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.npmmirror.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-3.1.2.tgz#b66538007f645ccd851c729d4b8a8f7e07666d3f"
+  integrity sha512-cqBR+lZktTqHY/J7V0aq+TZNkuqeILxwZ5bBXKndokwH4qvZl7ifijM7LlfWhfhU1/pzjketTsX7P2zyojfAaQ==
+
 react-native-easy-chat-ui@^0.4.14:
   version "0.4.14"
   resolved "https://registry.nlark.com/react-native-easy-chat-ui/download/react-native-easy-chat-ui-0.4.14.tgz"

@@ -2,16 +2,19 @@
  * @Date: 2021-09-23 11:37:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 23:09:45
+ * @LastEditTime: 2022-06-28 11:39:37
  * @Description:
  */
 import actionTypes from '../actionTypes';
 import {fromJS} from 'immutable';
-const defaultState = fromJS({});
+const defaultState = fromJS({
+    ocrOwernList: [], //持仓基金
+    ocrOptionalList: [], //自选基金
+});
 
-export default function userInfo(state = defaultState, action) {
+export default function ocrFundList(state = defaultState, action) {
     switch (action.type) {
-        case actionTypes.Account:
+        case actionTypes.OcrFundList:
             return state.merge(fromJS(action.payload));
         default:
             return state;
