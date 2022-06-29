@@ -80,7 +80,7 @@ const PKHome = () => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    jump({path: 'PKIntroduce'});
+                                    jump({path: 'PrivatePlacement'});
                                 }}>
                                 <FastImage
                                     source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/06/public.png'}}

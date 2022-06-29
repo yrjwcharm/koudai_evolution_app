@@ -21,6 +21,8 @@ import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import {updateAccount} from '../../redux/actions/accountInfo.js';
 import {deleteModal} from '../../redux/actions/modalInfo';
+import {cleanProduct} from '../../redux/actions/pk/pkProducts';
+import {pinningProduct} from '../../redux/actions/pk/pkPinning';
 import http from '../../services/index.js';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
@@ -73,6 +75,8 @@ const Settings = ({navigation}) => {
                                 await Storage.delete('AD');
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
+                                dispatch(cleanProduct());
+                                dispatch(pinningProduct());
                                 dispatch(
                                     updateUserInfo({
                                         phone: '',

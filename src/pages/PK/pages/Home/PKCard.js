@@ -6,8 +6,10 @@ import PKParamRate from '../../components/PKParamRate';
 import {px} from '../../../../utils/appUtil';
 import {Font} from '../../../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
+import {useJump} from '~/components/hooks';
 
 const PKCard = () => {
+    const jump = useJump();
     return (
         <View style={styles.pkCard}>
             <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
@@ -43,7 +45,12 @@ const PKCard = () => {
                     <Text style={styles.pkParamsTip}>
                         魔方将根据对比板块和权重设置，对基金进行PK，在PK中为您推荐分值更高的产品
                     </Text>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.pkBtn}
+                        onPress={() => {
+                            jump({path: 'PKCompare'});
+                        }}>
                         <Text style={styles.pkBtnText}>进入PK &gt;</Text>
                     </TouchableOpacity>
                 </View>

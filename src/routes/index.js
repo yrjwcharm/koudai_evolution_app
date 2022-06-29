@@ -200,6 +200,8 @@ import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
 import ImportOptionalFund from '~/pages/Attention/ImportOptionalFund'; //导入自选
 import EditSortFund from '~/pages/Attention/EditSortFund'; //基金编辑
 import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
+import PKCompare from '../pages/PK/pages/Compare'; // pk对比
+import PrivatePlacement from '../pages/PE/PrivatePlacement'; // 私募
 import FundDetail from '~/pages/PublicOfferingOfFund/pages/FundDetail'; // 基金详情
 import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // 基金榜单
 import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
@@ -784,6 +786,8 @@ export default function AppStack() {
             <Stack.Screen name="FundNoticeCenter" component={FundNoticeCenter} options={{title: '提醒中心'}} />
             <Stack.Screen name="FundNoticeManage" component={FundNoticeManage} options={{title: '管理提醒'}} />
 
+            <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
+            <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
