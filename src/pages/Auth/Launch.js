@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 00:18:07
+ * @LastEditTime: 2022-06-29 14:39:16
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -104,7 +104,7 @@ export default function Launch({navigation}) {
         });
     };
     const getSystemMes = async () => {
-        global.did = DeviceInfo.getUniqueId();
+        global.did = await DeviceInfo.syncUniqueId();
         global.ver = DeviceInfo.getVersion();
         global.deviceId = DeviceInfo.getDeviceId();
         global.brandName = DeviceInfo.getBrand();
