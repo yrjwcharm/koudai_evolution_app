@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: dx
- * @LastEditTime: 2021-11-01 11:26:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-24 22:25:52
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
@@ -223,10 +223,13 @@ export default class TradeRedeem extends Component {
         setTimeout(() => {
             const option = [];
             var _id;
-            this.state.data.survey.option.forEach((_item, _index) => {
+            this.state.data?.survey?.option?.forEach?.((_item, _index) => {
                 option.push(_item.v);
             });
-
+            if (!option.length) {
+                this.passwordInput();
+                return;
+            }
             this.setState({showMask: true});
             Picker.init({
                 pickerTitleText: '您赎回的原因？',

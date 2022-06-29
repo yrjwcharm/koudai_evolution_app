@@ -223,6 +223,9 @@ import SignPassword from '../pages/PE/SignPassword'; // 设置签署密码
 import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
 import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
+import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
+import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -806,6 +809,8 @@ export default function AppStack() {
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
             <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
+            <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
+            <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
         </Stack.Navigator>
     );
 }

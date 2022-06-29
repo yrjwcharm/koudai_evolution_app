@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-25 20:29:28
+ * @LastEditTime: 2022-06-27 14:29:35
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -28,7 +28,7 @@ import {debounce} from 'lodash';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
 import {useStateChange} from './src/components/hooks';
 import {navigationRef} from './src/components/hooks/RootNavigation';
-
+import RNExitApp from 'react-native-exit-app';
 if (process.env.NODE_ENV === 'development') {
     //调试中可看到网络请求
     global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
@@ -52,7 +52,7 @@ function App(props) {
     const onBackAndroid = () => {
         if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
             store.dispatch(updateVerifyGesture(false));
-            BackHandler.exitApp(); //退出整个应用
+            RNExitApp.exitApp(); //退出整个应用
             return false;
         }
         lastBackPressed = Date.now(); //按第一次的时候，记录时间

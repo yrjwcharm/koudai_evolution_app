@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 18:43:22
+ * @LastEditTime: 2022-06-28 10:36:00
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -20,7 +20,6 @@ import {
     TouchableHighlight,
     Linking,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import {ChatScreen} from '../../components/IM';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {isIphoneX, px, requestAuth, deviceWidth, deviceHeight} from '../../utils/appUtil';
@@ -473,7 +472,7 @@ const IM = (props) => {
         params.to = 'S';
         params.entry = props.route?.params?.entry;
         params.data = content;
-        params.version = DeviceInfo.getVersion();
+        params.version = global.ver;
         return JSON.stringify(params);
     };
     const loadHistory = () => {

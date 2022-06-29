@@ -3,21 +3,11 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-25 20:13:07
+ * @LastEditTime: 2022-06-29 14:39:16
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
-import {
-    StyleSheet,
-    View,
-    Image,
-    Text,
-    TouchableOpacity,
-    Platform,
-    BackHandler,
-    ScrollView,
-    NativeModules,
-} from 'react-native';
+import {StyleSheet, View, Image, Text, TouchableOpacity, Platform, ScrollView, NativeModules} from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
 import http from '../../services';
@@ -66,11 +56,7 @@ export default function Launch({navigation}) {
             backButtonClose: false,
             isTouchMaskToClose: false,
             cancelCallBack: () => {
-                if (Platform.OS == 'android') {
-                    BackHandler.exitApp(); //退出整个应用
-                } else {
-                    RNExitApp.exitApp();
-                }
+                RNExitApp.exitApp();
             },
             confirmCallBack: () => {
                 init();
@@ -118,7 +104,7 @@ export default function Launch({navigation}) {
         });
     };
     const getSystemMes = async () => {
-        global.did = DeviceInfo.getUniqueId();
+        global.did = await DeviceInfo.syncUniqueId();
         global.ver = DeviceInfo.getVersion();
         global.deviceId = DeviceInfo.getDeviceId();
         global.brandName = DeviceInfo.getBrand();
