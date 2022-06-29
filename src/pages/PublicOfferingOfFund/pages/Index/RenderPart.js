@@ -2,27 +2,23 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-22 12:05:50
+ * @LastEditTime: 2022-06-29 17:05:53
  * @Description: 公募基金首页榜单渲染组件
  */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import CapsuleTabbar from '~/components/CapsuleTabbar';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import {useJump} from '~/components/hooks';
+import RenderCate from '~/pages/Vision/components/RenderCate';
 import {deviceWidth, px} from '~/utils/appUtil';
 
 export default ({data = {}}) => {
     const jump = useJump();
-    const {items = [], more = '', sub_title = '', tabs = [], title = ''} = data;
-    const [activeTab, setTab] = useState();
-
-    useEffect(() => {
-        if (tabs.length > 0) {
-            setTab(tabs[0].key);
-        }
-    }, [tabs]);
+    const {direction, items = [], more = '', scene, sub_title = '', tab_list: tabs = [], title = ''} = data;
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
@@ -40,33 +36,42 @@ export default ({data = {}}) => {
                     ) : null}
                 </View>
             ) : null}
-            {tabs?.length > 0 && (
-                <ScrollView
-                    bounces={false}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.tabsContainer}>
-                    {tabs.map((tab, index) => (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            disabled={activeTab === tab.key}
-                            key={tab.key}
-                            onPress={() => setTab(tab.key)}
-                            style={[
-                                styles.tabBox,
-                                // index === tabs.length - 1 ? {marginRight: 2 * Space.marginAlign} : {},
-                                activeTab === tab.key ? {backgroundColor: '#DEE8FF'} : {},
-                            ]}>
-                            <Text style={[styles.tabText, activeTab === tab.key ? styles.activeText : {}]}>
-                                {tab.value}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+            {scene === 'live' ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.liveContainer}>
+                    <View style={[Style.flexRow, {marginLeft: Space.marginAlign}]}>
+                        {items.map((_article) => {
+                            return RenderCate(_article, {
+                                marginRight: px(12),
+                            });
+                        })}
+                    </View>
                 </ScrollView>
+            ) : tabs?.length > 0 ? (
+                <ScrollableTabView
+                    initialPage={0}
+                    // onChangeTab={(value) => console.log(value)}
+                    prerenderingSiblingsNumber={Infinity}
+                    renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}>
+                    {tabs.map((tab) => {
+                        const {items: tabItems = [], rank_type, title: tabTitle} = tab;
+                        return (
+                            <View key={rank_type} tabLabel={tabTitle}>
+                                {tabItems.map((item, index) => (
+                                    <ProductCards
+                                        data={item}
+                                        key={index}
+                                        style={index === 0 ? {marginTop: px(8)} : {}}
+                                    />
+                                ))}
+                            </View>
+                        );
+                    })}
+                </ScrollableTabView>
+            ) : (
+                items.map((item, index) => (
+                    <ProductCards data={item} key={index} style={index === 0 ? {marginTop: px(8)} : {}} />
+                ))
             )}
-            {items.map((item, index) => (
-                <ProductCards data={item} key={index} style={index === 0 ? {marginTop: px(8)} : {}} />
-            ))}
         </View>
     ) : null;
 };
@@ -104,20 +109,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
         width: deviceWidth,
     },
-    tabBox: {
-        marginRight: px(12),
-        paddingVertical: px(6),
-        paddingHorizontal: px(12),
-        borderRadius: px(20),
-        backgroundColor: '#fff',
-    },
-    tabText: {
-        fontSize: Font.textH3,
-        lineHeight: px(17),
-        color: Colors.defaultColor,
-    },
-    activeText: {
-        color: Colors.brandColor,
-        fontWeight: Font.weightMedium,
+    liveContainer: {
+        marginTop: px(12),
+        marginLeft: -Space.marginAlign,
+        width: deviceWidth,
     },
 });
