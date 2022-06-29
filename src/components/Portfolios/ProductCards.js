@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-06-20 16:34:54
+ * @LastEditTime: 2022-06-29 17:38:24
  * @Description: v7产品卡片
  */
 import React from 'react';
@@ -106,38 +106,46 @@ const PrivateCard = () => (
 );
 
 /** @name 榜单卡片 */
-const RankCard = () => (
-    <View style={Style.flexRow}>
-        <Image
-            source={{
-                uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/first.png',
-            }}
-            style={styles.rankIcon}
-        />
-        <View style={{flex: 1}}>
-            <View style={Style.flexRow}>
-                <Text style={styles.title}>{'嘉实中证基建ETF发起式联接A'}</Text>
-            </View>
-            <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                <View style={styles.tagBox}>
-                    <Text style={styles.tagText}>{'基础建设'}</Text>
+const RankCard = ({data = {}}) => {
+    const {button, icon, name, tags = [], yield_info} = data;
+    return (
+        <View style={Style.flexRow}>
+            <Image
+                source={{
+                    uri: icon,
+                }}
+                style={styles.rankIcon}
+            />
+            <View style={{flex: 1}}>
+                <View style={Style.flexRow}>
+                    <Text style={styles.title}>{name}</Text>
                 </View>
-                <View style={styles.tagBox}>
-                    <Text style={styles.tagText}>{'大盘股'}</Text>
+                {tags?.length > 0 && (
+                    <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                        {tags.map((tag, i) => (
+                            <View key={tag + i} style={styles.tagBox}>
+                                <Text style={styles.tagText}>{tag}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                    <View style={tags?.length > 0 ? styles.rowEnd : {}}>
+                        <HTML html={yield_info.value} style={styles.profit} />
+                        <Text style={[styles.label, tags?.length > 0 ? {marginLeft: px(8)} : {marginTop: px(2)}]}>
+                            {yield_info.text}
+                        </Text>
+                    </View>
+                    {button?.text ? (
+                        <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
+                            <Text style={styles.btnText}>{button.text}</Text>
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
-            </View>
-            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                <View style={styles.rowEnd}>
-                    <Text style={[styles.profit, {marginRight: px(8)}]}>{'+18.67%'}</Text>
-                    <Text style={styles.label}>{'近一年收益率'}</Text>
-                </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
-                    <Text style={styles.btnText}>{'PK'}</Text>
-                </TouchableOpacity>
             </View>
         </View>
-    </View>
-);
+    );
+};
 
 /** @name 推荐卡片 */
 const RecommendCard = () => (
@@ -173,37 +181,40 @@ const RecommendCard = () => (
 );
 
 /** @name 默认卡片 */
-const DefaultCard = () => (
-    <View>
-        <View style={Style.flexRow}>
-            <Text style={styles.title}>{'工银新能源汽车混合C'}</Text>
-        </View>
-        <View style={[Style.flexRow, {marginTop: px(4)}]}>
-            <View style={styles.tagBox}>
-                <Text style={styles.tagText}>{'绿色新能源'}</Text>
+const DefaultCard = ({data = {}}) => {
+    const {button, name, rank_info = {}, tags = [], yield_info} = data;
+    return (
+        <View>
+            <View style={Style.flexRow}>
+                <Text style={styles.title}>{name}</Text>
             </View>
-            <View style={styles.tagBox}>
-                <Text style={styles.tagText}>{'业绩优秀'}</Text>
-            </View>
-        </View>
-        <View style={[Style.flexBetween, {marginTop: px(12), alignItems: 'flex-end'}]}>
-            <View>
-                <Text style={styles.profit}>{'+50.18%'}</Text>
-                <Text style={[styles.label, {marginTop: px(2)}]}>{'近一年收益率'}</Text>
-            </View>
-            <View>
-                <View style={Style.flexRow}>
-                    <Text style={styles.baseText}>{'前'}</Text>
-                    <Text style={[styles.profit, {color: Colors.defaultColor}]}>{'5%'}</Text>
+            {tags?.length > 0 && (
+                <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                    {tags.map((tag, i) => (
+                        <View key={tag + i} style={styles.tagBox}>
+                            <Text style={styles.tagText}>{tag}</Text>
+                        </View>
+                    ))}
                 </View>
-                <Text style={[styles.label, {marginTop: px(2)}]}>{'同类排名'}</Text>
+            )}
+            <View style={[Style.flexBetween, {marginTop: px(12), alignItems: 'flex-end'}]}>
+                <View>
+                    <HTML html={yield_info.value} style={styles.profit} />
+                    <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
+                </View>
+                <View>
+                    <HTML html={rank_info.value} style={{...styles.profit, color: Colors.defaultColor}} />
+                    <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info.text}</Text>
+                </View>
+                {button?.text ? (
+                    <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
+                        <Text style={styles.btnText}>{button.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
-            <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
-                <Text style={styles.btnText}>{'PK'}</Text>
-            </TouchableOpacity>
         </View>
-    </View>
-);
+    );
+};
 
 export default ({data = {}, style = {}}) => {
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
@@ -217,16 +228,16 @@ export default ({data = {}, style = {}}) => {
                         return <ManagerCard />;
                     // 私募卡片
                     case 'private_card':
-                        return <PrivateCard />;
+                        return <PrivateCard data={data} />;
                     // 榜单卡片
                     case 'rank_card':
-                        return <RankCard />;
+                        return <RankCard data={data} />;
                     // 推荐卡片
                     case 'recommend_card':
-                        return <RecommendCard />;
+                        return <RecommendCard data={data} />;
                     // 默认卡片
                     default:
-                        return <DefaultCard />;
+                        return <DefaultCard data={data} />;
                 }
             })()}
         </TouchableOpacity>
