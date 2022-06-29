@@ -16,6 +16,7 @@ import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
 import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 import {useJump} from '~/components/hooks';
+import PKWeightSet from '../Compare/PKWieghtSet';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
@@ -115,7 +116,8 @@ const PKHome = () => {
                 <BottomDesc />
             </ScrollView>
             <PKBall ref={PKBallRef} />
-            <PKCollectUserInterest />
+            {/* <PKCollectUserInterest /> */}
+            <PKWeightSet />
         </LinearGradient>
     );
 };
