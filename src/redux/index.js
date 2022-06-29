@@ -13,6 +13,8 @@ import UserReducer from './reducers/userReducer';
 import VisionReducer from './reducers/visionReducer';
 import AccountReducer from './reducers/accountReducer';
 import ModalReducer from './reducers/modalReducer';
+import pkProductsReducer from './reducers/pk/pkProductsReducer';
+import pkPinningReducer from './reducers/pk/pkPinningReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
 const persistConfig = {
@@ -34,6 +36,8 @@ const reducer = combineReducers({
     vision: VisionReducer,
     accountInfo: AccountReducer,
     modalInfo: ModalReducer,
+    pkProducts: pkProductsReducer,
+    pkPinning: pkPinningReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

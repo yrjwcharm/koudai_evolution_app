@@ -200,6 +200,8 @@ import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
 import ImportOptionalFund from '~/pages/Attention/ImportOptionalFund'; //导入自选
 import EditFund from '~/pages/Attention/EditFund'; //基金编辑
 import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
+import PKCompare from '../pages/PK/pages/Compare'; // pk对比
+import PrivatePlacement from '../pages/PE/PrivatePlacement'; // 私募
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -778,6 +780,8 @@ export default function AppStack() {
             <Stack.Screen name="EditFund" component={EditFund} options={{title: ''}} />
             <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: ''}} />
 
+            <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
+            <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />

@@ -15,10 +15,11 @@ import {Font, Style} from '~/common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import PKBtnTab from '../../components/PKBtnTab';
 import checkBtnIcon from '../../../../components/IM/app/source/image/check.png';
+import {connect} from 'react-redux';
+import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
 
-const SelectProduct = () => {
+const SelectProduct = (props) => {
     const [loading, setLoading] = useState(true);
-    const [selections, setSelections] = useState([]);
     const [search, setSearch] = useState('');
     const [searchFocused, setSearchFocus] = useState(false);
 
@@ -37,19 +38,11 @@ const SelectProduct = () => {
     const onTabChange = (item) => {};
 
     const deleteSelectedItem = (item) => {
-        let arr = [...selections];
-        let idx = arr.indexOf(item);
-        console.log(idx);
-        if (idx > -1) arr.splice(idx, 1);
-        setSelections(arr);
+        props.delProduct(item);
     };
 
     const handlerSelectItem = (item) => {
-        let arr = [...selections];
-        let idx = arr.indexOf(item);
-        if (idx > -1) arr.splice(idx, 1);
-        else arr.push(item);
-        setSelections(arr);
+        props.pkProducts.includes(item) ? props.delProduct(item) : props.addProduct(item);
     };
 
     return (
@@ -57,10 +50,10 @@ const SelectProduct = () => {
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
                 <View style={{flex: 1, padding: px(16)}}>
                     {/* selected area */}
-                    {selections?.length ? (
+                    {props.pkProducts?.length ? (
                         <View style={styles.selectWrap}>
                             <View style={styles.selectRowWrap}>
-                                {selections.slice(0, 3).map((item, idx) => (
+                                {props.pkProducts.slice(0, 3).map((item, idx) => (
                                     <View style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]} key={idx}>
                                         <View style={styles.selectItemHeader}>
                                             {idx === 0 ? (
@@ -95,7 +88,7 @@ const SelectProduct = () => {
                                         </View>
                                         <View style={styles.selectItemFooter}>
                                             <View style={styles.selectItemTag}>
-                                                <Text style={styles.selectItemTagText}>指数型 </Text>
+                                                <Text style={styles.selectItemTagText}>指数型</Text>
                                             </View>
                                             <FastImage
                                                 source={{
@@ -111,7 +104,7 @@ const SelectProduct = () => {
                                 ))}
                             </View>
                             <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
-                                {selections.slice(3, 6).map((item, idx) => (
+                                {props.pkProducts.slice(3, 6).map((item, idx) => (
                                     <View style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]} key={idx}>
                                         <View style={styles.selectItemHeader}>
                                             {idx === 1 ? (
@@ -144,7 +137,7 @@ const SelectProduct = () => {
                                         </View>
                                         <View style={styles.selectItemFooter}>
                                             <View style={styles.selectItemTag}>
-                                                <Text style={styles.selectItemTagText}>指数型 </Text>
+                                                <Text style={styles.selectItemTagText}>指数型</Text>
                                             </View>
                                             <FastImage
                                                 source={{
@@ -218,6 +211,7 @@ const SelectProduct = () => {
                                 <View style={styles.tableListWrap}>
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, idx, arr) => (
                                         <View
+                                            key={idx}
                                             style={[
                                                 styles.tableRowWrap,
                                                 idx + 1 === arr.length
@@ -232,7 +226,7 @@ const SelectProduct = () => {
                                                         onPress={() => handlerSelectItem(item)}
                                                         style={[
                                                             styles.checkIconOuter,
-                                                            selections.includes(item)
+                                                            props.pkProducts.includes(item)
                                                                 ? {
                                                                       backgroundColor: '#0051CC',
                                                                   }
@@ -241,7 +235,7 @@ const SelectProduct = () => {
                                                                       borderColor: '#BDC2CC',
                                                                   },
                                                         ]}>
-                                                        {selections.includes(item) ? (
+                                                        {props.pkProducts.includes(item) ? (
                                                             <FastImage
                                                                 source={checkBtnIcon}
                                                                 style={{width: px(8), height: px(8)}}
@@ -283,13 +277,15 @@ const SelectProduct = () => {
                 <Text style={styles.bottomLeftDefaultText}>
                     最多对比6支基金，已选<Text style={styles.bottomLeftRedText}>6</Text>支
                 </Text>
-                <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtnWrap}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtnWrap} onPress={() => {}}>
                     <Text style={styles.bottomBtnText}>开始PK</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 };
+
+export default connect((state) => ({pkProducts: state.pkProducts}), pkProductsActions)(SelectProduct);
 
 const styles = StyleSheet.create({
     container: {
@@ -513,4 +509,3 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
-export default SelectProduct;

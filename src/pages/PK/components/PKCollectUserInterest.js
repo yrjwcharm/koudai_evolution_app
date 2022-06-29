@@ -13,8 +13,8 @@ const PKCollectUserInterest = ({}) => {
 
     useEffect(() => {
         setTimeout(() => {
-            setData([]);
-            setModalVisible(true);
+            // setData([]);
+            // setModalVisible(true);
         }, 1000);
     }, []);
 
@@ -52,7 +52,7 @@ const PKCollectUserInterest = ({}) => {
                                         </View>
                                         <View style={styles.checkOptionWrap}>
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => (
-                                                <View>
+                                                <View key={index}>
                                                     {index > 2 ? (
                                                         <View
                                                             style={{

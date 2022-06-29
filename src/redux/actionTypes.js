@@ -12,4 +12,8 @@ export default {
     Account: 'Account',
     Modal: 'Modal',
     DeleteModal: 'DeleteModal',
+    addProduct: 'addPKProduct',
+    delProduct: 'delPKProduct',
+    cleanProduct: 'cleanPKProduct',
+    pinningProduct: 'pinningPKProduct',
 };
