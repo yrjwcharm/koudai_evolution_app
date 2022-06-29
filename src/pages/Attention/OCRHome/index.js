@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 19:09:39
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-29 21:44:39
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -26,10 +26,12 @@ const Index = ({navigation}) => {
     const [data, setData] = useState(data);
     const _getData = async () => {
         let res = await getInfo();
+        navigation.setOptions({title: res.result?.title || '识图导入'});
         setData(res.result);
     };
     useEffect(() => {
         _getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // 选择相册
     const handleUpload = async () => {
@@ -59,9 +61,11 @@ const Index = ({navigation}) => {
         }, 100);
     };
     const uploadImage = async (data) => {
+        let toast = Toast.showLoading();
         let res = await uploadFile(data, (e) => {
             console.log(e);
         });
+        Toast.hide(toast);
         Toast.show(res.message);
         if (res.code === '000000') {
             if (res.result?.type == 'self_select') {
@@ -87,13 +91,13 @@ const Index = ({navigation}) => {
     return (
         <ScrollView style={styles.con}>
             {data?.list?.map((item, index) => (
-                <View key={index}>
+                <View key={index} style={{marginBottom: px(20)}}>
                     <RenderHtml style={styles.title} html={item.title} />
                     <Text style={styles.title_desc}>{item.content}</Text>
                     {item?.imgUrl ? <FitImage source={{uri: item?.imgUrl}} /> : null}
                 </View>
             ))}
-            <Button onPress={handleUpload} />
+            <Button onPress={handleUpload} title="上传图片" />
         </ScrollView>
     );
 };
@@ -108,7 +112,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(16),
-        marginBottom: px(6),
         color: Colors.defaultColor,
         fontWeight: '700',
     },
@@ -117,5 +120,6 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         fontSize: px(12),
         marginBottom: px(12),
+        marginTop: px(4),
     },
 });

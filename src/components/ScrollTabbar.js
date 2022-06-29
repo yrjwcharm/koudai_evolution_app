@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 12:33:09
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-29 23:40:55
  * @Description:
  */
 
@@ -23,13 +23,16 @@ const Button = (props) => {
 class ScrollTabbar extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            tabLeft: 0,
+        };
         this.tabsLayouts = {};
         //Tab项总长
         this.tabsWidth = 0;
         //Tab显示区域宽度
         this.tabsViewportWidth = 0;
         //Tab显示区左边界
+        this.underlineWidth = px(20);
     }
     componentWillReceiveProps(nextProps) {
         this.scrollToIndex(nextProps.activeTab);
@@ -56,29 +59,28 @@ class ScrollTabbar extends Component {
         const {width} = evt.nativeEvent.layout;
         this.tabsViewportWidth = width;
     }
-    measureTab(idx, evt) {
+    measureTab = (idx, evt) => {
         const {x, width, height} = evt.nativeEvent.layout;
+        if (idx == this.props.activeTab) {
+            this.setState({tabLeft: (width - this.underlineWidth) / 2});
+        }
         let right = x + width;
         this.tabsLayouts[idx] = {left: x, right, width, height};
         if (idx == this.props.tabs.length - 1) {
             this.tabsWidth = right;
         }
-    }
+    };
     _renderUnderline() {
-        const containerWidth = this.tabsWidth;
         const numberOfTabs = this.props.tabs.length;
-        const underlineWidth = px(20);
         const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 4;
-        // const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2 || 0;
-        const deLen = (this.tabsLayouts[this.props.activeTab]?.width - underlineWidth) / 2 || px(12);
         const tabUnderlineStyle = {
             position: 'absolute',
-            width: underlineWidth,
+            width: this.underlineWidth,
             height: 2,
             borderRadius: 2,
             backgroundColor: this.props.underlineColor ? this.props.underlineColor : Colors.defaultColor,
             bottom: 6,
-            left: deLen,
+            left: this.state.tabLeft,
         };
         const inputRange = [];
         const outputRange = [];

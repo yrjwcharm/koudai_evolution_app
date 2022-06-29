@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-20 10:35:46
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-18 17:13:33
  * @Description: 自定义tabbar
  */
 
