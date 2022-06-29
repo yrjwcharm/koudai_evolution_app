@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:37:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-28 16:32:58
+ * @LastEditTime: 2022-06-29 18:20:03
  * @Description:导入持仓
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
@@ -14,10 +14,10 @@ import {useSelector} from 'react-redux';
 import {FixedButton} from '~/components/Button';
 import {postImport} from './services';
 import Toast from '~/components/Toast';
-const Index = ({navigation}) => {
+const Index = ({navigation, route}) => {
     let data = useSelector((store) => store.ocrFund).toJS()?.ocrOwernList;
     const handleImport = async () => {
-        let res = await postImport({items: data, item_type: 3});
+        let res = await postImport({items: data, item_type: route?.params?.item_type || 3});
         Toast.show(res.message);
         if (res.code === '000000') {
             navigation.goBack();

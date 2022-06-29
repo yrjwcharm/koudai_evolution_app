@@ -2,15 +2,21 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-28 22:09:30
+ * @LastEditTime: 2022-06-29 15:12:04
  * @Description:基金消息中心
  */
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
+// import {getSettingData} from '../FundNoticeManage/services';
 
 const Index = () => {
+    const [data, setData] = useState({});
+    // const getData = async () => {
+    //     let res = await getSettingData();
+    //     setData(res.result);
+    // };
     return (
         <View>
             <Text>index</Text>

@@ -2,15 +2,25 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-06-28 22:15:39
+ * @LastEditTime: 2022-06-29 17:19:12
  * @Description:基金消息管理
  */
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors} from '~/common/commonStyle';
 
+import {getSettingData} from './services';
+
 const Index = () => {
+    const [data, setData] = useState({});
+    const getData = async () => {
+        let res = await getSettingData();
+        setData(res.result);
+    };
+    useEffect(() => {
+        getData();
+    }, []);
     return (
         <View>
             <Text>index</Text>

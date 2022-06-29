@@ -319,6 +319,12 @@ const Index = (props) => {
                                     props.navigation.navigate('Attention');
                                 }}
                             />
+                            <Button
+                                title="消息管理"
+                                onPress={() => {
+                                    props.navigation.navigate('FundNoticeManage');
+                                }}
+                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
