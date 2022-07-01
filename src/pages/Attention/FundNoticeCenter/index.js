@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 10:47:37
+ * @LastEditTime: 2022-07-01 14:04:03
  * @Description:基金消息中心
  */
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -76,7 +76,7 @@ const Index = ({navigation}) => {
                         </View>
                     </View>
                     <RenderHtml html={item.title} style={styles.content_text} />
-                    <View style={Style.flexRow}>
+                    <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                         {item?.label_list?.map((lable, key) => (
                             <View style={styles.lable} key={key}>
                                 <Text style={styles.lable_text}>{lable.text}</Text>

@@ -2,10 +2,10 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 23:45:15
+ * @LastEditTime: 2022-07-01 15:29:25
  * @Description:基金消息管理
  */
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors} from '~/common/commonStyle';
@@ -31,7 +31,7 @@ const Index = () => {
                 ))}
             </View>
             {data?.event_list?.length ? (
-                <ScrollableTabView renderTabBar={() => <ScrollTabbar />}>
+                <ScrollableTabView renderTabBar={() => <ScrollTabbar />} locked={Platform.OS == 'android'}>
                     {data?.event_list.map((item) => (
                         <View tabLabel={item.name}>
                             {item?.list.map((_list) => (

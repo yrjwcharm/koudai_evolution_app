@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 16:44:08
+ * @LastEditTime: 2022-07-01 11:44:51
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -15,7 +15,8 @@ import sortUp from '~/assets/img/attention/sortUp.png';
 import sortDown from '~/assets/img/attention/sortDown.png';
 import Feather from 'react-native-vector-icons/Feather';
 import {useJump} from '~/components/hooks';
-const FollowTable = ({data = {}, activeTab, handleSort, tabButton}) => {
+import StickyHeader from '~/components/Sticky';
+const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY, scrollY}) => {
     const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
     const jump = useJump();
@@ -37,52 +38,65 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton}) => {
                     {header && activeTab == 3 && <FollowTableHeader header={header} />}
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                         <View style={{minWidth: '100%'}}>
-                            <View style={[styles.tr, {height: px(47)}]}>
-                                <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
-                                    {body?.th &&
-                                        body?.th?.map((_item, index) => (
-                                            <View
-                                                style={[
-                                                    {
-                                                        width: index == 0 ? firstLineWidth : otherLineWidth,
-                                                        alignItems: index == 0 ? 'flex-start' : 'center',
-                                                    },
-                                                ]}
-                                                key={index}>
-                                                <TouchableOpacity
-                                                    style={Style.flexRow}
-                                                    activeOpacity={0.9}
-                                                    onPress={() => _handleSort(_item)}>
-                                                    <View style={{alignItems: 'flex-end'}}>
-                                                        <Text
-                                                            numberOfLines={1}
-                                                            style={{
-                                                                fontSize: index == 0 ? px(14) : px(12),
-                                                                color: Colors.lightBlackColor,
-                                                            }}>
-                                                            {_item?.line?.title}
-                                                        </Text>
-                                                        {_item?.line?.desc ? (
-                                                            <Text style={styles.th_line_desc}>{_item?.line?.desc}</Text>
-                                                        ) : null}
-                                                    </View>
-                                                    {_item?.order_by_field && (
-                                                        <Image
-                                                            source={
-                                                                _item?.current_order == ''
-                                                                    ? sortImg
-                                                                    : _item?.current_order == 'asc'
-                                                                    ? sortUp
-                                                                    : sortDown
-                                                            }
-                                                            style={{width: px(6), height: px(12), marginLeft: px(2)}}
-                                                        />
-                                                    )}
-                                                </TouchableOpacity>
-                                            </View>
-                                        ))}
+                            <StickyHeader
+                                stickyHeaderY={stickyHeaderY + px(42) + (header && activeTab == 3 ? px(75 + 9) : 0)} // 把头部高度传入
+                                stickyScrollY={scrollY} // 把滑动距离传入
+                            >
+                                {/* 分割线 */}
+                                <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                <View style={[styles.tr, {height: px(47), backgroundColor: '#fff'}]}>
+                                    <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
+                                        {body?.th &&
+                                            body?.th?.map((_item, index) => (
+                                                <View
+                                                    style={[
+                                                        {
+                                                            width: index == 0 ? firstLineWidth : otherLineWidth,
+                                                            alignItems: index == 0 ? 'flex-start' : 'center',
+                                                        },
+                                                    ]}
+                                                    key={index}>
+                                                    <TouchableOpacity
+                                                        style={Style.flexRow}
+                                                        activeOpacity={0.9}
+                                                        onPress={() => _handleSort(_item)}>
+                                                        <View style={{alignItems: 'flex-end'}}>
+                                                            <Text
+                                                                numberOfLines={1}
+                                                                style={{
+                                                                    fontSize: index == 0 ? px(14) : px(12),
+                                                                    color: Colors.lightBlackColor,
+                                                                }}>
+                                                                {_item?.line?.title}
+                                                            </Text>
+                                                            {_item?.line?.desc ? (
+                                                                <Text style={styles.th_line_desc}>
+                                                                    {_item?.line?.desc}
+                                                                </Text>
+                                                            ) : null}
+                                                        </View>
+                                                        {_item?.order_by_field && (
+                                                            <Image
+                                                                source={
+                                                                    _item?.current_order == ''
+                                                                        ? sortImg
+                                                                        : _item?.current_order == 'asc'
+                                                                        ? sortUp
+                                                                        : sortDown
+                                                                }
+                                                                style={{
+                                                                    width: px(6),
+                                                                    height: px(12),
+                                                                    marginLeft: px(2),
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </TouchableOpacity>
+                                                </View>
+                                            ))}
+                                    </View>
                                 </View>
-                            </View>
+                            </StickyHeader>
                             {/* tr */}
                             {body?.tr?.map((tr, index) => (
                                 <View style={[styles.tr]} key={index}>

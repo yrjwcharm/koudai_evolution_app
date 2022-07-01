@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 17:54:37
+ * @LastEditTime: 2022-07-01 15:29:46
  * @Description:关注
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated, Platform} from 'react-native';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
@@ -84,25 +84,22 @@ const Attention = ({navigation}) => {
                     {data?.hot_fund && <HotFund data={data?.hot_fund} onFollow={onFollow} />}
                 </View>
                 {/* 列表 */}
-                {/* <StickyHeader
-                    stickyHeaderY={headHeight} // 把头部高度传入
-                    stickyScrollY={scrollY} // 把滑动距离传入
-                > */}
+
                 {data?.follow?.tabs && (
                     <View style={{backgroundColor: '#fff'}}>
                         <ScrollableTabView
-                            prerenderingSiblingsNumber={3}
+                            locked={Platform.OS == 'android'}
                             renderTabBar={() => <ScrollTabbar boxStyle={{paddingLeft: px(8)}} />}
                             onChangeTab={onChangeTab}>
                             {data?.follow?.tabs?.map((tab, index) => (
                                 <View key={index} tabLabel={tab?.type_text}>
-                                    {/* 分割线 */}
-                                    <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
                                     <FollowTable
                                         data={followData}
                                         activeTab={activeTab}
                                         handleSort={getFollowData}
                                         tabButton={tab?.button_list}
+                                        scrollY={scrollY}
+                                        stickyHeaderY={headHeight}
                                     />
                                 </View>
                             ))}

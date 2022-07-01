@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:39:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 10:45:43
+ * @LastEditTime: 2022-07-01 15:24:13
  * @Description:消息卡片
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(18),
         marginLeft: px(8),
+        flex: 1,
     },
     content: {
         color: '#545968',

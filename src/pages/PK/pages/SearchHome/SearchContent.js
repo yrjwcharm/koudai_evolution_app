@@ -1,32 +1,41 @@
 /*
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-14 10:24:23
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 15:49:47
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {px} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-// import collectActive from '@/assets/img/pk/pkcollectActive.png';
-// import collect from '@/assets/img/pk/pkcollect.png';
-const SearchContent = () => {
+import collectActive from '~/assets/img/pk/pkcollectActive.png';
+import collect from '~/assets/img/pk/pkcollect.png';
+import {followAdd} from '~/pages/Attention/Index/service';
+const SearchContent = ({data}) => {
+    const [favor, setFavor] = useState(data.favor);
+    const onFavor = () => {
+        setFavor((_favor) => !_favor);
+        followAdd({item_id: data.code});
+    };
+    const onPk = () => {};
     return (
         <View style={[styles.con, Style.flexBetween]}>
-            <View>
+            <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
-                    <Text style={styles.title}>SearchContent</Text>
-                    <Text style={styles.code}>000000</Text>
+                    <Text style={styles.title} numberOfLines={1}>
+                        {data?.name}
+                    </Text>
+                    <Text style={styles.code}>{data?.code}</Text>
                 </View>
-                <Text style={styles.rate}>+2.23%</Text>
-                <Text style={styles.rateDesc}>近一年收益率</Text>
+                <Text style={styles.rate}>{data?.yield_info?.ratio}</Text>
+                <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity>
-                    {/* <Image source={collect} style={{width: px(26), height: px(26)}} /> */}
+                <TouchableOpacity onPress={onFavor}>
+                    <Image source={favor ? collect : collectActive} style={{width: px(26), height: px(26)}} />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]}>
+                <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk}>
                     <Text style={{color: '#fff'}}>PK</Text>
                 </TouchableOpacity>
             </View>
