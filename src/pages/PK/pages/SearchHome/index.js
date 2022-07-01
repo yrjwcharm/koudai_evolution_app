@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 15:34:00
+ * @LastEditTime: 2022-07-01 16:29:06
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
@@ -15,6 +15,7 @@ import SearchTag from './SearchTag';
 import SearchContent from './SearchContent';
 import {getSearchHistory, insertSearch} from './utils';
 import {getSearchData} from './services';
+import http from '~/services';
 const Index = () => {
     const [data, setData] = useState([]);
     const [searchHistory, setSearchHistory] = useState([]);
@@ -26,6 +27,9 @@ const Index = () => {
     };
     //获取搜索数据
     const getSerachList = async (content) => {
+        global.cancle && global.cancle('取消请求');
+        if (!content) return;
+        // http.cancelAxiosRequest();
         let res = await getSearchData({keyword: content});
         if (res.code === '000000') {
             setData(res.result);

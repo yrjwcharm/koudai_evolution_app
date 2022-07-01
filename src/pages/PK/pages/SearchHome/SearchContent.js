@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 15:49:47
+ * @LastEditTime: 2022-07-01 16:02:26
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -11,16 +11,22 @@ import {px} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import collectActive from '~/assets/img/pk/pkcollectActive.png';
 import collect from '~/assets/img/pk/pkcollect.png';
-import {followAdd} from '~/pages/Attention/Index/service';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import {useJump} from '~/components/hooks';
 const SearchContent = ({data}) => {
     const [favor, setFavor] = useState(data.favor);
+    const jump = useJump();
     const onFavor = () => {
         setFavor((_favor) => !_favor);
-        followAdd({item_id: data.code});
+        if (favor) {
+            followCancel({item_id: data.code, item_type: data.item_type || 1});
+        } else {
+            followAdd({item_id: data.code, item_type: data.item_type || 1});
+        }
     };
     const onPk = () => {};
     return (
-        <View style={[styles.con, Style.flexBetween]}>
+        <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
                     <Text style={styles.title} numberOfLines={1}>
@@ -33,13 +39,15 @@ const SearchContent = ({data}) => {
             </View>
             <View style={Style.flexRow}>
                 <TouchableOpacity onPress={onFavor}>
-                    <Image source={favor ? collect : collectActive} style={{width: px(26), height: px(26)}} />
+                    <Image source={favor ? collectActive : collect} style={{width: px(26), height: px(26)}} />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk}>
-                    <Text style={{color: '#fff'}}>PK</Text>
-                </TouchableOpacity>
+                {data?.item_type == 1 ? (
+                    <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk}>
+                        <Text style={{color: '#fff'}}>PK</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
