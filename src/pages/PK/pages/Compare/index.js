@@ -5,7 +5,6 @@ import http from '~/services';
 import {px} from '~/utils/appUtil';
 import Header from './Header';
 import PKParams from './PKParams';
-import result from './a.js';
 import PKAchivementChart from './PKAchivementChart';
 import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
