@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-29 17:55:29
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 12:02:16
  * @Description: 公募基金首页
  */
 import React, {useEffect, useState} from 'react';
@@ -17,9 +17,9 @@ import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import http from '~/services';
 import {deviceWidth, px} from '~/utils/appUtil';
 import RenderPart from './RenderPart';
+import {getPageData} from './services';
 
 /** @name 顶部菜单 */
 const TopMenu = ({data = []}) => {
@@ -62,7 +62,7 @@ const SwiperCom = ({data = []}) => {
                 {data.map((item, index) => {
                     const {button, name, rank_tag, tags, title, yield_info} = item;
                     return (
-                        <TouchableOpacity key={name + index} activeOpacity={0.8}>
+                        <View key={name + index}>
                             <LinearGradient
                                 colors={['#FFF7EC', '#FFFFFF']}
                                 start={{x: 0, y: 0}}
@@ -112,7 +112,7 @@ const SwiperCom = ({data = []}) => {
                                     </TouchableOpacity>
                                 ) : null}
                             </LinearGradient>
-                        </TouchableOpacity>
+                        </View>
                     );
                 })}
             </Swiper>
@@ -125,7 +125,7 @@ const Index = ({navigation, route}) => {
     const {live, sub_list = [], suggest_list = [], tabs = [], un_buy_img} = data;
 
     useEffect(() => {
-        http.get('/fund/public/index/20220610').then((res) => {
+        getPageData().then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({
                     headerRight: () => (
@@ -156,7 +156,7 @@ const Index = ({navigation, route}) => {
                     end={{x: 0, y: 0.2}}
                     style={styles.bottomContainer}>
                     <View style={{paddingHorizontal: Space.padding}}>
-                        {live?.items?.length > 0 && <RenderPart data={live} />}
+                        {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
                         {sub_list?.length > 0 ? (
                             sub_list.map((item, index) => <RenderPart data={item} key={index} />)
                         ) : (

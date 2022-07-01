@@ -778,6 +778,7 @@ export default function AppStack() {
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
             <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
             <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
+            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
             <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
             <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: '导入关注'}} />
@@ -806,7 +807,6 @@ export default function AppStack() {
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
-            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
             <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
             <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
         </Stack.Navigator>

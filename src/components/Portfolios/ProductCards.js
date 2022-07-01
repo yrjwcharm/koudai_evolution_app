@@ -1,19 +1,35 @@
 /*
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-29 17:38:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 14:44:59
  * @Description: v7产品卡片
  */
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import quot from '~/assets/img/icon/quot.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import HTML from '~/components/RenderHtml';
+import Toast from '~/components/Toast';
+import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {px} from '~/utils/appUtil';
+import {followAdd} from '~/pages/Attention/Index/service';
+
+const onPressBtn = ({action, code, dispatch}) => {
+    if (action === 'do_pk') {
+        dispatch(addProduct(code));
+    } else if (action === 'attention') {
+        followAdd({item_id: code, item_type: 1}).then((res) => {
+            if (res.code === '000000') {
+                Toast.show(res.message);
+            }
+        });
+    }
+};
 
 /** @name 基金经理卡片 */
 const ManagerCard = () => (
@@ -107,7 +123,8 @@ const PrivateCard = () => (
 
 /** @name 榜单卡片 */
 const RankCard = ({data = {}}) => {
-    const {button, icon, name, tags = [], yield_info} = data;
+    const dispatch = useDispatch();
+    const {button, code, icon, name, tags = [], yield_info} = data;
     return (
         <View style={Style.flexRow}>
             <Image
@@ -137,8 +154,17 @@ const RankCard = ({data = {}}) => {
                         </Text>
                     </View>
                     {button?.text ? (
-                        <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
-                            <Text style={styles.btnText}>{button.text}</Text>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            disabled={button.avail === 0}
+                            onPress={() => onPressBtn({action: button.action, code, dispatch})}
+                            style={[
+                                styles.btnBox,
+                                button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
+                            ]}>
+                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                                {button.text}
+                            </Text>
                         </TouchableOpacity>
                     ) : null}
                 </View>
@@ -182,7 +208,8 @@ const RecommendCard = () => (
 
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}}) => {
-    const {button, name, rank_info = {}, tags = [], yield_info} = data;
+    const dispatch = useDispatch();
+    const {button, code, name, rank_info = {}, tags = [], yield_info} = data;
     return (
         <View>
             <View style={Style.flexRow}>
@@ -198,17 +225,28 @@ const DefaultCard = ({data = {}}) => {
                 </View>
             )}
             <View style={[Style.flexBetween, {marginTop: px(12), alignItems: 'flex-end'}]}>
-                <View>
-                    <HTML html={yield_info.value} style={styles.profit} />
-                    <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
-                </View>
-                <View>
-                    <HTML html={rank_info.value} style={{...styles.profit, color: Colors.defaultColor}} />
-                    <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info.text}</Text>
-                </View>
+                {yield_info ? (
+                    <View>
+                        <HTML html={yield_info.value} style={styles.profit} />
+                        <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
+                    </View>
+                ) : null}
+                {rank_info ? (
+                    <View>
+                        <HTML html={rank_info.value} style={{...styles.profit, color: Colors.defaultColor}} />
+                        <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info.text}</Text>
+                    </View>
+                ) : null}
                 {button?.text ? (
-                    <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
-                        <Text style={styles.btnText}>{button.text}</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={button.avail === 0}
+                        onPress={() => onPressBtn({action: button.action, code, dispatch})}
+                        style={[
+                            styles.btnBox,
+                            button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
+                        ]}>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{button.text}</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>

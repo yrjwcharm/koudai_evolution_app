@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-29 19:13:22
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 10:28:31
  * @Description:直播模块
  */
 
@@ -22,11 +22,11 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
     // 直播状态:status 1预约 2直播 3回放
     const [reserved, setReserved] = useState(data.reserved);
     //特殊处理预约人数
-    const [reservedNum, setReservedNum] = useState(data?.reserved_num);
+    const [, setReservedNum] = useState(data?.reserved_num);
     //直播推荐位大卡片
     const isLiveRecommend = scene == 'largeLiveCard';
     //是否是回放小卡片 针对回放小卡片特殊处理
-    const issmLiveCard = scene == 'smLiveCard';
+    // const issmLiveCard = scene == 'smLiveCard';
 
     const jump = useJump();
     useFocusEffect(
@@ -159,13 +159,11 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                         />
                         <Text style={styles.numDesc}>{data.status === 2 ? '直播中' : data?.people_num_desc}</Text>
                     </View>
-                    {data?.status === 3 ? null : (
+                    {data?.status === 1 ? (
                         <View style={[Style.flexRow, styles.waitTag, {paddingLeft: px(6)}]}>
-                            <Text style={styles.numDesc}>
-                                {data?.status === 1 ? data.status_desc : data?.people_num_desc}
-                            </Text>
+                            <Text style={styles.numDesc}>{data.status_desc}</Text>
                         </View>
-                    )}
+                    ) : null}
                 </View>
             </ImageBackground>
             <View style={[Style.flexBetween, styles.card_bottom]}>

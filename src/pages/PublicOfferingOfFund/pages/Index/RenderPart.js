@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-29 17:05:53
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 10:04:00
  * @Description: 公募基金首页榜单渲染组件
  */
 import React from 'react';
@@ -16,9 +16,9 @@ import {useJump} from '~/components/hooks';
 import RenderCate from '~/pages/Vision/components/RenderCate';
 import {deviceWidth, px} from '~/utils/appUtil';
 
-export default ({data = {}}) => {
+export default ({data = {}, scene}) => {
     const jump = useJump();
-    const {direction, items = [], more = '', scene, sub_title = '', tab_list: tabs = [], title = ''} = data;
+    const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
