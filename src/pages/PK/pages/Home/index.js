@@ -117,7 +117,7 @@ const PKHome = () => {
             </ScrollView>
             <PKBall ref={PKBallRef} />
             {/* <PKCollectUserInterest /> */}
-            <PKWeightSet />
+            {/* <PKWeightSet /> */}
         </LinearGradient>
     );
 };
