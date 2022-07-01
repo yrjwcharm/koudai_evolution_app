@@ -2,13 +2,13 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 22:54:09
+ * @LastEditTime: 2022-06-29 23:45:15
  * @Description:基金消息管理
  */
-import {ScrollView, StyleSheet, Switch, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors} from '~/common/commonStyle';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {getSettingData} from './services';
 import Item from './Item';

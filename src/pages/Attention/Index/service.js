@@ -1,18 +1,18 @@
 /*
  * @Date: 2022-06-21 14:29:37
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-28 16:29:20
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 18:45:54
  * @Description:
  */
 import http from '~/services';
 
 export const getData = () => {
-    return http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/follow/index/202206');
+    return http.get('/follow/index/202206');
 };
 export const getFollowList = (params) => {
-    return http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/follow/list/202206', params);
+    return http.get('/follow/list/202206', params);
 };
 export const followAdd = (data) => {
-    return http.post('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/follow/add/202206', data);
+    return http.post('/follow/add/202206', data);
 };

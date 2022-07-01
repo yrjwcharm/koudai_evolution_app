@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 23:40:55
+ * @LastEditTime: 2022-06-30 15:22:40
  * @Description:
  */
 
@@ -35,12 +35,12 @@ class ScrollTabbar extends Component {
         this.underlineWidth = px(20);
     }
     componentWillReceiveProps(nextProps) {
-        this.scrollToIndex(nextProps.activeTab);
+        // this.scrollToIndex(nextProps.activeTab);
     }
     componentDidMount() {
-        setTimeout(() => {
-            this.scrollToIndex(this.props.activeTab);
-        }, 100);
+        // setTimeout(() => {
+        //     this.scrollToIndex(this.props.activeTab);
+        // }, 100);
     }
     scrollToIndex = (index) => {
         setTimeout(() => {

@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 21:44:39
+ * @LastEditTime: 2022-07-01 10:49:11
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -92,9 +92,9 @@ const Index = ({navigation}) => {
         <ScrollView style={styles.con}>
             {data?.list?.map((item, index) => (
                 <View key={index} style={{marginBottom: px(20)}}>
-                    <RenderHtml style={styles.title} html={item.title} />
-                    <Text style={styles.title_desc}>{item.content}</Text>
-                    {item?.imgUrl ? <FitImage source={{uri: item?.imgUrl}} /> : null}
+                    <Text style={styles.title}>{item.title}</Text>
+                    <RenderHtml html={item.content} style={styles.title_desc} />
+                    {item?.imgUrl ? <FitImage source={{uri: item?.imgUrl}} style={{marginTop: px(12)}} /> : null}
                 </View>
             ))}
             <Button onPress={handleUpload} title="上传图片" />
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         lineHeight: px(18),
         fontSize: px(12),
-        marginBottom: px(12),
+
         marginTop: px(4),
     },
 });

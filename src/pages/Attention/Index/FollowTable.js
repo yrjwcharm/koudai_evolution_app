@@ -1,34 +1,32 @@
 /*
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 16:30:56
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 16:44:08
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {debounce, px} from '~/utils/appUtil';
+import React from 'react';
+import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
-import {getFollowList} from './service';
 import FollowTableHeader from './FollowTableHeader';
-import sort from '~/assets/img/attention/sort.png';
+import sortImg from '~/assets/img/attention/sort.png';
 import sortUp from '~/assets/img/attention/sortUp.png';
 import sortDown from '~/assets/img/attention/sortDown.png';
-import _ from 'lodash';
-const FollowTable = ({data = {}, activeTab}) => {
-    const [followData, setFollowData] = useState();
-    const [sort, setSort] = useState({});
-    const getFollowData = async (params) => {
-        let res = await getFollowList(params);
-        setFollowData(res.result);
-    };
+import Feather from 'react-native-vector-icons/Feather';
+import {useJump} from '~/components/hooks';
+const FollowTable = ({data = {}, activeTab, handleSort, tabButton}) => {
+    const firstLineWidth = px(130); //第一列宽度
+    const otherLineWidth = px(80);
+    const jump = useJump();
     const {header, body} = data;
-    const handleSort = (data) => {
-        if (data.support_sort) {
-            // setSort((prev) => {
-            //     let _sort = {...prev};
-            //     // if()
-            // });
+    const _handleSort = (_data) => {
+        if (_data.order_by_field) {
+            handleSort({
+                item_type: activeTab,
+                order_by: _data?.current_order == 'asc' ? '' : _data.order_by_field,
+                sort: _data?.current_order == 'asc' ? '' : _data?.current_order == 'desc' ? 'asc' : 'desc',
+            });
         }
     };
 
@@ -46,14 +44,15 @@ const FollowTable = ({data = {}, activeTab}) => {
                                             <View
                                                 style={[
                                                     {
-                                                        width: index == 0 ? px(130) : px(80),
+                                                        width: index == 0 ? firstLineWidth : otherLineWidth,
                                                         alignItems: index == 0 ? 'flex-start' : 'center',
                                                     },
                                                 ]}
                                                 key={index}>
                                                 <TouchableOpacity
                                                     style={Style.flexRow}
-                                                    onPress={() => handleSort(_item)}>
+                                                    activeOpacity={0.9}
+                                                    onPress={() => _handleSort(_item)}>
                                                     <View style={{alignItems: 'flex-end'}}>
                                                         <Text
                                                             numberOfLines={1}
@@ -69,7 +68,13 @@ const FollowTable = ({data = {}, activeTab}) => {
                                                     </View>
                                                     {_item?.order_by_field && (
                                                         <Image
-                                                            source={sort}
+                                                            source={
+                                                                _item?.current_order == ''
+                                                                    ? sortImg
+                                                                    : _item?.current_order == 'asc'
+                                                                    ? sortUp
+                                                                    : sortDown
+                                                            }
                                                             style={{width: px(6), height: px(12), marginLeft: px(2)}}
                                                         />
                                                     )}
@@ -80,14 +85,14 @@ const FollowTable = ({data = {}, activeTab}) => {
                             </View>
                             {/* tr */}
                             {body?.tr?.map((tr, index) => (
-                                <View style={[styles.tr]}>
+                                <View style={[styles.tr]} key={index}>
                                     <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                         {tr.map((item, _index) => (
                                             <View
                                                 key={_index}
                                                 style={[
                                                     {
-                                                        width: _index == 0 ? px(130) : px(80),
+                                                        width: _index == 0 ? firstLineWidth : otherLineWidth,
                                                         alignItems: _index == 0 ? 'flex-start' : 'center',
                                                     },
                                                 ]}>
@@ -105,17 +110,25 @@ const FollowTable = ({data = {}, activeTab}) => {
                                                         ]}>
                                                         {item?.line1?.value}
                                                     </Text>
-                                                    {item?.line2 ? (
-                                                        <Text
-                                                            style={{
-                                                                color: item?.line2?.color || Colors.lightBlackColor,
-                                                                fontFamily: Font.numFontFamily,
-                                                                fontSize: px(14),
-                                                                marginTop: px(2),
-                                                            }}>
-                                                            {item?.line2?.value}
-                                                        </Text>
-                                                    ) : null}
+                                                    <View style={Style.flexRow}>
+                                                        {item?.line2 ? (
+                                                            <Text
+                                                                style={{
+                                                                    color: item?.line2?.color || Colors.lightBlackColor,
+                                                                    fontFamily:
+                                                                        _index == 0 ? undefined : Font.numFontFamily,
+                                                                    fontSize: _index == 0 ? px(11) : px(14),
+                                                                    marginTop: px(2),
+                                                                }}>
+                                                                {item?.line2?.value}
+                                                            </Text>
+                                                        ) : null}
+                                                        {item?.tag?.map((_tag, _tagIndex) => (
+                                                            <View style={styles.tag} key={_tagIndex}>
+                                                                <Text style={styles.tag_text}>{_tag}</Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
                                                 </View>
                                             </View>
                                         ))}
@@ -124,6 +137,23 @@ const FollowTable = ({data = {}, activeTab}) => {
                             ))}
                         </View>
                     </ScrollView>
+                    <View style={Style.flexRow}>
+                        {tabButton?.map((btn, dex) => (
+                            <TouchableOpacity
+                                key={dex}
+                                activeOpacity={0.9}
+                                onPress={() => jump(btn.url)}
+                                style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
+                                <Feather
+                                    size={px(16)}
+                                    name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
+                                    color={Colors.btnColor}
+                                />
+                                <View style={{width: px(6)}} />
+                                <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
             ) : null}
         </>
@@ -146,5 +176,19 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
         fontSize: px(10),
         marginTop: px(2),
+    },
+    tag: {
+        borderColor: '#BDC2CC',
+        borderWidth: 0.5,
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
+        paddingVertical: px(2),
+        marginTop: px(2),
+        marginLeft: px(7),
+    },
+    tag_text: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: Colors.lightBlackColor,
     },
 });

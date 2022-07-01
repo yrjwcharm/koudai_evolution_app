@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-13 17:02:35
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 17:41:24
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
@@ -14,6 +14,7 @@ import SearchInput from './SearchInput';
 import SearchTag from './SearchTag';
 import SearchContent from './SearchContent';
 import {getSearchHistory, insertSearch} from './utils';
+import {getSearchData} from './services';
 const Index = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [searchContent, setSearchContent] = useState('');
@@ -23,7 +24,10 @@ const Index = () => {
         getSerachList(value);
     };
     //获取搜索数据
-    const getSerachList = (content) => {};
+    const getSerachList = async (content) => {
+        let res = await getSearchData({keyword: content});
+        console.log(res);
+    };
     //搜索点击
     const onHandleSearch = (text) => {
         //插入搜索历史

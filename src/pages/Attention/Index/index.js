@@ -1,40 +1,45 @@
 /*
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 16:22:57
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 17:54:37
  * @Description:关注
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
-import {debounce, px} from '~/utils/appUtil';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {px} from '~/utils/appUtil';
+import {Colors, Style} from '~/common/commonStyle';
 import HotFund from './HotFund';
-import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import HeaderRight from './HeaderRight';
 import FollowTable from './FollowTable';
-import Feather from 'react-native-vector-icons/Feather';
-import http from '../../../services';
 import Toast from '../../../components/Toast';
+import NavBar from '~/components/NavBar';
+import StickyHeader from '~/components/Sticky';
+import {useFocusEffect} from '@react-navigation/native';
 const Attention = ({navigation}) => {
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
     const [activeTab, setActiveTab] = useState(1);
+    const [headHeight, setHeaderHeight] = useState(0);
+    const scrollY = useRef(new Animated.Value(0)).current;
     const _getData = async () => {
         let res = await getData();
         setData(res.result);
     };
-    useEffect(() => {
-        navigation.setOptions({
-            headerRight: () => {
-                return <HeaderRight />;
-            },
-        });
-        _getData();
-    }, [navigation]);
+    useFocusEffect(
+        useCallback(() => {
+            _getData();
+        }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            getFollowData({item_type: activeTab});
+        }, [activeTab])
+    );
     const onChangeTab = (obj) => {
         setActiveTab(data?.follow?.tabs[obj.i].item_type);
     };
@@ -50,19 +55,39 @@ const Attention = ({navigation}) => {
         }
         Toast.show(res.message);
     };
-    useEffect(() => {
-        getFollowData({item_type: activeTab});
-    }, [activeTab]);
+
     return (
         <View style={{flex: 1}}>
-            <ScrollView style={styles.con}>
-                <View style={{paddingHorizontal: px(16)}}>
+            <NavBar renderRight={<HeaderRight />} title="关注" />
+            <Animated.ScrollView
+                style={styles.con}
+                onScroll={
+                    Animated.event(
+                        [
+                            {
+                                nativeEvent: {contentOffset: {y: scrollY}}, // 记录滑动距离
+                            },
+                        ],
+                        {useNativeDriver: true}
+                    ) // 使用原生动画驱动
+                }
+                scrollEventThrottle={1}>
+                <View
+                    style={{paddingHorizontal: px(16)}}
+                    onLayout={(e) => {
+                        let {height} = e.nativeEvent.layout;
+                        setHeaderHeight(height); // 给头部高度赋值
+                    }}>
                     {/* 消息卡片 */}
                     {data?.notice && <MessageCard data={data?.notice} />}
                     {/* 热门基金 */}
                     {data?.hot_fund && <HotFund data={data?.hot_fund} onFollow={onFollow} />}
                 </View>
                 {/* 列表 */}
+                {/* <StickyHeader
+                    stickyHeaderY={headHeight} // 把头部高度传入
+                    stickyScrollY={scrollY} // 把滑动距离传入
+                > */}
                 {data?.follow?.tabs && (
                     <View style={{backgroundColor: '#fff'}}>
                         <ScrollableTabView
@@ -73,32 +98,19 @@ const Attention = ({navigation}) => {
                                 <View key={index} tabLabel={tab?.type_text}>
                                     {/* 分割线 */}
                                     <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
-                                    <FollowTable data={followData} activeTab={activeTab} />
-                                    <View style={Style.flexRow}>
-                                        {tab?.button_list?.map((btn, dex) => (
-                                            <TouchableOpacity
-                                                key={dex}
-                                                activeOpacity={0.9}
-                                                style={[
-                                                    Style.flexRow,
-                                                    {flex: 1, paddingVertical: px(14), justifyContent: 'center'},
-                                                ]}>
-                                                <Feather
-                                                    size={px(16)}
-                                                    name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
-                                                    color={Colors.btnColor}
-                                                />
-                                                <View style={{width: px(6)}} />
-                                                <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
+                                    <FollowTable
+                                        data={followData}
+                                        activeTab={activeTab}
+                                        handleSort={getFollowData}
+                                        tabButton={tab?.button_list}
+                                    />
                                 </View>
                             ))}
                         </ScrollableTabView>
                     </View>
                 )}
-            </ScrollView>
+                {/* </StickyHeader> */}
+            </Animated.ScrollView>
         </View>
     );
 };

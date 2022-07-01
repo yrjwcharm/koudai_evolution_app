@@ -2,7 +2,7 @@
  * @Date: 2022-06-29 21:56:50
  * @Description:
  */
-import {StyleSheet, Switch, Text, View} from 'react-native';
+import {StyleSheet, Switch, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
@@ -12,15 +12,23 @@ const Item = ({data}) => {
     const [isEnabled, setIsEnabled] = useState(data.status == 'ON');
     const toggleSwitch = () => {
         setIsEnabled((previousState) => {
-            // setEvent
+            sendEvent({id: data.id, status: previousState ? 'OFF' : 'ON'});
             return !previousState;
         });
+    };
+    const sendEvent = (params) => {
+        setEvent(params);
     };
     return (
         <View>
             <View style={[styles.card, Style.flexBetween]}>
-                <View>
-                    {/* <Image /> */}
+                <View style={Style.flexRow}>
+                    {data.icon_url && (
+                        <Image
+                            source={{uri: data.icon_url}}
+                            style={{marginRight: px(7), width: px(24), height: px(24)}}
+                        />
+                    )}
                     <View>
                         <Text style={styles.title}>{data.name}</Text>
                         <Text style={styles.desc}>{data.desc}</Text>

@@ -301,30 +301,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-                            <Button
-                                title="识别上传"
-                                onPress={() => {
-                                    props.navigation.navigate('OCRHome');
-                                }}
-                            />
-                            <Button
-                                title="编辑基金"
-                                onPress={() => {
-                                    props.navigation.navigate('EditSortFund');
-                                }}
-                            />
-                            <Button
-                                title="关注"
-                                onPress={() => {
-                                    props.navigation.navigate('Attention');
-                                }}
-                            />
-                            <Button
-                                title="消息管理"
-                                onPress={() => {
-                                    props.navigation.navigate('FundNoticeManage');
-                                }}
-                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
