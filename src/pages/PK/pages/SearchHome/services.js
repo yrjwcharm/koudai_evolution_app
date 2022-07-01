@@ -4,5 +4,8 @@
  */
 import http from '~/services';
 export const getSearchData = (params) => {
-    return http.get('http://kapi-webv7.yitao.mofanglicai.com.cn:10080/pk/index/search/20220608', params);
+    return http.get('/pk/index/search/20220608', params);
+};
+export const getSearchInfo = () => {
+    return http.get('/pk/search/default/20220608');
 };
