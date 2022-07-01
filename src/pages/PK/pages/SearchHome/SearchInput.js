@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-13 11:04:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-13 15:32:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 19:36:54
  * @Description:
  */
 import React, {useState} from 'react';
@@ -13,7 +13,7 @@ import {Colors, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useNavigation} from '@react-navigation/native';
-const SearchInput = (props) => {
+const SearchInput = React.forwardRef((props, ref) => {
     const {top} = useSafeAreaInsets();
     const navigation = useNavigation();
     const {onChangeText, onHandleSearch} = props;
@@ -22,7 +22,13 @@ const SearchInput = (props) => {
         setContent(value);
         onChangeText(value);
     };
-
+    React.useImperativeHandle(ref, () => {
+        return {
+            setValue: (value) => {
+                _onChangeText(value);
+            },
+        };
+    });
     return (
         <View style={[Style.flexRow, {marginTop: top}, styles.con]}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -31,7 +37,7 @@ const SearchInput = (props) => {
             <View style={[styles.inputCon, Style.flexRow]}>
                 <Icons name={'search'} color={'#545968'} size={px(18)} />
                 <TextInput
-                    placeholder="搜基金代码/名称"
+                    placeholder={props.placeholder || '123'}
                     style={{flex: 1, marginLeft: px(6)}}
                     onChangeText={_onChangeText}
                     value={content + ''}
@@ -43,7 +49,7 @@ const SearchInput = (props) => {
             </TouchableOpacity>
         </View>
     );
-};
+});
 
 export default SearchInput;
 

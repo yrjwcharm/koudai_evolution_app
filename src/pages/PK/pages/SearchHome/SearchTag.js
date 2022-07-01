@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-13 11:23:55
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-13 12:16:10
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 19:35:20
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
@@ -10,19 +10,21 @@ import React from 'react';
 import {px} from '../../../../utils/appUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Style} from '../../../../common/commonStyle';
-const SearchTag = ({title, style, onPress, onDelete}) => {
-    return (
-        <TouchableOpacity style={[styles.tag, Style.flexRow, style]} activeOpacity={0.9} onPress={() => onPress(title)}>
+const SearchTag = ({title, style, onPress, isDelete, onDelete, showDelete}) => {
+    return title ? (
+        <TouchableOpacity style={[styles.tag, Style.flexRow, style]} onPress={() => onPress(title)}>
             <Text style={{color: '#545968', fontSize: px(12), lineHeight: px(17)}}>{title}</Text>
-            <TouchableOpacity
-                style={{marginLeft: px(4)}}
-                onPress={() => {
-                    onDelete(title);
-                }}>
-                <AntDesign name={'close'} />
-            </TouchableOpacity>
+            {showDelete && isDelete ? (
+                <TouchableOpacity
+                    style={{marginLeft: px(4)}}
+                    onPress={() => {
+                        onDelete(title);
+                    }}>
+                    <AntDesign name={'close'} />
+                </TouchableOpacity>
+            ) : null}
         </TouchableOpacity>
-    );
+    ) : null;
 };
 
 export default SearchTag;

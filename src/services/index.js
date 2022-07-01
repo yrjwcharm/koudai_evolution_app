@@ -98,11 +98,7 @@ export default class http {
             let query = await qs.stringify(params);
             let res = null;
             if (!params) {
-                res = await this.adapter.get(url, null, {
-                    cancelToken: new axios.CancelToken(function executor(c) {
-                        global.cancle = c;
-                    }),
-                });
+                res = await this.adapter.get(url);
             } else {
                 res = await this.adapter.get(url + '?' + query);
             }
