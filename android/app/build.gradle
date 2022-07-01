@@ -81,7 +81,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle" //热更新
 
 project.ext.vectoricons = [
         iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'AntDesign.ttf','Entypo.ttf','EvilIcons.ttf','Ionicons.ttf','Foundation.ttf','Feather.ttf','MaterialCommunityIcons.ttf','Octicons.ttf','SimpleLineIcons.ttf']
@@ -154,8 +153,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 67900
-        versionName '6.7.9'
+        versionCode 68000
+        versionName '6.8.0'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23

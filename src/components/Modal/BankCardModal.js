@@ -86,7 +86,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 {item?.bank_name}
                                 {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
                             </Text>
-                            <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc}</Text>
+                            <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc || item?.desc}</Text>
                         </View>
                         {select == index ? <Entypo name={'check'} size={14} color={'#0051CC'} /> : null}
                     </>

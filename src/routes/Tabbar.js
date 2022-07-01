@@ -14,6 +14,7 @@ import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/index'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
+import Attention from '~/pages/Attention/Index'; //关注
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
@@ -115,6 +116,7 @@ export default function Tabbar() {
                 },
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
+            <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             {userInfo?.toJS()?.show_find_tab ? (
                 <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />

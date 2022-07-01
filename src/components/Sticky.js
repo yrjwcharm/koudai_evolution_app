@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 21:53:00
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-06 22:18:58
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-30 17:40:57
  * @Description:
  */
 import * as React from 'react';
@@ -44,7 +44,6 @@ export default class StickyHeader extends React.Component {
             outputRange: [0, 0, 0, 1],
         });
 
-        console.log(translateY);
         return (
             <Animated.View onLayout={this._onLayout} style={[style, styles.container, {transform: [{translateY}]}]}>
                 {children}

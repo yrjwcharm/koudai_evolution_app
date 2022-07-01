@@ -188,10 +188,9 @@ import UserCommunication from '../pages/Assets/UserCommunication'; // 用户交�
 import AdjustSetting from '../pages/Assets/AdjustSetting'; // 调仓方式
 import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾服务签约
 // v7新页面 Start
-import PKSearch from '../pages/PK/pages/Search'; //搜索
+import SearchHome from '../pages/PK/pages/SearchHome'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
-import Attention from '~/pages/Attention/Index'; //关注
 import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages/Index'; // 公募基金首页
 import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
 import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
@@ -204,6 +203,8 @@ import PKCompare from '../pages/PK/pages/Compare'; // pk对比
 import PrivatePlacement from '../pages/PE/PrivatePlacement'; // 私募
 import FundDetail from '~/pages/PublicOfferingOfFund/pages/FundDetail'; // 基金详情
 import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // 基金榜单
+import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
+import FundNoticeCenter from '~/pages/Attention/FundNoticeCenter'; //基金消息中心
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -221,6 +222,9 @@ import SignPassword from '../pages/PE/SignPassword'; // 设置签署密码
 import PortfolioTransfer from '../pages/Assets/PortfolioTransfer'; // 组合转投页面
 import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // 股债平衡组合
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
+import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
+import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -769,18 +773,20 @@ export default function AppStack() {
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             {/* v7新页面 Start */}
-            <Stack.Screen name="PKSearch" component={PKSearch} options={{title: '', headerShown: false}} />
+            <Stack.Screen name="SearchHome" component={SearchHome} options={{title: '', headerShown: false}} />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
-            <Stack.Screen name="Attention" component={Attention} options={{title: '关注'}} />
             <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
             <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
+            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
             <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
             <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
-            <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: ''}} />
+            <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: '导入关注'}} />
             <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
             <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
             <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
+            <Stack.Screen name="FundNoticeCenter" component={FundNoticeCenter} options={{title: '提醒中心'}} />
+            <Stack.Screen name="FundNoticeManage" component={FundNoticeManage} options={{title: '管理提醒'}} />
 
             <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
             <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
@@ -801,7 +807,8 @@ export default function AppStack() {
             <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
             <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
-            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
+            <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
+            <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
         </Stack.Navigator>
     );
 }

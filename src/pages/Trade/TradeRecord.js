@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 11:28:25
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 14:35:29
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -143,6 +143,13 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
 
+    const handlerName = (val = '') => {
+        if (val.length > 9) {
+            val = val.slice(0, 5) + '...' + val.slice(-4);
+        }
+        return val;
+    };
+
     const ListFooterComponent = () => {
         return (
             <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>
@@ -180,7 +187,7 @@ const TradeRecord = ({route, navigation}) => {
                                         {item?.type?.text}
                                     </Text>
                                 </View>
-                                <Text style={styles.title}>{item.name}</Text>
+                                <Text style={styles.title}>{handlerName(item.name)}</Text>
                             </View>
                             <Text style={styles.date}>{item.time}</Text>
                         </View>

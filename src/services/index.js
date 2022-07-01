@@ -91,13 +91,18 @@ axios.interceptors.response.use(
 export default class http {
     static adapter = Platform.OS === 'ios' || __DEV__ ? axios : androidHttp;
     // static adapter = axios;
+    axiosPostRequestCancel = null;
 
     static async get(url, params, config, showLoading = true) {
         try {
             let query = await qs.stringify(params);
             let res = null;
             if (!params) {
-                res = await this.adapter.get(url);
+                res = await this.adapter.get(url, null, {
+                    cancelToken: new axios.CancelToken(function executor(c) {
+                        global.cancle = c;
+                    }),
+                });
             } else {
                 res = await this.adapter.get(url + '?' + query);
             }
@@ -125,7 +130,6 @@ export default class http {
         }
     }
 
-    axiosPostRequestCancel = null;
     static async uploadFiles(url, data, progressCallBack) {
         let formData = new FormData();
         let file = {

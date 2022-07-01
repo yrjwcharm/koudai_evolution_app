@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 23:11:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 10:49:11
  * @Description:
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {px} from '~/utils/appUtil';
@@ -15,12 +15,24 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {requestAuth} from '../../../utils/appUtil';
 import {Modal} from '../../../components/Modal';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {uploadFile} from './services';
+import {getInfo, uploadFile} from './services';
 import Toast from '~/components/Toast';
 import {useDispatch} from 'react-redux';
 import {updateFundList} from '~/redux/actions/ocrFundList';
+import RenderHtml from '~/components/RenderHtml';
+import FitImage from 'react-native-fit-image';
 const Index = ({navigation}) => {
     const dispatch = useDispatch();
+    const [data, setData] = useState(data);
+    const _getData = async () => {
+        let res = await getInfo();
+        navigation.setOptions({title: res.result?.title || '识图导入'});
+        setData(res.result);
+    };
+    useEffect(() => {
+        _getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     // 选择相册
     const handleUpload = async () => {
         try {
@@ -49,13 +61,20 @@ const Index = ({navigation}) => {
         }, 100);
     };
     const uploadImage = async (data) => {
+        let toast = Toast.showLoading();
         let res = await uploadFile(data, (e) => {
             console.log(e);
         });
+        Toast.hide(toast);
         Toast.show(res.message);
         if (res.code === '000000') {
-            dispatch(updateFundList({ocrOwernList: res.result}));
-            navigation.navigate('ImportOwnerFund', {data: res.result});
+            if (res.result?.type == 'self_select') {
+                dispatch(updateFundList({ocrOptionalList: res.result.list}));
+                navigation.navigate('ImportOptionalFund');
+            } else {
+                dispatch(updateFundList({ocrOwernList: res.result.list}));
+                navigation.navigate('ImportOwnerFund');
+            }
         }
     };
     const blockCal = () => {
@@ -71,16 +90,14 @@ const Index = ({navigation}) => {
     };
     return (
         <ScrollView style={styles.con}>
-            <View style={[Style.flexRow, {alignItems: 'flex-start', marginBottom: px(15)}]}>
-                <TouchableOpacity style={{height: px(20), marginTop: px(2), width: px(24)}}>
-                    <AntDesign name={'checkcircle'} size={px(14)} color={Colors.btnColor} />
-                </TouchableOpacity>
-                <View>
-                    <Text style={{fontSize: px(14), color: Colors.defaultColor}}>广发多因子灵活配置</Text>
-                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginTop: px(4)}}>123455</Text>
+            {data?.list?.map((item, index) => (
+                <View key={index} style={{marginBottom: px(20)}}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <RenderHtml html={item.content} style={styles.title_desc} />
+                    {item?.imgUrl ? <FitImage source={{uri: item?.imgUrl}} style={{marginTop: px(12)}} /> : null}
                 </View>
-            </View>
-            <Button onPress={handleUpload} />
+            ))}
+            <Button onPress={handleUpload} title="上传图片" />
         </ScrollView>
     );
 };
@@ -95,7 +112,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(16),
-        marginBottom: px(6),
         color: Colors.defaultColor,
         fontWeight: '700',
     },
@@ -103,5 +119,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         lineHeight: px(18),
         fontSize: px(12),
+
+        marginTop: px(4),
     },
 });

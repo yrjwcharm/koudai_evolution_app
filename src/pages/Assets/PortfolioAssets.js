@@ -3,10 +3,10 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2022-06-25 14:53:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-06-26 18:30:45
  */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
     View,
     Text,
@@ -18,6 +18,8 @@ import {
     RefreshControl,
     Platform,
     StatusBar,
+    ImageBackground,
+    ActivityIndicator,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -45,6 +47,22 @@ import ReasonListDialog from './components/ReasonListDialog.js';
 import LinearGradient from 'react-native-linear-gradient';
 const deviceWidth = Dimensions.get('window').width;
 
+const RatioColor = [
+    '#E1645C',
+    '#6694F3',
+    '#F8A840',
+    '#CC8FDD',
+    '#5DC162',
+    '#C7AC6B',
+    '#62C4C7',
+    '#E97FAD',
+    '#C2E07F',
+    '#B1B4C5',
+    '#E78B61',
+    '#8683C9',
+    '#EBDD69',
+];
+
 export default function PortfolioAssets(props) {
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
@@ -69,6 +87,11 @@ export default function PortfolioAssets(props) {
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const [signData, setSignData] = useState(null);
+    const [fundDetail, setFundDetail] = useState(null);
+    const [fundDetailLoading, setFundDetailLoading] = useState(false);
+    const bottomBtns = useMemo(() => {
+        return [...(data?.core_buttons || []), ...(data?.extend_buttons || [])];
+    }, [data]);
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -85,6 +108,18 @@ export default function PortfolioAssets(props) {
             props.navigation.setOptions({
                 title: res.result.title,
             });
+            if (res.result.need_ds) {
+                // 基金明细
+                setFundDetailLoading(true);
+                http.get('/portfolio/funds/user_holding/20210101', {
+                    poid: props?.route.params?.poid || 'X00F000003',
+                }).then((result) => {
+                    if (result.code === '000000') {
+                        setFundDetail(result.result || {});
+                    }
+                    setFundDetailLoading(false);
+                });
+            }
             if (res.result?.progress_bar) {
                 let _l = '';
                 const _left = res.result?.progress_bar?.percent_text;
@@ -349,122 +384,150 @@ export default function PortfolioAssets(props) {
                         styles.plan_card_sty,
                         card.group_bulletin && {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                     ]}>
-                    <View style={Style.flexBetween}>
-                        <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
-                            <View style={[{marginRight: text(8)}, Style.flexRow]}>
-                                {card?.title_info?.icon ? (
-                                    <Image
-                                        source={{uri: card?.title_info?.icon}}
-                                        style={{width: px(20), height: px(20), marginRight: text(6)}}
-                                    />
+                    <View style={{padding: text(16)}}>
+                        <View style={Style.flexBetween}>
+                            <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
+                                <View style={[{marginRight: text(8)}, Style.flexRow]}>
+                                    {card?.title_info?.icon ? (
+                                        <Image
+                                            source={{uri: card?.title_info?.icon}}
+                                            style={{width: px(20), height: px(20), marginRight: text(6)}}
+                                        />
+                                    ) : null}
+                                    <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+                                </View>
+                                {card?.title_info?.popup ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => showTips(card?.title_info?.popup)}>
+                                        <FastImage
+                                            style={{width: text(16), height: text(16)}}
+                                            source={require('../../assets/img/tip.png')}
+                                        />
+                                    </TouchableOpacity>
                                 ) : null}
-                                <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
                             </View>
-                            {card?.title_info?.popup ? (
-                                <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
-                                    <FastImage
-                                        style={{width: text(16), height: text(16)}}
-                                        source={require('../../assets/img/tip.png')}
-                                    />
+                            {card.is_plan && card.update_button ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(card.update_button.url)}
+                                    style={[
+                                        Style.flexCenter,
+                                        styles.updateBtn,
+                                        {borderColor: card.update_button.color},
+                                    ]}>
+                                    <Text style={[styles.updateText, {color: card.update_button.color}]}>
+                                        {card.update_button.text}
+                                    </Text>
                                 </TouchableOpacity>
                             ) : null}
                         </View>
-                        {card.is_plan && card.update_button ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => jump(card.update_button.url)}
-                                style={[Style.flexCenter, styles.updateBtn, {borderColor: card.update_button.color}]}>
-                                <Text style={[styles.updateText, {color: card.update_button.color}]}>
-                                    {card.update_button.text}
-                                </Text>
-                            </TouchableOpacity>
+                        {card.is_plan && card.score_update_time ? (
+                            <Text style={styles.updateTime}>{card.score_update_time}</Text>
                         ) : null}
-                    </View>
-                    {card.is_plan && card.score_update_time ? (
-                        <Text style={styles.updateTime}>{card.score_update_time}</Text>
-                    ) : null}
-                    {card?.desc ? (
-                        <View style={{marginVertical: px(12)}}>
-                            <Html style={styles.plan_desc_sty} html={card?.desc} />
-                        </View>
-                    ) : null}
+                        {card?.desc ? (
+                            <View style={{marginVertical: px(12)}}>
+                                <Html style={styles.plan_desc_sty} html={card?.desc} />
+                            </View>
+                        ) : null}
 
-                    {/* {card?.notice ? (
+                        {/* {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
                         <Text style={styles.blue_text_style}>{card?.notice}</Text>
                     </View>
                 ) : null} */}
-                    {card?.notice_info ? (
-                        <View style={{marginBottom: text(24)}}>
-                            <View style={styles.noticeSty}>
-                                <Image
-                                    source={require('../../assets/personal/noticeArrow.png')}
-                                    style={[
-                                        styles.noticeArrow,
-                                        card.notice_info.arrow_position === 'middle'
-                                            ? styles.center
-                                            : card.notice_info.arrow_position === 'right'
-                                            ? styles.right
-                                            : {},
-                                    ]}
-                                />
-                                <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
+                        {card?.notice_info ? (
+                            <View style={{marginBottom: text(24)}}>
+                                <View style={styles.noticeSty}>
+                                    <Image
+                                        source={require('../../assets/personal/noticeArrow.png')}
+                                        style={[
+                                            styles.noticeArrow,
+                                            card.notice_info.arrow_position === 'middle'
+                                                ? styles.center
+                                                : card.notice_info.arrow_position === 'right'
+                                                ? styles.right
+                                                : {},
+                                        ]}
+                                    />
+                                    <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
+                                </View>
                             </View>
-                        </View>
-                    ) : null}
-                    <View style={Style.flexBetween}>
-                        {card?.button_list?.map?.((_button, _index, arr) => {
-                            return (
-                                <TouchableOpacity
-                                    key={_index + '_button'}
-                                    onPress={() => {
-                                        global.LogTool(_button.action, props.route?.params?.poid);
-                                        accountJump(_button.url, _button.action);
-                                    }}
-                                    disabled={_button.avail == 0}
-                                    activeOpacity={1}
-                                    style={{
-                                        borderColor: Colors.descColor,
-                                        borderWidth:
-                                            _index == arr.length - 1 && _button.avail !== 0 ? Space.borderWidth : 0,
-                                        borderRadius: text(6),
-                                        backgroundColor:
-                                            _button.avail !== 0
-                                                ? _index == arr.length - 1
-                                                    ? '#fff'
-                                                    : '#0051CC'
-                                                : '#C7D8F0',
-                                        flex: 1,
-                                        marginRight: _index < card?.button_list?.length - 1 ? text(10) : 0,
-                                        height: text(40),
-                                        justifyContent: 'center',
-                                    }}>
-                                    <Text
+                        ) : null}
+                        <View style={Style.flexBetween}>
+                            {card?.button_list?.map?.((_button, _index, arr) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={_index + '_button'}
+                                        onPress={() => {
+                                            global.LogTool(_button.action, props.route?.params?.poid);
+                                            accountJump(_button.url, _button.action);
+                                        }}
+                                        disabled={_button.avail == 0}
+                                        activeOpacity={1}
                                         style={{
-                                            textAlign: 'center',
-                                            fontSize: px(14),
-                                            color:
-                                                _index == arr.length - 1
-                                                    ? _button.avail == 0
+                                            borderColor: Colors.descColor,
+                                            borderWidth:
+                                                _index == arr.length - 1 && _button.avail !== 0 ? Space.borderWidth : 0,
+                                            borderRadius: text(6),
+                                            backgroundColor:
+                                                _button.avail !== 0
+                                                    ? _index == arr.length - 1
                                                         ? '#fff'
-                                                        : '#545968'
-                                                    : '#fff',
+                                                        : '#0051CC'
+                                                    : '#C7D8F0',
+                                            flex: 1,
+                                            marginRight: _index < card?.button_list?.length - 1 ? text(10) : 0,
+                                            height: text(40),
+                                            justifyContent: 'center',
                                         }}>
-                                        {_button.text}
-                                    </Text>
-                                    {_button.tips ? (
-                                        <View style={styles.superscriptBox}>
-                                            <Text style={styles.superscript}>{_button.tips}</Text>
-                                        </View>
-                                    ) : null}
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                    {card?.tip ? (
-                        <View style={{marginTop: text(20)}}>
-                            <Text style={styles.cardTips}>{card?.tip}</Text>
+                                        <Text
+                                            style={{
+                                                textAlign: 'center',
+                                                fontSize: px(14),
+                                                color:
+                                                    _index == arr.length - 1
+                                                        ? _button.avail == 0
+                                                            ? '#fff'
+                                                            : '#545968'
+                                                        : '#fff',
+                                            }}>
+                                            {_button.text}
+                                        </Text>
+                                        {_button.tips ? (
+                                            <View style={styles.superscriptBox}>
+                                                <Text style={styles.superscript}>{_button.tips}</Text>
+                                            </View>
+                                        ) : null}
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
+                        {card?.tip ? (
+                            <View style={{marginTop: text(20)}}>
+                                <Text style={styles.cardTips}>{card?.tip}</Text>
+                            </View>
+                        ) : null}
+                    </View>
+                    {/* 蒙层 */}
+                    {data.need_ds ? (
+                        <ImageBackground
+                            resizeMode="cover"
+                            source={{uri: card.ds_info.bg}}
+                            style={[styles.mark, {justifyContent: 'flex-end'}]}
+                            imageStyle={{borderRadius: px(6)}}>
+                            {card.ds_info.button ? (
+                                <Button
+                                    title={card.ds_info?.button?.text}
+                                    activeOpacity={0.8}
+                                    disabled={!card.ds_info?.button?.avail}
+                                    onPress={() => {
+                                        jump(card.ds_info.button.url);
+                                    }}
+                                    style={styles.markBtn}
+                                />
+                            ) : null}
+                        </ImageBackground>
                     ) : null}
                 </View>
                 {card.group_bulletin && renderGroupBulletin(card.group_bulletin)}
@@ -477,139 +540,152 @@ export default function PortfolioAssets(props) {
                 <Text style={[styles.title_sty, {paddingVertical: text(16)}]}>{chart?.title}</Text>
                 <View
                     style={{
-                        paddingTop: text(16),
-                        paddingBottom: text(10),
                         backgroundColor: '#fff',
                         borderRadius: text(10),
                     }}>
-                    <View
-                        style={{
-                            height: 260,
-                        }}>
-                        {chart?.label && chart?.label?.length > 0 ? (
-                            <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
-                                <View style={[styles.legend_sty]}>
-                                    <TextInput
-                                        ref={_textTime}
-                                        style={[styles.legend_title_sty, {width: text(100)}]}
-                                        defaultValue={chart?.label[0]?.val}
-                                        editable={false}
-                                    />
-                                    <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
-                                </View>
-                                <View style={styles.legend_sty}>
-                                    <TextInput
-                                        style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
-                                        ref={_textPortfolio}
-                                        defaultValue={chart?.label[1]?.val}
-                                        editable={false}
-                                    />
-                                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                        <CircleLegend color={['#FFECEC', '#E74949']} />
-                                        <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
+                    <View style={{paddingTop: text(16), paddingBottom: text(10)}}>
+                        <View
+                            style={{
+                                height: 260,
+                            }}>
+                            {chart?.label && chart?.label?.length > 0 ? (
+                                <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
+                                    <View style={[styles.legend_sty]}>
+                                        <TextInput
+                                            ref={_textTime}
+                                            style={[styles.legend_title_sty, {width: text(100)}]}
+                                            defaultValue={chart?.label[0]?.val}
+                                            editable={false}
+                                        />
+                                        <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
                                     </View>
-                                </View>
-                                {chart?.label[2] && (
                                     <View style={styles.legend_sty}>
                                         <TextInput
-                                            style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
-                                            ref={_textBenchmark}
-                                            defaultValue={chart?.label[2]?.val}
+                                            style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
+                                            ref={_textPortfolio}
+                                            defaultValue={chart?.label[1]?.val}
                                             editable={false}
                                         />
                                         <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                            {chart?.label[2]?.name === '底线' ? (
-                                                <Text
-                                                    style={{
-                                                        color: Colors.defaultColor,
-                                                        fontSize: Font.textH3,
-                                                        fontWeight: Platform.select({android: '700', ios: '600'}),
-                                                    }}>
-                                                    --
-                                                </Text>
-                                            ) : (
-                                                <CircleLegend color={['#E8EAEF', '#545968']} />
-                                            )}
-                                            <View style={Style.flexRow}>
-                                                <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
-                                                    {chart?.label[2]?.name}
-                                                </Text>
-                                                {chart?.tips && (
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.8}
-                                                        onPress={() => showTips(chart.tips, 'chart')}>
-                                                        <FastImage
-                                                            style={{
-                                                                width: text(12),
-                                                                height: text(12),
-                                                                marginLeft: text(4),
-                                                            }}
-                                                            source={require('../../assets/img/tip.png')}
-                                                        />
-                                                    </TouchableOpacity>
-                                                )}
-                                            </View>
+                                            <CircleLegend color={['#FFECEC', '#E74949']} />
+                                            <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
                                         </View>
                                     </View>
-                                )}
-                            </View>
-                        ) : null}
-                        {chartData?.length > 0 ? (
-                            <Chart
-                                initScript={baseAreaChart(
-                                    chartData,
-                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                    true,
-                                    2,
-                                    deviceWidth - text(40),
-                                    10,
-                                    tag,
-                                    220,
-                                    chart.max_ratio
-                                )}
-                                onChange={onChartChange}
-                                onHide={onHide}
-                                style={{width: '100%'}}
-                            />
-                        ) : (
-                            showEmpty && (
-                                <EmptyTip
-                                    style={{paddingTop: px(40)}}
-                                    imageStyle={{width: px(150), resizeMode: 'contain'}}
-                                    type={'part'}
+                                    {chart?.label[2] && (
+                                        <View style={styles.legend_sty}>
+                                            <TextInput
+                                                style={[
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chart?.label[2]?.val)},
+                                                ]}
+                                                ref={_textBenchmark}
+                                                defaultValue={chart?.label[2]?.val}
+                                                editable={false}
+                                            />
+                                            <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                                {chart?.label[2]?.name === '底线' ? (
+                                                    <Text
+                                                        style={{
+                                                            color: Colors.defaultColor,
+                                                            fontSize: Font.textH3,
+                                                            fontWeight: Platform.select({android: '700', ios: '600'}),
+                                                        }}>
+                                                        --
+                                                    </Text>
+                                                ) : (
+                                                    <CircleLegend color={['#E8EAEF', '#545968']} />
+                                                )}
+                                                <View style={Style.flexRow}>
+                                                    <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
+                                                        {chart?.label[2]?.name}
+                                                    </Text>
+                                                    {chart?.tips && (
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.8}
+                                                            onPress={() => showTips(chart.tips, 'chart')}>
+                                                            <FastImage
+                                                                style={{
+                                                                    width: text(12),
+                                                                    height: text(12),
+                                                                    marginLeft: text(4),
+                                                                }}
+                                                                source={require('../../assets/img/tip.png')}
+                                                            />
+                                                        </TouchableOpacity>
+                                                    )}
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )}
+                                </View>
+                            ) : null}
+                            {chartData?.length > 0 ? (
+                                <Chart
+                                    initScript={baseAreaChart(
+                                        chartData,
+                                        [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                        ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                        true,
+                                        2,
+                                        deviceWidth - text(40),
+                                        10,
+                                        tag,
+                                        220,
+                                        chart.max_ratio
+                                    )}
+                                    onChange={onChartChange}
+                                    onHide={onHide}
+                                    style={{width: '100%'}}
                                 />
-                            )
+                            ) : (
+                                showEmpty && (
+                                    <EmptyTip
+                                        style={{paddingTop: px(40)}}
+                                        imageStyle={{width: px(150), resizeMode: 'contain'}}
+                                        type={'part'}
+                                    />
+                                )
+                            )}
+                        </View>
+                        {chart?.sub_tabs && chart?.chart?.length > 0 && (
+                            <View style={styles.sub_tabs}>
+                                {chart?.sub_tabs?.map((_item, _index, arr) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[
+                                                styles.btn_sty,
+                                                {
+                                                    backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                                    borderWidth: period == _item.val ? 0 : 0.5,
+                                                    marginRight: _index < arr.length - 1 ? text(10) : 0,
+                                                },
+                                            ]}
+                                            key={_index}
+                                            onPress={() => changeTab(_item.val, _item.type)}>
+                                            <Text
+                                                style={{
+                                                    color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                    fontSize: text(12),
+                                                }}>
+                                                {_item.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
                         )}
                     </View>
-                    {chart?.sub_tabs && chart?.chart?.length > 0 && (
-                        <View style={styles.sub_tabs}>
-                            {chart?.sub_tabs?.map((_item, _index, arr) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={[
-                                            styles.btn_sty,
-                                            {
-                                                backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
-                                                borderWidth: period == _item.val ? 0 : 0.5,
-                                                marginRight: _index < arr.length - 1 ? text(10) : 0,
-                                            },
-                                        ]}
-                                        key={_index}
-                                        onPress={() => changeTab(_item.val, _item.type)}>
-                                        <Text
-                                            style={{
-                                                color: period == _item.val ? '#0051CC' : '#555B6C',
-                                                fontSize: text(12),
-                                            }}>
-                                            {_item.name}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                    )}
+                    {/* 蒙层 */}
+                    {data.need_ds ? (
+                        <ImageBackground
+                            resizeMode="cover"
+                            source={{uri: card.ds_info.bg}}
+                            style={[styles.mark, {borderRadius: text(10)}]}
+                            imageStyle={{borderRadius: px(10)}}>
+                            <Text style={styles.dsInfoContent}>{card.ds_info.content}</Text>
+                        </ImageBackground>
+                    ) : null}
                 </View>
             </>
         );
@@ -652,6 +728,157 @@ export default function PortfolioAssets(props) {
                     })}
                 </View>
             </>
+        );
+    };
+
+    const renderFundDetail = () => {
+        return (
+            <View style={fundDetailStyles.subContainer}>
+                {/* title */}
+                <Text style={[styles.title_sty, {paddingTop: text(16)}]}>{fundDetail?.title}</Text>
+                {/* loading */}
+                {fundDetailLoading ? (
+                    <ActivityIndicator color={Colors.brandColor} style={{width: '100%', height: text(42)}} />
+                ) : (
+                    <>
+                        {/* list */}
+                        {fundDetail?.list?.length ? (
+                            fundDetail?.list?.map((item, index) => {
+                                return (
+                                    <View key={`type${index}`} style={{marginBottom: text(8)}}>
+                                        <View style={[fundDetailStyles.titleContainer, Style.flexRow]}>
+                                            <View
+                                                style={[
+                                                    fundDetailStyles.circle,
+                                                    {backgroundColor: item.color || RatioColor[index]},
+                                                ]}
+                                            />
+                                            <Text
+                                                style={[
+                                                    fundDetailStyles.name,
+                                                    {color: item.color || RatioColor[index], fontWeight: '500'},
+                                                ]}>
+                                                {item.name}
+                                            </Text>
+                                            {/*<Text*/}
+                                            {/*    style={[*/}
+                                            {/*        fundDetailStyles.numStyle,*/}
+                                            {/*        {color: item.color || RatioColor[index]},*/}
+                                            {/*    ]}>*/}
+                                            {/*    {item.percent < 0.01 ? '<0.01' : item.percent}%*/}
+                                            {/*</Text>*/}
+                                        </View>
+                                        {item?.funds?.map((fund, i, arr) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        global.LogTool('click', 'fund', item.code);
+                                                        props.navigation.navigate('FundDetail', {code: fund.code});
+                                                    }}
+                                                    style={[
+                                                        fundDetailStyles.fundContainer,
+                                                        i === arr.length - 1 ? {marginBottom: 0} : {},
+                                                    ]}
+                                                    key={`${item.type}${fund.code}${i}`}>
+                                                    <View style={[fundDetailStyles.fundTitle, Style.flexBetween]}>
+                                                        <View style={Style.flexRow}>
+                                                            <Text style={[fundDetailStyles.name]}>{fund.name}</Text>
+                                                        </View>
+                                                        {fund.button ? (
+                                                            <TouchableOpacity
+                                                                activeOpacity={fund.button.avail ? 0.8 : 0.3}
+                                                                onPress={() => {
+                                                                    jump(fund.button.url);
+                                                                }}
+                                                                disabled={!fund.button.avail}
+                                                                style={[
+                                                                    fundDetailStyles.redeemBtn,
+                                                                    {opacity: fund.button.avail ? 1 : 0.3},
+                                                                ]}>
+                                                                <Text style={fundDetailStyles.redeemBtnText}>
+                                                                    {fund.button.text}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        ) : null}
+                                                    </View>
+                                                    <View style={Style.flexRow}>
+                                                        <View style={{flex: 1}}>
+                                                            <View style={[Style.flexRow, {marginBottom: text(12)}]}>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.subTitle,
+                                                                        {color: Colors.darkGrayColor},
+                                                                    ]}>
+                                                                    {'日收益(元)'}
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.numStyle,
+                                                                        {color: getColor(fund.profit)},
+                                                                    ]}>
+                                                                    {fund.profit}
+                                                                </Text>
+                                                                <Text style={[fundDetailStyles.numStyle]}>
+                                                                    ({fund.profit_date_raw})
+                                                                </Text>
+                                                            </View>
+                                                            <View style={Style.flexRow}>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.subTitle,
+                                                                        {color: Colors.darkGrayColor},
+                                                                    ]}>
+                                                                    {'份额(份)'}
+                                                                </Text>
+                                                                <Text style={[fundDetailStyles.numStyle]}>
+                                                                    {fund.share}
+                                                                </Text>
+                                                            </View>
+                                                        </View>
+                                                        <View style={{flex: 1}}>
+                                                            <View style={[Style.flexRow, {marginBottom: text(12)}]}>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.subTitle,
+                                                                        {color: Colors.darkGrayColor},
+                                                                    ]}>
+                                                                    {'累计收益(元)'}
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.numStyle,
+                                                                        {color: getColor(fund.profit_acc)},
+                                                                    ]}>
+                                                                    {fund.profit_acc}
+                                                                </Text>
+                                                            </View>
+                                                            <View style={Style.flexRow}>
+                                                                <Text
+                                                                    style={[
+                                                                        fundDetailStyles.subTitle,
+                                                                        {color: Colors.darkGrayColor},
+                                                                    ]}>
+                                                                    {'金额(元)'}
+                                                                </Text>
+                                                                <Text style={[fundDetailStyles.numStyle]}>
+                                                                    {fund.amount}
+                                                                </Text>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+                                );
+                            })
+                        ) : (
+                            <EmptyTip text={'暂无持有中基金'} />
+                        )}
+                    </>
+                )}
+            </View>
         );
     };
 
@@ -818,46 +1045,54 @@ export default function PortfolioAssets(props) {
                         </View>
                     )}
                     {renderChart()}
+                    {/* 基金明细 */}
+                    {data.need_ds && renderFundDetail()}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
-                    <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
-                        {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {
-                            return _index % 4 == 0 && _index === arr.length - 1 ? null : (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{
-                                        alignItems: 'center',
-                                        width: (deviceWidth - px(16) * 2) / 4,
-                                        marginBottom: px(26),
-                                    }}
-                                    key={_index + '_item0'}
-                                    onPress={() => {
-                                        global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _item.id);
-                                        if (_item.red_point) {
-                                            http.get('/wechat/report/red_point/20210906');
-                                        }
-                                        jump(_item.url);
-                                    }}>
-                                    <View style={{position: 'relative'}}>
-                                        <FastImage
-                                            source={{
-                                                uri: _item.icon,
-                                            }}
-                                            resizeMode="contain"
-                                            style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                        />
-                                        {_item.red_point ? <View style={styles.redDot} /> : null}
-                                    </View>
-                                    <Text
-                                        style={[
-                                            styles.list_text_sty,
-                                            {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
-                                        ]}>
-                                        {_item.text}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
+                    {bottomBtns?.[0] ? (
+                        <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
+                            {bottomBtns.map((_item, _index, arr) => {
+                                return _index % 4 == 0 && _index === arr.length - 1 ? null : (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={{
+                                            alignItems: 'center',
+                                            width: (deviceWidth - px(16) * 2) / 4,
+                                            marginBottom: px(26),
+                                        }}
+                                        key={_index + '_item0'}
+                                        onPress={() => {
+                                            global.LogTool(
+                                                'assetsDetailIconsStart',
+                                                props.route?.params?.poid,
+                                                _item.id
+                                            );
+                                            if (_item.red_point) {
+                                                http.get('/wechat/report/red_point/20210906');
+                                            }
+                                            jump(_item.url);
+                                        }}>
+                                        <View style={{position: 'relative'}}>
+                                            <FastImage
+                                                source={{
+                                                    uri: _item.icon,
+                                                }}
+                                                resizeMode="contain"
+                                                style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                            />
+                                            {_item.red_point ? <View style={styles.redDot} /> : null}
+                                        </View>
+                                        <Text
+                                            style={[
+                                                styles.list_text_sty,
+                                                {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                            ]}>
+                                            {_item.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    ) : null}
                 </View>
                 {card?.is_plan ? (
                     <BottomModal ref={scoreModal} title={'资产健康分'} style={{height: text(400)}}>
@@ -1176,7 +1411,6 @@ const styles = StyleSheet.create({
     },
     plan_card_sty: {
         backgroundColor: '#fff',
-        padding: text(16),
         borderRadius: text(10),
         marginTop: px(-20),
     },
@@ -1438,5 +1672,94 @@ const styles = StyleSheet.create({
     groupBulletinBtnText: {
         fontSize: px(12),
         color: '#0051cc',
+    },
+    mark: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        zIndex: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: text(10),
+        paddingBottom: px(16),
+    },
+    markBtn: {
+        width: px(140),
+        paddingVertical: px(10),
+        borderRadius: px(6),
+        backgroundColor: '#0051CC',
+    },
+    markBtnText: {
+        fontSize: px(14),
+        lineHeight: px(20),
+        color: '#fff',
+        textAlign: 'center',
+    },
+    dsInfoContent: {
+        paddingHorizontal: px(28),
+        fontSize: px(13),
+        lineHeight: px(21),
+        color: '#121D3A',
+    },
+});
+
+const fundDetailStyles = StyleSheet.create({
+    subContainer: {
+        // paddingHorizontal: Space.padding,
+    },
+    titleContainer: {
+        paddingVertical: text(14),
+    },
+    circle: {
+        width: text(10),
+        height: text(10),
+        borderRadius: text(6),
+        marginRight: text(8),
+    },
+    name: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.defaultColor,
+    },
+    numStyle: {
+        fontSize: text(13),
+        lineHeight: text(16),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+        marginLeft: text(4),
+    },
+    fundContainer: {
+        marginBottom: text(12),
+        paddingTop: text(14),
+        paddingBottom: text(18),
+        paddingHorizontal: text(14),
+        borderRadius: text(4),
+        backgroundColor: '#fff',
+    },
+    fundTitle: {
+        marginBottom: text(14),
+    },
+    subTitle: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.brandColor,
+    },
+    historyHolding: {
+        padding: Space.padding,
+        marginVertical: text(28),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+    },
+    redeemBtn: {
+        borderWidth: 1,
+        borderColor: '#0051CC',
+        borderRadius: px(12),
+        paddingVertical: px(3),
+        paddingHorizontal: px(8),
+    },
+    redeemBtnText: {
+        fontSize: px(12),
+        lineHeight: px(18),
+        color: '#0051CC',
     },
 });

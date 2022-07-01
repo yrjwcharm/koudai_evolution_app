@@ -1,34 +1,38 @@
 /*
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-28 17:21:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 12:06:13
  * @Description: 基金分类
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, ScrollView, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import sort from '~/assets/img/attention/sort.png';
 import sortUp from '~/assets/img/attention/sortUp.png';
 import sortDown from '~/assets/img/attention/sortDown.png';
+import favor from '~/assets/img/icon/favor.png';
+import not_favor from '~/assets/img/icon/not_favor.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Empty from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
 import TabBar from '~/components/ScrollTabbar';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
+import {isIphoneX, px} from '~/utils/appUtil';
 import {debounce} from 'lodash';
+import {getFundCate, getFundList} from './services';
 
-const FundList = () => {
+const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const jump = useJump();
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
     const [showEmpty, setShowEmpty] = useState(false);
+    const [sortBy, setSortBy] = useState('');
+    const [sortType, setSortType] = useState('');
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
@@ -42,18 +46,42 @@ const FundList = () => {
 
     /** @name 渲染头部 */
     const renderHeader = () => {
+        const icon1 = sortBy === 'nav' ? (sortType === 1 ? sortUp : sortType === 2 ? sortDown : sort) : sort;
+        const icon2 = sortBy === 'inc' ? (sortType === 1 ? sortUp : sortType === 2 ? sortDown : sort) : sort;
+        /** @name 更改排序 1 从小到大 2 从大到小 */
+        const changeSort = (by) => {
+            if (sortBy) {
+                if (sortBy === by) {
+                    sortType === 2 && setSortType(1);
+                    sortType === 1 && setSortType('');
+                    sortType === 1 && setSortBy('');
+                } else {
+                    setSortBy(by);
+                    setSortType(2);
+                }
+            } else {
+                setSortBy(by);
+                setSortType(2);
+            }
+        };
         return (
             <View style={[Style.flexRow, styles.headerContainer]}>
-                <View style={[Style.flexRow, {width: px(218)}]}>
+                <View style={[Style.flexRow, {width: px(220)}]}>
                     <Text style={[styles.headerText, {marginLeft: px(40)}]}>{'基金名称'}</Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.8} style={[Style.flexRowCenter, {flex: 1}]}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => changeSort('nav')}
+                    style={[Style.flexRowCenter, {flex: 1}]}>
                     <Text style={styles.headerText}>{'净值'}</Text>
-                    <Image source={sort} style={styles.sortIcon} />
+                    <Image source={icon1} style={styles.sortIcon} />
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8} style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={styles.headerText}>{'近1年'}</Text>
-                    <Image source={sortDown} style={styles.sortIcon} />
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => changeSort('inc')}
+                    style={[Style.flexRowCenter, {flex: 1}]}>
+                    <Text style={styles.headerText}>{periodsObj[activePeriod]}</Text>
+                    <Image source={icon2} style={styles.sortIcon} />
                 </TouchableOpacity>
             </View>
         );
@@ -61,28 +89,25 @@ const FundList = () => {
 
     /** @name 渲染列表项 */
     const renderItem = ({item, index}) => {
-        const {fund_code, fund_name, nav, nav_inc} = item;
+        const {code, is_favor, name, nav, url, yield: nav_inc} = item;
         return (
-            <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, styles.fundItem]}>
-                <View style={[Style.flexRow, styles.nameBox, {width: px(218)}]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={[Style.flexRow, styles.fundItem]}>
+                <View style={[Style.flexRow, styles.nameBox, {width: px(220)}]}>
                     <TouchableOpacity activeOpacity={0.8}>
-                        <Image
-                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/public.png'}}
-                            style={styles.collectIcon}
-                        />
+                        <Image source={is_favor ? favor : not_favor} style={styles.collectIcon} />
                     </TouchableOpacity>
                     <View style={{flex: 1}}>
                         <Text numberOfLines={1} style={styles.baseText}>
-                            {fund_name}
+                            {name}
                         </Text>
-                        <Text style={styles.fundCode}>{fund_code}</Text>
+                        <Text style={styles.fundCode}>{code}</Text>
                     </View>
                 </View>
                 <View style={[Style.flexRowCenter, {flex: 1}]}>
                     <HTML html={`${nav}`} style={styles.numberText} />
                 </View>
                 <View style={[Style.flexRowCenter, {flex: 1}]}>
-                    <HTML html={nav_inc} style={styles.numberText} />
+                    <HTML html={`${nav_inc}`} style={styles.numberText} />
                 </View>
             </TouchableOpacity>
         );
@@ -103,28 +128,33 @@ const FundList = () => {
     };
 
     useEffect(() => {
-        setList([
-            {
-                fund_code: '000466',
-                fund_name: '工银新能源汽车混合C',
-                nav: 1.4336,
-                nav_inc: '<span style="color: #E74949;">23.49%</span>',
-            },
-            {
-                fund_code: '000467',
-                fund_name: '平安策略先锋混合',
-                nav: 1.4336,
-                nav_inc: '<span style="color: #E74949;">23.49%</span>',
-            },
-        ]);
-    }, []);
+        getFundList({
+            cate_type: activeTab,
+            page,
+            period: activePeriod,
+            sort_by: sortBy,
+            sort_type: sortType,
+        }).then((res) => {
+            if (res.code === '000000') {
+                const {has_more, list: _list = []} = res.result;
+                setShowEmpty(true);
+                setRefreshing(false);
+                setHasMore(has_more);
+                if (page === 1) {
+                    setList(_list);
+                } else {
+                    setList((prev) => [...prev, ..._list]);
+                }
+            }
+        });
+    }, [activePeriod, activeTab, page, sortBy, sortType]);
 
     return (
         <SectionList
             sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
             initialNumToRender={20}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
-            keyExtractor={(item) => item.fund_code}
+            keyExtractor={(item) => item.code}
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
             onEndReached={onEndReached}
@@ -134,35 +164,23 @@ const FundList = () => {
             renderItem={renderItem}
             renderSectionHeader={renderHeader}
             stickySectionHeadersEnabled
+            style={styles.tabContentBox}
         />
     );
 };
 
 const Index = ({navigation, route}) => {
-    const [tabs, setTabs] = useState([
-        {label: '全部', value: 1},
-        {label: 'A股', value: 2},
-        {label: '美股', value: 3},
-        {label: '港股', value: 4},
-        {label: '黄金', value: 5},
-        {label: '原油', value: 6},
-        {label: '灵活配置', value: 7},
-        {label: '灵活配置', value: 8},
-        {label: '灵活配置', value: 9},
-    ]);
+    const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
-    const [periods, setPeriods] = useState([
-        {label: '近1月', value: 'm1'},
-        {label: '近3月', value: 'm3'},
-        {label: '近6月', value: 'm6'},
-        {label: '近1年', value: 'y1'},
-        {label: '近3年', value: 'y3'},
-    ]);
-    const [activePeriod, setActivePeriod] = useState('m1');
+    const [periods, setPeriods] = useState([]);
+    const [activePeriod, setActivePeriod] = useState();
 
-    const changePage = (p) => {
-        setActiveTab(p);
-    };
+    const periodsObj = useMemo(() => {
+        return periods.reduce((prev, curr) => {
+            prev[curr.period_inc] = curr.name;
+            return prev;
+        }, {});
+    }, [periods]);
 
     const changePeriod = useCallback(
         debounce(
@@ -176,43 +194,54 @@ const Index = ({navigation, route}) => {
     );
 
     useEffect(() => {
-        navigation.setOptions({title: '基金分类'});
+        getFundCate().then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '基金分类'});
+                const {navigations, period_tabs} = res.result;
+                setActivePeriod(period_tabs.default);
+                setActiveTab(navigations.default);
+                setPeriods(period_tabs.items);
+                setTabs(navigations.items);
+            }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return (
+    return tabs?.length > 0 ? (
         <View style={styles.container}>
             <ScrollableTabView
-                initialPage={0}
-                onChangeTab={(value) => changePage(value.i)}
-                prerenderingSiblingsNumber={1}
-                renderTabBar={() => <TabBar btnColor={Colors.defaultColor} />}
+                initialPage={activeTab}
+                // prerenderingSiblingsNumber={1}
+                renderTabBar={() => <TabBar boxStyle={{backgroundColor: '#fff'}} btnColor={Colors.defaultColor} />}
                 style={{flex: 1}}>
                 {tabs.map((tab, index) => (
-                    <View key={tab.value} style={styles.tabContentBox} tabLabel={tab.label}>
-                        <FundList />
+                    <View key={tab.cate_type} style={{flex: 1}} tabLabel={tab.cate_name}>
+                        <FundList activePeriod={activePeriod} activeTab={tab.cate_type} periodsObj={periodsObj} />
                     </View>
                 ))}
             </ScrollableTabView>
             <View style={[Style.flexRowCenter, styles.barContainer]}>
-                {periods.map((period, index) => (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        disabled={activePeriod === period.value}
-                        key={period.value}
-                        onPress={() => changePeriod(period.value)}
-                        style={[
-                            styles.barBox,
-                            index === 0 ? {marginLeft: 0} : {},
-                            activePeriod === period.value ? styles.activeBarBox : {},
-                        ]}>
-                        <Text style={[styles.barText, activePeriod === period.value ? styles.activeBarText : {}]}>
-                            {period.label}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+                {periods.map((period, index) => {
+                    const isActive = activePeriod === period.period_inc;
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            disabled={isActive}
+                            key={period.period_inc}
+                            onPress={() => changePeriod(period.period_inc)}
+                            style={[
+                                styles.barBox,
+                                index === 0 ? {marginLeft: 0} : {},
+                                isActive ? styles.activeBarBox : {},
+                            ]}>
+                            <Text style={[styles.barText, isActive ? styles.activeBarText : {}]}>{period.name}</Text>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
         </View>
+    ) : (
+        <Loading />
     );
 };
 
@@ -279,8 +308,8 @@ const styles = StyleSheet.create({
     },
     collectIcon: {
         marginRight: px(12),
-        width: px(16),
-        height: px(16),
+        width: px(18),
+        height: px(18),
     },
     baseText: {
         fontSize: px(13),

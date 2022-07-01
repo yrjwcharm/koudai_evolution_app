@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-23 17:17:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 10:30:14
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-01 11:43:04
  * @Description:账户持仓
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
@@ -27,7 +27,8 @@ const FollowTableHeader = ({header}) => {
     }, []);
     return (
         <>
-            <View style={[Style.flexBetween, {padding: px(16)}]}>
+            <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+            <View style={[Style.flexBetween, {padding: px(16), height: px(75)}]}>
                 <View>
                     <TouchableOpacity style={Style.flexRow} activeOpacity={0.8} onPress={toggleEye}>
                         <Text style={{fontSize: px(12), color: Colors.defaultColor}}>{header?.left?.text1?.value}</Text>

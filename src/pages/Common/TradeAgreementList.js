@@ -32,15 +32,17 @@ const TradeAgreements = ({navigation, route}) => {
             {(data.funds || data.agreements)?.map((agree, index, arr) => (
                 <View style={[styles.partBox]} key={index}>
                     {agree?.map((item, _key) => (
-                        <View
-                            key={_key}
-                            style={{
-                                borderTopWidth: index !== 0 ? Space.borderWidth : 0,
-                                borderColor: Colors.borderColor,
-                            }}>
+                        <View key={_key}>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                style={[Style.flexBetween, styles.item]}
+                                style={[
+                                    Style.flexBetween,
+                                    styles.item,
+                                    {
+                                        borderTopWidth: _key !== 0 ? Space.borderWidth : 0,
+                                        borderColor: Colors.borderColor,
+                                    },
+                                ]}
                                 onPress={() => jump(item.url)}>
                                 <Text style={styles.name}>{item.name || item?.title}</Text>
                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
