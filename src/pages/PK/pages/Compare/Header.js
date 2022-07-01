@@ -7,17 +7,21 @@ import {px} from '~/utils/appUtil';
 import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
 import * as pkPinningActions from '~/redux/actions/pk/pkPinning';
 
-const Header = (props, ref) => {
+const Header = (props) => {
     const groupScrollViewRef = useRef(null);
     const [footerHeight, setFooterHeight] = useState(0);
 
-    useImperativeHandle(ref, () => ({
+    const scrolling = useRef(null);
+
+    useImperativeHandle(props._ref, () => ({
         scrollTo: (x) => {
-            groupScrollViewRef.current?.scrollTo?.({x});
+            groupScrollViewRef.current?.scrollTo?.({x, y: 0, animated: false});
         },
     }));
 
     const groupItem = (item, key) => {
+        // item = data.find(itm=>item.aa === itm.aa)
+        item = props.data?.[0];
         return (
             <View style={styles.groupItemWrap} key={key}>
                 {/* header */}
@@ -50,7 +54,7 @@ const Header = (props, ref) => {
                 {/* title */}
                 <View style={styles.groupItemContent}>
                     <Text style={styles.groupItemTitle} numberOfLines={props.pageScroll ? 1 : 3}>
-                        {item}嘉实中证基建E
+                        嘉实中证基建E
                         {key === 1 ? '嘉实中嘉实中证基建ETF嘉实中证基建ETF证基建ETF嘉实中证基建ETF' : ''}aaa
                     </Text>
                 </View>
@@ -87,7 +91,7 @@ const Header = (props, ref) => {
     };
 
     const addCompareItem = () => {
-        if (props.pkProducts?.length > 5) return null;
+        if (props.data?.length > 5) return null;
         return (
             <TouchableOpacity activeOpacity={0.8} style={styles.addCompareItemWrap}>
                 <Icons style={{marginRight: 2, marginTop: 4}} name={'plus'} color={'#0051CC'} size={px(18)} />
@@ -110,22 +114,32 @@ const Header = (props, ref) => {
                     bounces={false}
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    scrollEventThrottle={6}
+                    scrollEventThrottle={1}
                     ref={groupScrollViewRef}
+                    onMomentumScrollBegin={(_) => {
+                        scrolling.current = true;
+                    }}
+                    onMomentumScrollEnd={(_) => {
+                        scrolling.current = false;
+                    }}
+                    onScrollBeginDrag={(_) => {
+                        scrolling.current = true;
+                    }}
+                    onScrollEndDrag={(_) => {
+                        scrolling.current = false;
+                    }}
                     onScroll={(e) => {
-                        props.onScroll?.(e.nativeEvent.contentOffset.x);
+                        scrolling.current && props.onScroll?.(e.nativeEvent.contentOffset.x);
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {props.pkProducts
-                            .filter((item) => item != props.pkPinning)
-                            .map((item, idx) => groupItem(item, idx))}
+                        {props.data.filter((item) => item != props.pkPinning).map((item, idx) => groupItem(item, idx))}
                     </View>
                     {/* 添加基金 */}
-                    {props.pkProducts.length > 1 ? addCompareItem() : null}
+                    {props.data.length > 1 ? addCompareItem() : null}
                 </ScrollView>
                 {/* 添加基金 */}
-                {props.pkProducts.length < 2 ? (
+                {props.data.length < 2 ? (
                     <View style={{borderLeftColor: '#E9EAEF', borderLeftWidth: 1}}>{addCompareItem()}</View>
                 ) : null}
             </View>
@@ -133,12 +147,12 @@ const Header = (props, ref) => {
     );
 };
 
-const ForwardHeader = forwardRef(Header);
-
-export default connect((state) => ({pkProducts: state.pkProducts, pkPinning: state.pkPinning}), {
+const _Header = connect((state) => ({pkPinning: state.pkPinning}), {
     ...pkProductsActions,
     ...pkPinningActions,
-})(ForwardHeader);
+})(Header);
+
+export default forwardRef((props, ref) => <_Header {...props} _ref={ref} />);
 
 const styles = StyleSheet.create({
     compareGroup: {

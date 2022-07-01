@@ -2,9 +2,9 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {px} from '~/utils/appUtil';
 
-const PKParamsRateOfSum = ({total = 100, value = 0, color = ''}) => {
+const PKParamsRateOfSum = ({total = 100, value = 0, color = '', style}) => {
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             <View style={styles.wrap}>
                 <View
                     style={[styles.inner, {width: ((value / total) * 100).toFixed(2) + '%', backgroundColor: color}]}

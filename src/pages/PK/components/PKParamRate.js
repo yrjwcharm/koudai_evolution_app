@@ -20,7 +20,7 @@ const PKParamRate = ({total = 100, value = 0, color = '#9AA0B1', barsNum = 5, ju
     return (
         <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent}}>
-                <Text style={[styles.text, {color}]}>{value}</Text>
+                <Text style={[styles.text, {color}]}>{value || '--'}</Text>
                 <Text style={[styles.text, {color: '#9AA0B1'}]}>/{total}</Text>
             </View>
             <View style={styles.barWrap}>
