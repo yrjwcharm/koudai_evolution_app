@@ -2,34 +2,45 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 14:44:59
+ * @LastEditTime: 2022-07-02 17:20:53
  * @Description: v7产品卡片
  */
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {DeviceEventEmitter, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import quot from '~/assets/img/icon/quot.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {Chart, chartOptions} from '~/components/Chart';
+import {useJump} from '../hooks';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {px} from '~/utils/appUtil';
-import {followAdd} from '~/pages/Attention/Index/service';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import {debounce} from 'lodash';
 
-const onPressBtn = ({action, code, dispatch}) => {
-    if (action === 'do_pk') {
-        dispatch(addProduct(code));
-    } else if (action === 'attention') {
-        followAdd({item_id: code, item_type: 1}).then((res) => {
-            if (res.code === '000000') {
-                Toast.show(res.message);
-            }
-        });
-    }
-};
+const onPressBtn = debounce(
+    ({action, code, dispatch, plan_id}) => {
+        if (action === 'do_pk') {
+            dispatch(addProduct(code));
+        } else if (action === 'attention' || action === 'cancel_attention') {
+            (action === 'attention' ? followAdd : followCancel)({
+                item_id: code || plan_id,
+                item_type: code ? 1 : plan_id ? 2 : 3,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    res.message && Toast.show(res.message);
+                    DeviceEventEmitter.emit('attentionRefresh');
+                }
+            });
+        }
+    },
+    500,
+    {leading: true, trailing: false}
+);
 
 /** @name 基金经理卡片 */
 const ManagerCard = () => (
@@ -122,7 +133,7 @@ const PrivateCard = () => (
 );
 
 /** @name 榜单卡片 */
-const RankCard = ({data = {}}) => {
+const RankCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
     const {button, code, icon, name, tags = [], yield_info} = data;
     return (
@@ -163,7 +174,7 @@ const RankCard = ({data = {}}) => {
                                 button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                             ]}>
                             <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
-                                {button.text}
+                                {isPking ? 'PK中' : button.text}
                             </Text>
                         </TouchableOpacity>
                     ) : null}
@@ -174,25 +185,24 @@ const RankCard = ({data = {}}) => {
 };
 
 /** @name 推荐卡片 */
-const RecommendCard = ({data: {item}}) => {
+const RecommendCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const handlerRate = (rate) => {
-        return ((rate || 0) * 100).toFixed(2) + '%';
-    };
+    const {button, chart = [], code, icon_url, labels, name, plan_id, reason, tags = [], yield_info} = data;
     return (
         <View>
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
-                    <></>
+                    {icon_url ? <Image source={{uri: icon_url}} style={{width: '100%', height: px(74)}} /> : null}
+                    {chart?.length > 0 && <Chart initScript={chartOptions.smChart(chart)} />}
                 </View>
                 <View style={{flex: 1}}>
                     <View style={Style.flexRow}>
-                        <Text style={styles.title}>{item.name}</Text>
-                        <Text style={styles.desc}>{'让你有钱可用'}</Text>
+                        <Text style={styles.title}>{name}</Text>
+                        {labels ? <Text style={styles.desc}>{labels}</Text> : null}
                     </View>
-                    {item.tags?.length > 0 && (
+                    {tags?.length > 0 && (
                         <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                            {item.tags.map((tag, i) => (
+                            {tags.map((tag, i) => (
                                 <View key={tag + i} style={styles.tagBox}>
                                     <Text style={styles.tagText}>{tag}</Text>
                                 </View>
@@ -200,37 +210,44 @@ const RecommendCard = ({data: {item}}) => {
                         </View>
                     )}
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                        <View>
-                            <Text style={styles.profit}>{handlerRate(item.yield_info?.year)}</Text>
-                            <Text style={[styles.label, {marginTop: px(2)}]}>{'近一年收益率'}</Text>
+                        <View style={tags?.length > 0 ? styles.rowEnd : {}}>
+                            <HTML html={yield_info.value} style={styles.profit} />
+                            <Text style={[styles.label, tags?.length > 0 ? {marginLeft: px(8)} : {marginTop: px(2)}]}>
+                                {yield_info.text}
+                            </Text>
                         </View>
-                        {item.btn ? (
+                        {button?.text ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
+                                disabled={button.avail === 0}
+                                onPress={() => onPressBtn({action: button.action, code, dispatch, plan_id})}
                                 style={[
                                     styles.btnBox,
-                                    item.btn.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
-                                ]}
-                                disabled={item.btn.avail === 0}
-                                onPress={() => onPressBtn({action: item.btn.action, code: item.code, dispatch})}>
-                                <Text style={[styles.btnText, item.btn.avail === 0 ? {color: '#ddd'} : {}]}>
-                                    {item.btn.title}
+                                    button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
+                                ]}>
+                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                                    {isPking ? 'PK中' : button.text}
                                 </Text>
                             </TouchableOpacity>
                         ) : null}
                     </View>
                 </View>
             </View>
-            <View style={styles.recommendBox}>
-                <Image source={quot} style={styles.quot} />
-                <HTML html={item.reason} style={styles.recommendText} />
-            </View>
+            {reason ? (
+                <View style={styles.recommendBox}>
+                    <Image source={quot} style={styles.quot} />
+                    <HTML
+                        html={`<span style="color: #FF7D41;font-weight: 500;">推荐</span>｜${reason}`}
+                        style={styles.recommendText}
+                    />
+                </View>
+            ) : null}
         </View>
     );
 };
 
 /** @name 默认卡片 */
-const DefaultCard = ({data = {}}) => {
+const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
     const {button, code, name, rank_info = {}, tags = [], yield_info} = data;
     return (
@@ -269,7 +286,9 @@ const DefaultCard = ({data = {}}) => {
                             styles.btnBox,
                             button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                         ]}>
-                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{button.text}</Text>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                            {isPking ? 'PK中' : button.text}
+                        </Text>
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -278,10 +297,22 @@ const DefaultCard = ({data = {}}) => {
 };
 
 export default ({data = {}, style = {}}) => {
+    const jump = useJump();
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
-    const {type} = data;
+    const {code, type, url} = data;
+    const [isPking, setIsPking] = useState(false);
+    const pkProducts = useSelector((store) => store.pkProducts);
+
+    useEffect(() => {
+        if (pkProducts.includes(code)) {
+            setIsPking(true);
+        } else {
+            setIsPking(false);
+        }
+    }, [code, pkProducts]);
+
     return (
-        <TouchableOpacity activeOpacity={0.8} style={[styles.cardContainer, ...outerStyle]}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={[styles.cardContainer, ...outerStyle]}>
             {(() => {
                 switch (type) {
                     // 基金经理卡片
@@ -292,13 +323,13 @@ export default ({data = {}, style = {}}) => {
                         return <PrivateCard data={data} />;
                     // 榜单卡片
                     case 'rank_card':
-                        return <RankCard data={data} />;
+                        return <RankCard data={data} isPking={isPking} />;
                     // 推荐卡片
                     case 'recommend_card':
-                        return <RecommendCard data={data} />;
+                        return <RecommendCard data={data} isPking={isPking} />;
                     // 默认卡片
                     default:
-                        return <DefaultCard data={data} />;
+                        return <DefaultCard data={data} isPking={isPking} />;
                 }
             })()}
         </TouchableOpacity>

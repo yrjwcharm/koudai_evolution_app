@@ -1,11 +1,11 @@
 /*
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-23 22:49:37
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 21:09:10
  * @Description: 基金购买
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -17,13 +17,18 @@ import {BankCardModal} from '~/components/Modal';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
-import {onlyNumber, px} from '~/utils/appUtil';
+import Loading from '~/pages/Portfolio/components/PageLoading';
+import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
+import {fundBuyDo, getBuyFee, getBuyInfo} from './services';
+import {debounce} from 'lodash';
 
-const InputBox = ({onChange, value = ''}) => {
+const InputBox = ({buy_info, errTip, feeData, onChange, value = ''}) => {
+    const {hidden_text, title} = buy_info;
+    const {date_text, fee_text} = feeData;
     return (
         <View style={[styles.partBox, {paddingVertical: Space.padding}]}>
             <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
-                <Text style={styles.buyTitle}>{'买入金额'}</Text>
+                <Text style={styles.buyTitle}>{title}</Text>
                 <TouchableOpacity activeOpacity={0.8}>
                     <Text style={[styles.desc, {color: Colors.brandColor}]}>{'交易规则'}</Text>
                 </TouchableOpacity>
@@ -32,8 +37,8 @@ const InputBox = ({onChange, value = ''}) => {
                 <Text style={styles.unit}>{'￥'}</Text>
                 {`${value}`.length === 0 && (
                     <Text style={styles.placeholder}>
-                        <Text style={{fontSize: px(28)}}>{'10'}</Text>
-                        {'元起购'}
+                        {/* <Text style={{fontSize: px(28)}}>{'10'}</Text> */}
+                        {hidden_text}
                     </Text>
                 )}
                 <TextInput keyboardType="numeric" onChangeText={onChange} style={styles.input} value={`${value}`} />
@@ -44,43 +49,56 @@ const InputBox = ({onChange, value = ''}) => {
                 )}
             </View>
             <View style={styles.tipsBox}>
-                <Text style={{...styles.desc, color: Colors.descColor}}>
-                    {'买入费率：'}
-                    <Text style={{color: '#FF7D41'}}>{'0.2%'}&nbsp;</Text>
-                    <Text style={{textDecorationLine: 'line-through'}}>{'1.5%'}</Text>
-                </Text>
-                <Text style={{...styles.desc, color: Colors.descColor, marginTop: px(4)}}>
-                    {'预计'}
-                    <Text style={{color: '#FF7D41'}}>&nbsp;{'05月30日(周一)'}&nbsp;</Text>
-                    {'根据'}
-                    <Text style={{color: '#FF7D41'}}>&nbsp;{'05月27日(周五)'}&nbsp;</Text>
-                    {'的净值确认份额'}
-                </Text>
+                {errTip ? (
+                    <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
+                ) : (
+                    <>
+                        {fee_text ? <HTML html={fee_text} style={{...styles.desc, color: Colors.descColor}} /> : null}
+                        {date_text ? (
+                            <View style={{marginTop: px(4)}}>
+                                <HTML
+                                    html={date_text}
+                                    style={{...styles.desc, color: Colors.descColor, marginTop: px(4)}}
+                                />
+                            </View>
+                        ) : null}
+                    </>
+                )}
             </View>
         </View>
     );
 };
 
-const PayMethod = () => {
+const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = {}, setIsLarge}) => {
+    const {bank_icon, bank_name, bank_no, limit_desc} = pay_method;
+    const {
+        bank_icon: large_bank_icon,
+        bank_name: large_bank_name,
+        large_pay_tip,
+        limit_desc: large_limit_desc,
+    } = large_pay_method;
     return (
         <>
             <Text style={styles.payTitle}>{'付款方式'}</Text>
             <View style={styles.partBox}>
                 <View style={Style.flexRow}>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.radioBox}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(false)} style={styles.radioBox}>
                         <View style={styles.radioWrap}>
-                            <View style={styles.radioPoint} />
+                            <View style={[styles.radioPoint, isLarge ? {backgroundColor: 'transparent'} : {}]} />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={[Style.flexBetween, styles.payMethodBox]}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => bankCardModal.current.show()}
+                        style={[Style.flexBetween, styles.payMethodBox]}>
                         <View style={Style.flexRow}>
-                            <Image
-                                source={{uri: 'https://static.licaimofang.cn/wp-content/uploads/2016/04/zhaoshang.png'}}
-                                style={styles.bankIcon}
-                            />
+                            <Image source={{uri: bank_icon}} style={styles.bankIcon} />
                             <View>
-                                <Text style={styles.title}>{'招商银行(尾号8888)'}</Text>
-                                <Text style={[styles.desc, {marginTop: px(4)}]}>{'限额：单笔5千元、单日3万元'}</Text>
+                                <Text style={styles.title}>
+                                    {`${bank_name}`}
+                                    {bank_no ? `(${bank_no})` : ''}
+                                </Text>
+                                <Text style={[styles.desc, {marginTop: px(4)}]}>{limit_desc}</Text>
                             </View>
                         </View>
                         <View style={Style.flexRow}>
@@ -91,24 +109,22 @@ const PayMethod = () => {
                 </View>
                 <View style={[styles.payMethodBox, styles.borderTop]}>
                     <View style={Style.flexRow}>
-                        <TouchableOpacity activeOpacity={0.8} style={styles.radioBox}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(true)} style={styles.radioBox}>
                             <View style={styles.radioWrap}>
-                                <View style={[styles.radioPoint, {backgroundColor: 'transparent'}]} />
+                                <View style={[styles.radioPoint, isLarge ? {} : {backgroundColor: 'transparent'}]} />
                             </View>
                         </TouchableOpacity>
                         <View style={[Style.flexBetween, {flex: 1}]}>
                             <View style={Style.flexRow}>
                                 <Image
                                     source={{
-                                        uri: 'https://static.licaimofang.cn/wp-content/uploads/2021/04/mfb2@3x.png',
+                                        uri: large_bank_icon,
                                     }}
                                     style={styles.bankIcon}
                                 />
                                 <View>
-                                    <Text style={styles.title}>{'大额汇款(单笔无上限)'}</Text>
-                                    <Text style={[styles.desc, {marginTop: px(4)}]}>
-                                        {'魔方宝可用余额：288,290.03元'}
-                                    </Text>
+                                    <Text style={styles.title}>{large_bank_name}</Text>
+                                    <Text style={[styles.desc, {marginTop: px(4)}]}>{large_limit_desc}</Text>
                                 </View>
                             </View>
                             <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, styles.useBtn]}>
@@ -117,11 +133,13 @@ const PayMethod = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={styles.largePayTipsBox}>
-                        <Text style={[styles.desc, {color: '#FF7D41'}]}>
-                            {'您尚有X次大额极速购优惠，使用大额极速购，原有折扣上再打五折'}
-                        </Text>
-                    </View>
+                    {large_pay_tip ? (
+                        <View style={styles.largePayTipsBox}>
+                            <Text style={[styles.desc, {color: '#FF7D41'}]}>
+                                {'您尚有X次大额极速购优惠，使用大额极速购，原有折扣上再打五折'}
+                            </Text>
+                        </View>
+                    ) : null}
                 </View>
             </View>
         </>
@@ -129,38 +147,132 @@ const PayMethod = () => {
 };
 
 const Index = ({navigation, route}) => {
-    const [amount, setAmount] = useState('');
+    const {amount: _amount = '', code} = route.params;
+    const bankCardModal = useRef();
+    const passwordModal = useRef();
+    const [amount, setAmount] = useState(_amount);
+    const [data, setData] = useState({});
+    const [feeData, setFeeData] = useState({});
+    const [isLarge, setIsLarge] = useState(false);
+    const [bankSelectIndex, setIndex] = useState(0);
+    const [deltaHeight, setDeltaHeight] = useState(0);
+    const [errTip, setErrTip] = useState('');
+    const {
+        add_payment_disable = false,
+        agreement,
+        agreement_bottom,
+        button,
+        buy_info,
+        large_pay_method,
+        large_pay_tip,
+        pay_methods = [],
+        sub_title,
+    } = data;
 
     const onChange = (val) => {
         setAmount(onlyNumber(val >= 100000000 ? '99999999.99' : val));
     };
 
+    const onInput = () => {
+        const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
+        if (amount > method.left_amount && method.pay_method !== 'wallet') {
+            setErrTip(`您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`);
+        } else if (amount > method.single_amount) {
+            setErrTip(
+                method.pay_method === 'wallet'
+                    ? `魔方宝余额不足,建议<alink url='{"path":"MfbIn","params":{"fr":"fund_trade_buy"}}'>立即充值</alink>`
+                    : `最大单笔购买金额为${method.single_amount}元`
+            );
+        } else if (amount !== '' && amount < buy_info.initial_amount) {
+            setErrTip(`起购金额${buy_info.initial_amount}`);
+        } else {
+            setErrTip('');
+            getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
+                if (res.code === '000000') {
+                    setFeeData(res.result);
+                }
+            });
+        }
+    };
+
+    const buyClick = () => {
+        Keyboard.dismiss();
+        passwordModal.current.show();
+    };
+
+    const onSubmit = (password) => {
+        const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
+        const toast = Toast.showLoading();
+        fundBuyDo({amount, fund_code: code, password, pay_method: method.pay_method}).then((res) => {
+            Toast.hide(toast);
+            if (res.code === '000000') {
+                navigation.navigate('TradeProcessing', res.result);
+            }
+        });
+    };
+
     useEffect(() => {
-        navigation.setOptions({
-            title: '买入',
+        getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({
+                    title: res.result.title || '买入',
+                });
+                setData(res.result);
+            }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return (
-        <View style={styles.container}>
-            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
+    useEffect(() => {
+        if (pay_methods.length > 0) {
+            onInput();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [amount, bankSelectIndex, code, isLarge, large_pay_method, pay_methods]);
+
+    return Object.keys(data).length > 0 ? (
+        <View style={[styles.container, {paddingBottom: (isIphoneX() ? px(86) : px(60)) + deltaHeight}]}>
+            <ScrollView
+                bounces={false}
+                keyboardShouldPersistTaps="handled"
+                scrollIndicatorInsets={{right: 1}}
+                style={{flex: 1}}>
                 <View style={[Style.flexRow, styles.nameBox]}>
-                    <Text style={styles.title}>{'国投瑞银新能源混合A'}</Text>
-                    <Text style={[styles.desc, styles.fundCode]}>{'000883'}</Text>
+                    <Text style={styles.title}>{sub_title}</Text>
+                    <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
                 </View>
-                <InputBox onChange={onChange} value={amount} />
-                <PayMethod />
-                <View style={styles.agreementBox}>
-                    <HTML
-                        html={`购买既代表您已悉知该基金组合的<alink style="color: #0051CC;">基金服务协议</alink>、<alink style="color: #0051CC;">产品概要</alink>、<alink style="color: #0051CC;">风险揭示书</alink>、<alink style="color: #0051CC;">客户维护费揭示书</alink>和<alink style="color: #0051CC;">投资人权益须知</alink>等内容`}
-                        style={styles.agreementText}
-                    />
-                </View>
+                <InputBox buy_info={buy_info} errTip={errTip} feeData={feeData} onChange={onChange} value={amount} />
+                <PayMethod
+                    bankCardModal={bankCardModal}
+                    isLarge={isLarge}
+                    large_pay_method={{...large_pay_method, large_pay_tip}}
+                    pay_method={pay_methods[bankSelectIndex]}
+                    setIsLarge={setIsLarge}
+                />
                 <BottomDesc />
             </ScrollView>
-            <FixedButton title="确认购买" />
+            <BankCardModal
+                data={pay_methods}
+                onDone={(select, index) => {
+                    setIndex(index);
+                }}
+                ref={bankCardModal}
+                select={bankSelectIndex}
+                type={add_payment_disable ? 'hidden' : ''}
+            />
+            <PasswordModal onDone={onSubmit} ref={passwordModal} />
+            <FixedButton
+                agreement={agreement_bottom}
+                disabled={button.avail === 0}
+                heightChange={(height) => setDeltaHeight(height)}
+                onPress={buyClick}
+                otherAgreement={agreement}
+                suffix={agreement_bottom.agree_text}
+                title={button.text}
+            />
         </View>
+    ) : (
+        <Loading />
     );
 };
 

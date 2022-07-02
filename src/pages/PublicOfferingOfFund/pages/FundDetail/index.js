@@ -2,11 +2,12 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 14:42:56
+ * @LastEditTime: 2022-07-02 18:24:55
  * @Description: 基金详情
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {Linking, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import Image from 'react-native-fast-image';
 import {WebView} from 'react-native-webview';
 import shareFund from '~/assets/img/icon/shareFund.png';
@@ -14,17 +15,22 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {BottomModal, ShareModal} from '~/components/Modal';
 import Toast from '~/components/Toast';
+import {addProduct} from '~/redux/actions/pk/pkProducts';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
+import Storage from '~/utils/storage';
 import {getPageData} from './services';
-import {followAdd} from '~/pages/Attention/Index/service';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import URI from 'urijs';
 
 const Index = ({navigation, route}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const bottomModal = useRef();
     const shareModal = useRef();
     const webview = useRef();
     const clickRef = useRef(true);
+    const timeStamp = useRef(Date.now());
     const [data, setData] = useState({});
     const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, share_button: {share_info} = {}} = data;
 
@@ -137,7 +143,7 @@ const Index = ({navigation, route}) => {
             bottomModal.current.show();
         } else if (title === '关注') {
             clickRef.current = false;
-            followAdd({item_id: route.params.code, item_type: 1}).then((res) => {
+            (btn.is_follow ? followCancel : followAdd)({item_id: route.params.code, item_type: 1}).then((res) => {
                 if (res.code === '000000') {
                     res.message && Toast.show(res.message);
                     setTimeout(() => {
@@ -146,6 +152,9 @@ const Index = ({navigation, route}) => {
                     init();
                 }
             });
+        } else if (title === '对比') {
+            dispatch(addProduct(route.params.code));
+            jump(btn.url);
         }
     };
 
@@ -168,11 +177,27 @@ const Index = ({navigation, route}) => {
                     const {nativeEvent} = syntheticEvent;
                     console.warn('WebView received error status code: ', nativeEvent.statusCode);
                 }}
+                onLoadEnd={async () => {
+                    const loginStatus = await Storage.get('loginStatus');
+                    // console.log(loginStatus);
+                    webview.current.postMessage(
+                        JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                        })
+                    );
+                }}
                 onMessage={onMessage}
                 originWhitelist={['*']}
                 ref={webview}
                 renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
-                source={{uri: `http://localhost:3000/fundDetail/${route.params.code}`}}
+                source={{
+                    uri: URI(`http://localhost:3000/fundDetail/${route.params.code}`)
+                        .addQuery({timeStamp: timeStamp.current})
+                        .valueOf(),
+                }}
                 startInLoadingState
                 style={{flex: 1}}
                 textZoom={100}

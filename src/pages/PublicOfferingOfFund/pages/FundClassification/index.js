@@ -2,10 +2,10 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 12:06:13
+ * @LastEditTime: 2022-07-01 17:24:44
  * @Description: 基金分类
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -19,10 +19,12 @@ import Empty from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
 import TabBar from '~/components/ScrollTabbar';
+import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {debounce} from 'lodash';
 import {getFundCate, getFundList} from './services';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 
 const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const jump = useJump();
@@ -33,6 +35,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const [showEmpty, setShowEmpty] = useState(false);
     const [sortBy, setSortBy] = useState('');
     const [sortType, setSortType] = useState('');
+    const clickRef = useRef(true);
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
@@ -93,7 +96,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
         return (
             <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={[Style.flexRow, styles.fundItem]}>
                 <View style={[Style.flexRow, styles.nameBox, {width: px(220)}]}>
-                    <TouchableOpacity activeOpacity={0.8}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => onFavor(item, index)}>
                         <Image source={is_favor ? favor : not_favor} style={styles.collectIcon} />
                     </TouchableOpacity>
                     <View style={{flex: 1}}>
@@ -125,6 +128,24 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     /** @name 渲染空数据状态 */
     const renderEmpty = () => {
         return showEmpty ? <Empty text={'暂无基金数据'} /> : null;
+    };
+
+    /** @name 关注/取消关注 */
+    const onFavor = ({code, is_favor}, index) => {
+        clickRef.current = false;
+        (is_favor ? followCancel : followAdd)({item_id: code, item_type: 1}).then((res) => {
+            if (res.code === '000000') {
+                res.message && Toast.show(res.message);
+                setTimeout(() => {
+                    clickRef.current = true;
+                }, 100);
+                setList((prev) => {
+                    const next = [...prev];
+                    next[index].is_favor = is_favor ? 0 : 1;
+                    return next;
+                });
+            }
+        });
     };
 
     useEffect(() => {
