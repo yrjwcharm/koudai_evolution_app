@@ -8,7 +8,7 @@ import {Space, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import PKCard from './PKCard';
-import {getPKHomeData} from './services';
+import {getPKHomeData} from '../../services';
 import Toast from '../../../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import PKBtnTab from '../../components/PKBtnTab';
