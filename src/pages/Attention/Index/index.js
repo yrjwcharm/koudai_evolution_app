@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 15:29:46
+ * @LastEditTime: 2022-07-01 20:11:22
  * @Description:关注
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated, Platform} from 'react-native';
@@ -88,6 +88,7 @@ const Attention = ({navigation}) => {
                 {data?.follow?.tabs && (
                     <View style={{backgroundColor: '#fff'}}>
                         <ScrollableTabView
+                            prerenderingSiblingsNumber={data?.follow?.tabs?.length}
                             locked={Platform.OS == 'android'}
                             renderTabBar={() => <ScrollTabbar boxStyle={{paddingLeft: px(8)}} />}
                             onChangeTab={onChangeTab}>
