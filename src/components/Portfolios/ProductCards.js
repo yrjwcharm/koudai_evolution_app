@@ -174,37 +174,60 @@ const RankCard = ({data = {}}) => {
 };
 
 /** @name 推荐卡片 */
-const RecommendCard = () => (
-    <View>
-        <View style={Style.flexRow}>
-            <View style={styles.leftPart}>
-                <></>
-            </View>
-            <View style={{flex: 1}}>
-                <View style={Style.flexRow}>
-                    <Text style={styles.title}>{'短期｜稳健组合'}</Text>
-                    <Text style={styles.desc}>{'让你有钱可用'}</Text>
+const RecommendCard = ({data: {item}}) => {
+    const dispatch = useDispatch();
+    const handlerRate = (rate) => {
+        return ((rate || 0) * 100).toFixed(2) + '%';
+    };
+    return (
+        <View>
+            <View style={Style.flexRow}>
+                <View style={styles.leftPart}>
+                    <></>
                 </View>
-                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <View>
-                        <Text style={styles.profit}>{'+50.18%'}</Text>
-                        <Text style={[styles.label, {marginTop: px(2)}]}>{'近一年收益率'}</Text>
+                <View style={{flex: 1}}>
+                    <View style={Style.flexRow}>
+                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.desc}>{'让你有钱可用'}</Text>
                     </View>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
-                        <Text style={styles.btnText}>{'关注'}</Text>
-                    </TouchableOpacity>
+                    {item.tags?.length > 0 && (
+                        <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                            {item.tags.map((tag, i) => (
+                                <View key={tag + i} style={styles.tagBox}>
+                                    <Text style={styles.tagText}>{tag}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+                    <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                        <View>
+                            <Text style={styles.profit}>{handlerRate(item.yield_info?.year)}</Text>
+                            <Text style={[styles.label, {marginTop: px(2)}]}>{'近一年收益率'}</Text>
+                        </View>
+                        {item.btn ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[
+                                    styles.btnBox,
+                                    item.btn.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
+                                ]}
+                                disabled={item.btn.avail === 0}
+                                onPress={() => onPressBtn({action: item.btn.action, code: item.code, dispatch})}>
+                                <Text style={[styles.btnText, item.btn.avail === 0 ? {color: '#ddd'} : {}]}>
+                                    {item.btn.title}
+                                </Text>
+                            </TouchableOpacity>
+                        ) : null}
+                    </View>
                 </View>
             </View>
+            <View style={styles.recommendBox}>
+                <Image source={quot} style={styles.quot} />
+                <HTML html={item.reason} style={styles.recommendText} />
+            </View>
         </View>
-        <View style={styles.recommendBox}>
-            <Image source={quot} style={styles.quot} />
-            <HTML
-                html={`<span style="color: #FF7D41;font-weight: 500;">推荐</span>｜打包全市场明星经历代表作，长期绩优`}
-                style={styles.recommendText}
-            />
-        </View>
-    </View>
-);
+    );
+};
 
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}}) => {
