@@ -2,15 +2,15 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 20:11:22
+ * @LastEditTime: 2022-07-02 14:02:49
  * @Description:关注
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated, Platform} from 'react-native';
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {StyleSheet, View, Animated, Platform} from 'react-native';
+import React, {useState, useRef, useCallback} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
 import {px} from '~/utils/appUtil';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors} from '~/common/commonStyle';
 import HotFund from './HotFund';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
@@ -18,9 +18,11 @@ import HeaderRight from './HeaderRight';
 import FollowTable from './FollowTable';
 import Toast from '../../../components/Toast';
 import NavBar from '~/components/NavBar';
-import StickyHeader from '~/components/Sticky';
 import {useFocusEffect} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import LoginMask from '~/components/LoginMask';
 const Attention = ({navigation}) => {
+    const userInfo = useSelector((store) => store.userInfo);
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
     const [activeTab, setActiveTab] = useState(1);
@@ -59,6 +61,7 @@ const Attention = ({navigation}) => {
     return (
         <View style={{flex: 1}}>
             <NavBar renderRight={<HeaderRight />} title="关注" />
+            {!userInfo.toJS().is_login && <LoginMask />}
             <Animated.ScrollView
                 style={styles.con}
                 onScroll={

@@ -1,11 +1,11 @@
 /*
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 16:28:31
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 13:33:53
  * @Description:
  */
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,7 +15,7 @@ import {useJump} from '~/components/hooks';
 import Feather from 'react-native-vector-icons/Feather';
 import {Font} from '../../../common/commonStyle';
 const HotFund = ({data, onFollow}) => {
-    const {body, footer} = data;
+    const {header, body, footer} = data;
     const jump = useJump();
     const [checkList, setCheckList] = useState([]);
     useEffect(() => {
@@ -42,6 +42,7 @@ const HotFund = ({data, onFollow}) => {
     return (
         <>
             <View style={styles.card}>
+                <Image source={{uri: header?.left_btn?.icon_url}} style={{width: px(68), height: px(19)}} />
                 <View style={[Style.flexBetween, {flexWrap: 'wrap'}]}>
                     {body?.list?.map((item, index) => (
                         <View
@@ -66,8 +67,14 @@ const HotFund = ({data, onFollow}) => {
                                 </Text>
                                 <Text style={{fontSize: px(11), color: '#9AA0B1', marginTop: px(6)}}>
                                     {item.yield_text}
-                                    <Text style={{fontSize: px(13), fontFamily: Font.numFontFamily, color: Colors.red}}>
-                                        {item.yield_value}
+
+                                    <Text
+                                        style={{
+                                            fontSize: px(13),
+                                            fontFamily: Font.numFontFamily,
+                                            color: item.value_color || Colors.red,
+                                        }}>
+                                        {''} {''} {item.yield_value}
                                     </Text>
                                 </Text>
                             </View>
@@ -82,9 +89,10 @@ const HotFund = ({data, onFollow}) => {
                 />
             </View>
             {/* 底部按钮 */}
-            <View style={Style.flexBetween}>
+            <View style={[Style.flexBetween, {marginBottom: px(16)}]}>
                 {footer?.button_list?.map((button, index) => (
                     <TouchableOpacity
+                        activeOpacity={0.9}
                         style={styles.bottomBtn}
                         key={index}
                         onPress={() => {
@@ -104,6 +112,7 @@ export default HotFund;
 const styles = StyleSheet.create({
     card: {
         padding: px(20),
+        paddingTop: px(14),
         borderRadius: px(6),
         backgroundColor: '#fff',
         marginBottom: px(20),
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         color: Colors.defaultColor,
     },
-    card_button: {borderRadius: px(314), marginHorizontal: px(51), marginTop: px(20)},
+    card_button: {borderRadius: px(314), marginHorizontal: px(51), marginTop: px(16)},
     bottomBtn: {
         width: px(164),
         height: px(48),

@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:37:18
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 18:20:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 13:51:19
  * @Description:导入持仓
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView} from 'react-native';
@@ -17,7 +17,7 @@ import Toast from '~/components/Toast';
 const Index = ({navigation, route}) => {
     let data = useSelector((store) => store.ocrFund).toJS()?.ocrOwernList;
     const handleImport = async () => {
-        let res = await postImport({items: data, item_type: route?.params?.item_type || 3});
+        let res = await postImport({items: JSON.stringify(data), item_type: route?.params?.item_type || 3});
         Toast.show(res.message);
         if (res.code === '000000') {
             navigation.goBack();

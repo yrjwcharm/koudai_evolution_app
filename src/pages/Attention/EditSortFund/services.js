@@ -1,14 +1,14 @@
 /*
  * @Date: 2022-06-29 15:17:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 16:56:33
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 14:21:27
  * @Description:
  */
 import http from '~/services';
 
-export const getList = () => {
-    return http.get('/follow/listlite/202206');
+export const getList = (params) => {
+    return http.get('/follow/listlite/202206', params);
 };
 export const changeSort = (params) => {
     return http.post('follow/changesort/202206', params);

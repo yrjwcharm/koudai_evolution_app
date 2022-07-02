@@ -87,6 +87,7 @@ const Index = (props) => {
             params == 'refresh' && setRefreshing(true);
             http.get('/home/detail/20210101')
                 .then((res) => {
+                    jump(res?.result?.app_tag_url);
                     setLoading(false);
                     setRefreshing(false);
                     if (bannerList.length == res.result.banner_list.length) {
@@ -107,6 +108,7 @@ const Index = (props) => {
                     setLoading(false);
                 });
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [isFocused, readInterface]
     );
 

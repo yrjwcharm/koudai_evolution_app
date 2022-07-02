@@ -2,6 +2,7 @@
  * @Date: 2022-06-29 19:29:33
  * @Description:
  */
+import {Colors} from '~/common/commonStyle';
 import {arrDelete} from '../../../../utils/appUtil';
 import Storage from '../../../../utils/storage';
 
@@ -36,4 +37,8 @@ export const updateSearch = async (text) => {
 export const getSearchHistory = async () => {
     let history = await Storage.get('searchHistory');
     return history;
+};
+//获取颜色值
+export const getColor = (value) => {
+    return value == 0 ? Colors.defaultColor : value > 0 ? Colors.red : Colors.green;
 };

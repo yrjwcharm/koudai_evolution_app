@@ -2,10 +2,10 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 19:56:42
+ * @LastEditTime: 2022-07-02 13:07:58
  * @Description:搜索
  */
-import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import Icons from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '../../../../common/commonStyle';
@@ -16,6 +16,8 @@ import SearchContent from './SearchContent';
 import {getSearchHistory, insertSearch, updateSearch} from './utils';
 import {getSearchData, getSearchInfo} from './services';
 import _ from 'lodash';
+import HotFundCard from './HotFundCard';
+
 const Index = () => {
     const [data, setData] = useState({});
     const [searchList, setSearchList] = useState([]);
@@ -152,6 +154,8 @@ const Index = () => {
                                     </View>
                                 </View>
                             ) : null}
+                            {/* 热门基金 */}
+                            {data?.hot_fund ? <HotFundCard style={{marginTop: px(24)}} data={data?.hot_fund} /> : null}
                         </>
                     )}
                 </ScrollView>
