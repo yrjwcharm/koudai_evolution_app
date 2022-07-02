@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Text, ImageBackground} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {View, StyleSheet, ScrollView, Text, ImageBackground, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar.js';
 import {px} from '~/utils/appUtil';
@@ -10,10 +10,39 @@ import PKParamRate from '../../components/PKParamRate';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '~/components/Button';
 import {BoxShadow} from 'react-native-shadow';
+import {pkIntroduce} from '../../services';
+import Toast from '~/components/Toast';
+import {useJump} from '~/components/hooks';
 
 const Introduce = () => {
+    const jump = useJump();
+    const [data, setData] = useState(null);
     const [tableSize, setTableSize] = useState({});
-    return (
+
+    const [leftObj = {}, rightObj = {}] = useMemo(() => {
+        return [data?.pk_list?.list?.[0], data?.pk_list?.list?.[1]];
+    }, [data]);
+
+    useEffect(() => {
+        pkIntroduce().then((res) => {
+            console.log(res);
+            if (res.code === '000000') {
+                setData(res.result);
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    }, []);
+
+    const handlerRate = (rate) => {
+        return ((rate || 0) * 100).toFixed(2) + '%';
+    };
+
+    return !data ? (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <ActivityIndicator />
+        </View>
+    ) : (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             <NavBar
                 leftIcon="chevron-left"
@@ -41,28 +70,27 @@ const Introduce = () => {
                             uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-bg.png',
                         }}
                         style={styles.card}>
-                        <Text style={styles.questionTitle}>什么是产品PK?</Text>
-                        <Text style={styles.questionAnswer}>
-                            根据个人偏好设置六个板块对比权重进行产品PK，魔方将根据您选择的基金和设置的权重，计算出每个基金的总PK值，?
-                        </Text>
+                        <Text style={styles.questionTitle}>{data.introduce.title}</Text>
+                        <Text style={styles.questionAnswer}>{data.introduce.content}</Text>
                         <View style={styles.pkDetail}>
                             {/* pk info */}
                             <ImageBackground
                                 source={{
-                                    uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-pk-bg.png',
+                                    uri:
+                                        'http://wp0.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-pk-bg.png',
                                 }}
                                 resizeMode="stretch"
                                 style={styles.pkInfo}>
                                 <View style={styles.pkInfoLeft}>
-                                    <Text style={styles.pkInfoName}>嘉实中证基建ETF发起式联接A</Text>
-                                    <Text style={styles.priceRate}>+19.12%</Text>
+                                    <Text style={styles.pkInfoName}>{leftObj.name}</Text>
+                                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
                                     <Text style={styles.priceDesc}>近一年涨跌幅</Text>
                                 </View>
                                 <View style={styles.pkInfoRight}>
-                                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>
-                                        嘉实中证基建ETF发起式联接A
+                                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
+                                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
+                                        {handlerRate(rightObj?.yield_info?.year)}
                                     </Text>
-                                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>+19.12%</Text>
                                     <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
                                 </View>
                                 <FastImage source={pkIcon} style={styles.pkIconStyle} />
@@ -71,7 +99,6 @@ const Introduce = () => {
                             <View
                                 style={styles.paramsTable}
                                 onLayout={(e) => {
-                                    console.log(e.nativeEvent.layout);
                                     setTableSize(e.nativeEvent.layout);
                                 }}>
                                 {/* 总pk分 */}
@@ -79,43 +106,47 @@ const Introduce = () => {
                                     <ParamsCellWrapOfSum style={{...styles.cellBorderR, width: px(82)}}>
                                         <Text style={styles.paramsLabelOfSum}>总PK分</Text>
                                     </ParamsCellWrapOfSum>
-                                    <ParamsCellWrapOfSum status={true} style={styles.cellBorderR}>
-                                        <PKParamsRateOfSum value={90} color="#E74949" />
+                                    <ParamsCellWrapOfSum data={leftObj} style={styles.cellBorderR}>
+                                        <PKParamsRateOfSum value={leftObj.total_score_info} color="#E74949" />
                                     </ParamsCellWrapOfSum>
-                                    <ParamsCellWrapOfSum>
-                                        <PKParamsRateOfSum value={54} color="#545968" />
+                                    <ParamsCellWrapOfSum data={rightObj}>
+                                        <PKParamsRateOfSum value={rightObj.total_score_info} color="#545968" />
                                     </ParamsCellWrapOfSum>
                                 </View>
                                 {/* pk 参数 */}
-                                {[
-                                    {text: '短期爆发力', v1: 96, v2: 35},
-                                    {text: '短期爆发力', v1: 96, v2: 35},
-                                    {text: '短期爆发力', v1: 96, v2: 35},
-                                    {text: '收益千里', v1: 75, v2: 35},
-                                    {text: '收益千里', v1: 75, v2: 20},
-                                    {text: '收益千里', v1: 75, v2: 45},
-                                    {text: '业绩独特性', v1: 75, v2: 35},
-                                    {text: '业绩独特性', v1: 20, v2: 99},
-                                    {text: '业绩独特性', v1: 75, v2: 45},
-                                ].map((item, idx) => (
-                                    <View
-                                        style={[
-                                            styles.paramsRow,
-                                            styles.rowBorderT,
-                                            {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'},
-                                        ]}
-                                        key={idx}>
-                                        <View style={[styles.paramsCell, {...styles.cellBorderR, width: px(82)}]}>
-                                            <Text style={styles.paramsLabel}>{item.text}</Text>
+                                {leftObj.score_info?.map((item, idx) => {
+                                    let rItem = rightObj.score_info?.[idx] || {};
+
+                                    return (
+                                        <View
+                                            style={[
+                                                styles.paramsRow,
+                                                styles.rowBorderT,
+                                                {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'},
+                                            ]}
+                                            key={idx}>
+                                            <View style={[styles.paramsCell, {...styles.cellBorderR, width: px(82)}]}>
+                                                <Text style={styles.paramsLabel}>{item.name}</Text>
+                                            </View>
+                                            <View style={[styles.paramsCell, styles.cellBorderR]}>
+                                                <PKParamRate
+                                                    value={item.score}
+                                                    total={item.total_score}
+                                                    color="#E74949"
+                                                    justifyContent="flex-end"
+                                                />
+                                            </View>
+                                            <View style={[styles.paramsCell]}>
+                                                <PKParamRate
+                                                    value={rItem.score}
+                                                    total={rItem.total_score}
+                                                    color="#545968"
+                                                    justifyContent="flex-end"
+                                                />
+                                            </View>
                                         </View>
-                                        <View style={[styles.paramsCell, styles.cellBorderR]}>
-                                            <PKParamRate value={item.v1} color="#E74949" justifyContent="flex-end" />
-                                        </View>
-                                        <View style={[styles.paramsCell]}>
-                                            <PKParamRate value={item.v2} color="#545968" justifyContent="flex-end" />
-                                        </View>
-                                    </View>
-                                ))}
+                                    );
+                                })}
                             </View>
                             {/* box shadow */}
                             {tableSize.height && (
@@ -138,9 +169,16 @@ const Introduce = () => {
                     </ImageBackground>
                 </View>
             </ScrollView>
-            <View style={styles.btnWrap}>
-                <Button title={'开始PK'} onPress={() => {}} />
-            </View>
+            {data.btn ? (
+                <View style={styles.btnWrap}>
+                    <Button
+                        title={data.btn.title}
+                        onPress={() => {
+                            jump(data.btn.url);
+                        }}
+                    />
+                </View>
+            ) : null}
         </SafeAreaView>
     );
 };
@@ -302,22 +340,20 @@ const styles = StyleSheet.create({
 });
 export default Introduce;
 
-const ParamsCellWrapOfSum = ({children, style, status = false}) => {
+const ParamsCellWrapOfSum = ({children, style, data}) => {
     return (
         <View style={[styles.paramsCellOfSum, style]}>
-            <View style={[styles.highStamp, {opacity: +status}]}>
+            <View style={[styles.highStamp, {opacity: data?.tip ? 1 : 0}]}>
                 <FastImage
                     source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png'}}
                     style={{width: px(10), height: px(10), marginRight: px(2)}}
                 />
-                <Text style={styles.highStampText}>优选推荐</Text>
+                <Text style={styles.highStampText}>{data?.tip}</Text>
             </View>
             {children}
-            {['推荐理由文案推荐理由文案', '推荐理由文案'].map((item, idx) => (
-                <View key={idx} style={[styles.recommendDesc, {opacity: +status, marginTop: idx > 0 ? 4 : 0}]}>
-                    <Text style={styles.recommendDescText}>{item}</Text>
-                </View>
-            ))}
+            <View style={[styles.recommendDesc, {opacity: data?.tip ? 1 : 0}]}>
+                <Text style={styles.recommendDescText}>{data?.reason}</Text>
+            </View>
         </View>
     );
 };

@@ -34,3 +34,7 @@ export const hotpkData = (data) => {
 export const borwseListData = (data) => {
     return http.get('/pk/browse/list/20220608', data);
 };
+
+export const pkIntroduce = (data) => {
+    return http.get('/pk/introduce/20220608', data);
+};
