@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useRef} from 'react';
-import {View, StyleSheet, Text, RefreshControl} from 'react-native';
+import {View, StyleSheet, Text, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -8,7 +8,7 @@ import {Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import PKCard from './PKCard';
-import {getPKHomeData} from './services';
+import {getPKHomeData, getFundRankData} from '../../services';
 import Toast from '../../../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import PKBtnTab from '../../components/PKBtnTab';
@@ -17,15 +17,17 @@ import PKBall from '../../components/PKBall';
 import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 import {useJump} from '~/components/hooks';
 import PKWeightSet from '../Compare/PKWieghtSet';
+import ProductCards from '~/components/Portfolios/ProductCards';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
+    const [fundRankData, setFundRankData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [fundRankLoading, setFundRankLoading] = useState(false);
+    const [curFundTopTab, setCurFundTopTab] = useState('');
     const jump = useJump();
-
-    const PKBallRef = useRef(null);
 
     const getData = (refresh) => {
         refresh ? setRefreshing(true) : setLoading(true);
@@ -33,6 +35,7 @@ const PKHome = () => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
+                    getFundRankList(res.result?.fund_top?.tabs?.[0]?.rank_type);
                 } else {
                     Toast.show(res.message);
                 }
@@ -43,14 +46,30 @@ const PKHome = () => {
             });
     };
 
+    const getFundRankList = (rank_type) => {
+        setCurFundTopTab(rank_type);
+        setFundRankLoading(true);
+        getFundRankData({rank_type})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setFundRankData(res.result);
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally((_) => {
+                setFundRankLoading(false);
+            });
+    };
+
     useFocusEffect(
         useCallback(() => {
             getData();
         }, [])
     );
 
-    const handlerChange = (item, idx, val) => {
-        console.log(item);
+    const handlerFundTopTabChange = (item, idx, val) => {
+        getFundRankList(val);
     };
 
     return (
@@ -64,7 +83,7 @@ const PKHome = () => {
                 <TouchableOpacity style={[styles.searchBg, Style.flexCenter]}>
                     <View style={Style.flexRowCenter}>
                         <Icons name={'search'} color={'#545968'} size={px(18)} />
-                        <Text style={styles.searchPlaceHolder}>搜基金代码/名称/经理/公司等</Text>
+                        <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -76,46 +95,66 @@ const PKHome = () => {
                 scrollIndicatorInsets={{right: 1}}>
                 {/* topmenu */}
                 <View style={styles.topMenu}>
-                    {[1, 2, 3, 4, 5].map((item, idx) => (
+                    {data?.tabs?.map((item, idx) => (
                         <View key={idx} style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    jump({path: 'PrivatePlacement'});
+                                    jump(item.url);
                                 }}>
-                                <FastImage
-                                    source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/06/public.png'}}
-                                    resizeMode="contain"
-                                    style={styles.topMenuIcon}
-                                />
-                                <Text style={styles.topMenuText}>公募基金</Text>
+                                <FastImage source={{uri: item.icon}} resizeMode="contain" style={styles.topMenuIcon} />
+                                <Text style={styles.topMenuText}>{item.text}</Text>
                             </TouchableOpacity>
                         </View>
                     ))}
                 </View>
                 {/* pkCard */}
-                <PKCard />
-                {/* 基金榜单 */}
+                <PKCard data={data?.pk_list} />
                 <View style={styles.listWrap}>
-                    <Text style={styles.listTitle}>热门产品推荐</Text>
-                    {/* tab */}
-                    <PKBtnTab data={['追求收益', '省心定投', '金牛经理']} onChange={handlerChange} />
-                    {/* list */}
-                    {[1, 2, 3, 4].map((item, idx) => (
-                        <TouchableOpacity
-                            onPress={() => {
-                                PKBallRef.current.add();
-                            }}
-                            key={idx}
-                            style={{marginTop: idx > 0 ? px(12) : 0}}>
-                            <Text style={{backgroundColor: '#fff'}}>{item}</Text>
-                        </TouchableOpacity>
-                    ))}
+                    {data?.hot_recommend && (
+                        <>
+                            <Text style={styles.listTitle}>热门产品推荐</Text>
+                            {data?.hot_recommend?.map((item, idx) => {
+                                return (
+                                    <ProductCards
+                                        key={idx}
+                                        data={{type: 'recommend_card', item}}
+                                        style={{borderRadius: px(8), marginTop: 0, marginBottom: px(12)}}
+                                    />
+                                );
+                            })}
+                        </>
+                    )}
+                    {data?.fund_top && (
+                        <>
+                            <Text style={styles.listTitle}>基金榜单</Text>
+                            {/* tab */}
+                            <PKBtnTab
+                                data={data?.fund_top?.tabs}
+                                onChange={handlerFundTopTabChange}
+                                defaultActive={0}
+                                labelKey="title"
+                                valueKey="rank_type"
+                            />
+                            {/* list */}
+                            {fundRankLoading ? (
+                                <>
+                                    <ActivityIndicator size={'large'} style={{marginTop: px(20)}} />
+                                </>
+                            ) : (
+                                <>
+                                    {fundRankData?.list?.map?.((item, idx) => {
+                                        return <ProductCards key={idx + item.code + curFundTopTab} data={item} />;
+                                    })}
+                                </>
+                            )}
+                        </>
+                    )}
                 </View>
                 {/* bottomDesc */}
                 <BottomDesc />
             </ScrollView>
-            <PKBall ref={PKBallRef} />
+            <PKBall />
             {/* <PKCollectUserInterest /> */}
             {/* <PKWeightSet /> */}
         </LinearGradient>
