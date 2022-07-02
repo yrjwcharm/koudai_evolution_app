@@ -76,7 +76,7 @@ const Settings = ({navigation}) => {
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
                                 dispatch(cleanProduct());
-                                dispatch(pinningProduct());
+                                dispatch(pinningProduct(null));
                                 dispatch(
                                     updateUserInfo({
                                         phone: '',

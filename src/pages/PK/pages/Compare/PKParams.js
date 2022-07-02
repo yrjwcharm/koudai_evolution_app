@@ -4,11 +4,11 @@ import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {Font} from '~/common/commonStyle';
-import http from '~/services';
 import {px} from '~/utils/appUtil';
 import PKParamRate from '../../components/PKParamRate';
 import PKParamsRateOfSum from '../../components/PKParamsRateOfSum';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import {postPKWeightSwitch} from '../../services';
 
 const handlerTagHeight = (data) => {
     const max = data.reduce((memo, cur) => {
@@ -189,7 +189,7 @@ const LabelPart = ({item, idx, expand, onChange}) => {
     const onValueChange = (val) => {
         setValue(val);
         onChange(val, item.name);
-        http.post('/pk/weight/switch/20220608', {open_status: +val, type: item.type}).then((res) => {
+        postPKWeightSwitch({open_status: +val, type: item.type}).then((res) => {
             console.log(res);
         });
     };

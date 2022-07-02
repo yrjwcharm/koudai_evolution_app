@@ -1,11 +1,11 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {px} from '~/utils/appUtil';
-import http from '~/services';
 import {throttle} from 'lodash';
 import {useFocusEffect} from '@react-navigation/native';
 import {Chart} from '~/components/Chart';
 import {Colors, Font} from '~/common/commonStyle';
+import {getPKChartDetail} from '../../services';
 
 const PKAchivementChart = ({fund_code_list, originPeriod}) => {
     const [period, setPeriod] = useState(originPeriod);
@@ -15,7 +15,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
 
     const getData = (p) => {
         setData({});
-        http.get('/pk/chart/detail/20220608', {
+        getPKChartDetail({
             period: p,
             fund_code_list: '470018,487021,550010,550009,550008',
         }).then((res) => {

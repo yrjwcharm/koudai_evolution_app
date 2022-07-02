@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import http from '~/services';
 import {px} from '~/utils/appUtil';
 import Header from './Header';
 import PKParams from './PKParams';
@@ -12,6 +11,7 @@ import PKPriceRange from './PKPriceRange';
 import PKPortfolio from './PKPortfolio';
 import PKManagerInfo from './PKManagerInfo';
 import PKFundInfo from './PKFundInfo';
+import {getPKDetailData} from '../../services';
 
 const Compare = (props) => {
     const pkProducts = useSelector((state) => state.pkProducts);
@@ -28,7 +28,7 @@ const Compare = (props) => {
     useFocusEffect(
         useCallback(() => {
             // 更新data
-            http.get('/pk/detail/20220608', {fund_code_list: [550011, 487021, 550010, 550009, 550008]}).then((res) => {
+            getPKDetailData({fund_code_list: [550011, 487021, 550010, 550009, 550008]}).then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
                 }

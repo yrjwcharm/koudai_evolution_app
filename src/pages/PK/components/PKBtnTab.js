@@ -12,7 +12,7 @@ import {px} from '../../../utils/appUtil';
  * @param {object} option
  * @param {array} option.data
  * @param {string} [option.labelKey] 用来显示文字的字段key, 如果是fasy值则直接显示item
- * @param {number} [option.defaultActive] 默认选中的btn
+ * @param {number} [option.active] 选中的btn
  * @param {string} [option.valueKey] value key
  * @param {onChange} [option.onChange] change 事件
  * @param {object} [option.btnDefaultStyle] 按钮默认样式
@@ -22,14 +22,12 @@ const PKBtnTab = ({
     data = [],
     labelKey = '',
     valueKey = '',
-    defaultActive = 0,
+    active = 0,
     onChange,
     btnDefaultStyle = {backgroundColor: '#fff'},
 }) => {
-    const [active, setActive] = useState(data[defaultActive]);
     const handlerPress = (item, idx) => {
-        if (item === active) return;
-        setActive(item);
+        if (idx === active) return;
         onChange?.(item, idx, item[valueKey]);
     };
     return (
@@ -42,7 +40,7 @@ const PKBtnTab = ({
                         styles.btn,
                         {
                             marginLeft: idx > 0 ? px(12) : 0,
-                            backgroundColor: item === active ? '#DEE8FF' : btnDefaultStyle.backgroundColor,
+                            backgroundColor: idx === active ? '#DEE8FF' : btnDefaultStyle.backgroundColor,
                         },
                     ]}
                     onPress={() => handlerPress(item, idx)}>
@@ -50,7 +48,7 @@ const PKBtnTab = ({
                         style={[
                             styles.btnText,
                             {
-                                color: item === active ? '#0051CC' : '#121D3A',
+                                color: idx === active ? '#0051CC' : '#121D3A',
                             },
                         ]}>
                         {labelKey ? item[labelKey] : item}

@@ -80,7 +80,11 @@ const PKHome = () => {
             style={[styles.container, {paddingTop: insets.top}]}>
             {/* search */}
             <View style={[styles.searchWrap]}>
-                <TouchableOpacity style={[styles.searchBg, Style.flexCenter]}>
+                <TouchableOpacity
+                    style={[styles.searchBg, Style.flexCenter]}
+                    onPress={() => {
+                        jump(data?.search_button?.url);
+                    }}>
                     <View style={Style.flexRowCenter}>
                         <Icons name={'search'} color={'#545968'} size={px(18)} />
                         <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>

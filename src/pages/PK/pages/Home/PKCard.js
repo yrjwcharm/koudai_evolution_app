@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ImageBackground} from 'react-native';
 import pkCardBg from '../../../../assets/img/pk/pkCardBg.png';
 import pkIcon from '../../../../assets/img/pk/pkIcon.png';
@@ -8,55 +8,74 @@ import {Font} from '../../../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 
-const PKCard = () => {
+const PKCard = ({data = {}}) => {
     const jump = useJump();
+
+    const [leftObj = {}, rightObj = {}] = useMemo(() => {
+        return [data?.list?.[0], data?.list?.[1]];
+    }, [data]);
+
+    const handlerRate = (rate) => {
+        return ((rate || 0) * 100).toFixed(2) + '%';
+    };
+
     return (
         <View style={styles.pkCard}>
             <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
                 <View style={styles.pkInfoLeft}>
-                    <Text style={styles.pkInfoName}>嘉实中证基建ETF发起式联接A</Text>
-                    <Text style={styles.priceRate}>+19.12%</Text>
+                    <Text style={styles.pkInfoName}>{leftObj.name}</Text>
+                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
                     <Text style={styles.priceDesc}>近一年涨跌幅</Text>
                 </View>
                 <View style={styles.pkInfoRight}>
-                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>嘉实中证基建ETF发起式联接A</Text>
-                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>+19.12%</Text>
+                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
+                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
+                        {handlerRate(rightObj?.yield_info?.year)}
+                    </Text>
                     <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
                 </View>
                 <FastImage source={pkIcon} style={styles.pkIconStyle} />
             </ImageBackground>
-            {true ? (
+            {!data?.is_enter_pk ? (
                 <View
                     style={{
                         paddingBottom: px(20),
                     }}>
                     <View style={styles.pkParams}>
-                        {[1, 2, 3].map((item, idx) => (
-                            <View key={idx} style={styles.pkParamsItem}>
-                                <Text style={styles.pkParamsItemTitle}>抗风险能力</Text>
-                                <View style={styles.pkParamsItemRate}>
-                                    <PKParamRate value={88} color="#1A4FEB" />
-                                    <View style={{width: px(40)}} />
-                                    <PKParamRate value={60} justifyContent="flex-end" color="#E74949" />
+                        {leftObj.score_info?.map((item, idx) => {
+                            let rItem = rightObj.score_info?.[idx] || {};
+                            return (
+                                <View key={idx} style={styles.pkParamsItem}>
+                                    <Text style={styles.pkParamsItemTitle}>{item.name}</Text>
+                                    <View style={styles.pkParamsItemRate}>
+                                        <PKParamRate value={item.score} total={item.total_score} color="#1A4FEB" />
+                                        <View style={{width: px(40)}} />
+                                        <PKParamRate
+                                            value={rItem.score}
+                                            total={rItem.total_score}
+                                            justifyContent="flex-end"
+                                            color="#E74949"
+                                        />
+                                    </View>
                                 </View>
-                            </View>
-                        ))}
+                            );
+                        })}
                     </View>
-                    <Text style={styles.pkParamsTip}>
-                        魔方将根据对比板块和权重设置，对基金进行PK，在PK中为您推荐分值更高的产品
-                    </Text>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.pkBtn}
-                        onPress={() => {
-                            jump({path: 'PKCompare'});
-                        }}>
-                        <Text style={styles.pkBtnText}>进入PK &gt;</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.pkParamsTip}>{data.tip}</Text>
+                    {data.btns && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={styles.pkBtn}
+                            onPress={() => {
+                                jump(data.btns.url);
+                            }}>
+                            <Text style={styles.pkBtnText}>{data.btns.title}</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
             ) : (
                 <View style={styles.pkTipWrap}>
-                    <Text style={styles.pkTipText}>发现了新的优质基金，点击PK即可查看</Text>
+                    <Text style={styles.pkTipText}>{data.tip}</Text>
                 </View>
             )}
         </View>

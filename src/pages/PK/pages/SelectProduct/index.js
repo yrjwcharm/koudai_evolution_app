@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     View,
     Text,
@@ -17,32 +17,89 @@ import PKBtnTab from '../../components/PKBtnTab';
 import checkBtnIcon from '../../../../components/IM/app/source/image/check.png';
 import {connect} from 'react-redux';
 import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
+import {useFocusEffect} from '@react-navigation/native';
+import {borwseListData, followListLite, getPKDetailData, hotpkData, pkChooseDefaultData} from '../../services';
+import {useJump} from '~/components/hooks';
+import Toast from '~/components/Toast';
+import Html from '../../../../components/RenderHtml';
 
 const SelectProduct = (props) => {
+    const jump = useJump();
+    const [data, setData] = useState({});
+    const [selectLoading, setSelectLoading] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
-    const [searchFocused, setSearchFocus] = useState(false);
+    const [selectData, setSelectData] = useState(null);
+    const [curTab, setCurTab] = useState(0);
+    const [tabList, setTabList] = useState([]);
 
-    const searchInputRef = useRef(null);
+    useFocusEffect(
+        useCallback(() => {
+            getDefaultData();
+            getSelectData();
+            onTabChange(null, 0);
+        }, [])
+    );
 
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-    }, []);
-
-    const onChangeSearch = (val) => {
-        setSearch(val);
+    const getDefaultData = () => {
+        pkChooseDefaultData().then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
     };
 
-    const onTabChange = (item) => {};
+    const getSelectData = () => {
+        setSelectLoading(true);
+        getPKDetailData({fund_code_list: props.pkProducts})
+            .then((res) => {
+                setSelectData(res.result?.pk_list || []);
+            })
+            .finally((_) => {
+                setSelectLoading(false);
+            });
+    };
+
+    const onTabChange = (_, idx) => {
+        setCurTab(idx);
+        setLoading(true);
+        [followListLite, hotpkData, borwseListData]
+            [idx]()
+            .then((res) => {
+                setTabList(res.result?.list);
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    };
 
     const deleteSelectedItem = (item) => {
-        props.delProduct(item);
+        setSelectData((val) => {
+            return val.filter((itm) => item.code !== itm.code);
+        });
+        props.delProduct(item.code);
     };
 
     const handlerSelectItem = (item) => {
-        props.pkProducts.includes(item) ? props.delProduct(item) : props.addProduct(item);
+        // 整理selectData
+        let state = selectData.find((itm) => itm.code === item.code);
+        if (state) {
+            setSelectData((val) => {
+                return val.filter((itm) => item.code !== itm.code);
+            });
+        } else {
+            if (selectData.length === 6) return Toast.show('您PK的基金过多，最多选择6只');
+            setSelectData((val) => {
+                let arr = [...val];
+                arr.push(item);
+                return arr;
+            });
+        }
+        // 整理redux
+        if (props.pkProducts.includes(item.code)) {
+            props.delProduct(item.code);
+        } else {
+            props.addProduct(item.code);
+        }
     };
 
     return (
@@ -50,141 +107,160 @@ const SelectProduct = (props) => {
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
                 <View style={{flex: 1, padding: px(16)}}>
                     {/* selected area */}
-                    {props.pkProducts?.length ? (
-                        <View style={styles.selectWrap}>
-                            <View style={styles.selectRowWrap}>
-                                {props.pkProducts.slice(0, 3).map((item, idx) => (
-                                    <View style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]} key={idx}>
-                                        <View style={styles.selectItemHeader}>
-                                            {idx === 0 ? (
-                                                <View style={styles.highStamp}>
-                                                    <FastImage
-                                                        source={{
-                                                            uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
-                                                        }}
-                                                        style={{width: px(10), height: px(10), marginRight: px(2)}}
-                                                    />
-                                                    <Text style={styles.highStampText}>优选推荐</Text>
-                                                </View>
-                                            ) : (
-                                                <View />
-                                            )}
-                                            <TouchableWithoutFeedback
-                                                onPress={() => {
-                                                    deleteSelectedItem(item);
-                                                }}>
-                                                <Icons
-                                                    style={{marginRight: 2, marginTop: 4}}
-                                                    name={'close'}
-                                                    color={'#9AA0B1'}
-                                                    size={px(18)}
-                                                />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                        <View style={styles.selectItemTitleWrap}>
-                                            <Text style={styles.selectItemTitle}>
-                                                嘉实中证基建ETF联结A{idx === 2 ? '嘉实中证基建ETF联结A' : ''}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.selectItemFooter}>
-                                            <View style={styles.selectItemTag}>
-                                                <Text style={styles.selectItemTagText}>指数型</Text>
-                                            </View>
-                                            <FastImage
-                                                source={{
-                                                    uri:
-                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
-                                                        (idx + 1) +
-                                                        '.png',
-                                                }}
-                                                style={{width: px(22), height: px(26)}}
-                                            />
-                                        </View>
-                                    </View>
-                                ))}
-                            </View>
-                            <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
-                                {props.pkProducts.slice(3, 6).map((item, idx) => (
-                                    <View style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]} key={idx}>
-                                        <View style={styles.selectItemHeader}>
-                                            {idx === 1 ? (
-                                                <View style={styles.highStamp}>
-                                                    <FastImage
-                                                        source={{
-                                                            uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
-                                                        }}
-                                                        style={{width: px(10), height: px(10), marginRight: px(2)}}
-                                                    />
-                                                    <Text style={styles.highStampText}>优选推荐</Text>
-                                                </View>
-                                            ) : (
-                                                <View />
-                                            )}
-                                            <TouchableWithoutFeedback
-                                                onPress={() => {
-                                                    deleteSelectedItem(item);
-                                                }}>
-                                                <Icons
-                                                    style={{marginRight: 2, marginTop: 4}}
-                                                    name={'close'}
-                                                    color={'#9AA0B1'}
-                                                    size={px(18)}
-                                                />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                        <View style={styles.selectItemTitleWrap}>
-                                            <Text style={styles.selectItemTitle}>嘉实中证基建ETF联结A</Text>
-                                        </View>
-                                        <View style={styles.selectItemFooter}>
-                                            <View style={styles.selectItemTag}>
-                                                <Text style={styles.selectItemTagText}>指数型</Text>
-                                            </View>
-                                            <FastImage
-                                                source={{
-                                                    uri:
-                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
-                                                        (idx + 4) +
-                                                        '.png',
-                                                }}
-                                                style={{width: px(22), height: px(26)}}
-                                            />
-                                        </View>
-                                    </View>
-                                ))}
-                            </View>
+                    {selectLoading ? (
+                        <View style={{paddingVertical: px(40)}}>
+                            <ActivityIndicator />
                         </View>
                     ) : (
-                        <View style={styles.noSelctWrap}>
-                            <View>
-                                <Text style={styles.desc}> 您当前还未选择产品</Text>
-                                <Text style={styles.desc}> 可通过我的关注、热门PK、浏览历史或直接搜索进行选择</Text>
-                            </View>
-                        </View>
+                        <>
+                            {selectData?.length ? (
+                                <View style={styles.selectWrap}>
+                                    <View style={styles.selectRowWrap}>
+                                        {selectData.slice(0, 3).map((item, idx) => (
+                                            <View
+                                                style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                key={idx}>
+                                                <View style={styles.selectItemHeader}>
+                                                    {item.tip ? (
+                                                        <View style={styles.highStamp}>
+                                                            <FastImage
+                                                                source={{
+                                                                    uri:
+                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                                                }}
+                                                                style={{
+                                                                    width: px(10),
+                                                                    height: px(10),
+                                                                    marginRight: px(2),
+                                                                }}
+                                                            />
+                                                            <Text style={styles.highStampText}>{item.tip}</Text>
+                                                        </View>
+                                                    ) : (
+                                                        <View />
+                                                    )}
+                                                    <TouchableWithoutFeedback
+                                                        onPress={() => {
+                                                            deleteSelectedItem(item);
+                                                        }}>
+                                                        <Icons
+                                                            style={{marginRight: 2, marginTop: 4}}
+                                                            name={'close'}
+                                                            color={'#9AA0B1'}
+                                                            size={px(18)}
+                                                        />
+                                                    </TouchableWithoutFeedback>
+                                                </View>
+                                                <View style={styles.selectItemTitleWrap}>
+                                                    <Text style={styles.selectItemTitle}>{item.name}</Text>
+                                                </View>
+                                                <View style={styles.selectItemFooter}>
+                                                    <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
+                                                        {item.tags.map((itm, i) => (
+                                                            <View key={i} style={[styles.selectItemTag]}>
+                                                                <Text key={i} style={[styles.selectItemTagText]}>
+                                                                    {itm}
+                                                                </Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
+                                                    <FastImage
+                                                        source={{
+                                                            uri:
+                                                                'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
+                                                                (idx + 1) +
+                                                                '.png',
+                                                        }}
+                                                        style={{width: px(22), height: px(26)}}
+                                                    />
+                                                </View>
+                                            </View>
+                                        ))}
+                                    </View>
+                                    <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
+                                        {selectData.slice(3, 6).map((item, idx) => (
+                                            <View
+                                                style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                key={idx}>
+                                                <View style={styles.selectItemHeader}>
+                                                    {item.tip ? (
+                                                        <View style={styles.highStamp}>
+                                                            <FastImage
+                                                                source={{
+                                                                    uri:
+                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                                                }}
+                                                                style={{
+                                                                    width: px(10),
+                                                                    height: px(10),
+                                                                    marginRight: px(2),
+                                                                }}
+                                                            />
+                                                            <Text style={styles.highStampText}>{item.tip}</Text>
+                                                        </View>
+                                                    ) : (
+                                                        <View />
+                                                    )}
+                                                    <TouchableWithoutFeedback
+                                                        onPress={() => {
+                                                            deleteSelectedItem(item);
+                                                        }}>
+                                                        <Icons
+                                                            style={{marginRight: 2, marginTop: 4}}
+                                                            name={'close'}
+                                                            color={'#9AA0B1'}
+                                                            size={px(18)}
+                                                        />
+                                                    </TouchableWithoutFeedback>
+                                                </View>
+                                                <View style={styles.selectItemTitleWrap}>
+                                                    <Text style={styles.selectItemTitle}>{item.name}</Text>
+                                                </View>
+                                                <View style={styles.selectItemFooter}>
+                                                    <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
+                                                        {item.tags.map((itm, i) => (
+                                                            <View key={i} style={[styles.selectItemTag]}>
+                                                                <Text key={i} style={[styles.selectItemTagText]}>
+                                                                    {itm}
+                                                                </Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
+                                                    <FastImage
+                                                        source={{
+                                                            uri:
+                                                                'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
+                                                                (idx + 4) +
+                                                                '.png',
+                                                        }}
+                                                        style={{width: px(22), height: px(26)}}
+                                                    />
+                                                </View>
+                                            </View>
+                                        ))}
+                                    </View>
+                                </View>
+                            ) : (
+                                <View style={styles.noSelctWrap}>
+                                    <View>
+                                        <Text style={styles.desc}>{data.empty_text1}</Text>
+                                        <Text style={styles.desc}>{data.empty_text2}</Text>
+                                    </View>
+                                </View>
+                            )}
+                        </>
                     )}
                     {/* search */}
                     <View style={styles.searchWrap}>
-                        <TextInput
-                            onFocus={() => {
-                                setSearchFocus(true);
-                            }}
-                            onBlur={() => {
-                                setSearchFocus(false);
-                            }}
-                            ref={searchInputRef}
-                            onChangeText={onChangeSearch}
-                            style={styles.searchInput}
-                        />
-                        {search || searchFocused ? null : (
-                            <TouchableWithoutFeedback
-                                onPress={() => {
-                                    searchInputRef.current?.focus?.();
-                                }}>
-                                <View style={[styles.placeholderWrap, Style.flexRowCenter]}>
-                                    <Icons name={'search'} color={'#545968'} size={px(18)} />
-                                    <Text style={styles.placeholderText}>搜基金代码/名称/经理/公司等</Text>
-                                </View>
-                            </TouchableWithoutFeedback>
-                        )}
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.searchInput, Style.flexRowCenter]}
+                            onPress={() => {
+                                jump(data.search_button.url);
+                            }}>
+                            <Icons name={'search'} color={'#545968'} size={px(18)} />
+                            <Text style={styles.placeholderText}>{data.search_box_content}</Text>
+                        </TouchableOpacity>
                     </View>
                     {/* tableCard */}
                     <View style={styles.card}>
@@ -192,6 +268,7 @@ const SelectProduct = (props) => {
                         <View style={styles.tabsWrap}>
                             <PKBtnTab
                                 data={['我的关注', '热门PK', '历史浏览']}
+                                active={curTab}
                                 btnDefaultStyle={{backgroundColor: '#F5F6F8'}}
                                 onChange={onTabChange}
                             />
@@ -209,64 +286,80 @@ const SelectProduct = (props) => {
                             <>
                                 {/* table list */}
                                 <View style={styles.tableListWrap}>
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, idx, arr) => (
-                                        <View
-                                            key={idx}
-                                            style={[
-                                                styles.tableRowWrap,
-                                                idx + 1 === arr.length
-                                                    ? {}
-                                                    : {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5},
-                                            ]}>
-                                            <View style={[styles.leftColWidth, styles.leftColContent]}>
-                                                {/* check icon */}
-                                                <View style={styles.checkIconWrap}>
-                                                    <TouchableOpacity
-                                                        activeOpacity={1}
-                                                        onPress={() => handlerSelectItem(item)}
-                                                        style={[
-                                                            styles.checkIconOuter,
-                                                            props.pkProducts.includes(item)
-                                                                ? {
-                                                                      backgroundColor: '#0051CC',
-                                                                  }
-                                                                : {
-                                                                      borderWidth: 0.5,
-                                                                      borderColor: '#BDC2CC',
-                                                                  },
-                                                        ]}>
-                                                        {props.pkProducts.includes(item) ? (
-                                                            <FastImage
-                                                                source={checkBtnIcon}
-                                                                style={{width: px(8), height: px(8)}}
-                                                            />
-                                                        ) : null}
-                                                    </TouchableOpacity>
-                                                </View>
-                                                {/* name */}
-                                                <View style={styles.productName}>
-                                                    <Text style={styles.productNameText}>中欧时代先锋股</Text>
-                                                    <View style={styles.productTags}>
-                                                        {[1, 2].map((item, idx) => (
-                                                            <View
-                                                                style={[
-                                                                    styles.productTag,
-                                                                    {marginLeft: idx > 0 ? 4 : 0},
-                                                                ]}
-                                                                key={idx}>
-                                                                <Text style={styles.productTagText}>中高风险</Text>
-                                                            </View>
-                                                        ))}
+                                    {tabList?.[0] ? (
+                                        tabList?.map?.((item, idx, arr) => (
+                                            <View
+                                                key={idx}
+                                                style={[
+                                                    styles.tableRowWrap,
+                                                    idx + 1 === arr.length
+                                                        ? {}
+                                                        : {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5},
+                                                ]}>
+                                                <View style={[styles.leftColWidth, styles.leftColContent]}>
+                                                    {/* check icon */}
+                                                    <View style={styles.checkIconWrap}>
+                                                        <TouchableOpacity
+                                                            activeOpacity={1}
+                                                            onPress={() => handlerSelectItem(item)}
+                                                            style={[
+                                                                styles.checkIconOuter,
+                                                                props.pkProducts.includes(item.code)
+                                                                    ? {
+                                                                          backgroundColor: '#0051CC',
+                                                                      }
+                                                                    : {
+                                                                          borderWidth: 0.5,
+                                                                          borderColor: '#BDC2CC',
+                                                                      },
+                                                            ]}>
+                                                            {props.pkProducts.includes(item.code) ? (
+                                                                <FastImage
+                                                                    source={checkBtnIcon}
+                                                                    style={{width: px(8), height: px(8)}}
+                                                                />
+                                                            ) : null}
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    {/* name */}
+                                                    <View style={styles.productName}>
+                                                        <Text style={styles.productNameText}>{item.name}</Text>
+                                                        <View style={styles.productTags}>
+                                                            {item.tags.map((itm, i) => (
+                                                                <View
+                                                                    style={[
+                                                                        styles.productTag,
+                                                                        {marginLeft: i > 0 ? 4 : 0},
+                                                                    ]}
+                                                                    key={i}>
+                                                                    <Text style={styles.productTagText}>{itm}</Text>
+                                                                </View>
+                                                            ))}
+                                                        </View>
                                                     </View>
                                                 </View>
+                                                {/* 右侧 */}
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        jump(item.url);
+                                                    }}
+                                                    style={[styles.rightColWidth, styles.rightColContent]}>
+                                                    <View style={{flex: 1, alignItems: 'flex-end'}}>
+                                                        <Html
+                                                            html={item?.yield_y1?.value || item?.yield_info?.value}
+                                                            style={styles.rightRate}
+                                                        />
+                                                    </View>
+                                                    <Icons name={'chevron-right'} color={'#9AA0B1'} size={px(30)} />
+                                                </TouchableOpacity>
                                             </View>
-                                            {/* 右侧 */}
-                                            <View style={[styles.rightColWidth, styles.rightColContent]}>
-                                                <Text style={styles.rightRate}>+38.67% </Text>
-                                                <Icons name={'chevron-right'} color={'#9AA0B1'} size={px(30)} />
-                                            </View>
+                                        ))
+                                    ) : (
+                                        <View style={{paddingVertical: px(50)}}>
+                                            <Text style={{textAlign: 'center', color: '#9AA0B1'}}>暂无数据</Text>
                                         </View>
-                                    ))}
+                                    )}
                                 </View>
                             </>
                         )}
@@ -275,11 +368,18 @@ const SelectProduct = (props) => {
             </ScrollView>
             <View style={styles.bottomWrap}>
                 <Text style={styles.bottomLeftDefaultText}>
-                    最多对比6支基金，已选<Text style={styles.bottomLeftRedText}>6</Text>支
+                    最多对比6支基金，已选<Text style={styles.bottomLeftRedText}>{props.pkProducts.length}</Text>支
                 </Text>
-                <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtnWrap} onPress={() => {}}>
-                    <Text style={styles.bottomBtnText}>开始PK</Text>
-                </TouchableOpacity>
+                {data.pk_button ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.bottomBtnWrap}
+                        onPress={() => {
+                            jump(data.pk_button.url);
+                        }}>
+                        <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
         </View>
     );
@@ -316,13 +416,6 @@ const styles = StyleSheet.create({
         paddingVertical: px(12),
         paddingHorizontal: px(20),
         flex: 1,
-    },
-    placeholderWrap: {
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        top: 0,
-        left: 0,
     },
     placeholderText: {
         fontSize: px(13),
@@ -381,6 +474,7 @@ const styles = StyleSheet.create({
         height: px(19),
         justifyContent: 'center',
         marginTop: 4,
+        marginLeft: 3,
     },
     selectItemTagText: {
         fontSize: px(10),
@@ -477,7 +571,6 @@ const styles = StyleSheet.create({
         color: '#e74949',
         fontWeight: '500',
         fontFamily: Font.numFontFamily,
-        flex: 1,
     },
     bottomWrap: {
         paddingTop: px(8),
