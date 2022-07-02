@@ -1,26 +1,25 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Font} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import * as Animatable from 'react-native-animatable';
 import {useJump} from '~/components/hooks';
+import {useDispatch, useSelector} from 'react-redux';
+import {addProduct} from '~/redux/actions/pk/pkProducts';
 
 const PKBall = ({}, ref) => {
-    const jump = useJump();
+    const pkProducts = useSelector((state) => state.pkProducts);
+    const dispatch = useDispatch();
 
+    const jump = useJump();
+    // 0没有产品 1有PK产品  2优选产品
     const [layoutType, updateLayoutType] = useState(1);
 
     const animatableRef = useRef(null);
     const animateViewWidthRef = useRef(0);
     const timer = useRef(null);
-
-    useImperativeHandle(ref, () => ({
-        add: () => {
-            updateLayoutType(1);
-            handlerExpand(animateViewWidthRef.current);
-        },
-    }));
+    const prevPKProducts = useRef(pkProducts);
 
     useEffect(() => {
         () => {
@@ -30,27 +29,45 @@ const PKBall = ({}, ref) => {
         };
     }, []);
 
-    const handlerExpand = (width) => {
+    useEffect(() => {
+        if (pkProducts.length > prevPKProducts.current.length) {
+            let state = layoutType === 1;
+            handlerAnimate(animateViewWidthRef.current, state, state);
+        }
+        prevPKProducts.current = pkProducts;
+    }, [pkProducts, layoutType]);
+
+    //展开收缩动画
+    const handlerAnimate = (width, expand, shrink) => {
         if (timer.current) {
             clearTimeout(timer.current);
             timer.current = null;
         }
-        animatableRef.current?.transition({opacity: 0, width: 0}, {opacity: 1, width});
-        timer.current = setTimeout(() => {
-            animatableRef.current?.transitionTo({opacity: 0, width: 0});
-        }, 2000);
+        if (expand) {
+            animatableRef.current?.transition({opacity: 0, width: 0}, {opacity: 1, width});
+        }
+        if (shrink) {
+            timer.current = setTimeout(() => {
+                animatableRef.current?.transitionTo({opacity: 0, width: 0});
+            }, 2000);
+        }
     };
 
     const handlerJump = () => {
+        if (false) dispatch(addProduct('123123'));
         jump({path: 'PKSelectProduct'});
+        setTimeout(() => {
+            updateLayoutType(1);
+            handlerAnimate(px(205), false, true);
+        }, 10);
     };
 
     const handlerOnPush = () => {
         updateLayoutType(2);
-        handlerExpand(px(205));
+        handlerAnimate(px(205), true);
     };
     return (
-        <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={handlerJump}>
+        <TouchableOpacity activeOpacity={0.9} style={[styles.container]} onPress={handlerJump}>
             <Animatable.View
                 ref={animatableRef}
                 iterationCount={1}
@@ -70,7 +87,7 @@ const PKBall = ({}, ref) => {
                                 },
                             ]}>
                             已选择
-                            <Text style={{color: '#FFAF00', fontFamily: Font.numFontFamily}}>2</Text>
+                            <Text style={{color: '#FFAF00', fontFamily: Font.numFontFamily}}>{pkProducts.length}</Text>
                             支产品
                         </Text>
                     ) : (
@@ -81,7 +98,9 @@ const PKBall = ({}, ref) => {
                             }}>
                             <Text numberOfLines={1} style={[styles.noticeMainText, {textAlign: 'right'}]}>
                                 已选择
-                                <Text style={{color: '#FFAF00', fontFamily: Font.numFontFamily}}>2</Text>
+                                <Text style={{color: '#FFAF00', fontFamily: Font.numFontFamily}}>
+                                    {pkProducts.length}
+                                </Text>
                                 支产品
                             </Text>
                             <View style={styles.noticePushWrap}>
@@ -105,12 +124,12 @@ const PKBall = ({}, ref) => {
                     resizeMode="cover"
                     style={{width: px(66), height: px(66)}}
                 />
-                {true ? (
+                {pkProducts.length ? (
                     <ImageBackground
                         resizeMode="cover"
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar-badge.png'}}
                         style={styles.badge}>
-                        <Text style={styles.badgeText}>22</Text>
+                        <Text style={styles.badgeText}>{pkProducts.length}</Text>
                     </ImageBackground>
                 ) : null}
             </View>
