@@ -1,8 +1,9 @@
 import React, {forwardRef, useRef, useImperativeHandle, useState, useMemo} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Font} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
     const scrolling = useRef(null);
@@ -99,24 +100,54 @@ export default forwardRef((props, ref) => <_PKManagerInfo {...props} _ref={ref} 
 
 const ValuePart = ({item}) => {
     const [active, setActive] = useState(0);
+    const [visible, setVisible] = useState(false);
     const obj = useMemo(() => {
         return item?.manager_list?.[active] || {};
     }, [active, item]);
     return (
-        <View style={styles.valuesWrap}>
-            <View style={styles.valueWrap}>
-                <Text style={styles.valueText}>{obj?.name}</Text>
+        <>
+            <View style={styles.valuesWrap}>
+                {visible ? (
+                    <View style={[styles.dialog]}>
+                        {item?.manager_list.map((itm, idx) => (
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                key={idx}
+                                style={[styles.valueWrap, {backgroundColor: '#F5F6F8'}]}
+                                onPress={() => {
+                                    setVisible(false);
+                                    setActive(idx);
+                                }}>
+                                <Text style={styles.valueText}>{itm.name}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                ) : null}
+                <View style={styles.valueWrap}>
+                    <Text style={styles.valueText}>{obj?.name}</Text>
+                    {item?.manager_list.length > 1 && (
+                        <FontAwesome
+                            color={'#AD9064'}
+                            name={'angle-down'}
+                            size={16}
+                            style={{marginLeft: px(5)}}
+                            onPress={() => {
+                                setVisible((val) => !val);
+                            }}
+                        />
+                    )}
+                </View>
+                <View style={styles.valueWrap}>
+                    <Text style={styles.valueText}>{obj?.work_date || '--'}</Text>
+                </View>
+                <View style={styles.valueWrap}>
+                    <Text style={styles.valueText}>{obj?.fund_date || '--'}</Text>
+                </View>
+                <View style={styles.valueWrap}>
+                    <Text style={[styles.valueText, {color: '#E74949'}]}>{obj?.yield || '--'}</Text>
+                </View>
             </View>
-            <View style={styles.valueWrap}>
-                <Text style={styles.valueText}>{obj?.work_date || '--'}</Text>
-            </View>
-            <View style={styles.valueWrap}>
-                <Text style={styles.valueText}>{obj?.fund_date || '--'}</Text>
-            </View>
-            <View style={styles.valueWrap}>
-                <Text style={[styles.valueText, {color: '#E74949'}]}>{obj?.yield || '--'}</Text>
-            </View>
-        </View>
+        </>
     );
 };
 
@@ -169,6 +200,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'row',
     },
     valueText: {
         fontSize: px(14),
@@ -176,5 +208,11 @@ const styles = StyleSheet.create({
         color: '#121D3A',
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
+    },
+    dialog: {
+        width: px(120),
+        position: 'absolute',
+        top: px(35),
+        zIndex: 2,
     },
 });
