@@ -38,3 +38,15 @@ export const borwseListData = (data) => {
 export const pkIntroduce = (data) => {
     return http.get('/pk/introduce/20220608', data);
 };
+
+export const weightDetail = (data) => {
+    return http.get('/pk/weight/deail/20220608', data);
+};
+
+export const weightReset = (data) => {
+    return http.get('/pk/weight/reset/20220608', data);
+};
+
+export const weightSetting = (data) => {
+    return http.post('/pk/weight/setting/20220608', data);
+};

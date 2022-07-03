@@ -55,8 +55,6 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
     };
 
     const genValues = (item, key) => {
-        // item = data.find(itm=>item.aa === itm.aa)
-        item = data[0] || [];
         let map = {};
         item.asset_deploy.map((obj) => {
             map[obj.name] = obj.ratio + '%';
@@ -188,7 +186,12 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? genValues(pkPinning, -1) : null}
+                {pkPinning
+                    ? genValues(
+                          data.find((itm) => itm.code === pkPinning),
+                          -1
+                      )
+                    : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -213,7 +216,7 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {data.filter((item) => item != pkPinning).map((item, idx) => genValues(item, idx))}
+                        {data.filter((item) => item.code !== pkPinning).map((item, idx) => genValues(item, idx))}
                     </View>
                     {/* 补位 */}
                     {data.length > 1 ? genSup() : null}

@@ -35,8 +35,6 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
     };
 
     const genValues = (item, key) => {
-        // item = data.find(itm=>item.aa === itm.aa)
-        item = data[0];
         return (
             <View style={styles.valuesWrap} key={key}>
                 <View style={styles.valueWrap}>
@@ -64,11 +62,10 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
 
     const genSup = () => {
         if (data?.length > 5) return null;
-        const obj = data?.[0].manager_info;
         const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 1};
         return (
             <View style={{width: px(40)}}>
-                {new Array(Object.keys(obj).length).fill('').map((_, idx) => (
+                {new Array(4).fill('').map((_, idx) => (
                     <View style={{height: px(42), ...border}} />
                 ))}
             </View>
@@ -78,13 +75,18 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
     return (
         <View style={styles.container}>
             <View style={styles.title}>
-                <Text style={styles.titleText}>基金经理信息</Text>
+                <Text style={styles.titleText}>基金信息</Text>
             </View>
             <View style={[styles.content]}>
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? genValues(pkPinning, -1) : null}
+                {pkPinning
+                    ? genValues(
+                          data.find((itm) => itm.code === pkPinning),
+                          -1
+                      )
+                    : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -109,7 +111,7 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {data.filter((item) => item != pkPinning).map((item, idx) => genValues(item, idx))}
+                        {data.filter((item) => item.code !== pkPinning).map((item, idx) => genValues(item, idx))}
                     </View>
                     {/* 补位 */}
                     {data.length > 1 ? genSup() : null}
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontSize: px(14),
         lineHeight: px(22),
-        color: '#E74949',
+        color: '#121D3A',
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
     },

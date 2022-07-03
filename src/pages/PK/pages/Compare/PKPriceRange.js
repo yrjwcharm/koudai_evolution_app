@@ -46,30 +46,28 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     };
 
     const genValues = (item, key) => {
-        // item = data.find(itm=>item.aa === itm.aa)
-        item = data[0].yield_info;
         return (
             <View style={styles.valuesWrap} key={key}>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.week}</Text>
+                    <Text style={styles.valueText}>{item.week || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.month}</Text>
+                    <Text style={styles.valueText}>{item.month || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.three_month}</Text>
+                    <Text style={styles.valueText}>{item.three_month || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.half_year}</Text>
+                    <Text style={styles.valueText}>{item.half_year || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.year}</Text>
+                    <Text style={styles.valueText}>{item.year || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.three_year}</Text>
+                    <Text style={styles.valueText}>{item.three_year || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.founding}</Text>
+                    <Text style={styles.valueText}>{item.founding || '--'}</Text>
                 </View>
             </View>
         );
@@ -77,7 +75,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
 
     const genSup = () => {
         if (data?.length > 5) return null;
-        const obj = data?.[0].yield_info;
+        const obj = data?.[0]?.yield_info || {};
         const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 1};
         return (
             <View style={{width: px(40)}}>
@@ -97,7 +95,12 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? genValues(pkPinning, -1) : null}
+                {pkPinning
+                    ? genValues(
+                          data.find((itm) => itm.code === pkPinning),
+                          -1
+                      )
+                    : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -122,7 +125,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {data.filter((item) => item != pkPinning).map((item, idx) => genValues(item, idx))}
+                        {data.filter((item) => item.code !== pkPinning).map((item, idx) => genValues(item, idx))}
                     </View>
                     {/* 补位 */}
                     {data.length > 1 ? genSup() : null}

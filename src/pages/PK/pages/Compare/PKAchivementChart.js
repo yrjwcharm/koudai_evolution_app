@@ -17,7 +17,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
         setData({});
         getPKChartDetail({
             period: p,
-            fund_code_list: '470018,487021,550010,550009,550008',
+            fund_code_list: fund_code_list?.join?.(),
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result.yield_info);
@@ -26,22 +26,20 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
         });
     };
 
-    const changeTab = useCallback(
-        throttle((p) => {
-            setPeriod((prev) => {
-                if (p !== prev) {
-                    getData(p);
-                }
-                return p;
-            });
-        }, 500),
-        []
-    );
+    const changeTab = (p) => {
+        setPeriod((prev) => {
+            if (p !== prev) {
+                getData(p);
+            }
+            return p;
+        });
+    };
 
     useFocusEffect(
         useCallback(() => {
             getData(originPeriod);
-        }, [])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [fund_code_list])
     );
 
     const onChartChange = ({items: arr}) => {
@@ -64,7 +62,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
                 <View style={{height: px(207)}}>
                     {data.chart?.length > 0 && (
                         <Chart
-                            initScript={baseAreaChart(data.chart.slice(0, 200), true, 2, null, [10, 10, 10, 15])}
+                            initScript={baseAreaChart(data.chart, true, 2, null, [10, 10, 10, 15])}
                             onChange={onChartChange}
                             // data={chart}
                             onHide={onHide}
@@ -123,14 +121,17 @@ const areaColors = [
 ];
 
 const Lengend = ({name, items, index}) => {
+    let value = items?.find?.((itm) => itm.name === name)?.value;
     return (
         <View style={[styles.lengendItemWrap, index % 2 === 0 ? {paddingRight: px(8)} : {paddingLeft: px(8)}]}>
             <View style={[styles.circle_black, {backgroundColor: colors[index], borderColor: areaColors[index]}]} />
             <Text style={styles.langendWrapRightName} numberOfLines={1}>
                 {name}
             </Text>
-            <Text style={styles.langendWrapRightRate} numberOfLines={1}>
-                {items?.find?.((itm) => itm.name === name)?.value || '0.00%'}
+            <Text
+                style={[styles.langendWrapRightRate, {color: value?.slice?.(0, -1) > 0 ? '#E74949' : '#4BA471'}]}
+                numberOfLines={1}>
+                {value || '0.00%'}
             </Text>
         </View>
     );
@@ -204,7 +205,7 @@ const baseAreaChart = (
     appendPadding = 10,
     height = 220,
     showDate = true,
-    ownColor = false // 是否使用对象里自带的颜色
+    max = null // 是否使用对象里自带的颜色
 ) => {
     return `
 (function(){
@@ -224,6 +225,7 @@ const baseAreaChart = (
   chart.scale('value', {
     tickCount: 5,
     // range: [ 0, 1 ],
+    max: ${JSON.stringify(max)},
     formatter: (value) => {
       return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
@@ -283,9 +285,7 @@ const baseAreaChart = (
   chart.line()
     .position('date*value')
     .shape('smooth')
-    .color(${ownColor} ? 'line' : 'type',${ownColor} ? function(color){
-      return color
-    } :  ${JSON.stringify(colors)})
+    .color('type',${JSON.stringify(colors)})
    
     .animate({
       appear: {

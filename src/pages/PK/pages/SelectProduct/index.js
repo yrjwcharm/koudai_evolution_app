@@ -32,6 +32,12 @@ const SelectProduct = (props) => {
     const [curTab, setCurTab] = useState(0);
     const [tabList, setTabList] = useState([]);
 
+    const pkProduct = useRef([]);
+
+    useEffect(() => {
+        pkProduct.current = props.pkProducts;
+    }, [props.pkProducts]);
+
     useFocusEffect(
         useCallback(() => {
             getDefaultData();
@@ -50,7 +56,7 @@ const SelectProduct = (props) => {
 
     const getSelectData = () => {
         setSelectLoading(true);
-        getPKDetailData({fund_code_list: props.pkProducts})
+        getPKDetailData({fund_code_list: pkProduct.current})
             .then((res) => {
                 setSelectData(res.result?.pk_list || []);
             })
@@ -375,7 +381,8 @@ const SelectProduct = (props) => {
                         activeOpacity={0.8}
                         style={styles.bottomBtnWrap}
                         onPress={() => {
-                            jump(data.pk_button.url);
+                            // jump(data.pk_button.url);
+                            jump({path: 'PKCompare'});
                         }}>
                         <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>
                     </TouchableOpacity>

@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {Font} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 
-const PKParamsRateOfSum = ({total = 100, value = 0, color = '', style}) => {
+const PKParamsRateOfSum = ({total = 100, value = 0, color = '#545968', style}) => {
     return (
         <View style={[styles.container, style]}>
             <View style={styles.wrap}>
@@ -10,9 +11,7 @@ const PKParamsRateOfSum = ({total = 100, value = 0, color = '', style}) => {
                     style={[styles.inner, {width: ((value / total) * 100).toFixed(2) + '%', backgroundColor: color}]}
                 />
             </View>
-            <View style={{width: px(25)}}>
-                <Text style={[styles.text, color ? {color} : {}]}>{value}</Text>
-            </View>
+            <Text style={[styles.text, color ? {color} : {}]}>{value}</Text>
         </View>
     );
 };
@@ -38,7 +37,8 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         lineHeight: px(30),
         fontWeight: '500',
-        alignSelf: 'flex-end',
+        marginLeft: px(6),
+        fontFamily: Font.numFontFamily,
     },
 });
 export default PKParamsRateOfSum;

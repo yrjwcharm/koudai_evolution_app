@@ -6,8 +6,10 @@ import {connect} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
 import * as pkPinningActions from '~/redux/actions/pk/pkPinning';
+import {useJump} from '~/components/hooks';
 
 const Header = (props) => {
+    const jump = useJump();
     const groupScrollViewRef = useRef(null);
     const [footerHeight, setFooterHeight] = useState(0);
 
@@ -20,8 +22,6 @@ const Header = (props) => {
     }));
 
     const groupItem = (item, key) => {
-        // item = data.find(itm=>item.aa === itm.aa)
-        item = props.data?.[0];
         return (
             <View style={styles.groupItemWrap} key={key}>
                 {/* header */}
@@ -30,7 +30,7 @@ const Header = (props) => {
                         activeOpacity={0.7}
                         style={[styles.pinningStamp, {backgroundColor: key === -1 ? '#F1F6FF' : '#F5F6F8'}]}
                         onPress={() => {
-                            props.pinningProduct(item === props.pkPinning ? null : item);
+                            props.pinningProduct(item.code === props.pkPinning ? null : item.code);
                         }}>
                         <FastImage
                             source={{
@@ -41,12 +41,15 @@ const Header = (props) => {
                             }}
                             style={{width: px(12), height: px(12), marginRight: px(2)}}
                         />
-                        <Text style={styles.highStampText}>{key === -1 ? '已钉住' : '钉在左侧'}</Text>
+                        <Text style={[styles.highStampText, {color: key === -1 ? '#0051CC' : '#9AA0B1'}]}>
+                            {key === -1 ? '已钉住' : '钉在左侧'}
+                        </Text>
                     </TouchableOpacity>
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            props.delProduct(item);
-                            props.pkPinning === item && props.pinningProduct(null);
+                            props.syncParentDel(item.code);
+                            props.delProduct(item.code);
+                            props.pkPinning === item.code && props.pinningProduct(null);
                         }}>
                         <Icons style={{marginRight: 2, marginTop: 4}} name={'close'} color={'#9AA0B1'} size={px(18)} />
                     </TouchableWithoutFeedback>
@@ -54,8 +57,7 @@ const Header = (props) => {
                 {/* title */}
                 <View style={styles.groupItemContent}>
                     <Text style={styles.groupItemTitle} numberOfLines={props.pageScroll ? 1 : 3}>
-                        嘉实中证基建E
-                        {key === 1 ? '嘉实中嘉实中证基建ETF嘉实中证基建ETF证基建ETF嘉实中证基建ETF' : ''}aaa
+                        {item.name}
                     </Text>
                 </View>
                 {/* footer */}
@@ -65,22 +67,28 @@ const Header = (props) => {
                     onLayout={(e) => {
                         setFooterHeight(e.nativeEvent.layout.height);
                     }}>
-                    {props.pageScroll ? (
+                    {props.pageScroll && item.buy_button ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
+                            disabled={item.buy_button.avail !== 1}
                             style={[
                                 styles.btnWrap,
-                                key === 1
+                                item.tip
                                     ? {backgroundColor: '#0051CC'}
                                     : {backgroundColor: '#fff', borderWidth: 1, borderColor: '#0051CC'},
-                            ]}>
-                            <Text style={[styles.btnText, {color: key === 1 ? '#fff' : '#0051CC'}]}>买入</Text>
+                            ]}
+                            onPress={() => {
+                                jump(item.buy_button.url);
+                            }}>
+                            <Text style={[styles.btnText, {color: item.tip ? '#fff' : '#0051CC'}]}>
+                                {item.buy_button.text}
+                            </Text>
                         </TouchableOpacity>
                     ) : (
                         <>
-                            {[1, 2].map((itm, idx) => (
+                            {item.tags.map((itm, idx) => (
                                 <View style={[styles.groupItemTag, {marginLeft: idx > 0 ? px(4) : 0}]} key={idx}>
-                                    <Text style={styles.groupItemTagText}>指数型</Text>
+                                    <Text style={styles.groupItemTagText}>{itm}</Text>
                                 </View>
                             ))}
                         </>
@@ -93,9 +101,15 @@ const Header = (props) => {
     const addCompareItem = () => {
         if (props.data?.length > 5) return null;
         return (
-            <TouchableOpacity activeOpacity={0.8} style={styles.addCompareItemWrap}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={[styles.addCompareItemWrap]}
+                disabled={props?.addFundButton?.avail === 0}
+                onPress={() => {
+                    jump(props?.addFundButton?.url);
+                }}>
                 <Icons style={{marginRight: 2, marginTop: 4}} name={'plus'} color={'#0051CC'} size={px(18)} />
-                <Text style={styles.addCompareItemText}>添加基金</Text>
+                <Text style={styles.addCompareItemText}>{props?.addFundButton?.text}</Text>
             </TouchableOpacity>
         );
     };
@@ -108,7 +122,12 @@ const Header = (props) => {
                     <Text style={styles.groupLabelText}>基金</Text>
                 </View>
                 {/* 占位 */}
-                {props.pkPinning ? groupItem(props.pkPinning, -1) : null}
+                {props.pkPinning
+                    ? groupItem(
+                          props.data.find((itm) => itm.code === props.pkPinning),
+                          -1
+                      )
+                    : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -133,7 +152,9 @@ const Header = (props) => {
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {props.data.filter((item) => item != props.pkPinning).map((item, idx) => groupItem(item, idx))}
+                        {props.data
+                            .filter((item) => item.code !== props.pkPinning)
+                            .map((item, idx) => groupItem(item, idx))}
                     </View>
                     {/* 添加基金 */}
                     {props.data.length > 1 ? addCompareItem() : null}

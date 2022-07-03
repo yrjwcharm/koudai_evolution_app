@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {px} from '~/utils/appUtil';
 import Header from './Header';
@@ -15,8 +15,10 @@ import {getPKDetailData} from '../../services';
 
 const Compare = (props) => {
     const pkProducts = useSelector((state) => state.pkProducts);
+    const [loading, setLoading] = useState(true);
     const [pageScroll, setPageScroll] = useState(false);
     const [data, setData] = useState(null);
+    const [list, setList] = useState(null);
 
     const headerRef = useRef(null);
     const pkParamsRef = useRef(null);
@@ -25,16 +27,28 @@ const Compare = (props) => {
     const pkManagerInfoRef = useRef(null);
     const pkFundInfoRef = useRef(null);
 
-    useFocusEffect(
-        useCallback(() => {
-            // 更新data
-            getPKDetailData({fund_code_list: [550011, 487021, 550010, 550009, 550008]}).then((res) => {
+    const _pkProducts = useRef([]);
+
+    useEffect(() => {
+        _pkProducts.current = pkProducts;
+    }, [pkProducts]);
+
+    const getData = useCallback(() => {
+        // 更新data
+        setLoading(true);
+        getPKDetailData({fund_code_list: _pkProducts.current})
+            .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
+                    setList(res.result.pk_list);
                 }
+            })
+            .finally((_) => {
+                setLoading(false);
             });
-        }, [pkProducts])
-    );
+    }, []);
+
+    useFocusEffect(getData);
 
     const handlerScroll = (curRef) => {
         const refArr = [
@@ -59,8 +73,14 @@ const Compare = (props) => {
             <Header
                 pageScroll={pageScroll}
                 ref={headerRef}
-                data={data?.pk_list || []}
+                data={list || []}
+                addFundButton={data?.add_fund_button}
                 onScroll={handlerScroll(headerRef)}
+                syncParentDel={(code) => {
+                    setList((val) => {
+                        return val.filter((itm) => code !== itm.code);
+                    });
+                }}
             />
             <ScrollView
                 style={{flex: 1, marginTop: px(12)}}
@@ -70,38 +90,34 @@ const Compare = (props) => {
                 onScroll={(e) => {
                     setPageScroll(e.nativeEvent.contentOffset.y > 0);
                 }}>
-                {data?.pk_list && (
-                    <PKParams ref={pkParamsRef} data={data.pk_list} onScroll={handlerScroll(pkParamsRef)} />
+                {list && (
+                    <PKParams
+                        ref={pkParamsRef}
+                        data={list}
+                        weightButton={data.weight_button}
+                        refresh={getData}
+                        onScroll={handlerScroll(pkParamsRef)}
+                    />
                 )}
                 {/* 业绩表现 */}
-                {data?.pk_list && (
-                    <PKAchivementChart
-                        fund_code_list={[550011, 487021, 550010, 550009, 550008].join()}
-                        originPeriod={data?.default_period}
-                    />
-                )}
+                {list && <PKAchivementChart fund_code_list={pkProducts} originPeriod={data?.default_period} />}
                 {/* 涨跌幅 */}
-                {data?.pk_list && (
-                    <PKPriceRange data={data.pk_list} ref={pkPriceRangeRef} onScroll={handlerScroll(pkPriceRangeRef)} />
-                )}
+                {list && <PKPriceRange data={list} ref={pkPriceRangeRef} onScroll={handlerScroll(pkPriceRangeRef)} />}
                 {/* 投资组合 */}
-                {data?.pk_list && (
-                    <PKPortfolio data={data.pk_list} ref={pkPortfolioRef} onScroll={handlerScroll(pkPortfolioRef)} />
-                )}
+                {list && <PKPortfolio data={list} ref={pkPortfolioRef} onScroll={handlerScroll(pkPortfolioRef)} />}
                 {/* 基金经理信息 */}
-                {data?.pk_list && (
-                    <PKManagerInfo
-                        data={data.pk_list}
-                        ref={pkManagerInfoRef}
-                        onScroll={handlerScroll(pkManagerInfoRef)}
-                    />
+                {list && (
+                    <PKManagerInfo data={list} ref={pkManagerInfoRef} onScroll={handlerScroll(pkManagerInfoRef)} />
                 )}
                 {/* 基金信息 */}
-                {data?.pk_list && (
-                    <PKFundInfo data={data.pk_list} ref={pkFundInfoRef} onScroll={handlerScroll(pkFundInfoRef)} />
-                )}
+                {list && <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerScroll(pkFundInfoRef)} />}
                 <View style={{height: 60}} />
             </ScrollView>
+            {loading ? (
+                <View style={styles.loadingMask}>
+                    <ActivityIndicator size={'large'} />
+                </View>
+            ) : null}
         </View>
     );
 };
@@ -109,4 +125,17 @@ export default Compare;
 
 const styles = StyleSheet.create({
     container: {flex: 1},
+    loadingMask: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        zIndex: 1,
+    },
 });

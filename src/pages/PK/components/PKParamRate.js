@@ -12,15 +12,21 @@ import {px} from '../../../utils/appUtil';
  * @param {"flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly" | undefined} [options.justifyContent] 进度条数据描述对齐方式
  * @returns
  */
-const PKParamRate = ({total = 100, value = 0, color = '#9AA0B1', barsNum = 5, justifyContent = 'flex-start'}) => {
+const PKParamRate = ({total = 100, value, color = '#9AA0B1', barsNum = 5, justifyContent = 'flex-start'}) => {
     const highLightNum = useMemo(() => {
         let barValue = Math.round(total / barsNum);
-        return Math.ceil(value / barValue);
+        return Math.ceil((value || 0) / barValue);
     }, [total, value, barsNum]);
+
+    const handlerValue = (val) => {
+        let state = !!(val || val === 0);
+        return state ? Math.round(val) : '--';
+    };
+
     return (
         <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent}}>
-                <Text style={[styles.text, {color}]}>{value || '--'}</Text>
+                <Text style={[styles.text, {color}]}>{handlerValue(value)}</Text>
                 <Text style={[styles.text, {color: '#9AA0B1'}]}>/{total}</Text>
             </View>
             <View style={styles.barWrap}>

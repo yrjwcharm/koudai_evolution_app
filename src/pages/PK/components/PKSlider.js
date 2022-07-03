@@ -4,9 +4,7 @@ import Slider from 'react-native-slider';
 import LinearGradient from 'react-native-linear-gradient';
 import {px} from '~/utils/appUtil';
 
-const PKSlider = ({total, tickNum, style = {}}) => {
-    const [rate, setRate] = useState(0);
-
+const PKSlider = ({rate, total, tickNum, style = {}, onChange}) => {
     return (
         <View style={[styles.sliderWrap, style]}>
             {/* verticle line */}
@@ -18,12 +16,13 @@ const PKSlider = ({total, tickNum, style = {}}) => {
             <LinearGradient
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
-                locations={[0, rate, rate, 1]}
+                locations={[0, rate / 100, rate / 100, 1]}
                 colors={['#CEDDF5', '#6FA0EE', '#E9EAEF', '#E9EAEF']}
                 style={styles.sliderBg}
             />
             {/* slider */}
             <Slider
+                value={rate}
                 style={styles.slider}
                 trackStyle={{height: px(6)}}
                 minimumValue={0}
@@ -44,7 +43,7 @@ const PKSlider = ({total, tickNum, style = {}}) => {
                 minimumTrackTintColor="transparent"
                 maximumTrackTintColor="transparent"
                 onValueChange={(val) => {
-                    setRate(val / total);
+                    onChange(val);
                 }}
             />
         </View>

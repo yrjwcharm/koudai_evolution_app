@@ -1,4 +1,4 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useRef, useImperativeHandle, useState, useMemo} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {Font} from '~/common/commonStyle';
@@ -33,34 +33,12 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
         );
     };
 
-    const genValues = (item, key) => {
-        // item = data.find(itm=>item.aa === itm.aa)
-        item = data[0].manager_info;
-        return (
-            <View style={styles.valuesWrap} key={key}>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.name}</Text>
-                </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.work_date || '--'}</Text>
-                </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.fund_date || '--'}</Text>
-                </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.yield || '--'}</Text>
-                </View>
-            </View>
-        );
-    };
-
     const genSup = () => {
         if (data?.length > 5) return null;
-        const obj = data?.[0].manager_info;
         const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 1};
         return (
             <View style={{width: px(40)}}>
-                {new Array(Object.keys(obj).length).fill('').map((_, idx) => (
+                {new Array(4).fill('').map((_, idx) => (
                     <View style={{height: px(42), ...border}} />
                 ))}
             </View>
@@ -76,7 +54,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? genValues(pkPinning, -1) : null}
+                {pkPinning ? <ValuePart item={data.find((itm) => itm.code === pkPinning)} key={-1} /> : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -101,7 +79,11 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                     }}>
                     {/* list */}
                     <View style={{flexDirection: 'row'}}>
-                        {data.filter((item) => item != pkPinning).map((item, idx) => genValues(item, idx))}
+                        {data
+                            .filter((item) => item.code !== pkPinning)
+                            .map((item, idx) => (
+                                <ValuePart item={item} key={idx} />
+                            ))}
                     </View>
                     {/* 补位 */}
                     {data.length > 1 ? genSup() : null}
@@ -114,6 +96,29 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
 const _PKManagerInfo = connect((state) => ({pkPinning: state.pkPinning}))(PKManagerInfo);
 
 export default forwardRef((props, ref) => <_PKManagerInfo {...props} _ref={ref} />);
+
+const ValuePart = ({item}) => {
+    const [active, setActive] = useState(0);
+    const obj = useMemo(() => {
+        return item?.manager_list?.[active] || {};
+    }, [active, item]);
+    return (
+        <View style={styles.valuesWrap}>
+            <View style={styles.valueWrap}>
+                <Text style={styles.valueText}>{obj?.name}</Text>
+            </View>
+            <View style={styles.valueWrap}>
+                <Text style={styles.valueText}>{obj?.work_date || '--'}</Text>
+            </View>
+            <View style={styles.valueWrap}>
+                <Text style={styles.valueText}>{obj?.fund_date || '--'}</Text>
+            </View>
+            <View style={styles.valueWrap}>
+                <Text style={[styles.valueText, {color: '#E74949'}]}>{obj?.yield || '--'}</Text>
+            </View>
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     valueText: {
         fontSize: px(14),
         lineHeight: px(22),
-        color: '#E74949',
+        color: '#121D3A',
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
     },

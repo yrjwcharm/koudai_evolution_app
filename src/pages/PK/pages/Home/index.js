@@ -16,18 +16,20 @@ import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
 import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 import {useJump} from '~/components/hooks';
-import PKWeightSet from '../Compare/PKWieghtSet';
+import PKWeightSet from '../Compare/PKWeightSet';
 import ProductCards from '~/components/Portfolios/ProductCards';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
+    const jump = useJump();
+    const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
     const [fundRankData, setFundRankData] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [fundRankLoading, setFundRankLoading] = useState(false);
     const [curFundTopTab, setCurFundTopTab] = useState('');
-    const jump = useJump();
+
+    const isFirst = useState(0);
 
     const getData = (refresh) => {
         refresh ? setRefreshing(true) : setLoading(true);
@@ -64,7 +66,7 @@ const PKHome = () => {
 
     useFocusEffect(
         useCallback(() => {
-            getData();
+            getData(isFirst.current++ !== 0);
         }, [])
     );
 
@@ -72,7 +74,11 @@ const PKHome = () => {
         getFundRankList(val);
     };
 
-    return (
+    return loading ? (
+        <View style={styles.loadingMask}>
+            <ActivityIndicator size={'large'} />
+        </View>
+    ) : (
         <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
@@ -216,6 +222,14 @@ const styles = StyleSheet.create({
         lineHeight: px(25),
         fontWeight: '600',
         marginBottom: px(12),
+    },
+    loadingMask: {
+        width: '100%',
+        paddingTop: 150,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        zIndex: 1,
     },
 });
 export default PKHome;
