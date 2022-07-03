@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 23:11:58
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 15:21:59
  * @Description:
  */
 export default {
@@ -17,4 +17,5 @@ export default {
     cleanProduct: 'cleanPKProduct',
     pinningProduct: 'pinningPKProduct',
     OcrFundList: 'OcrFundList', //识别基金
+    initCart: 'InitCart', // 初始化购物车
 };

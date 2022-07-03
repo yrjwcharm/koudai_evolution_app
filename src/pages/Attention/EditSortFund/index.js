@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 17:00:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 14:36:32
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -15,15 +15,16 @@ import {changeSort, getList, handleCancle} from './services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from '~/components/Toast';
 
-export default function EditSortFund() {
+export default function EditSortFund({route}) {
     const [data, setData] = useState([]);
     const [check, setCheck] = useState(0); // 0没有选中 1部分选中 2全选
     const getData = async () => {
-        let res = await getList();
+        let res = await getList(route?.params);
         setData(res.result?.list);
     };
     useEffect(() => {
         getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         let tmp = data.filter((item) => item.check);

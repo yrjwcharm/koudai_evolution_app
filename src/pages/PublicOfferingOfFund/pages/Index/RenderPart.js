@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 10:04:00
+ * @LastEditTime: 2022-07-01 19:38:04
  * @Description: 公募基金首页榜单渲染组件
  */
-import React from 'react';
+import React, {useRef} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -19,6 +19,7 @@ import {deviceWidth, px} from '~/utils/appUtil';
 export default ({data = {}, scene}) => {
     const jump = useJump();
     const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
+    const pageRef = useRef(0);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
@@ -29,7 +30,17 @@ export default ({data = {}, scene}) => {
                         {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
                     </View>
                     {more?.text ? (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => jump(more.url)} style={Style.flexRow}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                if (more.url.params) {
+                                    more.url.params.initialPage = pageRef.current;
+                                } else {
+                                    more.url.params = {initialPage: pageRef.current};
+                                }
+                                jump(more.url);
+                            }}
+                            style={Style.flexRow}>
                             <Text style={styles.moreText}>{more.text}</Text>
                             <FontAwesome color={Colors.brandColor} name={'angle-right'} size={16} />
                         </TouchableOpacity>
@@ -49,9 +60,10 @@ export default ({data = {}, scene}) => {
             ) : tabs?.length > 0 ? (
                 <ScrollableTabView
                     initialPage={0}
-                    // onChangeTab={(value) => console.log(value)}
+                    onChangeTab={(value) => (pageRef.current = value.i)}
                     prerenderingSiblingsNumber={Infinity}
-                    renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}>
+                    renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}
+                    style={{flex: 1}}>
                     {tabs.map((tab) => {
                         const {items: tabItems = [], rank_type, title: tabTitle} = tab;
                         return (
@@ -79,6 +91,7 @@ export default ({data = {}, scene}) => {
 const styles = StyleSheet.create({
     container: {
         marginTop: Space.marginVertical,
+        flex: 1,
     },
     rowEnd: {
         flexDirection: 'row',

@@ -2,12 +2,12 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 11:44:51
+ * @LastEditTime: 2022-07-02 13:37:25
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import FollowTableHeader from './FollowTableHeader';
 import sortImg from '~/assets/img/attention/sort.png';
@@ -37,7 +37,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                 <View style={{flex: 1}}>
                     {header && activeTab == 3 && <FollowTableHeader header={header} />}
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
-                        <View style={{minWidth: '100%'}}>
+                        <View style={{minWidth: deviceWidth}}>
                             <StickyHeader
                                 stickyHeaderY={stickyHeaderY + px(42) + (header && activeTab == 3 ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
@@ -181,10 +181,10 @@ const styles = StyleSheet.create({
     //     width
     // },
     tr: {
-        paddingVertical: px(12),
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.5,
         height: px(58),
+        justifyContent: 'center',
     },
     th_line_desc: {
         color: Colors.lightGrayColor,

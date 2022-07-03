@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 16:02:26
+ * @LastEditTime: 2022-07-02 14:59:59
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -13,9 +13,15 @@ import collectActive from '~/assets/img/pk/pkcollectActive.png';
 import collect from '~/assets/img/pk/pkcollect.png';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {useJump} from '~/components/hooks';
+import {getColor} from './utils';
+import {useDispatch, useSelector} from 'react-redux';
+import {addProduct} from '~/redux/actions/pk/pkProducts';
+import RenderHtml from '~/components/RenderHtml';
 const SearchContent = ({data}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
+    const dispatch = useDispatch();
+    const pkProducts = useSelector((store) => store.pkProducts);
     const onFavor = () => {
         setFavor((_favor) => !_favor);
         if (favor) {
@@ -24,26 +30,27 @@ const SearchContent = ({data}) => {
             followAdd({item_id: data.code, item_type: data.item_type || 1});
         }
     };
-    const onPk = () => {};
+    const onPk = () => {
+        dispatch(addProduct(data.code));
+        jump(data?.url);
+    };
     return (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
-                    <Text style={styles.title} numberOfLines={1}>
-                        {data?.name}
-                    </Text>
+                    <RenderHtml html={data?.name} style={styles.title} numberOfLines={1} />
                     <Text style={styles.code}>{data?.code}</Text>
                 </View>
-                <Text style={styles.rate}>{data?.yield_info?.ratio}</Text>
+                <Text style={[styles.rate, {color: getColor(data?.yield_info?.yield)}]}>{data?.yield_info?.ratio}</Text>
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity onPress={onFavor}>
+                <TouchableOpacity onPress={onFavor} activeOpacity={0.8}>
                     <Image source={favor ? collectActive : collect} style={{width: px(26), height: px(26)}} />
                 </TouchableOpacity>
                 {data?.item_type == 1 ? (
-                    <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk}>
-                        <Text style={{color: '#fff'}}>PK</Text>
+                    <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk} activeOpacity={0.8}>
+                        <Text style={{color: '#fff'}}>{pkProducts.includes(data.code) ? 'PK中' : 'PK'} </Text>
                     </TouchableOpacity>
                 ) : null}
             </View>

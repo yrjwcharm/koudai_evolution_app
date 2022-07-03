@@ -4,6 +4,10 @@ import actionTypes from '../../actionTypes';
 export default function pkProducts(state = [], action) {
     switch (action.type) {
         case actionTypes.addProduct:
+            if (state.includes(action.payload)) {
+                Toast.show('已经选择过该产品了');
+                return state;
+            }
             if (state.length < 6) {
                 return [...state, action.payload];
             } else {
@@ -14,6 +18,8 @@ export default function pkProducts(state = [], action) {
             return state.filter((item) => item != action.payload);
         case actionTypes.cleanProduct:
             return [];
+        case actionTypes.initCart:
+            return action.payload;
         default:
             return state;
     }

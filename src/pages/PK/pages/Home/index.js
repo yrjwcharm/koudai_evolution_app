@@ -1,14 +1,14 @@
 import React, {useCallback, useState, useRef} from 'react';
-import {View, StyleSheet, Text, RefreshControl, ActivityIndicator} from 'react-native';
+import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import {Style} from '../../../../common/commonStyle';
+import {Space, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import PKCard from './PKCard';
-import {getPKHomeData, getFundRankData} from '../../services';
+import {getPKHomeData} from '../../services';
 import Toast from '../../../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import PKBtnTab from '../../components/PKBtnTab';
@@ -18,6 +18,7 @@ import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 import {useJump} from '~/components/hooks';
 import PKWeightSet from '../Compare/PKWeightSet';
 import ProductCards from '~/components/Portfolios/ProductCards';
+import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
@@ -37,7 +38,6 @@ const PKHome = () => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    getFundRankList(res.result?.fund_top?.tabs?.[0]?.rank_type);
                 } else {
                     Toast.show(res.message);
                 }
@@ -48,31 +48,17 @@ const PKHome = () => {
             });
     };
 
-    const getFundRankList = (rank_type) => {
-        setCurFundTopTab(rank_type);
-        setFundRankLoading(true);
-        getFundRankData({rank_type})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setFundRankData(res.result);
-                } else {
-                    Toast.show(res.message);
-                }
-            })
-            .finally((_) => {
-                setFundRankLoading(false);
-            });
-    };
-
     useFocusEffect(
         useCallback(() => {
             getData(isFirst.current++ !== 0);
         }, [])
     );
 
-    const handlerFundTopTabChange = (item, idx, val) => {
-        getFundRankList(val);
-    };
+    useFocusEffect(
+        useCallback(() => {
+            DeviceEventEmitter.addListener('attentionRefresh', getData);
+        }, [])
+    );
 
     return loading ? (
         <View style={styles.loadingMask}>
@@ -120,46 +106,10 @@ const PKHome = () => {
                 </View>
                 {/* pkCard */}
                 <PKCard data={data?.pk_list} />
-                <View style={styles.listWrap}>
-                    {data?.hot_recommend && (
-                        <>
-                            <Text style={styles.listTitle}>热门产品推荐</Text>
-                            {data?.hot_recommend?.map((item, idx) => {
-                                return (
-                                    <ProductCards
-                                        key={idx}
-                                        data={{type: 'recommend_card', item}}
-                                        style={{borderRadius: px(8), marginTop: 0, marginBottom: px(12)}}
-                                    />
-                                );
-                            })}
-                        </>
-                    )}
-                    {data?.fund_top && (
-                        <>
-                            <Text style={styles.listTitle}>基金榜单</Text>
-                            {/* tab */}
-                            <PKBtnTab
-                                data={data?.fund_top?.tabs}
-                                onChange={handlerFundTopTabChange}
-                                defaultActive={0}
-                                labelKey="title"
-                                valueKey="rank_type"
-                            />
-                            {/* list */}
-                            {fundRankLoading ? (
-                                <>
-                                    <ActivityIndicator size={'large'} style={{marginTop: px(20)}} />
-                                </>
-                            ) : (
-                                <>
-                                    {fundRankData?.list?.map?.((item, idx) => {
-                                        return <ProductCards key={idx + item.code + curFundTopTab} data={item} />;
-                                    })}
-                                </>
-                            )}
-                        </>
-                    )}
+                <View style={{paddingHorizontal: Space.padding}}>
+                    {data?.sub_list?.map?.((item, index) => {
+                        return <RenderPart data={item} key={item.title + index} />;
+                    })}
                 </View>
                 {/* bottomDesc */}
                 <BottomDesc />

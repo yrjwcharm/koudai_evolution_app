@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 10:00:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-02 15:35:57
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -29,6 +29,7 @@ import Toast from '../Toast';
 import UnderlineText from '../UnderlineText';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {deleteModal, updateModal} from '../../redux/actions/modalInfo';
+import {getCartData} from '~/redux/actions/pk/pkProducts';
 import http from '../../services';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import saveImg from '../../utils/saveImg';
@@ -254,6 +255,7 @@ function useStateChange({homeShowModal, store}) {
                             (!prev.buy_status_for_vision && next.buy_status_for_vision)
                         ) {
                             getModalData();
+                            store.dispatch(getCartData());
                         }
                     }
                     if (prev.is_login) {
