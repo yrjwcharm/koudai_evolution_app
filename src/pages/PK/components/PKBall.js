@@ -7,19 +7,22 @@ import * as Animatable from 'react-native-animatable';
 import {useJump} from '~/components/hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
+import {getPKBetter} from '../services';
 
 const PKBall = ({}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts);
     const dispatch = useDispatch();
 
     const jump = useJump();
-    // 0没有产品 1有PK产品  2优选产品
+    // 1有PK产品  2优选产品
     const [layoutType, updateLayoutType] = useState(1);
+    const [better, setBetter] = useState(null);
 
     const animatableRef = useRef(null);
     const animateViewWidthRef = useRef(0);
     const timer = useRef(null);
     const prevPKProducts = useRef(pkProducts);
+    const layoutTypeRef = useRef(null);
 
     useEffect(() => {
         () => {
@@ -29,13 +32,34 @@ const PKBall = ({}, ref) => {
         };
     }, []);
 
+    // 当增加pk产品时展示动画
     useEffect(() => {
         if (pkProducts.length > prevPKProducts.current.length) {
             let state = layoutType === 1;
             handlerAnimate(animateViewWidthRef.current, state, state);
         }
         prevPKProducts.current = pkProducts;
+        layoutTypeRef.current = layoutType;
     }, [pkProducts, layoutType]);
+
+    useEffect(() => {
+        getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
+            if (res.code === '000000') {
+                setBetter(res.result?.better_fund);
+                if (res.result?.better_fund) {
+                    if (layoutTypeRef.current !== 2) {
+                        updateLayoutType(2);
+                        handlerAnimate(px(205), true);
+                    }
+                } else {
+                    if (layoutTypeRef.current !== 1) {
+                        updateLayoutType(1);
+                        handlerAnimate(animateViewWidthRef.current, true, true);
+                    }
+                }
+            }
+        });
+    }, [pkProducts]);
 
     //展开收缩动画
     const handlerAnimate = (width, expand, shrink) => {
@@ -54,18 +78,15 @@ const PKBall = ({}, ref) => {
     };
 
     const handlerJump = () => {
-        if (false) dispatch(addProduct('123123'));
+        if (better) dispatch(addProduct(better.code));
         jump({path: 'PKSelectProduct'});
         setTimeout(() => {
             updateLayoutType(1);
-            handlerAnimate(px(205), false, true);
-        }, 10);
+            setBetter(null);
+            handlerAnimate(animateViewWidthRef.current, false, true);
+        }, 1);
     };
 
-    const handlerOnPush = () => {
-        updateLayoutType(2);
-        handlerAnimate(px(205), true);
-    };
     return (
         <TouchableOpacity activeOpacity={0.9} style={[styles.container]} onPress={handlerJump}>
             <Animatable.View

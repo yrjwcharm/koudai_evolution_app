@@ -30,7 +30,7 @@ const handlerDefaultParamItemBest = (data) => {
             obj.ts.code = item.code;
         }
         // 详细
-        item.score_info.forEach((itm) => {
+        item.score_info?.forEach?.((itm) => {
             let key = itm.type;
             if (!obj[key]) obj[key] = {value: 0, code: ''};
             if (itm.score > obj[key].value) {

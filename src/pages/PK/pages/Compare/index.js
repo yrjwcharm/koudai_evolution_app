@@ -5,16 +5,22 @@ import {px} from '~/utils/appUtil';
 import Header from './Header';
 import PKParams from './PKParams';
 import PKAchivementChart from './PKAchivementChart';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import PKPriceRange from './PKPriceRange';
 import PKPortfolio from './PKPortfolio';
 import PKManagerInfo from './PKManagerInfo';
 import PKFundInfo from './PKFundInfo';
 import {getPKDetailData} from '../../services';
+import BlackHint from './BlackHint';
+import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
+import {pinningProduct} from '~/redux/actions/pk/pkPinning';
 
 const Compare = (props) => {
     const pkProducts = useSelector((state) => state.pkProducts);
+    const pkPinning = useSelector((state) => state.pkPinning);
+    const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(true);
     const [pageScroll, setPageScroll] = useState(false);
     const [data, setData] = useState(null);
@@ -49,6 +55,16 @@ const Compare = (props) => {
     }, []);
 
     useFocusEffect(getData);
+
+    const addHigh = (code) => {
+        let item = list.find((itm) => itm.tip);
+        if (item) {
+            dispatch(delProduct(item.code));
+            if (item.code === pkPinning) dispatch(pinningProduct(null));
+        }
+        dispatch(addProduct(code));
+        getData();
+    };
 
     const handlerScroll = (curRef) => {
         const refArr = [
@@ -118,6 +134,8 @@ const Compare = (props) => {
                     <ActivityIndicator size={'large'} />
                 </View>
             ) : null}
+            {/* 小黑条 */}
+            <BlackHint addHigh={addHigh} />
         </View>
     );
 };
