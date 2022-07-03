@@ -1,12 +1,29 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useRef, useImperativeHandle, useState, useEffect} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {Font} from '~/common/commonStyle';
 
+const handlerDefaultItemBest = (data) => {
+    let obj = {};
+    data?.forEach((item) => {
+        let info = item.yield_info;
+        if (!info) return;
+        Object.keys(info).forEach((key) => {
+            if (!obj[key]) obj[key] = {value: -Infinity, code: ''};
+            if (info[key] > obj[key].value) {
+                obj[key].value = info[key];
+                obj[key].code = item.code;
+            }
+        });
+    });
+    return obj;
+};
+
 const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     const [expand, setExpand] = useState(false);
+    const [itemBest, setItemBest] = useState({});
 
     const scrolling = useRef(null);
     const scrollViewRef = useRef(null);
@@ -16,6 +33,10 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
             scrollViewRef.current?.scrollTo?.({x, y: 0, animated: false});
         },
     }));
+
+    useEffect(() => {
+        setItemBest(handlerDefaultItemBest(data));
+    }, [data]);
 
     const genLabels = () => {
         return (
@@ -46,28 +67,51 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     };
 
     const genValues = (item, key) => {
+        const handlerVal = (val) => {
+            if (!val && val !== 0) return '--';
+            return (val * 100).toFixed(2) + '%';
+        };
+        const handlerBg = (k) => {
+            return {
+                backgroundColor: itemBest?.[k]?.code === item.code ? '#FFF2F2' : '#fff',
+            };
+        };
         return (
             <View style={styles.valuesWrap} key={key}>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.week || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('week')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.week > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.week)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.month || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('month')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.month > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.month)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.three_month || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('three_month')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.three_month > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.three_month)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.half_year || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('half_year')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.half_year > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.half_year)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.year || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('year')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.year > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.year)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.three_year || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('three_year')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.three_year > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.three_year)}
+                    </Text>
                 </View>
-                <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item.founding || '--'}</Text>
+                <View style={[styles.valueWrap, handlerBg('founding')]}>
+                    <Text style={[styles.valueText, {color: item.yield_info?.founding > 0 ? '#E74949' : '#4BA471'}]}>
+                        {handlerVal(item.yield_info?.founding)}
+                    </Text>
                 </View>
             </View>
         );
@@ -202,7 +246,6 @@ const styles = StyleSheet.create({
     valueText: {
         fontSize: px(14),
         lineHeight: px(22),
-        color: '#E74949',
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
     },
