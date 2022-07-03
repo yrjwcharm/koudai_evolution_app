@@ -1,14 +1,49 @@
-import React from 'react';
-import {View, StyleSheet, ScrollView, ImageBackground, Platform, Text, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+    View,
+    StyleSheet,
+    ScrollView,
+    ImageBackground,
+    Platform,
+    Text,
+    TouchableOpacity,
+    ActivityIndicator,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import Swiper from 'react-native-swiper';
 import {Font, Style} from '~/common/commonStyle';
+import {useJump} from '~/components/hooks';
 import NavBar from '~/components/NavBar';
+import ProductCards from '~/components/Portfolios/ProductCards';
+import Toast from '~/components/Toast';
+import http from '~/services';
 import {px, isIphoneX} from '~/utils/appUtil';
 
 const PrivatePlacement = () => {
-    return (
+    const jump = useJump();
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+        setLoading(true);
+        http.get('/private_fund/index/20220608')
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    }, []);
+
+    return loading ? (
+        <View style={styles.loadingMask}>
+            <ActivityIndicator />
+        </View>
+    ) : (
         <View style={styles.container}>
             <NavBar
                 leftIcon="chevron-left"
@@ -16,99 +51,75 @@ const PrivatePlacement = () => {
                 style={{backgroundColor: 'transparent', position: 'absolute', zIndex: 20}}
             />
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
-                <ImageBackground
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/private-bg.png'}}
-                    style={{height: px(268), width: '100%'}}
-                />
+                <ImageBackground source={{uri: data.background}} style={{height: px(268), width: '100%'}} />
                 <View style={styles.cardWrap}>
                     <LinearGradient
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 1}}
                         colors={['#FFF7EC', '#FFFFFF']}
                         style={{borderRadius: px(8)}}>
-                        <Swiper
-                            height={px(180)}
-                            autoplay
-                            loadMinimal={Platform.OS == 'ios' ? true : false}
-                            removeClippedSubviews={false}
-                            autoplayTimeout={4}
-                            paginationStyle={{
-                                bottom: px(8),
-                            }}
-                            dotStyle={{
-                                opacity: 0.2,
-                                width: px(4),
-                                height: px(3),
-                                borderRadius: px(5),
-                                backgroundColor: '#121D3A',
-                            }}
-                            activeDotStyle={{
-                                width: px(12),
-                                height: px(3),
-                                borderRadius: px(5),
-                                backgroundColor: '#545968',
-                            }}>
-                            {[1, 2, 3].map((item, idx) => (
-                                <View key={idx}>
-                                    <View style={styles.swiperHeader}>
-                                        <View style={styles.highStemp}>
-                                            <Text style={styles.highStempText}>选中从优 </Text>
+                        <View style={styles.swiperHeader}>
+                            <View style={styles.highStemp}>
+                                <Text style={styles.highStempText}>{data.recommend?.rank_tag}</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.swiperTitle}>{data.recommend?.title}</Text>
+                        <View style={styles.swiperMiddle}>
+                            <View style={styles.swiperMiddleLeft}>
+                                <Text style={styles.swiperMiddleRate}>{data.recommend?.yield_info.value}</Text>
+                                <Text style={styles.swiperMiddleDesc}>{data.recommend?.yield_info.text}</Text>
+                            </View>
+                            <View style={styles.swiperMiddleRight}>
+                                <Text style={styles.swiperMiddleName}>{data.recommend?.name}</Text>
+                                <View style={styles.swiperMiddleTags}>
+                                    {data.recommend.tags.map((item, idx) => (
+                                        <View key={idx} style={[styles.swiperMiddleTag, {marginLeft: px(8)}]}>
+                                            <Text style={styles.swiperMiddleTagText}>{item}</Text>
                                         </View>
-                                    </View>
-                                    <Text style={styles.swiperTitle}> 100万可投资多个优质私募</Text>
-                                    <View style={styles.swiperMiddle}>
-                                        <View style={styles.swiperMiddleLeft}>
-                                            <Text style={styles.swiperMiddleRate}>+38.67%</Text>
-                                            <Text style={styles.swiperMiddleDesc}>近一年收益率</Text>
-                                        </View>
-                                        <View style={styles.swiperMiddleRight}>
-                                            <Text style={styles.swiperMiddleName}> 魔方FOF2号</Text>
-                                            <View style={styles.swiperMiddleTags}>
-                                                {[1, 2, 3].map((item, idx) => (
-                                                    <View
-                                                        key={idx}
-                                                        style={[
-                                                            styles.swiperMiddleTag,
-                                                            {marginLeft: idx > 0 ? px(8) : 0},
-                                                        ]}>
-                                                        <Text style={styles.swiperMiddleTagText}>新能源</Text>
-                                                    </View>
-                                                ))}
-                                            </View>
-                                        </View>
-                                    </View>
-                                    <View style={styles.swiperFooter}>
-                                        <TouchableOpacity activeOpacity={0.8} style={styles.swiperBtn}>
-                                            <Text style={styles.swiperBtnText}>开始预约 &gt; </Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                    ))}
                                 </View>
-                            ))}
-                        </Swiper>
+                            </View>
+                        </View>
+                        <View style={styles.swiperFooter}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={styles.swiperBtn}
+                                onPress={() => {
+                                    jump(data.recommend.url);
+                                }}>
+                                <Text style={styles.swiperBtnText}>开始预约 &gt; </Text>
+                            </TouchableOpacity>
+                        </View>
                     </LinearGradient>
                     {/* card list */}
                     <View style={styles.cardList}>
-                        {[1, 2, 3, 4, 5].map((item, idx) => (
-                            <View style={[styles.listItem]} key={idx}>
-                                <Text>123</Text>
-                            </View>
+                        {data.fof_list.map((item, idx) => (
+                            <ProductCards key={idx} data={{type: 'private_card', data: item, url: item.url}} />
                         ))}
                     </View>
                 </View>
             </ScrollView>
-            <View style={[styles.bottomWrap, {paddingBottom: px(isIphoneX() ? 34 : 8)}]}>
-                <View style={Style.flexRow}>
-                    <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/consult_icon.png'}}
-                        style={{width: px(17), height: px(17)}}
-                    />
-                    <Text style={styles.bottomDesc}>联系投顾管家</Text>
-                    <Text style={styles.bottomTel}>400 080 8208</Text>
+            <View style={{height: px(30)}} />
+            {data.bottom ? (
+                <View style={[styles.bottomWrap, {paddingBottom: px(isIphoneX() ? 34 : 8)}]}>
+                    <View style={Style.flexRow}>
+                        <FastImage source={{uri: data.bottom.icon}} style={{width: px(17), height: px(17)}} />
+                        <Text style={styles.bottomDesc}>{data.bottom.text}</Text>
+                        <Text style={styles.bottomTel}>{data.bottom.phone}</Text>
+                    </View>
+                    {data.bottom.button && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            disabled={data.bottom.button.avail}
+                            style={styles.bottomBtn}
+                            onPress={() => {
+                                jump(data.bottom.button.url);
+                            }}>
+                            <Text style={styles.bottomBtnText}>{data.bottom.button.text}</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtn}>
-                    <Text style={styles.bottomBtnText}>点击拨打</Text>
-                </TouchableOpacity>
-            </View>
+            ) : null}
         </View>
     );
 };
@@ -116,11 +127,19 @@ const PrivatePlacement = () => {
 export default PrivatePlacement;
 
 const styles = StyleSheet.create({
+    loadingMask: {
+        flex: 1,
+        marginTop: px(30),
+        marginBottom: px(60),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
     },
     cardWrap: {
         paddingHorizontal: px(16),
+        marginTop: px(-86),
     },
     swiperHeader: {
         flexDirection: 'row',
@@ -156,6 +175,7 @@ const styles = StyleSheet.create({
         color: '#E74949',
         fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
+        textAlign: 'center',
     },
     swiperMiddleDesc: {
         fontSize: px(11),
@@ -163,8 +183,12 @@ const styles = StyleSheet.create({
         color: '#9AA0B1',
         marginTop: 3,
     },
+    swiperMiddleLeft: {
+        marginLeft: px(58),
+    },
     swiperMiddleRight: {
         marginLeft: px(40),
+        flex: 1,
     },
     swiperMiddleName: {
         fontSize: px(14),
@@ -174,7 +198,7 @@ const styles = StyleSheet.create({
     swiperMiddleTags: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: px(5),
+        flexWrap: 'wrap',
     },
     swiperMiddleTag: {
         borderRadius: 3,
@@ -182,6 +206,7 @@ const styles = StyleSheet.create({
         borderColor: '#AD9064',
         paddingHorizontal: px(2),
         paddingVertical: px(4),
+        marginTop: px(6),
     },
     swiperMiddleTagText: {
         fontSize: px(10),
@@ -189,7 +214,7 @@ const styles = StyleSheet.create({
         color: '#AD9064',
     },
     swiperFooter: {
-        paddingVertical: px(8),
+        paddingBottom: px(16),
     },
     swiperBtn: {
         alignSelf: 'center',
@@ -210,6 +235,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        backgroundColor: '#fff',
     },
     bottomDesc: {
         fontSize: px(14),

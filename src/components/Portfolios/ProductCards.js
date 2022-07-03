@@ -95,42 +95,55 @@ const ManagerCard = () => (
 );
 
 /** @name 私募卡片 */
-const PrivateCard = () => (
-    <LinearGradient
-        colors={['#FFF7EC', '#FFFFFF']}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 1}}
-        style={[Style.flexRow, styles.privateCardBox]}>
-        <View style={{flex: 1}}>
-            <View style={Style.flexRow}>
-                <Text style={styles.title}>{'嘉实中证基建ETF发起式联接A'}</Text>
+const PrivateCard = ({data: {data}}) => {
+    const jump = useJump();
+    return (
+        <LinearGradient
+            colors={['#FFF7EC', '#FFFFFF']}
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            style={[Style.flexRow, styles.privateCardBox]}>
+            <View style={{flex: 1}}>
+                <View style={Style.flexRow}>
+                    <Text style={styles.title}>{data.name}</Text>
+                </View>
+                {data.tags && (
+                    <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                        {data.tags.map((item, idx) => (
+                            <View key={idx} style={[styles.tagBox, {borderColor: '#AD9064'}]}>
+                                <Text style={[styles.tagText, {color: '#AD9064'}]}>{item}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+                <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.profit}>{data.yield_info?.value}</Text>
+                        <Text style={[styles.label, {marginTop: px(2)}]}>{data.yield_info?.text}</Text>
+                    </View>
+                    <View style={{flex: 1}}>
+                        <Text style={[styles.profit, {fontSize: px(18), color: Colors.defaultColor}]}>
+                            {data.nav_info?.value}
+                        </Text>
+                        <Text style={[styles.label, {marginTop: px(2)}]}>{data.nav_info?.text}</Text>
+                    </View>
+                </View>
+                {data.tip ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[Style.flexRow, {marginTop: px(12)}]}
+                        onPress={() => {
+                            jump(data.url);
+                        }}>
+                        <Text style={styles.jumpText}>{data.tip}</Text>
+                        <FontAwesome color={'#AD9064'} name={'angle-right'} size={16} />
+                    </TouchableOpacity>
+                ) : null}
             </View>
-            <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                <View style={[styles.tagBox, {borderColor: '#AD9064'}]}>
-                    <Text style={[styles.tagText, {color: '#AD9064'}]}>{'基础建设'}</Text>
-                </View>
-                <View style={[styles.tagBox, {borderColor: '#AD9064'}]}>
-                    <Text style={[styles.tagText, {color: '#AD9064'}]}>{'大盘股'}</Text>
-                </View>
-            </View>
-            <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                <View style={{flex: 1}}>
-                    <Text style={styles.profit}>{'+50.18%'}</Text>
-                    <Text style={[styles.label, {marginTop: px(2)}]}>{'近一年收益率'}</Text>
-                </View>
-                <View style={{flex: 1}}>
-                    <Text style={[styles.profit, {fontSize: px(18), color: Colors.defaultColor}]}>{'1.266'}</Text>
-                    <Text style={[styles.label, {marginTop: px(2)}]}>{'累计净值'}</Text>
-                </View>
-            </View>
-            <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, {marginTop: px(12)}]}>
-                <Text style={styles.jumpText}>{'查看私募产品前，请先完成投资者认证'}</Text>
-                <FontAwesome color={'#AD9064'} name={'angle-right'} size={16} />
-            </TouchableOpacity>
-        </View>
-        <FontAwesome color={Colors.descColor} name={'angle-right'} size={16} />
-    </LinearGradient>
-);
+            <FontAwesome color={Colors.descColor} name={'angle-right'} size={16} />
+        </LinearGradient>
+    );
+};
 
 /** @name 榜单卡片 */
 const RankCard = ({data = {}, isPking}) => {

@@ -378,11 +378,11 @@ const SelectProduct = (props) => {
                 </Text>
                 {data.pk_button ? (
                     <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.bottomBtnWrap}
+                        activeOpacity={props.pkProducts.length ? 0.8 : 0.3}
+                        style={[styles.bottomBtnWrap, {opacity: props.pkProducts.length ? 1 : 0.3}]}
+                        disabled={!props.pkProducts.length}
                         onPress={() => {
-                            // jump(data.pk_button.url);
-                            jump({path: 'PKCompare'});
+                            jump(data.pk_button.url);
                         }}>
                         <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>
                     </TouchableOpacity>
