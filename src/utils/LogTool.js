@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 10:29:30
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 17:42:49
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-04 12:06:05
  * @Description:埋点
  *
  */
@@ -12,6 +12,7 @@ const _ts = 0;
 const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
     var _params = {},
         st = new Date().getTime();
+
     if ((st - _ts) / 1000 < 1) {
         //避免重复发送
         return false;
@@ -25,7 +26,10 @@ const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
     _params.ctrl = ctrl !== undefined ? ctrl : ''; //当前页面控件标识
     _params.oid = oid !== undefined ? oid : ''; //当前页面子控件唯一标识
     _params.tag = tag !== undefined ? tag : ''; //特殊标记 abtest
-
+    //为了兼容新增字段
+    if (typeof event === 'object') {
+        _params = {..._params, ...event};
+    }
     setTimeout(() => {
         // if (__DEV__) {
         //     return;
