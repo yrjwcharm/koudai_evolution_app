@@ -19,6 +19,7 @@ import {useJump} from '~/components/hooks';
 import PKWeightSet from '../Compare/PKWeightSet';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
+import Loading from '~/pages/Portfolio/components/PageLoading';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
@@ -51,6 +52,7 @@ const PKHome = () => {
     useFocusEffect(
         useCallback(() => {
             getData(isFirst.current++ !== 0);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -61,15 +63,9 @@ const PKHome = () => {
     );
 
     return loading ? (
-        <View style={styles.loadingMask}>
-            <ActivityIndicator size={'large'} />
-        </View>
+        <Loading />
     ) : (
-        <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
-            colors={['#fff', '#F4F5F7']}
-            style={[styles.container, {paddingTop: insets.top}]}>
+        <View style={[styles.container, {paddingTop: insets.top}]}>
             {/* search */}
             <View style={[styles.searchWrap]}>
                 <TouchableOpacity
@@ -90,40 +86,53 @@ const PKHome = () => {
                 showsVerticalScrollIndicator={false}
                 scrollIndicatorInsets={{right: 1}}>
                 {/* topmenu */}
-                <View style={styles.topMenu}>
-                    {data?.tabs?.map((item, idx) => (
-                        <View key={idx} style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    jump(item.url);
-                                }}>
-                                <FastImage source={{uri: item.icon}} resizeMode="contain" style={styles.topMenuIcon} />
-                                <Text style={styles.topMenuText}>{item.text}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </View>
-                {/* pkCard */}
-                <PKCard data={data?.pk_list} />
-                <View style={{paddingHorizontal: Space.padding}}>
-                    {data?.sub_list?.map?.((item, index) => {
-                        return <RenderPart data={item} key={item.title + index} />;
-                    })}
-                </View>
-                {/* bottomDesc */}
-                <BottomDesc />
+                <LinearGradient
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 0.2}}
+                    colors={['#fff', '#F4F5F7']}
+                    style={{flex: 1}}>
+                    <View style={styles.topMenu}>
+                        {data?.tabs?.map((item, idx) => (
+                            <View
+                                key={idx}
+                                style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item.url);
+                                    }}>
+                                    <FastImage
+                                        source={{uri: item.icon}}
+                                        resizeMode="contain"
+                                        style={styles.topMenuIcon}
+                                    />
+                                    <Text style={styles.topMenuText}>{item.text}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                    </View>
+                    {/* pkCard */}
+                    <PKCard data={data?.pk_list} />
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        {data?.sub_list?.map?.((item, index) => {
+                            return <RenderPart data={item} key={item.title + index} />;
+                        })}
+                    </View>
+                    {/* bottomDesc */}
+                    <BottomDesc />
+                </LinearGradient>
             </ScrollView>
             <PKBall />
             {/* <PKCollectUserInterest /> */}
             {/* <PKWeightSet /> */}
-        </LinearGradient>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#fff',
     },
     searchWrap: {
         paddingVertical: px(6),

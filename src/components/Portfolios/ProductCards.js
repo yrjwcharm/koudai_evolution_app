@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 17:20:53
+ * @LastEditTime: 2022-07-04 14:46:34
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -148,7 +148,7 @@ const PrivateCard = ({data: {data}}) => {
 /** @name 榜单卡片 */
 const RankCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, icon, name, tags = [], yield_info} = data;
+    const {button, code, icon, labels, name, tags = [], yield_info} = data;
     return (
         <View style={Style.flexRow}>
             <Image
@@ -160,6 +160,13 @@ const RankCard = ({data = {}, isPking}) => {
             <View style={{flex: 1}}>
                 <View style={Style.flexRow}>
                     <Text style={styles.title}>{name}</Text>
+                    {labels?.length > 0 ? (
+                        <View style={{marginLeft: px(8)}}>
+                            {labels.map((label, i) => (
+                                <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                            ))}
+                        </View>
+                    ) : null}
                 </View>
                 {tags?.length > 0 && (
                     <View style={[Style.flexRow, {marginTop: px(4)}]}>
@@ -211,7 +218,13 @@ const RecommendCard = ({data = {}, isPking}) => {
                 <View style={{flex: 1}}>
                     <View style={Style.flexRow}>
                         <Text style={styles.title}>{name}</Text>
-                        {labels ? <Text style={styles.desc}>{labels}</Text> : null}
+                        {labels?.length > 0 ? (
+                            <View style={{marginLeft: px(8)}}>
+                                {labels.map((label, i) => (
+                                    <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                                ))}
+                            </View>
+                        ) : null}
                     </View>
                     {tags?.length > 0 && (
                         <View style={[Style.flexRow, {marginTop: px(4)}]}>
@@ -262,11 +275,18 @@ const RecommendCard = ({data = {}, isPking}) => {
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, name, rank_info = {}, tags = [], yield_info} = data;
+    const {button, code, labels, name, rank_info = {}, tags = [], yield_info} = data;
     return (
         <View>
             <View style={Style.flexRow}>
                 <Text style={styles.title}>{name}</Text>
+                {labels?.length > 0 ? (
+                    <View style={{marginLeft: px(8)}}>
+                        {labels.map((label, i) => (
+                            <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                        ))}
+                    </View>
+                ) : null}
             </View>
             {tags?.length > 0 && (
                 <View style={[Style.flexRow, {marginTop: px(4)}]}>
