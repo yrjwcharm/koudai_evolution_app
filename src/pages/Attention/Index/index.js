@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 14:02:49
+ * @LastEditTime: 2022-07-04 14:17:34
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
@@ -57,7 +57,6 @@ const Attention = ({navigation}) => {
         }
         Toast.show(res.message);
     };
-
     return (
         <View style={{flex: 1}}>
             <NavBar renderRight={<HeaderRight />} title="关注" />
