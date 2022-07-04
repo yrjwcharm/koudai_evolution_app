@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 16:57:35
+ * @LastEditTime: 2022-07-04 18:31:13
  * @Description: 公募基金首页
  */
 import React, {useEffect, useState} from 'react';
@@ -58,9 +58,6 @@ const SwiperCom = ({data = []}) => {
                 dotStyle={styles.dotStyle}
                 height={px(172)}
                 loadMinimal={Platform.select({android: false, ios: true})}
-                onIndexChanged={(i) => {
-                    console.log(i);
-                }}
                 paginationStyle={{bottom: px(8)}}
                 removeClippedSubviews={false}>
                 {data.map((item, index) => {

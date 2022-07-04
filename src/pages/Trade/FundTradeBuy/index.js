@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 17:02:13
+ * @LastEditTime: 2022-07-04 18:29:48
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -25,7 +25,7 @@ import {fundBuyDo, getBuyFee, getBuyInfo} from './services';
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
     const jump = useJump();
     const {hidden_text, title} = buy_info;
-    const {date_text, fee_text} = feeData;
+    const {date_text, fee_text, origin_fee} = feeData;
     return (
         <View style={[styles.partBox, {paddingVertical: Space.padding}]}>
             <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
@@ -56,7 +56,12 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
                 ) : (
                     <>
-                        {fee_text ? <HTML html={fee_text} style={{...styles.desc, color: Colors.descColor}} /> : null}
+                        {fee_text ? (
+                            <View style={Style.flexRow}>
+                                <HTML html={fee_text} style={{...styles.desc, color: Colors.descColor}} />
+                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}%</Text> : null}
+                            </View>
+                        ) : null}
                         {date_text ? (
                             <View style={{marginTop: px(4)}}>
                                 <HTML
@@ -308,6 +313,12 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.lightGrayColor,
+    },
+    originFee: {
+        marginLeft: px(4),
+        color: Colors.descColor,
+        textDecorationColor: Colors.descColor,
+        textDecorationLine: 'line-through',
     },
     fundCode: {
         marginLeft: px(8),

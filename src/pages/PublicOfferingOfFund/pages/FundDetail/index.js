@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 18:24:55
+ * @LastEditTime: 2022-07-04 18:34:39
  * @Description: 基金详情
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -20,6 +20,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
 import {getPageData} from './services';
+import {SERVER_URL} from '~/services/config';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import URI from 'urijs';
 
@@ -194,7 +195,7 @@ const Index = ({navigation, route}) => {
                 ref={webview}
                 renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
                 source={{
-                    uri: URI(`http://localhost:3000/fundDetail/${route.params.code}`)
+                    uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${route.params.code}`)
                         .addQuery({timeStamp: timeStamp.current})
                         .valueOf(),
                 }}
