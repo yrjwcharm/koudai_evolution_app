@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 14:17:34
+ * @LastEditTime: 2022-07-04 17:31:22
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
@@ -98,7 +98,7 @@ const Attention = ({navigation}) => {
                                 <View key={index} tabLabel={tab?.type_text}>
                                     <FollowTable
                                         data={followData}
-                                        activeTab={activeTab}
+                                        activeTab={index + 1}
                                         handleSort={getFollowData}
                                         tabButton={tab?.button_list}
                                         scrollY={scrollY}

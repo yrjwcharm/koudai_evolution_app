@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 14:36:32
+ * @LastEditTime: 2022-07-04 17:51:39
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -27,7 +27,8 @@ export default function EditSortFund({route}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
-        let tmp = data.filter((item) => item.check);
+        if (data?.length <= 0) return;
+        let tmp = data?.filter((item) => item.check) || [];
         if (tmp.length > 0 && data.length == tmp.length) {
             setCheck(2);
         } else if (tmp.length > 0) {
@@ -104,7 +105,7 @@ export default function EditSortFund({route}) {
         const params = {
             item_id: data
                 .filter((item) => item.check)
-                .map((t) => t.id)
+                .map((t) => t.item_id)
                 .join(','),
             item_type: 1,
         };

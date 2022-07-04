@@ -49,7 +49,6 @@ const Index = ({navigation}) => {
             handleQuestion({
                 tag_ids: type == 'muti' ? tmp[question_id].join(',') : answer_id,
                 question_id,
-                is_first_submit: current == 0,
             });
             return tmp;
         });

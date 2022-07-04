@@ -774,7 +774,7 @@ export default function AppStack() {
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
             {/* v7新页面 Start */}
-            <Stack.Screen name="PKSearchHome" component={SearchHome} options={{title: '', headerShown: false}} />
+            <Stack.Screen name="SearchHome" component={SearchHome} options={{title: '', headerShown: false}} />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
             <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
