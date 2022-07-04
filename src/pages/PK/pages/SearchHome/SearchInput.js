@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 11:04:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 19:36:54
+ * @LastEditTime: 2022-07-04 18:01:59
  * @Description:
  */
 import React, {useState} from 'react';
@@ -37,7 +37,8 @@ const SearchInput = React.forwardRef((props, ref) => {
             <View style={[styles.inputCon, Style.flexRow]}>
                 <Icons name={'search'} color={'#545968'} size={px(18)} />
                 <TextInput
-                    placeholder={props.placeholder || '123'}
+                    autoFocus={true}
+                    placeholder={props.placeholder || '请输入'}
                     style={{flex: 1, marginLeft: px(6)}}
                     onChangeText={_onChangeText}
                     value={content + ''}

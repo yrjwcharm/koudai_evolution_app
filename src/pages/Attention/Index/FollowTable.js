@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 17:35:04
+ * @LastEditTime: 2022-07-04 18:46:25
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -16,6 +16,7 @@ import sortDown from '~/assets/img/attention/sortDown.png';
 import Feather from 'react-native-vector-icons/Feather';
 import {useJump} from '~/components/hooks';
 import StickyHeader from '~/components/Sticky';
+import LoadingTips from '~/components/LoadingTips';
 const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY, scrollY}) => {
     const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
@@ -173,7 +174,11 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                         ))}
                     </View>
                 </View>
-            ) : null}
+            ) : (
+                <View style={{...Style.flexCenter, height: px(200)}}>
+                    <LoadingTips color="#ddd" />
+                </View>
+            )}
         </>
     );
 };

@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 17:51:39
+ * @LastEditTime: 2022-07-04 17:56:05
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';

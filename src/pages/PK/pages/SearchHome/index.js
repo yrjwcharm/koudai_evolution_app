@@ -2,11 +2,11 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 13:07:58
+ * @LastEditTime: 2022-07-04 18:55:37
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import Icons from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
@@ -17,6 +17,7 @@ import {getSearchHistory, insertSearch, updateSearch} from './utils';
 import {getSearchData, getSearchInfo} from './services';
 import _ from 'lodash';
 import HotFundCard from './HotFundCard';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Index = () => {
     const [data, setData] = useState({});
@@ -76,11 +77,13 @@ const Index = () => {
         Keyboard.dismiss();
         input.current.setValue(value);
     };
-    useEffect(() => {
-        getSearchIndexInfo();
-        _getSearchHistory();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getSearchIndexInfo();
+            _getSearchHistory();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     return (
         data && (
             <View style={styles.con}>
@@ -89,7 +92,7 @@ const Index = () => {
                     ref={input}
                     onChangeText={_.debounce(onChangeText, 500)}
                     onHandleSearch={onHandleSearch}
-                    placeholder={data?.search_box_search}
+                    placeholder={data?.search_box_content}
                     value={keyword}
                 />
                 <ScrollView
