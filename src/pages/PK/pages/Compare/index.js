@@ -62,7 +62,7 @@ const Compare = () => {
             dispatch(delProduct(item.code));
             if (item.code === pkPinning) dispatch(pinningProduct(null));
         }
-        dispatch(addProduct(code));
+        dispatch(addProduct({code, isHigh: true}));
         setTimeout(() => {
             getData();
         }, 0);

@@ -13,8 +13,8 @@ import {useFocusEffect} from '@react-navigation/native';
 const PKBall = ({}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts);
     const dispatch = useDispatch();
-
     const jump = useJump();
+
     // 1有PK产品  2优选产品
     const [layoutType, updateLayoutType] = useState(1);
     const [better, setBetter] = useState(null);
@@ -79,7 +79,7 @@ const PKBall = ({}, ref) => {
     };
 
     const handlerJump = () => {
-        if (better) dispatch(addProduct(better.code));
+        if (better) dispatch(addProduct({code: better.code, isHigh: true}));
         updateLayoutType(1);
         setBetter(null);
         handlerAnimate(animateViewWidthRef.current, false, true);

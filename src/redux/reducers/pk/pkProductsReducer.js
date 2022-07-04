@@ -5,13 +5,18 @@ import actionTypes from '../../actionTypes';
 export default function pkProducts(state = [], action) {
     switch (action.type) {
         case actionTypes.addProduct:
-            if (state.includes(action.payload)) {
+            let code = action.payload?.code || action.payload;
+            let isHigh = action.payload?.isHigh;
+            if (state.includes(code)) {
                 Toast.show('已经选择过该产品了');
                 return state;
             }
             if (state.length < 6) {
-                addPkProducts({fund_code: action.payload});
-                return [...state, action.payload];
+                let params = {fund_code: code};
+                // 是否优选基金
+                if (isHigh) params.source = 1;
+                addPkProducts(params);
+                return [...state, code];
             } else {
                 Toast.show('您PK的基金过多，最多选择6只');
                 return state;
