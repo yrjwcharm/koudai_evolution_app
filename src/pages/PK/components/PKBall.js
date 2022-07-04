@@ -10,7 +10,7 @@ import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {getPKBetter} from '../services';
 import {useFocusEffect} from '@react-navigation/native';
 
-const PKBall = ({}, ref) => {
+const PKBall = ({style}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts);
     const dispatch = useDispatch();
     const jump = useJump();
@@ -87,7 +87,7 @@ const PKBall = ({}, ref) => {
     };
 
     return (
-        <TouchableOpacity activeOpacity={0.9} style={[styles.container]} onPress={handlerJump}>
+        <TouchableOpacity activeOpacity={0.9} style={[styles.container, style]} onPress={handlerJump}>
             <Animatable.View
                 ref={animatableRef}
                 iterationCount={1}

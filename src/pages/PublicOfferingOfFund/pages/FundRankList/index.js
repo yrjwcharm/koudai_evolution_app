@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 14:21:39
+ * @LastEditTime: 2022-07-04 16:01:53
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -15,6 +15,7 @@ import CapsuleTabbar from '~/components/CapsuleTabbar';
 import Empty from '~/components/EmptyTip';
 import NavBar from '~/components/NavBar';
 import ProductCards from '~/components/Portfolios/ProductCards';
+import PKBall from '~/pages/PK/components/PKBall';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {getFeatureList, getRankList} from './services';
@@ -76,6 +77,7 @@ const Index = ({route}) => {
                     renderItem={renderItem}
                     style={styles.flatList}
                 />
+                <PKBall />
             </>
         );
     };
@@ -102,6 +104,7 @@ const Index = ({route}) => {
         } else {
             getFeatureList().then((res) => {
                 if (res.code === '000000') {
+                    setShowEmpty(true);
                     const {header_pic, items = []} = res.result;
                     setHeadImg(header_pic);
                     setList(items);
@@ -143,22 +146,25 @@ const Index = ({route}) => {
                                     scrollIndicatorInsets={{right: 1}}
                                     style={{paddingHorizontal: Space.padding}}
                                     tabLabel={tabTitle}>
-                                    {tabItems.map((item, index, arr) => (
-                                        <ProductCards
-                                            data={item}
-                                            key={index}
-                                            style={{
-                                                ...(index === 0 ? {marginTop: 0} : {}),
-                                                ...(index === arr.length - 1
-                                                    ? {marginBottom: isIphoneX() ? 34 : Space.marginVertical}
-                                                    : {}),
-                                            }}
-                                        />
-                                    ))}
+                                    {tabItems?.length > 0
+                                        ? tabItems.map((item, index, arr) => (
+                                              <ProductCards
+                                                  data={item}
+                                                  key={index}
+                                                  style={{
+                                                      ...(index === 0 ? {marginTop: 0} : {}),
+                                                      ...(index === arr.length - 1
+                                                          ? {marginBottom: isIphoneX() ? 34 : Space.marginVertical}
+                                                          : {}),
+                                                  }}
+                                              />
+                                          ))
+                                        : renderEmpty()}
                                 </ScrollView>
                             );
                         })}
                     </ScrollableTabView>
+                    <PKBall />
                 </LinearGradient>
             )}
         </View>

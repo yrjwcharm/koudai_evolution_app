@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 14:46:34
+ * @LastEditTime: 2022-07-04 16:51:59
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -205,13 +205,42 @@ const RankCard = ({data = {}, isPking}) => {
 /** @name 推荐卡片 */
 const RecommendCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, chart = [], code, icon_url, labels, name, plan_id, reason, tags = [], yield_info} = data;
+    const {
+        button,
+        chart = [],
+        code,
+        label: leftLabel = [],
+        labels,
+        name,
+        plan_id,
+        reason,
+        tags = [],
+        yield_info,
+    } = data;
     return (
         <View>
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
-                    {icon_url ? <Image source={{uri: icon_url}} style={{width: '100%', height: px(74)}} /> : null}
                     {chart?.length > 0 && <Chart initScript={chartOptions.smChart(chart)} />}
+                    {leftLabel?.length > 0 && (
+                        <>
+                            {leftLabel[0] ? (
+                                <View style={[Style.flexCenter, styles.leftLabel1]}>
+                                    <Text style={styles.leftLabel1Text}>{leftLabel[0]}</Text>
+                                </View>
+                            ) : null}
+                            {leftLabel[1] ? (
+                                <View style={[Style.flexCenter, styles.leftLabel2]}>
+                                    <Text style={styles.leftLabel2Text}>{leftLabel[0]}</Text>
+                                </View>
+                            ) : null}
+                            {leftLabel[2] ? (
+                                <View style={[Style.flexCenter, styles.leftLabel3]}>
+                                    <Text style={styles.leftLabel3Text}>{leftLabel[0]}</Text>
+                                </View>
+                            ) : null}
+                        </>
+                    )}
                 </View>
                 <View style={{flex: 1}}>
                     <View style={Style.flexRow}>
@@ -390,6 +419,48 @@ const styles = StyleSheet.create({
         marginRight: px(10),
         width: px(74),
         height: '100%',
+    },
+    leftLabel1: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: px(49),
+        height: px(49),
+        backgroundColor: 'rgba(231, 73, 73, 0.1)',
+        borderRadius: px(49),
+    },
+    leftLabel1Text: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.red,
+    },
+    leftLabel2: {
+        position: 'absolute',
+        top: px(22),
+        left: px(35),
+        width: px(38),
+        height: px(38),
+        backgroundColor: 'rgba(231, 73, 73, 0.1)',
+        borderRadius: px(38),
+    },
+    leftLabel2Text: {
+        fontSize: px(8),
+        lineHeight: px(13),
+        color: Colors.red,
+    },
+    leftLabel3: {
+        position: 'absolute',
+        top: px(39),
+        left: px(11),
+        width: px(34),
+        height: px(34),
+        backgroundColor: 'rgba(231, 73, 73, 0.1)',
+        borderRadius: px(34),
+    },
+    leftLabel3Text: {
+        fontSize: px(7),
+        lineHeight: px(12),
+        color: Colors.red,
     },
     managerPic: {
         marginRight: px(12),

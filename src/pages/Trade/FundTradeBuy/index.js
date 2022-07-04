@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 15:34:50
+ * @LastEditTime: 2022-07-04 17:02:13
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -138,9 +138,7 @@ const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = 
                     </View>
                     {large_pay_tip ? (
                         <View style={styles.largePayTipsBox}>
-                            <Text style={[styles.desc, {color: '#FF7D41'}]}>
-                                {'您尚有X次大额极速购优惠，使用大额极速购，原有折扣上再打五折'}
-                            </Text>
+                            <Text style={[styles.desc, {color: '#FF7D41'}]}>{large_pay_tip}</Text>
                         </View>
                     ) : null}
                 </View>

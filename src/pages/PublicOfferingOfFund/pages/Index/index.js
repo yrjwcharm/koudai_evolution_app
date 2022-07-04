@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 12:02:16
+ * @LastEditTime: 2022-07-04 16:57:35
  * @Description: 公募基金首页
  */
 import React, {useEffect, useState} from 'react';
@@ -16,6 +16,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
+import PKBall from '~/pages/PK/components/PKBall';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, px} from '~/utils/appUtil';
 import RenderPart from './RenderPart';
@@ -57,6 +58,9 @@ const SwiperCom = ({data = []}) => {
                 dotStyle={styles.dotStyle}
                 height={px(172)}
                 loadMinimal={Platform.select({android: false, ios: true})}
+                onIndexChanged={(i) => {
+                    console.log(i);
+                }}
                 paginationStyle={{bottom: px(8)}}
                 removeClippedSubviews={false}>
                 {data.map((item, index) => {
@@ -166,6 +170,7 @@ const Index = ({navigation, route}) => {
                     <BottomDesc />
                 </LinearGradient>
             </ScrollView>
+            <PKBall />
         </LinearGradient>
     ) : (
         <Loading />

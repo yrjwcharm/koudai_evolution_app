@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 17:24:44
+ * @LastEditTime: 2022-07-04 16:49:31
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -20,6 +20,7 @@ import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
 import TabBar from '~/components/ScrollTabbar';
 import Toast from '~/components/Toast';
+import PKBall from '~/pages/PK/components/PKBall';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {debounce} from 'lodash';
@@ -175,7 +176,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
             sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
             initialNumToRender={20}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
-            keyExtractor={(item) => item.code}
+            keyExtractor={(item, index) => item.code + index}
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
             onEndReached={onEndReached}
@@ -260,6 +261,7 @@ const Index = ({navigation, route}) => {
                     );
                 })}
             </View>
+            <PKBall style={{bottom: px(80)}} />
         </View>
     ) : (
         <Loading />
