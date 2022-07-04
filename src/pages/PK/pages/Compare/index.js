@@ -16,7 +16,7 @@ import BlackHint from './BlackHint';
 import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
 import {pinningProduct} from '~/redux/actions/pk/pkPinning';
 
-const Compare = (props) => {
+const Compare = () => {
     const pkProducts = useSelector((state) => state.pkProducts);
     const pkPinning = useSelector((state) => state.pkPinning);
     const dispatch = useDispatch();
@@ -63,7 +63,9 @@ const Compare = (props) => {
             if (item.code === pkPinning) dispatch(pinningProduct(null));
         }
         dispatch(addProduct(code));
-        getData();
+        setTimeout(() => {
+            getData();
+        }, 0);
     };
 
     const handlerScroll = (curRef) => {
@@ -127,7 +129,7 @@ const Compare = (props) => {
                 )}
                 {/* 基金信息 */}
                 {list && <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerScroll(pkFundInfoRef)} />}
-                <View style={{height: 60}} />
+                <View style={{height: 120}} />
             </ScrollView>
             {loading ? (
                 <View style={styles.loadingMask}>

@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Font} from '../../../common/commonStyle';
@@ -8,6 +8,7 @@ import {useJump} from '~/components/hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {getPKBetter} from '../services';
+import {useFocusEffect} from '@react-navigation/native';
 
 const PKBall = ({}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts);
@@ -32,7 +33,7 @@ const PKBall = ({}, ref) => {
         };
     }, []);
 
-    // 当增加pk产品时展示动画
+    // 当增加pk产品时展示动画 缓存pkProducts, layoutType
     useEffect(() => {
         if (pkProducts.length > prevPKProducts.current.length) {
             let state = layoutType === 1;
@@ -42,27 +43,27 @@ const PKBall = ({}, ref) => {
         layoutTypeRef.current = layoutType;
     }, [pkProducts, layoutType]);
 
-    useEffect(() => {
-        getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
-            if (res.code === '000000') {
+    useFocusEffect(
+        useCallback(() => {
+            getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
                 setBetter(res.result?.better_fund);
                 if (res.result?.better_fund) {
-                    if (layoutTypeRef.current !== 2) {
+                    if (layoutTypeRef.current === 1) {
                         updateLayoutType(2);
                         handlerAnimate(px(205), true);
                     }
                 } else {
-                    if (layoutTypeRef.current !== 1) {
+                    if (layoutTypeRef.current === 2) {
                         updateLayoutType(1);
-                        handlerAnimate(animateViewWidthRef.current, true, true);
+                        handlerAnimate(animateViewWidthRef.current, false, true, 0);
                     }
                 }
-            }
-        });
-    }, [pkProducts]);
+            });
+        }, [pkProducts])
+    );
 
     //展开收缩动画
-    const handlerAnimate = (width, expand, shrink) => {
+    const handlerAnimate = (width, expand, shrink, time = 2000) => {
         if (timer.current) {
             clearTimeout(timer.current);
             timer.current = null;
@@ -73,18 +74,16 @@ const PKBall = ({}, ref) => {
         if (shrink) {
             timer.current = setTimeout(() => {
                 animatableRef.current?.transitionTo({opacity: 0, width: 0});
-            }, 2000);
+            }, time);
         }
     };
 
     const handlerJump = () => {
         if (better) dispatch(addProduct(better.code));
+        updateLayoutType(1);
+        setBetter(null);
+        handlerAnimate(animateViewWidthRef.current, false, true);
         jump({path: 'PKSelectProduct'});
-        setTimeout(() => {
-            updateLayoutType(1);
-            setBetter(null);
-            handlerAnimate(animateViewWidthRef.current, false, true);
-        }, 1);
     };
 
     return (

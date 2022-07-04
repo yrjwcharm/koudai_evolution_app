@@ -1,8 +1,7 @@
 import actionTypes from '../../actionTypes';
-import {addPkProducts, deletePkProducts, getPkCartList} from '~/pages/PK/pages/SelectProduct/services';
+import {getPkCartList} from '~/pages/PK/pages/SelectProduct/services';
 
 export const addProduct = (payload) => {
-    addPkProducts({fund_code: payload});
     return {
         type: actionTypes.addProduct,
         payload,
@@ -10,7 +9,6 @@ export const addProduct = (payload) => {
 };
 
 export const delProduct = (payload) => {
-    deletePkProducts({fund_code: payload});
     return {
         type: actionTypes.delProduct,
         payload,

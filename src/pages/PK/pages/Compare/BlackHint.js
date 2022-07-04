@@ -3,8 +3,8 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import {getPKBetter} from '../../services';
-import Icon from 'react-native-vector-icons/EvilIcons';
 import FastImage from 'react-native-fast-image';
+import * as Animatable from 'react-native-animatable';
 
 const BlackHint = ({addHigh}) => {
     const pkProducts = useSelector((state) => state.pkProducts);
@@ -17,29 +17,31 @@ const BlackHint = ({addHigh}) => {
         });
     }, [pkProducts]);
 
-    return (
-        data && (
-            <View style={[styles.container]}>
-                {/* icon */}
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        setData(null);
-                    }}>
-                    <FastImage style={styles.icon} />
-                </TouchableOpacity>
-                <Text style={styles.text}>根据您的权重设置，有新的基金向您推荐</Text>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.btn}
-                    onPress={() => {
-                        addHigh(data.code);
-                    }}>
-                    <Text style={styles.btnText}>添加PK </Text>
-                </TouchableOpacity>
-            </View>
-        )
-    );
+    return data ? (
+        <Animatable.View animation={'fadeInUp'} duration={500} style={[styles.container]}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.iconWrap}
+                onPress={() => {
+                    setData(null);
+                }}>
+                <FastImage
+                    style={styles.icon}
+                    source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/cha.png'}}
+                />
+            </TouchableOpacity>
+            <Text style={styles.text}>根据您的权重设置，有新的基金向您推荐</Text>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={() => {
+                    setData(null);
+                    addHigh(data.code);
+                }}>
+                <Text style={styles.btnText}>添加PK </Text>
+            </TouchableOpacity>
+        </Animatable.View>
+    ) : null;
 };
 
 export default BlackHint;
@@ -74,9 +76,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
     },
-    icon: {
+    iconWrap: {
         position: 'absolute',
-        left: 0,
-        top: 0,
+        left: -7,
+        top: -7,
+    },
+    icon: {
+        width: px(18),
+        height: px(18),
     },
 });

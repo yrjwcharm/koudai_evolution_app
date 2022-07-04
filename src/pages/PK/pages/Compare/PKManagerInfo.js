@@ -40,7 +40,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
         return (
             <View style={{width: px(40)}}>
                 {new Array(4).fill('').map((_, idx) => (
-                    <View style={{height: px(42), ...border}} />
+                    <View key={idx} style={{height: px(42), ...border}} />
                 ))}
             </View>
         );
