@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:46:25
+ * @LastEditTime: 2022-07-04 19:17:53
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -104,7 +104,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                     style={[styles.tr]}
                                     key={index}
                                     activeOpacity={0.9}
-                                    onPress={() => jump(tr.url)}>
+                                    onPress={() => jump(tr[0].url)}>
                                     <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                         {tr.map((item, _index) => (
                                             <View
