@@ -56,7 +56,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
             <View style={styles.content}>
                 <View style={styles.legendsWrap}>
                     {data.chart?.slice?.(0, data.label.length).map((item, idx) => {
-                        return <Lengend name={item.type} items={items} index={idx} key={item.name + idx} />;
+                        return <Lengend name={item.type} items={items} index={idx} key={idx} />;
                     })}
                 </View>
                 <View style={{height: px(207)}}>

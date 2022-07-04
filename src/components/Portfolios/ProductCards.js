@@ -118,13 +118,11 @@ const PrivateCard = ({data: {data}}) => {
                 )}
                 <View style={[Style.flexRow, {marginTop: px(12)}]}>
                     <View style={{flex: 1}}>
-                        <Text style={styles.profit}>{data.yield_info?.value}</Text>
+                        <HTML style={styles.profit} html={data.yield_info?.value} />
                         <Text style={[styles.label, {marginTop: px(2)}]}>{data.yield_info?.text}</Text>
                     </View>
                     <View style={{flex: 1}}>
-                        <Text style={[styles.profit, {fontSize: px(18), color: Colors.defaultColor}]}>
-                            {data.nav_info?.value}
-                        </Text>
+                        <HTML style={[styles.profit, {fontSize: px(18)}]} html={data.nav_info?.value} />
                         <Text style={[styles.label, {marginTop: px(2)}]}>{data.nav_info?.text}</Text>
                     </View>
                 </View>

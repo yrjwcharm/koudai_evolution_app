@@ -2,11 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
-<<<<<<< HEAD
  * @LastEditTime: 2022-06-29 19:33:28
-=======
- * @LastEditTime: 2022-06-27 13:36:15
->>>>>>> master
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
