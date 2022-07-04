@@ -2,10 +2,10 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 21:09:10
+ * @LastEditTime: 2022-07-04 15:34:50
  * @Description: 基金购买
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -13,6 +13,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
+import {useJump} from '~/components/hooks';
 import {BankCardModal} from '~/components/Modal';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
@@ -20,18 +21,20 @@ import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
 import {fundBuyDo, getBuyFee, getBuyInfo} from './services';
-import {debounce} from 'lodash';
 
-const InputBox = ({buy_info, errTip, feeData, onChange, value = ''}) => {
+const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
+    const jump = useJump();
     const {hidden_text, title} = buy_info;
     const {date_text, fee_text} = feeData;
     return (
         <View style={[styles.partBox, {paddingVertical: Space.padding}]}>
             <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
                 <Text style={styles.buyTitle}>{title}</Text>
-                <TouchableOpacity activeOpacity={0.8}>
-                    <Text style={[styles.desc, {color: Colors.brandColor}]}>{'交易规则'}</Text>
-                </TouchableOpacity>
+                {rule_button?.text ? (
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(rule_button.url)}>
+                        <Text style={[styles.desc, {color: Colors.brandColor}]}>{rule_button.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
             <View style={[Style.flexRow, styles.inputBox]}>
                 <Text style={styles.unit}>{'￥'}</Text>
@@ -166,6 +169,7 @@ const Index = ({navigation, route}) => {
         large_pay_method,
         large_pay_tip,
         pay_methods = [],
+        rule_button,
         sub_title,
     } = data;
 
@@ -175,14 +179,16 @@ const Index = ({navigation, route}) => {
 
     const onInput = () => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
-        if (amount > method.left_amount && method.pay_method !== 'wallet') {
-            setErrTip(`您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`);
-        } else if (amount > method.single_amount) {
+        if (amount > method.left_amount) {
             setErrTip(
-                method.pay_method === 'wallet'
-                    ? `魔方宝余额不足,建议<alink url='{"path":"MfbIn","params":{"fr":"fund_trade_buy"}}'>立即充值</alink>`
-                    : `最大单笔购买金额为${method.single_amount}元`
+                method.pay_method !== 'wallet'
+                    ? `您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`
+                    : `魔方宝余额不足,建议<alink url='{"path":"MfbIn","params":{"fr":"fund_trade_buy"}}'>立即充值</alink>`
             );
+        } else if (amount > method.single_amount) {
+            setErrTip(`最大单笔购买金额为${method.single_amount}元`);
+        } else if (method.pay_method !== 'wallet' && amount > method.day_limit) {
+            setErrTip(`最大单日购买金额为${method.day_limit}元`);
         } else if (amount !== '' && amount < buy_info.initial_amount) {
             setErrTip(`起购金额${buy_info.initial_amount}`);
         } else {
@@ -241,7 +247,14 @@ const Index = ({navigation, route}) => {
                     <Text style={styles.title}>{sub_title}</Text>
                     <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
                 </View>
-                <InputBox buy_info={buy_info} errTip={errTip} feeData={feeData} onChange={onChange} value={amount} />
+                <InputBox
+                    buy_info={buy_info}
+                    errTip={errTip}
+                    feeData={feeData}
+                    onChange={onChange}
+                    rule_button={rule_button}
+                    value={amount}
+                />
                 <PayMethod
                     bankCardModal={bankCardModal}
                     isLarge={isLarge}
@@ -263,7 +276,7 @@ const Index = ({navigation, route}) => {
             <PasswordModal onDone={onSubmit} ref={passwordModal} />
             <FixedButton
                 agreement={agreement_bottom}
-                disabled={button.avail === 0}
+                disabled={amount === '' || button.avail === 0 || errTip !== ''}
                 heightChange={(height) => setDeltaHeight(height)}
                 onPress={buyClick}
                 otherAgreement={agreement}
