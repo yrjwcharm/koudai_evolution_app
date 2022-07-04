@@ -2,11 +2,20 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:29:48
+ * @LastEditTime: 2022-07-04 19:23:06
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -54,7 +63,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
             <View style={styles.tipsBox}>
                 {errTip ? (
                     <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
-                ) : (
+                ) : fee_text || date_text ? (
                     <>
                         {fee_text ? (
                             <View style={Style.flexRow}>
@@ -71,6 +80,10 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                             </View>
                         ) : null}
                     </>
+                ) : (
+                    <View style={Style.flexCenter}>
+                        <ActivityIndicator color={Colors.lightGrayColor} />
+                    </View>
                 )}
             </View>
         </View>
@@ -175,6 +188,7 @@ const Index = ({navigation, route}) => {
         rule_button,
         sub_title,
     } = data;
+    const timer = useRef();
 
     const onChange = (val) => {
         setAmount(onlyNumber(val >= 100000000 ? '99999999.99' : val));
@@ -188,19 +202,26 @@ const Index = ({navigation, route}) => {
                     ? `您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`
                     : `魔方宝余额不足,建议<alink url='{"path":"MfbIn","params":{"fr":"fund_trade_buy"}}'>立即充值</alink>`
             );
+            setFeeData({});
         } else if (amount > method.single_amount) {
             setErrTip(`最大单笔购买金额为${method.single_amount}元`);
+            setFeeData({});
         } else if (method.pay_method !== 'wallet' && amount > method.day_limit) {
             setErrTip(`最大单日购买金额为${method.day_limit}元`);
+            setFeeData({});
         } else if (amount !== '' && amount < buy_info.initial_amount) {
             setErrTip(`起购金额${buy_info.initial_amount}`);
+            setFeeData({});
         } else {
             setErrTip('');
-            getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
-                if (res.code === '000000') {
-                    setFeeData(res.result);
-                }
-            });
+            timer.current && clearTimeout(timer.current);
+            timer.current = setTimeout(() => {
+                getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
+                    if (res.code === '000000') {
+                        setFeeData(res.result);
+                    }
+                });
+            }, 300);
         }
     };
 

@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:31:13
+ * @LastEditTime: 2022-07-04 19:04:39
  * @Description: 公募基金首页
  */
 import React, {useEffect, useState} from 'react';
@@ -49,6 +49,15 @@ const TopMenu = ({data = []}) => {
 
 /** @name 轮播 */
 const SwiperCom = ({data = []}) => {
+    const jump = useJump();
+
+    useEffect(() => {
+        if (data[0]) {
+            const {code, plate_id, rec_json} = data[0];
+            global.LogTool({ctrl: code, event: 'PF_banner_show', plate_id, rec_json});
+        }
+    }, [data]);
+
     return (
         <View style={styles.swiperContainer}>
             <Swiper
@@ -61,7 +70,7 @@ const SwiperCom = ({data = []}) => {
                 paginationStyle={{bottom: px(8)}}
                 removeClippedSubviews={false}>
                 {data.map((item, index) => {
-                    const {button, name, rank_tag, tags, title, yield_info} = item;
+                    const {button, code, name, plate_id, rank_tag, rec_json, tags, title, yield_info} = item;
                     return (
                         <View key={name + index}>
                             <LinearGradient
@@ -105,6 +114,10 @@ const SwiperCom = ({data = []}) => {
                                 {button?.text ? (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
+                                        onPress={() => {
+                                            global.LogTool({ctrl: code, event: 'PF_banner_show', plate_id, rec_json});
+                                            jump(button.url);
+                                        }}
                                         style={[Style.flexRowCenter, styles.sliderBtn]}>
                                         <Text style={[styles.title, {marginRight: px(6), color: '#fff'}]}>
                                             {button.text}

@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 16:49:31
+ * @LastEditTime: 2022-07-04 19:57:00
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -29,6 +29,7 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 
 const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const jump = useJump();
+    const [period, setPeriod] = useState(activePeriod);
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -37,6 +38,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const [sortBy, setSortBy] = useState('');
     const [sortType, setSortType] = useState('');
     const clickRef = useRef(true);
+    const listRef = useRef();
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
@@ -67,6 +69,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                 setSortBy(by);
                 setSortType(2);
             }
+            setPage(1);
         };
         return (
             <View style={[Style.flexRow, styles.headerContainer]}>
@@ -150,10 +153,15 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     };
 
     useEffect(() => {
+        setPage(1);
+        setPeriod(activePeriod);
+    }, [activePeriod]);
+
+    useEffect(() => {
         getFundList({
             cate_type: activeTab,
             page,
-            period: activePeriod,
+            period,
             sort_by: sortBy,
             sort_type: sortType,
         }).then((res) => {
@@ -163,13 +171,18 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                 setRefreshing(false);
                 setHasMore(has_more);
                 if (page === 1) {
-                    setList(_list);
+                    setList((prev) => {
+                        if (prev.length > 0) {
+                            listRef.current?.scrollToLocation({animated: false, itemIndex: 0, sectionIndex: 0});
+                        }
+                        return _list;
+                    });
                 } else {
                     setList((prev) => [...prev, ..._list]);
                 }
             }
         });
-    }, [activePeriod, activeTab, page, sortBy, sortType]);
+    }, [activeTab, page, period, sortBy, sortType]);
 
     return (
         <SectionList
@@ -180,8 +193,9 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
             onEndReached={onEndReached}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.99}
             onRefresh={() => setPage(1)}
+            ref={listRef}
             refreshing={refreshing}
             renderItem={renderItem}
             renderSectionHeader={renderHeader}
