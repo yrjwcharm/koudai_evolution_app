@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 10:12:47
+ * @LastEditTime: 2022-07-05 15:28:07
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -221,7 +221,7 @@ const RecommendCard = ({data = {}, isPking}) => {
         <View>
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
-                    {chart?.length > 0 && <Chart initScript={chartOptions.smChart(chart)} />}
+                    {chart?.length > 0 ? <Chart initScript={chartOptions.smChart(chart)} /> : null}
                     {leftLabel?.length > 0 && (
                         <>
                             {leftLabel[0] ? (
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     leftPart: {
         marginRight: px(10),
         width: px(74),
-        height: '100%',
+        height: px(74),
     },
     leftLabel1: {
         position: 'absolute',

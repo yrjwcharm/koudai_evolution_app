@@ -231,7 +231,7 @@ export const smChart = (data) => `(function(){
   chart.line()
     .position('date*value')
     .color( '#DC4949').shape('smooth').style({
-      lineWidth: 1
+      lineWidth: 0.5
     });
   chart.render();
 })()
