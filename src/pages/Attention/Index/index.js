@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 17:31:22
+ * @LastEditTime: 2022-07-05 14:46:23
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
@@ -54,6 +54,7 @@ const Attention = ({navigation}) => {
         let res = await followAdd(params);
         if (res.code == '000000') {
             _getData();
+            getFollowData({item_type: activeTab});
         }
         Toast.show(res.message);
     };

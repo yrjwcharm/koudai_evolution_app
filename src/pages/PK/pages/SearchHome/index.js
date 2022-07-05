@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 13:58:19
+ * @LastEditTime: 2022-07-05 14:26:31
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
@@ -126,7 +126,10 @@ const Index = () => {
                             {data?.browse_history?.map((_his) => (
                                 <SearchTag
                                     title={_his.name}
-                                    onPress={(name) => handleSearchTag(name)}
+                                    onPress={(name) => {
+                                        global.LogTool('search_click_rec', 'view_history', name);
+                                        handleSearchTag(name);
+                                    }}
                                     showDelete={false}
                                     key={_his.name}
                                 />
@@ -159,7 +162,10 @@ const Index = () => {
                                             showDelete={true}
                                             isDelete={item.delete}
                                             title={item.title}
-                                            onPress={(value) => handleSearchTag(value)}
+                                            onPress={(value) => {
+                                                global.LogTool('search_click_rec', 'search_history', value);
+                                                handleSearchTag(value);
+                                            }}
                                             onDelete={() => handelDeleteHistory(item.title)}
                                         />
                                     ))}
@@ -167,7 +173,9 @@ const Index = () => {
                             </View>
                         ) : null}
                         {/* 热门基金 */}
-                        {data?.hot_fund ? <HotFundCard style={{marginTop: px(24)}} data={data?.hot_fund} /> : null}
+                        {data?.hot_fund ? (
+                            <HotFundCard style={{marginTop: px(24)}} plateid={data.plateid} data={data?.hot_fund} />
+                        ) : null}
                     </>
                 )}
             </ScrollView>

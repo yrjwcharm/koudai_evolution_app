@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:34:39
+ * @LastEditTime: 2022-07-05 14:45:35
  * @Description: 基金详情
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -27,16 +27,18 @@ import URI from 'urijs';
 const Index = ({navigation, route}) => {
     const dispatch = useDispatch();
     const jump = useJump();
+    const {code} = route.params;
     const bottomModal = useRef();
     const shareModal = useRef();
     const webview = useRef();
     const clickRef = useRef(true);
     const timeStamp = useRef(Date.now());
+    const playTime = useRef();
     const [data, setData] = useState({});
     const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, share_button: {share_info} = {}} = data;
 
     const init = () => {
-        getPageData({code: route.params.code}).then((res) => {
+        getPageData({code}).then((res) => {
             if (res.code === '000000') {
                 const {share_button, title} = res.result;
                 navigation.setOptions({
@@ -44,7 +46,10 @@ const Index = ({navigation, route}) => {
                         share_button.show ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => shareModal.current?.show()}
+                                onPress={() => {
+                                    global.LogTool({ctrl: code, event: 'share_click'});
+                                    shareModal.current?.show();
+                                }}
                                 style={{marginRight: Space.marginAlign}}>
                                 <Image source={shareFund} style={styles.shareFund} />
                             </TouchableOpacity>
@@ -65,6 +70,8 @@ const Index = ({navigation, route}) => {
         } else if (_data && _data.indexOf('url=') > -1) {
             const url = JSON.parse(_data.split('url=')[1]);
             jump(url);
+        } else if (_data?.indexOf('playTime=')) {
+            playTime.current = parseInt(_data.split('playTime=')[1], 10);
         } else if (_data && _data.indexOf('https') <= -1) {
             const url = _data.split('phone=')[1] ? `tel:${_data.split('phone=')[1]}` : '';
             if (url) {
@@ -139,12 +146,15 @@ const Index = ({navigation, route}) => {
         if (!clickRef.current) {
             return false;
         }
-        const {title} = btn;
-        if (title === '咨询') {
+        const {event_id, is_follow, url} = btn;
+        const logParams = {ctrl: code, event: event_id};
+        event_id === 'follow_click' && (logParams.oid = is_follow ? 'cancel' : 'add');
+        global.LogTool(logParams);
+        if (event_id === 'consult_click') {
             bottomModal.current.show();
-        } else if (title === '关注') {
+        } else if (event_id === 'follow_click') {
             clickRef.current = false;
-            (btn.is_follow ? followCancel : followAdd)({item_id: route.params.code, item_type: 1}).then((res) => {
+            (is_follow ? followCancel : followAdd)({item_id: code, item_type: 1}).then((res) => {
                 if (res.code === '000000') {
                     res.message && Toast.show(res.message);
                     setTimeout(() => {
@@ -153,9 +163,9 @@ const Index = ({navigation, route}) => {
                     init();
                 }
             });
-        } else if (title === '对比') {
-            dispatch(addProduct(route.params.code));
-            jump(btn.url);
+        } else if (event_id === 'pk_click') {
+            dispatch(addProduct(code));
+            jump(url);
         }
     };
 
@@ -195,7 +205,7 @@ const Index = ({navigation, route}) => {
                 ref={webview}
                 renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
                 source={{
-                    uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${route.params.code}`)
+                    uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${code}`)
                         .addQuery({timeStamp: timeStamp.current})
                         .valueOf(),
                 }}
@@ -226,13 +236,16 @@ const Index = ({navigation, route}) => {
                 })}
                 <View style={[Style.flexRow, styles.rightBtns]}>
                     {simple_btns?.map((btn, i, arr) => {
-                        const {avail, text, url} = btn;
+                        const {avail, event_id, text, url} = btn;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={avail === 0}
                                 key={text + i}
-                                onPress={() => jump(url)}
+                                onPress={() => {
+                                    global.LogTool({ctrl: code, event: event_id});
+                                    jump(url);
+                                }}
                                 style={[
                                     Style.flexCenter,
                                     styles.rightBtn,
