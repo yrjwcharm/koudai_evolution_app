@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 19:33:28
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-05 10:41:43
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -208,7 +208,7 @@ const inputInt = (value) => {
 const onlyNumber = (value, integer = false) => {
     if (value && typeof value == 'string') {
         //先把非数字的都替换掉，除了数字和.
-        value = value.replace(/[^\d\.]/g, '');
+        value = value.replace(/[^\d.]/g, '');
         //前两位不能是0加数字
         value = value.replace(/^0\d[0-9]*/g, '');
         if (integer) {
@@ -355,7 +355,7 @@ const countdownTool = function ({
 // 数组删除一个或多个 index:从第几个开始 length:删除几个,默认为1,可不传
 const arrDelete = (arr, index, length = 1) => {
     let tempArr = arr;
-    arr.splice(index, length);
+    arr?.splice(index, length);
     return tempArr;
 };
 //判断两个版本号的大小 7.1.1 8.1.1
@@ -364,8 +364,8 @@ const compareVersion = (v1, v2) => {
         return 0;
     }
 
-    const vs1 = v1.split('.').map((a) => parseInt(a));
-    const vs2 = v2.split('.').map((a) => parseInt(a));
+    const vs1 = v1.split('.').map((a) => parseInt(a, 10));
+    const vs2 = v2.split('.').map((a) => parseInt(a, 10));
 
     const length = Math.min(vs1.length, vs2.length);
     for (let i = 0; i < length; i++) {

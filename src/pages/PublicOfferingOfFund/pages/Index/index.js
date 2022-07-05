@@ -2,11 +2,12 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 19:04:39
+ * @LastEditTime: 2022-07-05 10:25:16
  * @Description: 公募基金首页
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
@@ -138,22 +139,27 @@ const Index = ({navigation, route}) => {
     const [data, setData] = useState({});
     const {live, sub_list = [], suggest_list = [], tabs = [], un_buy_img} = data;
 
-    useEffect(() => {
-        getPageData().then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({
-                    headerRight: () => (
-                        <TouchableOpacity activeOpacity={0.8} style={{marginRight: Space.marginAlign}}>
-                            <Feather color={Colors.defaultColor} name={'search'} size={px(20)} />
-                        </TouchableOpacity>
-                    ),
-                    title: res.result.title || '公募基金',
-                });
-                setData(res.result);
-            }
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getPageData().then((res) => {
+                if (res.code === '000000') {
+                    navigation.setOptions({
+                        headerRight: () => (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => navigation.navigate('SearchHome')}
+                                style={{marginRight: Space.marginAlign}}>
+                                <Feather color={Colors.defaultColor} name={'search'} size={px(20)} />
+                            </TouchableOpacity>
+                        ),
+                        title: res.result.title || '公募基金',
+                    });
+                    setData(res.result);
+                }
+            });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <LinearGradient

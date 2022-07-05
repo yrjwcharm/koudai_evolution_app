@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 16:51:59
+ * @LastEditTime: 2022-07-05 10:12:47
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -161,7 +161,7 @@ const RankCard = ({data = {}, isPking}) => {
                     {labels?.length > 0 ? (
                         <View style={{marginLeft: px(8)}}>
                             {labels.map((label, i) => (
-                                <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                                <HTML html={i === 0 ? label : `| ${label}`} key={label + i} style={styles.desc} />
                             ))}
                         </View>
                     ) : null}
@@ -248,7 +248,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                         {labels?.length > 0 ? (
                             <View style={{marginLeft: px(8)}}>
                                 {labels.map((label, i) => (
-                                    <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                                    <HTML html={i === 0 ? label : `| ${label}`} key={label + i} style={styles.desc} />
                                 ))}
                             </View>
                         ) : null}
@@ -310,7 +310,7 @@ const DefaultCard = ({data = {}, isPking}) => {
                 {labels?.length > 0 ? (
                     <View style={{marginLeft: px(8)}}>
                         {labels.map((label, i) => (
-                            <HTML html={i === 0 ? label : `| ${label}`} style={styles.desc} />
+                            <HTML html={i === 0 ? label : `| ${label}`} key={label + i} style={styles.desc} />
                         ))}
                     </View>
                 ) : null}
