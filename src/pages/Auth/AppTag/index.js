@@ -26,7 +26,7 @@ const Index = ({navigation}) => {
         getData();
     }, []);
     //type多选  选中取消选中
-    const handlePost = (question_id, answer_id, type) => {
+    const handlePost = (question_name, answer_name, question_id, answer_id, type) => {
         setAnswer((prev) => {
             let tmp = {...prev};
             if (type == 'muti') {
@@ -46,6 +46,7 @@ const Index = ({navigation}) => {
             } else {
                 tmp[question_id] = answer_id;
             }
+            global.LogTool('tag_click', question_name + '_' + data[0].version, answer_name);
             handleQuestion({
                 tag_ids: type == 'muti' ? tmp[question_id].join(',') : answer_id,
                 question_id,
@@ -82,7 +83,14 @@ const Index = ({navigation}) => {
                             <TouchableOpacity
                                 key={index}
                                 activeOpacity={0.9}
-                                onPress={() => handlePost(data[current]?.question_id, item.tag_id)}
+                                onPress={() =>
+                                    handlePost(
+                                        data[current]?.desc,
+                                        item.tag_name,
+                                        data[current]?.question_id,
+                                        item.tag_id
+                                    )
+                                }
                                 style={{width: deviceWidth / 2, alignItems: 'center', marginBottom: px(40)}}>
                                 <ImageBackground
                                     source={{uri: item.tag_icon}}
@@ -131,6 +139,8 @@ const Index = ({navigation}) => {
                                         <TouchableOpacity
                                             onPress={() =>
                                                 handlePost(
+                                                    item.tag_name,
+                                                    tag.tag_name,
                                                     item?.question_id,
                                                     tag.tag_id,
                                                     item.max_num > 1 ? 'muti' : ''

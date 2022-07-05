@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:55:37
+ * @LastEditTime: 2022-07-05 10:59:12
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
@@ -18,6 +18,7 @@ import {getSearchData, getSearchInfo} from './services';
 import _ from 'lodash';
 import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
+import LoadingTips from '~/components/LoadingTips';
 
 const Index = () => {
     const [data, setData] = useState({});
@@ -25,6 +26,7 @@ const Index = () => {
     const [searchHistory, setSearchHistory] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [historyCancle, setHistoryCancle] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
     const input = useRef();
     //获取搜索页数据
     const getSearchIndexInfo = async () => {
@@ -39,10 +41,12 @@ const Index = () => {
     //获取搜索数据
     const getSerachList = async (content) => {
         if (!content) return;
+        setSearchLoading(true);
         let res = await getSearchData({keyword: content});
         if (res.code === '000000') {
             setSearchList(res.result);
         }
+        setSearchLoading(false);
     };
     //搜索点击
     const onHandleSearch = async (text) => {
@@ -84,22 +88,22 @@ const Index = () => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
-    return (
-        data && (
-            <View style={styles.con}>
-                {/* 搜索框 */}
-                <SearchInput
-                    ref={input}
-                    onChangeText={_.debounce(onChangeText, 500)}
-                    onHandleSearch={onHandleSearch}
-                    placeholder={data?.search_box_content}
-                    value={keyword}
-                />
-                <ScrollView
-                    style={{paddingHorizontal: px(16), paddingTop: px(16)}}
-                    keyboardShouldPersistTaps={'handled'}>
-                    {keyword ? (
-                        // 搜索结果
+    return data ? (
+        <View style={styles.con}>
+            {/* 搜索框 */}
+            <SearchInput
+                ref={input}
+                onChangeText={_.debounce(onChangeText, 500)}
+                onHandleSearch={onHandleSearch}
+                placeholder={data?.search_box_content}
+                value={keyword}
+            />
+            <ScrollView style={{paddingHorizontal: px(16), paddingTop: px(16)}} keyboardShouldPersistTaps={'handled'}>
+                {keyword ? (
+                    // 搜索结果
+                    searchLoading ? (
+                        <LoadingTips size={px(18)} />
+                    ) : (
                         searchList?.map((item, key) => (
                             <View key={key}>
                                 {item.title ? (
@@ -110,60 +114,62 @@ const Index = () => {
                                 ))}
                             </View>
                         ))
-                    ) : (
-                        <>
-                            {/* 搜索tag */}
-                            <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                {data?.browse_history?.map((_his) => (
-                                    <SearchTag
-                                        title={_his.name}
-                                        onPress={(name) => handleSearchTag(name)}
-                                        showDelete={false}
-                                        key={_his.name}
-                                    />
-                                ))}
-                            </View>
-                            <View style={styles.line} />
-                            {/* 搜索历史 */}
-                            {searchHistory.length > 0 ? (
-                                <View>
-                                    <View style={[Style.flexBetween, {marginBottom: px(8)}]}>
-                                        <Text style={styles.title_text}>搜索历史</Text>
-                                        <View style={Style.flexRow}>
-                                            <TouchableOpacity onPress={() => handleHistory('delete')}>
-                                                <Icons name={'delete'} size={px(16)} color={Colors.lightBlackColor} />
+                    )
+                ) : (
+                    <>
+                        {/* 搜索tag */}
+                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                            {data?.browse_history?.map((_his) => (
+                                <SearchTag
+                                    title={_his.name}
+                                    onPress={(name) => handleSearchTag(name)}
+                                    showDelete={false}
+                                    key={_his.name}
+                                />
+                            ))}
+                        </View>
+                        <View style={styles.line} />
+                        {/* 搜索历史 */}
+                        {searchHistory.length > 0 ? (
+                            <View>
+                                <View style={[Style.flexBetween, {marginBottom: px(8)}]}>
+                                    <Text style={styles.title_text}>搜索历史</Text>
+                                    <View style={Style.flexRow}>
+                                        <TouchableOpacity onPress={() => handleHistory('delete')}>
+                                            <Icons name={'delete'} size={px(16)} color={Colors.lightBlackColor} />
+                                        </TouchableOpacity>
+                                        {historyCancle && (
+                                            <TouchableOpacity
+                                                onPress={() => handleHistory('inital')}
+                                                style={{marginLeft: px(4), marginTop: px(2)}}>
+                                                <Text>取消</Text>
                                             </TouchableOpacity>
-                                            {historyCancle && (
-                                                <TouchableOpacity
-                                                    onPress={() => handleHistory('inital')}
-                                                    style={{marginLeft: px(4), marginTop: px(2)}}>
-                                                    <Text>取消</Text>
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                    </View>
-
-                                    <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                        {searchHistory.map((item, index) => (
-                                            <SearchTag
-                                                key={index}
-                                                showDelete={true}
-                                                isDelete={item.delete}
-                                                title={item.title}
-                                                onPress={(value) => handleSearchTag(value)}
-                                                onDelete={() => handelDeleteHistory(item.title)}
-                                            />
-                                        ))}
+                                        )}
                                     </View>
                                 </View>
-                            ) : null}
-                            {/* 热门基金 */}
-                            {data?.hot_fund ? <HotFundCard style={{marginTop: px(24)}} data={data?.hot_fund} /> : null}
-                        </>
-                    )}
-                </ScrollView>
-            </View>
-        )
+
+                                <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                                    {searchHistory.map((item, index) => (
+                                        <SearchTag
+                                            key={index}
+                                            showDelete={true}
+                                            isDelete={item.delete}
+                                            title={item.title}
+                                            onPress={(value) => handleSearchTag(value)}
+                                            onDelete={() => handelDeleteHistory(item.title)}
+                                        />
+                                    ))}
+                                </View>
+                            </View>
+                        ) : null}
+                        {/* 热门基金 */}
+                        {data?.hot_fund ? <HotFundCard style={{marginTop: px(24)}} data={data?.hot_fund} /> : null}
+                    </>
+                )}
+            </ScrollView>
+        </View>
+    ) : (
+        <LoadingTips />
     );
 };
 
