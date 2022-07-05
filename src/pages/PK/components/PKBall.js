@@ -79,7 +79,8 @@ const PKBall = ({style}, ref) => {
     };
 
     const handlerJump = () => {
-        if (better) dispatch(addProduct({code: better.code, isHigh: true}));
+        global.LogTool('pk_floating');
+        if (better && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
         updateLayoutType(1);
         setBetter(null);
         handlerAnimate(animateViewWidthRef.current, false, true);

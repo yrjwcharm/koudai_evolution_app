@@ -45,6 +45,7 @@ const PKCard = ({data = {}}) => {
                         }}
                         onPress={() => {
                             jump(data.btns.url);
+                            global.LogTool('pk_button');
                             global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
                         }}>
                         <FastImage
@@ -88,6 +89,7 @@ const PKCard = ({data = {}}) => {
                             style={styles.pkBtn}
                             onPress={() => {
                                 jump(data.btns.url);
+                                global.LogTool('pk_button');
                                 global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
                             }}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
