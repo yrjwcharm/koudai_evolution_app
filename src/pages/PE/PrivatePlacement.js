@@ -18,6 +18,7 @@ import ProductCards from '~/components/Portfolios/ProductCards';
 import Toast from '~/components/Toast';
 import http from '~/services';
 import {px, isIphoneX} from '~/utils/appUtil';
+import HTML from '~/components/RenderHtml';
 
 const PrivatePlacement = () => {
     const jump = useJump();
@@ -66,7 +67,7 @@ const PrivatePlacement = () => {
                         <Text style={styles.swiperTitle}>{data.recommend?.title}</Text>
                         <View style={styles.swiperMiddle}>
                             <View style={styles.swiperMiddleLeft}>
-                                <Text style={styles.swiperMiddleRate}>{data.recommend?.yield_info.value}</Text>
+                                <HTML style={styles.swiperMiddleRate} html={data.recommend?.yield_info?.value} />
                                 <Text style={styles.swiperMiddleDesc}>{data.recommend?.yield_info.text}</Text>
                             </View>
                             <View style={styles.swiperMiddleRight}>
