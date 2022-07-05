@@ -182,7 +182,7 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
             <View style={styles.title}>
                 <Text style={styles.titleText}>投资组合</Text>
             </View>
-            <View style={[styles.content, expand ? {} : {height: px(150), overflow: 'hidden'}]}>
+            <View style={[styles.content, expand ? {} : {height: px(row1Height), overflow: 'hidden'}]}>
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}

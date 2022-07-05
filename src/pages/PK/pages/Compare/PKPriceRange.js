@@ -135,7 +135,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
             <View style={styles.title}>
                 <Text style={styles.titleText}>涨跌幅</Text>
             </View>
-            <View style={[styles.content, expand ? {} : {height: px(150), overflow: 'hidden'}]}>
+            <View style={[styles.content, expand ? {} : {height: px(136), overflow: 'hidden'}]}>
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}

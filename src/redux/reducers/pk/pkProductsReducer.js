@@ -13,10 +13,12 @@ export default function pkProducts(state = [], action) {
             }
             if (state.length < 6) {
                 let params = {fund_code: code};
+                let newState = [...state];
                 // 是否优选基金
                 if (isHigh) params.source = 1;
+                newState[isHigh ? 'unshift' : 'push'](code);
                 addPkProducts(params);
-                return [...state, code];
+                return newState;
             } else {
                 Toast.show('您PK的基金过多，最多选择6只');
                 return state;
