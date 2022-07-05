@@ -2,11 +2,11 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 16:01:53
+ * @LastEditTime: 2022-07-05 17:51:07
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -75,6 +75,7 @@ const Index = ({route}) => {
                     onRefresh={() => setPage(1)}
                     refreshing={refreshing}
                     renderItem={renderItem}
+                    scrollIndicatorInsets={{right: 1}}
                     style={styles.flatList}
                 />
                 <PKBall />
@@ -114,62 +115,78 @@ const Index = ({route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
-    return list?.length > 0 ? (
+    return (
         <View style={styles.container}>
             {headImg ? (
-                <Image source={{uri: headImg}} style={[styles.topBg, {height: rank_type ? px(268) : px(230)}]} />
-            ) : null}
-            <NavBar leftIcon={'chevron-left'} fontStyle={{color: '#fff'}} style={{backgroundColor: 'transparent'}} />
-            {rank_type ? (
-                <View style={styles.listContainer}>{renderList()}</View>
+                <>
+                    {headImg ? (
+                        <Image
+                            source={{uri: headImg}}
+                            style={[styles.topBg, {height: rank_type ? px(268) : px(230)}]}
+                        />
+                    ) : null}
+                    <NavBar
+                        leftIcon={'chevron-left'}
+                        fontStyle={{color: '#fff'}}
+                        style={{backgroundColor: 'transparent'}}
+                    />
+                    {rank_type ? (
+                        <View style={styles.listContainer}>{renderList()}</View>
+                    ) : (
+                        <LinearGradient
+                            colors={['rgba(255, 243, 243, 0.79)', '#F5F6F8']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 0.05}}
+                            style={[styles.listContainer, {paddingTop: px(24)}]}>
+                            <ScrollableTabView
+                                initialPage={initialPage}
+                                // onChangeTab={(value) => console.log(value)}
+                                prerenderingSiblingsNumber={Infinity}
+                                renderTabBar={(props) => (
+                                    <View>
+                                        <CapsuleTabbar {...props} boxStyle={styles.tabsContainer} />
+                                    </View>
+                                )}
+                                style={{flex: 1}}>
+                                {list.map((tab) => {
+                                    const {items: tabItems = [], rank_type: key, title: tabTitle} = tab;
+                                    return (
+                                        <ScrollView
+                                            bounces={false}
+                                            key={key}
+                                            scrollIndicatorInsets={{right: 1}}
+                                            style={{paddingHorizontal: Space.padding}}
+                                            tabLabel={tabTitle}>
+                                            {tabItems?.length > 0
+                                                ? tabItems.map((item, index, arr) => (
+                                                      <ProductCards
+                                                          data={item}
+                                                          key={index}
+                                                          style={{
+                                                              ...(index === 0 ? {marginTop: 0} : {}),
+                                                              ...(index === arr.length - 1
+                                                                  ? {
+                                                                        marginBottom: isIphoneX()
+                                                                            ? 34
+                                                                            : Space.marginVertical,
+                                                                    }
+                                                                  : {}),
+                                                          }}
+                                                      />
+                                                  ))
+                                                : renderEmpty()}
+                                        </ScrollView>
+                                    );
+                                })}
+                            </ScrollableTabView>
+                            <PKBall />
+                        </LinearGradient>
+                    )}
+                </>
             ) : (
-                <LinearGradient
-                    colors={['rgba(255, 243, 243, 0.79)', '#F5F6F8']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.05}}
-                    style={[styles.listContainer, {paddingTop: px(24)}]}>
-                    <ScrollableTabView
-                        initialPage={initialPage}
-                        // onChangeTab={(value) => console.log(value)}
-                        prerenderingSiblingsNumber={Infinity}
-                        renderTabBar={(props) => (
-                            <View>
-                                <CapsuleTabbar {...props} boxStyle={styles.tabsContainer} />
-                            </View>
-                        )}
-                        style={{flex: 1}}>
-                        {list.map((tab) => {
-                            const {items: tabItems = [], rank_type: key, title: tabTitle} = tab;
-                            return (
-                                <ScrollView
-                                    key={key}
-                                    scrollIndicatorInsets={{right: 1}}
-                                    style={{paddingHorizontal: Space.padding}}
-                                    tabLabel={tabTitle}>
-                                    {tabItems?.length > 0
-                                        ? tabItems.map((item, index, arr) => (
-                                              <ProductCards
-                                                  data={item}
-                                                  key={index}
-                                                  style={{
-                                                      ...(index === 0 ? {marginTop: 0} : {}),
-                                                      ...(index === arr.length - 1
-                                                          ? {marginBottom: isIphoneX() ? 34 : Space.marginVertical}
-                                                          : {}),
-                                                  }}
-                                              />
-                                          ))
-                                        : renderEmpty()}
-                                </ScrollView>
-                            );
-                        })}
-                    </ScrollableTabView>
-                    <PKBall />
-                </LinearGradient>
+                <Loading />
             )}
         </View>
-    ) : (
-        <Loading />
     );
 };
 
@@ -204,7 +221,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     tabsContainer: {
-        paddingHorizontal: Space.padding,
+        paddingHorizontal: Platform.select({android: px(8), ios: Space.padding}),
         paddingBottom: px(18),
         width: deviceWidth,
     },

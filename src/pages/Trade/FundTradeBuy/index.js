@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 19:23:06
+ * @LastEditTime: 2022-07-05 15:49:21
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -260,56 +260,60 @@ const Index = ({navigation, route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [amount, bankSelectIndex, code, isLarge, large_pay_method, pay_methods]);
 
-    return Object.keys(data).length > 0 ? (
+    return (
         <View style={[styles.container, {paddingBottom: (isIphoneX() ? px(86) : px(60)) + deltaHeight}]}>
-            <ScrollView
-                bounces={false}
-                keyboardShouldPersistTaps="handled"
-                scrollIndicatorInsets={{right: 1}}
-                style={{flex: 1}}>
-                <View style={[Style.flexRow, styles.nameBox]}>
-                    <Text style={styles.title}>{sub_title}</Text>
-                    <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
-                </View>
-                <InputBox
-                    buy_info={buy_info}
-                    errTip={errTip}
-                    feeData={feeData}
-                    onChange={onChange}
-                    rule_button={rule_button}
-                    value={amount}
-                />
-                <PayMethod
-                    bankCardModal={bankCardModal}
-                    isLarge={isLarge}
-                    large_pay_method={{...large_pay_method, large_pay_tip}}
-                    pay_method={pay_methods[bankSelectIndex]}
-                    setIsLarge={setIsLarge}
-                />
-                <BottomDesc />
-            </ScrollView>
-            <BankCardModal
-                data={pay_methods}
-                onDone={(select, index) => {
-                    setIndex(index);
-                }}
-                ref={bankCardModal}
-                select={bankSelectIndex}
-                type={add_payment_disable ? 'hidden' : ''}
-            />
-            <PasswordModal onDone={onSubmit} ref={passwordModal} />
-            <FixedButton
-                agreement={agreement_bottom}
-                disabled={amount === '' || button.avail === 0 || errTip !== ''}
-                heightChange={(height) => setDeltaHeight(height)}
-                onPress={buyClick}
-                otherAgreement={agreement}
-                suffix={agreement_bottom.agree_text}
-                title={button.text}
-            />
+            {Object.keys(data).length > 0 ? (
+                <>
+                    <ScrollView
+                        bounces={false}
+                        keyboardShouldPersistTaps="handled"
+                        scrollIndicatorInsets={{right: 1}}
+                        style={{flex: 1}}>
+                        <View style={[Style.flexRow, styles.nameBox]}>
+                            <Text style={styles.title}>{sub_title}</Text>
+                            <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
+                        </View>
+                        <InputBox
+                            buy_info={buy_info}
+                            errTip={errTip}
+                            feeData={feeData}
+                            onChange={onChange}
+                            rule_button={rule_button}
+                            value={amount}
+                        />
+                        <PayMethod
+                            bankCardModal={bankCardModal}
+                            isLarge={isLarge}
+                            large_pay_method={{...large_pay_method, large_pay_tip}}
+                            pay_method={pay_methods[bankSelectIndex]}
+                            setIsLarge={setIsLarge}
+                        />
+                        <BottomDesc />
+                    </ScrollView>
+                    <BankCardModal
+                        data={pay_methods}
+                        onDone={(select, index) => {
+                            setIndex(index);
+                        }}
+                        ref={bankCardModal}
+                        select={bankSelectIndex}
+                        type={add_payment_disable ? 'hidden' : ''}
+                    />
+                    <PasswordModal onDone={onSubmit} ref={passwordModal} />
+                    <FixedButton
+                        agreement={agreement_bottom}
+                        disabled={amount === '' || button.avail === 0 || errTip !== ''}
+                        heightChange={(height) => setDeltaHeight(height)}
+                        onPress={buyClick}
+                        otherAgreement={agreement}
+                        suffix={agreement_bottom.agree_text}
+                        title={button.text}
+                    />
+                </>
+            ) : (
+                <Loading />
+            )}
         </View>
-    ) : (
-        <Loading />
     );
 };
 

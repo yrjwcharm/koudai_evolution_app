@@ -2,11 +2,11 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 19:38:04
+ * @LastEditTime: 2022-07-05 16:57:31
  * @Description: 公募基金首页榜单渲染组件
  */
 import React, {useRef} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     tabsContainer: {
         marginTop: px(8),
         marginLeft: -Space.marginAlign,
-        paddingHorizontal: Space.padding,
+        paddingHorizontal: Platform.select({android: px(8), ios: Space.padding}),
         width: deviceWidth,
     },
     liveContainer: {

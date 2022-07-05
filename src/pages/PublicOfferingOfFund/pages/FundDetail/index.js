@@ -210,7 +210,7 @@ const Index = ({navigation, route}) => {
                         .valueOf(),
                 }}
                 startInLoadingState
-                style={{flex: 1}}
+                style={{flex: 1, opacity: 0.9999}}
                 textZoom={100}
             />
             <View style={[Style.flexRow, styles.bottomBtns]}>
