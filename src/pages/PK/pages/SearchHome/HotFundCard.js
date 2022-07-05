@@ -9,7 +9,7 @@ import {Colors, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
-const HotFundCard = ({data, style, plateid, onPress}) => {
+const HotFundCard = ({data, style, plateid}) => {
     const jump = useJump();
     return (
         <View style={[styles.shadow, style]}>
