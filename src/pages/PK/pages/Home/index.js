@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useRef} from 'react';
-import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, ActivityIndicator} from 'react-native';
+import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -11,27 +11,22 @@ import PKCard from './PKCard';
 import {getPKHomeData} from '../../services';
 import Toast from '../../../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
-import PKBtnTab from '../../components/PKBtnTab';
 import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
-import PKCollectUserInterest from '../../components/PKCollectUserInterest';
 import {useJump} from '~/components/hooks';
-import PKWeightSet from '../Compare/PKWeightSet';
-import ProductCards from '~/components/Portfolios/ProductCards';
 import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
+    const dimensions = useWindowDimensions();
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
-    const [fundRankData, setFundRankData] = useState(null);
-    const [fundRankLoading, setFundRankLoading] = useState(false);
-    const [curFundTopTab, setCurFundTopTab] = useState('');
 
-    const isFirst = useState(0);
+    const isFirst = useRef(0);
+    const listLayout = useRef({});
 
     const getData = (refresh) => {
         refresh ? setRefreshing(true) : setLoading(true);
@@ -39,6 +34,7 @@ const PKHome = () => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
+                    listLayout.current.status = true;
                 } else {
                     Toast.show(res.message);
                 }
@@ -52,7 +48,6 @@ const PKHome = () => {
     useFocusEffect(
         useCallback(() => {
             getData(isFirst.current++ !== 0);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -61,6 +56,19 @@ const PKHome = () => {
             DeviceEventEmitter.addListener('attentionRefresh', getData);
         }, [])
     );
+
+    const handleScroll = (e) => {
+        handlerReport(e.nativeEvent.contentOffset.y + dimensions.height);
+    };
+
+    const handlerReport = (y) => {
+        if (listLayout.current.status && y > listLayout.current.start) {
+            listLayout.current.status = false;
+            let cur = data.sub_list[0];
+            let code = cur.items?.map?.((item) => item.code)?.join?.();
+            global.LogTool({event: 'rec_show', rec_json: data.rec_json}, null, code);
+        }
+    };
 
     return loading ? (
         <Loading />
@@ -82,6 +90,8 @@ const PKHome = () => {
             {/* scrollView */}
             <ScrollView
                 style={{flex: 1}}
+                scrollEventThrottle={6}
+                onScroll={handleScroll}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}
                 showsVerticalScrollIndicator={false}
                 scrollIndicatorInsets={{right: 1}}>
@@ -113,9 +123,40 @@ const PKHome = () => {
                     </View>
                     {/* pkCard */}
                     <PKCard data={data?.pk_list} />
-                    <View style={{paddingHorizontal: Space.padding}}>
+                    <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
                         {data?.sub_list?.map?.((item, index) => {
-                            return <RenderPart data={item} key={item.title + index} />;
+                            let code = item.items?.map?.((t) => t.code)?.join?.();
+                            item.items?.forEach?.((obj) => {
+                                obj.LogTool = () => {
+                                    global.LogTool(
+                                        {
+                                            event: 'rec_click',
+                                            rec_json: data.rec_json,
+                                            platId: data.plateid,
+                                        },
+                                        null,
+                                        code
+                                    );
+                                };
+                            });
+                            return (
+                                <RenderPart
+                                    data={item}
+                                    key={item.title + index}
+                                    onLayout={
+                                        index === 0
+                                            ? (layout) => {
+                                                  const {y, height} = layout;
+                                                  listLayout.current = {
+                                                      start: y + height / 2,
+                                                      status: true,
+                                                  };
+                                                  handlerReport(dimensions.height);
+                                              }
+                                            : null
+                                    }
+                                />
+                            );
                         })}
                     </View>
                     {/* bottomDesc */}

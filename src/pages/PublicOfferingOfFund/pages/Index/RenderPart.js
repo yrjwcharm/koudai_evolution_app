@@ -16,13 +16,17 @@ import {useJump} from '~/components/hooks';
 import RenderCate from '~/pages/Vision/components/RenderCate';
 import {deviceWidth, px} from '~/utils/appUtil';
 
-export default ({data = {}, scene}) => {
+export default ({data = {}, scene, onLayout}) => {
     const jump = useJump();
     const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
     const pageRef = useRef(0);
 
     return Object.keys(data).length > 0 ? (
-        <View style={styles.container}>
+        <View
+            style={styles.container}
+            onLayout={(e) => {
+                onLayout?.(e.nativeEvent.layout);
+            }}>
             {title ? (
                 <View style={[styles.rowEnd, {justifyContent: 'space-between'}]}>
                     <View style={styles.rowEnd}>

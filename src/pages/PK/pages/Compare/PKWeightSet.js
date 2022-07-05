@@ -7,8 +7,11 @@ import {Font} from '~/common/commonStyle';
 import PKSlider from '../../components/PKSlider';
 import {weightDetail, weightReset, weightSetting} from '../../services';
 import Toast from '~/components/Toast';
+import {useSelector} from 'react-redux';
 
 const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
+    const pkProducts = useSelector((state) => state.pkProducts);
+
     const [loading, setLoading] = useState(true);
     const [resetLoading, setResetLoading] = useState(false);
     const [sumbitLoading, setSubmitLoading] = useState(false);
@@ -56,6 +59,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
         setSubmitLoading(true);
         weightSetting(sliderRate)
             .then((res) => {
+                global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
                 Toast.show(res.message);
                 if (res.code === '000000') {
                     cancel();
@@ -106,7 +110,9 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
                                                 let xRate = (-50 + step * idx) / 100;
                                                 let translateX = parseInt(px(32) * xRate, 10);
                                                 return (
-                                                    <Text style={[styles.tickText, {transform: [{translateX}]}]}>
+                                                    <Text
+                                                        key={idx}
+                                                        style={[styles.tickText, {transform: [{translateX}]}]}>
                                                         {val}
                                                     </Text>
                                                 );

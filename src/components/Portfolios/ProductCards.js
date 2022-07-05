@@ -273,7 +273,10 @@ const RecommendCard = ({data = {}, isPking}) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={button.avail === 0}
-                                onPress={() => onPressBtn({action: button.action, code, dispatch, plan_id})}
+                                onPress={() => {
+                                    data?.LogTool?.();
+                                    onPressBtn({action: button.action, code, dispatch, plan_id});
+                                }}
                                 style={[
                                     styles.btnBox,
                                     button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},

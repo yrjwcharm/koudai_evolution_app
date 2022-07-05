@@ -382,6 +382,7 @@ const SelectProduct = (props) => {
                         style={[styles.bottomBtnWrap, {opacity: props.pkProducts.length ? 1 : 0.3}]}
                         disabled={!props.pkProducts.length}
                         onPress={() => {
+                            global.LogTool('start_PK_click', null, props.pkProducts.join());
                             jump(data.pk_button.url);
                         }}>
                         <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>

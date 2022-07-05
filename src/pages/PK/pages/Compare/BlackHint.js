@@ -37,6 +37,7 @@ const BlackHint = ({addHigh}) => {
                 onPress={() => {
                     setData(null);
                     addHigh(data.code);
+                    global.LogTool({event: 'add_fund_click', rec_json: pkProducts.join()}, null, pkProducts.join());
                 }}>
                 <Text style={styles.btnText}>添加PK </Text>
             </TouchableOpacity>
