@@ -110,6 +110,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     };
 
     const genValues = (item, key) => {
+        if (!item) return null;
         let dScore = scoreDiff[item.code] || 0;
 
         const handlerScore = (a, b) => {

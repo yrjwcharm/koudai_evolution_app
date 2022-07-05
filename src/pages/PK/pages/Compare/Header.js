@@ -22,6 +22,7 @@ const Header = (props) => {
     }));
 
     const groupItem = (item, key) => {
+        if (!item) return null;
         return (
             <View style={styles.groupItemWrap} key={key}>
                 {/* header */}

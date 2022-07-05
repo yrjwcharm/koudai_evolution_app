@@ -35,6 +35,7 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
     };
 
     const genValues = (item, key) => {
+        if (!item) return null;
         return (
             <View style={styles.valuesWrap} key={key}>
                 <View style={styles.valueWrap}>
