@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 14:26:31
+ * @LastEditTime: 2022-07-05 15:43:57
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
@@ -19,6 +19,7 @@ import _ from 'lodash';
 import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
+import PKBall from '../../components/PKBall';
 
 const Index = () => {
     const [data, setData] = useState({});
@@ -179,6 +180,7 @@ const Index = () => {
                     </>
                 )}
             </ScrollView>
+            {(keyword || searchLoading) && <PKBall />}
         </View>
     ) : (
         <LoadingTips />
