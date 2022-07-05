@@ -8,6 +8,7 @@ import Storage from '../../../../utils/storage';
 
 // 保存搜索标签
 export const insertSearch = async (text) => {
+    Storage.delete('searchHistory');
     let searchHistory = await Storage.get('searchHistory');
     let tempArr;
     if (searchHistory?.indexOf(text) != -1) {

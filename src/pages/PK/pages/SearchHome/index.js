@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 10:59:12
+ * @LastEditTime: 2022-07-05 13:58:19
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
@@ -36,6 +36,7 @@ const Index = () => {
     // 搜索监听
     const onChangeText = (value) => {
         setKeyword(value);
+        global.LogTool('search_click', 'input', value);
         getSerachList(value);
     };
     //获取搜索数据
@@ -51,6 +52,8 @@ const Index = () => {
     //搜索点击
     const onHandleSearch = async (text) => {
         Keyboard.dismiss();
+        if (!text) return;
+        global.LogTool('search_click', 'search', text);
         //插入搜索历史
         let newHistory = await insertSearch(text);
         handleHistory('inital', newHistory);
@@ -64,6 +67,7 @@ const Index = () => {
 
     //显示删除或取消删除搜索记录
     const handleHistory = (type, initalData = searchHistory) => {
+        if (type == 'delete') global.LogTool('search_hitstory_delete');
         setHistoryCancle(type == 'delete');
         let history = [...initalData];
         let tmp = history.map((item) => {
