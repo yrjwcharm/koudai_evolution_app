@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Switch, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Switch, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
@@ -253,7 +253,10 @@ const LabelPart = ({item, idx, expand, onChange}) => {
         setValue(val);
         onChange(val, item.name);
         postPKWeightSwitch({open_status: +val, type: item.type}).then((res) => {
-            console.log(res);
+            if (res.code === '000000') {
+                // 由于更新权重，所以需要刷新优质推荐
+                DeviceEventEmitter.emit('pkDetailBackHintRefresh');
+            }
         });
     };
     return (

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {useSelector} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import {getPKBetter} from '../../services';
@@ -11,11 +11,24 @@ const BlackHint = ({addHigh}) => {
 
     const [data, setData] = useState(null);
 
-    useEffect(() => {
+    const getData = () => {
+        setData(null);
         getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
             setData(res.result?.better_fund);
         });
+    };
+
+    useEffect(() => {
+        getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pkProducts]);
+
+    useEffect(() => {
+        DeviceEventEmitter.addListener('pkDetailBackHintRefresh', (e) => {
+            getData();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return data ? (
         <Animatable.View animation={'fadeInUp'} duration={500} style={[styles.container]}>

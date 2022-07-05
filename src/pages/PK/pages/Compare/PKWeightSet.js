@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Modal, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import {isIphoneX, px} from '../../../../utils/appUtil';
 import Mask from '~/components/Mask';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -64,8 +64,9 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
                 if (res.code === '000000') {
                     cancel();
                     setTimeout(() => {
+                        DeviceEventEmitter.emit('pkDetailBackHintRefresh');
                         refresh();
-                    }, 200);
+                    }, 100);
                 }
             })
             .finally((_) => {
