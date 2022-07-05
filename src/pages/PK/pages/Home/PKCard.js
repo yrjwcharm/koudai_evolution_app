@@ -34,7 +34,27 @@ const PKCard = ({data = {}}) => {
                     </Text>
                     <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
                 </View>
-                <FastImage source={pkIcon} style={styles.pkIconStyle} />
+                {data?.is_enter_pk ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: [{translateX: px(-41)}, {translateY: px(-41)}],
+                        }}
+                        onPress={() => {
+                            jump(data.btns.url);
+                            global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
+                        }}>
+                        <FastImage
+                            source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/pk_button.png'}}
+                            style={styles.pkIconStyle2}
+                        />
+                    </TouchableOpacity>
+                ) : (
+                    <FastImage source={pkIcon} style={styles.pkIconStyle} />
+                )}
             </ImageBackground>
             {!data?.is_enter_pk ? (
                 <View
@@ -134,6 +154,10 @@ const styles = StyleSheet.create({
         top: '50%',
         left: '50%',
         transform: [{translateX: px(-44)}, {translateY: px(-22)}],
+    },
+    pkIconStyle2: {
+        width: px(82),
+        height: px(82),
     },
     pkParams: {
         alignItems: 'center',
