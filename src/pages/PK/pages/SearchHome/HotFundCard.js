@@ -9,7 +9,7 @@ import {Colors, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
-const HotFundCard = ({data, style, onPress}) => {
+const HotFundCard = ({data, style, plateid, onPress}) => {
     const jump = useJump();
     return (
         <View style={[styles.shadow, style]}>
@@ -37,7 +37,18 @@ const HotFundCard = ({data, style, onPress}) => {
                         <TouchableOpacity
                             style={{width: px(148), marginBottom: px(16)}}
                             key={_index}
-                            onPress={() => jump(_list.url)}>
+                            onPress={() => {
+                                global.LogTool(
+                                    {
+                                        event: 'search_click_rec',
+                                        rec_json: JSON.stringify(data?.rec_json),
+                                        plate_id: plateid,
+                                    },
+                                    'hot_fund',
+                                    _list.name
+                                );
+                                jump(_list.url);
+                            }}>
                             <Text numberOfLines={1} style={styles.hot_fund_list_title}>
                                 {_list.name}
                             </Text>

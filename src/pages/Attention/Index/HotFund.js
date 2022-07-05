@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 13:33:53
+ * @LastEditTime: 2022-07-05 14:44:02
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -22,12 +22,30 @@ const HotFund = ({data, onFollow}) => {
         let arr = new Array(body?.list?.length || 0).fill(1);
         setCheckList(arr);
     }, [body]);
-    const onCheckToggle = (index) => {
+    const onCheckToggle = (index, code) => {
         setCheckList((prev) => {
             let list = [...prev];
             if (list[index] == 1) {
+                global.LogTool(
+                    {
+                        event: 'fund_unfollow_click',
+                        plate_id: body.plateid,
+                        rec_json: JSON.stringify(body.rec_json),
+                    },
+                    null,
+                    code
+                );
                 list[index] = 0;
             } else {
+                global.LogTool(
+                    {
+                        event: 'fund_follow_click',
+                        plate_id: body.plateid,
+                        rec_json: JSON.stringify(body.rec_json),
+                    },
+                    null,
+                    code
+                );
                 list[index] = 1;
             }
             return list;
@@ -35,6 +53,15 @@ const HotFund = ({data, onFollow}) => {
     };
     const followAdd = () => {
         const params = body?.list.filter((item, index) => checkList[index] == 1).map((key) => key.item_id);
+        global.LogTool(
+            {
+                event: 'follow_all_click',
+                plate_id: body.plateid,
+                rec_json: JSON.stringify(body.rec_json),
+            },
+            null,
+            params.join(',')
+        );
         if (params?.length > 0) {
             onFollow({item_id: params.join(','), item_type: 1});
         }
@@ -54,7 +81,7 @@ const HotFund = ({data, onFollow}) => {
                             <TouchableOpacity
                                 activeOpacity={0.9}
                                 style={{height: px(20), marginTop: px(2), width: px(18)}}
-                                onPress={() => onCheckToggle(index)}>
+                                onPress={() => onCheckToggle(index, item.code)}>
                                 <AntDesign
                                     name={'checkcircle'}
                                     size={px(14)}
