@@ -16,11 +16,15 @@ import PKBall from '../../components/PKBall';
 import {useJump} from '~/components/hooks';
 import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
 import Loading from '~/pages/Portfolio/components/PageLoading';
+import LoginMask from '~/components/LoginMask';
+import {useSelector} from 'react-redux';
 
 const PKHome = () => {
     const insets = useSafeAreaInsets();
     const dimensions = useWindowDimensions();
     const jump = useJump();
+    const userInfo = useSelector((store) => store.userInfo);
+
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
@@ -73,100 +77,103 @@ const PKHome = () => {
     return loading ? (
         <Loading />
     ) : (
-        <View style={[styles.container, {paddingTop: insets.top}]}>
-            {/* search */}
-            <View style={[styles.searchWrap]}>
-                <TouchableOpacity
-                    style={[styles.searchBg, Style.flexCenter]}
-                    onPress={() => {
-                        jump(data?.search_button?.url);
-                    }}>
-                    <View style={Style.flexRowCenter}>
-                        <Icons name={'search'} color={'#545968'} size={px(18)} />
-                        <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            {/* scrollView */}
-            <ScrollView
-                style={{flex: 1}}
-                scrollEventThrottle={6}
-                onScroll={handleScroll}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}
-                showsVerticalScrollIndicator={false}
-                scrollIndicatorInsets={{right: 1}}>
-                {/* topmenu */}
-                <LinearGradient
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.2}}
-                    colors={['#fff', '#F4F5F7']}
-                    style={{flex: 1}}>
-                    <View style={styles.topMenu}>
-                        {data?.tabs?.map((item, idx) => (
-                            <View
-                                key={idx}
-                                style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        jump(item.url);
-                                    }}>
-                                    <FastImage
-                                        source={{uri: item.icon}}
-                                        resizeMode="contain"
-                                        style={styles.topMenuIcon}
+        <>
+            <View style={[styles.container, {paddingTop: insets.top}]}>
+                {/* search */}
+                <View style={[styles.searchWrap]}>
+                    <TouchableOpacity
+                        style={[styles.searchBg, Style.flexCenter]}
+                        onPress={() => {
+                            jump(data?.search_button?.url);
+                        }}>
+                        <View style={Style.flexRowCenter}>
+                            <Icons name={'search'} color={'#545968'} size={px(18)} />
+                            <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {/* scrollView */}
+                <ScrollView
+                    style={{flex: 1}}
+                    scrollEventThrottle={6}
+                    onScroll={handleScroll}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}
+                    showsVerticalScrollIndicator={false}
+                    scrollIndicatorInsets={{right: 1}}>
+                    {/* topmenu */}
+                    <LinearGradient
+                        start={{x: 0, y: 0}}
+                        end={{x: 0, y: 0.2}}
+                        colors={['#fff', '#F4F5F7']}
+                        style={{flex: 1}}>
+                        <View style={styles.topMenu}>
+                            {data?.tabs?.map((item, idx) => (
+                                <View
+                                    key={idx}
+                                    style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            jump(item.url);
+                                        }}>
+                                        <FastImage
+                                            source={{uri: item.icon}}
+                                            resizeMode="contain"
+                                            style={styles.topMenuIcon}
+                                        />
+                                        <Text style={styles.topMenuText}>{item.text}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                        {/* pkCard */}
+                        <PKCard data={data?.pk_list} />
+                        <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
+                            {data?.sub_list?.map?.((item, index) => {
+                                let code = item.items?.map?.((t) => t.code)?.join?.();
+                                item.items?.forEach?.((obj) => {
+                                    obj.LogTool = () => {
+                                        global.LogTool(
+                                            {
+                                                event: 'rec_click',
+                                                rec_json: data.rec_json,
+                                                platId: data.plateid,
+                                            },
+                                            null,
+                                            code
+                                        );
+                                    };
+                                });
+                                return (
+                                    <RenderPart
+                                        data={item}
+                                        key={item.title + index}
+                                        onLayout={
+                                            index === 0
+                                                ? (layout) => {
+                                                      const {y, height} = layout;
+                                                      listLayout.current = {
+                                                          start: y + height / 2,
+                                                          status: true,
+                                                      };
+                                                      handlerReport(dimensions.height);
+                                                  }
+                                                : null
+                                        }
                                     />
-                                    <Text style={styles.topMenuText}>{item.text}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        ))}
-                    </View>
-                    {/* pkCard */}
-                    <PKCard data={data?.pk_list} />
-                    <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
-                        {data?.sub_list?.map?.((item, index) => {
-                            let code = item.items?.map?.((t) => t.code)?.join?.();
-                            item.items?.forEach?.((obj) => {
-                                obj.LogTool = () => {
-                                    global.LogTool(
-                                        {
-                                            event: 'rec_click',
-                                            rec_json: data.rec_json,
-                                            platId: data.plateid,
-                                        },
-                                        null,
-                                        code
-                                    );
-                                };
-                            });
-                            return (
-                                <RenderPart
-                                    data={item}
-                                    key={item.title + index}
-                                    onLayout={
-                                        index === 0
-                                            ? (layout) => {
-                                                  const {y, height} = layout;
-                                                  listLayout.current = {
-                                                      start: y + height / 2,
-                                                      status: true,
-                                                  };
-                                                  handlerReport(dimensions.height);
-                                              }
-                                            : null
-                                    }
-                                />
-                            );
-                        })}
-                    </View>
-                    {/* bottomDesc */}
-                    <BottomDesc />
-                </LinearGradient>
-            </ScrollView>
-            <PKBall />
-            {/* <PKCollectUserInterest /> */}
-            {/* <PKWeightSet /> */}
-        </View>
+                                );
+                            })}
+                        </View>
+                        {/* bottomDesc */}
+                        <BottomDesc />
+                    </LinearGradient>
+                </ScrollView>
+                <PKBall />
+                {/* <PKCollectUserInterest /> */}
+                {/* <PKWeightSet /> */}
+            </View>
+            {!userInfo.toJS().is_login && <LoginMask />}
+        </>
     );
 };
 
