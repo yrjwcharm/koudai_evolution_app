@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:39:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 15:24:13
+ * @LastEditTime: 2022-07-05 19:03:32
  * @Description:消息卡片
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -44,11 +44,13 @@ const MessageCard = ({data}) => {
                                     <Text style={styles.tag_text}>{_list?.type_text}</Text>
                                 </View>
                             ) : null}
-                            <Text numberOfLines={1} style={styles.title}>
-                                {_list?.title}
-                            </Text>
+                            <View style={{marginLeft: px(8)}}>
+                                <RenderHtml html={_list?.title} numberOfLines={1} style={styles.title} />
+                            </View>
                         </View>
-                        <RenderHtml html={_list?.content} style={styles.content} numberOfLines={1} />
+                        <View style={{marginTop: px(5)}}>
+                            <RenderHtml html={_list?.content} style={styles.content} numberOfLines={1} />
+                        </View>
                     </View>
                     <EvilIcons name={'chevron-right'} size={px(24)} />
                 </TouchableOpacity>
@@ -80,14 +82,12 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: px(13),
         lineHeight: px(18),
-        marginLeft: px(8),
         flex: 1,
     },
     content: {
         color: '#545968',
         fontSize: px(12),
         lineHeight: px(17),
-        marginTop: px(5),
     },
     tag: {
         borderRadius: px(6),
