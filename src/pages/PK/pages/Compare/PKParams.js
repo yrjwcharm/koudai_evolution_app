@@ -29,7 +29,7 @@ const handlerDefaultParamItemBest = (data) => {
             obj.ts.code = '';
         }
         if (item.total_score_info > obj.ts.value) {
-            obj.ts.value = item.total_score_info;
+            obj.ts.value = Math.round(item.total_score_info);
             obj.ts.code = item.code;
         }
         // 详细
@@ -40,7 +40,7 @@ const handlerDefaultParamItemBest = (data) => {
                 obj[key].code = '';
             }
             if (itm.score > obj[key].value) {
-                obj[key].value = itm.score;
+                obj[key].value = Math.round(itm.score);
                 obj[key].code = item.code;
             }
         });

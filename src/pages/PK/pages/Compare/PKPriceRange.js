@@ -16,7 +16,7 @@ const handlerDefaultItemBest = (data) => {
                 obj[key].code = '';
             }
             if (info[key] > obj[key].value) {
-                obj[key].value = info[key];
+                obj[key].value = (info[key] * 100).toFixed(2);
                 obj[key].code = item.code;
             }
         });
