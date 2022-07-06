@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     titleText: {
-        fontSize: px(16),
+        fontSize: px(14),
         lineHeight: px(22),
         color: '#121D3A',
     },

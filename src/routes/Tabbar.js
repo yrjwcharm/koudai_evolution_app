@@ -102,6 +102,38 @@ export default function Tabbar() {
                                 />
                             );
                         }
+                    } else if (route.name === 'Attention') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/guanzhuActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/guanzhu.png')}
+                                />
+                            );
+                        }
+                    } else if (route.name === 'PKHome') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/pkActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/pk.png')}
+                                />
+                            );
+                        }
                     }
                 },
             })}

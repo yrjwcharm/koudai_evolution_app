@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {useSelector} from 'react-redux';
 import {px} from '~/utils/appUtil';
-import {getPKBetter} from '../../services';
+import {getPKWeightBetter} from '../../services';
 import FastImage from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
 
@@ -13,7 +13,7 @@ const BlackHint = ({addHigh}) => {
 
     const getData = () => {
         setData(null);
-        getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
+        getPKWeightBetter({fund_code_list: pkProducts.join()}).then((res) => {
             setData(res.result?.better_fund);
         });
     };

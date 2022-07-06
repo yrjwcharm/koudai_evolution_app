@@ -54,3 +54,6 @@ export const weightSetting = (data) => {
 export const getPKBetter = (data) => {
     return http.get('/pk/better/20220608', data);
 };
+export const getPKWeightBetter = (data) => {
+    return http.get('/pk/weight/better/20220608', data);
+};

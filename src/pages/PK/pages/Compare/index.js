@@ -101,13 +101,14 @@ const Compare = () => {
                 }}
             />
             <ScrollView
-                style={{flex: 1, marginTop: px(12)}}
+                style={{flex: 1}}
                 bounces={false}
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={6}
                 onScroll={(e) => {
                     setPageScroll(e.nativeEvent.contentOffset.y > 0);
                 }}>
+                <View style={{height: px(12)}} />
                 {list && (
                     <PKParams
                         ref={pkParamsRef}

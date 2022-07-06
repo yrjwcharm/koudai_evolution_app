@@ -7,11 +7,14 @@ import {px} from '~/utils/appUtil';
 import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
 import * as pkPinningActions from '~/redux/actions/pk/pkPinning';
 import {useJump} from '~/components/hooks';
+import {BoxShadow} from 'react-native-shadow';
 
 const Header = (props) => {
     const jump = useJump();
-    const groupScrollViewRef = useRef(null);
     const [footerHeight, setFooterHeight] = useState(0);
+    const [layout, setLayout] = useState({});
+
+    const groupScrollViewRef = useRef(null);
 
     const scrolling = useRef(null);
 
@@ -117,7 +120,11 @@ const Header = (props) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.compareGroup}>
+            <View
+                style={styles.compareGroup}
+                onLayout={(e) => {
+                    setLayout(e.nativeEvent.layout);
+                }}>
                 {/* label */}
                 <View style={styles.groupLabel}>
                     <Text style={styles.groupLabelText}>基金</Text>
@@ -165,6 +172,18 @@ const Header = (props) => {
                     <View style={{borderLeftColor: '#E9EAEF', borderLeftWidth: 1}}>{addCompareItem()}</View>
                 ) : null}
             </View>
+            {layout?.width && props.pageScroll ? (
+                <BoxShadow
+                    setting={{
+                        color: '#ddd',
+                        opacity: 0.1,
+                        width: layout.width,
+                        height: 3,
+                        x: 0,
+                        y: 0,
+                    }}
+                />
+            ) : null}
         </View>
     );
 };

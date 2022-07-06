@@ -25,6 +25,9 @@ const handlerDefaultParamItemBest = (data) => {
     data?.forEach((item) => {
         // 总分
         if (!obj.ts) obj.ts = {value: 0, code: ''};
+        if (item.total_score_info === obj.ts.value) {
+            obj.ts.code = '';
+        }
         if (item.total_score_info > obj.ts.value) {
             obj.ts.value = item.total_score_info;
             obj.ts.code = item.code;
@@ -33,6 +36,9 @@ const handlerDefaultParamItemBest = (data) => {
         item.score_info?.forEach?.((itm) => {
             let key = itm.type;
             if (!obj[key]) obj[key] = {value: 0, code: ''};
+            if (itm.score === obj[key].value) {
+                obj[key].code = '';
+            }
             if (itm.score > obj[key].value) {
                 obj[key].value = itm.score;
                 obj[key].code = item.code;
@@ -189,7 +195,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                     </Text>
                 ) : null}
             </View>
-            <View style={[styles.content, expand ? {} : {height: px(350), overflow: 'hidden'}]}>
+            <View style={[styles.content]}>
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
@@ -333,7 +339,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     title: {
-        fontSize: px(16),
+        fontSize: px(14),
         lineHeight: px(22),
         color: '#121D3a',
     },

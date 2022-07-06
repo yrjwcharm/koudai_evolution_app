@@ -12,6 +12,9 @@ const handlerDefaultItemBest = (data) => {
         if (!info) return;
         Object.keys(info).forEach((key) => {
             if (!obj[key]) obj[key] = {value: -Infinity, code: ''};
+            if (info[key] === obj[key].value) {
+                obj[key].code = '';
+            }
             if (info[key] > obj[key].value) {
                 obj[key].value = info[key];
                 obj[key].code = item.code;
@@ -206,7 +209,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     titleText: {
-        fontSize: px(16),
+        fontSize: px(14),
         lineHeight: px(22),
         color: '#121D3A',
     },

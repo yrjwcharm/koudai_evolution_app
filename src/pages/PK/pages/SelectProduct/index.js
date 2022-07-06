@@ -71,7 +71,7 @@ const SelectProduct = (props) => {
         [followListLite, hotpkData, borwseListData]
             [idx]()
             .then((res) => {
-                setTabList(res.result?.list);
+                setTabList(res.result?.list || res.result);
             })
             .finally((_) => {
                 setLoading(false);
@@ -224,7 +224,7 @@ const SelectProduct = (props) => {
                                                 </View>
                                                 <View style={styles.selectItemFooter}>
                                                     <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-                                                        {item.tags.map((itm, i) => (
+                                                        {item.tags?.map?.((itm, i) => (
                                                             <View key={i} style={[styles.selectItemTag]}>
                                                                 <Text key={i} style={[styles.selectItemTagText]}>
                                                                     {itm}
@@ -331,7 +331,7 @@ const SelectProduct = (props) => {
                                                     <View style={styles.productName}>
                                                         <Text style={styles.productNameText}>{item.name}</Text>
                                                         <View style={styles.productTags}>
-                                                            {item.tags.map((itm, i) => (
+                                                            {item.tags?.map?.((itm, i) => (
                                                                 <View
                                                                     style={[
                                                                         styles.productTag,
