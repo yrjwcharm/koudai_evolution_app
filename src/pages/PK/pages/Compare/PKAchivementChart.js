@@ -74,11 +74,11 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
                 <View
                     style={{
                         flexDirection: 'row',
-                        height: 50,
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         backgroundColor: '#fff',
                         paddingHorizontal: px(20),
+                        paddingVertical: px(10),
                     }}>
                     {subTabs?.map((_item, _index) => {
                         return (
@@ -204,7 +204,7 @@ const baseAreaChart = (
     tofixed = 2,
     width = deviceWidth - 10,
     appendPadding = 10,
-    height = 220,
+    height = px(207),
     showDate = true,
     max = null // 是否使用对象里自带的颜色
 ) => {

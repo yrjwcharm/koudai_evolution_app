@@ -94,7 +94,6 @@ const PKBall = ({style}, ref) => {
             <Animatable.View
                 ref={animatableRef}
                 iterationCount={1}
-                direction="alternate"
                 style={[styles.noticeWrap]}
                 onLayout={(e) => {
                     if (!animateViewWidthRef.current) animateViewWidthRef.current = e.nativeEvent.layout.width;

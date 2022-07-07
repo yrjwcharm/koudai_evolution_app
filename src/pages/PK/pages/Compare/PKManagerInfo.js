@@ -55,7 +55,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? <ValuePart item={data.find((itm) => itm.code === pkPinning)} key={-1} /> : null}
+                {pkPinning ? <ValuePart item={data.find((itm) => itm.code === pkPinning) || {}} key={-1} /> : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -83,7 +83,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                         {data
                             .filter((item) => item.code !== pkPinning)
                             .map((item, idx) => (
-                                <ValuePart item={item} key={idx} />
+                                <ValuePart item={item || {}} key={idx} />
                             ))}
                     </View>
                     {/* 补位 */}
