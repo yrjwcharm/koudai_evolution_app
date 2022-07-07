@@ -62,6 +62,17 @@ const PKBall = ({style}, ref) => {
         }, [pkProducts])
     );
 
+    const handlerJump = () => {
+        global.LogTool('pk_floating');
+        if (better && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
+        setBetter(null);
+
+        updateLayoutType(1);
+        handlerAnimate(animateViewWidthRef.current, false, true);
+
+        jump({path: 'PKSelectProduct'});
+    };
+
     //展开收缩动画
     const handlerAnimate = (width, expand, shrink, time = 2000) => {
         if (timer.current) {
@@ -76,17 +87,6 @@ const PKBall = ({style}, ref) => {
                 animatableRef.current?.transitionTo({opacity: 0, width: 0});
             }, time);
         }
-    };
-
-    const handlerJump = () => {
-        global.LogTool('pk_floating');
-        if (better && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
-        setBetter(null);
-
-        updateLayoutType(1);
-        handlerAnimate(animateViewWidthRef.current, false, true);
-
-        jump({path: 'PKSelectProduct'});
     };
 
     return (
