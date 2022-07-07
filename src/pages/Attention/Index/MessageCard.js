@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:39:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 19:03:32
+ * @LastEditTime: 2022-07-07 10:15:13
  * @Description:消息卡片
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -44,7 +44,7 @@ const MessageCard = ({data}) => {
                                     <Text style={styles.tag_text}>{_list?.type_text}</Text>
                                 </View>
                             ) : null}
-                            <View style={{marginLeft: px(8)}}>
+                            <View style={{marginLeft: px(8), flex: 1}}>
                                 <RenderHtml html={_list?.title} numberOfLines={1} style={styles.title} />
                             </View>
                         </View>

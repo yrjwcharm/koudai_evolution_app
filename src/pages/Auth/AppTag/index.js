@@ -2,7 +2,7 @@
  * @Date: 2022-07-02 15:07:38
  * @Description:用户标签选择
  */
-import {StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground, ScrollView} from 'react-native';
+import {BackHandler, StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getTagData, handleDone, handleQuestion} from './service';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -22,6 +22,13 @@ const Index = ({navigation}) => {
             setData(res.result);
         }
     };
+    useEffect(() => {
+        const fun = () => true;
+        BackHandler.addEventListener('hardwareBackPress', fun);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', fun);
+        };
+    }, []);
     useEffect(() => {
         getData();
     }, []);
@@ -55,10 +62,10 @@ const Index = ({navigation}) => {
         });
         current == 0 && setCurrent((pre) => ++pre);
     };
-    const goNextPage = () => {
+    const goNextPage = async () => {
         if (current == data.length - 1) {
             //答完题目
-            handleDone();
+            await handleDone();
             navigation.goBack();
         } else {
             setCurrent((pre) => ++pre);
@@ -70,12 +77,12 @@ const Index = ({navigation}) => {
             if (i > current) break;
             currentTotalQuesitions += i == 0 ? 1 : data[i].sub_list?.length;
         }
-        setDisableBtn(Object.keys(answer)?.length !== currentTotalQuesitions);
+        setDisableBtn(Object.keys(answer)?.length < currentTotalQuesitions);
     }, [answer, current, data]);
     return (
         <View style={[styles.con, {paddingTop: inset.top}]}>
             {current == 0 ? ( //处理第一题
-                <ScrollView style={{marginTop: px(56)}}>
+                <ScrollView bounces={false} style={{marginTop: px(56)}}>
                     <Text style={styles.title}>{data[current]?.tag_name}</Text>
                     <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
                     <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
@@ -118,7 +125,10 @@ const Index = ({navigation}) => {
             ) : (
                 <View style={{paddingHorizontal: px(28), flex: 1}}>
                     <View style={styles.header}>
-                        <TouchableOpacity onPress={() => setCurrent((pre) => --pre)} style={Style.flexRow}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => setCurrent((pre) => --pre)}
+                            style={Style.flexRow}>
                             <AntDesign name="left" size={px(16)} />
                             <Text>上一步</Text>
                         </TouchableOpacity>
@@ -127,7 +137,7 @@ const Index = ({navigation}) => {
                         <Text style={[styles.title, {fontSize: px(22)}]}>{data[current]?.tag_name}</Text>
                         <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
                         {data[current]?.sub_list?.map((item, index) => (
-                            <View style={{marginBottom: px(16)}}>
+                            <View key={item.tag_name + index} style={{marginBottom: px(16)}}>
                                 <Text style={styles.tag_title} key={index}>
                                     {item.tag_name}
                                     <Text style={{fontWeight: '400', color: Colors.lightBlackColor, fontSize: px(14)}}>
@@ -137,6 +147,7 @@ const Index = ({navigation}) => {
                                 <View style={{...Style.flexBetween, flexWrap: 'wrap'}}>
                                     {item?.sub_list?.map((tag, _index, arr) => (
                                         <TouchableOpacity
+                                            activeOpacity={0.8}
                                             onPress={() =>
                                                 handlePost(
                                                     item.tag_name,
@@ -160,7 +171,7 @@ const Index = ({navigation}) => {
                                                         : '#F5F6F8',
                                                 },
                                             ]}
-                                            key={_index}>
+                                            key={item.tag_name + _index}>
                                             <Text
                                                 style={[
                                                     styles.title_desc,
