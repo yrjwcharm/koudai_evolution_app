@@ -22,7 +22,6 @@ const PKCard = ({data = {}}) => {
     const handlerRate = (rate) => {
         let val = ((rate || 0) * 100).toFixed(2);
         if (val >= 0) val = '+' + val;
-        else val = '-' + val;
         return val + '%';
     };
 

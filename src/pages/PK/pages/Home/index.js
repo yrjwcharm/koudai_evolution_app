@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useRef} from 'react';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
@@ -10,7 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import PKCard from './PKCard';
 import {getPKHomeData} from '../../services';
 import Toast from '../../../../components/Toast';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
 import {useJump} from '~/components/hooks';
@@ -18,12 +18,14 @@ import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
+import NetInfoComponent from '~/components/NetInfoComponent';
 
-const PKHome = () => {
+const PKHome = ({navigation}) => {
     const insets = useSafeAreaInsets();
     const dimensions = useWindowDimensions();
     const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo);
+    const isFocused = useIsFocused();
 
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -31,6 +33,7 @@ const PKHome = () => {
 
     const isFirst = useRef(1);
     const listLayout = useRef({});
+    const scrollViewRef = useRef();
 
     const getData = (type) => {
         type === 0 && setRefreshing(true);
@@ -61,6 +64,17 @@ const PKHome = () => {
             DeviceEventEmitter.addListener('attentionRefresh', getData);
         }, [])
     );
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', (e) => {
+            if (isFocused) {
+                getData(0);
+                scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                global.LogTool('tabDoubleClick', 'PKHome');
+            }
+        });
+        return () => unsubscribe();
+    }, [isFocused, navigation]);
 
     const handleScroll = (e) => {
         handlerReport(e.nativeEvent.contentOffset.y + dimensions.height);
@@ -99,6 +113,7 @@ const PKHome = () => {
                     style={{flex: 1}}
                     scrollEventThrottle={6}
                     onScroll={handleScroll}
+                    ref={scrollViewRef}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(0)} />}
                     showsVerticalScrollIndicator={false}
                     scrollIndicatorInsets={{right: 1}}>
@@ -242,4 +257,4 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
 });
-export default PKHome;
+export default NetInfoComponent(PKHome);
