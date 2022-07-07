@@ -2,14 +2,14 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 15:43:57
+ * @LastEditTime: 2022-07-07 16:23:34
  * @Description:搜索
  */
-import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, Image} from 'react-native';
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
+import React, {useState, useRef, useCallback} from 'react';
 import Icons from 'react-native-vector-icons/AntDesign';
-import {Colors, Style} from '../../../../common/commonStyle';
-import {px} from '../../../../utils/appUtil';
+import {Colors, Space, Style} from '~/common/commonStyle';
+import {px} from '~/utils/appUtil';
 import SearchInput from './SearchInput';
 import SearchTag from './SearchTag';
 import SearchContent from './SearchContent';
@@ -19,7 +19,7 @@ import _ from 'lodash';
 import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
-import PKBall from '../../components/PKBall';
+import PKBall from '~/pages/PK/components/PKBall';
 
 const Index = () => {
     const [data, setData] = useState({});
@@ -175,7 +175,11 @@ const Index = () => {
                         ) : null}
                         {/* 热门基金 */}
                         {data?.hot_fund ? (
-                            <HotFundCard style={{marginTop: px(24)}} plateid={data.plateid} data={data?.hot_fund} />
+                            <HotFundCard
+                                style={searchHistory.length > 0 ? {marginTop: px(24)} : {}}
+                                plateid={data.plateid}
+                                data={data?.hot_fund}
+                            />
                         ) : null}
                     </>
                 )}
@@ -191,7 +195,7 @@ export default Index;
 
 const styles = StyleSheet.create({
     con: {backgroundColor: '#fff', flex: 1},
-    line: {height: 0.5, backgroundColor: '#eee', marginTop: px(10), marginBottom: px(15)},
+    line: {height: 0.5, backgroundColor: '#eee', marginVertical: Space.marginVertical},
     title_text: {
         fontSize: px(16),
         lineHeight: px(22),

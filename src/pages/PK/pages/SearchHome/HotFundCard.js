@@ -5,8 +5,8 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Colors, Style} from '../../../../common/commonStyle';
-import {px} from '../../../../utils/appUtil';
+import {Colors, Font, Style} from '~/common/commonStyle';
+import {px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
 const HotFundCard = ({data, style, plateid}) => {
@@ -60,7 +60,7 @@ const HotFundCard = ({data, style, plateid}) => {
                                 <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
                                     {_list?.yield_info?.title}
                                 </Text>
-                                {_list?.yield_info?.ratio}
+                                <Text style={{fontWeight: Font.weightMedium}}>&nbsp;{_list?.yield_info?.ratio}</Text>
                             </Text>
                         </TouchableOpacity>
                     ))}

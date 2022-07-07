@@ -2,11 +2,11 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 14:52:04
+ * @LastEditTime: 2022-07-07 15:11:17
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
-import {DeviceEventEmitter, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DeviceEventEmitter, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -425,6 +425,7 @@ const styles = StyleSheet.create({
     },
     rankText: {
         marginTop: px(2),
+        marginRight: Platform.select({android: px(2), ios: px(1)}),
         fontSize: px(15),
         lineHeight: px(17),
         color: Colors.placeholderColor,
