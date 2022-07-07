@@ -163,7 +163,7 @@ const SelectProduct = (props) => {
                                                 </View>
                                                 <View style={styles.selectItemFooter}>
                                                     <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-                                                        {item.tags.map((itm, i) => (
+                                                        {item?.tags?.map((itm, i) => (
                                                             <View key={i} style={[styles.selectItemTag]}>
                                                                 <Text key={i} style={[styles.selectItemTagText]}>
                                                                     {itm}
