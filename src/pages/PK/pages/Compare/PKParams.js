@@ -279,7 +279,6 @@ const LabelPart = ({item, idx, expand, onChange}) => {
                     trackColor={{false: '#CCD0DB', true: '#0051CC'}}
                     value={value}
                     style={{
-                        backgroundColor: 'red',
                         width: px(28),
                         height: px(18),
                         transform: [{scale: 0.6}],
