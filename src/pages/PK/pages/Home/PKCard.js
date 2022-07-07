@@ -7,9 +7,13 @@ import {px} from '../../../../utils/appUtil';
 import {Font} from '../../../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
+import {useDispatch, useSelector} from 'react-redux';
+import {addProduct} from '~/redux/actions/pk/pkProducts';
 
 const PKCard = ({data = {}}) => {
     const jump = useJump();
+    const pkProducts = useSelector((state) => state.pkProducts);
+    const dispatch = useDispatch();
 
     const [leftObj = {}, rightObj = {}] = useMemo(() => {
         return [data?.list?.[0], data?.list?.[1]];
@@ -20,6 +24,14 @@ const PKCard = ({data = {}}) => {
         if (val >= 0) val = '+' + val;
         else val = '-' + val;
         return val + '%';
+    };
+
+    const handlerEnter = () => {
+        global.LogTool('pk_button');
+        global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
+        if (!pkProducts.includes(leftObj.code)) dispatch(addProduct(leftObj.code));
+        if (!pkProducts.includes(rightObj.code)) dispatch(addProduct(rightObj.code));
+        jump(data.btns.url);
     };
 
     return (
@@ -46,11 +58,7 @@ const PKCard = ({data = {}}) => {
                             left: '50%',
                             transform: [{translateX: px(-41)}, {translateY: px(-41)}],
                         }}
-                        onPress={() => {
-                            jump(data.btns.url);
-                            global.LogTool('pk_button');
-                            global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
-                        }}>
+                        onPress={handlerEnter}>
                         <FastImage
                             source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/pk_button.png'}}
                             style={styles.pkIconStyle2}
@@ -87,14 +95,7 @@ const PKCard = ({data = {}}) => {
                     </View>
                     <Text style={styles.pkParamsTip}>{data.tip}</Text>
                     {data.btns && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={styles.pkBtn}
-                            onPress={() => {
-                                jump(data.btns.url);
-                                global.LogTool('pk_button');
-                                global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
-                            }}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
                         </TouchableOpacity>
                     )}
