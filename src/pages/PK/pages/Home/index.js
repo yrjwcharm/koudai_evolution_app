@@ -29,11 +29,12 @@ const PKHome = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
 
-    const isFirst = useRef(0);
+    const isFirst = useRef(1);
     const listLayout = useRef({});
 
-    const getData = (refresh) => {
-        refresh ? setRefreshing(true) : setLoading(true);
+    const getData = (type) => {
+        type === 0 && setRefreshing(true);
+        type === 1 && setLoading(true);
         getPKHomeData()
             .then((res) => {
                 if (res.code === '000000') {
@@ -51,7 +52,7 @@ const PKHome = () => {
 
     useFocusEffect(
         useCallback(() => {
-            getData(isFirst.current++ !== 0);
+            getData(isFirst.current++);
         }, [])
     );
 
@@ -98,7 +99,7 @@ const PKHome = () => {
                     style={{flex: 1}}
                     scrollEventThrottle={6}
                     onScroll={handleScroll}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(0)} />}
                     showsVerticalScrollIndicator={false}
                     scrollIndicatorInsets={{right: 1}}>
                     {/* topmenu */}
