@@ -66,6 +66,7 @@ const SelectProduct = (props) => {
     };
 
     const onTabChange = (_, idx) => {
+        global.LogTool('ProductSelection_Clicktab', idx + 1);
         setCurTab(idx);
         setLoading(true);
         [followListLite, hotpkData, borwseListData]
@@ -262,6 +263,7 @@ const SelectProduct = (props) => {
                             activeOpacity={0.8}
                             style={[styles.searchInput, Style.flexRowCenter]}
                             onPress={() => {
+                                global.LogTool('PK_Search');
                                 jump(data.search_button.url);
                             }}>
                             <Icons name={'search'} color={'#545968'} size={px(18)} />
@@ -383,6 +385,7 @@ const SelectProduct = (props) => {
                         disabled={!props.pkProducts.length}
                         onPress={() => {
                             global.LogTool('start_PK_click', null, props.pkProducts.join());
+                            global.LogTool('ProductSelection_StartPK');
                             jump(data.pk_button.url);
                         }}>
                         <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>

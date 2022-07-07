@@ -110,6 +110,7 @@ const Header = (props) => {
                 style={[styles.addCompareItemWrap]}
                 disabled={props?.addFundButton?.avail === 0}
                 onPress={() => {
+                    global.LogTool('PKContrast_AddFund');
                     jump(props?.addFundButton?.url);
                 }}>
                 <Icons style={{marginRight: 2, marginTop: 4}} name={'plus'} color={'#0051CC'} size={px(18)} />

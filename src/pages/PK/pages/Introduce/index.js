@@ -174,6 +174,7 @@ const Introduce = () => {
                     <Button
                         title={data.btn.title}
                         onPress={() => {
+                            global.LogTool('PKIntroduce_StartPK');
                             jump(data.btn.url);
                         }}
                     />

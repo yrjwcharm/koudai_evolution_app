@@ -92,6 +92,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                         idx={idx}
                         expand={expand}
                         onChange={(state, name) => {
+                            global.LogTool('PKContrast_ComparisonItemSwitch', name);
                             let arr = [...expandParts];
                             if (state) {
                                 arr.push(name);
@@ -189,6 +190,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                     <Text
                         style={styles.rightBtn}
                         onPress={() => {
+                            global.LogTool('PKContrast_WeightSetting');
                             weightSet.current.show();
                         }}>
                         {weightButton.text}
@@ -240,6 +242,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                 activeOpacity={0.7}
                 style={styles.expandWrap}
                 onPress={() => {
+                    global.LogTool('PKContrast_ExpandAndCollapse', 1);
                     setExpand((val) => !val);
                 }}>
                 <Text style={styles.expandText}>{expand ? '收起' : '展开明细'}</Text>

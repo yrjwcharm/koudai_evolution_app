@@ -84,6 +84,7 @@ const PKHome = () => {
                     <TouchableOpacity
                         style={[styles.searchBg, Style.flexCenter]}
                         onPress={() => {
+                            global.LogTool('PK_Search');
                             jump(data?.search_button?.url);
                         }}>
                         <View style={Style.flexRowCenter}>
@@ -114,6 +115,7 @@ const PKHome = () => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
+                                            global.LogTool('pk_clicktab', item.text);
                                             jump(item.url);
                                         }}>
                                         <FastImage

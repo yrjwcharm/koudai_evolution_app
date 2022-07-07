@@ -228,6 +228,7 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
                 activeOpacity={0.7}
                 style={styles.expandWrap}
                 onPress={() => {
+                    global.LogTool('PKContrast_ExpandAndCollapse', 3);
                     setExpand((val) => !val);
                 }}>
                 <Text style={styles.expandText}>{expand ? '收起' : '展开明细'}</Text>

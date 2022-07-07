@@ -26,7 +26,8 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
         });
     };
 
-    const changeTab = (p) => {
+    const changeTab = (p, name) => {
+        global.LogTool('PKContrast_Performance', name);
         setPeriod((prev) => {
             if (p !== prev) {
                 getData(p);
@@ -91,7 +92,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
                                     },
                                 ]}
                                 key={_index}
-                                onPress={() => changeTab(_item.val)}>
+                                onPress={() => changeTab(_item.val, _item.name)}>
                                 <Text
                                     style={{
                                         color: period == _item.val ? '#0051CC' : '#555B6C',
