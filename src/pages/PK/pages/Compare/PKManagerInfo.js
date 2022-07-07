@@ -98,45 +98,44 @@ const _PKManagerInfo = connect((state) => ({pkPinning: state.pkPinning}))(PKMana
 
 export default forwardRef((props, ref) => <_PKManagerInfo {...props} _ref={ref} />);
 
-const ValuePart = ({item}) => {
-    const [active, setActive] = useState(0);
+const ValuePart = ({item: {manager_list = []}}) => {
+    const [active, setActive] = useState(manager_list?.[0]?.name);
     const [visible, setVisible] = useState(false);
     const obj = useMemo(() => {
-        return item?.manager_list?.[active] || {};
-    }, [active, item]);
+        return manager_list?.find?.((itm) => itm.name === active) || {};
+    }, [active, manager_list]);
     return (
         <>
             <View style={styles.valuesWrap}>
                 {visible ? (
                     <View style={[styles.dialog]}>
-                        {item?.manager_list.map((itm, idx) => (
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                key={idx}
-                                style={[styles.valueWrap, {backgroundColor: '#F5F6F8'}]}
-                                onPress={() => {
-                                    setVisible(false);
-                                    setActive(idx);
-                                }}>
-                                <Text style={styles.valueText}>{itm.name}</Text>
-                            </TouchableOpacity>
-                        ))}
+                        {manager_list
+                            .filter((itm) => itm.name !== active)
+                            .map((itm, idx) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    key={idx}
+                                    style={[styles.valueWrap, {backgroundColor: '#F5F6F8'}]}
+                                    onPress={() => {
+                                        setVisible(false);
+                                        setActive(itm.name);
+                                    }}>
+                                    <Text style={styles.valueText}>{itm.name}</Text>
+                                </TouchableOpacity>
+                            ))}
                     </View>
                 ) : null}
-                <View style={styles.valueWrap}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.valueWrap}
+                    onPress={() => {
+                        manager_list.length > 1 && setVisible((val) => !val);
+                    }}>
                     <Text style={styles.valueText}>{obj?.name}</Text>
-                    {item?.manager_list.length > 1 && (
-                        <FontAwesome
-                            color={'#AD9064'}
-                            name={'angle-down'}
-                            size={16}
-                            style={{marginLeft: px(5)}}
-                            onPress={() => {
-                                setVisible((val) => !val);
-                            }}
-                        />
+                    {manager_list.length > 1 && (
+                        <FontAwesome color={'#AD9064'} name={'angle-down'} size={16} style={{marginLeft: px(5)}} />
                     )}
-                </View>
+                </TouchableOpacity>
                 <View style={styles.valueWrap}>
                     <Text style={styles.valueText}>{obj?.work_date || '--'}</Text>
                 </View>
