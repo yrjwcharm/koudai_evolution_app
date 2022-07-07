@@ -81,9 +81,11 @@ const PKBall = ({style}, ref) => {
     const handlerJump = () => {
         global.LogTool('pk_floating');
         if (better && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
-        updateLayoutType(1);
         setBetter(null);
+
+        updateLayoutType(1);
         handlerAnimate(animateViewWidthRef.current, false, true);
+
         jump({path: 'PKSelectProduct'});
     };
 
@@ -164,7 +166,6 @@ const styles = StyleSheet.create({
         bottom: px(50),
         right: px(16),
         flexDirection: 'row',
-        // backgroundColor: 'red',
     },
     noticeWrap: {
         borderRadius: px(387),
