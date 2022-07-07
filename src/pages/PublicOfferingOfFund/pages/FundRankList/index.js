@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 17:51:07
+ * @LastEditTime: 2022-07-07 14:58:49
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -25,9 +25,11 @@ const Index = ({route}) => {
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
+    const [title, setTitle] = useState('');
     const [list, setList] = useState([]);
     const [showEmpty, setShowEmpty] = useState(false);
     const [headImg, setHeadImg] = useState('');
+    const [scrollY, setScrollY] = useState(0);
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
@@ -40,7 +42,11 @@ const Index = ({route}) => {
     };
 
     const renderItem = ({item, index}) => {
-        return <ProductCards data={item} style={index === 0 ? {marginTop: 0} : {}} />;
+        return (
+            <View style={{paddingHorizontal: Space.padding}}>
+                <ProductCards data={item} style={index === 0 ? {marginTop: px(-80)} : {}} />
+            </View>
+        );
     };
 
     /** @name 渲染底部 */
@@ -63,23 +69,30 @@ const Index = ({route}) => {
 
     const renderList = () => {
         return (
-            <>
+            <View style={styles.listContainer}>
                 <FlatList
                     data={list}
                     initialNumToRender={20}
                     keyExtractor={(item, index) => item + index}
+                    ListHeaderComponent={headImg ? <Image source={{uri: headImg}} style={styles.topBg} /> : null}
                     ListFooterComponent={renderFooter}
                     ListEmptyComponent={renderEmpty}
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.5}
                     onRefresh={() => setPage(1)}
+                    onScroll={({
+                        nativeEvent: {
+                            contentOffset: {y},
+                        },
+                    }) => setScrollY(y)}
                     refreshing={refreshing}
                     renderItem={renderItem}
+                    scrollEventThrottle={16}
                     scrollIndicatorInsets={{right: 1}}
                     style={styles.flatList}
                 />
                 <PKBall />
-            </>
+            </View>
         );
     };
 
@@ -95,6 +108,7 @@ const Index = ({route}) => {
                     setRefreshing(false);
                     setHasMore(has_more);
                     setHeadImg(head_pic);
+                    setTitle(res.result.title);
                     if (page === 1) {
                         setList(_list);
                     } else {
@@ -119,68 +133,77 @@ const Index = ({route}) => {
         <View style={styles.container}>
             {headImg ? (
                 <>
-                    {headImg ? (
-                        <Image
-                            source={{uri: headImg}}
-                            style={[styles.topBg, {height: rank_type ? px(268) : px(230)}]}
-                        />
-                    ) : null}
                     <NavBar
                         leftIcon={'chevron-left'}
-                        fontStyle={{color: '#fff'}}
-                        style={{backgroundColor: 'transparent'}}
+                        fontStyle={{color: scrollY > 0 || scrollY < -60 ? Colors.navLeftTitleColor : '#fff'}}
+                        style={{
+                            backgroundColor: scrollY > 0 ? '#fff' : 'transparent',
+                            opacity: scrollY < 50 && scrollY > 0 ? scrollY / 50 : 1,
+                            position: 'absolute',
+                        }}
+                        title={scrollY > 0 ? title : ''}
                     />
                     {rank_type ? (
-                        <View style={styles.listContainer}>{renderList()}</View>
+                        // 有分页榜单
+                        renderList()
                     ) : (
-                        <LinearGradient
-                            colors={['rgba(255, 243, 243, 0.79)', '#F5F6F8']}
-                            start={{x: 0, y: 0}}
-                            end={{x: 0, y: 0.05}}
-                            style={[styles.listContainer, {paddingTop: px(24)}]}>
-                            <ScrollableTabView
-                                initialPage={initialPage}
-                                // onChangeTab={(value) => console.log(value)}
-                                prerenderingSiblingsNumber={Infinity}
-                                renderTabBar={(props) => (
-                                    <View>
-                                        <CapsuleTabbar {...props} boxStyle={styles.tabsContainer} />
-                                    </View>
-                                )}
-                                style={{flex: 1}}>
-                                {list.map((tab) => {
-                                    const {items: tabItems = [], rank_type: key, title: tabTitle} = tab;
-                                    return (
-                                        <ScrollView
-                                            bounces={false}
-                                            key={key}
-                                            scrollIndicatorInsets={{right: 1}}
-                                            style={{paddingHorizontal: Space.padding}}
-                                            tabLabel={tabTitle}>
-                                            {tabItems?.length > 0
-                                                ? tabItems.map((item, index, arr) => (
-                                                      <ProductCards
-                                                          data={item}
-                                                          key={index}
-                                                          style={{
-                                                              ...(index === 0 ? {marginTop: 0} : {}),
-                                                              ...(index === arr.length - 1
-                                                                  ? {
-                                                                        marginBottom: isIphoneX()
-                                                                            ? 34
-                                                                            : Space.marginVertical,
-                                                                    }
-                                                                  : {}),
-                                                          }}
-                                                      />
-                                                  ))
-                                                : renderEmpty()}
-                                        </ScrollView>
-                                    );
-                                })}
-                            </ScrollableTabView>
-                            <PKBall />
-                        </LinearGradient>
+                        // 无分页榜单
+                        <>
+                            {headImg ? (
+                                <Image
+                                    source={{uri: headImg}}
+                                    style={[styles.topBg, {position: 'absolute', height: px(230)}]}
+                                />
+                            ) : null}
+                            <LinearGradient
+                                colors={['rgba(255, 243, 243, 0.79)', '#F5F6F8']}
+                                start={{x: 0, y: 0}}
+                                end={{x: 0, y: 0.05}}
+                                style={styles.scrollTabContainer}>
+                                <ScrollableTabView
+                                    initialPage={initialPage}
+                                    // onChangeTab={(value) => console.log(value)}
+                                    prerenderingSiblingsNumber={Infinity}
+                                    renderTabBar={(props) => (
+                                        <View>
+                                            <CapsuleTabbar {...props} boxStyle={styles.tabsContainer} />
+                                        </View>
+                                    )}
+                                    style={{flex: 1}}>
+                                    {list.map((tab) => {
+                                        const {items: tabItems = [], rank_type: key, title: tabTitle} = tab;
+                                        return (
+                                            <ScrollView
+                                                bounces={false}
+                                                key={key}
+                                                scrollIndicatorInsets={{right: 1}}
+                                                style={{paddingHorizontal: Space.padding}}
+                                                tabLabel={tabTitle}>
+                                                {tabItems?.length > 0
+                                                    ? tabItems.map((item, index, arr) => (
+                                                          <ProductCards
+                                                              data={item}
+                                                              key={index}
+                                                              style={{
+                                                                  ...(index === 0 ? {marginTop: 0} : {}),
+                                                                  ...(index === arr.length - 1
+                                                                      ? {
+                                                                            marginBottom: isIphoneX()
+                                                                                ? 34
+                                                                                : Space.marginVertical,
+                                                                        }
+                                                                      : {}),
+                                                              }}
+                                                          />
+                                                      ))
+                                                    : renderEmpty()}
+                                            </ScrollView>
+                                        );
+                                    })}
+                                </ScrollableTabView>
+                                <PKBall />
+                            </LinearGradient>
+                        </>
                     )}
                 </>
             ) : (
@@ -196,22 +219,27 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     topBg: {
-        position: 'absolute',
         top: 0,
-        right: 0,
         left: 0,
+        width: deviceWidth,
         height: px(268),
-        zIndex: 9,
+        zIndex: 8,
     },
     listContainer: {
-        marginTop: px(100),
+        flex: 1,
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    scrollTabContainer: {
+        marginTop: px(182),
+        paddingTop: px(24),
         borderRadius: px(8),
         flex: 1,
         position: 'relative',
-        zIndex: 10,
+        zIndex: 9,
     },
     flatList: {
-        paddingHorizontal: Space.marginAlign,
+        backgroundColor: Colors.bgColor,
         flex: 1,
     },
     headerText: {
