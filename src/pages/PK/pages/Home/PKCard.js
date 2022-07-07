@@ -9,6 +9,7 @@ import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
+import RenderHtml from '~/components/RenderHtml';
 
 const PKCard = ({data = {}}) => {
     const jump = useJump();
@@ -92,7 +93,7 @@ const PKCard = ({data = {}}) => {
                             );
                         })}
                     </View>
-                    <Text style={styles.pkParamsTip}>{data.tip}</Text>
+                    <RenderHtml html={data.tip} style={styles.pkParamsTip} />
                     {data.btns && (
                         <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
@@ -101,7 +102,7 @@ const PKCard = ({data = {}}) => {
                 </View>
             ) : (
                 <View style={styles.pkTipWrap}>
-                    <Text style={styles.pkTipText}>{data.tip}</Text>
+                    <RenderHtml html={data.tip} style={styles.pkTipText} />
                 </View>
             )}
         </View>
