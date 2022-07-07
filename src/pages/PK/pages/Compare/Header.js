@@ -173,18 +173,14 @@ const Header = (props) => {
                     <View style={{borderLeftColor: '#E9EAEF', borderLeftWidth: 1}}>{addCompareItem()}</View>
                 ) : null}
             </View>
-            {layout?.width && props.pageScroll ? (
-                <BoxShadow
-                    setting={{
-                        color: '#ddd',
-                        opacity: 0.1,
-                        width: layout.width,
-                        height: 3,
-                        x: 0,
-                        y: 0,
-                    }}
-                />
-            ) : null}
+            <View
+                style={{
+                    color: '#ddd',
+                    opacity: 0.1,
+                    width: layout.width,
+                    height: 2,
+                }}
+            />
         </View>
     );
 };
