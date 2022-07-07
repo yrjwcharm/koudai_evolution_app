@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {px} from '~/utils/appUtil';
 import {Button} from './Button';
@@ -7,7 +7,10 @@ import EmptyTip from './EmptyTip';
 // 暂不支持ref
 const NetInfoComponent = ({Component, ...props}) => {
     const netInfo = useNetInfo();
-    return netInfo.isConnected ? (
+    const state = useMemo(() => {
+        return netInfo.type === 'unknown' ? true : netInfo.isConnected;
+    }, [netInfo]);
+    return state ? (
         <Component {...props} />
     ) : (
         <>
