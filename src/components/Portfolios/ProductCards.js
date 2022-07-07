@@ -2,11 +2,11 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 15:28:07
+ * @LastEditTime: 2022-07-07 14:52:04
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
-import {DeviceEventEmitter, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DeviceEventEmitter, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -146,15 +146,18 @@ const PrivateCard = ({data: {data}}) => {
 /** @name 榜单卡片 */
 const RankCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, icon, labels, name, tags = [], yield_info} = data;
+    const {button, code, icon, labels, name, rank, tags = [], yield_info} = data;
     return (
         <View style={Style.flexRow}>
-            <Image
-                source={{
-                    uri: icon,
-                }}
-                style={styles.rankIcon}
-            />
+            {icon ? (
+                <ImageBackground
+                    source={{
+                        uri: icon,
+                    }}
+                    style={[Style.flexCenter, styles.rankIcon]}>
+                    {rank > 3 && <Text style={styles.rankText}>{rank}</Text>}
+                </ImageBackground>
+            ) : null}
             <View style={{flex: 1}}>
                 <View style={Style.flexRow}>
                     <Text style={styles.title}>{name}</Text>
@@ -305,7 +308,7 @@ const RecommendCard = ({data = {}, isPking}) => {
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, labels, name, rank_info = {}, tags = [], yield_info} = data;
+    const {button, code, labels, name, rank_info, tags = [], yield_info} = data;
     return (
         <View>
             <View style={Style.flexRow}>
@@ -329,9 +332,11 @@ const DefaultCard = ({data = {}, isPking}) => {
             )}
             <View style={[Style.flexBetween, {marginTop: px(12), alignItems: 'flex-end'}]}>
                 {yield_info ? (
-                    <View>
+                    <View style={rank_info ? {} : styles.rowEnd}>
                         <HTML html={yield_info.value} style={styles.profit} />
-                        <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
+                        <Text style={[styles.label, rank_info ? {marginTop: px(2)} : {marginLeft: px(8)}]}>
+                            {yield_info.text}
+                        </Text>
                     </View>
                 ) : null}
                 {rank_info ? (
@@ -417,6 +422,13 @@ const styles = StyleSheet.create({
         marginRight: px(10),
         width: px(31),
         height: px(31),
+    },
+    rankText: {
+        marginTop: px(2),
+        fontSize: px(15),
+        lineHeight: px(17),
+        color: Colors.placeholderColor,
+        fontFamily: Font.numFontFamily,
     },
     leftPart: {
         marginRight: px(10),

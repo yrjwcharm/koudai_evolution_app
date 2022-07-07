@@ -2,11 +2,11 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 19:57:00
+ * @LastEditTime: 2022-07-07 15:04:25
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import sort from '~/assets/img/attention/sort.png';
@@ -152,12 +152,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
         });
     };
 
-    useEffect(() => {
-        setPage(1);
-        setPeriod(activePeriod);
-    }, [activePeriod]);
-
-    useEffect(() => {
+    const getList = () => {
         getFundList({
             cate_type: activeTab,
             page,
@@ -173,7 +168,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                 if (page === 1) {
                     setList((prev) => {
                         if (prev.length > 0) {
-                            listRef.current?.scrollToLocation({animated: false, itemIndex: 0, sectionIndex: 0});
+                            listRef.current?.scrollToOffset({animated: false, offset: 0});
                         }
                         return _list;
                     });
@@ -182,24 +177,35 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                 }
             }
         });
+    };
+
+    useEffect(() => {
+        setPage(1);
+        setPeriod(activePeriod);
+    }, [activePeriod]);
+
+    useEffect(() => {
+        getList();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, page, period, sortBy, sortType]);
 
     return (
-        <SectionList
-            sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
+        <FlatList
+            data={list}
             initialNumToRender={20}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => item.code + index}
             ListFooterComponent={renderFooter}
             ListEmptyComponent={renderEmpty}
+            ListHeaderComponent={renderHeader}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.99}
-            onRefresh={() => setPage(1)}
+            onRefresh={() => (page > 1 ? setPage(1) : getList())}
             ref={listRef}
             refreshing={refreshing}
             renderItem={renderItem}
-            renderSectionHeader={renderHeader}
-            stickySectionHeadersEnabled
+            scrollIndicatorInsets={{right: 1}}
+            stickyHeaderIndices={[0]}
             style={styles.tabContentBox}
         />
     );
