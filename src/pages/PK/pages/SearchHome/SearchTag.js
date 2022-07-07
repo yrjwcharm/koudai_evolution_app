@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 11:23:55
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 19:35:20
+ * @LastEditTime: 2022-07-07 16:17:48
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
@@ -12,10 +12,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Style} from '../../../../common/commonStyle';
 const SearchTag = ({title, style, onPress, isDelete, onDelete, showDelete}) => {
     return title ? (
-        <TouchableOpacity style={[styles.tag, Style.flexRow, style]} onPress={() => onPress(title)}>
+        <TouchableOpacity
+            activeOpacity={0.8}
+            disabled={showDelete}
+            style={[styles.tag, Style.flexRow, style]}
+            onPress={() => onPress(title)}>
             <Text style={{color: '#545968', fontSize: px(12), lineHeight: px(17)}}>{title}</Text>
             {showDelete && isDelete ? (
                 <TouchableOpacity
+                    activeOpacity={0.8}
                     style={{marginLeft: px(4)}}
                     onPress={() => {
                         onDelete(title);
