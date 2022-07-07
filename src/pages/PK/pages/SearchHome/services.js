@@ -9,3 +9,9 @@ export const getSearchData = (params) => {
 export const getSearchInfo = () => {
     return http.get('/pk/search/default/20220608');
 };
+export const postSearchKeyword = (params) => {
+    return http.post('/pk/search/keyword/20220608', params);
+};
+export const delSearchKeyword = (params) => {
+    return http.post('/pk/search/delete/20220608', params);
+};
