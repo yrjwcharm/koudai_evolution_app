@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle, useMemo, useRef, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icons from 'react-native-vector-icons/EvilIcons';
@@ -7,7 +7,6 @@ import {px} from '~/utils/appUtil';
 import * as pkProductsActions from '~/redux/actions/pk/pkProducts';
 import * as pkPinningActions from '~/redux/actions/pk/pkPinning';
 import {useJump} from '~/components/hooks';
-import {BoxShadow} from 'react-native-shadow';
 
 const Header = (props) => {
     const jump = useJump();
@@ -23,7 +22,6 @@ const Header = (props) => {
             groupScrollViewRef.current?.scrollTo?.({x, y: 0, animated: false});
         },
     }));
-
     const groupItem = (item, key) => {
         if (!item) return null;
         return (

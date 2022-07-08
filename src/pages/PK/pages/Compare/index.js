@@ -56,19 +56,26 @@ const Compare = () => {
 
     useFocusEffect(getData);
 
-    const addHigh = (code) => {
-        let item = list.find((itm) => itm.tip);
-        if (item) {
-            dispatch(delProduct(item.code));
-            if (item.code === pkPinning) dispatch(pinningProduct(null));
-        }
-        dispatch(addProduct({code, isHigh: true}));
-        setTimeout(() => {
-            getData();
-        }, 0);
-    };
+    const handlerPageScroll = useCallback((e) => {
+        setPageScroll(e.nativeEvent.contentOffset.y > 0);
+    }, []);
 
-    const handlerScroll = (curRef) => {
+    const addHigh = useCallback(
+        (code) => {
+            let item = list.find((itm) => itm.tip);
+            if (item) {
+                dispatch(delProduct(item.code));
+                if (item.code === pkPinning) dispatch(pinningProduct(null));
+            }
+            dispatch(addProduct({code, isHigh: true}));
+            setTimeout(() => {
+                getData();
+            }, 0);
+        },
+        [dispatch, getData, list, pkPinning]
+    );
+
+    const handlerHorizontalScroll = (curRef) => {
         const refArr = [
             headerRef,
             pkParamsRef,
@@ -86,6 +93,12 @@ const Compare = () => {
         };
     };
 
+    const handlerSyncParentDel = useCallback((code) => {
+        setList((val) => {
+            return val.filter((itm) => code !== itm.code);
+        });
+    }, []);
+
     return (
         <View style={styles.container}>
             <Header
@@ -93,21 +106,15 @@ const Compare = () => {
                 ref={headerRef}
                 data={list || []}
                 addFundButton={data?.add_fund_button}
-                onScroll={handlerScroll(headerRef)}
-                syncParentDel={(code) => {
-                    setList((val) => {
-                        return val.filter((itm) => code !== itm.code);
-                    });
-                }}
+                onScroll={handlerHorizontalScroll(headerRef)}
+                syncParentDel={handlerSyncParentDel}
             />
             <ScrollView
                 style={{flex: 1}}
                 bounces={false}
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={6}
-                onScroll={(e) => {
-                    setPageScroll(e.nativeEvent.contentOffset.y > 0);
-                }}>
+                onScroll={handlerPageScroll}>
                 <View style={{height: px(12)}} />
                 {list && (
                     <PKParams
@@ -115,21 +122,35 @@ const Compare = () => {
                         data={list}
                         weightButton={data.weight_button}
                         refresh={getData}
-                        onScroll={handlerScroll(pkParamsRef)}
+                        onScroll={handlerHorizontalScroll(pkParamsRef)}
                     />
                 )}
                 {/* 业绩表现 */}
                 {list && <PKAchivementChart fund_code_list={pkProducts} originPeriod={data?.default_period} />}
                 {/* 涨跌幅 */}
-                {list && <PKPriceRange data={list} ref={pkPriceRangeRef} onScroll={handlerScroll(pkPriceRangeRef)} />}
+                {list && (
+                    <PKPriceRange
+                        data={list}
+                        ref={pkPriceRangeRef}
+                        onScroll={handlerHorizontalScroll(pkPriceRangeRef)}
+                    />
+                )}
                 {/* 投资组合 */}
-                {list && <PKPortfolio data={list} ref={pkPortfolioRef} onScroll={handlerScroll(pkPortfolioRef)} />}
+                {list && (
+                    <PKPortfolio data={list} ref={pkPortfolioRef} onScroll={handlerHorizontalScroll(pkPortfolioRef)} />
+                )}
                 {/* 基金经理信息 */}
                 {list && (
-                    <PKManagerInfo data={list} ref={pkManagerInfoRef} onScroll={handlerScroll(pkManagerInfoRef)} />
+                    <PKManagerInfo
+                        data={list}
+                        ref={pkManagerInfoRef}
+                        onScroll={handlerHorizontalScroll(pkManagerInfoRef)}
+                    />
                 )}
                 {/* 基金信息 */}
-                {list && <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerScroll(pkFundInfoRef)} />}
+                {list && (
+                    <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerHorizontalScroll(pkFundInfoRef)} />
+                )}
                 <View style={{height: 120}} />
             </ScrollView>
             {loading ? (
