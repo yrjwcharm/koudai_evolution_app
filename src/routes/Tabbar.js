@@ -2,14 +2,13 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 19:41:20
+ * @LastEditTime: 2022-07-08 14:49:33
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {px, isIphoneX} from '../utils/appUtil';
-import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/index'; //资产页
@@ -51,22 +50,6 @@ export default function Tabbar() {
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
                                     source={require('../assets/img/tabIcon/mofang.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'Find') {
-                        if (focused) {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/faxianActive.png')}
-                                />
-                            );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/faxian.png')}
                                 />
                             );
                         }
@@ -150,9 +133,6 @@ export default function Tabbar() {
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
-            {userInfo?.toJS()?.show_find_tab ? (
-                <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
-            ) : null}
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
                     name="Vision"
