@@ -1,17 +1,17 @@
-import React, {useMemo} from 'react';
+import React, {forwardRef, useMemo} from 'react';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {px} from '~/utils/appUtil';
 import {Button} from './Button';
 import EmptyTip from './EmptyTip';
 
-// 暂不支持ref
-const NetInfoComponent = ({Component, ...props}) => {
+const NetInfoComponent = ({Component, _ref, ...props}) => {
     const netInfo = useNetInfo();
     const state = useMemo(() => {
         return netInfo.type === 'unknown' ? true : netInfo.isConnected;
     }, [netInfo]);
     return state ? (
-        <Component {...props} />
+        // 为避免复杂情况的重名，ref放到从props的_ref字段
+        <Component {...props} _ref={_ref} />
     ) : (
         <>
             <EmptyTip
@@ -25,4 +25,5 @@ const NetInfoComponent = ({Component, ...props}) => {
     );
 };
 
-export default (Component) => (props) => <NetInfoComponent Component={Component} {...props} />;
+export default (Component) =>
+    forwardRef((props, ref) => <NetInfoComponent {...props} Component={Component} _ref={ref} />);
