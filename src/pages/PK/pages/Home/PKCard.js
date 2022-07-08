@@ -93,7 +93,9 @@ const PKCard = ({data = {}}) => {
                             );
                         })}
                     </View>
-                    <RenderHtml html={data.tip} style={styles.pkParamsTip} />
+                    <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
+                        <RenderHtml html={data.tip} style={styles.pkParamsTip} />
+                    </View>
                     {data.btns && (
                         <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
@@ -184,11 +186,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     pkParamsTip: {
-        marginTop: px(16),
         fontSize: px(12),
         lineHeight: px(17),
         color: '#9AA0B1',
-        paddingHorizontal: px(19),
     },
     pkBtn: {
         backgroundColor: '#FFCC00',
