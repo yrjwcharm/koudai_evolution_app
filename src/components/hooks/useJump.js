@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 12:21:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-08 19:03:16
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {DeviceEventEmitter, Linking, Platform} from 'react-native';
+import {DeviceEventEmitter, Linking, Platform, Clipboard} from 'react-native';
 import {checkMultiple, openSettings, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
@@ -44,7 +44,7 @@ function useJump() {
                             return Toast.show(
                                 url.path?.indexOf?.('tel:') > -1
                                     ? `您的设备不支持该功能，请手动拨打 ${url.path?.split?.('tel:')[1]}`
-                                    : '您的设备不支持打开网址'
+                                    : '您的设备不支持打开该功能'
                             );
                         }
                         return Linking.openURL(url.path);
@@ -67,6 +67,9 @@ function useJump() {
             } else if (url.type === 6) {
                 // 弹出弹窗
                 const {popup = {}} = url;
+                if (popup?.clipboard) {
+                    Clipboard.setString(popup?.clipboard);
+                }
                 if (Object.keys(popup).length === 0) {
                     return false;
                 }
