@@ -18,7 +18,7 @@ import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
-import NetInfoComponent from '~/components/NetInfoComponent';
+import withNetState from '~/components/withNetState';
 
 const PKHome = ({navigation}) => {
     const insets = useSafeAreaInsets();
@@ -257,4 +257,4 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
 });
-export default NetInfoComponent(PKHome);
+export default withNetState(PKHome);

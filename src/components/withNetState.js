@@ -4,7 +4,7 @@ import {px} from '~/utils/appUtil';
 import {Button} from './Button';
 import EmptyTip from './EmptyTip';
 
-const NetInfoComponent = ({Component, _ref, ...props}) => {
+const NetStateComponent = ({Component, _ref, ...props}) => {
     const netInfo = useNetInfo();
     const state = useMemo(() => {
         return netInfo.type === 'unknown' ? true : netInfo.isConnected;
@@ -26,4 +26,4 @@ const NetInfoComponent = ({Component, _ref, ...props}) => {
 };
 
 export default (Component) =>
-    forwardRef((props, ref) => <NetInfoComponent {...props} Component={Component} _ref={ref} />);
+    forwardRef((props, ref) => <NetStateComponent {...props} Component={Component} _ref={ref} />);
