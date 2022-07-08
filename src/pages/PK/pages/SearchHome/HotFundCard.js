@@ -35,6 +35,7 @@ const HotFundCard = ({data, style, plateid}) => {
                     }}>
                     {data?.list?.map((_list, _index) => (
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             style={{width: px(148), marginBottom: px(16)}}
                             key={_index}
                             onPress={() => {
