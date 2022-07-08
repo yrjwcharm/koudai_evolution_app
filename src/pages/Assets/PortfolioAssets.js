@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-26 18:30:45
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-05 11:39:34
  */
 import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
@@ -509,26 +509,6 @@ export default function PortfolioAssets(props) {
                             </View>
                         ) : null}
                     </View>
-                    {/* 蒙层 */}
-                    {data.need_ds ? (
-                        <ImageBackground
-                            resizeMode="cover"
-                            source={{uri: card.ds_info.bg}}
-                            style={[styles.mark, {justifyContent: 'flex-end'}]}
-                            imageStyle={{borderRadius: px(6)}}>
-                            {card.ds_info.button ? (
-                                <Button
-                                    title={card.ds_info?.button?.text}
-                                    activeOpacity={0.8}
-                                    disabled={!card.ds_info?.button?.avail}
-                                    onPress={() => {
-                                        jump(card.ds_info.button.url);
-                                    }}
-                                    style={styles.markBtn}
-                                />
-                            ) : null}
-                        </ImageBackground>
-                    ) : null}
                 </View>
                 {card.group_bulletin && renderGroupBulletin(card.group_bulletin)}
             </>
