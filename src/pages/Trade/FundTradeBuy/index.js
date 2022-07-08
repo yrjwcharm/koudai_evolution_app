@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 15:49:21
+ * @LastEditTime: 2022-07-08 11:14:20
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -226,6 +226,8 @@ const Index = ({navigation, route}) => {
     };
 
     const buyClick = () => {
+        const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
+        global.LogTool({ctrl: code, event: 'buy_button_click', oid: `${method.pay_method},${amount}`});
         Keyboard.dismiss();
         passwordModal.current.show();
     };
@@ -242,6 +244,7 @@ const Index = ({navigation, route}) => {
     };
 
     useEffect(() => {
+        global.LogTool({ctrl: code, event: 'buy_detail_view'});
         getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({

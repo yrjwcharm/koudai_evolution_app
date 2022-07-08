@@ -2,11 +2,11 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 14:58:49
+ * @LastEditTime: 2022-07-08 18:27:48
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
-import {FlatList, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -98,6 +98,7 @@ const Index = ({route}) => {
 
     useEffect(() => {
         if (rank_type) {
+            global.LogTool({ctrl: rank_type, event: 'fund_fist'});
             getRankList({
                 page,
                 rank_type,
@@ -249,7 +250,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     tabsContainer: {
-        paddingHorizontal: Platform.select({android: px(8), ios: Space.padding}),
+        paddingHorizontal: Space.padding,
         paddingBottom: px(18),
         width: deviceWidth,
     },

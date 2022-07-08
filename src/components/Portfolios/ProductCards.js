@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 15:11:17
+ * @LastEditTime: 2022-07-08 18:41:01
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -72,7 +72,9 @@ const ManagerCard = () => (
                 <Text style={styles.subTitle}>{'交银品质增长一年混合A'}</Text>
                 <View style={[styles.rowEnd, {marginTop: px(4)}]}>
                     <Text style={[styles.profit, {marginRight: px(8)}]}>{'+18.67%'}</Text>
-                    <Text style={styles.label}>{'近一年收益率'}</Text>
+                    <Text style={[styles.label, {marginBottom: Platform.select({android: px(2), ios: 0})}]}>
+                        {'近一年收益率'}
+                    </Text>
                 </View>
             </View>
             <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
@@ -84,7 +86,9 @@ const ManagerCard = () => (
                 <Text style={styles.subTitle}>{'交银品质增长一年混合A'}</Text>
                 <View style={[styles.rowEnd, {marginTop: px(4)}]}>
                     <Text style={[styles.profit, {marginRight: px(8)}]}>{'+18.67%'}</Text>
-                    <Text style={styles.label}>{'近一年收益率'}</Text>
+                    <Text style={[styles.label, {marginBottom: Platform.select({android: px(2), ios: 0})}]}>
+                        {'近一年收益率'}
+                    </Text>
                 </View>
             </View>
             <TouchableOpacity activeOpacity={0.8} style={styles.btnBox}>
@@ -181,7 +185,13 @@ const RankCard = ({data = {}, isPking}) => {
                 <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                     <View style={tags?.length > 0 ? styles.rowEnd : {}}>
                         <HTML html={yield_info.value} style={styles.profit} />
-                        <Text style={[styles.label, tags?.length > 0 ? {marginLeft: px(8)} : {marginTop: px(2)}]}>
+                        <Text
+                            style={[
+                                styles.label,
+                                tags?.length > 0
+                                    ? {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)}
+                                    : {marginTop: px(2)},
+                            ]}>
                             {yield_info.text}
                         </Text>
                     </View>
@@ -268,7 +278,13 @@ const RecommendCard = ({data = {}, isPking}) => {
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                         <View style={tags?.length > 0 ? styles.rowEnd : {}}>
                             <HTML html={yield_info.value} style={styles.profit} />
-                            <Text style={[styles.label, tags?.length > 0 ? {marginLeft: px(8)} : {marginTop: px(2)}]}>
+                            <Text
+                                style={[
+                                    styles.label,
+                                    tags?.length > 0
+                                        ? {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)}
+                                        : {marginTop: px(2)},
+                                ]}>
                                 {yield_info.text}
                             </Text>
                         </View>
@@ -334,7 +350,13 @@ const DefaultCard = ({data = {}, isPking}) => {
                 {yield_info ? (
                     <View style={rank_info ? {} : styles.rowEnd}>
                         <HTML html={yield_info.value} style={styles.profit} />
-                        <Text style={[styles.label, rank_info ? {marginTop: px(2)} : {marginLeft: px(8)}]}>
+                        <Text
+                            style={[
+                                styles.label,
+                                rank_info
+                                    ? {marginTop: px(2)}
+                                    : {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)},
+                            ]}>
                             {yield_info.text}
                         </Text>
                     </View>

@@ -2,11 +2,11 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 16:57:31
+ * @LastEditTime: 2022-07-08 18:19:53
  * @Description: 公募基金首页榜单渲染组件
  */
 import React, {useRef} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -16,7 +16,7 @@ import {useJump} from '~/components/hooks';
 import RenderCate from '~/pages/Vision/components/RenderCate';
 import {deviceWidth, px} from '~/utils/appUtil';
 
-export default ({data = {}, scene, onLayout}) => {
+export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
     const jump = useJump();
     const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
     const pageRef = useRef(0);
@@ -64,9 +64,12 @@ export default ({data = {}, scene, onLayout}) => {
             ) : tabs?.length > 0 ? (
                 <ScrollableTabView
                     initialPage={0}
-                    onChangeTab={(value) => (pageRef.current = value.i)}
+                    onChangeTab={(value) => {
+                        pageRef.current = value.i;
+                        pointKey && global.LogTool({ctrl: value.i + 1, event: pointKey});
+                    }}
                     prerenderingSiblingsNumber={Infinity}
-                    renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}
+                    renderTabBar={() => <CapsuleTabbar boxStyle={[styles.tabsContainer, tabsStyle]} />}
                     style={{flex: 1}}>
                     {tabs.map((tab) => {
                         const {items: tabItems = [], rank_type, title: tabTitle} = tab;
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     tabsContainer: {
         marginTop: px(8),
         marginLeft: -Space.marginAlign,
-        paddingHorizontal: Platform.select({android: px(8), ios: Space.padding}),
+        paddingHorizontal: Space.padding,
         width: deviceWidth,
     },
     liveContainer: {

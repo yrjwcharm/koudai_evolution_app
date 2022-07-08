@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 15:04:25
+ * @LastEditTime: 2022-07-08 14:37:42
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -227,6 +227,7 @@ const Index = ({navigation, route}) => {
     const changePeriod = useCallback(
         debounce(
             (p) => {
+                global.LogTool({ctrl: p, event: 'fund_timeclassification'});
                 setActivePeriod(p);
             },
             500,
@@ -253,6 +254,7 @@ const Index = ({navigation, route}) => {
         <View style={styles.container}>
             <ScrollableTabView
                 initialPage={activeTab}
+                onChangeTab={({i}) => global.LogTool({ctrl: i + 1, event: 'fund_classification'})}
                 // prerenderingSiblingsNumber={1}
                 renderTabBar={() => <TabBar boxStyle={{backgroundColor: '#fff'}} btnColor={Colors.defaultColor} />}
                 style={{flex: 1}}>

@@ -2,10 +2,10 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 14:45:35
+ * @LastEditTime: 2022-07-08 18:13:35
  * @Description: 基金详情
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Linking, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Image from 'react-native-fast-image';
@@ -23,6 +23,7 @@ import {getPageData} from './services';
 import {SERVER_URL} from '~/services/config';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import URI from 'urijs';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Index = ({navigation, route}) => {
     const dispatch = useDispatch();
@@ -169,10 +170,12 @@ const Index = ({navigation, route}) => {
         }
     };
 
-    useEffect(() => {
-        init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     return (
         <View style={styles.container}>

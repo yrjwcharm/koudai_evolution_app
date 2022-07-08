@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 10:25:16
+ * @LastEditTime: 2022-07-08 18:48:42
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -34,7 +34,10 @@ const TopMenu = ({data = []}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={index}
-                        onPress={() => jump(url)}
+                        onPress={() => {
+                            global.LogTool({ctrl: index + 1, event: 'fund_clicktab'});
+                            jump(url);
+                        }}
                         style={[
                             styles.menuItemBox,
                             index === arr.length - 1 ? {marginRight: 2 * Space.marginAlign} : {},
@@ -73,7 +76,13 @@ const SwiperCom = ({data = []}) => {
                 {data.map((item, index) => {
                     const {button, code, name, plate_id, rank_tag, rec_json, tags, title, yield_info} = item;
                     return (
-                        <View key={name + index}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
+                                jump(button?.url || '');
+                            }}
+                            key={name + index}>
                             <LinearGradient
                                 colors={['#FFF7EC', '#FFFFFF']}
                                 start={{x: 0, y: 0}}
@@ -92,7 +101,7 @@ const SwiperCom = ({data = []}) => {
                                 ) : null}
                                 <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
                                     {yield_info?.text ? (
-                                        <View style={[Style.flexCenter, {marginRight: px(40), marginLeft: px(20)}]}>
+                                        <View style={[Style.flexCenter, {marginRight: px(40)}]}>
                                             <HTML html={yield_info.value} style={styles.profit} />
                                             <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
                                         </View>
@@ -116,7 +125,7 @@ const SwiperCom = ({data = []}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
-                                            global.LogTool({ctrl: code, event: 'PF_banner_show', plate_id, rec_json});
+                                            global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
                                             jump(button.url);
                                         }}
                                         style={[Style.flexRowCenter, styles.sliderBtn]}>
@@ -127,7 +136,7 @@ const SwiperCom = ({data = []}) => {
                                     </TouchableOpacity>
                                 ) : null}
                             </LinearGradient>
-                        </View>
+                        </TouchableOpacity>
                     );
                 })}
             </Swiper>
@@ -173,12 +182,14 @@ const Index = ({navigation, route}) => {
                 <LinearGradient
                     colors={['#FFFFFF', '#F4F5F7']}
                     start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.2}}
+                    end={{x: 0, y: 0.05}}
                     style={styles.bottomContainer}>
                     <View style={{paddingHorizontal: Space.padding}}>
                         {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
                         {sub_list?.length > 0 ? (
-                            sub_list.map((item, index) => <RenderPart data={item} key={index} />)
+                            sub_list.map((item, index) => (
+                                <RenderPart data={item} key={index} pointKey={'fund_featurestab'} />
+                            ))
                         ) : (
                             <Image source={{uri: un_buy_img}} style={styles.blocked} />
                         )}
@@ -209,8 +220,8 @@ const styles = StyleSheet.create({
         minWidth: px(48),
     },
     menuIcon: {
-        width: px(24),
-        height: px(24),
+        width: px(32),
+        height: px(32),
     },
     menuItemText: {
         marginTop: px(8),
