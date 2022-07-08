@@ -55,7 +55,9 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
-                {pkPinning ? <ValuePart item={data.find((itm) => itm.code === pkPinning) || {}} key={-1} /> : null}
+                {pkPinning ? (
+                    <ValuePart item={data.find((itm) => itm.code === pkPinning)} key={-1 + pkPinning} />
+                ) : null}
                 <ScrollView
                     style={{flex: 1}}
                     bounces={false}
@@ -83,7 +85,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
                         {data
                             .filter((item) => item.code !== pkPinning)
                             .map((item, idx) => (
-                                <ValuePart item={item || {}} key={idx} />
+                                <ValuePart item={item} key={idx + item.code} />
                             ))}
                     </View>
                     {/* 补位 */}
@@ -98,7 +100,10 @@ const _PKManagerInfo = connect((state) => ({pkPinning: state.pkPinning}))(PKMana
 
 export default forwardRef((props, ref) => <_PKManagerInfo {...props} _ref={ref} />);
 
-const ValuePart = ({item: {manager_list = []}}) => {
+const ValuePart = React.memo(({item}) => {
+    const manager_list = useMemo(() => {
+        return item?.manager_list || [];
+    }, [item]);
     const [active, setActive] = useState(manager_list?.[0]?.name);
     const [visible, setVisible] = useState(false);
     const obj = useMemo(() => {
@@ -148,7 +153,7 @@ const ValuePart = ({item: {manager_list = []}}) => {
             </View>
         </>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
