@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 14:59:59
+ * @LastEditTime: 2022-07-08 14:50:05
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -32,7 +32,6 @@ const SearchContent = ({data}) => {
     };
     const onPk = () => {
         dispatch(addProduct(data.code));
-        jump(data?.url);
     };
     return (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>

@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 18:08:07
+ * @LastEditTime: 2022-07-08 14:53:26
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -19,7 +19,7 @@ import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
 import PKBall from '~/pages/PK/components/PKBall';
-
+import EmptyTip from '~/components/EmptyTip';
 const Index = () => {
     const [data, setData] = useState({});
     const {keyword_history = []} = data;
@@ -105,7 +105,7 @@ const Index = () => {
                     // 搜索结果
                     searchLoading ? (
                         <LoadingTips size={px(18)} />
-                    ) : (
+                    ) : searchList?.length > 0 ? (
                         searchList?.map((item, key) => (
                             <View key={key}>
                                 {item.title ? (
@@ -116,6 +116,8 @@ const Index = () => {
                                 ))}
                             </View>
                         ))
+                    ) : (
+                        <EmptyTip text={'暂无记录'} />
                     )
                 ) : (
                     <>
