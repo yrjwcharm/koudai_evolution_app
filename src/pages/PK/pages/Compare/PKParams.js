@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     labelsWrap: {
         width: px(87),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     labelPart: {},
     labelWrap: {
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     valuesWrap: {
         width: px(124),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     valuePart: {},
     valueWrap: {

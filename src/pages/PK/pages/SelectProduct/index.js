@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(4),
         backgroundColor: '#fff',
         borderRadius: 2,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '#BDC2CC',
         height: px(19),
         justifyContent: 'center',

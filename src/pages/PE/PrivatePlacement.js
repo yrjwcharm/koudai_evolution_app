@@ -99,8 +99,8 @@ const PrivatePlacement = () => {
                         ))}
                     </View>
                 </View>
+                <View style={{height: px(30)}} />
             </ScrollView>
-            <View style={{height: px(30)}} />
             {data.bottom ? (
                 <View style={[styles.bottomWrap, {paddingBottom: px(isIphoneX() ? 34 : 8)}]}>
                     <View style={Style.flexRow}>
@@ -111,7 +111,7 @@ const PrivatePlacement = () => {
                     {data.bottom.button && (
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            disabled={data.bottom.button.avail}
+                            disabled={!data.bottom.button.avail}
                             style={styles.bottomBtn}
                             onPress={() => {
                                 jump(data.bottom.button.url);
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     },
     swiperMiddleTag: {
         borderRadius: 3,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '#AD9064',
         paddingHorizontal: px(2),
         paddingVertical: px(4),
