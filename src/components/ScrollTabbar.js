@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 15:22:40
+ * @LastEditTime: 2022-07-11 10:48:54
  * @Description:
  */
 
@@ -34,13 +34,13 @@ class ScrollTabbar extends Component {
         //Tab显示区左边界
         this.underlineWidth = px(20);
     }
-    componentWillReceiveProps(nextProps) {
-        // this.scrollToIndex(nextProps.activeTab);
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        this.scrollToIndex(nextProps.activeTab);
     }
     componentDidMount() {
-        // setTimeout(() => {
-        //     this.scrollToIndex(this.props.activeTab);
-        // }, 100);
+        setTimeout(() => {
+            this.scrollToIndex(this.props.activeTab);
+        }, 100);
     }
     scrollToIndex = (index) => {
         setTimeout(() => {
