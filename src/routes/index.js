@@ -225,6 +225,7 @@ import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // �
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
 import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
+import Find from '~/pages/Find'; // 投顾组合
 
 const Stack = createStackNavigator();
 
@@ -814,6 +815,7 @@ export default function AppStack() {
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
             <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
             <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
+            <Stack.Screen name="Find" component={Find} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:19:53
+ * @LastEditTime: 2022-07-11 11:35:56
  * @Description: 公募基金首页榜单渲染组件
  */
 import React, {useRef} from 'react';
@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import CapsuleTabbar from '~/components/CapsuleTabbar';
+import Empty from '~/components/EmptyTip';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import {useJump} from '~/components/hooks';
 import RenderCate from '~/pages/Vision/components/RenderCate';
@@ -75,13 +76,17 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
                         const {items: tabItems = [], rank_type, title: tabTitle} = tab;
                         return (
                             <View key={rank_type} tabLabel={tabTitle}>
-                                {tabItems.map((item, index) => (
-                                    <ProductCards
-                                        data={item}
-                                        key={index}
-                                        style={index === 0 ? {marginTop: px(8)} : {}}
-                                    />
-                                ))}
+                                {tabItems?.length > 0 ? (
+                                    tabItems.map((item, index) => (
+                                        <ProductCards
+                                            data={item}
+                                            key={index}
+                                            style={index === 0 ? {marginTop: px(8)} : {}}
+                                        />
+                                    ))
+                                ) : (
+                                    <Empty text={'暂无基金数据'} />
+                                )}
                             </View>
                         );
                     })}
