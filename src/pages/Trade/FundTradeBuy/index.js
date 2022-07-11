@@ -2,10 +2,10 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 11:01:08
+ * @LastEditTime: 2022-07-11 19:26:24
  * @Description: 基金购买
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     ActivityIndicator,
     Keyboard,
@@ -16,6 +16,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -250,18 +251,20 @@ const Index = ({navigation, route}) => {
         });
     };
 
-    useEffect(() => {
-        global.LogTool({ctrl: code, event: 'buy_detail_view'});
-        getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({
-                    title: res.result.title || '买入',
-                });
-                setData(res.result);
-            }
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            global.LogTool({ctrl: code, event: 'buy_detail_view'});
+            getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
+                if (res.code === '000000') {
+                    navigation.setOptions({
+                        title: res.result.title || '买入',
+                    });
+                    setData(res.result);
+                }
+            });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     useEffect(() => {
         if (pay_methods.length > 0) {
