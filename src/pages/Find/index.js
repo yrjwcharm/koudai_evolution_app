@@ -1,23 +1,24 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Platform} from 'react-native';
-import {deviceWidth, px} from '../../utils/appUtil';
-import {Colors, Space, Style, Font} from '../../common/commonStyle';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {deviceWidth, px} from '~/utils/appUtil';
+import {Colors, Space, Style, Font} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
-import BottomDesc from '../../components/BottomDesc';
-import LoginMask from '../../components/LoginMask';
-import http from '../../services';
-import {useJump} from '../../components/hooks';
+import BottomDesc from '~/components/BottomDesc';
+import LoginMask from '~/components/LoginMask';
+import http from '~/services';
+import {useJump} from '~/components/hooks';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import Empty from '../../components/EmptyTip';
-import {Button} from '../../components/Button';
-import LazyImage from '../../components/LazyImage';
-import PortfolioCard from '../../components/Portfolios/PortfolioCard';
-import HTML from '../../components/RenderHtml';
+import Empty from '~/components/EmptyTip';
+import {Button} from '~/components/Button';
+import LazyImage from '~/components/LazyImage';
+import ProductCards from '~/components/Portfolios/ProductCards';
+import HTML from '~/components/RenderHtml';
+
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -54,7 +55,7 @@ const Index = (props) => {
     const snapScroll = useRef(null);
     const getData = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
-        http.get('/discovery/index/20210101')
+        http.get('/discovery/index/20220711')
             .then((res) => {
                 setRefreshing(false);
                 setLoading(false);
@@ -253,8 +254,16 @@ const Index = (props) => {
                         )}
                         {data?.group_list?.map((item, index) => {
                             return (
-                                <View style={{paddingHorizontal: px(16)}} key={index}>
-                                    <Text style={[styles.large_title]}>{item?.group_name}</Text>
+                                <View style={{paddingHorizontal: px(16)}} key={item.group_name + index}>
+                                    <Text
+                                        style={[
+                                            styles.large_title,
+                                            index === 0
+                                                ? {marginTop: 0, marginBottom: 0}
+                                                : {marginTop: Space.marginVertical, marginBottom: 0},
+                                        ]}>
+                                        {item?.group_name}
+                                    </Text>
                                     {item?.img ? (
                                         <FastImage
                                             source={{uri: item?.img}}
@@ -262,7 +271,7 @@ const Index = (props) => {
                                         />
                                     ) : (
                                         item?.plans?.map((_item, _index) => (
-                                            <PortfolioCard data={_item} key={_index} style={{marginBottom: px(12)}} />
+                                            <ProductCards data={_item} key={_item.plan_id} />
                                         ))
                                     )}
                                 </View>
