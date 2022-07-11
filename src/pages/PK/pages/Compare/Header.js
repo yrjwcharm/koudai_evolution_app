@@ -67,7 +67,8 @@ const Header = (props) => {
                 <View
                     style={styles.groupItemFooter}
                     onLayout={(e) => {
-                        setFooterHeight(e.nativeEvent.layout.height);
+                        let height = e.nativeEvent.layout.height;
+                        footerHeight < height && setFooterHeight(height);
                     }}>
                     {props.pageScroll && item.buy_button ? (
                         <TouchableOpacity
