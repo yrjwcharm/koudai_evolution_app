@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 11:14:20
+ * @LastEditTime: 2022-07-11 11:01:08
  * @Description: 基金购买
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -91,10 +91,12 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
 };
 
 const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = {}, setIsLarge}) => {
+    const jump = useJump();
     const {bank_icon, bank_name, bank_no, limit_desc} = pay_method;
     const {
         bank_icon: large_bank_icon,
         bank_name: large_bank_name,
+        button,
         large_pay_tip,
         limit_desc: large_limit_desc,
     } = large_pay_method;
@@ -148,10 +150,15 @@ const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = 
                                     <Text style={[styles.desc, {marginTop: px(4)}]}>{large_limit_desc}</Text>
                                 </View>
                             </View>
-                            <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, styles.useBtn]}>
-                                <Text style={[styles.desc, styles.useText]}>{'去使用'}</Text>
-                                <FontAwesome color={'#FF7D41'} name={'angle-right'} size={16} />
-                            </TouchableOpacity>
+                            {button?.text ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(button.url)}
+                                    style={[Style.flexRow, styles.useBtn]}>
+                                    <Text style={[styles.desc, styles.useText]}>{button.text}</Text>
+                                    <FontAwesome color={'#FF7D41'} name={'angle-right'} size={16} />
+                                </TouchableOpacity>
+                            ) : null}
                         </View>
                     </View>
                     {large_pay_tip ? (

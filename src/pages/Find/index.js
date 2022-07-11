@@ -58,11 +58,16 @@ const Index = (props) => {
             .then((res) => {
                 setRefreshing(false);
                 setLoading(false);
-                SetData(res.result);
+                if (res.code === '000000') {
+                    props.navigation.setOptions({title: res.result.title || '投顾组合'});
+                    SetData(res.result);
+                }
             })
-            .catch(() => {
+            .finally(() => {
+                setRefreshing(false);
                 setLoading(false);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const renderLoading = () => {
         return (
@@ -93,10 +98,11 @@ const Index = (props) => {
             <>
                 {!userInfo.toJS().is_login && <LoginMask />}
 
-                <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
+                {/* <View style={{backgroundColor: '#fff', paddingTop: inset.top}} /> */}
                 <ScrollView
                     style={{backgroundColor: Colors.bgColor}}
                     scrollEventThrottle={16}
+                    scrollIndicatorInsets={{right: 1}}
                     ref={snapScroll}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
                     <View style={styles.container}>
@@ -105,9 +111,9 @@ const Index = (props) => {
                             end={{x: 0, y: 1}}
                             colors={['#fff', '#F5F6F8']}
                             style={{paddingHorizontal: Space.padding}}>
-                            <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
+                            {/* <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
-                            </View>
+                            </View> */}
 
                             {/* 今日推荐 */}
 
@@ -299,6 +305,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
     },
     recommend: {
+        marginTop: Space.marginVertical,
         borderRadius: 8,
         marginBottom: px(20),
     },
