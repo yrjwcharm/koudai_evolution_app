@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 14:53:26
+ * @LastEditTime: 2022-07-11 15:35:50
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -109,7 +109,13 @@ const Index = () => {
                         searchList?.map((item, key) => (
                             <View key={key}>
                                 {item.title ? (
-                                    <Text style={[styles.title_text, {marginBottom: px(12)}]}>{item.title}</Text>
+                                    <Text
+                                        style={[
+                                            styles.title_text,
+                                            {marginBottom: px(12), marginTop: key != 0 ? px(20) : 0},
+                                        ]}>
+                                        {item.title}
+                                    </Text>
                                 ) : null}
                                 {item?.list?.map((_list, index) => (
                                     <SearchContent data={_list} key={index} />
