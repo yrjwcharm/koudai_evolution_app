@@ -4,11 +4,12 @@
  */
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import AssetHeaderCard from './AssetHeaderCard';
 
 const Index = () => {
     return (
         <View>
-            <Text>index</Text>
+            <AssetHeaderCard />
         </View>
     );
 };

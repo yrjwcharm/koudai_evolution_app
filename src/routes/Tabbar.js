@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 14:49:33
+ * @LastEditTime: 2022-07-11 14:32:52
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -11,7 +11,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {px, isIphoneX} from '../utils/appUtil';
 import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision'; //视野
-import Home from '../pages/Assets/index'; //资产页
+import Home from '../pages/Assets/Asset'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
 import Attention from '~/pages/Attention/Index'; //关注
 import {Colors} from '../common/commonStyle';
