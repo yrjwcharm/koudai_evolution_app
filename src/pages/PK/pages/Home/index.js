@@ -204,8 +204,6 @@ const PKHome = ({navigation}) => {
                     </LinearGradient>
                 </ScrollView>
                 <PKBall />
-                {/* <PKCollectUserInterest /> */}
-                {/* <PKWeightSet /> */}
             </View>
             {!userInfo.toJS().is_login && <LoginMask />}
         </>
