@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 14:46:23
+ * @LastEditTime: 2022-07-11 11:30:45
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
@@ -89,7 +89,7 @@ const Attention = ({navigation}) => {
                 {/* 列表 */}
 
                 {data?.follow?.tabs && (
-                    <View style={{backgroundColor: '#fff'}}>
+                    <View style={{backgroundColor: '#fff', marginBottom: px(20)}}>
                         <ScrollableTabView
                             prerenderingSiblingsNumber={data?.follow?.tabs?.length}
                             locked={Platform.OS == 'android'}
