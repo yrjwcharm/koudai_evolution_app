@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:27:48
+ * @LastEditTime: 2022-07-11 12:02:52
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -78,8 +78,8 @@ const Index = ({route}) => {
                     ListFooterComponent={renderFooter}
                     ListEmptyComponent={renderEmpty}
                     onEndReached={onEndReached}
-                    onEndReachedThreshold={0.5}
-                    onRefresh={() => setPage(1)}
+                    onEndReachedThreshold={0.1}
+                    onRefresh={() => (page > 1 ? setPage(1) : getData())}
                     onScroll={({
                         nativeEvent: {
                             contentOffset: {y},
@@ -87,7 +87,6 @@ const Index = ({route}) => {
                     }) => setScrollY(y)}
                     refreshing={refreshing}
                     renderItem={renderItem}
-                    scrollEventThrottle={16}
                     scrollIndicatorInsets={{right: 1}}
                     style={styles.flatList}
                 />
@@ -96,37 +95,53 @@ const Index = ({route}) => {
         );
     };
 
-    useEffect(() => {
+    const getData = () => {
         if (rank_type) {
-            global.LogTool({ctrl: rank_type, event: 'fund_fist'});
             getRankList({
                 page,
                 rank_type,
-            }).then((res) => {
-                if (res.code === '000000') {
-                    const {has_more, head_pic, list: _list = []} = res.result;
+            })
+                .then((res) => {
+                    if (res.code === '000000') {
+                        const {has_more, head_pic, list: _list = []} = res.result;
+                        setShowEmpty(true);
+                        setRefreshing(false);
+                        setHasMore(has_more);
+                        setHeadImg(head_pic);
+                        setTitle(res.result.title);
+                        if (page === 1) {
+                            setList(_list);
+                        } else {
+                            setList((prev) => [...prev, ..._list]);
+                        }
+                    }
+                })
+                .finally(() => {
                     setShowEmpty(true);
                     setRefreshing(false);
-                    setHasMore(has_more);
-                    setHeadImg(head_pic);
-                    setTitle(res.result.title);
-                    if (page === 1) {
-                        setList(_list);
-                    } else {
-                        setList((prev) => [...prev, ..._list]);
-                    }
-                }
-            });
+                });
         } else {
-            getFeatureList().then((res) => {
-                if (res.code === '000000') {
+            getFeatureList()
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setShowEmpty(true);
+                        const {header_pic, items = []} = res.result;
+                        setHeadImg(header_pic);
+                        setList(items);
+                    }
+                })
+                .finally(() => {
                     setShowEmpty(true);
-                    const {header_pic, items = []} = res.result;
-                    setHeadImg(header_pic);
-                    setList(items);
-                }
-            });
+                });
         }
+    };
+
+    useEffect(() => {
+        rank_type && global.LogTool({ctrl: rank_type, event: 'fund_fist'});
+    }, [rank_type]);
+
+    useEffect(() => {
+        getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
