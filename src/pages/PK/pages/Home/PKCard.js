@@ -93,20 +93,22 @@ const PKCard = ({data = {}}) => {
                             );
                         })}
                     </View>
-                    <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
-                        <RenderHtml html={data.tip} style={styles.pkParamsTip} />
-                    </View>
+                    {data.tip ? (
+                        <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
+                            <RenderHtml html={data.tip} style={styles.pkParamsTip} />
+                        </View>
+                    ) : null}
                     {data.btns && (
                         <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
                         </TouchableOpacity>
                     )}
                 </View>
-            ) : (
+            ) : data.tip ? (
                 <View style={styles.pkTipWrap}>
                     <RenderHtml html={data.tip} style={styles.pkTipText} />
                 </View>
-            )}
+            ) : null}
         </View>
     );
 };
