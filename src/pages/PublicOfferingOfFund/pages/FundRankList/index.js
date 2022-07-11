@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 12:02:52
+ * @LastEditTime: 2022-07-11 17:29:14
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -137,7 +137,7 @@ const Index = ({route}) => {
     };
 
     useEffect(() => {
-        rank_type && global.LogTool({ctrl: rank_type, event: 'fund_fist'});
+        global.LogTool({ctrl: rank_type || 'mofang', event: 'view'});
     }, [rank_type]);
 
     useEffect(() => {
