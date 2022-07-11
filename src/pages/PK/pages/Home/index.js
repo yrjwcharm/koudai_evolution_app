@@ -31,7 +31,7 @@ const handlerItemsLog = (items, data) => {
                     {
                         event: 'rec_click',
                         rec_json: data.rec_json,
-                        platId: data.plateid,
+                        plate_id: data.plateid,
                     },
                     null,
                     items?.map?.((t) => t.code || t.plan_id)?.join?.()
