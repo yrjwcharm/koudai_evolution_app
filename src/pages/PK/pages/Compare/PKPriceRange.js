@@ -123,11 +123,10 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
 
     const genSup = () => {
         if (data?.length > 5) return null;
-        const obj = data?.[0]?.yield_info || {};
         const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5};
         return (
             <View style={{width: px(40)}}>
-                {new Array(Object.keys(obj).length).fill('').map((_, idx) => (
+                {new Array(7).fill('').map((_, idx) => (
                     <View key={idx} style={{height: px(45), ...border}} />
                 ))}
             </View>

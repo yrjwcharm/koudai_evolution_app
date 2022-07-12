@@ -13,6 +13,7 @@ import {BoxShadow} from 'react-native-shadow';
 import {pkIntroduce} from '../../services';
 import Toast from '~/components/Toast';
 import {useJump} from '~/components/hooks';
+import RenderHtml from '~/components/RenderHtml';
 
 const Introduce = () => {
     const jump = useJump();
@@ -70,8 +71,10 @@ const Introduce = () => {
                             uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-bg.png',
                         }}
                         style={styles.card}>
-                        <Text style={styles.questionTitle}>{data.introduce.title}</Text>
-                        <Text style={styles.questionAnswer}>{data.introduce.content}</Text>
+                        <Text style={styles.questionTitle}>{data.introduce?.title}</Text>
+                        <View style={{marginTop: px(12)}}>
+                            <RenderHtml html={data.introduce?.content} style={styles.questionAnswer} />
+                        </View>
                         <View style={styles.pkDetail}>
                             {/* pk info */}
                             <ImageBackground
@@ -225,7 +228,6 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     questionAnswer: {
-        marginTop: px(12),
         fontSize: px(12),
         lineHeight: px(17),
         color: '#545968',

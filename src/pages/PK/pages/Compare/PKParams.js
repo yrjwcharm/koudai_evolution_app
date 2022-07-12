@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Switch, TouchableOpacity, DeviceEventEmitter} from 'react-native';
+import {View, Text, StyleSheet, Switch, TouchableOpacity, DeviceEventEmitter, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
@@ -303,13 +303,15 @@ const LabelPart = ({item, idx, expand, onChange}) => {
                     thumbColor={'#fff'}
                     trackColor={{false: '#CCD0DB', true: '#0051CC'}}
                     value={value}
-                    style={{
-                        width: px(28),
-                        height: px(18),
-                        transform: [{scale: 0.7}],
-                        left: px(-9.8),
-                        top: px(-1.3),
-                    }}
+                    style={[
+                        {
+                            width: px(28),
+                            height: px(18),
+                        },
+                        Platform.OS === 'ios'
+                            ? {transform: [{scale: 0.7}], left: px(-9.8), top: px(-1.3)}
+                            : {marginTop: 2},
+                    ]}
                     onValueChange={onValueChange}
                 />
             </View>
