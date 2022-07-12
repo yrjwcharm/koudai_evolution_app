@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 10:48:54
+ * @LastEditTime: 2022-07-12 08:52:06
  * @Description:
  */
 
@@ -85,6 +85,10 @@ class ScrollTabbar extends Component {
         const inputRange = [];
         const outputRange = [];
         for (var i = 0; i < numberOfTabs; i++) {
+            if (numberOfTabs == 1) {
+                inputRange.push(i);
+                outputRange.push(this.tabsLayouts[i]?.left || 0);
+            }
             inputRange.push(i);
             outputRange.push(this.tabsLayouts[i]?.left || 0);
         }

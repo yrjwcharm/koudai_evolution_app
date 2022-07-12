@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:41:01
+ * @LastEditTime: 2022-07-12 14:12:06
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -204,7 +204,7 @@ const RankCard = ({data = {}, isPking}) => {
                                 styles.btnBox,
                                 button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                             ]}>
-                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                 {isPking ? 'PK中' : button.text}
                             </Text>
                         </TouchableOpacity>
@@ -245,12 +245,12 @@ const RecommendCard = ({data = {}, isPking}) => {
                             ) : null}
                             {leftLabel[1] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel2]}>
-                                    <Text style={styles.leftLabel2Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel2Text}>{leftLabel[1]}</Text>
                                 </View>
                             ) : null}
                             {leftLabel[2] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel3]}>
-                                    <Text style={styles.leftLabel3Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel3Text}>{leftLabel[2]}</Text>
                                 </View>
                             ) : null}
                         </>
@@ -301,7 +301,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                                     styles.btnBox,
                                     button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                                 ]}>
-                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                     {btnText}
                                 </Text>
                             </TouchableOpacity>
@@ -381,7 +381,7 @@ const DefaultCard = ({data = {}, isPking}) => {
                             styles.btnBox,
                             button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                         ]}>
-                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{btnText}</Text>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>{btnText}</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>

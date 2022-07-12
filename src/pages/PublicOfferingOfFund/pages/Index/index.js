@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 12:05:14
+ * @LastEditTime: 2022-07-12 13:21:12
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -58,7 +58,7 @@ const SwiperCom = ({data = []}) => {
     useEffect(() => {
         if (data[0]) {
             const {code, plate_id, rec_json} = data[0];
-            global.LogTool({ctrl: code, event: 'PF_banner_show', plate_id, rec_json});
+            global.LogTool({ctrl: code, event: 'PF_banner_show', plateid: plate_id, rec_json});
         }
     }, [data]);
 
@@ -79,7 +79,7 @@ const SwiperCom = ({data = []}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
-                                global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
+                                global.LogTool({ctrl: code, event: 'PF_banner_click', plateid: plate_id, rec_json});
                                 jump(button?.url || '');
                             }}
                             key={name + index}>
@@ -125,7 +125,12 @@ const SwiperCom = ({data = []}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
-                                            global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
+                                            global.LogTool({
+                                                ctrl: code,
+                                                event: 'PF_banner_click',
+                                                plateid: plate_id,
+                                                rec_json,
+                                            });
                                             jump(button.url);
                                         }}
                                         style={[Style.flexRowCenter, styles.sliderBtn]}>
