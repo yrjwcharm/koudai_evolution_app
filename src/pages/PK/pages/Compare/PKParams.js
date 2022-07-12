@@ -21,6 +21,13 @@ const handlerDefaultExpandParts = (data) => {
     );
 };
 
+const handlerDefaultTotalScoreMap = (data) => {
+    return data.reduce((memo, cur) => {
+        memo[cur.code] = cur.total_score_info;
+        return memo;
+    }, {});
+};
+
 const handlerDefaultParamItemBest = (data) => {
     let obj = {};
     data?.forEach((item) => {
@@ -52,7 +59,7 @@ const handlerDefaultParamItemBest = (data) => {
 const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     const [expand, setExpand] = useState(false);
     const [expandParts, setExpandParts] = useState([]);
-    const [scoreDiff, setScoreDiff] = useState({});
+    const [totalScoreMap, setTotalScoreMap] = useState({});
     const [paramItemBest, setParamItemBest] = useState({});
 
     const scrolling = useRef(null);
@@ -69,6 +76,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
 
     useEffect(() => {
         setExpandParts(handlerDefaultExpandParts(data));
+        setTotalScoreMap(handlerDefaultTotalScoreMap(data));
         setParamItemBest(handlerDefaultParamItemBest(data));
     }, [data]);
 
@@ -92,24 +100,44 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                         key={idx + item.name}
                         idx={idx}
                         expand={expand}
-                        onChange={(state, name) => {
-                            global.LogTool('PKContrast_ComparisonItemSwitch', name);
+                        onChange={(state, itm) => {
+                            global.LogTool('PKContrast_ComparisonItemSwitch', itm.name);
+                            postPKWeightSwitch({
+                                open_status: +state,
+                                type: item.type,
+                                fund_code_list: Object.keys(totalScoreMap || {}).join(),
+                            }).then((res) => {
+                                if (res.code === '000000') {
+                                    // 更新总分
+                                    setTotalScoreMap(res.result);
+                                    // 更新展示 总分中最高的分数
+                                    const ts = {value: 0, code: ''};
+                                    for (let code in res.result) {
+                                        let total = res.result[code];
+                                        if (total === ts.value) {
+                                            ts.code = '';
+                                        }
+                                        if (total > ts.value) {
+                                            ts.value = Math.round(total);
+                                            ts.code = code;
+                                        }
+                                    }
+                                    setParamItemBest((val) => {
+                                        let newVal = {...val};
+                                        newVal.ts = ts;
+                                        return newVal;
+                                    });
+                                    // 由于更新权重，所以需要刷新优质推荐
+                                    DeviceEventEmitter.emit('pkDetailBackHintRefresh');
+                                }
+                            });
                             let arr = [...expandParts];
                             if (state) {
-                                arr.push(name);
+                                arr.push(itm.name);
                             } else {
-                                arr = arr.filter((n) => n !== name);
+                                arr = arr.filter((n) => n !== itm.name);
                             }
                             setExpandParts(arr);
-                            setScoreDiff((val) => {
-                                return data.reduce((memo, cur) => {
-                                    let oldScore = val[cur.code] || 0;
-                                    let score = cur.score_info[idx].close_value;
-                                    if (state) memo[cur.code] = oldScore + score;
-                                    else memo[cur.code] = oldScore - score;
-                                    return memo;
-                                }, {});
-                            });
                         }}
                     />
                 ))}
@@ -119,11 +147,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
 
     const genValues = (item, key) => {
         if (!item) return null;
-        let dScore = scoreDiff[item.code] || 0;
 
-        const handlerScore = (a, b) => {
-            return Math.round((a * 1000 + b * 1000) / 1000);
-        };
         return (
             <View style={styles.valuesWrap} key={key + item.code}>
                 {/* 总分 */}
@@ -140,7 +164,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                     <PKParamsRateOfSum
                         style={{marginTop: px(16)}}
                         color={paramItemBest?.ts?.code === item.code ? '#E74949' : '#545968'}
-                        value={handlerScore(item.total_score_info, dScore)}
+                        value={totalScoreMap[item.code]}
                     />
                     <View style={[styles.tag, {opacity: item.reason ? 1 : 0}]}>
                         <Text style={styles.tagText}>{item.reason}</Text>
@@ -268,13 +292,7 @@ const LabelPart = ({item, idx, expand, onChange}) => {
     const [value, setValue] = useState(!!item.open_status);
     const onValueChange = (val) => {
         setValue(val);
-        onChange(val, item.name);
-        postPKWeightSwitch({open_status: +val, type: item.type}).then((res) => {
-            if (res.code === '000000') {
-                // 由于更新权重，所以需要刷新优质推荐
-                DeviceEventEmitter.emit('pkDetailBackHintRefresh');
-            }
-        });
+        onChange(val, item);
     };
     return (
         <View key={idx} style={[styles.labelPart, {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>

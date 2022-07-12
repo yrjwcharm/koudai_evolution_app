@@ -61,8 +61,8 @@ const PKHome = ({navigation}) => {
         getPKHomeData()
             .then((res) => {
                 if (res.code === '000000') {
-                    setData(res.result);
                     listLayout.current.status = true;
+                    setData(res.result);
                 } else {
                     Toast.show(res.message);
                 }
