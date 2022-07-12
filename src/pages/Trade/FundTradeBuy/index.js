@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 13:05:49
+ * @LastEditTime: 2022-07-12 19:25:59
  * @Description: 基金购买
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -69,8 +69,15 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     <>
                         {fee_text ? (
                             <View style={Style.flexRow}>
-                                <HTML html={fee_text} style={{...styles.desc, color: Colors.descColor}} />
+                                <HTML
+                                    html={`${fee_text.split('：')[0]}：`}
+                                    style={{...styles.desc, color: Colors.descColor}}
+                                />
                                 {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}%</Text> : null}
+                                <HTML
+                                    html={`${fee_text.split('：')[1]}`}
+                                    style={{...styles.desc, color: Colors.descColor}}
+                                />
                             </View>
                         ) : null}
                         {date_text ? (
@@ -237,6 +244,8 @@ const Index = ({navigation, route}) => {
                 getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
                     if (res.code === '000000') {
                         setFeeData(res.result);
+                    } else {
+                        setErrTip(res.message);
                     }
                 });
             }, 300);
@@ -401,7 +410,7 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     originFee: {
-        marginLeft: px(4),
+        marginRight: px(4),
         color: Colors.descColor,
         textDecorationColor: Colors.descColor,
         textDecorationLine: 'line-through',

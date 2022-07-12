@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 13:21:12
+ * @LastEditTime: 2022-07-12 16:30:25
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -94,9 +94,11 @@ const SwiperCom = ({data = []}) => {
                                     </View>
                                 ) : null}
                                 {title ? (
-                                    <View style={{marginTop: px(20)}}>
+                                    <View style={{marginTop: px(20), maxWidth: px(240)}}>
                                         {/* <View style={styles.underline} /> */}
-                                        <Text style={styles.sliderTitle}>{title}</Text>
+                                        <Text numberOfLines={1} style={styles.sliderTitle}>
+                                            {title}
+                                        </Text>
                                     </View>
                                 ) : null}
                                 <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
@@ -112,9 +114,11 @@ const SwiperCom = ({data = []}) => {
                                         </Text>
                                         {tags?.length > 0 && (
                                             <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                                                {tags.map((tag, i) => (
+                                                {tags.slice(0, 3).map((tag, i) => (
                                                     <View key={tag + i} style={styles.labelBox}>
-                                                        <Text style={styles.labelText}>{tag}</Text>
+                                                        <Text numberOfLines={1} style={styles.labelText}>
+                                                            {tag}
+                                                        </Text>
                                                     </View>
                                                 ))}
                                             </View>
@@ -334,6 +338,7 @@ const styles = StyleSheet.create({
         borderRadius: px(2),
         borderWidth: Space.borderWidth,
         borderColor: '#AD9064',
+        maxWidth: px(50),
     },
     labelText: {
         fontSize: px(10),

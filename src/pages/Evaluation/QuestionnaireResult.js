@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-10 14:47:04
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 16:43:18
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -90,7 +90,7 @@ const QuestionnaireResult = () => {
                             if (route?.params?.fr?.includes('riskch')) {
                                 navigation.goBack();
                             } else {
-                                jump(data?.button?.url, 'replace');
+                                jump(data?.button?.url, route?.params?.fr === 'single_buy' ? 'navigate' : 'replace');
                             }
                         }}
                         style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}

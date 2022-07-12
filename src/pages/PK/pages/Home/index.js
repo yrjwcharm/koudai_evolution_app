@@ -81,7 +81,10 @@ const PKHome = ({navigation}) => {
 
     useFocusEffect(
         useCallback(() => {
-            DeviceEventEmitter.addListener('attentionRefresh', getData);
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', getData);
+            return () => {
+                listener.remove();
+            };
         }, [])
     );
 

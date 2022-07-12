@@ -1,12 +1,13 @@
 /*
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 16:22:37
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 18:55:49
  * @Description: 全球配置
  */
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {DeviceEventEmitter, StyleSheet, ScrollView, View, Text} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import http from '../../services';
 import {px as text} from '../../utils/appUtil';
 import {Style, Colors, Space, Font} from '../../common/commonStyle';
@@ -35,7 +36,7 @@ const RatioColor = [
 const GlobalConfig = ({navigation, route}) => {
     const [data, setData] = useState({});
 
-    useEffect(() => {
+    const init = () => {
         http.get('/portfolio/asset_deploy_detail/20211101', {
             upid: route.params?.upid,
         }).then((res) => {
@@ -52,7 +53,24 @@ const GlobalConfig = ({navigation, route}) => {
                 });
             }
         });
-    }, [navigation, route]);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     return (
         <>

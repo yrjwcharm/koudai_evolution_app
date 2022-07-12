@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 10:06:45
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 17:08:01
  * @Description: 银行卡选择
  */
 
@@ -16,13 +16,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../../common/commonStyle';
 import Mask from '../Mask';
 import {useNavigation} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 const BankCardModal = React.forwardRef((props, ref) => {
-    const insets = useSafeAreaInsets();
     const {
         type = '', //type为hidden时隐藏添加新银行卡
         clickable = true, // 是否禁用点击
-        backdrop = true,
         header,
         title = '请选择付款方式',
         data = [],
@@ -149,7 +147,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 data={data}
                                 ListFooterComponent={renderFooter}
                                 renderItem={renderItem}
-                                keyExtractor={(item, index) => index.toString()}
+                                keyExtractor={(item, index) => item.pay_method + index.toString()}
                                 ItemSeparatorComponent={() => {
                                     return <View style={{height: 0.5, backgroundColor: Colors.lineColor}} />;
                                 }}
