@@ -33,6 +33,7 @@ const SelectProduct = (props) => {
     const [tabList, setTabList] = useState([]);
 
     const pkProduct = useRef([]);
+    const isFirst = useRef(0);
 
     useEffect(() => {
         pkProduct.current = props.pkProducts;
@@ -42,7 +43,7 @@ const SelectProduct = (props) => {
         useCallback(() => {
             getDefaultData();
             getSelectData();
-            onTabChange(null, 0);
+            onTabChange(null, 0, null, isFirst.current++ > 0);
         }, [])
     );
 
@@ -65,10 +66,10 @@ const SelectProduct = (props) => {
             });
     };
 
-    const onTabChange = (_, idx) => {
+    const onTabChange = (_, idx, val, doNotLoad) => {
         global.LogTool('ProductSelection_Clicktab', idx + 1);
         setCurTab(idx);
-        setLoading(true);
+        !doNotLoad && setLoading(true);
         [followListLite, hotpkData, borwseListData]
             [idx]()
             .then((res) => {
