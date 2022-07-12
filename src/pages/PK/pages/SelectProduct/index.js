@@ -348,12 +348,13 @@ const SelectProduct = (props) => {
                                                         ? {}
                                                         : {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5},
                                                 ]}>
-                                                <View style={[styles.leftColWidth, styles.leftColContent]}>
+                                                <TouchableOpacity
+                                                    activeOpacity={1}
+                                                    onPress={() => handlerSelectItem(item)}
+                                                    style={[styles.leftColWidth, styles.leftColContent]}>
                                                     {/* check icon */}
                                                     <View style={styles.checkIconWrap}>
-                                                        <TouchableOpacity
-                                                            activeOpacity={1}
-                                                            onPress={() => handlerSelectItem(item)}
+                                                        <View
                                                             style={[
                                                                 styles.checkIconOuter,
                                                                 props.pkProducts.includes(item.code)
@@ -371,7 +372,7 @@ const SelectProduct = (props) => {
                                                                     style={{width: px(8), height: px(8)}}
                                                                 />
                                                             ) : null}
-                                                        </TouchableOpacity>
+                                                        </View>
                                                     </View>
                                                     {/* name */}
                                                     <View style={styles.productName}>
@@ -389,7 +390,7 @@ const SelectProduct = (props) => {
                                                             ))}
                                                         </View>
                                                     </View>
-                                                </View>
+                                                </TouchableOpacity>
                                                 {/* 右侧 */}
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
