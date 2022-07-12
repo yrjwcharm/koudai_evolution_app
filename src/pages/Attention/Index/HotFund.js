@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 14:44:02
+ * @LastEditTime: 2022-07-12 13:20:29
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -29,7 +29,7 @@ const HotFund = ({data, onFollow}) => {
                 global.LogTool(
                     {
                         event: 'fund_unfollow_click',
-                        plate_id: body.plateid,
+                        plateid: body.plateid,
                         rec_json: JSON.stringify(body.rec_json),
                     },
                     null,
@@ -40,7 +40,7 @@ const HotFund = ({data, onFollow}) => {
                 global.LogTool(
                     {
                         event: 'fund_follow_click',
-                        plate_id: body.plateid,
+                        plateid: body.plateid,
                         rec_json: JSON.stringify(body.rec_json),
                     },
                     null,
@@ -56,7 +56,7 @@ const HotFund = ({data, onFollow}) => {
         global.LogTool(
             {
                 event: 'follow_all_click',
-                plate_id: body.plateid,
+                plateid: body.plateid,
                 rec_json: JSON.stringify(body.rec_json),
             },
             null,

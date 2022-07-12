@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-03-10 18:51:32
- * @LastEditors: yhc
+ * @LastEditTime: 2022-07-12 12:53:26
+ * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -22,7 +22,7 @@ import FastImage from 'react-native-fast-image';
 import Html from '../../components/RenderHtml';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
-let _sign = false;
+
 const TradeProcessing = ({navigation, route}) => {
     const dispatch = useDispatch();
     const {txn_id} = route.params || {};
@@ -36,6 +36,7 @@ const TradeProcessing = ({navigation, route}) => {
     const loopRef = useRef(0);
     const scrollRef = useRef();
     const timerRef = useRef(null);
+    const signFlag = useRef(false);
     const init = useCallback(
         (sign = false, refused = 0) => {
             http.get('/trade/order/processing/20210101', {
@@ -119,14 +120,14 @@ const TradeProcessing = ({navigation, route}) => {
         }
     }, [bankInfo, init]);
     const buttonCallBack = (value) => {
-        if (_sign) return;
-        _sign = true;
+        if (signFlag.current) return;
+        signFlag.current = true;
         http.post('/trade/recharge/verify_code_confirm/20210101', {
             txn_id: txn_id,
             code: value,
         }).then((res) => {
             setTimeout(() => {
-                _sign = false;
+                signFlag.current = false;
             }, 300);
             if (res.code === '000000') {
                 setSign(true);

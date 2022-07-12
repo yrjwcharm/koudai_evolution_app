@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 19:26:24
+ * @LastEditTime: 2022-07-12 13:05:49
  * @Description: 基金购买
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,6 +16,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -24,7 +25,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
-import {BankCardModal} from '~/components/Modal';
+import {BankCardModal, Modal} from '~/components/Modal';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
@@ -131,49 +132,57 @@ const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = 
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View style={[styles.payMethodBox, styles.borderTop]}>
-                    <View style={Style.flexRow}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(true)} style={styles.radioBox}>
-                            <View style={styles.radioWrap}>
-                                <View style={[styles.radioPoint, isLarge ? {} : {backgroundColor: 'transparent'}]} />
-                            </View>
-                        </TouchableOpacity>
-                        <View style={[Style.flexBetween, {flex: 1}]}>
-                            <View style={Style.flexRow}>
-                                <Image
-                                    source={{
-                                        uri: large_bank_icon,
-                                    }}
-                                    style={styles.bankIcon}
-                                />
-                                <View>
-                                    <Text style={styles.title}>{large_bank_name}</Text>
-                                    <Text style={[styles.desc, {marginTop: px(4)}]}>{large_limit_desc}</Text>
+                {large_pay_method.pay_method ? (
+                    <View style={[styles.payMethodBox, styles.borderTop]}>
+                        <View style={Style.flexRow}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => setIsLarge(true)}
+                                style={styles.radioBox}>
+                                <View style={styles.radioWrap}>
+                                    <View
+                                        style={[styles.radioPoint, isLarge ? {} : {backgroundColor: 'transparent'}]}
+                                    />
                                 </View>
+                            </TouchableOpacity>
+                            <View style={[Style.flexBetween, {flex: 1}]}>
+                                <View style={Style.flexRow}>
+                                    <Image
+                                        source={{
+                                            uri: large_bank_icon,
+                                        }}
+                                        style={styles.bankIcon}
+                                    />
+                                    <View>
+                                        <Text style={styles.title}>{large_bank_name}</Text>
+                                        <Text style={[styles.desc, {marginTop: px(4)}]}>{large_limit_desc}</Text>
+                                    </View>
+                                </View>
+                                {button?.text ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => jump(button.url)}
+                                        style={[Style.flexRow, styles.useBtn]}>
+                                        <Text style={[styles.desc, styles.useText]}>{button.text}</Text>
+                                        <FontAwesome color={'#FF7D41'} name={'angle-right'} size={16} />
+                                    </TouchableOpacity>
+                                ) : null}
                             </View>
-                            {button?.text ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => jump(button.url)}
-                                    style={[Style.flexRow, styles.useBtn]}>
-                                    <Text style={[styles.desc, styles.useText]}>{button.text}</Text>
-                                    <FontAwesome color={'#FF7D41'} name={'angle-right'} size={16} />
-                                </TouchableOpacity>
-                            ) : null}
                         </View>
+                        {large_pay_tip ? (
+                            <View style={styles.largePayTipsBox}>
+                                <Text style={[styles.desc, {color: '#FF7D41'}]}>{large_pay_tip}</Text>
+                            </View>
+                        ) : null}
                     </View>
-                    {large_pay_tip ? (
-                        <View style={styles.largePayTipsBox}>
-                            <Text style={[styles.desc, {color: '#FF7D41'}]}>{large_pay_tip}</Text>
-                        </View>
-                    ) : null}
-                </View>
+                ) : null}
             </View>
         </>
     );
 };
 
 const Index = ({navigation, route}) => {
+    const jump = useJump();
     const {amount: _amount = '', code} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
@@ -197,6 +206,7 @@ const Index = ({navigation, route}) => {
         sub_title,
     } = data;
     const timer = useRef();
+    const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
 
     const onChange = (val) => {
         setAmount(onlyNumber(val >= 100000000 ? '99999999.99' : val));
@@ -243,13 +253,51 @@ const Index = ({navigation, route}) => {
     const onSubmit = (password) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
-        fundBuyDo({amount, fund_code: code, password, pay_method: method.pay_method}).then((res) => {
-            Toast.hide(toast);
-            if (res.code === '000000') {
-                navigation.navigate('TradeProcessing', res.result);
-            }
-        });
+        fundBuyDo({amount, fund_code: code, password, pay_method: method.pay_method})
+            .then((res) => {
+                Toast.hide(toast);
+                if (res.code === '000000') {
+                    navigation.navigate('TradeProcessing', res.result);
+                } else {
+                    res.message &&
+                        Toast.show(res.message, {
+                            onHidden: () => {
+                                if (res.code === 'TA2803') {
+                                    passwordModal.current.show();
+                                }
+                            },
+                        });
+                }
+            })
+            .finally(() => {
+                Toast.hide(toast);
+            });
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            const {anti_pop} = userInfo;
+            if (anti_pop) {
+                const {cancel_action, confirm_action, content, title} = anti_pop;
+                Modal.show({
+                    title: title,
+                    content: content,
+                    confirm: true,
+                    backButtonClose: false,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => {
+                        navigation.goBack();
+                    },
+                    confirmCallBack: () => {
+                        jump(confirm_action?.url);
+                    },
+                    cancelText: cancel_action?.text,
+                    confirmText: confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -297,7 +345,7 @@ const Index = ({navigation, route}) => {
                         <PayMethod
                             bankCardModal={bankCardModal}
                             isLarge={isLarge}
-                            large_pay_method={{...large_pay_method, large_pay_tip}}
+                            large_pay_method={large_pay_method ? {...large_pay_method, large_pay_tip} : undefined}
                             pay_method={pay_methods[bankSelectIndex]}
                             setIsLarge={setIsLarge}
                         />

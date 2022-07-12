@@ -31,7 +31,7 @@ const handlerItemsLog = (items, data) => {
                     {
                         event: 'rec_click',
                         rec_json: data.rec_json,
-                        plate_id: data.plateid,
+                        plateid: data.plateid,
                     },
                     null,
                     items?.map?.((t) => t.code || t.plan_id)?.join?.()
@@ -105,7 +105,7 @@ const PKHome = ({navigation}) => {
             listLayout.current.status = false;
             let cur = data.sub_list[0];
             let code = cur.items?.map?.((item) => item.code)?.join?.();
-            global.LogTool({event: 'rec_show', rec_json: data.rec_json}, null, code);
+            global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json}, null, code);
         }
     };
 

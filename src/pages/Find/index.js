@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, DeviceEventEmitter} from 'react-native';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Space, Style, Font} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -51,6 +51,14 @@ const Index = (props) => {
         });
         return () => unsubscribe();
     }, [isFocused, props.navigation, getData, hasNet]);
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', getData);
+            return () => {
+                listener.remove();
+            };
+        }, [getData])
+    );
 
     const snapScroll = useRef(null);
     const getData = useCallback((type) => {

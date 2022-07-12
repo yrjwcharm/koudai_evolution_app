@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:41:01
+ * @LastEditTime: 2022-07-12 11:58:28
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -245,12 +245,12 @@ const RecommendCard = ({data = {}, isPking}) => {
                             ) : null}
                             {leftLabel[1] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel2]}>
-                                    <Text style={styles.leftLabel2Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel2Text}>{leftLabel[1]}</Text>
                                 </View>
                             ) : null}
                             {leftLabel[2] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel3]}>
-                                    <Text style={styles.leftLabel3Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel3Text}>{leftLabel[2]}</Text>
                                 </View>
                             ) : null}
                         </>
