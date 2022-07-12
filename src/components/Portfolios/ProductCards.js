@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 11:58:28
+ * @LastEditTime: 2022-07-12 14:12:06
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -204,7 +204,7 @@ const RankCard = ({data = {}, isPking}) => {
                                 styles.btnBox,
                                 button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                             ]}>
-                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                 {isPking ? 'PK中' : button.text}
                             </Text>
                         </TouchableOpacity>
@@ -301,7 +301,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                                     styles.btnBox,
                                     button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                                 ]}>
-                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                     {btnText}
                                 </Text>
                             </TouchableOpacity>
@@ -381,7 +381,7 @@ const DefaultCard = ({data = {}, isPking}) => {
                             styles.btnBox,
                             button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                         ]}>
-                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{btnText}</Text>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>{btnText}</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>
