@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import ArtWave from '~/components/ArtWave';

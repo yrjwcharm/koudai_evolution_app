@@ -5,18 +5,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors, Font, Style} from '~/common/commonStyle';
 const ListTitle = () => {
     return (
-        <View style={Style.flexRow}>
+        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
             <View style={styles.title_tag} />
-            <Text>
-                <Text style={styles.bold_text}>产品</Text>
-                {''} {''}
-                <Text style={{fontSize: px(18)}}>|</Text>
-                {''} {''}
-                <Text style={styles.light_text}>包含公募、投顾组合、私募等产品</Text>
-            </Text>
+            <View style={Style.flexRow}>
+                <Text style={styles.bold_text}>
+                    产品 {''} {''}
+                </Text>
+                <Text style={{fontSize: px(16)}}>
+                    | {''} {''}
+                </Text>
+                <Text style={{marginBottom: px(-4), ...styles.light_text}}>包含公募、投顾组合、私募等产品</Text>
+            </View>
         </View>
     );
 };
@@ -25,7 +27,29 @@ const HoldList = () => {
         <View>
             <ListTitle />
             <View style={{marginHorizontal: px(16)}}>
-                <Text>111</Text>
+                <View>
+                    {/* header */}
+                    <View style={[Style.flexBetween, styles.table_header]}>
+                        <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                        <Text style={styles.light_text}>日收益</Text>
+                        <Text style={styles.light_text}>累计收益</Text>
+                    </View>
+                    <View style={styles.line} />
+                    {/* 列表卡片 */}
+                    <View style={styles.card}>
+                        <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                            <View style={styles.tag}>
+                                <Text style={styles.tag_text}>基金</Text>
+                            </View>
+                            <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                        </View>
+                        <View style={[Style.flexBetween]}>
+                            <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
+                            <Text style={styles.amount_text}>-3111.46</Text>
+                            <Text style={styles.amount_text}>+993146.12</Text>
+                        </View>
+                    </View>
+                </View>
             </View>
         </View>
     );
@@ -45,5 +69,47 @@ const styles = StyleSheet.create({
         height: px(12),
         backgroundColor: Colors.defaultColor,
         marginRight: px(13),
+    },
+    table_header: {
+        borderTopLeftRadius: px(6),
+        borderTopRightRadius: px(6),
+        backgroundColor: '#fff',
+        height: px(40),
+        paddingHorizontal: px(16),
+    },
+    card: {
+        paddingHorizontal: px(16),
+        paddingVertical: px(20),
+        backgroundColor: '#fff',
+    },
+    fund_name: {
+        color: Colors.defaultColor,
+        fontSize: px(14),
+        lineHeight: px(20),
+        fontWeight: '700',
+        flex: 1,
+    },
+    tag: {
+        borderColor: '#BDC2CC',
+        borderWidth: 0.5,
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
+        marginRight: px(6),
+        paddingVertical: px(2),
+    },
+    tag_text: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: Colors.lightBlackColor,
+    },
+    amount_text: {
+        fontSize: px(14),
+        lineHeight: px(19),
+        fontFamily: Font.numFontFamily,
+    },
+    line: {
+        backgroundColor: '#E9EAEF',
+        height: 0.5,
+        marginHorizontal: px(16),
     },
 });
