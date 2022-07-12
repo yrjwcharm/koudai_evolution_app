@@ -37,7 +37,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
         <>
             {body ? (
                 <View style={{flex: 1}}>
-                    {header && activeTab == 3 && <FollowTableHeader header={header} />}
+                    {header && <FollowTableHeader header={header} />}
                     <View style={{flexDirection: 'row'}}>
                         {/* 处理第一列固定 */}
                         {/* 分割线 */}
@@ -48,7 +48,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 borderRightWidth: isScroll ? 0.5 : 0,
                             }}>
                             <StickyHeader
-                                stickyHeaderY={stickyHeaderY + px(42) + (header && activeTab == 3 ? px(75 + 9) : 0)} // 把头部高度传入
+                                stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
                             >
                                 <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
