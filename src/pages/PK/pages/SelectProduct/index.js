@@ -123,129 +123,169 @@ const SelectProduct = (props) => {
                             {selectData?.length ? (
                                 <View style={styles.selectWrap}>
                                     <View style={styles.selectRowWrap}>
-                                        {selectData.slice(0, 3).map((item, idx) => (
-                                            <View
-                                                style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                key={idx}>
-                                                <View style={styles.selectItemHeader}>
-                                                    {item.tip ? (
-                                                        <View style={styles.highStamp}>
-                                                            <FastImage
-                                                                source={{
-                                                                    uri:
-                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
-                                                                }}
-                                                                style={{
-                                                                    width: px(10),
-                                                                    height: px(10),
-                                                                    marginRight: px(2),
-                                                                }}
-                                                            />
-                                                            <Text style={styles.highStampText}>{item.tip}</Text>
-                                                        </View>
-                                                    ) : (
-                                                        <View />
-                                                    )}
-                                                    <TouchableWithoutFeedback
-                                                        onPress={() => {
-                                                            deleteSelectedItem(item);
-                                                        }}>
-                                                        <Icons
-                                                            style={{marginRight: 2, marginTop: 4}}
-                                                            name={'close'}
-                                                            color={'#9AA0B1'}
-                                                            size={px(18)}
-                                                        />
-                                                    </TouchableWithoutFeedback>
-                                                </View>
-                                                <View style={styles.selectItemTitleWrap}>
-                                                    <Text style={styles.selectItemTitle}>{item.name}</Text>
-                                                </View>
-                                                <View style={styles.selectItemFooter}>
-                                                    <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-                                                        {item?.tags?.map((itm, i) => (
-                                                            <View key={i} style={[styles.selectItemTag]}>
-                                                                <Text key={i} style={[styles.selectItemTagText]}>
-                                                                    {itm}
-                                                                </Text>
+                                        {new Array(3).fill('').map((_, idx) => {
+                                            const item = selectData[idx];
+                                            return item ? (
+                                                <View
+                                                    style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                    key={idx}>
+                                                    <View style={styles.selectItemHeader}>
+                                                        {item.tip ? (
+                                                            <View style={styles.highStamp}>
+                                                                <FastImage
+                                                                    source={{
+                                                                        uri:
+                                                                            'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                                                    }}
+                                                                    style={{
+                                                                        width: px(10),
+                                                                        height: px(10),
+                                                                        marginRight: px(2),
+                                                                    }}
+                                                                />
+                                                                <Text style={styles.highStampText}>{item.tip}</Text>
                                                             </View>
-                                                        ))}
+                                                        ) : (
+                                                            <View />
+                                                        )}
+                                                        <TouchableWithoutFeedback
+                                                            onPress={() => {
+                                                                deleteSelectedItem(item);
+                                                            }}>
+                                                            <Icons
+                                                                style={{marginRight: 2, marginTop: 4}}
+                                                                name={'close'}
+                                                                color={'#9AA0B1'}
+                                                                size={px(18)}
+                                                            />
+                                                        </TouchableWithoutFeedback>
                                                     </View>
+                                                    <View style={styles.selectItemTitleWrap}>
+                                                        <Text style={styles.selectItemTitle}>{item.name}</Text>
+                                                    </View>
+                                                    <View style={styles.selectItemFooter}>
+                                                        <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
+                                                            {item?.tags?.map((itm, i) => (
+                                                                <View key={i} style={[styles.selectItemTag]}>
+                                                                    <Text key={i} style={[styles.selectItemTagText]}>
+                                                                        {itm}
+                                                                    </Text>
+                                                                </View>
+                                                            ))}
+                                                        </View>
+                                                        <FastImage
+                                                            source={{
+                                                                uri:
+                                                                    'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
+                                                                    (idx + 1) +
+                                                                    '.png',
+                                                            }}
+                                                            style={{width: px(22), height: px(26)}}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            ) : (
+                                                <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
                                                     <FastImage
                                                         source={{
                                                             uri:
-                                                                'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
+                                                                'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
                                                                 (idx + 1) +
                                                                 '.png',
                                                         }}
                                                         style={{width: px(22), height: px(26)}}
                                                     />
                                                 </View>
-                                            </View>
-                                        ))}
+                                            );
+                                        })}
                                     </View>
-                                    <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
-                                        {selectData.slice(3, 6).map((item, idx) => (
-                                            <View
-                                                style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                key={idx}>
-                                                <View style={styles.selectItemHeader}>
-                                                    {item.tip ? (
-                                                        <View style={styles.highStamp}>
+                                    {selectData[3] ? (
+                                        <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
+                                            {new Array(3).fill('').map((_, idx) => {
+                                                const item = selectData[idx + 3];
+                                                return item ? (
+                                                    <View
+                                                        style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                        key={idx}>
+                                                        <View style={styles.selectItemHeader}>
+                                                            {item.tip ? (
+                                                                <View style={styles.highStamp}>
+                                                                    <FastImage
+                                                                        source={{
+                                                                            uri:
+                                                                                'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                                                        }}
+                                                                        style={{
+                                                                            width: px(10),
+                                                                            height: px(10),
+                                                                            marginRight: px(2),
+                                                                        }}
+                                                                    />
+                                                                    <Text style={styles.highStampText}>{item.tip}</Text>
+                                                                </View>
+                                                            ) : (
+                                                                <View />
+                                                            )}
+                                                            <TouchableWithoutFeedback
+                                                                onPress={() => {
+                                                                    deleteSelectedItem(item);
+                                                                }}>
+                                                                <Icons
+                                                                    style={{marginRight: 2, marginTop: 4}}
+                                                                    name={'close'}
+                                                                    color={'#9AA0B1'}
+                                                                    size={px(18)}
+                                                                />
+                                                            </TouchableWithoutFeedback>
+                                                        </View>
+                                                        <View style={styles.selectItemTitleWrap}>
+                                                            <Text style={styles.selectItemTitle}>{item.name}</Text>
+                                                        </View>
+                                                        <View style={styles.selectItemFooter}>
+                                                            <View
+                                                                style={{
+                                                                    flexDirection: 'row',
+                                                                    flexWrap: 'wrap',
+                                                                    flex: 1,
+                                                                }}>
+                                                                {item.tags?.map?.((itm, i) => (
+                                                                    <View key={i} style={[styles.selectItemTag]}>
+                                                                        <Text
+                                                                            key={i}
+                                                                            style={[styles.selectItemTagText]}>
+                                                                            {itm}
+                                                                        </Text>
+                                                                    </View>
+                                                                ))}
+                                                            </View>
                                                             <FastImage
                                                                 source={{
                                                                     uri:
-                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
+                                                                        (idx + 4) +
+                                                                        '.png',
                                                                 }}
-                                                                style={{
-                                                                    width: px(10),
-                                                                    height: px(10),
-                                                                    marginRight: px(2),
-                                                                }}
+                                                                style={{width: px(22), height: px(26)}}
                                                             />
-                                                            <Text style={styles.highStampText}>{item.tip}</Text>
                                                         </View>
-                                                    ) : (
-                                                        <View />
-                                                    )}
-                                                    <TouchableWithoutFeedback
-                                                        onPress={() => {
-                                                            deleteSelectedItem(item);
-                                                        }}>
-                                                        <Icons
-                                                            style={{marginRight: 2, marginTop: 4}}
-                                                            name={'close'}
-                                                            color={'#9AA0B1'}
-                                                            size={px(18)}
-                                                        />
-                                                    </TouchableWithoutFeedback>
-                                                </View>
-                                                <View style={styles.selectItemTitleWrap}>
-                                                    <Text style={styles.selectItemTitle}>{item.name}</Text>
-                                                </View>
-                                                <View style={styles.selectItemFooter}>
-                                                    <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-                                                        {item.tags?.map?.((itm, i) => (
-                                                            <View key={i} style={[styles.selectItemTag]}>
-                                                                <Text key={i} style={[styles.selectItemTagText]}>
-                                                                    {itm}
-                                                                </Text>
-                                                            </View>
-                                                        ))}
                                                     </View>
-                                                    <FastImage
-                                                        source={{
-                                                            uri:
-                                                                'http://static.licaimofang.com/wp-content/uploads/2022/06/select-product-index-' +
-                                                                (idx + 4) +
-                                                                '.png',
-                                                        }}
-                                                        style={{width: px(22), height: px(26)}}
-                                                    />
-                                                </View>
-                                            </View>
-                                        ))}
-                                    </View>
+                                                ) : (
+                                                    <View
+                                                        style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                        <FastImage
+                                                            source={{
+                                                                uri:
+                                                                    'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
+                                                                    (idx + 4) +
+                                                                    '.png',
+                                                            }}
+                                                            style={{width: px(22), height: px(26)}}
+                                                        />
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    ) : null}
                                 </View>
                             ) : (
                                 <View style={styles.noSelctWrap}>
@@ -476,6 +516,7 @@ const styles = StyleSheet.create({
     selectItemFooter: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'flex-end',
         paddingHorizontal: px(8),
         marginBottom: px(4),
     },
@@ -614,5 +655,14 @@ const styles = StyleSheet.create({
         lineHeight: px(21),
         color: '#fff',
         textAlign: 'center',
+    },
+    placeBorder: {
+        width: px(108),
+        borderRadius: px(6),
+        borderColor: '#BDC2CC',
+        borderWidth: 1,
+        borderStyle: 'dashed',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
     },
 });
