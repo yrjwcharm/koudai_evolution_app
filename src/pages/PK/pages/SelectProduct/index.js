@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     View,
     Text,
-    TextInput,
     StyleSheet,
     ScrollView,
     TouchableWithoutFeedback,
@@ -112,24 +111,24 @@ const SelectProduct = (props) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
-                <View style={{flex: 1, padding: px(16)}}>
-                    {/* selected area */}
-                    {selectLoading ? (
-                        <View style={{paddingVertical: px(40)}}>
-                            <ActivityIndicator />
-                        </View>
-                    ) : (
-                        <>
-                            {selectData?.length ? (
-                                <View style={styles.selectWrap}>
-                                    <View style={styles.selectRowWrap}>
-                                        {new Array(3).fill('').map((_, idx) => {
-                                            const item = selectData[idx];
-                                            return item ? (
-                                                <View
-                                                    style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                    key={idx}>
+            <View style={{padding: px(16), paddingBottom: 0}}>
+                {/* selected area */}
+                {selectLoading ? (
+                    <View style={{paddingVertical: px(40)}}>
+                        <ActivityIndicator />
+                    </View>
+                ) : (
+                    <>
+                        {selectData?.length ? (
+                            <View style={styles.selectWrap}>
+                                <View style={styles.selectRowWrap}>
+                                    {new Array(3).fill('').map((_, idx) => {
+                                        const item = selectData[idx];
+                                        return item ? (
+                                            <View
+                                                style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                key={idx}>
+                                                <View>
                                                     <View style={styles.selectItemHeader}>
                                                         {item.tip ? (
                                                             <View style={styles.highStamp}>
@@ -149,7 +148,12 @@ const SelectProduct = (props) => {
                                                         ) : (
                                                             <View />
                                                         )}
-                                                        <TouchableWithoutFeedback
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.8}
+                                                            style={{
+                                                                paddingBottom: 6,
+                                                                paddingLeft: 6,
+                                                            }}
                                                             onPress={() => {
                                                                 deleteSelectedItem(item);
                                                             }}>
@@ -159,34 +163,22 @@ const SelectProduct = (props) => {
                                                                 color={'#9AA0B1'}
                                                                 size={px(18)}
                                                             />
-                                                        </TouchableWithoutFeedback>
+                                                        </TouchableOpacity>
                                                     </View>
                                                     <View style={styles.selectItemTitleWrap}>
                                                         <Text style={styles.selectItemTitle}>{item.name}</Text>
                                                     </View>
-                                                    <View style={styles.selectItemFooter}>
-                                                        <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-                                                            {item?.tags?.map((itm, i) => (
-                                                                <View key={i} style={[styles.selectItemTag]}>
-                                                                    <Text key={i} style={[styles.selectItemTagText]}>
-                                                                        {itm}
-                                                                    </Text>
-                                                                </View>
-                                                            ))}
-                                                        </View>
-                                                        <FastImage
-                                                            source={{
-                                                                uri:
-                                                                    'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
-                                                                    (idx + 1) +
-                                                                    '.png',
-                                                            }}
-                                                            style={{width: px(22), height: px(26)}}
-                                                        />
-                                                    </View>
                                                 </View>
-                                            ) : (
-                                                <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                <View style={styles.selectItemFooter}>
+                                                    <View style={styles.selectItemTagWrap}>
+                                                        {item?.tags?.map((itm, i) => (
+                                                            <View key={i} style={[styles.selectItemTag]}>
+                                                                <Text key={i} style={[styles.selectItemTagText]}>
+                                                                    {itm}
+                                                                </Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
                                                     <FastImage
                                                         source={{
                                                             uri:
@@ -197,17 +189,31 @@ const SelectProduct = (props) => {
                                                         style={{width: px(22), height: px(26)}}
                                                     />
                                                 </View>
-                                            );
-                                        })}
-                                    </View>
-                                    {selectData[3] ? (
-                                        <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
-                                            {new Array(3).fill('').map((_, idx) => {
-                                                const item = selectData[idx + 3];
-                                                return item ? (
-                                                    <View
-                                                        style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                        key={idx}>
+                                            </View>
+                                        ) : (
+                                            <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                <FastImage
+                                                    source={{
+                                                        uri:
+                                                            'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
+                                                            (idx + 1) +
+                                                            '.png',
+                                                    }}
+                                                    style={{width: px(22), height: px(26)}}
+                                                />
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                                {selectData[3] ? (
+                                    <View style={[styles.selectRowWrap, {marginTop: px(12)}]}>
+                                        {new Array(3).fill('').map((_, idx) => {
+                                            const item = selectData[idx + 3];
+                                            return item ? (
+                                                <View
+                                                    style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
+                                                    key={idx}>
+                                                    <View>
                                                         <View style={styles.selectItemHeader}>
                                                             {item.tip ? (
                                                                 <View style={styles.highStamp}>
@@ -242,37 +248,17 @@ const SelectProduct = (props) => {
                                                         <View style={styles.selectItemTitleWrap}>
                                                             <Text style={styles.selectItemTitle}>{item.name}</Text>
                                                         </View>
-                                                        <View style={styles.selectItemFooter}>
-                                                            <View
-                                                                style={{
-                                                                    flexDirection: 'row',
-                                                                    flexWrap: 'wrap',
-                                                                    flex: 1,
-                                                                }}>
-                                                                {item.tags?.map?.((itm, i) => (
-                                                                    <View key={i} style={[styles.selectItemTag]}>
-                                                                        <Text
-                                                                            key={i}
-                                                                            style={[styles.selectItemTagText]}>
-                                                                            {itm}
-                                                                        </Text>
-                                                                    </View>
-                                                                ))}
-                                                            </View>
-                                                            <FastImage
-                                                                source={{
-                                                                    uri:
-                                                                        'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
-                                                                        (idx + 4) +
-                                                                        '.png',
-                                                                }}
-                                                                style={{width: px(22), height: px(26)}}
-                                                            />
-                                                        </View>
                                                     </View>
-                                                ) : (
-                                                    <View
-                                                        style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                    <View style={styles.selectItemFooter}>
+                                                        <View style={styles.selectItemTagWrap}>
+                                                            {item.tags?.map?.((itm, i) => (
+                                                                <View key={i} style={[styles.selectItemTag]}>
+                                                                    <Text key={i} style={[styles.selectItemTagText]}>
+                                                                        {itm}
+                                                                    </Text>
+                                                                </View>
+                                                            ))}
+                                                        </View>
                                                         <FastImage
                                                             source={{
                                                                 uri:
@@ -283,21 +269,37 @@ const SelectProduct = (props) => {
                                                             style={{width: px(22), height: px(26)}}
                                                         />
                                                     </View>
-                                                );
-                                            })}
-                                        </View>
-                                    ) : null}
-                                </View>
-                            ) : (
-                                <View style={styles.noSelctWrap}>
-                                    <View>
-                                        <Text style={styles.desc}>{data.empty_text1}</Text>
-                                        <Text style={styles.desc}>{data.empty_text2}</Text>
+                                                </View>
+                                            ) : (
+                                                <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                    <FastImage
+                                                        source={{
+                                                            uri:
+                                                                'http://static.licaimofang.com/wp-content/uploads/2022/07/select-product-index-' +
+                                                                (idx + 4) +
+                                                                '.png',
+                                                        }}
+                                                        style={{width: px(22), height: px(26)}}
+                                                    />
+                                                </View>
+                                            );
+                                        })}
                                     </View>
+                                ) : null}
+                            </View>
+                        ) : (
+                            <View style={styles.noSelctWrap}>
+                                <View>
+                                    <Text style={styles.desc}>{data.empty_text1}</Text>
+                                    <Text style={styles.desc}>{data.empty_text2}</Text>
                                 </View>
-                            )}
-                        </>
-                    )}
+                            </View>
+                        )}
+                    </>
+                )}
+            </View>
+            <ScrollView style={{flex: 1, marginTop: px(12)}} scrollIndicatorInsets={{right: 1}}>
+                <View style={{flex: 1, padding: px(16), paddingTop: 0}}>
                     {/* search */}
                     <View style={styles.searchWrap}>
                         <TouchableOpacity
@@ -463,9 +465,7 @@ const styles = StyleSheet.create({
         color: '#9aa0b1',
         textAlign: 'center',
     },
-    searchWrap: {
-        marginTop: px(20),
-    },
+    searchWrap: {},
     searchInput: {
         backgroundColor: '#fff',
         borderRadius: px(146),
@@ -487,6 +487,7 @@ const styles = StyleSheet.create({
         width: px(108),
         backgroundColor: '#fff',
         borderRadius: px(6),
+        justifyContent: 'space-between',
     },
     selectItemHeader: {
         ...Style.flexBetween,
@@ -506,9 +507,7 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     selectItemTitleWrap: {
-        marginTop: 6,
         paddingHorizontal: px(8),
-        flex: 1,
     },
     selectItemTitle: {
         fontSize: px(12),
@@ -521,6 +520,12 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         paddingHorizontal: px(8),
         marginBottom: px(4),
+    },
+    selectItemTagWrap: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        flex: 1,
+        paddingBottom: 3,
     },
     selectItemTag: {
         paddingHorizontal: px(4),
