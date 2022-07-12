@@ -153,7 +153,7 @@ const ValuePart = React.memo(({item}) => {
                             styles.valueText,
                             {color: obj?.yield > 0 ? '#E74949' : obj?.yield === 0 ? '' : '#4BA471'},
                         ]}>
-                        {obj?.yield || '--'}
+                        {obj?.yield + '%'}
                     </Text>
                 </View>
             </View>

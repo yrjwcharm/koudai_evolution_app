@@ -135,7 +135,9 @@ const PositionRate = ({rate}) => {
         <View style={styles.positionRate}>
             <Text style={styles.positionRateText}>{rate + '%'}</Text>
             <View style={styles.positionRateProcess}>
+                <View style={{width: px(4)}} />
                 <View style={[styles.positionRateLeft, {width: rate + '%'}]} />
+                <View style={{width: px(2)}} />
                 <View style={[styles.positionRateRight]} />
             </View>
             <Text style={styles.positionRateText}>{100 - rate + '%'}</Text>
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
         color: '#121D3A',
         textAlign: 'center',
         fontFamily: Font.numFontFamily,
-        // width: px(25),
+        width: px(25),
     },
     positionRateProcess: {
         flex: 1,
@@ -219,12 +221,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     positionRateLeft: {
-        marginLeft: px(4),
         height: px(4),
         backgroundColor: '#E74949',
     },
     positionRateRight: {
-        marginLeft: px(2),
         height: px(4),
         marginRight: px(4),
         backgroundColor: '#545968',
