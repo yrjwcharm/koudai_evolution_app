@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 17:56:05
+ * @LastEditTime: 2022-07-12 09:13:51
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -14,6 +14,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {changeSort, getList, handleCancle} from './services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from '~/components/Toast';
+import {Modal} from '~/components/Modal';
 
 export default function EditSortFund({route}) {
     const [data, setData] = useState([]);
@@ -101,17 +102,24 @@ export default function EditSortFund({route}) {
             return res;
         });
     };
-    const handleAllDelete = async () => {
-        const params = {
-            item_id: data
-                .filter((item) => item.check)
-                .map((t) => t.item_id)
-                .join(','),
-            item_type: 1,
-        };
-        let res = await handleCancle(params);
-        if (res.code === '000000') getData();
-        Toast.show(res.message);
+    const handleAllDelete = () => {
+        Modal.show({
+            title: '温馨提示',
+            content: '将会从关注区删除已选中的基金',
+            confirm: true,
+            confirmCallBack: async () => {
+                const params = {
+                    item_id: data
+                        .filter((item) => item.check)
+                        .map((t) => t.item_id)
+                        .join(','),
+                    item_type: 1,
+                };
+                let res = await handleCancle(params);
+                if (res.code === '000000') getData();
+                Toast.show(res.message);
+            },
+        });
     };
     return data ? (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>

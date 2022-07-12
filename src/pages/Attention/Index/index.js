@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 11:30:45
+ * @LastEditTime: 2022-07-12 10:24:11
  * @Description:关注
  */
-import {StyleSheet, View, Animated, Platform} from 'react-native';
+import {StyleSheet, View, Animated, Platform, Text, TouchableOpacity} from 'react-native';
 import React, {useState, useRef, useCallback} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
@@ -21,12 +21,14 @@ import NavBar from '~/components/NavBar';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import LoginMask from '~/components/LoginMask';
+import {useJump} from '~/components/hooks';
 const Attention = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
     const [activeTab, setActiveTab] = useState(1);
     const [headHeight, setHeaderHeight] = useState(0);
+    const jump = useJump();
     const scrollY = useRef(new Animated.Value(0)).current;
     const _getData = async () => {
         let res = await getData();
@@ -90,6 +92,16 @@ const Attention = ({navigation}) => {
 
                 {data?.follow?.tabs && (
                     <View style={{backgroundColor: '#fff', marginBottom: px(20)}}>
+                        {data?.follow?.tabs_button ? (
+                            <TouchableOpacity
+                                style={styles.pkBtn}
+                                onPress={() => jump(data?.follow?.tabs_button?.url)}
+                                activeOpacity={0.8}>
+                                <Text style={{fontSize: px(13), lineHeight: px(18), color: Colors.btnColor}}>
+                                    {data?.follow?.tabs_button?.text}
+                                </Text>
+                            </TouchableOpacity>
+                        ) : null}
                         <ScrollableTabView
                             prerenderingSiblingsNumber={data?.follow?.tabs?.length}
                             locked={Platform.OS == 'android'}
@@ -123,5 +135,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.bgColor,
     },
-    followCon: {},
+    pkBtn: {
+        zIndex: 2,
+        position: 'absolute',
+        right: px(16),
+        borderRadius: px(103),
+        borderColor: Colors.btnColor,
+        borderWidth: 0.5,
+        paddingHorizontal: px(14),
+        paddingVertical: px(4),
+        top: px(8),
+    },
 });
