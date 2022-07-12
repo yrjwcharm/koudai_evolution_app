@@ -151,7 +151,7 @@ const Compare = () => {
                 {list && (
                     <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerHorizontalScroll(pkFundInfoRef)} />
                 )}
-                <View style={{height: 120}} />
+                <View style={{marginTop: px(12), height: 100, backgroundColor: '#fff'}} />
             </ScrollView>
             {loading ? (
                 <View style={styles.loadingMask}>

@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(8),
         paddingHorizontal: px(16),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
     },
     titleText: {
         fontSize: px(14),

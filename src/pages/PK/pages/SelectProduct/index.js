@@ -266,7 +266,10 @@ const SelectProduct = (props) => {
                                 global.LogTool('PK_Search');
                                 jump(data.search_button.url);
                             }}>
-                            <Icons name={'search'} color={'#545968'} size={px(18)} />
+                            <FastImage
+                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/pk-search.png'}}
+                                style={{width: px(18), height: px(18), marginRight: px(4)}}
+                            />
                             <Text style={styles.placeholderText}>{data.search_box_content}</Text>
                         </TouchableOpacity>
                     </View>
@@ -480,7 +483,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(4),
         backgroundColor: '#fff',
         borderRadius: 2,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '#BDC2CC',
         height: px(19),
         justifyContent: 'center',

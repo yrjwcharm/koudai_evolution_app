@@ -124,7 +124,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     const genSup = () => {
         if (data?.length > 5) return null;
         const obj = data?.[0]?.yield_info || {};
-        const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 1};
+        const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5};
         return (
             <View style={{width: px(40)}}>
                 {new Array(Object.keys(obj).length).fill('').map((_, idx) => (
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(8),
         paddingHorizontal: px(16),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
     },
     titleText: {
         fontSize: px(14),
@@ -221,19 +221,19 @@ const styles = StyleSheet.create({
     labelsWrap: {
         width: px(87),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     labelWrap: {
         height: px(45),
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
     },
     valuesWrap: {
         width: px(124),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     labelText: {
         fontSize: px(12),
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     valueWrap: {
         height: px(45),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },

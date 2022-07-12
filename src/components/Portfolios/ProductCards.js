@@ -230,6 +230,7 @@ const RecommendCard = ({data = {}, isPking}) => {
         tags = [],
         yield_info,
     } = data;
+    const btnText = isPking ? 'PK中' : button.text;
     return (
         <View>
             <View style={Style.flexRow}>
@@ -293,7 +294,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                                 activeOpacity={0.8}
                                 disabled={button.avail === 0}
                                 onPress={() => {
-                                    data?.LogTool?.();
+                                    button?.LogTool?.(['PK', '关注'].includes(btnText));
                                     onPressBtn({action: button.action, code, dispatch, plan_id});
                                 }}
                                 style={[
@@ -301,7 +302,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                                     button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                                 ]}>
                                 <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
-                                    {isPking ? 'PK中' : button.text}
+                                    {btnText}
                                 </Text>
                             </TouchableOpacity>
                         ) : null}
@@ -325,6 +326,7 @@ const RecommendCard = ({data = {}, isPking}) => {
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
     const {button, code, labels, name, rank_info, tags = [], yield_info} = data;
+    const btnText = isPking ? 'PK中' : button.text;
     return (
         <View>
             <View style={Style.flexRow}>
@@ -371,14 +373,15 @@ const DefaultCard = ({data = {}, isPking}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         disabled={button.avail === 0}
-                        onPress={() => onPressBtn({action: button.action, code, dispatch})}
+                        onPress={() => {
+                            button?.LogTool?.(['PK', '关注'].includes(btnText));
+                            onPressBtn({action: button.action, code, dispatch});
+                        }}
                         style={[
                             styles.btnBox,
                             button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                         ]}>
-                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
-                            {isPking ? 'PK中' : button.text}
-                        </Text>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{btnText}</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -389,7 +392,7 @@ const DefaultCard = ({data = {}, isPking}) => {
 export default ({data = {}, style = {}}) => {
     const jump = useJump();
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
-    const {code, type, url} = data;
+    const {code, type, url, LogTool} = data;
     const [isPking, setIsPking] = useState(false);
     const pkProducts = useSelector((store) => store.pkProducts);
 
@@ -402,7 +405,13 @@ export default ({data = {}, style = {}}) => {
     }, [code, pkProducts]);
 
     return (
-        <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={[styles.cardContainer, ...outerStyle]}>
+        <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+                LogTool?.();
+                jump(url);
+            }}
+            style={[styles.cardContainer, ...outerStyle]}>
             {(() => {
                 switch (type) {
                     // 基金经理卡片

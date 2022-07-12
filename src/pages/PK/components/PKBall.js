@@ -64,7 +64,7 @@ const PKBall = ({style}, ref) => {
 
     const handlerJump = () => {
         global.LogTool('pk_floating');
-        if (better && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
+        if (better?.code && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
         setBetter(null);
 
         updateLayoutType(1);

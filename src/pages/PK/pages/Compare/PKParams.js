@@ -8,6 +8,7 @@ import {px} from '~/utils/appUtil';
 import PKParamRate from '../../components/PKParamRate';
 import PKParamsRateOfSum from '../../components/PKParamsRateOfSum';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
 import {postPKWeightSwitch} from '../../services';
 import PKWeightSet from './PKWeightSet';
 
@@ -162,7 +163,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     const genSup = () => {
         if (data?.length > 5) return null;
         const obj = data?.[0];
-        const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 1};
+        const border = {borderBottomColor: '#E9EAEF', borderBottomWidth: 0.5};
         return (
             <View style={{width: px(40)}}>
                 <View style={{height: totalRowHeight, ...border}} />
@@ -194,6 +195,12 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                             weightSet.current.show();
                         }}>
                         {weightButton.text}
+                        <SimpleIcon
+                            name="arrow-right"
+                            size={9}
+                            color="#0051cc"
+                            style={{marginLeft: px(3), marginTop: px(2)}}
+                        />
                     </Text>
                 ) : null}
             </View>
@@ -338,7 +345,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(8),
         paddingHorizontal: px(16),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
     },
     title: {
         fontSize: px(14),
@@ -357,7 +364,7 @@ const styles = StyleSheet.create({
     labelsWrap: {
         width: px(87),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     labelPart: {},
     labelWrap: {
@@ -365,7 +372,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         paddingLeft: px(5),
         paddingRight: px(5),
     },
@@ -377,13 +384,13 @@ const styles = StyleSheet.create({
     valuesWrap: {
         width: px(124),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     valuePart: {},
     valueWrap: {
         height: px(55),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         paddingHorizontal: px(8),
         alignItems: 'center',
         flexDirection: 'row',
@@ -399,7 +406,7 @@ const styles = StyleSheet.create({
     },
     totalLabel: {
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         padding: px(16),
         backgroundColor: '#fff',
     },
@@ -411,7 +418,7 @@ const styles = StyleSheet.create({
     },
     totalValue: {
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         paddingHorizontal: px(8),
         backgroundColor: '#fff',
     },

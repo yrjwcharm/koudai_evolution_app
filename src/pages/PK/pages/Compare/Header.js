@@ -78,7 +78,7 @@ const Header = (props) => {
                                 styles.btnWrap,
                                 item.tip
                                     ? {backgroundColor: '#0051CC'}
-                                    : {backgroundColor: '#fff', borderWidth: 1, borderColor: '#0051CC'},
+                                    : {backgroundColor: '#fff', borderWidth: 0.5, borderColor: '#0051CC'},
                             ]}
                             onPress={() => {
                                 jump(item.buy_button.url);
@@ -169,7 +169,7 @@ const Header = (props) => {
                 </ScrollView>
                 {/* 添加基金 */}
                 {props.data.length < 2 ? (
-                    <View style={{borderLeftColor: '#E9EAEF', borderLeftWidth: 1}}>{addCompareItem()}</View>
+                    <View style={{borderLeftColor: '#E9EAEF', borderLeftWidth: 0.5}}>{addCompareItem()}</View>
                 ) : null}
             </View>
             <View
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     groupLabelText: {
         fontSize: px(12),
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     groupItemWrap: {
         width: px(124),
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
         paddingBottom: px(16),
     },
     groupItemHeader: {
@@ -227,6 +227,9 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    highStampText: {
+        fontSize: px(11),
     },
     groupItemContent: {
         marginTop: px(9),
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
     groupItemTag: {
         paddingHorizontal: px(4),
         borderRadius: 2,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '#BDC2CC',
         height: px(19),
         justifyContent: 'center',

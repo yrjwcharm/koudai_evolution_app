@@ -10,6 +10,7 @@ import {useJump} from '~/components/hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
 const PKCard = ({data = {}}) => {
     const jump = useJump();
@@ -39,15 +40,19 @@ const PKCard = ({data = {}}) => {
             <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
                 <View style={styles.pkInfoLeft}>
                     <Text style={styles.pkInfoName}>{leftObj.name}</Text>
-                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
-                    <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+                    <View>
+                        <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
+                        <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+                    </View>
                 </View>
                 <View style={styles.pkInfoRight}>
                     <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
-                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
-                        {handlerRate(rightObj?.yield_info?.year)}
-                    </Text>
-                    <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
+                    <View>
+                        <Text style={[styles.priceRate, {textAlign: 'right'}]}>
+                            {handlerRate(rightObj?.yield_info?.year)}
+                        </Text>
+                        <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
+                    </View>
                 </View>
                 {data?.is_enter_pk ? (
                     <TouchableOpacity
@@ -93,20 +98,28 @@ const PKCard = ({data = {}}) => {
                             );
                         })}
                     </View>
-                    <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
-                        <RenderHtml html={data.tip} style={styles.pkParamsTip} />
-                    </View>
+                    {data.tip ? (
+                        <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
+                            <RenderHtml html={data.tip} style={styles.pkParamsTip} />
+                        </View>
+                    ) : null}
                     {data.btns && (
                         <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
                             <Text style={styles.pkBtnText}>{data.btns.title}</Text>
+                            <Icon
+                                name="arrow-right"
+                                size={10}
+                                color="#121D3A"
+                                style={{marginLeft: px(3), marginTop: px(2)}}
+                            />
                         </TouchableOpacity>
                     )}
                 </View>
-            ) : (
+            ) : data.tip ? (
                 <View style={styles.pkTipWrap}>
                     <RenderHtml html={data.tip} style={styles.pkTipText} />
                 </View>
-            )}
+            ) : null}
         </View>
     );
 };
@@ -129,12 +142,14 @@ const styles = StyleSheet.create({
         padding: px(16),
         paddingRight: px(36),
         borderTopLeftRadius: px(6),
+        justifyContent: 'space-between',
     },
     pkInfoRight: {
         flex: 1,
         padding: px(16),
         paddingLeft: px(36),
         borderTopRightRadius: px(6),
+        justifyContent: 'space-between',
     },
     pkInfoName: {
         fontSize: px(14),
@@ -194,10 +209,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFCC00',
         borderRadius: px(314),
         marginTop: px(16),
-        alignItems: 'center',
         paddingVertical: px(10),
         width: px(220),
         alignSelf: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     pkBtnText: {
         fontSize: px(15),
@@ -210,6 +227,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(7),
         borderBottomLeftRadius: px(6),
         borderBottomRightRadius: px(6),
+        alignItems: 'center',
     },
     pkTipText: {
         textAlign: 'center',

@@ -1,9 +1,6 @@
 /*
- * @Date: 2022-06-22 10:25:59
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 19:17:53
- * @Description:
+ * @Description:关注表格
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 import React from 'react';

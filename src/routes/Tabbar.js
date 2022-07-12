@@ -1,8 +1,5 @@
 /*
- * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 14:32:52
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -132,6 +129,7 @@ export default function Tabbar() {
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
+            <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
@@ -177,7 +175,6 @@ export default function Tabbar() {
                 }}
                 component={Home}
             />
-            <Tab.Screen name="PKHome" options={{tabBarLabel: 'PK首页'}} component={PKHome} />
         </Tab.Navigator>
     );
 }

@@ -2,11 +2,11 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:48:42
+ * @LastEditTime: 2022-07-11 12:05:14
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -146,11 +146,13 @@ const SwiperCom = ({data = []}) => {
 
 const Index = ({navigation, route}) => {
     const [data, setData] = useState({});
+    const [refreshing, setRefreshing] = useState(false);
     const {live, sub_list = [], suggest_list = [], tabs = [], un_buy_img} = data;
 
-    useFocusEffect(
-        useCallback(() => {
-            getPageData().then((res) => {
+    const getData = () => {
+        getPageData()
+            .then((res) => {
+                setRefreshing(false);
                 if (res.code === '000000') {
                     navigation.setOptions({
                         headerRight: () => (
@@ -165,7 +167,15 @@ const Index = ({navigation, route}) => {
                     });
                     setData(res.result);
                 }
+            })
+            .finally(() => {
+                setRefreshing(false);
             });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -176,14 +186,17 @@ const Index = ({navigation, route}) => {
             start={{x: 0, y: 0.5}}
             end={{x: 0, y: 1}}
             style={styles.container}>
-            <ScrollView scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
+            <ScrollView
+                refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
+                scrollIndicatorInsets={{right: 1}}
+                style={{flex: 1}}>
                 <TopMenu data={tabs} />
-                <SwiperCom data={suggest_list} />
+                {suggest_list?.length > 0 && <SwiperCom data={suggest_list} />}
                 <LinearGradient
                     colors={['#FFFFFF', '#F4F5F7']}
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 0.05}}
-                    style={styles.bottomContainer}>
+                    style={[styles.bottomContainer, suggest_list?.length > 0 ? {} : {marginTop: 0, paddingTop: 0}]}>
                     <View style={{paddingHorizontal: Space.padding}}>
                         {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
                         {sub_list?.length > 0 ? (

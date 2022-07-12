@@ -3,7 +3,6 @@ import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, useWindowDim
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icons from 'react-native-vector-icons/EvilIcons';
 import {Space, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,6 +18,27 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
 import withNetState from '~/components/withNetState';
+
+const handlerItemsLog = (items, data) => {
+    items?.forEach?.((obj) => {
+        obj.LogTool = () => {
+            global.LogTool(obj.code ? 'pk_details' : 'pk_combinationdetails');
+        };
+        obj.button.LogTool = (notActive) => {
+            notActive && global.LogTool(obj.code ? 'pk_ratio' : 'pk_focus', obj.code || obj.plan_id);
+            notActive &&
+                global.LogTool(
+                    {
+                        event: 'rec_click',
+                        rec_json: data.rec_json,
+                        plate_id: data.plateid,
+                    },
+                    null,
+                    items?.map?.((t) => t.code || t.plan_id)?.join?.()
+                );
+        };
+    });
+};
 
 const PKHome = ({navigation}) => {
     const insets = useSafeAreaInsets();
@@ -77,15 +97,24 @@ const PKHome = ({navigation}) => {
     }, [isFocused, navigation]);
 
     const handleScroll = (e) => {
-        handlerReport(e.nativeEvent.contentOffset.y + dimensions.height);
+        handlerShowLog(e.nativeEvent.contentOffset.y + dimensions.height);
     };
 
-    const handlerReport = (y) => {
+    const handlerShowLog = (y) => {
         if (listLayout.current.status && y > listLayout.current.start) {
             listLayout.current.status = false;
             let cur = data.sub_list[0];
             let code = cur.items?.map?.((item) => item.code)?.join?.();
             global.LogTool({event: 'rec_show', rec_json: data.rec_json}, null, code);
+        }
+    };
+
+    const handlerListLog = (item) => {
+        if (item.items) handlerItemsLog(item.items, data);
+        if (item.tab_list) {
+            item.tab_list.forEach((itm) => {
+                handlerItemsLog(itm.items, data);
+            });
         }
     };
 
@@ -103,7 +132,10 @@ const PKHome = ({navigation}) => {
                             jump(data?.search_button?.url);
                         }}>
                         <View style={Style.flexRowCenter}>
-                            <Icons name={'search'} color={'#545968'} size={px(18)} />
+                            <FastImage
+                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/pk-search.png'}}
+                                style={{width: px(18), height: px(18), marginRight: px(4)}}
+                            />
                             <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>
                         </View>
                     </TouchableOpacity>
@@ -125,43 +157,28 @@ const PKHome = ({navigation}) => {
                         style={{flex: 1}}>
                         <View style={styles.topMenu}>
                             {data?.tabs?.map((item, idx) => (
-                                <View
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        global.LogTool('pk_clicktab', item.text);
+                                        jump(item.url);
+                                    }}
                                     key={idx}
-                                    style={{alignItems: 'center', width: '20%', marginTop: idx > 4 ? px(15) : 0}}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            global.LogTool('pk_clicktab', item.text);
-                                            jump(item.url);
-                                        }}>
-                                        <FastImage
-                                            source={{uri: item.icon}}
-                                            resizeMode="contain"
-                                            style={styles.topMenuIcon}
-                                        />
-                                        <Text style={styles.topMenuText}>{item.text}</Text>
-                                    </TouchableOpacity>
-                                </View>
+                                    style={styles.menuItem}>
+                                    <FastImage
+                                        source={{uri: item.icon}}
+                                        resizeMode="contain"
+                                        style={styles.topMenuIcon}
+                                    />
+                                    <Text style={styles.topMenuText}>{item.text}</Text>
+                                </TouchableOpacity>
                             ))}
                         </View>
                         {/* pkCard */}
-                        <PKCard data={data?.pk_list} />
+                        {data?.pk_list && <PKCard data={data?.pk_list} />}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
                             {data?.sub_list?.map?.((item, index) => {
-                                let code = item.items?.map?.((t) => t.code)?.join?.();
-                                item.items?.forEach?.((obj) => {
-                                    obj.LogTool = () => {
-                                        global.LogTool(
-                                            {
-                                                event: 'rec_click',
-                                                rec_json: data.rec_json,
-                                                platId: data.plateid,
-                                            },
-                                            null,
-                                            code
-                                        );
-                                    };
-                                });
+                                handlerListLog(item);
                                 return (
                                     <RenderPart
                                         data={item}
@@ -174,7 +191,7 @@ const PKHome = ({navigation}) => {
                                                           start: y + height / 2,
                                                           status: true,
                                                       };
-                                                      handlerReport(dimensions.height);
+                                                      handlerShowLog(dimensions.height);
                                                   }
                                                 : null
                                         }
@@ -187,8 +204,6 @@ const PKHome = ({navigation}) => {
                     </LinearGradient>
                 </ScrollView>
                 <PKBall />
-                {/* <PKCollectUserInterest /> */}
-                {/* <PKWeightSet /> */}
             </View>
             {!userInfo.toJS().is_login && <LoginMask />}
         </>
@@ -224,6 +239,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    menuItem: {
+        alignItems: 'center',
+        minWidth: px(48),
+        justifyContent: 'center',
     },
     topMenuIcon: {
         width: px(32),
