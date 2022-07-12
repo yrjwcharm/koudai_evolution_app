@@ -306,9 +306,9 @@ const LabelPart = ({item, idx, expand, onChange}) => {
                     style={{
                         width: px(28),
                         height: px(18),
-                        transform: [{scale: 0.6}],
-                        left: px(-14) * 0.5,
-                        top: px(-9) * 0.5 + 2,
+                        transform: [{scale: 0.7}],
+                        left: px(-9.8),
+                        top: px(-1.3),
                     }}
                     onValueChange={onValueChange}
                 />
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: px(33),
+        height: px(38),
     },
     expandText: {
         fontSize: px(12),

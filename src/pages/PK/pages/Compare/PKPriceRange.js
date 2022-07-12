@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: px(33),
+        height: px(38),
     },
     expandText: {
         fontSize: px(12),
