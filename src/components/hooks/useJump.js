@@ -2,12 +2,12 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 19:03:16
+ * @LastEditTime: 2022-07-12 10:44:44
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {DeviceEventEmitter, Linking, Platform, Clipboard} from 'react-native';
+import {DeviceEventEmitter, Linking, Platform} from 'react-native';
 import {checkMultiple, openSettings, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
@@ -16,7 +16,7 @@ import {generateOptions} from './useStateChange';
 import {PopupContent} from '../../pages/PE/ObjectChoose';
 import * as WeChat from 'react-native-wechat-lib';
 import {recordInit, signFile, signInit, signOrder, signPreview, startRecord} from '../../pages/PE/PEBridge';
-
+import Clipboard from '@react-native-community/clipboard';
 // 权限提示弹窗
 const blockCal = (action) => {
     Modal.show({

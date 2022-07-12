@@ -1307,8 +1307,8 @@
 
 "@react-native-community/clipboard@^1.5.1":
   version "1.5.1"
-  resolved "https://registry.npm.taobao.org/@react-native-community/clipboard/download/@react-native-community/clipboard-1.5.1.tgz"
-  integrity sha1-Mquz6i65HuP5xfsdMtV4MlPJ+r4=
+  resolved "https://registry.npmmirror.com/@react-native-community/clipboard/-/clipboard-1.5.1.tgz#32abb3ea2eb91ee3f9c5fb1d32d5783253c9fabe"
+  integrity sha512-AHAmrkLEH5UtPaDiRqoULERHh3oNv7Dgs0bTC0hO5Z2GdNokAMPT5w8ci8aMcRemcwbtdHjxChgtjbeA38GBdA==
 
 "@react-native-community/eslint-config@^1.1.0":
   version "1.1.0"

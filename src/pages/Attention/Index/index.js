@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 10:38:37
+ * @LastEditTime: 2022-07-12 10:44:08
  * @Description:关注
  */
-import {StyleSheet, View, Animated, Platform, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Animated, Platform} from 'react-native';
 import React, {useState, useRef, useCallback} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';

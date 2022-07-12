@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 10:28:22
+ * @LastEditTime: 2022-07-12 10:57:50
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -71,36 +71,34 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                     activeOpacity={0.9}
                                     key={index}
                                     onPress={() => jump(tr[0].url)}>
-                                    <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
+                                    <View style={[{paddingHorizontal: px(16)}]}>
                                         {/* 每一个td */}
-                                        <View>
-                                            <Text
-                                                numberOfLines={1}
-                                                style={[
-                                                    {
-                                                        color: tr[0]?.line1?.color || Colors.lightBlackColor,
-                                                        fontSize: px(14),
-                                                    },
-                                                ]}>
-                                                {tr[0]?.line1?.value}
-                                            </Text>
-                                            <View style={Style.flexRow}>
-                                                {tr[0]?.line2 ? (
-                                                    <Text
-                                                        style={{
-                                                            color: tr[0]?.line2?.color || Colors.lightBlackColor,
-                                                            fontSize: px(11),
-                                                            marginTop: px(2),
-                                                        }}>
-                                                        {tr[0]?.line2?.value}
-                                                    </Text>
-                                                ) : null}
-                                                {tr[0]?.tag?.map((_tag, _tagIndex) => (
-                                                    <View style={styles.tag} key={_tagIndex}>
-                                                        <Text style={styles.tag_text}>{_tag}</Text>
-                                                    </View>
-                                                ))}
-                                            </View>
+                                        <Text
+                                            numberOfLines={1}
+                                            style={[
+                                                {
+                                                    color: tr[0]?.line1?.color || Colors.lightBlackColor,
+                                                    fontSize: px(14),
+                                                },
+                                            ]}>
+                                            {tr[0]?.line1?.value}
+                                        </Text>
+                                        <View style={Style.flexRow}>
+                                            {tr[0]?.line2 ? (
+                                                <Text
+                                                    style={{
+                                                        color: tr[0]?.line2?.color || Colors.lightBlackColor,
+                                                        fontSize: px(11),
+                                                        marginTop: px(2),
+                                                    }}>
+                                                    {tr[0]?.line2?.value}
+                                                </Text>
+                                            ) : null}
+                                            {tr[0]?.tag?.map((_tag, _tagIndex) => (
+                                                <View style={styles.tag} key={_tagIndex}>
+                                                    <Text style={styles.tag_text}>{_tag}</Text>
+                                                </View>
+                                            ))}
                                         </View>
                                     </View>
                                 </TouchableOpacity>
