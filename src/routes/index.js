@@ -778,7 +778,18 @@ export default function AppStack() {
             <Stack.Screen
                 name="SearchHome"
                 component={SearchHome}
-                options={{title: '', headerShown: false, ...TransitionPresets.ScaleFromCenterAndroid}}
+                options={{
+                    title: '',
+                    headerShown: false,
+                    cardStyleInterpolator: ({current: {progress}}) => ({
+                        cardStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 0.5, 0.9, 1],
+                                outputRange: [0, 0.25, 0.7, 1],
+                            }),
+                        },
+                    }),
+                }}
             />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />

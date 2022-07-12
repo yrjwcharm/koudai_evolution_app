@@ -126,6 +126,7 @@ const PKHome = ({navigation}) => {
                 {/* search */}
                 <View style={[styles.searchWrap]}>
                     <TouchableOpacity
+                        activeOpacity={0.9}
                         style={[styles.searchBg, Style.flexCenter]}
                         onPress={() => {
                             global.LogTool('PK_Search');

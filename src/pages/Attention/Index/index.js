@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 13:39:39
+ * @LastEditTime: 2022-07-12 17:54:38
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
@@ -23,6 +23,7 @@ import {useSelector} from 'react-redux';
 import LoginMask from '~/components/LoginMask';
 import {useJump} from '~/components/hooks';
 import {SmButton} from '~/components/Button';
+import ProductCards from '~/components/Portfolios/ProductCards';
 const Attention = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const [data, setData] = useState();
