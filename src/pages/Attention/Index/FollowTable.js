@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 10:57:50
+ * @LastEditTime: 2022-07-12 16:45:31
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -104,6 +104,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 </TouchableOpacity>
                             ))}
                         </View>
+                        {/* 左右滑动的区域 */}
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -118,6 +119,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 >
                                     {/* 分割线 */}
                                     <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                    {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                             {body?.th &&

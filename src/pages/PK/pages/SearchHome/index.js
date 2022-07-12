@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 15:35:50
+ * @LastEditTime: 2022-07-12 17:37:25
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -51,7 +51,6 @@ const Index = () => {
     };
     //搜索点击
     const onHandleSearch = async (text) => {
-        Keyboard.dismiss();
         if (!text) return;
         global.LogTool('search_click', 'search', text);
         postKeyword(keyword);
@@ -106,22 +105,24 @@ const Index = () => {
                     searchLoading ? (
                         <LoadingTips size={px(18)} />
                     ) : searchList?.length > 0 ? (
-                        searchList?.map((item, key) => (
-                            <View key={key}>
-                                {item.title ? (
-                                    <Text
-                                        style={[
-                                            styles.title_text,
-                                            {marginBottom: px(12), marginTop: key != 0 ? px(20) : 0},
-                                        ]}>
-                                        {item.title}
-                                    </Text>
-                                ) : null}
-                                {item?.list?.map((_list, index) => (
-                                    <SearchContent data={_list} key={index} />
-                                ))}
-                            </View>
-                        ))
+                        <View style={{marginBottom: px(40)}}>
+                            {searchList?.map((item, key) => (
+                                <View key={key}>
+                                    {item.title ? (
+                                        <Text
+                                            style={[
+                                                styles.title_text,
+                                                {marginBottom: px(12), marginTop: key != 0 ? px(20) : 0},
+                                            ]}>
+                                            {item.title}
+                                        </Text>
+                                    ) : null}
+                                    {item?.list?.map((_list, index) => (
+                                        <SearchContent data={_list} key={index} />
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
                     ) : (
                         <EmptyTip text={'暂无记录'} />
                     )
