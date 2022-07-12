@@ -25,7 +25,7 @@ const AssetHeaderCard = () => {
         });
     };
     return (
-        <View style={{marginTop: px(40), paddingHorizontal: px(16)}}>
+        <View style={{marginTop: px(40), marginHorizontal: px(16), marginBottom: px(12)}}>
             <ArtWave
                 surfaceWidth={100}
                 surfaceHeigth={100}
