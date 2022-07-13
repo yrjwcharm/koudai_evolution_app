@@ -2,11 +2,11 @@
  * @Date: 2022-06-24 10:38:02
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 18:22:18
+ * @LastEditTime: 2022-07-13 23:10:29
  * @Description:修改持仓
  */
 import {StyleSheet, Text, TextInput, TouchableOpacity, View, Image} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {onlyNumber, px} from '~/utils/appUtil';
 import addImg from '~/assets/img/attention/add.png';
@@ -20,32 +20,28 @@ const Index = ({navigation, route}) => {
     const key = route?.params?.key;
     let ocrFundList = useSelector((store) => store.ocrFund).toJS();
     const initalData = useSelector((store) => store.ocrFund).toJS()?.ocrOwernList[key];
-    const [data, setData] = useState(initalData);
+    const tmpData = {...initalData};
+    tmpData.yield = tmpData.yield < 0 ? tmpData.yield.slice(1) : tmpData.yield;
+    const [data, setData] = useState(tmpData);
     const [isUp, setIsUp] = useState(initalData.yield > 0 ? true : false);
     const handleSave = () => {
-        onChangeText(data.yield, 'yield', (_data) => {
-            let tmpCcrFundList = [...ocrFundList.ocrOwernList];
-            tmpCcrFundList[key] = _data;
-            dispatch(updateFundList({ocrOwernList: tmpCcrFundList}));
-            navigation.goBack();
-        });
+        let _data = {...data};
+        if (!isUp && _data?.yield != 0) {
+            _data.yield = '-' + _data.yield;
+        }
+        let tmpCcrFundList = [...ocrFundList.ocrOwernList];
+        tmpCcrFundList[key] = _data;
+        dispatch(updateFundList({ocrOwernList: tmpCcrFundList}));
+        navigation.goBack();
     };
-    const onChangeText = (value, _key, callback) => {
+    const onChangeText = (value, _key) => {
         if (value > 99999999) {
             Toast.show('请输入合理的金额');
             return;
         }
         setData((prev) => {
             let tmp = {...prev};
-            tmp[_key] =
-                _key == 'amount'
-                    ? onlyNumber(value)
-                    : value
-                    ? isUp
-                        ? onlyNumber(value)
-                        : '-' + onlyNumber(value)
-                    : '0';
-            callback && callback(tmp);
+            tmp[_key] = onlyNumber(value);
             return tmp;
         });
     };
@@ -86,7 +82,7 @@ const Index = ({navigation, route}) => {
                     <TextInput
                         placeholder="请输入持有收益"
                         style={styles.input}
-                        value={data.yield?.indexOf('-') > -1 ? data.yield?.slice(1) : data.yield}
+                        value={data.yield}
                         keyboardType={'numeric'}
                         onChangeText={(value) => {
                             onChangeText(value, 'yield');
