@@ -43,7 +43,7 @@ const HotFundCard = ({data, style, plateid}) => {
                                     {
                                         event: 'search_click_rec',
                                         rec_json: JSON.stringify(data?.rec_json),
-                                        plateid: plateid,
+                                        plateid: data?.plateid,
                                     },
                                     'hot_fund',
                                     _list.name

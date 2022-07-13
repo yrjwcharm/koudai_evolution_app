@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 17:37:25
+ * @LastEditTime: 2022-07-13 16:18:37
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -184,7 +184,6 @@ const Index = () => {
                         {data?.hot_fund ? (
                             <HotFundCard
                                 style={keyword_history.length > 0 ? {marginTop: px(24)} : {}}
-                                plateid={data.plateid}
                                 data={data?.hot_fund}
                             />
                         ) : null}
