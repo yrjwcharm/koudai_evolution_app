@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 16:45:31
+ * @LastEditTime: 2022-07-13 18:57:49
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -67,11 +67,11 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             </StickyHeader>
                             {body?.tr?.map((tr, index) => (
                                 <TouchableOpacity
-                                    style={[styles.tr]}
+                                    style={styles.tr}
                                     activeOpacity={0.9}
                                     key={index}
                                     onPress={() => jump(tr[0].url)}>
-                                    <View style={[{paddingHorizontal: px(16)}]}>
+                                    <View style={[{paddingLeft: px(16)}]}>
                                         {/* 每一个td */}
                                         <Text
                                             numberOfLines={1}
@@ -110,6 +110,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             showsHorizontalScrollIndicator={false}
                             style={{flex: 1}}
                             snapToInterval={otherLineWidth}
+                            bounces={false}
                             onMomentumScrollEnd={() => setIsScroll(false)}
                             onScrollBeginDrag={(e) => setIsScroll(true)}>
                             <View style={{minWidth: deviceWidth}}>
