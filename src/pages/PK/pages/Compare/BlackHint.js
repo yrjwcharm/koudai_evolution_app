@@ -14,6 +14,8 @@ const BlackHint = ({addHigh}) => {
     const getData = () => {
         setData(null);
         getPKWeightBetter({fund_code_list: pkProducts.join()}).then((res) => {
+            const {code, plateid, rec_json} = res.result?.better_fund || {};
+            plateid && rec_json && global.LogTool({ctrl: code, event: 'rec_show', plateid, rec_json});
             setData(res.result?.better_fund);
         });
     };

@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ImageBackground} from 'react-native';
 import pkCardBg from '../../../../assets/img/pk/pkCardBg.png';
 import pkIcon from '../../../../assets/img/pk/pkIcon.png';
@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import {useFocusEffect} from '@react-navigation/native';
 
 const PKCard = ({data = {}}) => {
     const jump = useJump();
@@ -29,11 +30,17 @@ const PKCard = ({data = {}}) => {
 
     const handlerEnter = () => {
         global.LogTool('pk_button');
-        global.LogTool({event: 'rec_click', rec_json: data.rec_json.pk_home});
+        global.LogTool({event: 'rec_click', plateid: data.plateid, rec_json: data.rec_json});
         if (!pkProducts.includes(leftObj.code)) dispatch(addProduct(leftObj.code));
         if (!pkProducts.includes(rightObj.code)) dispatch(addProduct(rightObj.code));
         jump(data.btns.url);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json});
+        }, [data])
+    );
 
     return (
         <TouchableOpacity
