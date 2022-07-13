@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-29 11:42:16
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:01:05
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -26,6 +27,7 @@ import Toast from '../../components/Toast';
 const Questionnaire = () => {
     const navigation = useNavigation();
     const route = useRoute();
+    const {fr, fund_code = '', plan_id = ''} = route.params;
     const summaryIdRef = useRef('');
     const questionnaireRef = useRef('');
     const upidRef = useRef('');
@@ -37,23 +39,21 @@ const Questionnaire = () => {
     const [tips, setTips] = useState('');
     const clickRef = useRef(true);
 
-    const init = useCallback(() => {
-        http.get('/questionnaire/start/20210101', {plan_id: route.params?.plan_id, fr: route.params?.fr}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    summaryIdRef.current = res.result.summary_id;
-                    getQuestions();
-                } else {
-                    Toast.show(res.message);
-                }
+    const init = () => {
+        http.get('/questionnaire/start/20210101', {fr, fund_code, plan_id}).then((res) => {
+            if (res.code === '000000') {
+                summaryIdRef.current = res.result.summary_id;
+                getQuestions();
+            } else {
+                Toast.show(res.message);
             }
-        );
-    }, [getQuestions, route]);
-    const getQuestions = useCallback(() => {
+        });
+    };
+    const getQuestions = () => {
         const params = {
             summary_id: summaryIdRef.current,
             questionnaire_cate: questionnaireRef.current,
-            fr: route.params?.fr,
+            fr,
         };
         http.get('/questionnaire/questions/20210101', params).then((res) => {
             if (res.code === '000000') {
@@ -66,7 +66,7 @@ const Questionnaire = () => {
                 Toast.show(res.message);
             }
         });
-    }, [route]);
+    };
     const jumpNext = (item) => {
         if (!clickRef.current) {
             return false;
@@ -106,7 +106,7 @@ const Questionnaire = () => {
             option_val: option.content,
             questionnaire_cate: questionnaireRef.current,
             latency: endTimeRef.current - startTimeRef.current,
-            fr: route.params?.fr,
+            fr,
         };
         http.post('/questionnaire/report/20210101', params).then((res) => {
             if (res.code === '000000') {
@@ -115,7 +115,8 @@ const Questionnaire = () => {
                     navigation.replace('QuestionnaireResult', {
                         upid: upidRef.current,
                         summary_id: summaryIdRef.current,
-                        fr: route.params?.fr,
+                        fr,
+                        fund_code,
                     });
                 }
             }
@@ -125,7 +126,7 @@ const Questionnaire = () => {
     useFocusEffect(
         useCallback(() => {
             init();
-        }, [init])
+        }, [])
     );
     useEffect(() => {
         const listener = navigation.addListener('beforeRemove', (e) => {
@@ -134,6 +135,8 @@ const Questionnaire = () => {
                 // Prompt the user before leaving the screen
                 Modal.show({
                     title: '结束测评',
+                    backButtonClose: false,
+                    isTouchMaskToClose: false,
                     content: '确定要结束本次风险测评吗？',
                     confirm: true,
                     confirmCallBack: () => {
@@ -145,7 +148,7 @@ const Questionnaire = () => {
         return () => {
             listener();
         };
-    }, [navigation, route]);
+    }, []);
 
     return (
         <ScrollView style={styles.container}>

@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 17:54:17
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 11:35:56
+ * @LastEditTime: 2022-07-13 15:48:27
  * @Description: 公募基金首页榜单渲染组件
  */
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -21,6 +21,13 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
     const jump = useJump();
     const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
     const pageRef = useRef(0);
+
+    useEffect(() => {
+        if (tabs?.length > 0) {
+            const {plateid, rec_json} = tabs[0];
+            plateid && rec_json && global.LogTool({event: 'rec_show', plateid, rec_json});
+        }
+    }, [tabs]);
 
     return Object.keys(data).length > 0 ? (
         <View
@@ -68,18 +75,27 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
                     onChangeTab={(value) => {
                         pageRef.current = value.i;
                         pointKey && global.LogTool({ctrl: value.i + 1, event: pointKey});
+                        const {plateid, rec_json} = tabs[value.i];
+                        plateid && rec_json && global.LogTool({event: 'rec_show', plateid, rec_json});
                     }}
                     prerenderingSiblingsNumber={Infinity}
                     renderTabBar={() => <CapsuleTabbar boxStyle={[styles.tabsContainer, tabsStyle]} />}
                     style={{flex: 1}}>
                     {tabs.map((tab) => {
-                        const {items: tabItems = [], rank_type, title: tabTitle} = tab;
+                        const {items: tabItems = [], plateid, rank_type, rec_json, title: tabTitle} = tab;
                         return (
                             <View key={rank_type} tabLabel={tabTitle}>
                                 {tabItems?.length > 0 ? (
                                     tabItems.map((item, index) => (
                                         <ProductCards
-                                            data={item}
+                                            data={{
+                                                ...item,
+                                                LogTool: () => {
+                                                    plateid &&
+                                                        rec_json &&
+                                                        global.LogTool({event: 'rec_click', plateid, rec_json});
+                                                },
+                                            }}
                                             key={index}
                                             style={index === 0 ? {marginTop: px(8)} : {}}
                                         />

@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-26 11:49:35
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:18:32
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -62,6 +62,7 @@ const SetTradePassword = ({navigation, route}) => {
                             password: password,
                             poid: route?.params?.poid || '',
                             fr: route?.params?.fr,
+                            fund_code: route?.params?.fund_code,
                             amount: route?.params?.amount,
                         }).then((data) => {
                             if (data.code === '000000') {
@@ -98,10 +99,7 @@ const SetTradePassword = ({navigation, route}) => {
                                 Toast.show('设置密码成功，即将跳转');
                                 setTimeout(() => {
                                     if (data.result?.jump_url?.path) {
-                                        navigation.replace(
-                                            data.result.jump_url.path,
-                                            data.result.jump_url.params || {}
-                                        );
+                                        jump(data.result.jump_url, 'replace');
                                     } else {
                                         navigation.goBack();
                                     }

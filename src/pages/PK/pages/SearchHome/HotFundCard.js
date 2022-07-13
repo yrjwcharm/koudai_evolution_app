@@ -41,7 +41,7 @@ const HotFundCard = ({data, style, plateid}) => {
                             onPress={() => {
                                 global.LogTool(
                                     {
-                                        event: 'search_click_rec',
+                                        event: 'rec_click',
                                         rec_json: JSON.stringify(data?.rec_json),
                                         plateid: data?.plateid,
                                     },

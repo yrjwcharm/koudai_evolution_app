@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 16:43:18
+ * @LastEditTime: 2022-07-13 11:46:48
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -20,10 +20,11 @@ const QuestionnaireResult = () => {
     const jump = useJump();
     const navigation = useNavigation();
     const route = useRoute();
+    const {fr, fund_code = '', upid = ''} = route.params;
     const [data, setData] = useState({});
 
     useEffect(() => {
-        http.get('/questionnaire/result/20210101', {fr: route.params?.fr, upid: route.params?.upid}).then((res) => {
+        http.get('/questionnaire/result/20210101', {fr, fund_code, upid}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -87,10 +88,10 @@ const QuestionnaireResult = () => {
                         title={data.button.text}
                         onPress={() => {
                             //调整风险工具
-                            if (route?.params?.fr?.includes('riskch')) {
+                            if (fr?.includes('riskch')) {
                                 navigation.goBack();
                             } else {
-                                jump(data?.button?.url, route?.params?.fr === 'single_buy' ? 'navigate' : 'replace');
+                                jump(data?.button?.url, fr === 'single_buy' ? 'navigate' : 'replace');
                             }
                         }}
                         style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}

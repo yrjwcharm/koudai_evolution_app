@@ -2,7 +2,7 @@
  * @Date: 2022-06-10 18:41:07
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:18:37
+ * @LastEditTime: 2022-07-13 16:36:39
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -134,7 +134,7 @@ const Index = () => {
                                 <SearchTag
                                     title={_his.name}
                                     onPress={(name) => {
-                                        global.LogTool('search_click_rec', 'view_history', name);
+                                        global.LogTool('search_click', 'view_history', name);
                                         handleSearchTag(name);
                                     }}
                                     showDelete={false}
@@ -171,7 +171,7 @@ const Index = () => {
                                             isDelete={true}
                                             title={item.keyword}
                                             onPress={(value) => {
-                                                global.LogTool('search_click_rec', 'search_history', value);
+                                                global.LogTool('search_click', 'search_history', value);
                                                 handleSearchTag(value);
                                             }}
                                             onDelete={() => handelDeleteHistory(item.id)}

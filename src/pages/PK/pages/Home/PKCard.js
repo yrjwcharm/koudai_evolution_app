@@ -29,7 +29,7 @@ const PKCard = ({data = {}}) => {
 
     const handlerEnter = () => {
         global.LogTool('pk_button');
-        global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
+        global.LogTool({event: 'rec_click', rec_json: data.rec_json.pk_home});
         if (!pkProducts.includes(leftObj.code)) dispatch(addProduct(leftObj.code));
         if (!pkProducts.includes(rightObj.code)) dispatch(addProduct(rightObj.code));
         jump(data.btns.url);
