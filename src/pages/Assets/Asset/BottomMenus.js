@@ -36,7 +36,6 @@ export default BottomMenus;
 
 const styles = StyleSheet.create({
     topMenu: {
-        marginTop: px(16),
         paddingVertical: px(12),
         flexWrap: 'wrap',
         marginBottom: px(12),

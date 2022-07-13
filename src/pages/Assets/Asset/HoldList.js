@@ -8,7 +8,6 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 import NoAccountRender from './NoAccountRender';
-import Item from '~/pages/Attention/FundNoticeManage/Item';
 const ListTitle = ({title, desc}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
@@ -25,7 +24,8 @@ const ListTitle = ({title, desc}) => {
         </View>
     );
 };
-
+// 信号
+const RenderSingal = () => {};
 const HoldList = ({products}) => {
     return (
         <View>
@@ -43,30 +43,42 @@ const HoldList = ({products}) => {
                             <View style={styles.line} />
                             {/* 列表卡片 */}
                             {account?.items?.length ? (
-                                account?.items?.map((product, index) => (
-                                    <>
-                                        <View style={styles.card}>
-                                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                                <View style={styles.tag}>
-                                                    <Text style={styles.tag_text}>基金</Text>
+                                account?.items?.map((product = {}, index, arr) => {
+                                    // 卡片是否只有一个或者是最后一个
+                                    const flag = index + 1 == arr.length || index == arr.length - 1;
+                                    const {name, tag, profit, amount, profit_acc} = product;
+                                    return (
+                                        <View key={index}>
+                                            <View
+                                                style={[
+                                                    styles.card,
+                                                    flag && {
+                                                        borderBottomRightRadius: px(6),
+                                                        borderBottomLeftRadius: px(6),
+                                                    },
+                                                ]}>
+                                                <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                                    <View style={styles.tag}>
+                                                        <Text style={styles.tag_text}>{tag}</Text>
+                                                    </View>
+                                                    <Text numberOfLines={1}>{name}</Text>
                                                 </View>
-                                                <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                                                <View style={[Style.flexBetween]}>
+                                                    <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
+                                                    <Text style={styles.amount_text}>{profit}</Text>
+                                                    <Text style={styles.amount_text}>{profit_acc}</Text>
+                                                </View>
                                             </View>
-                                            <View style={[Style.flexBetween]}>
-                                                <Text style={[styles.amount_text, {width: px(120)}]}>
-                                                    422,123,912.48
-                                                </Text>
-                                                <Text style={styles.amount_text}>-3111.46</Text>
-                                                <Text style={styles.amount_text}>+993146.12</Text>
-                                            </View>
+                                            {!flag && (
+                                                <View style={styles.line_circle}>
+                                                    <View style={{...styles.leftCircle, left: -px(5)}} />
+                                                    <View style={{...styles.line, flex: 1}} />
+                                                    <View style={{...styles.leftCircle, right: -px(5)}} />
+                                                </View>
+                                            )}
                                         </View>
-                                        <View style={styles.line_circle}>
-                                            <View style={{...styles.leftCircle, left: -px(5)}} />
-                                            <View style={{...styles.line, flex: 1}} />
-                                            <View style={{...styles.leftCircle, right: -px(5)}} />
-                                        </View>
-                                    </>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <NoAccountRender
                                     empty_button={account?.empty_button}
