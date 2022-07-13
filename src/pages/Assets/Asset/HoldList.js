@@ -42,41 +42,37 @@ const HoldList = ({products}) => {
                             </View>
                             <View style={styles.line} />
                             {/* 列表卡片 */}
-                            <NoAccountRender />
-                            <View style={styles.card}>
-                                <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                    <View style={styles.tag}>
-                                        <Text style={styles.tag_text}>基金</Text>
-                                    </View>
-                                    <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
-                                </View>
-                                <View style={[Style.flexBetween]}>
-                                    <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
-                                    <Text style={styles.amount_text}>-3111.46</Text>
-                                    <Text style={styles.amount_text}>+993146.12</Text>
-                                </View>
-                            </View>
-                            <View style={styles.line_circle}>
-                                <View style={{...styles.leftCircle, left: -px(5)}} />
-                                <View style={{...styles.line, flex: 1}} />
-                                <View style={{...styles.leftCircle, right: -px(5)}} />
-                            </View>
-
-                            <View>
-                                <View style={styles.card}>
-                                    <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                        <View style={styles.tag}>
-                                            <Text style={styles.tag_text}>基金</Text>
+                            {account?.items?.length ? (
+                                account?.items?.map((product, index) => (
+                                    <>
+                                        <View style={styles.card}>
+                                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                                <View style={styles.tag}>
+                                                    <Text style={styles.tag_text}>基金</Text>
+                                                </View>
+                                                <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                                            </View>
+                                            <View style={[Style.flexBetween]}>
+                                                <Text style={[styles.amount_text, {width: px(120)}]}>
+                                                    422,123,912.48
+                                                </Text>
+                                                <Text style={styles.amount_text}>-3111.46</Text>
+                                                <Text style={styles.amount_text}>+993146.12</Text>
+                                            </View>
                                         </View>
-                                        <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
-                                    </View>
-                                    <View style={[Style.flexBetween]}>
-                                        <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
-                                        <Text style={styles.amount_text}>-3111.46</Text>
-                                        <Text style={styles.amount_text}>+993146.12</Text>
-                                    </View>
-                                </View>
-                            </View>
+                                        <View style={styles.line_circle}>
+                                            <View style={{...styles.leftCircle, left: -px(5)}} />
+                                            <View style={{...styles.line, flex: 1}} />
+                                            <View style={{...styles.leftCircle, right: -px(5)}} />
+                                        </View>
+                                    </>
+                                ))
+                            ) : (
+                                <NoAccountRender
+                                    empty_button={account?.empty_button}
+                                    empty_desc={account?.empty_desc}
+                                />
+                            )}
                         </View>
                     </View>
                 </View>

@@ -7,12 +7,14 @@ import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const NoAccountRender = () => {
+import {useJump} from '~/components/hooks';
+const NoAccountRender = ({empty_desc, empty_button}) => {
+    const jump = useJump();
     return (
         <View style={[Style.flexRowCenter, styles.no_account_con]}>
-            <Text style={styles.bold_text}>当前还未持有任何产品</Text>
-            <TouchableOpacity style={[Style.flexRow, {marginLeft: px(11)}]}>
-                <Text style={[styles.bold_text, {color: Colors.btnColor}]}>挑选产品</Text>
+            <Text style={styles.bold_text}>{empty_desc}</Text>
+            <TouchableOpacity style={[Style.flexRow, {marginLeft: px(11)}]} onPress={() => jump(empty_button?.url)}>
+                <Text style={[styles.bold_text, {color: Colors.btnColor}]}>{empty_button?.text}</Text>
                 <FontAwesome name={'angle-right'} size={16} color={Colors.btnColor} />
             </TouchableOpacity>
         </View>
