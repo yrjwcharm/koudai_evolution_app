@@ -46,6 +46,8 @@ const PKBall = ({style}, ref) => {
     useFocusEffect(
         useCallback(() => {
             getPKBetter({fund_code_list: pkProducts.join()}).then((res) => {
+                const {code, plateid, rec_json} = res.result?.better_fund || {};
+                plateid && rec_json && global.LogTool({ctrl: code, event: 'rec_show', plateid, rec_json});
                 setBetter(res.result?.better_fund);
                 if (res.result?.better_fund) {
                     if (layoutTypeRef.current === 1) {
@@ -64,6 +66,8 @@ const PKBall = ({style}, ref) => {
 
     const handlerJump = () => {
         global.LogTool('pk_floating');
+        const {code, plateid, rec_json} = better || {};
+        plateid && rec_json && global.LogTool({ctrl: code, event: 'rec_click', plateid, rec_json});
         if (better?.code && !pkProducts.includes(better.code)) dispatch(addProduct({code: better.code, isHigh: true}));
         setBetter(null);
 

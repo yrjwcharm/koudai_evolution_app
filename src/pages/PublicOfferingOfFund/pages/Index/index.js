@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 15:50:02
+ * @LastEditTime: 2022-07-13 19:11:55
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -54,7 +54,7 @@ const TopMenu = ({data = []}) => {
 /** @name 轮播 */
 const SwiperCom = ({data = {}}) => {
     const jump = useJump();
-    const {list = [], plateid, rec_json} = data;
+    const {items: list = [], plateid, rec_json} = data;
 
     useEffect(() => {
         list[0] && global.LogTool({ctrl: list[0].code, event: 'rec_show', plateid, rec_json});

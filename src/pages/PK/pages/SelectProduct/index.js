@@ -33,6 +33,7 @@ const SelectProduct = (props) => {
 
     const pkProduct = useRef([]);
     const isFirst = useRef(0);
+    const logParams = useRef({});
 
     useEffect(() => {
         pkProduct.current = props.pkProducts;
@@ -72,14 +73,25 @@ const SelectProduct = (props) => {
         [followListLite, hotpkData, borwseListData]
             [idx]()
             .then((res) => {
+                const {plateid, rec_json} = res.result;
+                if (plateid && rec_json) {
+                    logParams.current = {
+                        plateid,
+                        rec_json,
+                    };
+                    global.LogTool({event: 'rec_show', plateid, rec_json});
+                } else {
+                    logParams.current = {};
+                }
                 setTabList(res.result?.list || res.result);
             })
-            .finally((_) => {
+            .finally(() => {
                 setLoading(false);
             });
     };
 
     const deleteSelectedItem = (item) => {
+        global.LogTool({ctrl: item.code, event: 'ProductSelection_DelFund'});
         setSelectData((val) => {
             return val.filter((itm) => item.code !== itm.code);
         });
@@ -87,6 +99,9 @@ const SelectProduct = (props) => {
     };
 
     const handlerSelectItem = (item) => {
+        // 打点
+        const {plateid, rec_json} = logParams.current;
+        plateid && rec_json && global.LogTool({ctrl: item.code, event: 'rec_click', plateid, rec_json});
         // 整理selectData
         let state = selectData.find((itm) => itm.code === item.code);
         if (state) {
@@ -432,7 +447,6 @@ const SelectProduct = (props) => {
                         disabled={!props.pkProducts.length}
                         onPress={() => {
                             global.LogTool('start_PK_click', null, props.pkProducts.join());
-                            global.LogTool('ProductSelection_StartPK');
                             jump(data.pk_button.url);
                         }}>
                         <Text style={styles.bottomBtnText}>{data.pk_button.title}</Text>
