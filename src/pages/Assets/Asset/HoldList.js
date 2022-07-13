@@ -2,10 +2,12 @@
  * @Date: 2022-07-12 14:25:26
  * @Description:持仓卡片
  */
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
+
+import NoAccountRender from './NoAccountRender';
 const ListTitle = () => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
@@ -22,6 +24,7 @@ const ListTitle = () => {
         </View>
     );
 };
+
 const HoldList = () => {
     return (
         <View>
@@ -36,6 +39,7 @@ const HoldList = () => {
                     </View>
                     <View style={styles.line} />
                     {/* 列表卡片 */}
+                    <NoAccountRender />
                     <View style={styles.card}>
                         <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                             <View style={styles.tag}>
@@ -49,6 +53,27 @@ const HoldList = () => {
                             <Text style={styles.amount_text}>+993146.12</Text>
                         </View>
                     </View>
+                    <View style={styles.line_circle}>
+                        <View style={{...styles.leftCircle, left: -px(5)}} />
+                        <View style={{...styles.line, flex: 1}} />
+                        <View style={{...styles.leftCircle, right: -px(5)}} />
+                    </View>
+
+                    <View>
+                        <View style={styles.card}>
+                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                <View style={styles.tag}>
+                                    <Text style={styles.tag_text}>基金</Text>
+                                </View>
+                                <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                            </View>
+                            <View style={[Style.flexBetween]}>
+                                <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
+                                <Text style={styles.amount_text}>-3111.46</Text>
+                                <Text style={styles.amount_text}>+993146.12</Text>
+                            </View>
+                        </View>
+                    </View>
                 </View>
             </View>
         </View>
@@ -58,7 +83,7 @@ const HoldList = () => {
 export default HoldList;
 
 const styles = StyleSheet.create({
-    bold_text: {fontSize: px(18), lineHeight: px(25), color: Colors.defaultColor, fontWeight: '500'},
+    bold_text: {fontSize: px(18), lineHeight: px(25), color: Colors.defaultColor, fontWeight: '700'},
     light_text: {
         fontSize: px(12),
         lineHeight: px(17),
@@ -111,5 +136,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9EAEF',
         height: 0.5,
         marginHorizontal: px(16),
+    },
+    leftCircle: {
+        width: px(10),
+        height: px(10),
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(10),
+        position: 'absolute',
+    },
+    line_circle: {
+        ...Style.flexBetween,
+        backgroundColor: '#fff',
+        zIndex: 10,
     },
 });

@@ -26,13 +26,13 @@ const AssetHeaderCard = () => {
     };
     return (
         <View style={{marginTop: px(40), marginHorizontal: px(16), marginBottom: px(12)}}>
-            <ArtWave
+            {/* <ArtWave
                 surfaceWidth={100}
                 surfaceHeigth={100}
                 powerPercent={20}
                 type="dc"
                 style={{backgroundColor: '#FF7800'}}
-            />
+            /> */}
             <LinearGradient
                 colors={['#1C58E7', '#528AED']}
                 start={{x: 0, y: 0}}

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 08:52:06
+ * @LastEditTime: 2022-07-12 18:04:42
  * @Description:
  */
 
@@ -24,7 +24,7 @@ class ScrollTabbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabLeft: 0,
+            tabLeft: px(12),
         };
         this.tabsLayouts = {};
         //Tab项总长
