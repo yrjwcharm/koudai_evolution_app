@@ -437,7 +437,11 @@ export default function AppStack() {
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
-            <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{headerShown: false}} />
+            <Stack.Screen
+                name="TradeProcessing"
+                component={TradeProcessing}
+                options={{gestureEnabled: false, headerShown: false}}
+            />
             <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额极速购说明'}} />
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
@@ -778,7 +782,18 @@ export default function AppStack() {
             <Stack.Screen
                 name="SearchHome"
                 component={SearchHome}
-                options={{title: '', headerShown: false, ...TransitionPresets.ScaleFromCenterAndroid}}
+                options={{
+                    title: '',
+                    headerShown: false,
+                    cardStyleInterpolator: ({current: {progress}}) => ({
+                        cardStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 0.5, 0.9, 1],
+                                outputRange: [0, 0.25, 0.7, 1],
+                            }),
+                        },
+                    }),
+                }}
             />
             <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
             <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />

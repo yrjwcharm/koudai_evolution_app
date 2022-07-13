@@ -2,11 +2,11 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: Please set LastEditors
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform, DeviceEventEmitter} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
@@ -187,6 +187,15 @@ function DetailAccount({route, navigation}) {
             </View>
         );
     };
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     useFocusEffect(
         useCallback(() => {
             setType(1);

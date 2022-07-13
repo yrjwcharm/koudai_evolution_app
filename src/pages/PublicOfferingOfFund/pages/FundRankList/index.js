@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 17:29:14
+ * @LastEditTime: 2022-07-13 17:35:52
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -127,6 +127,8 @@ const Index = ({route}) => {
                         setShowEmpty(true);
                         const {header_pic, items = []} = res.result;
                         setHeadImg(header_pic);
+                        const {plateid, rec_json} = items[0];
+                        plateid && rec_json && global.LogTool({event: 'rec_show', plateid, rec_json});
                         setList(items);
                     }
                 })
@@ -178,7 +180,10 @@ const Index = ({route}) => {
                                 style={styles.scrollTabContainer}>
                                 <ScrollableTabView
                                     initialPage={initialPage}
-                                    // onChangeTab={(value) => console.log(value)}
+                                    onChangeTab={({i}) => {
+                                        const {plateid, rec_json} = list[i];
+                                        plateid && rec_json && global.LogTool({event: 'rec_show', plateid, rec_json});
+                                    }}
                                     prerenderingSiblingsNumber={Infinity}
                                     renderTabBar={(props) => (
                                         <View>
@@ -187,7 +192,13 @@ const Index = ({route}) => {
                                     )}
                                     style={{flex: 1}}>
                                     {list.map((tab) => {
-                                        const {items: tabItems = [], rank_type: key, title: tabTitle} = tab;
+                                        const {
+                                            items: tabItems = [],
+                                            plateid,
+                                            rank_type: key,
+                                            rec_json,
+                                            title: tabTitle,
+                                        } = tab;
                                         return (
                                             <ScrollView
                                                 bounces={false}
@@ -198,7 +209,18 @@ const Index = ({route}) => {
                                                 {tabItems?.length > 0
                                                     ? tabItems.map((item, index, arr) => (
                                                           <ProductCards
-                                                              data={item}
+                                                              data={{
+                                                                  ...item,
+                                                                  LogTool: () => {
+                                                                      plateid &&
+                                                                          rec_json &&
+                                                                          global.LogTool({
+                                                                              event: 'rec_click',
+                                                                              plateid,
+                                                                              rec_json,
+                                                                          });
+                                                                  },
+                                                              }}
                                                               key={index}
                                                               style={{
                                                                   ...(index === 0 ? {marginTop: 0} : {}),

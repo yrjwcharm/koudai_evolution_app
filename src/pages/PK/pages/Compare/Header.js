@@ -89,11 +89,11 @@ const Header = (props) => {
                         </TouchableOpacity>
                     ) : (
                         <>
-                            {item.tags.map((itm, idx) => (
-                                <View style={[styles.groupItemTag, {marginLeft: idx > 0 ? px(4) : 0}]} key={idx}>
-                                    <Text style={styles.groupItemTagText}>{itm}</Text>
+                            {item.tags[0] ? (
+                                <View style={[styles.groupItemTag]}>
+                                    <Text style={styles.groupItemTagText}>{item.tags[0]}</Text>
                                 </View>
-                            ))}
+                            ) : null}
                         </>
                     )}
                 </View>

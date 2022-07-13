@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 14:44:02
+ * @LastEditTime: 2022-07-13 15:07:10
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -28,8 +28,8 @@ const HotFund = ({data, onFollow}) => {
             if (list[index] == 1) {
                 global.LogTool(
                     {
-                        event: 'fund_unfollow_click',
-                        plate_id: body.plateid,
+                        event: 'rec_click',
+                        plateid: body.plateid,
                         rec_json: JSON.stringify(body.rec_json),
                     },
                     null,
@@ -39,8 +39,8 @@ const HotFund = ({data, onFollow}) => {
             } else {
                 global.LogTool(
                     {
-                        event: 'fund_follow_click',
-                        plate_id: body.plateid,
+                        event: 'rec_click',
+                        plateid: body.plateid,
                         rec_json: JSON.stringify(body.rec_json),
                     },
                     null,
@@ -55,8 +55,8 @@ const HotFund = ({data, onFollow}) => {
         const params = body?.list.filter((item, index) => checkList[index] == 1).map((key) => key.item_id);
         global.LogTool(
             {
-                event: 'follow_all_click',
-                plate_id: body.plateid,
+                event: 'rec_click',
+                plateid: body.plateid,
                 rec_json: JSON.stringify(body.rec_json),
             },
             null,

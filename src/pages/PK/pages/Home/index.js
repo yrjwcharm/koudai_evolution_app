@@ -31,7 +31,7 @@ const handlerItemsLog = (items, data) => {
                     {
                         event: 'rec_click',
                         rec_json: data.rec_json,
-                        plate_id: data.plateid,
+                        plateid: data.plateid,
                     },
                     null,
                     items?.map?.((t) => t.code || t.plan_id)?.join?.()
@@ -61,8 +61,8 @@ const PKHome = ({navigation}) => {
         getPKHomeData()
             .then((res) => {
                 if (res.code === '000000') {
-                    setData(res.result);
                     listLayout.current.status = true;
+                    setData(res.result);
                 } else {
                     Toast.show(res.message);
                 }
@@ -81,7 +81,10 @@ const PKHome = ({navigation}) => {
 
     useFocusEffect(
         useCallback(() => {
-            DeviceEventEmitter.addListener('attentionRefresh', getData);
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', getData);
+            return () => {
+                listener.remove();
+            };
         }, [])
     );
 
@@ -105,7 +108,7 @@ const PKHome = ({navigation}) => {
             listLayout.current.status = false;
             let cur = data.sub_list[0];
             let code = cur.items?.map?.((item) => item.code)?.join?.();
-            global.LogTool({event: 'rec_show', rec_json: data.rec_json}, null, code);
+            global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json}, null, code);
         }
     };
 
@@ -126,6 +129,7 @@ const PKHome = ({navigation}) => {
                 {/* search */}
                 <View style={[styles.searchWrap]}>
                     <TouchableOpacity
+                        activeOpacity={0.9}
                         style={[styles.searchBg, Style.flexCenter]}
                         onPress={() => {
                             global.LogTool('PK_Search');

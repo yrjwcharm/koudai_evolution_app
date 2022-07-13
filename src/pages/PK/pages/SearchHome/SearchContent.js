@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 14:50:05
+ * @LastEditTime: 2022-07-12 17:32:13
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         lineHeight: px(17),
         color: Colors.darkGrayColor,
+        marginLeft: px(6),
     },
     rate: {
         marginTop: px(8),

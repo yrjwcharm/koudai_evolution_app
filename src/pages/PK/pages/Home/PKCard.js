@@ -29,14 +29,19 @@ const PKCard = ({data = {}}) => {
 
     const handlerEnter = () => {
         global.LogTool('pk_button');
-        global.LogTool({event: 'pk_click', rec_json: data.rec_json.pk_home});
+        global.LogTool({event: 'rec_click', rec_json: data.rec_json.pk_home});
         if (!pkProducts.includes(leftObj.code)) dispatch(addProduct(leftObj.code));
         if (!pkProducts.includes(rightObj.code)) dispatch(addProduct(rightObj.code));
         jump(data.btns.url);
     };
 
     return (
-        <View style={styles.pkCard}>
+        <TouchableOpacity
+            style={styles.pkCard}
+            activeOpacity={data?.is_enter_pk ? 0.8 : 1}
+            onPress={() => {
+                data?.is_enter_pk && handlerEnter();
+            }}>
             <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
                 <View style={styles.pkInfoLeft}>
                     <Text style={styles.pkInfoName}>{leftObj.name}</Text>
@@ -55,20 +60,18 @@ const PKCard = ({data = {}}) => {
                     </View>
                 </View>
                 {data?.is_enter_pk ? (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
+                    <View
                         style={{
                             position: 'absolute',
                             top: '50%',
                             left: '50%',
                             transform: [{translateX: px(-41)}, {translateY: px(-41)}],
-                        }}
-                        onPress={handlerEnter}>
+                        }}>
                         <FastImage
                             source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/pk_button.png'}}
                             style={styles.pkIconStyle2}
                         />
-                    </TouchableOpacity>
+                    </View>
                 ) : (
                     <FastImage source={pkIcon} style={styles.pkIconStyle} />
                 )}
@@ -120,7 +123,7 @@ const PKCard = ({data = {}}) => {
                     <RenderHtml html={data.tip} style={styles.pkTipText} />
                 </View>
             ) : null}
-        </View>
+        </TouchableOpacity>
     );
 };
 

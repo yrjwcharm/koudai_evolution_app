@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 12:05:14
+ * @LastEditTime: 2022-07-13 15:50:02
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -52,18 +52,20 @@ const TopMenu = ({data = []}) => {
 };
 
 /** @name 轮播 */
-const SwiperCom = ({data = []}) => {
+const SwiperCom = ({data = {}}) => {
     const jump = useJump();
+    const {list = [], plateid, rec_json} = data;
 
     useEffect(() => {
-        if (data[0]) {
-            const {code, plate_id, rec_json} = data[0];
-            global.LogTool({ctrl: code, event: 'PF_banner_show', plate_id, rec_json});
-        }
-    }, [data]);
+        list[0] && global.LogTool({ctrl: list[0].code, event: 'rec_show', plateid, rec_json});
+    }, [list, plateid, rec_json]);
 
     return (
-        <View style={styles.swiperContainer}>
+        <LinearGradient
+            colors={['#fff', Colors.bgColor]}
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            style={styles.swiperContainer}>
             <Swiper
                 activeDotStyle={[styles.dotStyle, styles.activeDotStyle]}
                 autoplay
@@ -73,13 +75,13 @@ const SwiperCom = ({data = []}) => {
                 loadMinimal={Platform.select({android: false, ios: true})}
                 paginationStyle={{bottom: px(8)}}
                 removeClippedSubviews={false}>
-                {data.map((item, index) => {
-                    const {button, code, name, plate_id, rank_tag, rec_json, tags, title, yield_info} = item;
+                {list.map((item, index) => {
+                    const {button, code, name, rank_tag, tags, title, yield_info} = item;
                     return (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
-                                global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
+                                global.LogTool({ctrl: code, event: 'rec_click', plateid, rec_json});
                                 jump(button?.url || '');
                             }}
                             key={name + index}>
@@ -94,9 +96,11 @@ const SwiperCom = ({data = []}) => {
                                     </View>
                                 ) : null}
                                 {title ? (
-                                    <View style={{marginTop: px(20)}}>
+                                    <View style={{marginTop: px(20), maxWidth: px(240)}}>
                                         {/* <View style={styles.underline} /> */}
-                                        <Text style={styles.sliderTitle}>{title}</Text>
+                                        <Text numberOfLines={1} style={styles.sliderTitle}>
+                                            {title}
+                                        </Text>
                                     </View>
                                 ) : null}
                                 <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
@@ -112,9 +116,11 @@ const SwiperCom = ({data = []}) => {
                                         </Text>
                                         {tags?.length > 0 && (
                                             <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                                                {tags.map((tag, i) => (
+                                                {tags.slice(0, 3).map((tag, i) => (
                                                     <View key={tag + i} style={styles.labelBox}>
-                                                        <Text style={styles.labelText}>{tag}</Text>
+                                                        <Text numberOfLines={1} style={styles.labelText}>
+                                                            {tag}
+                                                        </Text>
                                                     </View>
                                                 ))}
                                             </View>
@@ -125,7 +131,7 @@ const SwiperCom = ({data = []}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
-                                            global.LogTool({ctrl: code, event: 'PF_banner_click', plate_id, rec_json});
+                                            global.LogTool({ctrl: code, event: 'rec_click', plateid, rec_json});
                                             jump(button.url);
                                         }}
                                         style={[Style.flexRowCenter, styles.sliderBtn]}>
@@ -140,7 +146,7 @@ const SwiperCom = ({data = []}) => {
                     );
                 })}
             </Swiper>
-        </View>
+        </LinearGradient>
     );
 };
 
@@ -182,33 +188,25 @@ const Index = ({navigation, route}) => {
 
     return Object.keys(data).length > 0 ? (
         <LinearGradient
-            colors={['#FFFFFF', '#F4F5F7']}
-            start={{x: 0, y: 0.5}}
-            end={{x: 0, y: 1}}
+            colors={['#FFFFFF', Colors.bgColor]}
+            start={{x: 0, y: 0.4}}
+            end={{x: 0, y: 0.6}}
             style={styles.container}>
             <ScrollView
                 refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
                 <TopMenu data={tabs} />
-                {suggest_list?.length > 0 && <SwiperCom data={suggest_list} />}
-                <LinearGradient
-                    colors={['#FFFFFF', '#F4F5F7']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.05}}
-                    style={[styles.bottomContainer, suggest_list?.length > 0 ? {} : {marginTop: 0, paddingTop: 0}]}>
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
-                        {sub_list?.length > 0 ? (
-                            sub_list.map((item, index) => (
-                                <RenderPart data={item} key={index} pointKey={'fund_featurestab'} />
-                            ))
-                        ) : (
-                            <Image source={{uri: un_buy_img}} style={styles.blocked} />
-                        )}
-                    </View>
-                    <BottomDesc />
-                </LinearGradient>
+                {suggest_list?.list?.length > 0 && <SwiperCom data={suggest_list} />}
+                <View style={styles.bottomContainer}>
+                    {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
+                    {sub_list?.length > 0 ? (
+                        sub_list.map((item, index) => <RenderPart data={item} key={index} />)
+                    ) : (
+                        <Image source={{uri: un_buy_img}} style={styles.blocked} />
+                    )}
+                </View>
+                <BottomDesc />
             </ScrollView>
             <PKBall />
         </LinearGradient>
@@ -226,6 +224,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
         paddingBottom: px(20),
         width: deviceWidth,
+        backgroundColor: '#fff',
     },
     menuItemBox: {
         marginRight: px(18),
@@ -243,14 +242,11 @@ const styles = StyleSheet.create({
         color: '#3D3D3D',
     },
     swiperContainer: {
-        marginHorizontal: Space.marginAlign,
-        position: 'relative',
-        zIndex: 2,
+        paddingHorizontal: Space.marginAlign,
     },
     bottomContainer: {
-        flex: 1,
-        marginTop: px(-134),
-        paddingTop: px(134),
+        paddingHorizontal: Space.padding,
+        backgroundColor: Colors.bgColor,
     },
     dotStyle: {
         borderRadius: px(5),
@@ -329,6 +325,7 @@ const styles = StyleSheet.create({
         borderRadius: px(2),
         borderWidth: Space.borderWidth,
         borderColor: '#AD9064',
+        maxWidth: px(50),
     },
     labelText: {
         fontSize: px(10),

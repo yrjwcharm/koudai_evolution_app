@@ -17,7 +17,7 @@ const Index = ({navigation, route}) => {
         let res = await postImport({items: JSON.stringify(data), item_type: route?.params?.item_type || 3});
         Toast.show(res.message);
         if (res.code === '000000') {
-            navigation.goBack();
+            navigation.pop(2);
         }
     };
     return (
@@ -54,8 +54,9 @@ const Index = ({navigation, route}) => {
                         </View>
                     </TouchableOpacity>
                 ))}
+                <View style={{height: px(20)}} />
             </ScrollView>
-            <FixedButton title="立即导入" onPress={handleImport} />
+            <FixedButton title="立即导入" onPress={handleImport} style={{position: 'relative'}} />
         </>
     );
 };

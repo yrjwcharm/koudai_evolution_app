@@ -2,12 +2,21 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-19 15:27:04
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 19:04:36
  */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
-import {px as text, isIphoneX} from '../../../utils/appUtil';
+import React, {useState, useCallback, useRef} from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    Dimensions,
+    Platform,
+    DeviceEventEmitter,
+} from 'react-native';
+import {px as text} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import Image from 'react-native-fast-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
@@ -104,6 +113,15 @@ export default function DetailPolaris({route, navigation}) {
             });
         }
     };
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     useFocusEffect(
         useCallback(() => {
             init();

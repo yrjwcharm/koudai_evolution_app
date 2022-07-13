@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:13:35
+ * @LastEditTime: 2022-07-12 17:36:39
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -51,7 +51,7 @@ const Index = ({navigation, route}) => {
                                     global.LogTool({ctrl: code, event: 'share_click'});
                                     shareModal.current?.show();
                                 }}
-                                style={{marginRight: Space.marginAlign}}>
+                                style={{marginRight: px(12)}}>
                                 <Image source={shareFund} style={styles.shareFund} />
                             </TouchableOpacity>
                         ) : null,
@@ -280,8 +280,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     shareFund: {
-        width: px(20),
-        height: px(20),
+        width: px(24),
+        height: px(24),
     },
     bottomBtns: {
         paddingTop: Space.padding,
@@ -293,9 +293,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
     },
     leftBtnIcon: {
-        marginBottom: px(4),
-        width: px(24),
-        height: px(24),
+        width: px(28),
+        height: px(28),
     },
     leftBtnText: {
         fontSize: Font.textSm,

@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:38:02
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-28 16:01:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 18:22:18
  * @Description:修改持仓
  */
 import {StyleSheet, Text, TextInput, TouchableOpacity, View, Image} from 'react-native';
@@ -14,6 +14,7 @@ import downImg from '~/assets/img/attention/down.png';
 import {Button} from '~/components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateFundList} from '~/redux/actions/ocrFundList';
+import Toast from '~/components/Toast';
 const Index = ({navigation, route}) => {
     const dispatch = useDispatch();
     const key = route?.params?.key;
@@ -22,20 +23,33 @@ const Index = ({navigation, route}) => {
     const [data, setData] = useState(initalData);
     const [isUp, setIsUp] = useState(initalData.yield > 0 ? true : false);
     const handleSave = () => {
-        let tmpCcrFundList = [...ocrFundList.ocrOwernList];
-        tmpCcrFundList[key] = data;
-        dispatch(updateFundList({ocrOwernList: tmpCcrFundList}));
-        navigation.goBack();
+        onChangeText(data.yield, 'yield', (_data) => {
+            let tmpCcrFundList = [...ocrFundList.ocrOwernList];
+            tmpCcrFundList[key] = _data;
+            dispatch(updateFundList({ocrOwernList: tmpCcrFundList}));
+            navigation.goBack();
+        });
     };
-    const onChangeText = (value, _key, scene) => {
+    const onChangeText = (value, _key, callback) => {
+        if (value > 99999999) {
+            Toast.show('请输入合理的金额');
+            return;
+        }
         setData((prev) => {
             let tmp = {...prev};
-            tmp[_key] = scene ? value : onlyNumber(value);
+            tmp[_key] =
+                _key == 'amount'
+                    ? onlyNumber(value)
+                    : value
+                    ? isUp
+                        ? onlyNumber(value)
+                        : '-' + onlyNumber(value)
+                    : '0';
+            callback && callback(tmp);
             return tmp;
         });
     };
     const hanldeToggle = () => {
-        onChangeText(data.yield * -1, 'yield', 'toggle');
         setIsUp((prev) => !prev);
     };
     return (
@@ -72,7 +86,7 @@ const Index = ({navigation, route}) => {
                     <TextInput
                         placeholder="请输入持有收益"
                         style={styles.input}
-                        value={data.yield < 0 ? data.yield * -1 + '' : data.yield + ''}
+                        value={data.yield?.indexOf('-') > -1 ? data.yield?.slice(1) : data.yield}
                         keyboardType={'numeric'}
                         onChangeText={(value) => {
                             onChangeText(value, 'yield');

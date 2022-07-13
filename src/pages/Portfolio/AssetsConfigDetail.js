@@ -1,13 +1,21 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2022-03-31 15:39:11
- * @LastEditors: yhc
+ * @LastEditTime: 2022-07-12 18:47:50
+ * @LastEditors: Please set LastEditors
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
 import React, {Component} from 'react';
-import {StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput as Input} from 'react-native';
+import {
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    TouchableOpacity,
+    TextInput as Input,
+    DeviceEventEmitter,
+} from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Http from '../../services';
@@ -54,6 +62,10 @@ export class AssetsConfigDetail extends Component {
     }
     componentDidMount() {
         this.init();
+        this.listener = DeviceEventEmitter.addListener('attentionRefresh', this.init);
+    }
+    componentWillUnmount() {
+        this.listener.remove();
     }
     init = () => {
         const {amount} = this.state;

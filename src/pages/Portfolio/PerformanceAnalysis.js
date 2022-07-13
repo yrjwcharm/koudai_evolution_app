@@ -1,12 +1,20 @@
 /*
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-03 19:34:04
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 18:57:41
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    DeviceEventEmitter,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
@@ -257,26 +265,41 @@ const PerformanceAnalysis = ({navigation, route}) => {
         }
     };
 
+    const init = () => {
+        http.get('/portfolio/yield_parse/20210426', {
+            upid: route.params?.upid,
+        })
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result || {});
+                    setTabs(res.result?.tabs || {});
+                    setShowEmpty(res.result ? false : true);
+                } else {
+                    setShowEmpty(true);
+                }
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+                setShowEmpty(true);
+            });
+    };
+
     useFocusEffect(
         useCallback(() => {
-            http.get('/portfolio/yield_parse/20210426', {
-                upid: route.params?.upid,
-            })
-                .then((res) => {
-                    if (res.code === '000000') {
-                        setData(res.result || {});
-                        setTabs(res.result?.tabs || {});
-                        setShowEmpty(res.result ? false : true);
-                    } else {
-                        setShowEmpty(true);
-                    }
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setLoading(false);
-                    setShowEmpty(true);
-                });
-        }, [route])
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
 
     return loading ? (

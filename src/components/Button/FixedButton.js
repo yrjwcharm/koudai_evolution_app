@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-11 11:08:31
+ * @LastEditTime: 2022-07-13 17:00:00
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -44,9 +44,18 @@ export default class FixedButton extends Component {
     }
     render() {
         const {check, keyboardHeight, showCheckTag} = this.state;
-        const {agreement, disabled, heightChange, suffix = '', otherAgreement, otherParam, checkIcon} = this.props;
+        const {
+            agreement,
+            disabled,
+            heightChange,
+            suffix = '',
+            otherAgreement,
+            otherParam,
+            checkIcon,
+            style,
+        } = this.props;
         return (
-            <Animated.View style={[styles.bottom, {bottom: keyboardHeight}]}>
+            <Animated.View style={[styles.bottom, {bottom: keyboardHeight}, style]}>
                 {agreement?.radio_text && showCheckTag && !check ? (
                     <View style={styles.checkTag}>
                         <Text style={{fontSize: px(14), lineHeight: px(20), color: '#fff'}}>

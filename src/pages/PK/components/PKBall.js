@@ -128,7 +128,7 @@ const PKBall = ({style}, ref) => {
                             <View style={styles.noticePushWrap}>
                                 <FastImage
                                     source={{
-                                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-bell.png',
+                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png',
                                     }}
                                     style={{width: px(16), height: px(16)}}
                                 />

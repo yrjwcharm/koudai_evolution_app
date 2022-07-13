@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 09:13:51
+ * @LastEditTime: 2022-07-13 16:54:53
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -42,8 +42,8 @@ export default function EditSortFund({route}) {
         return (
             <ScaleDecorator>
                 <TouchableOpacity
-                    onLongPress={drag}
-                    activeOpacity={0.5}
+                    onPressIn={drag}
+                    activeOpacity={0.6}
                     disabled={isActive}
                     style={[styles.rowItem, Style.flexBetween, {backgroundColor: isActive ? '#ddd' : '#fff'}]}>
                     <TouchableOpacity style={Style.flexRow} onPress={() => toggle(index)}>

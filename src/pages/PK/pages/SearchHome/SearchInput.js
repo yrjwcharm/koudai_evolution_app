@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 11:04:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 18:01:59
+ * @LastEditTime: 2022-07-12 17:33:49
  * @Description:
  */
 import React, {useState} from 'react';
@@ -37,16 +37,18 @@ const SearchInput = React.forwardRef((props, ref) => {
             <View style={[styles.inputCon, Style.flexRow]}>
                 <Icons name={'search'} color={'#545968'} size={px(18)} />
                 <TextInput
+                    returnKeyType={'search'}
                     autoFocus={true}
                     placeholder={props.placeholder || '请输入'}
                     style={{flex: 1, marginLeft: px(6)}}
                     onChangeText={_onChangeText}
                     value={content + ''}
                     clearButtonMode="while-editing"
+                    onSubmitEditing={() => onHandleSearch(content)}
                 />
             </View>
-            <TouchableOpacity onPress={() => onHandleSearch(content)} activeOpacity={0.9}>
-                <Text style={{color: Colors.lightBlackColor}}>搜索</Text>
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9}>
+                <Text style={{color: Colors.lightBlackColor}}>取消</Text>
             </TouchableOpacity>
         </View>
     );

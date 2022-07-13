@@ -64,11 +64,11 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             </StickyHeader>
                             {body?.tr?.map((tr, index) => (
                                 <TouchableOpacity
-                                    style={[styles.tr]}
+                                    style={styles.tr}
                                     activeOpacity={0.9}
                                     key={index}
                                     onPress={() => jump(tr[0].url)}>
-                                    <View style={[{paddingHorizontal: px(16)}]}>
+                                    <View style={[{paddingLeft: px(16)}]}>
                                         {/* 每一个td */}
                                         <Text
                                             numberOfLines={1}
@@ -101,11 +101,13 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 </TouchableOpacity>
                             ))}
                         </View>
+                        {/* 左右滑动的区域 */}
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                             style={{flex: 1}}
                             snapToInterval={otherLineWidth}
+                            bounces={false}
                             onMomentumScrollEnd={() => setIsScroll(false)}
                             onScrollBeginDrag={(e) => setIsScroll(true)}>
                             <View style={{minWidth: deviceWidth}}>
@@ -115,6 +117,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 >
                                     {/* 分割线 */}
                                     <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                    {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                             {body?.th &&

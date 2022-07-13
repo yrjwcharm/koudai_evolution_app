@@ -73,11 +73,11 @@ const PrivatePlacement = () => {
                             <View style={styles.swiperMiddleRight}>
                                 <Text style={styles.swiperMiddleName}>{data.recommend?.name}</Text>
                                 <View style={styles.swiperMiddleTags}>
-                                    {data.recommend.tags.map((item, idx) => (
-                                        <View key={idx} style={[styles.swiperMiddleTag, {marginLeft: px(8)}]}>
-                                            <Text style={styles.swiperMiddleTagText}>{item}</Text>
+                                    {data.recommend?.tags[0] ? (
+                                        <View style={[styles.swiperMiddleTag]}>
+                                            <Text style={styles.swiperMiddleTagText}>{data.recommend.tags[0]}</Text>
                                         </View>
-                                    ))}
+                                    ) : null}
                                 </View>
                             </View>
                         </View>

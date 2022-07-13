@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Platform} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, DeviceEventEmitter} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, formaNum, deviceWidth, onlyNumber, px} from '../../../utils/appUtil';
@@ -324,6 +324,15 @@ export default function DetailEducation({navigation, route}) {
             }
         });
     }, [countFr, countM]);
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     useFocusEffect(
         useCallback(() => {
             init();

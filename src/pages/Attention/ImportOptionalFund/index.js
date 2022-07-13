@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:36:09
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 18:20:50
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:56:26
  * @Description:导入自选
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform} from 'react-native';
@@ -35,7 +35,7 @@ const Index = ({navigation, route}) => {
         let res = await followAdd({item_id: checkList.join(','), item_type: route?.params?.item_type || 1});
         Toast.show(res.message);
         if (res.code === '000000') {
-            navigation.goBack();
+            navigation.pop(2);
         }
     };
     return (

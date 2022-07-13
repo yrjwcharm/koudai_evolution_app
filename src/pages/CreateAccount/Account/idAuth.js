@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 16:27:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:15:57
  * @Description: 开户身份证认证
  */
 
@@ -172,6 +172,7 @@ class IdAuth extends Component {
                         amount: this.props.route?.params?.amount,
                         poid: this.props.route?.params?.poid,
                         fr: this.props.route?.params?.fr || '',
+                        fund_code: this.props.route?.params?.fund_code,
                         url: this.props.route?.params?.url || '',
                     });
                 }

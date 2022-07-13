@@ -45,10 +45,10 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
         return (
             <View style={styles.labelsWrap}>
                 <View style={[styles.labelWrap, {height: px(row1Height)}]}>
-                    <Text style={styles.labelText}>资产配置</Text>
+                    <Text style={styles.labelText}>占比</Text>
                 </View>
                 <View style={[styles.labelWrap, {height: px(row2Height)}]}>
-                    <Text style={styles.labelText}>十大重仓股</Text>
+                    <Text style={styles.labelText}>重仓股</Text>
                 </View>
             </View>
         );
@@ -181,7 +181,7 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
     return (
         <View style={styles.container}>
             <View style={styles.title}>
-                <Text style={styles.titleText}>投资组合</Text>
+                <Text style={styles.titleText}>资产分布</Text>
             </View>
             <View style={[styles.content, expand ? {} : {height: px(row1Height), overflow: 'hidden'}]}>
                 {/* labels */}
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: px(33),
+        height: px(38),
     },
     expandText: {
         fontSize: px(12),

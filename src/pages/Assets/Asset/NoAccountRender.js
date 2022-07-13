@@ -25,7 +25,7 @@ export default NoAccountRender;
 
 const styles = StyleSheet.create({
     no_account_con: {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
         height: px(67),
         borderBottomRightRadius: px(6),
         borderBottomLeftRadius: px(6),

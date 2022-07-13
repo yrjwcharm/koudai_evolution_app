@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 18:41:01
+ * @LastEditTime: 2022-07-12 19:42:28
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -23,13 +23,13 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce} from 'lodash';
 
 const onPressBtn = debounce(
-    ({action, code, dispatch, plan_id}) => {
+    ({action, dispatch, item_id, item_type = 1}) => {
         if (action === 'do_pk') {
-            dispatch(addProduct(code));
+            dispatch(addProduct(item_id));
         } else if (action === 'attention' || action === 'cancel_attention') {
             (action === 'attention' ? followAdd : followCancel)({
-                item_id: code || plan_id,
-                item_type: code ? 1 : plan_id ? 2 : 3,
+                item_id,
+                item_type,
             }).then((res) => {
                 if (res.code === '000000') {
                     res.message && Toast.show(res.message);
@@ -121,14 +121,18 @@ const PrivateCard = ({data: {data}}) => {
                     </View>
                 )}
                 <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                    <View style={{flex: 1}}>
-                        <HTML style={styles.profit} html={data.yield_info?.value} />
-                        <Text style={[styles.label, {marginTop: px(2)}]}>{data.yield_info?.text}</Text>
-                    </View>
-                    <View style={{flex: 1}}>
-                        <HTML style={[styles.profit, {fontSize: px(18)}]} html={data.nav_info?.value} />
-                        <Text style={[styles.label, {marginTop: px(2)}]}>{data.nav_info?.text}</Text>
-                    </View>
+                    {data.yield_info ? (
+                        <View style={{flex: 1}}>
+                            <HTML style={styles.profit} html={data.yield_info?.value} />
+                            <Text style={[styles.label, {marginTop: px(2)}]}>{data.yield_info?.text}</Text>
+                        </View>
+                    ) : null}
+                    {data.nav_info ? (
+                        <View style={{flex: 1}}>
+                            <HTML style={[styles.profit, {fontSize: px(18)}]} html={data.nav_info?.value} />
+                            <Text style={[styles.label, {marginTop: px(2)}]}>{data.nav_info?.text}</Text>
+                        </View>
+                    ) : null}
                 </View>
                 {data.tip ? (
                     <TouchableOpacity
@@ -150,7 +154,7 @@ const PrivateCard = ({data: {data}}) => {
 /** @name 榜单卡片 */
 const RankCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, icon, labels, name, rank, tags = [], yield_info} = data;
+    const {button, code, icon, item_type, labels, name, rank, rank_info, tags = [], yield_info} = data;
     return (
         <View style={Style.flexRow}>
             {icon ? (
@@ -183,28 +187,28 @@ const RankCard = ({data = {}, isPking}) => {
                     </View>
                 )}
                 <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <View style={tags?.length > 0 ? styles.rowEnd : {}}>
-                        <HTML html={yield_info.value} style={styles.profit} />
-                        <Text
-                            style={[
-                                styles.label,
-                                tags?.length > 0
-                                    ? {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)}
-                                    : {marginTop: px(2)},
-                            ]}>
-                            {yield_info.text}
-                        </Text>
-                    </View>
+                    {yield_info ? (
+                        <View>
+                            <HTML html={yield_info.value} style={styles.profit} />
+                            <Text style={[styles.label, {marginTop: px(2)}]}>{yield_info.text}</Text>
+                        </View>
+                    ) : null}
+                    {rank_info ? (
+                        <View>
+                            <HTML html={rank_info.value} style={{...styles.profit, color: Colors.defaultColor}} />
+                            <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info.text}</Text>
+                        </View>
+                    ) : null}
                     {button?.text ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             disabled={button.avail === 0}
-                            onPress={() => onPressBtn({action: button.action, code, dispatch})}
+                            onPress={() => onPressBtn({action: button.action, item_id: code, item_type, dispatch})}
                             style={[
                                 styles.btnBox,
                                 button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                             ]}>
-                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                            <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                 {isPking ? 'PK中' : button.text}
                             </Text>
                         </TouchableOpacity>
@@ -222,6 +226,7 @@ const RecommendCard = ({data = {}, isPking}) => {
         button,
         chart = [],
         code,
+        item_type,
         label: leftLabel = [],
         labels,
         name,
@@ -245,12 +250,12 @@ const RecommendCard = ({data = {}, isPking}) => {
                             ) : null}
                             {leftLabel[1] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel2]}>
-                                    <Text style={styles.leftLabel2Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel2Text}>{leftLabel[1]}</Text>
                                 </View>
                             ) : null}
                             {leftLabel[2] ? (
                                 <View style={[Style.flexCenter, styles.leftLabel3]}>
-                                    <Text style={styles.leftLabel3Text}>{leftLabel[0]}</Text>
+                                    <Text style={styles.leftLabel3Text}>{leftLabel[2]}</Text>
                                 </View>
                             ) : null}
                         </>
@@ -277,31 +282,36 @@ const RecommendCard = ({data = {}, isPking}) => {
                         </View>
                     )}
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                        <View style={tags?.length > 0 ? styles.rowEnd : {}}>
-                            <HTML html={yield_info.value} style={styles.profit} />
-                            <Text
-                                style={[
-                                    styles.label,
-                                    tags?.length > 0
-                                        ? {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)}
-                                        : {marginTop: px(2)},
-                                ]}>
-                                {yield_info.text}
-                            </Text>
-                        </View>
+                        {yield_info ? (
+                            <View style={tags?.length > 0 ? styles.rowEnd : {}}>
+                                <HTML html={yield_info.value} style={styles.profit} />
+                                <Text
+                                    style={[
+                                        styles.label,
+                                        tags?.length > 0
+                                            ? {
+                                                  marginBottom: Platform.select({android: px(2), ios: 0}),
+                                                  marginLeft: px(8),
+                                              }
+                                            : {marginTop: px(2)},
+                                    ]}>
+                                    {yield_info.text}
+                                </Text>
+                            </View>
+                        ) : null}
                         {button?.text ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={button.avail === 0}
                                 onPress={() => {
                                     button?.LogTool?.(['PK', '关注'].includes(btnText));
-                                    onPressBtn({action: button.action, code, dispatch, plan_id});
+                                    onPressBtn({action: button.action, item_id: code, item_type, dispatch, plan_id});
                                 }}
                                 style={[
                                     styles.btnBox,
                                     button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                                 ]}>
-                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>
+                                <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
                                     {btnText}
                                 </Text>
                             </TouchableOpacity>
@@ -325,7 +335,7 @@ const RecommendCard = ({data = {}, isPking}) => {
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
-    const {button, code, labels, name, rank_info, tags = [], yield_info} = data;
+    const {button, code, item_type, labels, name, rank_info, tags = [], yield_info} = data;
     const btnText = isPking ? 'PK中' : button.text;
     return (
         <View>
@@ -375,13 +385,13 @@ const DefaultCard = ({data = {}, isPking}) => {
                         disabled={button.avail === 0}
                         onPress={() => {
                             button?.LogTool?.(['PK', '关注'].includes(btnText));
-                            onPressBtn({action: button.action, code, dispatch});
+                            onPressBtn({action: button.action, item_id: code, item_type, dispatch});
                         }}
                         style={[
                             styles.btnBox,
                             button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                         ]}>
-                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#ddd'} : {}]}>{btnText}</Text>
+                        <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>{btnText}</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>

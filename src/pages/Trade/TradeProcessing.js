@@ -1,28 +1,32 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-03-10 18:51:32
- * @LastEditors: yhc
+ * @LastEditTime: 2022-07-12 19:35:14
+ * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, BackHandler} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {VerifyCodeModal, Modal} from '../../components/Modal/';
-import http from '../../services';
-import Header from '../../components/NavBar';
-import {Button} from '../../components/Button';
-import {useJump} from '../../components/hooks';
-import Toast from '../../components/Toast';
+import NetInfo from '@react-native-community/netinfo';
+import {px as text} from '~/utils/appUtil';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import Empty from '~/components/EmptyTip';
+import {VerifyCodeModal, Modal} from '~/components/Modal';
+import http from '~/services';
+import Header from '~/components/NavBar';
+import {Button} from '~/components/Button';
+import {useJump} from '~/components/hooks';
+import Toast from '~/components/Toast';
 import FastImage from 'react-native-fast-image';
-import Html from '../../components/RenderHtml';
+import Html from '~/components/RenderHtml';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
-let _sign = false;
+import {getUserInfo} from '~/redux/actions/userInfo';
+import {useFocusEffect} from '@react-navigation/native';
+
 const TradeProcessing = ({navigation, route}) => {
     const dispatch = useDispatch();
     const {txn_id} = route.params || {};
@@ -36,35 +40,34 @@ const TradeProcessing = ({navigation, route}) => {
     const loopRef = useRef(0);
     const scrollRef = useRef();
     const timerRef = useRef(null);
-    const init = useCallback(
-        (sign = false, refused = 0) => {
-            http.get('/trade/order/processing/20210101', {
-                txn_id: txn_id,
-                loop: loopRef.current,
-                refused,
-            }).then((res) => {
-                setData(res.result);
-                if (res.result.need_verify_code && !sign) {
-                    verifyCodeModal.current.show();
-                    return signSendVerify();
-                }
-                if (res.result.finish || res.result.finish === -2 || loopRef.current >= res.result.loop) {
-                    setFinish(true);
-                    setTimeout(() => {
-                        scrollRef?.current?.scrollToEnd({animated: true});
-                    }, 200);
-                } else {
-                    timerRef.current = setTimeout(() => {
-                        loopRef.current++;
-                        if (loopRef.current <= res.result.loop) {
-                            init(sign, refused);
-                        }
-                    }, 1000);
-                }
-            });
-        },
-        [loopRef, timerRef, signSendVerify, txn_id]
-    );
+    const signFlag = useRef(false);
+    const [hasNet, setHasNet] = useState(false);
+    const init = useCallback((sign = false, refused = 0) => {
+        http.get('/trade/order/processing/20210101', {
+            txn_id: txn_id,
+            loop: loopRef.current,
+            refused,
+        }).then((res) => {
+            setData(res.result);
+            if (res.result.need_verify_code && !sign) {
+                verifyCodeModal.current.show();
+                return signSendVerify();
+            }
+            if (res.result.finish || res.result.finish === -2 || loopRef.current >= res.result.loop) {
+                setFinish(true);
+                setTimeout(() => {
+                    scrollRef?.current?.scrollToEnd({animated: true});
+                }, 200);
+            } else {
+                timerRef.current = setTimeout(() => {
+                    loopRef.current++;
+                    if (loopRef.current <= res.result.loop) {
+                        init(sign, refused);
+                    }
+                }, 1000);
+            }
+        });
+    }, []);
     const onLayout = useCallback(
         (index, e) => {
             const arr = [...heightArr];
@@ -119,14 +122,14 @@ const TradeProcessing = ({navigation, route}) => {
         }
     }, [bankInfo, init]);
     const buttonCallBack = (value) => {
-        if (_sign) return;
-        _sign = true;
+        if (signFlag.current) return;
+        signFlag.current = true;
         http.post('/trade/recharge/verify_code_confirm/20210101', {
             txn_id: txn_id,
             code: value,
         }).then((res) => {
             setTimeout(() => {
-                _sign = false;
+                signFlag.current = false;
             }, 300);
             if (res.code === '000000') {
                 setSign(true);
@@ -140,10 +143,26 @@ const TradeProcessing = ({navigation, route}) => {
             }
         });
     };
+    useFocusEffect(
+        useCallback(() => {
+            const listener = BackHandler.addEventListener('hardwareBackPress', () => true);
+            return () => {
+                listener.remove();
+            };
+        }, [])
+    );
     useEffect(() => {
-        init();
-        return () => clearTimeout(timerRef.current);
-    }, [init, timerRef]);
+        const listener = NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
+        return () => listener();
+    }, []);
+    useEffect(() => {
+        hasNet && init();
+        return () => {
+            timerRef.current !== null && clearTimeout(timerRef.current);
+        };
+    }, [hasNet]);
     const finishClick = () => {
         dispatch(getUserInfo());
         if (route?.params?.fr == 'trade_buy') {
@@ -152,7 +171,7 @@ const TradeProcessing = ({navigation, route}) => {
             jump(data.button.url);
         }
     };
-    return (
+    return hasNet ? (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
                 title="交易确认"
@@ -257,6 +276,13 @@ const TradeProcessing = ({navigation, route}) => {
                 getCode={signSendAgain}
             />
         </View>
+    ) : (
+        <Empty
+            img={require('~/assets/img/emptyTip/noNetwork.png')}
+            text={'哎呀！网络出问题了'}
+            desc={'网络不给力，请检查您的网络设置'}
+            style={{paddingTop: text(100), paddingBottom: text(60)}}
+        />
     );
 };
 

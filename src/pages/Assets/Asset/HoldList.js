@@ -2,12 +2,13 @@
  * @Date: 2022-07-12 14:25:26
  * @Description:持仓卡片
  */
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 import NoAccountRender from './NoAccountRender';
+import StickyHeader from '~/components/Sticky';
 const ListTitle = ({title, desc}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
@@ -26,15 +27,33 @@ const ListTitle = ({title, desc}) => {
 };
 // 信号
 const RenderSingal = () => {};
-const HoldList = ({products}) => {
+const HoldList = ({products, stickyHeaderY, scrollY}) => {
     return (
-        <View>
-            {products?.map((account, key) => (
-                <View key={key} style={{marginBottom: px(16)}}>
-                    <ListTitle title={account.title} desc={account?.desc} />
-                    <View style={{marginHorizontal: px(16)}}>
-                        <View>
+        <>
+            {/* <StickyHeader
+                style={[Style.flexBetween, styles.table_header]}
+                stickyHeaderY={stickyHeaderY} // 把头部高度传入
+                stickyScrollY={scrollY}>
+                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                <Text style={styles.light_text}>日收益</Text>
+                <Text style={styles.light_text}>累计收益</Text>
+            </StickyHeader> */}
+            <View style={{position: 'relative'}}>
+                {products?.map((account, key) => (
+                    <View key={key} style={{marginBottom: px(16)}}>
+                        <ListTitle title={account.title} desc={account?.desc} />
+                        <View style={{marginHorizontal: px(16), backgroundColor: '#fff'}}>
                             {/* header */}
+
+                            {/* <StickyHeader
+                                style={[Style.flexBetween, styles.table_header]}
+                                stickyHeaderY={stickyHeaderY} // 把头部高度传入
+                                stickyScrollY={scrollY}>
+                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                <Text style={styles.light_text}>日收益</Text>
+                                <Text style={styles.light_text}>累计收益</Text>
+                            </StickyHeader> */}
+
                             <View style={[Style.flexBetween, styles.table_header]}>
                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
                                 <Text style={styles.light_text}>日收益</Text>
@@ -48,7 +67,7 @@ const HoldList = ({products}) => {
                                     const flag = index + 1 == arr.length || index == arr.length - 1;
                                     const {name, tag, profit, amount, profit_acc} = product;
                                     return (
-                                        <View key={index}>
+                                        <React.Fragment key={index}>
                                             <View
                                                 style={[
                                                     styles.card,
@@ -76,7 +95,7 @@ const HoldList = ({products}) => {
                                                     <View style={{...styles.leftCircle, right: -px(5)}} />
                                                 </View>
                                             )}
-                                        </View>
+                                        </React.Fragment>
                                     );
                                 })
                             ) : (
@@ -87,9 +106,9 @@ const HoldList = ({products}) => {
                             )}
                         </View>
                     </View>
-                </View>
-            ))}
-        </View>
+                ))}
+            </View>
+        </>
     );
 };
 
@@ -114,11 +133,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         height: px(40),
         paddingHorizontal: px(16),
+        position: 'relative',
+        zIndex: 100,
     },
     card: {
         paddingHorizontal: px(16),
         paddingVertical: px(20),
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
     },
     fund_name: {
         color: Colors.defaultColor,

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-16 18:15:11
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:15:01
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -132,6 +132,7 @@ class BankInfo extends Component {
                 poid: this.props.route?.params?.poid || '',
                 amount: this.props.route?.params?.amount,
                 fr: this.props.route?.params?.fr,
+                fund_code: this.props.route?.params?.fund_code,
             },
             '正在提交数据...'
         ).then((res) => {
@@ -156,6 +157,7 @@ class BankInfo extends Component {
                                 this.props.navigation.replace(res.result?.jump_url?.path, {
                                     ...res.result?.jump_url?.params,
                                     fr: this.props.route?.params?.fr || '',
+                                    fund_code: this.props.route?.params?.fund_code,
                                     url: this.props.route?.params?.url || '',
                                 });
                             } else {

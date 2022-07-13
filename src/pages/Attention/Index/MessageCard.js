@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:39:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 10:15:13
+ * @LastEditTime: 2022-07-12 17:56:55
  * @Description:消息卡片
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';

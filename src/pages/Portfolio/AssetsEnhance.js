@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-01-22 10:51:10
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-07 17:20:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 18:53:49
  * @Description: 资产增强
  */
 import React, {useState, useCallback} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {DeviceEventEmitter, ScrollView, StyleSheet, Text, View} from 'react-native';
 import FitImage from 'react-native-fit-image';
 import {Colors, Font, Space} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -17,15 +17,28 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const AssetsEnhance = ({navigation, route}) => {
     const [data, setData] = useState({});
+    const init = () => {
+        http.get('/portfolio/asset_enhance/20210101', {...(route.params || {})}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+                navigation.setOptions({title: res.result.title || '资产增强'});
+            }
+        });
+    };
     useFocusEffect(
         useCallback(() => {
-            http.get('/portfolio/asset_enhance/20210101', {...(route.params || {})}).then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result);
-                    navigation.setOptions({title: res.result.title || '资产增强'});
-                }
-            });
-        }, [navigation, route])
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', init);
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
     return (
         <View style={styles.container}>

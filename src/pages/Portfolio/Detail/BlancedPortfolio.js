@@ -1,11 +1,11 @@
 /*
  * @Date: 2022-06-14 10:55:52
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-24 15:02:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-12 18:59:18
  * @Description:股债平衡组合
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, DeviceEventEmitter} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -36,6 +36,20 @@ const BlancedPortfolio = ({navigation, route}) => {
             setData(res.result);
         });
     };
+    useFocusEffect(
+        useCallback(() => {
+            const listener = DeviceEventEmitter.addListener('attentionRefresh', () => {
+                Http.get('portfolio/account_balance_detail/20220614', {type: typeRef.current}).then((res) => {
+                    navigation.setOptions({title: res.result.title || '股债平衡组合'});
+                    setData(res.result);
+                });
+            });
+            return () => {
+                listener.remove();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     useFocusEffect(
         useCallback(() => {
             getData();

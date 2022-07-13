@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-16 17:38:11
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-13 16:16:07
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -137,6 +137,7 @@ class Index extends Component {
                         amount: this.props.route?.params?.amount,
                         poid: this.props.route?.params?.poid,
                         fr: this.props.route?.params?.fr || '',
+                        fund_code: this.props.route?.params?.fund_code,
                         url: this.props.route?.params?.url || '',
                     });
                 }

@@ -148,7 +148,13 @@ const ValuePart = React.memo(({item}) => {
                     <Text style={styles.valueText}>{obj?.fund_date || '--'}</Text>
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={[styles.valueText, {color: '#E74949'}]}>{obj?.yield || '--'}</Text>
+                    <Text
+                        style={[
+                            styles.valueText,
+                            {color: obj?.yield > 0 ? '#E74949' : obj?.yield === 0 ? '' : '#4BA471'},
+                        ]}>
+                        {obj?.yield + '%'}
+                    </Text>
                 </View>
             </View>
         </>
