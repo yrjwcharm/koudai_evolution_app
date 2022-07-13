@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2022-07-12 18:45:29
+ * @LastEditTime: 2022-07-13 10:14:16
  * @LastEditors: Please set LastEditors
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -82,7 +82,7 @@ const FixedBtn = (props) => {
         if (!clickRef.current) {
             return false;
         }
-        const {event_id, is_follow, plan_id} = btn;
+        const {event_id, is_follow, item_type, plan_id} = btn;
         const logParams = {ctrl: plan_id, event: event_id};
         event_id === 'follow_click' && (logParams.oid = is_follow ? 'cancel' : 'add');
         global.LogTool(logParams);
@@ -90,7 +90,7 @@ const FixedBtn = (props) => {
             bottomModal.current.show();
         } else if (event_id === 'follow_click') {
             clickRef.current = false;
-            (is_follow ? followCancel : followAdd)({item_id: plan_id, item_type: 2}).then((res) => {
+            (is_follow ? followCancel : followAdd)({item_id: plan_id, item_type}).then((res) => {
                 if (res.code === '000000') {
                     res.message && Toast.show(res.message);
                     setTimeout(() => {
