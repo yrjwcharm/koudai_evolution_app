@@ -17,7 +17,7 @@ const shadow = {
     x: 0,
     y: 2,
 };
-const RationalCard = () => {
+const RationalCard = ({rational_info, im_info}) => {
     return (
         <View style={[Style.flexBetween, {marginBottom: px(20), marginHorizontal: px(16)}]}>
             <BoxShadow setting={{...shadow, width: px(166), height: px(63)}}>

@@ -25,7 +25,11 @@ const AssetHeaderCard = () => {
         });
     };
     return (
-        <View style={{marginTop: px(40), marginHorizontal: px(16), marginBottom: px(12)}}>
+        <LinearGradient
+            colors={['#F1F9FF', Colors.bgColor]}
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            style={{marginBottom: px(12), paddingTop: px(12)}}>
             {/* <ArtWave
                 surfaceWidth={100}
                 surfaceHeigth={100}
@@ -85,7 +89,7 @@ const AssetHeaderCard = () => {
                     </View>
                 </View>
             </LinearGradient>
-        </View>
+        </LinearGradient>
     );
 };
 
@@ -97,6 +101,7 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
         alignItems: 'flex-start',
         padding: px(20),
+        marginHorizontal: px(16),
     },
     mofang: {
         position: 'absolute',

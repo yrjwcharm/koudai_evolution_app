@@ -8,74 +8,79 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 import NoAccountRender from './NoAccountRender';
-const ListTitle = () => {
+import Item from '~/pages/Attention/FundNoticeManage/Item';
+const ListTitle = ({title, desc}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
             <View style={styles.title_tag} />
             <View style={Style.flexRow}>
                 <Text style={styles.bold_text}>
-                    产品 {''} {''}
+                    {title} {''} {''}
                 </Text>
                 <Text style={{fontSize: px(16)}}>
                     | {''} {''}
                 </Text>
-                <Text style={{marginBottom: px(-4), ...styles.light_text}}>包含公募、投顾组合、私募等产品</Text>
+                <Text style={{marginBottom: px(-4), ...styles.light_text}}>{desc}</Text>
             </View>
         </View>
     );
 };
 
-const HoldList = () => {
+const HoldList = ({products}) => {
     return (
         <View>
-            <ListTitle />
-            <View style={{marginHorizontal: px(16)}}>
-                <View>
-                    {/* header */}
-                    <View style={[Style.flexBetween, styles.table_header]}>
-                        <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                        <Text style={styles.light_text}>日收益</Text>
-                        <Text style={styles.light_text}>累计收益</Text>
-                    </View>
-                    <View style={styles.line} />
-                    {/* 列表卡片 */}
-                    <NoAccountRender />
-                    <View style={styles.card}>
-                        <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                            <View style={styles.tag}>
-                                <Text style={styles.tag_text}>基金</Text>
+            {products?.map((account, key) => (
+                <View key={key} style={{marginBottom: px(16)}}>
+                    <ListTitle title={account.title} desc={account?.desc} />
+                    <View style={{marginHorizontal: px(16)}}>
+                        <View>
+                            {/* header */}
+                            <View style={[Style.flexBetween, styles.table_header]}>
+                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                <Text style={styles.light_text}>日收益</Text>
+                                <Text style={styles.light_text}>累计收益</Text>
                             </View>
-                            <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
-                        </View>
-                        <View style={[Style.flexBetween]}>
-                            <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
-                            <Text style={styles.amount_text}>-3111.46</Text>
-                            <Text style={styles.amount_text}>+993146.12</Text>
-                        </View>
-                    </View>
-                    <View style={styles.line_circle}>
-                        <View style={{...styles.leftCircle, left: -px(5)}} />
-                        <View style={{...styles.line, flex: 1}} />
-                        <View style={{...styles.leftCircle, right: -px(5)}} />
-                    </View>
-
-                    <View>
-                        <View style={styles.card}>
-                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                <View style={styles.tag}>
-                                    <Text style={styles.tag_text}>基金</Text>
+                            <View style={styles.line} />
+                            {/* 列表卡片 */}
+                            <NoAccountRender />
+                            <View style={styles.card}>
+                                <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                    <View style={styles.tag}>
+                                        <Text style={styles.tag_text}>基金</Text>
+                                    </View>
+                                    <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
                                 </View>
-                                <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                                <View style={[Style.flexBetween]}>
+                                    <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
+                                    <Text style={styles.amount_text}>-3111.46</Text>
+                                    <Text style={styles.amount_text}>+993146.12</Text>
+                                </View>
                             </View>
-                            <View style={[Style.flexBetween]}>
-                                <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
-                                <Text style={styles.amount_text}>-3111.46</Text>
-                                <Text style={styles.amount_text}>+993146.12</Text>
+                            <View style={styles.line_circle}>
+                                <View style={{...styles.leftCircle, left: -px(5)}} />
+                                <View style={{...styles.line, flex: 1}} />
+                                <View style={{...styles.leftCircle, right: -px(5)}} />
+                            </View>
+
+                            <View>
+                                <View style={styles.card}>
+                                    <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                        <View style={styles.tag}>
+                                            <Text style={styles.tag_text}>基金</Text>
+                                        </View>
+                                        <Text numberOfLines={1}>嘉实中证基建ETF发起式联接A</Text>
+                                    </View>
+                                    <View style={[Style.flexBetween]}>
+                                        <Text style={[styles.amount_text, {width: px(120)}]}>422,123,912.48</Text>
+                                        <Text style={styles.amount_text}>-3111.46</Text>
+                                        <Text style={styles.amount_text}>+993146.12</Text>
+                                    </View>
+                                </View>
                             </View>
                         </View>
                     </View>
                 </View>
-            </View>
+            ))}
         </View>
     );
 };

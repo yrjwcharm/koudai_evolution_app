@@ -11,6 +11,7 @@ import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/Asset'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
 import Attention from '~/pages/Attention/Index'; //关注
+import ProjectHome from '../pages/Project/ProjectHome'; //计划
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
@@ -131,6 +132,7 @@ export default function Tabbar() {
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
+            <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
                     name="Vision"
