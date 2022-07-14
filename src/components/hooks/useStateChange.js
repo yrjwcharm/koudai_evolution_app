@@ -398,7 +398,7 @@ function useStateChange({homeShowModal, store}) {
                         if (modal.page.includes(navigation?.getCurrentRoute?.()?.name)) {
                             showModal(modal);
                         }
-                    } else if (navigation?.getCurrentRoute?.()?.name === 'Index') {
+                    } else if (navigation?.getCurrentRoute?.()?.name === 'PKHome') {
                         showModal(modal);
                     }
                 }
@@ -632,7 +632,7 @@ function useStateChange({homeShowModal, store}) {
                         showModal(modal);
                     }
                 }
-            } else if (currentRouteName === 'Index') {
+            } else if (currentRouteName === 'PKHome') {
                 showModal(modal);
             }
         }
