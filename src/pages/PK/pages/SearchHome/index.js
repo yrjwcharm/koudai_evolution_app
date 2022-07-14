@@ -96,7 +96,10 @@ const Index = () => {
                 placeholder={data?.search_box_content}
                 value={keyword}
             />
-            <ScrollView style={{paddingHorizontal: px(16), paddingTop: px(16)}} keyboardShouldPersistTaps={'handled'}>
+            <ScrollView
+                style={{paddingHorizontal: px(16), paddingTop: px(16)}}
+                keyboardShouldPersistTaps={'handled'}
+                keyboardDismissMode="on-drag">
                 {keyword ? (
                     // 搜索结果
                     searchLoading ? (

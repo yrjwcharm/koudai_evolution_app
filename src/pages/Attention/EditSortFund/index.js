@@ -107,6 +107,7 @@ export default function EditSortFund({route}) {
             title: '温馨提示',
             content: '将会从关注区删除已选中的基金',
             confirm: true,
+            confirmText: '确认删除',
             confirmCallBack: async () => {
                 const params = {
                     item_id: data
