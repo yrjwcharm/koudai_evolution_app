@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 17:35:52
+ * @LastEditTime: 2022-07-14 11:10:25
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -33,9 +33,10 @@ const Index = ({route}) => {
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) {
-            return false;
-        }
+        // console.log(distanceFromEnd);
+        // if (distanceFromEnd < 0) {
+        //     return false;
+        // }
         if (hasMore) {
             setPage((p) => p + 1);
         }
@@ -78,7 +79,7 @@ const Index = ({route}) => {
                     ListFooterComponent={renderFooter}
                     ListEmptyComponent={renderEmpty}
                     onEndReached={onEndReached}
-                    onEndReachedThreshold={0.1}
+                    onEndReachedThreshold={0.9}
                     onRefresh={() => (page > 1 ? setPage(1) : getData())}
                     onScroll={({
                         nativeEvent: {
