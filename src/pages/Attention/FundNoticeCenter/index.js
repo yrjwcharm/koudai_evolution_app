@@ -2,13 +2,13 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 10:54:17
+ * @LastEditTime: 2022-07-14 10:44:54
  * @Description:基金消息中心
  */
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors, Space, Style} from '~/common/commonStyle';
 import {getMessageList} from './services';
 import {useJump} from '~/components/hooks';
 import RenderHtml from '~/components/RenderHtml';
@@ -53,9 +53,22 @@ const Index = ({navigation}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
     const onEndReached = () => {
-        if (data?.total_count >= 20) {
+        console.log(data?.list?.length);
+        if (data?.total_count > data?.list?.length) {
             setPage((pre) => ++pre);
         }
+    };
+    // 渲染底部
+    const renderFooter = () => {
+        return (
+            <>
+                {data?.list?.length > 0 && (
+                    <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
+                        {data?.total_count > data?.list?.length ? '正在加载...' : '我们是有底线的...'}
+                    </Text>
+                )}
+            </>
+        );
     };
     const renderItem = ({item, index}) => {
         return (
@@ -108,7 +121,7 @@ const Index = ({navigation}) => {
                 contentContainerStyle={{
                     padding: px(16),
                 }}
-                // ListFooterComponent={renderFooter}
+                ListFooterComponent={renderFooter}
                 // ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
@@ -199,5 +212,12 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.5,
         flex: 1,
+    },
+    headerText: {
+        flex: 1,
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.darkGrayColor,
+        textAlign: 'center',
     },
 });
