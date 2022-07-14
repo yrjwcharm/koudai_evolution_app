@@ -17,7 +17,7 @@ import {
 } from './utils';
 import {LabelPart, ValuePart} from './parts';
 
-const PKParams = ({result, data, pkPinning, onScroll, refresh, _ref}) => {
+const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref}) => {
     const [expand, setExpand] = useState(false);
     const [expandParts, setExpandParts] = useState([]);
     const [totalScoreMap, setTotalScoreMap] = useState({});
@@ -90,7 +90,20 @@ const PKParams = ({result, data, pkPinning, onScroll, refresh, _ref}) => {
             <View style={styles.labelsWrap}>
                 {/* 总分 */}
                 <View style={[styles.totalLabel, {height: totalRowHeight}]}>
-                    <Text style={styles.totalLabelText}>总PK分</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={{flexDirection: 'row', alignItems: 'center'}}
+                        onPress={() => {
+                            showModal('PKParams');
+                        }}>
+                        <Text style={styles.totalLabelText}>总PK分</Text>
+                        {result?.pk_explain ? (
+                            <FastImage
+                                style={{width: px(14), height: px(14), marginLeft: 3}}
+                                source={require('../../../../../assets/img/tip.png')}
+                            />
+                        ) : null}
+                    </TouchableOpacity>
                 </View>
                 {obj?.score_info?.map((item, idx) => (
                     <LabelPart

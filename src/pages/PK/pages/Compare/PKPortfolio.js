@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import {Style} from '~/common/commonStyle';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {WebView} from 'react-native-webview';
+import FastImage from 'react-native-fast-image';
 
 const source = Platform.select({
     ios: require('../../../../components/Chart/f2chart.html'),
@@ -13,7 +14,7 @@ const source = Platform.select({
 });
 const colors = ['#E1645C', '#6694F3', '#F8A840', '#CC8FDD', '#5DC162', '#C7AC6B'];
 
-const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
+const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}) => {
     const [expand, setExpand] = useState(false);
 
     const scrolling = useRef(null);
@@ -181,7 +182,20 @@ const PKPortfolio = ({data, pkPinning, onScroll, _ref}) => {
     return (
         <View style={styles.container}>
             <View style={styles.title}>
-                <Text style={styles.titleText}>资产分布</Text>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={{flexDirection: 'row', alignItems: 'center'}}
+                    onPress={() => {
+                        showModal('PKPortfolio');
+                    }}>
+                    <Text style={styles.titleText}>资产分布</Text>
+                    {asset_explain ? (
+                        <FastImage
+                            style={{width: px(14), height: px(14), marginLeft: 5}}
+                            source={require('../../../../assets/img/tip.png')}
+                        />
+                    ) : null}
+                </TouchableOpacity>
             </View>
             <View style={[styles.content, expand ? {} : {height: px(row1Height), overflow: 'hidden'}]}>
                 {/* labels */}
