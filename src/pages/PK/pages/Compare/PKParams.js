@@ -294,6 +294,9 @@ const LabelPart = ({item, idx, expand, onChange}) => {
         setValue(val);
         onChange(val, item);
     };
+    useEffect(() => {
+        setValue(!!item.open_status);
+    }, [item.open_status]);
     return (
         <View key={idx} style={[styles.labelPart, {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
             <View style={styles.labelWrap}>
