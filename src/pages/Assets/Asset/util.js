@@ -32,3 +32,13 @@ export const getAlertColor = (type) => {
             };
     }
 };
+export const getTagColor = (type) => {
+    switch (type) {
+        case 'green':
+            return '#16A81D';
+        case 'red':
+            return '#E74949';
+        default:
+            return '#F5F6F8';
+    }
+};

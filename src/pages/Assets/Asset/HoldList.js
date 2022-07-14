@@ -4,78 +4,15 @@
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React from 'react';
-import {px, tagColor} from '~/utils/appUtil';
+import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 import NoAccountRender from './NoAccountRender';
 import StickyHeader from '~/components/Sticky';
 import {SmButton} from '~/components/Button';
-import {getAlertColor} from './util';
-const ListTitle = ({title, desc}) => {
-    return (
-        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-            <View style={styles.title_tag} />
-            <View style={Style.flexRow}>
-                <Text style={styles.bold_text}>
-                    {title} {''} {''}
-                </Text>
-                <Text style={{fontSize: px(16)}}>
-                    | {''} {''}
-                </Text>
-                <Text style={{marginBottom: px(-4), ...styles.light_text}}>{desc}</Text>
-            </View>
-        </View>
-    );
-};
-const Card = ({data, flag}) => {
-    const {name, type_name, profit, amount, profit_acc} = data;
-    return (
-        <>
-            <View
-                style={[
-                    styles.card,
-                    flag && {
-                        borderBottomRightRadius: px(6),
-                        borderBottomLeftRadius: px(6),
-                    },
-                ]}>
-                {name && (
-                    <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                        <View style={styles.tag}>
-                            <Text style={styles.tag_text}>{type_name}</Text>
-                        </View>
-                        <Text numberOfLines={1}>{name}</Text>
-                    </View>
-                )}
-                <View style={[Style.flexBetween]}>
-                    <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                    <Text style={styles.amount_text}>{profit}</Text>
-                    <Text style={styles.amount_text}>{profit_acc}</Text>
-                </View>
-                {/* <RenderSingal tag_style={data?.alert_style} /> */}
-            </View>
-            {!flag && (
-                <View style={styles.line_circle}>
-                    <View style={{...styles.leftCircle, left: -px(5)}} />
-                    <View style={{...styles.line, flex: 1}} />
-                    <View style={{...styles.leftCircle, right: -px(5)}} />
-                </View>
-            )}
-        </>
-    );
-};
-// 信号
-const RenderSingal = ({alert_style}) => {
-    const {bgColor, buttonColor} = getAlertColor(alert_style);
-    return (
-        <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
-            <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
-                信号已发出，可适当进行加仓
-            </Text>
-            <SmButton title={'查看'} style={{borderColor: buttonColor}} titleStyle={{color: buttonColor}} />
-        </View>
-    );
-};
+import {getAlertColor, getTagColor} from './util';
+import {useJump} from '~/components/hooks';
+
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
     return (
         <>
@@ -91,7 +28,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                 {products?.map((account, key) => (
                     <View key={key} style={{marginBottom: px(16)}}>
                         <ListTitle title={account.title} desc={account?.desc} />
-                        <View style={{marginHorizontal: px(16), backgroundColor: '#fff'}}>
+                        <View style={styles.card_con}>
                             {/* header */}
 
                             {/* <StickyHeader
@@ -109,16 +46,39 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                                 <Text style={styles.light_text}>累计收益</Text>
                             </View>
                             <View style={styles.line} />
+                            {/* 升级的卡片 */}
+                            {account?.upgrade_list?.length
+                                ? account?.upgrade_listaccount?.upgrade_list?.map((upgrade, _index) => (
+                                      <View style={{borderWidth: px(1.5), borderColor: '#FF7D41', borderRadius: px(6)}}>
+                                          {upgrade?.items?.map((product = {}, index, arr) => {
+                                              // 卡片是否只有一个或者是最后一个
+                                              const flag = index + 1 == arr.length || index == arr.length - 1;
+                                              return <CardItem data={product} flag={flag} key={index} />;
+                                          })}
+                                          {/* 升级按钮 */}
+                                          <View style={{height: px(52), ...Style.flexRow}}>
+                                              <View style={{flex: 1}}>
+                                                  <Text>{upgrade?.desc}</Text>
+                                                  <Text>{upgrade?.profit_desc}</Text>
+                                              </View>
+                                              <SmButton
+                                                  title={'查看'}
+                                                  style={{backgroundColor: '#fff'}}
+                                                  titleStyle={{color: '#FF7D41'}}
+                                              />
+                                          </View>
+                                      </View>
+                                  ))
+                                : null}
                             {/* 列表卡片 */}
                             {account?.items?.length ? (
                                 account?.items?.map((product = {}, index, arr) => {
                                     // 卡片是否只有一个或者是最后一个
                                     const flag = index + 1 == arr.length || index == arr.length - 1;
-
-                                    return <Card data={product} flag={flag} key={index} />;
+                                    return <CardItem data={product} flag={flag} key={index} />;
                                 })
                             ) : account.title == '魔方宝' ? (
-                                <Card data={account} />
+                                <CardItem data={account} />
                             ) : (
                                 <NoAccountRender
                                     empty_button={account?.empty_button}
@@ -132,7 +92,101 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
         </>
     );
 };
-
+const ListTitle = ({title, desc}) => {
+    return (
+        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+            <View style={styles.title_tag} />
+            <View style={Style.flexRow}>
+                <Text style={styles.bold_text}>
+                    {title} {''} {''}
+                </Text>
+                <Text style={{fontSize: px(16)}}>
+                    | {''} {''}
+                </Text>
+                <Text style={{marginBottom: px(-4), ...styles.light_text}}>{desc}</Text>
+            </View>
+        </View>
+    );
+};
+const CardItem = ({data = {}, flag}) => {
+    const {name, type_name, profit, amount, profit_acc, alert, tag} = data;
+    return (
+        <>
+            <View style={[styles.card]}>
+                {tag && <RenderTag tag={tag} />}
+                {name && (
+                    <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                        <View style={styles.tag}>
+                            <Text style={styles.tag_text}>{type_name}</Text>
+                        </View>
+                        <Text numberOfLines={1}>{name}</Text>
+                    </View>
+                )}
+                <View style={[Style.flexBetween]}>
+                    <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
+                    <Text style={styles.amount_text}>{profit}</Text>
+                    <Text style={styles.amount_text}>{profit_acc}</Text>
+                </View>
+                {alert && <RenderAlert alert={alert} />}
+            </View>
+            {!flag && (
+                <View style={[styles.line_circle]}>
+                    <View
+                        style={{
+                            ...styles.leftCircle,
+                            left: -px(5),
+                            // borderRightColor: '#FF7D41',
+                            // borderRightWidth: px(5),
+                        }}
+                    />
+                    <View style={{...styles.line, flex: 1}} />
+                    <View style={{...styles.leftCircle, right: -px(5)}} />
+                </View>
+            )}
+        </>
+    );
+};
+//买卖信号
+const RenderTag = ({tag}) => {
+    const bgColor = getTagColor(tag.tag_style);
+    return (
+        <View style={[styles.card_tag, Style.flexRowCenter, {backgroundColor: bgColor}]}>
+            <Text style={{color: '#fff', fontSize: px(12), marginRight: px(4)}}>{tag.tag_content}</Text>
+            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                {new Array(3).fill(0).map((_, index, arr) => (
+                    <View
+                        key={index}
+                        style={{
+                            width: px(2),
+                            backgroundColor: '#fff',
+                            opacity: index == arr.length - 1 ? 0.4 : 1,
+                            marginRight: index == arr.length - 1 ? 0 : px(2),
+                            height: px(4) + index * 3,
+                        }}
+                    />
+                ))}
+            </View>
+        </View>
+    );
+};
+// 信号
+const RenderAlert = ({alert}) => {
+    const jump = useJump();
+    const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
+    return (
+        <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
+            <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
+                {alert?.alert_content}
+            </Text>
+            <SmButton
+                title={alert?.alert_button?.text}
+                style={{borderColor: buttonColor}}
+                titleStyle={{color: buttonColor}}
+                onPress={() => jump(alert?.alert_button?.url)}
+            />
+        </View>
+    );
+};
 export default HoldList;
 
 const styles = StyleSheet.create({
@@ -157,10 +211,15 @@ const styles = StyleSheet.create({
         position: 'relative',
         zIndex: 100,
     },
+    card_con: {
+        marginHorizontal: px(16),
+        backgroundColor: '#fff',
+        borderBottomEndRadius: px(6),
+        borderBottomLeftRadius: px(6),
+    },
     card: {
         paddingHorizontal: px(16),
         paddingVertical: px(20),
-        // backgroundColor: '#fff',
     },
     fund_name: {
         color: Colors.defaultColor,
@@ -208,5 +267,14 @@ const styles = StyleSheet.create({
         height: px(38),
         borderRadius: px(4),
         paddingHorizontal: px(8),
+    },
+    card_tag: {
+        width: px(34),
+        height: px(24),
+        borderBottomLeftRadius: px(30),
+        borderTopLeftRadius: px(30),
+        position: 'absolute',
+        right: 0,
+        top: px(20),
     },
 });
