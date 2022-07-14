@@ -16,15 +16,6 @@ import BlackHint from './BlackHint';
 import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
 import {pinningProduct} from '~/redux/actions/pk/pkPinning';
 
-const handlerDefaultExpandParts = (data) => {
-    return (
-        data?.[0]?.score_info?.reduce?.((memo, cur) => {
-            if (cur.open_status) memo.push(cur.name);
-            return memo;
-        }, []) || []
-    );
-};
-
 const Compare = () => {
     const pkProducts = useSelector((state) => state.pkProducts);
     const pkPinning = useSelector((state) => state.pkPinning);
@@ -34,7 +25,6 @@ const Compare = () => {
     const [pageScroll, setPageScroll] = useState(false);
     const [data, setData] = useState(null);
     const [list, setList] = useState(null);
-    const [paramsExpandParts, setParamsExpandParts] = useState([]);
 
     const headerRef = useRef(null);
     const pkParamsRef = useRef(null);
@@ -56,9 +46,7 @@ const Compare = () => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    const _list = res.result.pk_list;
-                    setList(_list);
-                    setParamsExpandParts(handlerDefaultExpandParts(_list));
+                    setList(res.result.pk_list);
                 }
             })
             .finally((_) => {
@@ -67,18 +55,6 @@ const Compare = () => {
     }, []);
 
     useFocusEffect(getData);
-
-    const handlerParamsExpandState = useCallback((state, name) => {
-        setParamsExpandParts((val) => {
-            let arr = [...val];
-            if (state) {
-                arr.push(name);
-            } else {
-                arr = arr.filter((n) => n !== name);
-            }
-            return arr;
-        });
-    }, []);
 
     const handlerPageScroll = useCallback((e) => {
         setPageScroll(e.nativeEvent.contentOffset.y > 0);
@@ -143,10 +119,8 @@ const Compare = () => {
                 {list && (
                     <PKParams
                         ref={pkParamsRef}
+                        result={data}
                         data={list}
-                        weightButton={data.weight_button}
-                        expandParts={paramsExpandParts}
-                        emitExpandState={handlerParamsExpandState}
                         refresh={getData}
                         onScroll={handlerHorizontalScroll(pkParamsRef)}
                     />
