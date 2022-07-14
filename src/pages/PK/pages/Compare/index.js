@@ -15,6 +15,7 @@ import {getPKDetailData} from '../../services';
 import BlackHint from './BlackHint';
 import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
 import {pinningProduct} from '~/redux/actions/pk/pkPinning';
+import {BottomModal} from '~/components/Modal';
 
 const Compare = () => {
     const pkProducts = useSelector((state) => state.pkProducts);
@@ -32,6 +33,7 @@ const Compare = () => {
     const pkPortfolioRef = useRef(null);
     const pkManagerInfoRef = useRef(null);
     const pkFundInfoRef = useRef(null);
+    const bottomModal = useRef(null);
 
     const _pkProducts = useRef([]);
 
@@ -160,6 +162,8 @@ const Compare = () => {
             ) : null}
             {/* 小黑条 */}
             <BlackHint addHigh={addHigh} />
+            {/* bottom modal */}
+            <BottomModal ref={bottomModal} title={'666'} />
         </View>
     );
 };
