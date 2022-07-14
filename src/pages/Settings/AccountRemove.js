@@ -95,7 +95,7 @@ const AccountRemove = ({navigation, route}) => {
                         dispatch(deleteModal());
                         global.layerOptions = null;
                         Modal.hideLayer();
-                        navigation.navigate('Index');
+                        navigation.navigate('PKHome');
                     }
                 });
             }

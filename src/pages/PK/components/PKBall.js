@@ -132,7 +132,7 @@ const PKBall = ({style}, ref) => {
                             <View style={styles.noticePushWrap}>
                                 <FastImage
                                     source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png',
+                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-bell.png',
                                     }}
                                     style={{width: px(16), height: px(16)}}
                                 />
@@ -146,14 +146,14 @@ const PKBall = ({style}, ref) => {
             </Animatable.View>
             <View style={styles.circleWrap}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png'}}
                     resizeMode="cover"
                     style={{width: px(66), height: px(66)}}
                 />
                 {pkProducts.length ? (
                     <ImageBackground
                         resizeMode="cover"
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar-badge.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar-badge.png'}}
                         style={styles.badge}>
                         <Text style={styles.badgeText}>{pkProducts.length}</Text>
                     </ImageBackground>
