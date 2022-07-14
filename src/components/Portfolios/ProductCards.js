@@ -235,7 +235,7 @@ const RecommendCard = ({data = {}, isPking}) => {
         tags = [],
         yield_info,
     } = data;
-    const btnText = isPking ? 'PK中' : button.text;
+    const btnText = isPking ? 'PK中' : button?.text;
     return (
         <View>
             <View style={Style.flexRow}>
@@ -295,7 +295,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                                               }
                                             : {marginTop: px(2)},
                                     ]}>
-                                    {yield_info.text}
+                                    {yield_info?.text}
                                 </Text>
                             </View>
                         ) : null}
