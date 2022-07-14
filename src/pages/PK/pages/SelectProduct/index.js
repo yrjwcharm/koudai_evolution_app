@@ -101,15 +101,18 @@ const SelectProduct = (props) => {
     const handlerSelectItem = (item) => {
         // 打点
         const {plateid, rec_json} = logParams.current;
-        plateid && rec_json && global.LogTool({ctrl: item.code, event: 'rec_click', plateid, rec_json});
         // 整理selectData
         let state = selectData.find((itm) => itm.code === item.code);
         if (state) {
+            plateid &&
+                rec_json &&
+                global.LogTool({ctrl: 'cancel', event: 'rec_click', oid: item.code, plateid, rec_json});
             setSelectData((val) => {
                 return val.filter((itm) => item.code !== itm.code);
             });
         } else {
             if (selectData.length === 6) return Toast.show('您PK的基金过多，最多选择6只');
+            plateid && rec_json && global.LogTool({ctrl: 'add', event: 'rec_click', oid: item.code, plateid, rec_json});
             setSelectData((val) => {
                 let arr = [...val];
                 arr.push(item);
