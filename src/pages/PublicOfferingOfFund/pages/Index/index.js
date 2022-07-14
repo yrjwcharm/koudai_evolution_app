@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 19:11:55
+ * @LastEditTime: 2022-07-14 15:19:45
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -197,7 +197,7 @@ const Index = ({navigation, route}) => {
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
                 <TopMenu data={tabs} />
-                {suggest_list?.list?.length > 0 && <SwiperCom data={suggest_list} />}
+                {suggest_list?.items?.length > 0 && <SwiperCom data={suggest_list} />}
                 <View style={styles.bottomContainer}>
                     {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
                     {sub_list?.length > 0 ? (
