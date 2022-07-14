@@ -42,8 +42,16 @@ const Index = ({navigation, route}) => {
                             </View>
                             <View style={{flex: 1}}>
                                 <Text style={styles.label_title}>持有收益</Text>
-                                <Text style={{...styles.label_desc, color: item.yield > 0 ? Colors.red : Colors.green}}>
-                                    {item.yield > 0 ? '+' : ''}
+                                <Text
+                                    style={{
+                                        ...styles.label_desc,
+                                        color:
+                                            item.yield == 0
+                                                ? Colors.defaultColor
+                                                : item.yield > 0
+                                                ? Colors.red
+                                                : Colors.green,
+                                    }}>
                                     {item.yield}
                                 </Text>
                             </View>

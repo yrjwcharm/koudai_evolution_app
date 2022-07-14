@@ -2,11 +2,11 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 18:48:09
+ * @LastEditTime: 2022-07-14 18:31:38
  * @Description:关注
  */
 import {StyleSheet, View, Animated, Platform} from 'react-native';
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
 import {px} from '~/utils/appUtil';
@@ -23,8 +23,8 @@ import {useSelector} from 'react-redux';
 import LoginMask from '~/components/LoginMask';
 import {useJump} from '~/components/hooks';
 import {SmButton} from '~/components/Button';
-const Attention = ({navigation}) => {
-    const userInfo = useSelector((store) => store.userInfo);
+const Attention = () => {
+    const is_login = useSelector((store) => store.userInfo).toJS().is_login;
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
     const [activeTab, setActiveTab] = useState(1);
@@ -40,6 +40,9 @@ const Attention = ({navigation}) => {
             _getData();
         }, [])
     );
+    useEffect(() => {
+        setActiveTab(1);
+    }, [is_login]);
     useFocusEffect(
         useCallback(() => {
             getFollowData({item_type: activeTab});
@@ -64,7 +67,7 @@ const Attention = ({navigation}) => {
     return (
         <View style={{flex: 1}}>
             <NavBar renderRight={<HeaderRight />} title="关注" />
-            {!userInfo.toJS().is_login && <LoginMask />}
+            {!is_login && <LoginMask />}
             <Animated.ScrollView
                 style={styles.con}
                 onScroll={

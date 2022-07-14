@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 17:56:00
+ * @LastEditTime: 2022-07-14 19:53:28
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
@@ -158,6 +158,12 @@ const SERVER_URL = {
     },
     v7: {
         HTTP: 'http://kapi-webv7.yitao.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
+        IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+    },
+    aliuchao: {
+        HTTP: 'https://kapi-web-liuchaosyt.deva.mofanglicai.com.cn',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
         H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
