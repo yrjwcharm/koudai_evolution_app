@@ -151,7 +151,7 @@ const ValuePart = React.memo(({item}) => {
                     <Text
                         style={[
                             styles.valueText,
-                            {color: obj?.yield > 0 ? '#E74949' : obj?.yield === 0 ? '' : '#4BA471'},
+                            {color: obj?.yield > 0 ? '#E74949' : obj?.yield === 0 ? '#121D3A' : '#4BA471'},
                         ]}>
                         {obj?.yield + '%'}
                     </Text>
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
     valueText: {
         fontSize: px(14),
         lineHeight: px(22),
-        color: '#121D3A',
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
     },
