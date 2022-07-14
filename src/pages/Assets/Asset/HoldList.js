@@ -110,17 +110,15 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                             </View>
                             <View style={styles.line} />
                             {/* 列表卡片 */}
-                            {account?.items?.length || account.title == '魔方宝' ? (
-                                account.title == '魔方宝' ? (
-                                    <Card data={account} />
-                                ) : (
-                                    account?.items?.map((product = {}, index, arr) => {
-                                        // 卡片是否只有一个或者是最后一个
-                                        const flag = index + 1 == arr.length || index == arr.length - 1;
+                            {account?.items?.length ? (
+                                account?.items?.map((product = {}, index, arr) => {
+                                    // 卡片是否只有一个或者是最后一个
+                                    const flag = index + 1 == arr.length || index == arr.length - 1;
 
-                                        return <Card data={product} flag={flag} key={index} />;
-                                    })
-                                )
+                                    return <Card data={product} flag={flag} key={index} />;
+                                })
+                            ) : account.title == '魔方宝' ? (
+                                <Card data={account} />
                             ) : (
                                 <NoAccountRender
                                     empty_button={account?.empty_button}
