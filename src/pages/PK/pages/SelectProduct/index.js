@@ -188,9 +188,7 @@ const SelectProduct = (props) => {
                                                     <View style={styles.selectItemTagWrap}>
                                                         {item?.tags?.map((itm, i) => (
                                                             <View key={i} style={[styles.selectItemTag]}>
-                                                                <Text key={i} style={[styles.selectItemTagText]}>
-                                                                    {itm}
-                                                                </Text>
+                                                                <Text style={[styles.selectItemTagText]}>{itm}</Text>
                                                             </View>
                                                         ))}
                                                     </View>
@@ -206,7 +204,9 @@ const SelectProduct = (props) => {
                                                 </View>
                                             </View>
                                         ) : (
-                                            <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                            <View
+                                                key={idx + '-'}
+                                                style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
                                                 <FastImage
                                                     source={{
                                                         uri:
@@ -227,7 +227,7 @@ const SelectProduct = (props) => {
                                             return item ? (
                                                 <View
                                                     style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                    key={idx}>
+                                                    key={idx + 3}>
                                                     <View>
                                                         <View style={styles.selectItemHeader}>
                                                             {item.tip ? (
@@ -286,7 +286,9 @@ const SelectProduct = (props) => {
                                                     </View>
                                                 </View>
                                             ) : (
-                                                <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                <View
+                                                    key={idx + 3 + '-'}
+                                                    style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
                                                     <FastImage
                                                         source={{
                                                             uri:

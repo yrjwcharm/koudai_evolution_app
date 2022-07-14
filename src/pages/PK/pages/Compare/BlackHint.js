@@ -29,6 +29,9 @@ const BlackHint = ({addHigh}) => {
         DeviceEventEmitter.addListener('pkDetailBackHintRefresh', (e) => {
             getData();
         });
+        return () => {
+            DeviceEventEmitter.removeAllListeners('pkDetailBackHintRefresh');
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
