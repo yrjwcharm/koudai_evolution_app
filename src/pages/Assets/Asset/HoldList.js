@@ -4,11 +4,13 @@
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React from 'react';
-import {px} from '~/utils/appUtil';
+import {px, tagColor} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 import NoAccountRender from './NoAccountRender';
 import StickyHeader from '~/components/Sticky';
+import {SmButton} from '~/components/Button';
+import {getAlertColor} from './util';
 const ListTitle = ({title, desc}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
@@ -25,8 +27,55 @@ const ListTitle = ({title, desc}) => {
         </View>
     );
 };
+const Card = ({data, flag}) => {
+    const {name, type_name, profit, amount, profit_acc} = data;
+    return (
+        <>
+            <View
+                style={[
+                    styles.card,
+                    flag && {
+                        borderBottomRightRadius: px(6),
+                        borderBottomLeftRadius: px(6),
+                    },
+                ]}>
+                {name && (
+                    <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                        <View style={styles.tag}>
+                            <Text style={styles.tag_text}>{type_name}</Text>
+                        </View>
+                        <Text numberOfLines={1}>{name}</Text>
+                    </View>
+                )}
+                <View style={[Style.flexBetween]}>
+                    <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
+                    <Text style={styles.amount_text}>{profit}</Text>
+                    <Text style={styles.amount_text}>{profit_acc}</Text>
+                </View>
+                {/* <RenderSingal tag_style={data?.alert_style} /> */}
+            </View>
+            {!flag && (
+                <View style={styles.line_circle}>
+                    <View style={{...styles.leftCircle, left: -px(5)}} />
+                    <View style={{...styles.line, flex: 1}} />
+                    <View style={{...styles.leftCircle, right: -px(5)}} />
+                </View>
+            )}
+        </>
+    );
+};
 // 信号
-const RenderSingal = () => {};
+const RenderSingal = ({alert_style}) => {
+    const {bgColor, buttonColor} = getAlertColor(alert_style);
+    return (
+        <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
+            <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
+                信号已发出，可适当进行加仓
+            </Text>
+            <SmButton title={'查看'} style={{borderColor: buttonColor}} titleStyle={{color: buttonColor}} />
+        </View>
+    );
+};
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
     return (
         <>
@@ -61,43 +110,17 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                             </View>
                             <View style={styles.line} />
                             {/* 列表卡片 */}
-                            {account?.items?.length ? (
-                                account?.items?.map((product = {}, index, arr) => {
-                                    // 卡片是否只有一个或者是最后一个
-                                    const flag = index + 1 == arr.length || index == arr.length - 1;
-                                    const {name, tag, profit, amount, profit_acc} = product;
-                                    return (
-                                        <React.Fragment key={index}>
-                                            <View
-                                                style={[
-                                                    styles.card,
-                                                    flag && {
-                                                        borderBottomRightRadius: px(6),
-                                                        borderBottomLeftRadius: px(6),
-                                                    },
-                                                ]}>
-                                                <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                                    <View style={styles.tag}>
-                                                        <Text style={styles.tag_text}>{tag}</Text>
-                                                    </View>
-                                                    <Text numberOfLines={1}>{name}</Text>
-                                                </View>
-                                                <View style={[Style.flexBetween]}>
-                                                    <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                                                    <Text style={styles.amount_text}>{profit}</Text>
-                                                    <Text style={styles.amount_text}>{profit_acc}</Text>
-                                                </View>
-                                            </View>
-                                            {!flag && (
-                                                <View style={styles.line_circle}>
-                                                    <View style={{...styles.leftCircle, left: -px(5)}} />
-                                                    <View style={{...styles.line, flex: 1}} />
-                                                    <View style={{...styles.leftCircle, right: -px(5)}} />
-                                                </View>
-                                            )}
-                                        </React.Fragment>
-                                    );
-                                })
+                            {account?.items?.length || account.title == '魔方宝' ? (
+                                account.title == '魔方宝' ? (
+                                    <Card data={account} />
+                                ) : (
+                                    account?.items?.map((product = {}, index, arr) => {
+                                        // 卡片是否只有一个或者是最后一个
+                                        const flag = index + 1 == arr.length || index == arr.length - 1;
+
+                                        return <Card data={product} flag={flag} key={index} />;
+                                    })
+                                )
                             ) : (
                                 <NoAccountRender
                                     empty_button={account?.empty_button}
@@ -182,5 +205,10 @@ const styles = StyleSheet.create({
         ...Style.flexBetween,
         backgroundColor: '#fff',
         zIndex: 10,
+    },
+    singal_card: {
+        height: px(38),
+        borderRadius: px(4),
+        paddingHorizontal: px(8),
     },
 });

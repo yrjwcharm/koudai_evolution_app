@@ -126,8 +126,8 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                         <View
                                                             style={[
                                                                 {
-                                                                    width: index == 0 ? firstLineWidth : otherLineWidth,
-                                                                    alignItems: index == 0 ? 'flex-start' : 'center',
+                                                                    width: otherLineWidth,
+                                                                    alignItems: 'center',
                                                                 },
                                                             ]}
                                                             key={index}>
@@ -139,7 +139,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                                     <Text
                                                                         numberOfLines={1}
                                                                         style={{
-                                                                            fontSize: index == 0 ? px(14) : px(12),
+                                                                            fontSize: px(12),
                                                                             color: Colors.lightBlackColor,
                                                                         }}>
                                                                         {_item?.line?.title}
@@ -187,8 +187,8 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                         key={_index}
                                                         style={[
                                                             {
-                                                                width: _index == 0 ? firstLineWidth : otherLineWidth,
-                                                                alignItems: _index == 0 ? 'flex-start' : 'center',
+                                                                width: otherLineWidth,
+                                                                alignItems: 'center',
                                                             },
                                                         ]}>
                                                         {/* 每一个td */}
@@ -202,8 +202,8 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                                             Colors.lightBlackColor,
 
                                                                         fontSize: px(14),
+                                                                        fontFamily: Font.numFontFamily,
                                                                     },
-                                                                    _index != 0 && {fontFamily: Font.numFontFamily},
                                                                 ]}>
                                                                 {item?.line1?.value}
                                                             </Text>
@@ -214,11 +214,8 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                                             color:
                                                                                 item?.line2?.color ||
                                                                                 Colors.lightBlackColor,
-                                                                            fontFamily:
-                                                                                _index == 0
-                                                                                    ? undefined
-                                                                                    : Font.numFontFamily,
-                                                                            fontSize: _index == 0 ? px(11) : px(14),
+                                                                            fontFamily: Font.numFontFamily,
+                                                                            fontSize: px(14),
                                                                             marginTop: px(2),
                                                                         }}>
                                                                         {item?.line2?.value}
@@ -230,6 +227,18 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                                     </View>
                                                                 ))}
                                                             </View>
+                                                            {item?.line3?.value ? (
+                                                                <Text
+                                                                    style={{
+                                                                        color:
+                                                                            item?.line3?.color ||
+                                                                            Colors.lightBlackColor,
+                                                                        fontSize: px(11),
+                                                                        marginTop: px(2),
+                                                                    }}>
+                                                                    {item?.line3?.value}
+                                                                </Text>
+                                                            ) : null}
                                                         </View>
                                                     </View>
                                                 )

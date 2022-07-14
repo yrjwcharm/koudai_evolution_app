@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-10 18:41:07
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:36:39
  * @Description:搜索
  */
 import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
@@ -124,7 +121,7 @@ const Index = () => {
                             ))}
                         </View>
                     ) : (
-                        <EmptyTip text={'暂无记录'} />
+                        <EmptyTip text={'没有找到你需要的东西'} />
                     )
                 ) : (
                     <>
