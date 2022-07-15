@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 10:53:57
+ * @LastEditTime: 2022-07-14 20:26:17
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -252,24 +252,28 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             </View>
                         </ScrollView>
                     </View>
-
-                    <View style={Style.flexRow}>
-                        {tabButton?.map((btn, dex) => (
-                            <TouchableOpacity
-                                key={dex}
-                                activeOpacity={0.9}
-                                onPress={() => jump(btn.url)}
-                                style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
-                                <Feather
-                                    size={px(16)}
-                                    name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
-                                    color={Colors.btnColor}
-                                />
-                                <View style={{width: px(6)}} />
-                                <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                    {tabButton ? (
+                        <View style={Style.flexRow}>
+                            {tabButton?.map((btn, dex) => (
+                                <TouchableOpacity
+                                    key={dex}
+                                    activeOpacity={0.9}
+                                    onPress={() => jump(btn.url)}
+                                    style={[
+                                        Style.flexRow,
+                                        {flex: 1, paddingVertical: px(14), justifyContent: 'center'},
+                                    ]}>
+                                    <Feather
+                                        size={px(16)}
+                                        name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
+                                        color={Colors.btnColor}
+                                    />
+                                    <View style={{width: px(6)}} />
+                                    <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    ) : null}
                 </View>
             ) : (
                 <View style={{...Style.flexCenter, height: px(200)}}>

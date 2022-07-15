@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:54:53
+ * @LastEditTime: 2022-07-14 21:52:14
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -114,7 +114,7 @@ export default function EditSortFund({route}) {
                         .filter((item) => item.check)
                         .map((t) => t.item_id)
                         .join(','),
-                    item_type: 1,
+                    item_type: route?.params?.item_type,
                 };
                 let res = await handleCancle(params);
                 if (res.code === '000000') getData();

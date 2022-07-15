@@ -2,10 +2,10 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 18:31:38
+ * @LastEditTime: 2022-07-15 10:22:48
  * @Description:关注
  */
-import {StyleSheet, View, Animated, Platform} from 'react-native';
+import {StyleSheet, View, Animated} from 'react-native';
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
@@ -27,7 +27,7 @@ const Attention = () => {
     const is_login = useSelector((store) => store.userInfo).toJS().is_login;
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState(0);
     const [headHeight, setHeaderHeight] = useState(0);
     const jump = useJump();
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -38,18 +38,18 @@ const Attention = () => {
     useFocusEffect(
         useCallback(() => {
             _getData();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
     useEffect(() => {
-        setActiveTab(1);
+        setActiveTab(0);
     }, [is_login]);
-    useFocusEffect(
-        useCallback(() => {
-            getFollowData({item_type: activeTab});
-        }, [activeTab])
-    );
+    useEffect(() => {
+        console.log(data, '123');
+        data?.follow && getFollowData({item_type: data?.follow?.tabs[activeTab].item_type});
+    }, [activeTab, data]);
     const onChangeTab = (obj) => {
-        setActiveTab(data?.follow?.tabs[obj.i].item_type);
+        setActiveTab(obj.i);
     };
     const getFollowData = async (params) => {
         let res = await getFollowList(params);
@@ -60,7 +60,7 @@ const Attention = () => {
         let res = await followAdd(params);
         if (res.code == '000000') {
             _getData();
-            getFollowData({item_type: activeTab});
+            getFollowData({item_type: 1});
         }
         Toast.show(res.message);
     };
@@ -112,7 +112,7 @@ const Attention = () => {
                                 <View key={index} tabLabel={tab?.type_text}>
                                     <FollowTable
                                         data={followData}
-                                        activeTab={activeTab}
+                                        activeTab={data?.follow?.tabs[activeTab].item_type}
                                         handleSort={getFollowData}
                                         tabButton={tab?.button_list}
                                         scrollY={scrollY}
