@@ -31,20 +31,14 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                         <View style={styles.card_con}>
                             {/* header */}
 
-                            {/* <StickyHeader
+                            <StickyHeader
                                 style={[Style.flexBetween, styles.table_header]}
                                 stickyHeaderY={stickyHeaderY} // 把头部高度传入
                                 stickyScrollY={scrollY}>
                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
                                 <Text style={styles.light_text}>日收益</Text>
                                 <Text style={styles.light_text}>累计收益</Text>
-                            </StickyHeader> */}
-
-                            <View style={[Style.flexBetween, styles.table_header]}>
-                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                <Text style={styles.light_text}>日收益</Text>
-                                <Text style={styles.light_text}>累计收益</Text>
-                            </View>
+                            </StickyHeader>
                             <View style={styles.line} />
                             {/* 升级的卡片 */}
                             {account?.upgrade_list?.length

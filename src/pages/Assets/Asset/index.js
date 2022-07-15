@@ -39,11 +39,6 @@ const Index = ({navigation}) => {
     return (
         <>
             <Header />
-            {/* <View style={[Style.flexBetween, styles.table_header]}>
-                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                <Text style={styles.light_text}>日收益</Text>
-                <Text style={styles.light_text}>累计收益</Text>
-            </View> */}
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 scrollEventThrottle={1}
@@ -60,7 +55,7 @@ const Index = ({navigation}) => {
                 <View
                     onLayout={(e) => {
                         let {height} = e.nativeEvent.layout;
-                        console.log(height);
+                        // console.log(e.nativeEvent.layout);
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
                     {/* 资产卡片 */}
