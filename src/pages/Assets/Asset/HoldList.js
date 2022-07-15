@@ -3,7 +3,7 @@
  * @Description:持仓卡片
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -14,6 +14,8 @@ import {getAlertColor, getTagColor} from './util';
 import {useJump} from '~/components/hooks';
 
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
+    const [height, setHeight] = useState({});
+    console.log(height);
     return (
         <>
             {/* <StickyHeader
@@ -26,7 +28,16 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
             </StickyHeader> */}
             <View style={{position: 'relative'}}>
                 {products?.map((account, key) => (
-                    <View key={key} style={{marginBottom: px(16)}}>
+                    <View
+                        key={key}
+                        style={{marginBottom: px(16)}}
+                        onLayout={(e) => {
+                            setHeight((prev) => {
+                                let tmp = {...prev};
+                                tmp[key] = e.nativeEvent?.layout?.height;
+                                return tmp;
+                            });
+                        }}>
                         <ListTitle title={account.title} desc={account?.desc} />
                         <View style={styles.card_con}>
                             {/* header */}

@@ -59,7 +59,7 @@ const Index = ({navigation}) => {
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
                     {/* 资产卡片 */}
-                    <AssetHeaderCard />
+                    <AssetHeaderCard summary={holding?.summary} />
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                 </View>
