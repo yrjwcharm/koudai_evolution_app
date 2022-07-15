@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 10:25:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 20:26:17
+ * @LastEditTime: 2022-07-15 10:31:34
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
@@ -51,7 +51,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
                             >
-                                <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
                                 <View style={[styles.tr, {height: px(47)}]}>
                                     <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                         <Text
@@ -119,7 +119,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                     stickyScrollY={scrollY} // 把滑动距离传入
                                 >
                                     {/* 分割线 */}
-                                    <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                    <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
                                     {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     // },
     tr: {
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 0.6,
         height: px(58),
         justifyContent: 'center',
         backgroundColor: '#fff',

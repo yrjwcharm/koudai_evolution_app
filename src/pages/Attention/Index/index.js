@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 10:22:48
+ * @LastEditTime: 2022-07-15 10:34:25
  * @Description:关注
  */
 import {StyleSheet, View, Animated} from 'react-native';
@@ -114,7 +114,7 @@ const Attention = () => {
                                         data={followData}
                                         activeTab={data?.follow?.tabs[activeTab].item_type}
                                         handleSort={getFollowData}
-                                        tabButton={tab?.button_list}
+                                        tabButton={data?.follow?.tabs[activeTab]?.button_list}
                                         scrollY={scrollY}
                                         stickyHeaderY={headHeight}
                                     />
