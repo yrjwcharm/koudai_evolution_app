@@ -302,7 +302,7 @@ const baseAreaChart = (
       }
     });
   chart.render();
-  const point = chart.getPosition(${JSON.stringify(data[0])}); // 获取该数据的画布坐标
+  const point = chart.getPosition(${JSON.stringify(data[data.length - 1])}); // 获取该数据的画布坐标
   chart.showTooltip(point); // 展示该点的 tooltip
 })();
 `;

@@ -46,7 +46,7 @@ const Compare = () => {
     const getData = useCallback(() => {
         // 更新data
         setLoading(true);
-        getPKDetailData({fund_code_list: _pkProducts.current})
+        getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
