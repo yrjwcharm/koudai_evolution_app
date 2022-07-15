@@ -273,7 +273,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
     );
 };
 
-const _PKParams = connect((state) => ({pkPinning: state.pkPinning}))(PKParams);
+const _PKParams = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKParams);
 
 export default forwardRef((props, ref) => <_PKParams {...props} _ref={ref} />);
 

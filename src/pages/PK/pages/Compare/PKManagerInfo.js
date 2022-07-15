@@ -96,7 +96,7 @@ const PKManagerInfo = ({data, pkPinning, onScroll, _ref}) => {
     );
 };
 
-const _PKManagerInfo = connect((state) => ({pkPinning: state.pkPinning}))(PKManagerInfo);
+const _PKManagerInfo = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKManagerInfo);
 
 export default forwardRef((props, ref) => <_PKManagerInfo {...props} _ref={ref} />);
 

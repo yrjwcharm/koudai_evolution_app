@@ -75,6 +75,7 @@ const Settings = ({navigation}) => {
                                 await Storage.delete('AD');
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
+                                global.pkEntry = '2';
                                 dispatch(cleanProduct());
                                 dispatch(pinningProduct(null));
                                 dispatch(

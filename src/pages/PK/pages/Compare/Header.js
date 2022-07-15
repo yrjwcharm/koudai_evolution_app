@@ -184,7 +184,7 @@ const Header = (props) => {
     );
 };
 
-const _Header = connect((state) => ({pkPinning: state.pkPinning}), {
+const _Header = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}), {
     ...pkProductsActions,
     ...pkPinningActions,
 })(Header);

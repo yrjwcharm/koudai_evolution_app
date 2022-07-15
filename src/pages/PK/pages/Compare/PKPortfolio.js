@@ -252,7 +252,7 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
     );
 };
 
-const _PKPriceRange = connect((state) => ({pkPinning: state.pkPinning}))(PKPortfolio);
+const _PKPriceRange = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKPortfolio);
 
 export default forwardRef((props, ref) => <_PKPriceRange {...props} _ref={ref} />);
 

@@ -20,7 +20,7 @@ import ModalTip from './ModalTip';
 
 const Compare = () => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
-    const pkPinning = useSelector((state) => state.pkPinning);
+    const pkPinning = useSelector((state) => state.pkPinning[global.pkEntry]);
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(true);
