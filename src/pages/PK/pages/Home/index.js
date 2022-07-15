@@ -120,7 +120,9 @@ const PKHome = ({navigation}) => {
             });
         }
     };
-
+    const handlerPress = () => {
+        jump({path: 'UpgradeDetail'});
+    };
     return loading ? (
         <Loading />
     ) : (
@@ -178,6 +180,9 @@ const PKHome = ({navigation}) => {
                                 </TouchableOpacity>
                             ))}
                         </View>
+                        <Text style={{height: 50, textAlign: 'center'}} onPress={handlerPress}>
+                            升级详情
+                        </Text>
                         {/* pkCard */}
                         {data?.pk_list && <PKCard data={data?.pk_list} />}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>

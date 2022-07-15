@@ -206,6 +206,7 @@ import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // �
 import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
 import FundNoticeCenter from '~/pages/Attention/FundNoticeCenter'; //基金消息中心
 import AppTag from '~/pages/Auth/AppTag'; //用户标签选择
+import UpgradeDetail from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级详情
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -811,6 +812,7 @@ export default function AppStack() {
             <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
             <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
             <Stack.Screen name="AppTag" component={AppTag} options={{headerShown: false, gestureEnabled: false}} />
+            <Stack.Screen name="UpgradeDetail" component={UpgradeDetail} options={{title: '升级详情'}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
