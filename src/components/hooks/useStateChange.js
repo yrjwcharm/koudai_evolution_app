@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 10:00:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-15 18:09:21
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -33,6 +33,7 @@ import http from '../../services';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import saveImg from '../../utils/saveImg';
 import Storage from '../../utils/storage';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const fontWeightMedium = Platform.select({android: '700', ios: '500'});
 
@@ -268,6 +269,7 @@ function useStateChange({homeShowModal, store}) {
                     }
                     userInfoRef.current = cloneDeep(next);
                 });
+                store.dispatch(getUserInfo());
             }
         }, 500);
         return () => {
