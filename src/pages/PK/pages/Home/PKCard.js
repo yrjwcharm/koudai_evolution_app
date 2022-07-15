@@ -7,15 +7,14 @@ import {px} from '../../../../utils/appUtil';
 import {Font} from '../../../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
-import {useDispatch, useSelector} from 'react-redux';
-import {addProduct} from '~/redux/actions/pk/pkProducts';
+import {useDispatch} from 'react-redux';
+import {initCart} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import {useFocusEffect} from '@react-navigation/native';
 
 const PKCard = ({data = {}}) => {
     const jump = useJump();
-    const pkProducts = useSelector((state) => state.pkProducts);
     const dispatch = useDispatch();
 
     const [leftObj = {}, rightObj = {}] = useMemo(() => {
@@ -29,10 +28,10 @@ const PKCard = ({data = {}}) => {
     };
 
     const handlerEnter = () => {
+        global.pkEntry = '1';
         global.LogTool('pk_button');
         global.LogTool({event: 'rec_click', plateid: data.plateid, rec_json: data.rec_json});
-        if (!pkProducts.includes(leftObj.code)) dispatch(addProduct(leftObj.code));
-        if (!pkProducts.includes(rightObj.code)) dispatch(addProduct(rightObj.code));
+        dispatch(initCart([leftObj.code, rightObj.code]));
         jump(data.btns.url);
     };
 

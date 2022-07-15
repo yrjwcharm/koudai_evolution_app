@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-08 17:20:25
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-14 18:17:28
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -75,6 +75,7 @@ const Settings = ({navigation}) => {
                                 await Storage.delete('AD');
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
+                                global.pkEntry = '2';
                                 dispatch(cleanProduct());
                                 dispatch(pinningProduct(null));
                                 dispatch(
@@ -158,7 +159,7 @@ const Settings = ({navigation}) => {
                 Modal.show({
                     confirm: true,
                     confirmCallBack: () => navigation.navigate('Find'),
-                    content: `已经成功绑定${res.result.nick_name}，请到发现页面查看`,
+                    content: res.result.nick_name,
                     title: '绑定成功',
                 });
                 Http.get('/mapi/config/20210101').then((resp) => {

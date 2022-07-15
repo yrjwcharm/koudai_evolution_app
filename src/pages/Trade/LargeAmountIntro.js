@@ -2,8 +2,8 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 15:31:32
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-15 10:26:20
  */
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Linking, Alert, View, Image} from 'react-native';
@@ -22,20 +22,20 @@ const LargeAmountIntro = () => {
             setData(res.result);
         });
     }, []);
-    const callTel = () => {
-        const url = 'tel:400-080-8208';
+    const callTel = (phone) => {
+        const url = `tel:${phone}`;
         global.LogTool('call');
         Linking.canOpenURL(url)
             .then((supported) => {
                 if (!supported) {
-                    return Toast.show('您的设备不支持该功能，请手动拨打400-080-8208');
+                    return Toast.show(`您的设备不支持该功能，请手动拨打${phone}`);
                 }
                 return Linking.openURL(url);
             })
             .catch((err) => Alert(err));
     };
 
-    return (
+    return Object.keys(data || {})?.length ? (
         <View style={{backgroundColor: Colors.bgColor}}>
             <ScrollView style={{marginBottom: btnHeight}}>
                 {data?.imgs?.map((item, index) => (
@@ -55,8 +55,8 @@ const LargeAmountIntro = () => {
                     style={{marginLeft: text(16), paddingTop: text(8), paddingBottom: text(6)}}
                 />
             </ScrollView>
-            <FixedButton title={'魔方客服电话:400-080-8208'} onPress={() => callTel()} />
+            <FixedButton title={`魔方客服电话:${data.phone}`} onPress={() => callTel(data.phone)} />
         </View>
-    );
+    ) : null;
 };
 export default LargeAmountIntro;

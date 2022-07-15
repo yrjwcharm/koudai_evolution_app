@@ -193,7 +193,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     );
 };
 
-const _PKPriceRange = connect((state) => ({pkPinning: state.pkPinning}))(PKPriceRange);
+const _PKPriceRange = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKPriceRange);
 
 export default forwardRef((props, ref) => <_PKPriceRange {...props} _ref={ref} />);
 

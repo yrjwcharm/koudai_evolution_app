@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-10 17:37:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-14 17:22:37
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -95,7 +95,7 @@ const AccountRemove = ({navigation, route}) => {
                         dispatch(deleteModal());
                         global.layerOptions = null;
                         Modal.hideLayer();
-                        navigation.navigate('PKHome');
+                        navigation.navigate('Index');
                     }
                 });
             }

@@ -1,6 +1,6 @@
 /*
  * @Author: yhc
- * @Description:关注表格
+ * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
@@ -48,7 +48,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
                             >
-                                <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
                                 <View style={[styles.tr, {height: px(47)}]}>
                                     <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                         <Text
@@ -112,11 +112,11 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             onScrollBeginDrag={(e) => setIsScroll(true)}>
                             <View style={{minWidth: deviceWidth}}>
                                 <StickyHeader
-                                    stickyHeaderY={stickyHeaderY + px(42) + (header && activeTab == 3 ? px(75 + 9) : 0)} // 把头部高度传入
+                                    stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                     stickyScrollY={scrollY} // 把滑动距离传入
                                 >
                                     {/* 分割线 */}
-                                    <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+                                    <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
                                     {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
@@ -249,24 +249,28 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             </View>
                         </ScrollView>
                     </View>
-
-                    <View style={Style.flexRow}>
-                        {tabButton?.map((btn, dex) => (
-                            <TouchableOpacity
-                                key={dex}
-                                activeOpacity={0.9}
-                                onPress={() => jump(btn.url)}
-                                style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
-                                <Feather
-                                    size={px(16)}
-                                    name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
-                                    color={Colors.btnColor}
-                                />
-                                <View style={{width: px(6)}} />
-                                <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                    {tabButton ? (
+                        <View style={Style.flexRow}>
+                            {tabButton?.map((btn, dex) => (
+                                <TouchableOpacity
+                                    key={dex}
+                                    activeOpacity={0.9}
+                                    onPress={() => jump(btn.url)}
+                                    style={[
+                                        Style.flexRow,
+                                        {flex: 1, paddingVertical: px(14), justifyContent: 'center'},
+                                    ]}>
+                                    <Feather
+                                        size={px(16)}
+                                        name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
+                                        color={Colors.btnColor}
+                                    />
+                                    <View style={{width: px(6)}} />
+                                    <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    ) : null}
                 </View>
             ) : (
                 <View style={{...Style.flexCenter, height: px(200)}}>
@@ -282,7 +286,7 @@ export default FollowTable;
 const styles = StyleSheet.create({
     tr: {
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 0.6,
         height: px(58),
         justifyContent: 'center',
         backgroundColor: '#fff',

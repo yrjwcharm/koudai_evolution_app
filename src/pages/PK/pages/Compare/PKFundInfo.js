@@ -126,7 +126,7 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
     );
 };
 
-const _PKFundInfo = connect((state) => ({pkPinning: state.pkPinning}))(PKFundInfo);
+const _PKFundInfo = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKFundInfo);
 
 export default forwardRef((props, ref) => <_PKFundInfo {...props} _ref={ref} />);
 

@@ -10,7 +10,7 @@ import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
 
 const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
-    const pkProducts = useSelector((state) => state.pkProducts);
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [loading, setLoading] = useState(true);
     const [resetLoading, setResetLoading] = useState(false);
@@ -28,7 +28,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
 
     const getData = () => {
         setLoading(true);
-        weightDetail()
+        weightDetail({source: global.pkEntry})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
@@ -57,7 +57,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
 
     const submitData = () => {
         setSubmitLoading(true);
-        weightSetting(sliderRate)
+        weightSetting({...sliderRate, source: global.pkEntry})
             .then((res) => {
                 global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
                 Toast.show(res.message);
