@@ -115,7 +115,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             onScrollBeginDrag={(e) => setIsScroll(true)}>
                             <View style={{minWidth: deviceWidth}}>
                                 <StickyHeader
-                                    stickyHeaderY={stickyHeaderY + px(42) + (header && activeTab == 3 ? px(75 + 9) : 0)} // 把头部高度传入
+                                    stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                     stickyScrollY={scrollY} // 把滑动距离传入
                                 >
                                     {/* 分割线 */}
