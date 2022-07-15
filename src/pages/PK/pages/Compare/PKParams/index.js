@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     totalLabelText: {
-        fontSize: px(14),
+        fontSize: px(13),
         lineHeight: px(18),
         color: '#121D3A',
         textAlign: 'center',
