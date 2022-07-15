@@ -22,7 +22,7 @@ import {Modal} from '../../components/Modal';
 
 const weightMedium = Platform.select({android: '700', ios: '500'});
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {content, pop = {}, portfolios = []} = data;
@@ -45,11 +45,11 @@ export default ({navigation}) => {
     /**
      * @name 选中/取消选中组合
      * @param index 组合的索引
-     * @param checked 是否选中
      */
-    const onSelect = (index, checked) => {
+    const onSelect = (index) => {
         const _data = {...data};
-        _data.portfolios[index].checked = checked;
+        _data.portfolios.forEach((item) => item.checked = false)
+        _data.portfolios[index].checked = true;
         setData(_data);
     };
 
@@ -92,7 +92,7 @@ export default ({navigation}) => {
     );
 
     useEffect(() => {
-        http.get('/advisor/need_sign/trans3/20220613').then((res) => {
+        http.get('/advisor/need_sign/trans3/20220613', {poid: route.params?.poid}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '组合转投'});
                 setData(res.result);
@@ -106,16 +106,16 @@ export default ({navigation}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
                 {content ? <HTML html={content} style={styles.tips} /> : null}
                 <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
-                    <View style={Style.flexRow}>
-                        <CheckBox
-                            checked={selectedData.allSelected}
-                            onChange={(value) => {
-                                selectAll(value);
-                            }}
-                            style={{marginRight: px(8)}}
-                        />
-                        <Text style={styles.title}>全选</Text>
-                    </View>
+                    {/*<View style={Style.flexRow}>*/}
+                    {/*    <CheckBox*/}
+                    {/*        checked={selectedData.allSelected}*/}
+                    {/*        onChange={(value) => {*/}
+                    {/*            selectAll(value);*/}
+                    {/*        }}*/}
+                    {/*        style={{marginRight: px(8)}}*/}
+                    {/*    />*/}
+                    {/*    <Text style={styles.title}>全选</Text>*/}
+                    {/*</View>*/}
                     <Text style={[styles.desc, {fontWeight: weightMedium}]}>
                         {`您已选择${selectedData.selectedNum}个组合，预估转投金额(元)：`}
                         <Text style={{color: Colors.red}}>
@@ -124,24 +124,32 @@ export default ({navigation}) => {
                     </Text>
                 </View>
                 {portfolios?.map?.((item, index) => {
-                    const {amount, checked = false, from, poid, to, to_url} = item;
+                    const {amount, checked = false, from, poid, to_poid, to, to_url} = item;
                     return (
-                        <View key={poid} style={styles.itemBox}>
+                        <TouchableOpacity
+                                key={to_poid}
+                                style={styles.itemBox}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    onSelect(index);
+                                }}
+                            >
                             <View style={Style.flexRow}>
-                                <Text style={[styles.title, {flex: 1}]}>{from}</Text>
-                                <Image source={require('../../assets/personal/transArrow.png')} style={styles.arrow} />
+                                {/*<Text style={[styles.title, {flex: 1}]}>{from}</Text>*/}
+                                {/*<Image source={require('../../assets/personal/transArrow.png')} style={styles.arrow} />*/}
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => jump(to_url)}
-                                    style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
+                                    // style={[Style.flexRow, {flex: 1}]}
+                                >
                                     <Text
                                         style={[
                                             styles.title,
-                                            {color: Colors.brandColor, flex: 1, textAlign: 'center'},
+                                            {color: Colors.brandColor, flex: 1, textAlign: 'left'},
                                         ]}>
                                         {to}
                                     </Text>
-                                    <AntDesign color={Colors.brandColor} name="right" size={12} />
+                                    {/*<AntDesign color={Colors.brandColor} name="right" size={12} />*/}
                                 </TouchableOpacity>
                             </View>
                             <Text style={[styles.desc, {marginTop: px(4)}]}>
@@ -153,8 +161,8 @@ export default ({navigation}) => {
                             <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
                                 <CheckBox
                                     checked={checked}
-                                    onChange={(value) => {
-                                        onSelect(index, value);
+                                    onChange={() => {
+                                        onSelect(index);
                                     }}
                                     style={{marginRight: px(8)}}
                                 />
@@ -163,7 +171,7 @@ export default ({navigation}) => {
                                     style={{...styles.desc, color: Colors.descColor}}
                                 />
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     );
                 })}
             </ScrollView>
