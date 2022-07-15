@@ -404,7 +404,7 @@ export default ({data = {}, style = {}}) => {
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
     const {code, type, url, LogTool} = data;
     const [isPking, setIsPking] = useState(false);
-    const pkProducts = useSelector((store) => store.pkProducts);
+    const pkProducts = useSelector((store) => store.pkProducts[global.pkEntry]);
 
     useEffect(() => {
         if (pkProducts.includes(code)) {

@@ -11,7 +11,7 @@ import {getPKBetter} from '../services';
 import {useFocusEffect} from '@react-navigation/native';
 
 const PKBall = ({style}, ref) => {
-    const pkProducts = useSelector((state) => state.pkProducts);
+    const pkProducts = useSelector((state) => state.pkProducts['2']);
     const dispatch = useDispatch();
     const jump = useJump();
 
@@ -42,6 +42,12 @@ const PKBall = ({style}, ref) => {
         prevPKProducts.current = pkProducts;
         layoutTypeRef.current = layoutType;
     }, [pkProducts, layoutType]);
+
+    useFocusEffect(
+        useCallback(() => {
+            global.pkEntry = '2';
+        }, [])
+    );
 
     useFocusEffect(
         useCallback(() => {

@@ -462,7 +462,7 @@ const SelectProduct = (props) => {
     );
 };
 
-export default connect((state) => ({pkProducts: state.pkProducts}), pkProductsActions)(SelectProduct);
+export default connect((state) => ({pkProducts: state.pkProducts[global.pkEntry]}), pkProductsActions)(SelectProduct);
 
 const styles = StyleSheet.create({
     container: {

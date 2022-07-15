@@ -7,7 +7,7 @@ import FastImage from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
 
 const BlackHint = ({addHigh}) => {
-    const pkProducts = useSelector((state) => state.pkProducts);
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [data, setData] = useState(null);
 

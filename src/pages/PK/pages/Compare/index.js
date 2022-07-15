@@ -19,7 +19,7 @@ import {PageModal} from '~/components/Modal';
 import ModalTip from './ModalTip';
 
 const Compare = () => {
-    const pkProducts = useSelector((state) => state.pkProducts);
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
     const pkPinning = useSelector((state) => state.pkPinning);
     const dispatch = useDispatch();
 

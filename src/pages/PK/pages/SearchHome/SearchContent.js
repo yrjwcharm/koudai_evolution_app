@@ -21,7 +21,7 @@ const SearchContent = ({data}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const dispatch = useDispatch();
-    const pkProducts = useSelector((store) => store.pkProducts);
+    const pkProducts = useSelector((store) => store.pkProducts[global.pkEntry]);
     const onFavor = () => {
         setFavor((_favor) => !_favor);
         if (favor) {

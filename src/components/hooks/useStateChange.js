@@ -255,6 +255,7 @@ function useStateChange({homeShowModal, store}) {
                             (!prev.buy_status_for_vision && next.buy_status_for_vision)
                         ) {
                             getModalData();
+                            global.pkEntry = '2';
                             store.dispatch(getCartData());
                         }
                     }
