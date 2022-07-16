@@ -5,9 +5,13 @@ import FastImage from 'react-native-fast-image';
 
 const a = ['1. 提高收益', '2. 降低风险', '3. 盈利能力', '4. 专属投顾', '5. 资产配置'];
 
-const StickyHeader = ({scrollY, curtainNum}) => {
+const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight}) => {
     return (
-        <View style={[styles.container, {top: scrollY}]}>
+        <View
+            style={[styles.container, {top: scrollY}]}
+            onLayout={(e) => {
+                handlerCurtainHeight(e.nativeEvent.layout.height);
+            }}>
             {new Array(curtainNum).fill('').map((_, idx) => (
                 <View key={idx}>
                     <View style={[styles.item, idx > 0 ? {borderTopColor: '#F4F5F7', borderTopWidth: 1} : {}]}>
@@ -40,7 +44,7 @@ const StickyHeader = ({scrollY, curtainNum}) => {
     );
 };
 
-export default StickyHeader;
+export default StickyHeaderPortFolio;
 
 const styles = StyleSheet.create({
     container: {
@@ -50,7 +54,7 @@ const styles = StyleSheet.create({
     },
     item: {
         backgroundColor: '#fff',
-        height: px(44),
+        paddingVertical: px(12),
         paddingHorizontal: px(16),
         flexDirection: 'row',
         alignItems: 'center',

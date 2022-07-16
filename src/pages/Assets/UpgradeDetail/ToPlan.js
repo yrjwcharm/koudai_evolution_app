@@ -1,20 +1,17 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {px} from '~/utils/appUtil';
-import AssetAllocation from './AssetAllocation';
-import ExclusiveAdvisor from './ExclusiveAdvisor';
-import FixBottom from './FixBottom';
 import Header from './Header';
-import IncreaseRevenue from './IncreaseRevenue';
-import Profitability from './Profitability';
-import ReduceRisk from './ReduceRisk';
-import StickyHeaderPortFolio from './StickyHeaderPortFolio';
-import ToBeUpgradedList from './ToBeUpgradedList';
+import FixBottom from './FixBottom';
+import StickyHeaderPlan from './StickyHeaderPlan';
+import SaleReminder from './SaleReminder';
+import TaurenSignal from './TaurenSignal';
+import FallBuy from './FallBuy';
+import ProbabilitySignal from './ProbabilitySignal';
 
-const ToPortfolio = () => {
+const ToPlan = () => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
-
     const cardsHeight = useRef([]);
     const cardsPosition = useRef([]);
     const curtainHeight = useRef(0);
@@ -36,7 +33,7 @@ const ToPortfolio = () => {
 
     const onCardHeight = useCallback((index, height) => {
         cardsHeight.current[index] = height;
-        if (cardsHeight.current.length === 5) {
+        if (cardsHeight.current.length === 4) {
             const arr = [];
             cardsHeight.current.reduce((memo, cur, idx) => {
                 memo += cur;
@@ -46,15 +43,10 @@ const ToPortfolio = () => {
             cardsPosition.current = arr.filter((item) => item);
         }
     }, []);
-
     return (
         <View style={styles.container}>
             <Header />
-            <StickyHeaderPortFolio
-                handlerCurtainHeight={handlerCurtainHeight}
-                scrollY={scrollY}
-                curtainNum={curtainNum}
-            />
+            <StickyHeaderPlan scrollY={scrollY} curtainNum={curtainNum} handlerCurtainHeight={handlerCurtainHeight} />
             <ScrollView
                 style={{flex: 1}}
                 scrollEventThrottle={3}
@@ -62,12 +54,10 @@ const ToPortfolio = () => {
                 onLayout={(e) => {
                     setScrollY(e.nativeEvent.layout.y);
                 }}>
-                <IncreaseRevenue onCardHeight={onCardHeight} />
-                <ReduceRisk onCardHeight={onCardHeight} />
-                <Profitability onCardHeight={onCardHeight} />
-                <ExclusiveAdvisor onCardHeight={onCardHeight} />
-                <AssetAllocation onCardHeight={onCardHeight} />
-                <ToBeUpgradedList />
+                <SaleReminder onCardHeight={onCardHeight} />
+                <TaurenSignal onCardHeight={onCardHeight} />
+                <FallBuy onCardHeight={onCardHeight} />
+                <ProbabilitySignal onCardHeight={onCardHeight} />
                 <View style={{height: px(30)}} />
             </ScrollView>
             <FixBottom />
@@ -75,7 +65,7 @@ const ToPortfolio = () => {
     );
 };
 
-export default ToPortfolio;
+export default ToPlan;
 
 const styles = StyleSheet.create({
     container: {

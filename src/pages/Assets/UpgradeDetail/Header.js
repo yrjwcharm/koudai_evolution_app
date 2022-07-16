@@ -33,7 +33,7 @@ const Header = () => {
                     colors={['#F5F6F8', '#fff']}
                     onLayout={handlerLeftLayout}>
                     <View style={styles.headerLeftBorderBar} />
-                    {[1, 2].map((item, idx) => (
+                    {[1].map((item, idx) => (
                         <View
                             key={idx}
                             style={[
@@ -45,7 +45,7 @@ const Header = () => {
                             </Text>
                         </View>
                     ))}
-                    {true && (
+                    {false && (
                         <View style={[styles.headerLeftItem, {borderTopColor: '#E9EAEF', borderTopWidth: 0.5}]}>
                             <Text style={styles.headerItemText} numberOfLines={1}>
                                 ...
