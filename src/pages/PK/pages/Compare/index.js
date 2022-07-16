@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {px} from '~/utils/appUtil';
+import {isIphoneX, px} from '~/utils/appUtil';
 import Header from './Header';
 import PKParams from './PKParams';
 import PKAchivementChart from './PKAchivementChart';
@@ -15,16 +15,19 @@ import {getPKDetailData} from '../../services';
 import BlackHint from './BlackHint';
 import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
 import {pinningProduct} from '~/redux/actions/pk/pkPinning';
+import {PageModal} from '~/components/Modal';
+import ModalTip from './ModalTip';
 
 const Compare = () => {
-    const pkProducts = useSelector((state) => state.pkProducts);
-    const pkPinning = useSelector((state) => state.pkPinning);
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
+    const pkPinning = useSelector((state) => state.pkPinning[global.pkEntry]);
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(true);
     const [pageScroll, setPageScroll] = useState(false);
     const [data, setData] = useState(null);
     const [list, setList] = useState(null);
+    const [modalTipType, setModalTipType] = useState('');
 
     const headerRef = useRef(null);
     const pkParamsRef = useRef(null);
@@ -32,6 +35,7 @@ const Compare = () => {
     const pkPortfolioRef = useRef(null);
     const pkManagerInfoRef = useRef(null);
     const pkFundInfoRef = useRef(null);
+    const bottomModalRef = useRef(null);
 
     const _pkProducts = useRef([]);
 
@@ -42,7 +46,7 @@ const Compare = () => {
     const getData = useCallback(() => {
         // 更新data
         setLoading(true);
-        getPKDetailData({fund_code_list: _pkProducts.current})
+        getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
@@ -99,6 +103,11 @@ const Compare = () => {
         });
     }, []);
 
+    const showModal = useCallback((type) => {
+        setModalTipType(type);
+        bottomModalRef.current.show();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Header
@@ -119,8 +128,9 @@ const Compare = () => {
                 {list && (
                     <PKParams
                         ref={pkParamsRef}
+                        result={data}
                         data={list}
-                        weightButton={data.weight_button}
+                        showModal={showModal}
                         refresh={getData}
                         onScroll={handlerHorizontalScroll(pkParamsRef)}
                     />
@@ -135,9 +145,15 @@ const Compare = () => {
                         onScroll={handlerHorizontalScroll(pkPriceRangeRef)}
                     />
                 )}
-                {/* 投资组合 */}
+                {/* 资产分布 */}
                 {list && (
-                    <PKPortfolio data={list} ref={pkPortfolioRef} onScroll={handlerHorizontalScroll(pkPortfolioRef)} />
+                    <PKPortfolio
+                        data={list}
+                        asset_explain={data?.asset_explain}
+                        showModal={showModal}
+                        ref={pkPortfolioRef}
+                        onScroll={handlerHorizontalScroll(pkPortfolioRef)}
+                    />
                 )}
                 {/* 基金经理信息 */}
                 {list && (
@@ -160,6 +176,21 @@ const Compare = () => {
             ) : null}
             {/* 小黑条 */}
             <BlackHint addHigh={addHigh} />
+            {/* bottom modal */}
+            <PageModal
+                ref={bottomModalRef}
+                title={{PKParams: data?.pk_explain?.title, PKPortfolio: data?.asset_explain?.title}[modalTipType]}
+                style={{height: px(320)}}>
+                <View style={{flex: 1, paddingBottom: isIphoneX() ? 34 : px(12)}}>
+                    <ScrollView
+                        bounces={false}
+                        style={{
+                            flex: 1,
+                        }}>
+                        <ModalTip data={data} type={modalTipType} />
+                    </ScrollView>
+                </View>
+            </PageModal>
         </View>
     );
 };

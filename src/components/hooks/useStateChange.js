@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-02 15:35:57
+ * @LastEditTime: 2022-07-14 17:29:13
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -255,6 +255,7 @@ function useStateChange({homeShowModal, store}) {
                             (!prev.buy_status_for_vision && next.buy_status_for_vision)
                         ) {
                             getModalData();
+                            global.pkEntry = '2';
                             store.dispatch(getCartData());
                         }
                     }
@@ -398,7 +399,7 @@ function useStateChange({homeShowModal, store}) {
                         if (modal.page.includes(navigation?.getCurrentRoute?.()?.name)) {
                             showModal(modal);
                         }
-                    } else if (navigation?.getCurrentRoute?.()?.name === 'PKHome') {
+                    } else if (navigation?.getCurrentRoute?.()?.name === 'Index') {
                         showModal(modal);
                     }
                 }
@@ -632,7 +633,7 @@ function useStateChange({homeShowModal, store}) {
                         showModal(modal);
                     }
                 }
-            } else if (currentRouteName === 'PKHome') {
+            } else if (currentRouteName === 'Index') {
                 showModal(modal);
             }
         }

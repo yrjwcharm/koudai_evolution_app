@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:38:02
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 23:10:29
+ * @LastEditTime: 2022-07-14 19:45:56
  * @Description:修改持仓
  */
 import {StyleSheet, Text, TextInput, TouchableOpacity, View, Image} from 'react-native';
@@ -21,13 +21,15 @@ const Index = ({navigation, route}) => {
     let ocrFundList = useSelector((store) => store.ocrFund).toJS();
     const initalData = useSelector((store) => store.ocrFund).toJS()?.ocrOwernList[key];
     const tmpData = {...initalData};
-    tmpData.yield = tmpData.yield < 0 ? tmpData.yield.slice(1) : tmpData.yield;
+    tmpData.yield = tmpData.yield != 0 ? tmpData.yield.slice(1) : tmpData.yield;
     const [data, setData] = useState(tmpData);
     const [isUp, setIsUp] = useState(initalData.yield > 0 ? true : false);
     const handleSave = () => {
         let _data = {...data};
         if (!isUp && _data?.yield != 0) {
             _data.yield = '-' + _data.yield;
+        } else if (_data?.yield != 0) {
+            _data.yield = '+' + _data.yield;
         }
         let tmpCcrFundList = [...ocrFundList.ocrOwernList];
         tmpCcrFundList[key] = _data;

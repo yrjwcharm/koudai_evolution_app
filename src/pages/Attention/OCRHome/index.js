@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 10:49:11
+ * @LastEditTime: 2022-07-14 17:43:24
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -61,7 +61,7 @@ const Index = ({navigation}) => {
         }, 100);
     };
     const uploadImage = async (data) => {
-        let toast = Toast.showLoading();
+        let toast = Toast.showLoading('正在识别...');
         let res = await uploadFile(data, (e) => {
             console.log(e);
         });

@@ -101,15 +101,18 @@ const SelectProduct = (props) => {
     const handlerSelectItem = (item) => {
         // 打点
         const {plateid, rec_json} = logParams.current;
-        plateid && rec_json && global.LogTool({ctrl: item.code, event: 'rec_click', plateid, rec_json});
         // 整理selectData
         let state = selectData.find((itm) => itm.code === item.code);
         if (state) {
+            plateid &&
+                rec_json &&
+                global.LogTool({ctrl: 'cancel', event: 'rec_click', oid: item.code, plateid, rec_json});
             setSelectData((val) => {
                 return val.filter((itm) => item.code !== itm.code);
             });
         } else {
             if (selectData.length === 6) return Toast.show('您PK的基金过多，最多选择6只');
+            plateid && rec_json && global.LogTool({ctrl: 'add', event: 'rec_click', oid: item.code, plateid, rec_json});
             setSelectData((val) => {
                 let arr = [...val];
                 arr.push(item);
@@ -188,9 +191,7 @@ const SelectProduct = (props) => {
                                                     <View style={styles.selectItemTagWrap}>
                                                         {item?.tags?.map((itm, i) => (
                                                             <View key={i} style={[styles.selectItemTag]}>
-                                                                <Text key={i} style={[styles.selectItemTagText]}>
-                                                                    {itm}
-                                                                </Text>
+                                                                <Text style={[styles.selectItemTagText]}>{itm}</Text>
                                                             </View>
                                                         ))}
                                                     </View>
@@ -206,7 +207,9 @@ const SelectProduct = (props) => {
                                                 </View>
                                             </View>
                                         ) : (
-                                            <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                            <View
+                                                key={idx + '-'}
+                                                style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
                                                 <FastImage
                                                     source={{
                                                         uri:
@@ -227,7 +230,7 @@ const SelectProduct = (props) => {
                                             return item ? (
                                                 <View
                                                     style={[styles.selectItem, {marginLeft: idx > 0 ? px(8) : 0}]}
-                                                    key={idx}>
+                                                    key={idx + 3}>
                                                     <View>
                                                         <View style={styles.selectItemHeader}>
                                                             {item.tip ? (
@@ -286,7 +289,9 @@ const SelectProduct = (props) => {
                                                     </View>
                                                 </View>
                                             ) : (
-                                                <View style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
+                                                <View
+                                                    key={idx + 3 + '-'}
+                                                    style={[styles.placeBorder, {marginLeft: idx > 0 ? px(8) : 0}]}>
                                                     <FastImage
                                                         source={{
                                                             uri:
@@ -457,7 +462,7 @@ const SelectProduct = (props) => {
     );
 };
 
-export default connect((state) => ({pkProducts: state.pkProducts}), pkProductsActions)(SelectProduct);
+export default connect((state) => ({pkProducts: state.pkProducts[global.pkEntry]}), pkProductsActions)(SelectProduct);
 
 const styles = StyleSheet.create({
     container: {

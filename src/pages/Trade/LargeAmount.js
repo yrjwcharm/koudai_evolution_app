@@ -2,30 +2,30 @@
  * @Description:大额转账汇款
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-26 10:46:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-15 10:11:45
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
-import Html from '../../components/RenderHtml';
-import Http from '../../services';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {px as text, isIphoneX} from '~/utils/appUtil';
+import Html from '~/components/RenderHtml';
+import Http from '~/services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {FixedButton} from '../../components/Button';
-import Toast from '../../components/Toast/';
+import {FixedButton} from '~/components/Button';
+import Toast from '~/components/Toast/';
 import Clipboard from '@react-native-community/clipboard';
-import Notice from '../../components/Notice';
-import {Modal} from '../../components/Modal';
+import Notice from '~/components/Notice';
+import {Modal} from '~/components/Modal';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
-const tips = [
-    {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款；'},
-    {title: '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝；'},
-    {title: '3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：', tel: '400-080-8208'},
-    {title: '4. 民生银行是理财魔方的资金监管银行，您的汇款资金安全有保障。'},
+const tips = (phone) => [
+    '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款；',
+    '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝；',
+    `3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：<span style="color: ${Colors.red}">${phone}</span>`,
+    '4. 民生银行是理财魔方的资金监管银行，您的汇款资金安全有保障。',
 ];
 
 const LargeAmount = (props) => {
@@ -36,7 +36,7 @@ const LargeAmount = (props) => {
             props.navigation.setOptions({
                 headerRight: () => {
                     return (
-                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                        <TouchableOpacity onPress={rightPress} activeOpacity={0.8}>
                             <Text style={styles.right_sty}>{'使用说明'}</Text>
                         </TouchableOpacity>
                     );
@@ -65,8 +65,8 @@ const LargeAmount = (props) => {
             props.navigation.goBack();
         }
     };
-    const copy = (text) => {
-        Clipboard.setString(text);
+    const copy = (_text) => {
+        Clipboard.setString(_text);
         Toast.show('复制成功！');
     };
     const rightPress = () => {
@@ -88,16 +88,11 @@ const LargeAmount = (props) => {
                         {padding: 0, marginBottom: btnHeight, borderTopWidth: 0.5, borderColor: Colors.borderColor})
                     }>
                     <Notice content={{content: data?.processing}} isClose={true} />
-                    {/* <View>
-                        <Text style={styles.content_sty}>
-                            当您向魔方监管户中汇入资金，系统确认收到后将存入魔方宝。若需要该买其他任何组合您可以立即使用。
-                        </Text>
-                    </View> */}
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
                         <Text style={styles.title_sty}>大额极速购-使用流程</Text>
                         <View style={styles.process_wrap}>
                             <Image
-                                source={require('../../assets/img/common/largeAmount.png')}
+                                source={require('~/assets/img/common/largeAmount.png')}
                                 resizeMode="contain"
                                 style={styles.image_sty}
                             />
@@ -127,7 +122,7 @@ const LargeAmount = (props) => {
                                         style={[Style.flexRow, styles.list_sty]}
                                         key={_index + '_item'}
                                         onPress={() => jumpPage(_item.url)}
-                                        activeOpacity={1}>
+                                        activeOpacity={0.8}>
                                         <View style={[Style.flexRow, {flex: 1}]}>
                                             <Image
                                                 source={{uri: _item.bank_icon}}
@@ -142,6 +137,7 @@ const LargeAmount = (props) => {
                                 );
                             })}
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 style={[
                                     styles.bankCard,
                                     {
@@ -154,7 +150,7 @@ const LargeAmount = (props) => {
                                 }>
                                 <Image
                                     style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
-                                    source={require('../../assets/img/common/mfbIcon.png')}
+                                    source={require('~/assets/img/common/mfbIcon.png')}
                                 />
                                 <View style={{flex: 1}}>
                                     <Text style={styles.text}>使用新卡汇款</Text>
@@ -174,6 +170,7 @@ const LargeAmount = (props) => {
                                     <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_name}</Text>
                                 </View>
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
                                     onPress={() => copy(data?.mf_account_info?.bank_name)}>
                                     <Text style={styles.copy_sty}>复制</Text>
@@ -185,6 +182,7 @@ const LargeAmount = (props) => {
                                     <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_no}</Text>
                                 </View>
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
                                     onPress={() => copy(data?.mf_account_info?.bank_no)}>
                                     <Text style={styles.copy_sty}>复制</Text>
@@ -196,6 +194,7 @@ const LargeAmount = (props) => {
                                     <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_addr}</Text>
                                 </View>
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
                                     onPress={() => copy(data?.mf_account_info?.bank_addr)}>
                                     <Text style={styles.copy_sty}>复制</Text>
@@ -204,14 +203,11 @@ const LargeAmount = (props) => {
                         </View>
                     </View>
                     <View style={styles.tip_sty}>
-                        <Text style={{marginBottom: text(10), color: '#545968'}}>提示信息：</Text>
-                        {tips?.map((_i, _d) => {
+                        <Text style={{color: Colors.descColor}}>提示信息：</Text>
+                        {tips(data.phone)?.map((_i, _d) => {
                             return (
-                                <View style={{marginBottom: text(10)}} key={_d + '_i'}>
-                                    <Text key={_i + _d} style={{lineHeight: text(18), color: '#545968'}}>
-                                        {_i.title}
-                                    </Text>
-                                    {_i.tel ? <Text style={{color: '#E74949'}}> {_i.tel}；</Text> : null}
+                                <View style={{marginTop: text(10)}} key={_i + _d}>
+                                    <Html html={_i} style={{lineHeight: text(18), color: Colors.descColor}} />
                                 </View>
                             );
                         })}

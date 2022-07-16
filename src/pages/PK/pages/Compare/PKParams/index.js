@@ -1,62 +1,23 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Switch, TouchableOpacity, DeviceEventEmitter, Platform} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
-import {Font} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
-import PKParamRate from '../../components/PKParamRate';
-import PKParamsRateOfSum from '../../components/PKParamsRateOfSum';
+import PKParamsRateOfSum from '../../../components/PKParamsRateOfSum';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
-import {postPKWeightSwitch} from '../../services';
-import PKWeightSet from './PKWeightSet';
+import {postPKWeightSwitch} from '../../../services';
+import PKWeightSet from '../PKWeightSet';
+import {
+    handlerDefaultReason,
+    handlerDefaultExpandParts,
+    handlerDefaultTotalScoreMap,
+    handlerDefaultParamItemBest,
+} from './utils';
+import {LabelPart, ValuePart} from './parts';
 
-const handlerDefaultExpandParts = (data) => {
-    return (
-        data?.[0]?.score_info?.reduce?.((memo, cur) => {
-            if (cur.open_status) memo.push(cur.name);
-            return memo;
-        }, []) || []
-    );
-};
-
-const handlerDefaultTotalScoreMap = (data) => {
-    return data.reduce((memo, cur) => {
-        memo[cur.code] = cur.total_score_info;
-        return memo;
-    }, {});
-};
-
-const handlerDefaultParamItemBest = (data) => {
-    let obj = {};
-    data?.forEach((item) => {
-        // 总分
-        if (!obj.ts) obj.ts = {value: 0, code: ''};
-        if (item.total_score_info === obj.ts.value) {
-            obj.ts.code = '';
-        }
-        if (item.total_score_info > obj.ts.value) {
-            obj.ts.value = Math.round(item.total_score_info);
-            obj.ts.code = item.code;
-        }
-        // 详细
-        item.score_info?.forEach?.((itm) => {
-            let key = itm.type;
-            if (!obj[key]) obj[key] = {value: 0, code: ''};
-            if (itm.score === obj[key].value) {
-                obj[key].code = '';
-            }
-            if (itm.score > obj[key].value) {
-                obj[key].value = Math.round(itm.score);
-                obj[key].code = item.code;
-            }
-        });
-    });
-    return obj;
-};
-
-const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
+const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref}) => {
     const [expand, setExpand] = useState(false);
     const [expandParts, setExpandParts] = useState([]);
     const [totalScoreMap, setTotalScoreMap] = useState({});
@@ -66,16 +27,22 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     const scrollViewRef = useRef(null);
     const weightSet = useRef(null);
 
+    const [reason, setReason] = useState('');
+
     const totalRowHeight = useMemo(() => {
         let height = 55;
         let obj = data.find((item) => item.tip);
         if (obj) height += 16;
-        if (obj?.reason) height += 24;
+        if (reason) height += 24;
         return height;
-    }, [data]);
+    }, [data, reason]);
 
     useEffect(() => {
-        setExpandParts(handlerDefaultExpandParts(data));
+        setReason(handlerDefaultReason(result?.pk_list || []));
+        setExpandParts(handlerDefaultExpandParts(result?.pk_list || []));
+    }, [result]);
+
+    useEffect(() => {
         setTotalScoreMap(handlerDefaultTotalScoreMap(data));
         setParamItemBest(handlerDefaultParamItemBest(data));
     }, [data]);
@@ -87,12 +54,56 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     }));
 
     const genLabels = () => {
+        const handlerExpandApi = (state, item) => {
+            postPKWeightSwitch({
+                open_status: +state,
+                type: item.type,
+                fund_code_list: Object.keys(totalScoreMap || {}).join(),
+            }).then((res) => {
+                if (res.code === '000000') {
+                    // 更新理由
+                    setReason(res.result?.reason);
+                    // 更新总分
+                    setTotalScoreMap(res.result?.score);
+                    // 更新展示 总分中最高的分数
+                    const ts = {value: 0, code: ''};
+                    for (let code in res.result?.score) {
+                        let total = res.result?.score[code];
+                        if (total === ts.value) {
+                            ts.code = '';
+                        }
+                        if (total > ts.value) {
+                            ts.value = Math.round(total);
+                            ts.code = code;
+                        }
+                    }
+                    setParamItemBest((val) => {
+                        let newVal = {...val};
+                        newVal.ts = ts;
+                        return newVal;
+                    });
+                }
+            });
+        };
         const obj = data?.[0];
         return (
             <View style={styles.labelsWrap}>
                 {/* 总分 */}
                 <View style={[styles.totalLabel, {height: totalRowHeight}]}>
-                    <Text style={styles.totalLabelText}>总PK分</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={{flexDirection: 'row', alignItems: 'center'}}
+                        onPress={() => {
+                            showModal('PKParams');
+                        }}>
+                        <Text style={styles.totalLabelText}>总PK分</Text>
+                        {result?.pk_explain ? (
+                            <FastImage
+                                style={{width: px(14), height: px(14), marginLeft: 3}}
+                                source={require('../../../../../assets/img/tip.png')}
+                            />
+                        ) : null}
+                    </TouchableOpacity>
                 </View>
                 {obj?.score_info?.map((item, idx) => (
                     <LabelPart
@@ -100,44 +111,22 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                         key={idx + item.name}
                         idx={idx}
                         expand={expand}
+                        expandParts={expandParts}
                         onChange={(state, itm) => {
                             global.LogTool('PKContrast_ComparisonItemSwitch', itm.name);
-                            postPKWeightSwitch({
-                                open_status: +state,
-                                type: item.type,
-                                fund_code_list: Object.keys(totalScoreMap || {}).join(),
-                            }).then((res) => {
-                                if (res.code === '000000') {
-                                    // 更新总分
-                                    setTotalScoreMap(res.result);
-                                    // 更新展示 总分中最高的分数
-                                    const ts = {value: 0, code: ''};
-                                    for (let code in res.result) {
-                                        let total = res.result[code];
-                                        if (total === ts.value) {
-                                            ts.code = '';
-                                        }
-                                        if (total > ts.value) {
-                                            ts.value = Math.round(total);
-                                            ts.code = code;
-                                        }
-                                    }
-                                    setParamItemBest((val) => {
-                                        let newVal = {...val};
-                                        newVal.ts = ts;
-                                        return newVal;
-                                    });
-                                    // 由于更新权重，所以需要刷新优质推荐
-                                    DeviceEventEmitter.emit('pkDetailBackHintRefresh');
+                            setExpandParts((val) => {
+                                let arr = [...val];
+                                if (state) {
+                                    arr.push(itm.name);
+                                } else {
+                                    arr = arr.filter((n) => n !== itm.name);
                                 }
+                                return arr;
                             });
-                            let arr = [...expandParts];
-                            if (state) {
-                                arr.push(itm.name);
-                            } else {
-                                arr = arr.filter((n) => n !== itm.name);
-                            }
-                            setExpandParts(arr);
+                            // 同步给后端
+                            handlerExpandApi(state, item);
+                            // 由于更新权重，所以需要刷新优质推荐
+                            DeviceEventEmitter.emit('pkDetailBackHintRefresh');
                         }}
                     />
                 ))}
@@ -166,8 +155,8 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                         color={paramItemBest?.ts?.code === item.code ? '#E74949' : '#545968'}
                         value={totalScoreMap[item.code]}
                     />
-                    <View style={[styles.tag, {opacity: item.reason ? 1 : 0}]}>
-                        <Text style={styles.tagText}>{item.reason}</Text>
+                    <View style={[styles.tag, {opacity: item.tip && reason ? 1 : 0}]}>
+                        <Text style={styles.tagText}>{reason}</Text>
                     </View>
                 </View>
                 {item?.score_info?.map((itm, idx) => (
@@ -176,7 +165,7 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
                         item={itm}
                         idx={idx}
                         best={paramItemBest?.[itm.type]?.code === item.code}
-                        expand={expandParts.includes(itm.name) && expand}
+                        expand={expand}
                         expandParts={expandParts}
                     />
                 ))}
@@ -211,14 +200,14 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>PK</Text>
-                {weightButton ? (
+                {result.weight_button ? (
                     <Text
                         style={styles.rightBtn}
                         onPress={() => {
                             global.LogTool('PKContrast_WeightSetting');
                             weightSet.current.show();
                         }}>
-                        {weightButton.text}
+                        {result.weight_button.text}
                         <SimpleIcon
                             name="arrow-right"
                             size={9}
@@ -284,78 +273,9 @@ const PKParams = ({data, weightButton, pkPinning, onScroll, refresh, _ref}) => {
     );
 };
 
-const _PKParams = connect((state) => ({pkPinning: state.pkPinning}))(PKParams);
+const _PKParams = connect((state) => ({pkPinning: state.pkPinning[global.pkEntry]}))(PKParams);
 
 export default forwardRef((props, ref) => <_PKParams {...props} _ref={ref} />);
-
-const LabelPart = ({item, idx, expand, onChange}) => {
-    const [value, setValue] = useState(!!item.open_status);
-    const onValueChange = (val) => {
-        setValue(val);
-        onChange(val, item);
-    };
-    useEffect(() => {
-        setValue(!!item.open_status);
-    }, [item.open_status]);
-    return (
-        <View key={idx} style={[styles.labelPart, {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
-            <View style={styles.labelWrap}>
-                <Text style={[styles.labelText, {color: value ? '#545968' : '#9AA0B1'}]}>{item.name}</Text>
-                <Switch
-                    ios_backgroundColor={'#CCD0DB'}
-                    thumbColor={'#fff'}
-                    trackColor={{false: '#CCD0DB', true: '#0051CC'}}
-                    value={value}
-                    style={[
-                        {
-                            width: px(28),
-                            height: px(18),
-                        },
-                        Platform.OS === 'ios'
-                            ? {transform: [{scale: 0.7}], left: px(-9.8), top: px(-1.3)}
-                            : {marginTop: 2},
-                    ]}
-                    onValueChange={onValueChange}
-                />
-            </View>
-            {value &&
-                expand &&
-                item.sub_items?.map?.((itm, index) => (
-                    <View style={styles.labelWrap} key={index}>
-                        <Text style={styles.labelText}>{itm.key} </Text>
-                    </View>
-                ))}
-        </View>
-    );
-};
-
-const ValuePart = ({item, idx, best, expand, expandParts}) => {
-    const handlerValue = (val) => {
-        let state = !!(val || val === 0);
-        return state ? val : '--';
-    };
-
-    return (
-        <View key={idx} style={[styles.valuePart, {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
-            <View style={styles.valueWrap}>
-                <PKParamRate
-                    color={best ? '#E74949' : '#545968'}
-                    total={item.total_score}
-                    value={expandParts.includes(item.name) ? item.score : null}
-                    justifyContent="flex-end"
-                />
-            </View>
-            {expand &&
-                item.sub_items?.map?.((itm, index) => (
-                    <View style={styles.valueWrap} key={index}>
-                        <Text style={[styles.valueText, {color: best ? '#E74949' : '#545968'}]}>
-                            {handlerValue(itm.value)}
-                        </Text>
-                    </View>
-                ))}
-        </View>
-    );
-};
 
 const styles = StyleSheet.create({
     container: {
@@ -389,43 +309,10 @@ const styles = StyleSheet.create({
         borderRightColor: '#E9EAEF',
         borderRightWidth: 0.5,
     },
-    labelPart: {},
-    labelWrap: {
-        height: px(55),
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 0.5,
-        paddingLeft: px(5),
-        paddingRight: px(5),
-    },
-    labelText: {
-        fontSize: px(12),
-        lineHeight: px(17),
-        textAlign: 'center',
-    },
     valuesWrap: {
         width: px(124),
         borderRightColor: '#E9EAEF',
         borderRightWidth: 0.5,
-    },
-    valuePart: {},
-    valueWrap: {
-        height: px(55),
-        borderBottomColor: '#E9EAEF',
-        borderBottomWidth: 0.5,
-        paddingHorizontal: px(8),
-        alignItems: 'center',
-        flexDirection: 'row',
-        paddingVertical: px(10),
-    },
-    valueText: {
-        fontSize: px(14),
-        lineHeight: px(22),
-        fontWeight: 'bold',
-        fontFamily: Font.numFontFamily,
-        textAlign: 'center',
-        flex: 1,
     },
     totalLabel: {
         borderBottomColor: '#E9EAEF',

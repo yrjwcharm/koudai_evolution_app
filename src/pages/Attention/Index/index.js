@@ -2,11 +2,11 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 18:48:09
+ * @LastEditTime: 2022-07-15 11:06:14
  * @Description:关注
  */
-import {StyleSheet, View, Animated, Platform} from 'react-native';
-import React, {useState, useRef, useCallback} from 'react';
+import {StyleSheet, View, Animated} from 'react-native';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {followAdd, getData, getFollowList} from './service';
 import MessageCard from './MessageCard';
 import {px} from '~/utils/appUtil';
@@ -23,11 +23,11 @@ import {useSelector} from 'react-redux';
 import LoginMask from '~/components/LoginMask';
 import {useJump} from '~/components/hooks';
 import {SmButton} from '~/components/Button';
-const Attention = ({navigation}) => {
-    const userInfo = useSelector((store) => store.userInfo);
+const Attention = () => {
+    const is_login = useSelector((store) => store.userInfo).toJS().is_login;
     const [data, setData] = useState();
     const [followData, setFollowData] = useState();
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState(0);
     const [headHeight, setHeaderHeight] = useState(0);
     const jump = useJump();
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -38,15 +38,17 @@ const Attention = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             _getData();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
-    useFocusEffect(
-        useCallback(() => {
-            getFollowData({item_type: activeTab});
-        }, [activeTab])
-    );
+    useEffect(() => {
+        setActiveTab(0);
+    }, [is_login]);
+    useEffect(() => {
+        data?.follow && getFollowData({item_type: data?.follow?.tabs[activeTab].item_type});
+    }, [activeTab, data]);
     const onChangeTab = (obj) => {
-        setActiveTab(data?.follow?.tabs[obj.i].item_type);
+        setActiveTab(obj.i);
     };
     const getFollowData = async (params) => {
         let res = await getFollowList(params);
@@ -57,14 +59,14 @@ const Attention = ({navigation}) => {
         let res = await followAdd(params);
         if (res.code == '000000') {
             _getData();
-            getFollowData({item_type: activeTab});
+            getFollowData({item_type: 1});
         }
         Toast.show(res.message);
     };
     return (
         <View style={{flex: 1}}>
             <NavBar renderRight={<HeaderRight />} title="关注" />
-            {!userInfo.toJS().is_login && <LoginMask />}
+            {!is_login && <LoginMask />}
             <Animated.ScrollView
                 style={styles.con}
                 onScroll={
@@ -109,9 +111,9 @@ const Attention = ({navigation}) => {
                                 <View key={index} tabLabel={tab?.type_text}>
                                     <FollowTable
                                         data={followData}
-                                        activeTab={activeTab}
+                                        activeTab={data?.follow?.tabs[activeTab].item_type}
                                         handleSort={getFollowData}
-                                        tabButton={tab?.button_list}
+                                        tabButton={data?.follow?.tabs[activeTab]?.button_list}
                                         scrollY={scrollY}
                                         stickyHeaderY={headHeight}
                                     />

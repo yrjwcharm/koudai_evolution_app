@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {useSelector} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import {getPKWeightBetter} from '../../services';
@@ -7,15 +7,15 @@ import FastImage from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
 
 const BlackHint = ({addHigh}) => {
-    const pkProducts = useSelector((state) => state.pkProducts);
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [data, setData] = useState(null);
 
     const getData = () => {
         setData(null);
         getPKWeightBetter({fund_code_list: pkProducts.join()}).then((res) => {
-            const {code, plateid, rec_json} = res.result?.better_fund || {};
-            plateid && rec_json && global.LogTool({ctrl: code, event: 'rec_show', plateid, rec_json});
+            const {plateid, rec_json} = res.result?.better_fund || {};
+            plateid && rec_json && global.LogTool({ctrl: pkProducts.join(), event: 'rec_show', plateid, rec_json});
             setData(res.result?.better_fund);
         });
     };
@@ -29,6 +29,9 @@ const BlackHint = ({addHigh}) => {
         DeviceEventEmitter.addListener('pkDetailBackHintRefresh', (e) => {
             getData();
         });
+        return () => {
+            DeviceEventEmitter.removeAllListeners('pkDetailBackHintRefresh');
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -50,11 +53,12 @@ const BlackHint = ({addHigh}) => {
                 activeOpacity={0.8}
                 style={styles.btn}
                 onPress={() => {
+                    const {code, plateid, rec_json} = data;
                     setData(null);
-                    addHigh(data.code);
-                    global.LogTool({event: 'rec_click', rec_json: pkProducts.join()}, null, pkProducts.join());
+                    addHigh(code);
+                    global.LogTool({ctrl: pkProducts.join(), event: 'rec_click', plateid, rec_json});
                 }}>
-                <Text style={styles.btnText}>添加PK </Text>
+                <Text style={styles.btnText}>添加PK</Text>
             </TouchableOpacity>
         </Animatable.View>
     ) : null;
