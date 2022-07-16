@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 21:47:04
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-16 12:52:24
+ * @LastEditTime: 2022-07-16 12:54:06
  * @Description:基金消息中心
  */
 import {FlatList, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -53,7 +53,7 @@ const Index = ({navigation}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
     const onEndReached = () => {
-        if (data?.total_count > data?.list?.length && data?.total_count > 20) {
+        if (data?.total_count > 20) {
             setPage((pre) => ++pre);
         }
     };
@@ -61,7 +61,7 @@ const Index = ({navigation}) => {
     const renderFooter = () => {
         return (
             <>
-                {data?.list?.length > 0 && data?.total_count > 20 && (
+                {data?.total_count > 20 && (
                     <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
                         {data?.total_count > data?.list?.length ? '正在加载...' : '我们是有底线的...'}
                     </Text>
