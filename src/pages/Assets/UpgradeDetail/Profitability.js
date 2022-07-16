@@ -6,17 +6,17 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 
-const IncreaseRevenue = ({onCardHeight}) => {
+const Profitability = ({onCardHeight}) => {
     const [activeTab, setTabActive] = useState(0);
     return (
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(0, e.nativeEvent.layout.height);
+                onCardHeight(2, e.nativeEvent.layout.height);
             }}>
-            <Text style={styles.title}>更优质的产品，提高收益</Text>
+            <Text style={styles.title}>更低风险，更高盈利能力</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>10.27%</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>63.27%</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -24,7 +24,7 @@ const IncreaseRevenue = ({onCardHeight}) => {
                     />
                     <Text style={styles.pannelDesc}>收益率</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>20.27%</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>92.36%</Text>
             </View>
             <View style={{height: px(210)}}>
                 {true && (
@@ -38,20 +38,12 @@ const IncreaseRevenue = ({onCardHeight}) => {
                 <View style={styles.legendRow}>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[1]}]} />
-                        <Text style={styles.legendRowText}>持有基金</Text>
+                        <Text style={styles.legendRowText}>嘉实中证基建ETF发起式联接A</Text>
                     </View>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[0]}]} />
                         <Text style={styles.legendRowText}>某某某组合名称</Text>
                     </View>
-                </View>
-                <View style={styles.lengendCol}>
-                    {[1, 2, 3].map((item, idx) => (
-                        <View key={idx} style={[styles.legendItem, {marginTop: px(8)}]}>
-                            <View style={[styles.colIcon, {backgroundColor: colors[idx + 2]}]} />
-                            <Text style={styles.legendColText}>某某某组合名称</Text>
-                        </View>
-                    ))}
                 </View>
             </View>
             <View style={styles.tabsWrap}>
@@ -79,12 +71,13 @@ const IncreaseRevenue = ({onCardHeight}) => {
     );
 };
 
-export default IncreaseRevenue;
+export default Profitability;
 
 const styles = StyleSheet.create({
     container: {
         padding: px(16),
         backgroundColor: '#fff',
+        marginTop: px(12),
     },
     title: {
         fontSize: px(16),
@@ -141,19 +134,6 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: '#1e2331',
     },
-    lengendCol: {
-        paddingLeft: px(4),
-    },
-    colIcon: {
-        width: px(4),
-        height: px(3),
-        marginRight: px(4),
-    },
-    legendColText: {
-        fontSize: px(11),
-        lineHeight: px(15),
-        color: '#545968',
-    },
     tabsWrap: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -200,7 +180,7 @@ const colors = [
     'rgba(235, 221, 105, 0.3)',
 ];
 
-const areaColors = ['l(90) 0:#FFF9ED 1:#fff', 'transparent'];
+const areaColors = ['#FFF3D9', '#fff'];
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -208,140 +188,70 @@ const baseAreaChart = (
     data = [
         {
             type: '交银施罗德持续成长',
-            value: 0.65,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
             value: 0.3,
             date: '2021-07-15',
             line: '',
             area: '',
         },
         {
-            type: 'aaa',
-            value: 0.2,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.25,
+            type: '富国转型机遇',
+            value: 0.65,
             date: '2021-07-15',
             line: '',
             area: '',
         },
         {
             type: '交银施罗德持续成长',
+            value: 0.2,
+            date: '2021-07-16',
+            line: '',
+            area: '',
+        },
+        {
+            type: '富国转型机遇',
             value: 0.5,
             date: '2021-07-16',
             line: '',
             area: '',
         },
         {
-            type: '富国转型机遇',
-            value: 0.2,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.3,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.35,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
             type: '交银施罗德持续成长',
-            value: 0.91,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
             value: 0.75,
             date: '2021-07-19',
             line: '',
             area: '',
         },
         {
-            type: 'aaa',
-            value: 0.4,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.55,
+            type: '富国转型机遇',
+            value: 0.91,
             date: '2021-07-19',
             line: '',
             area: '',
         },
         {
             type: '交银施罗德持续成长',
-            value: 0.67,
+            value: 0.65,
             date: '2021-07-20',
             line: '',
             area: '',
         },
         {
             type: '富国转型机遇',
-            value: 0.65,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.25,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.65,
+            value: 0.68,
             date: '2021-07-20',
             line: '',
             area: '',
         },
         {
             type: '交银施罗德持续成长',
+            value: 0.55,
+            date: '2021-07-21',
+            line: '',
+            area: '',
+        },
+        {
+            type: '富国转型机遇',
             value: 0.85,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.55,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.35,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.65,
             date: '2021-07-21',
             line: '',
             area: '',
@@ -358,130 +268,103 @@ const baseAreaChart = (
     return `
 (function(){
 chart = new F2.Chart({
-  id: 'chart',
-  pixelRatio: window.devicePixelRatio,
-  width: ${width},
-  height:${height},
-  appendPadding: ${JSON.stringify(appendPadding)},
+id: 'chart',
+pixelRatio: window.devicePixelRatio,
+width: ${width},
+height:${height},
+appendPadding: ${JSON.stringify(appendPadding)},
 });
 chart.source(${JSON.stringify(data)});
 chart.scale('date', {
-  type: 'timeCat',
-  tickCount: 3,
-  range: [0, 1]
+type: 'timeCat',
+tickCount: 3,
+range: [0, 1]
 });
 chart.scale('value', {
-  tickCount: 5,
-  // range: [ 0, 1 ],
-  max: ${JSON.stringify(max)},
-  formatter: (value) => {
-    return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
-  }
+tickCount: 5,
+// range: [ 0, 1 ],
+max: ${JSON.stringify(max)},
+formatter: (value) => {
+  return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
+}
 });
 chart.axis('date', {
-  label: function label(text, index, total) {
-    const textCfg = {};
-    if (index === 0) {
-      textCfg.textAlign = 'left';
-    } else if (index === total - 1 ) {
-      textCfg.textAlign = 'right';
-    }
-    textCfg.fontFamily = 'DINAlternate-Bold';
-    return textCfg;
+label: function label(text, index, total) {
+  const textCfg = {};
+  if (index === 0) {
+    textCfg.textAlign = 'left';
+  } else if (index === total - 1 ) {
+    textCfg.textAlign = 'right';
   }
+  textCfg.fontFamily = 'DINAlternate-Bold';
+  return textCfg;
+}
 });
 chart.axis('value', {
-  label: function label(text) {
-    const cfg = {};
-    cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
-    cfg.fontFamily = 'DINAlternate-Bold';
-    return cfg;
-  }
+label: function label(text) {
+  const cfg = {};
+  cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+  cfg.fontFamily = 'DINAlternate-Bold';
+  return cfg;
+}
 });
 chart.legend(false);
 chart.tooltip({
-  crosshairsStyle: ${JSON.stringify(showDate)} ? {
-    stroke: ${JSON.stringify(colors[0])},
-    lineWidth: 0.5,
-    lineDash: [2],
-  } : {},
-  crosshairsType: 'y',
-  custom: true,
-  onChange: function(obj) {
-    window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
-  },
-  onHide: function(obj) {
-    window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
-  },
-  showCrosshairs: true,
-  showXTip: ${JSON.stringify(showDate)},
-  // showYTip: true,
-  snap: false,
-  tooltipMarkerStyle: {
-    radius: 1
-  },
-  // triggerOn: ['touchstart', 'touchmove'],
-  // triggerOff: 'touchend',
-  // xTipBackground: {
-  //   fill: '#E74949',
-  // },
-  // yTipBackground: {
-  //   fill: '#E74949',
-  // },
+crosshairsStyle: ${JSON.stringify(showDate)} ? {
+  stroke: ${JSON.stringify(colors[0])},
+  lineWidth: 0.5,
+  lineDash: [2],
+} : {},
+crosshairsType: 'y',
+custom: true,
+onChange: function(obj) {
+  window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
+},
+onHide: function(obj) {
+  window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
+},
+showCrosshairs: true,
+showXTip: ${JSON.stringify(showDate)},
+// showYTip: true,
+snap: false,
+tooltipMarkerStyle: {
+  radius: 1
+},
+// triggerOn: ['touchstart', 'touchmove'],
+// triggerOff: 'touchend',
+// xTipBackground: {
+//   fill: '#E74949',
+// },
+// yTipBackground: {
+//   fill: '#E74949',
+// },
 });
 chart.area({startOnZero: false, connectNulls: false})
 .position('date*value')
 .shape('smooth')
 .color('type', ${JSON.stringify(areaColors)})
 .animate({
+appear: {
+  animation: 'groupWaveIn',
+  duration: 500
+}
+});
+chart.line()
+.position('date*value')
+.shape('smooth')
+.color('type',${JSON.stringify(colors)})
+
+.animate({
   appear: {
     animation: 'groupWaveIn',
     duration: 500
   }
+})
+.style('type', {
+  lineWidth: 1,
 });
-chart.line()
-  .position('date*value')
-  .shape('smooth')
-  .color('type',${JSON.stringify(colors)})
- 
-  .animate({
-    appear: {
-      animation: 'groupWaveIn',
-      duration: 500
-    }
-  })
-  .style('type', {
-    lineWidth: 1,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.85],
-    html: "<div style='background: rgba(255,125,65,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #FF7D41;width:6px;height:6px;border-radius:50%;'></div></div>",
-    alignY: 'bottom',
-    offsetY: 5,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.55],
-    html: "<div style='background: rgba(84,89,104,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #545968;width:6px;height:6px;border-radius:50%;'></div></div>",
-    alignY: 'bottom',
-    offsetY: 5,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.85],
-    html: "<div style='padding:5px 6px;border-radius:5px;background-color:#FF7D41;position:relative;display:flex;align-items:center;white-space: nowrap;'><div style='background-color:#fff;border-radius:2px;padding:1px 2px;font-size:10px;line-height:14px;color:#ff7d41'>升级后</div><span style='margin-left:4px;font-size:10px;line-height:14px;color:#fff;'>持有收益<span style='font-size:14px;color:#fff;font-weight:bold;font-family: DIN Alternate-Bold, DIN Alternate;margin:0 3px;vertical-align: bottom;'>2,353.70</span>元</span><div style='position:absolute;right:0px;bottom:-5px;width:0;height:0;border-color:transparent #FF7D41 transparent transparent;border-style:solid;border-width:0 7px 8px 0;'></div></div>",
-    alignX: 'right',
-    alignY: 'bottom',
-    offsetY: -25,
-    offsetX: -12,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.55],
-    html: "<div style='padding:5px 6px;border-radius:5px;background-color:#545968;position:relative;display:flex;align-items:center;white-space: nowrap;'><div style='background-color:#fff;border-radius:2px;padding:1px 2px;font-size:10px;line-height:14px;color:#545968'>当前</div><span style='margin-left:4px;font-size:10px;line-height:14px;color:#fff;'>持有收益<span style='font-size:14px;color:#fff;font-weight:bold;font-family: DIN Alternate-Bold, DIN Alternate;margin:0 3px;vertical-align: bottom;'>2,353.70</span>元</span><div style='position:absolute;right:0px;top:-5px;width:0;height:0;border-color:transparent #545968 transparent transparent;border-style:solid;border-width:8px 7px 0 0;'></div></div>",
-    alignX: 'right',
-    alignY: 'top',
-    offsetY: 8,
-    offsetX: -12,
-  });
 chart.render();
 })();
+console.log(123)
 `;
 };

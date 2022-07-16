@@ -1,17 +1,66 @@
-import React from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
+import {px} from '~/utils/appUtil';
+import AssetAllocation from './AssetAllocation';
+import ExclusiveAdvisor from './ExclusiveAdvisor';
+import FixBottom from './FixBottom';
 import Header from './Header';
 import IncreaseRevenue from './IncreaseRevenue';
+import Profitability from './Profitability';
 import ReduceRisk from './ReduceRisk';
+import StickyHeader from './StickyHeader';
+import ToBeUpgradedList from './ToBeUpgradedList';
 
 const ToPortfolio = () => {
+    const [scrollY, setScrollY] = useState(0);
+    const [curtainNum, setCurtainNum] = useState(0);
+    const cardsHeight = useRef([]);
+    const cardsPosition = useRef([]);
+
+    const handlerScroll = useCallback((e) => {
+        let height = e.nativeEvent.contentOffset.y;
+        let arr = cardsPosition.current;
+        for (let i = arr.length - 1; i >= -1; i--) {
+            if (height + px(44 * i) > (arr[i] || 0)) {
+                setCurtainNum(i + 1);
+                break;
+            }
+        }
+    }, []);
+
+    const onCardHeight = useCallback((index, height) => {
+        cardsHeight.current[index] = height;
+        if (cardsHeight.current.length === 5) {
+            const arr = [];
+            cardsHeight.current.reduce((memo, cur, idx) => {
+                memo += cur;
+                arr[idx] = memo;
+                return memo;
+            }, 0);
+            cardsPosition.current = arr.filter((item) => item);
+        }
+    }, []);
+
     return (
         <View style={styles.container}>
             <Header />
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
-                <IncreaseRevenue />
-                <ReduceRisk />
+            <StickyHeader scrollY={scrollY} curtainNum={curtainNum} />
+            <ScrollView
+                style={{flex: 1}}
+                scrollEventThrottle={3}
+                onScroll={handlerScroll}
+                onLayout={(e) => {
+                    setScrollY(e.nativeEvent.layout.y);
+                }}>
+                <IncreaseRevenue onCardHeight={onCardHeight} />
+                <ReduceRisk onCardHeight={onCardHeight} />
+                <Profitability onCardHeight={onCardHeight} />
+                <ExclusiveAdvisor onCardHeight={onCardHeight} />
+                <AssetAllocation onCardHeight={onCardHeight} />
+                <ToBeUpgradedList />
+                <View style={{height: px(30)}} />
             </ScrollView>
+            <FixBottom />
         </View>
     );
 };

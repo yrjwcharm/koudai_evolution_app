@@ -6,10 +6,14 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 
-const ReduceRisk = () => {
+const ReduceRisk = ({onCardHeight}) => {
     const [activeTab, setTabActive] = useState(0);
     return (
-        <View style={styles.container}>
+        <View
+            style={styles.container}
+            onLayout={(e) => {
+                onCardHeight(1, e.nativeEvent.layout.height);
+            }}>
             <Text style={styles.title}>严控风险底线，不惧极端市场</Text>
             <View style={styles.ratePanel}>
                 <Text style={[styles.rateText, {color: '#4BA471'}]}>-16.27%</Text>
@@ -361,10 +365,6 @@ chart.line()
 })
 .style('type', {
   lineWidth: 1,
-  lineDash(val) {
-    if (val === '底线') return [4, 4, 4];
-    else return [];
-  }
 });
 chart.guide().html({
   position: ['2021-07-21', -0.55],
