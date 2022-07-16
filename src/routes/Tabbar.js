@@ -1,7 +1,5 @@
 /*
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 17:23:17
  * @Description: 底部Tab路由
  */
 import * as React from 'react';

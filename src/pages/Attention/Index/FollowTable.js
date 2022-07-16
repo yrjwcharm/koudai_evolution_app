@@ -1,7 +1,5 @@
 /*
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 10:31:34
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
