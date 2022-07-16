@@ -103,7 +103,7 @@ export default ({navigation, route}) => {
                 .split(',')
                 .map((poid) => () =>
                     new Promise((resolve, reject) => {
-                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid})
+                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid, to_poids})
                             .then((res) => {
                                 if (res.code === '000000') {
                                     resolve(res);

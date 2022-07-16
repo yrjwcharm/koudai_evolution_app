@@ -15,18 +15,19 @@ import CheckBox from '../../components/CheckBox';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
 import Loading from '../Portfolio/components/PageLoading';
-import {formaNum, isIphoneX, px} from '../../utils/appUtil';
+import {formaNum, isIphoneX, px as text, px} from '../../utils/appUtil';
 import http from '../../services';
 import {debounce} from 'lodash';
 import {Modal} from '../../components/Modal';
+import PortfolioCard from "../../components/Portfolios/PortfolioCard";
 
 const weightMedium = Platform.select({android: '700', ios: '500'});
 
 export default ({navigation, route}) => {
-    const jump = useJump();
     const [data, setData] = useState({});
+    const [modalContent, setModalContent] = useState("");
     const {content, pop = {}, portfolios = []} = data;
-    const {cancel, confirm, content: modalContent, title} = pop;
+    const {cancel, confirm, title, content_part1, content_part2, content_part3} = pop;
 
     /** @name 选中的组合数据 */
     const selectedData = useMemo(() => {
@@ -51,6 +52,7 @@ export default ({navigation, route}) => {
         _data.portfolios.forEach((item) => item.checked = false)
         _data.portfolios[index].checked = true;
         setData(_data);
+        setModalContent(`${content_part1}${data?.amount}${content_part2}${_data.portfolios[index]?.name}${content_part3}`)
     };
 
     /**
@@ -104,74 +106,40 @@ export default ({navigation, route}) => {
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.scrollView}>
-                {content ? <HTML html={content} style={styles.tips} /> : null}
-                <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
-                    {/*<View style={Style.flexRow}>*/}
-                    {/*    <CheckBox*/}
-                    {/*        checked={selectedData.allSelected}*/}
-                    {/*        onChange={(value) => {*/}
-                    {/*            selectAll(value);*/}
-                    {/*        }}*/}
-                    {/*        style={{marginRight: px(8)}}*/}
-                    {/*    />*/}
-                    {/*    <Text style={styles.title}>全选</Text>*/}
-                    {/*</View>*/}
+                {content ? <HTML html={content} style={styles.tips}/> : null}
+                <View style={[Style.flexBetween, {marginTop: 16}]}>
                     <Text style={[styles.desc, {fontWeight: weightMedium}]}>
-                        {`您已选择${selectedData.selectedNum}个组合，预估转投金额(元)：`}
-                        <Text style={{color: Colors.red}}>
-                            {selectedData.selectedAmount > 0 ? formaNum(selectedData.selectedAmount) : 0}
-                        </Text>
+                        请选择要转入的组合
                     </Text>
+                    {data?.amount ? (
+                            <View style={Style.flexRow}>
+                                <Text style={[styles.desc, {fontSize: text(12)}]}>
+                                    预计转入金额 :
+                                </Text>
+                                <Text style={[styles.desc, {fontWeight: weightMedium, color: "red"}]}>
+                                    {formaNum(data?.amount)}
+                                </Text>
+                                <Text style={[styles.desc, {fontSize: text(12)}]}>
+                                    元
+                                </Text>
+                            </View>
+                    ) : null}
                 </View>
                 {portfolios?.map?.((item, index) => {
                     const {amount, checked = false, from, poid, to_poid, to, to_url} = item;
                     return (
-                        <TouchableOpacity
-                                key={to_poid}
-                                style={styles.itemBox}
-                                activeOpacity={0.8}
-                                onPress={() => {
+                        <View style={[Style.flexBetween, {marginTop: 10}]}>
+                            <PortfolioCard data={item} key={index} style={{marginBottom: px(12)}} onPress={() => {
+                                onSelect(index);
+                            }} />
+                            <CheckBox
+                                checked={checked}
+                                onChange={() => {
                                     onSelect(index);
                                 }}
-                            >
-                            <View style={Style.flexRow}>
-                                {/*<Text style={[styles.title, {flex: 1}]}>{from}</Text>*/}
-                                {/*<Image source={require('../../assets/personal/transArrow.png')} style={styles.arrow} />*/}
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => jump(to_url)}
-                                    // style={[Style.flexRow, {flex: 1}]}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.title,
-                                            {color: Colors.brandColor, flex: 1, textAlign: 'left'},
-                                        ]}>
-                                        {to}
-                                    </Text>
-                                    {/*<AntDesign color={Colors.brandColor} name="right" size={12} />*/}
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={[styles.desc, {marginTop: px(4)}]}>
-                                <Text style={{color: Colors.descColor}}>{'持仓金额(元)：'}</Text>
-                                <Text style={{fontSize: Font.textH2, fontFamily: Font.numFontFamily}}>
-                                    {formaNum(amount)}
-                                </Text>
-                            </Text>
-                            <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
-                                <CheckBox
-                                    checked={checked}
-                                    onChange={() => {
-                                        onSelect(index);
-                                    }}
-                                    style={{marginRight: px(8)}}
-                                />
-                                <HTML
-                                    html={`同意将<span style="color: #E74949;">${from}</span>转投至<span style="color: #E74949;">${to}</span>`}
-                                    style={{...styles.desc, color: Colors.descColor}}
-                                />
-                            </View>
-                        </TouchableOpacity>
+                                style={{position: 'absolute', right: px(16)}}
+                            />
+                        </View>
                     );
                 })}
             </ScrollView>
@@ -188,12 +156,12 @@ export default ({navigation, route}) => {
                             title,
                         });
                     }}
-                    title="确认"
+                    title="确认转投"
                 />
             </View>
         </View>
     ) : (
-        <Loading />
+        <Loading/>
     );
 };
 
@@ -219,7 +187,7 @@ const styles = StyleSheet.create({
         fontWeight: weightMedium,
     },
     desc: {
-        fontSize: Font.textH3,
+        fontSize: text(15),
         lineHeight: px(17),
         color: Colors.defaultColor,
     },
@@ -239,4 +207,7 @@ const styles = StyleSheet.create({
         paddingBottom: isIphoneX() ? 34 : Space.padding,
         backgroundColor: '#fff',
     },
+    light_text: {
+        color: Colors.lightBlackColor
+    }
 });
