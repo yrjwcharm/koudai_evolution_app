@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-25 20:30:22
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-15 20:12:58
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -72,7 +72,6 @@ export default function WebView({route, navigation}) {
         }
         setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
-
     useFocusEffect(
         useCallback(() => {
             // webview.current && webview.current.reload();

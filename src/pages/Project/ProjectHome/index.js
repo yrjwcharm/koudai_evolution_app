@@ -8,14 +8,20 @@ import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import RenderSignal from './RenderSignal';
+import {Button} from '~/components/Button';
 
-const Index = () => {
+const Index = ({navigation}) => {
     return (
         <>
             <NavBar title="计划" />
             <ScrollView style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
                 <Title style={{marginBottom: px(16)}} />
                 <RenderSignal />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('ProjectSetTrade');
+                    }}
+                />
             </ScrollView>
         </>
     );
