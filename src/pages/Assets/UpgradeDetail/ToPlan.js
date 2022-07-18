@@ -19,7 +19,7 @@ const ToPlan = () => {
     const handlerScroll = useCallback((e) => {
         let height = e.nativeEvent.contentOffset.y;
         let arr = cardsPosition.current;
-        for (let i = arr.length - 1; i >= -1; i--) {
+        for (let i = arr.length - 2; i >= -1; i--) {
             if (height + curtainHeight.current > (arr[i] || 0)) {
                 setCurtainNum(i + 1);
                 break;
@@ -34,12 +34,12 @@ const ToPlan = () => {
     const onCardHeight = useCallback((index, height) => {
         cardsHeight.current[index] = height;
         if (cardsHeight.current.length === 4) {
-            const arr = [];
+            const arr = [px(40)];
             cardsHeight.current.reduce((memo, cur, idx) => {
                 memo += cur;
-                arr[idx] = memo;
+                arr[idx + 1] = memo;
                 return memo;
-            }, 0);
+            }, px(40));
             cardsPosition.current = arr.filter((item) => item);
         }
     }, []);

@@ -121,7 +121,7 @@ const PKHome = ({navigation}) => {
         }
     };
     const handlerPress = () => {
-        jump({path: 'UpgradeConfirm'});
+        jump({path: 'ToPortfolio'});
     };
     return loading ? (
         <Loading />

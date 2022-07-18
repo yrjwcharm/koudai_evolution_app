@@ -206,10 +206,9 @@ import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // �
 import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
 import FundNoticeCenter from '~/pages/Attention/FundNoticeCenter'; //基金消息中心
 import AppTag from '~/pages/Auth/AppTag'; //用户标签选择
-import ToPortFolio from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级到组合详情
+import ToPortfolio from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级到组合详情
 import ToPlan from '~/pages/Assets/UpgradeDetail/ToPlan'; // 升级到计划详情
 import UpgradeConfirm from '~/pages/Assets/UpgradeDetail/UpgradeConfirm'; // 升级到计划详情
-import UpgradeDetail from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级详情
 import ProjectSetTrade from '~/pages/Project/ProjectSetTrade'; //计划设置买卖模式
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
@@ -816,10 +815,9 @@ export default function AppStack() {
             <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
             <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
             <Stack.Screen name="AppTag" component={AppTag} options={{headerShown: false, gestureEnabled: false}} />
-            <Stack.Screen name="ToPortFolio" component={ToPortFolio} options={{title: '升级详情'}} />
             <Stack.Screen name="ToPlan" component={ToPlan} options={{title: '升级详情'}} />
+            <Stack.Screen name="ToPortfolio" component={ToPortfolio} options={{title: '升级详情'}} />
             <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
-            <Stack.Screen name="UpgradeDetail" component={UpgradeDetail} options={{title: '升级详情'}} />
             <Stack.Screen name="ProjectSetTrade" component={ProjectSetTrade} options={{title: '设置买卖模式'}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
