@@ -1,17 +1,19 @@
 /*
  * @Date: 2020-11-04 15:30:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-06 10:37:42
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-16 13:42:33
  * @Description: 全局配置及异常机型处理
  */
 import * as React from 'react';
 import {TextInput, Text, Platform} from 'react-native';
+import {Colors} from './commonStyle';
 //解决小米手机字体显示不全
 const defaultFontFamily = {
     ...Platform.select({
         android: {fontFamily: ' '},
     }),
+    color: Colors.defaultColor,
 };
 const oldRender = Text.render;
 Text.render = function (...args) {
