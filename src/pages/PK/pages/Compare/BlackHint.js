@@ -13,7 +13,7 @@ const BlackHint = ({weightsState, addHigh}) => {
 
     const getData = () => {
         setData(null);
-        getPKWeightBetter({fund_code_list: pkProducts.join(), weight: weightsState}).then((res) => {
+        getPKWeightBetter({fund_code_list: pkProducts.join(), ...weightsState}).then((res) => {
             const {plateid, rec_json} = res.result?.better_fund || {};
             plateid && rec_json && global.LogTool({ctrl: pkProducts.join(), event: 'rec_show', plateid, rec_json});
             setData(res.result?.better_fund);

@@ -28,7 +28,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState}, 
 
     const getData = () => {
         setLoading(true);
-        weightDetail({source: global.pkEntry, weight: weightsState})
+        weightDetail({source: global.pkEntry, ...weightsState})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);

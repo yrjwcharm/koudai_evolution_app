@@ -52,6 +52,7 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showM
                 open_status: +state,
                 type: item.type,
                 fund_code_list: Object.keys(totalScoreMap || {}).join(),
+                ...weightsState,
             }).then((res) => {
                 if (res.code === '000000') {
                     // 更新理由
