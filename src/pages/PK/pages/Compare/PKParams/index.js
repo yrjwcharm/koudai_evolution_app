@@ -9,17 +9,11 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
 import {postPKWeightSwitch} from '../../../services';
 import PKWeightSet from '../PKWeightSet';
-import {
-    handlerDefaultReason,
-    handlerDefaultExpandParts,
-    handlerDefaultTotalScoreMap,
-    handlerDefaultParamItemBest,
-} from './utils';
+import {handlerDefaultReason, handlerDefaultTotalScoreMap, handlerDefaultParamItemBest} from './utils';
 import {LabelPart, ValuePart} from './parts';
 
-const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref}) => {
+const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showModal, onScroll, _ref}) => {
     const [expand, setExpand] = useState(false);
-    const [expandParts, setExpandParts] = useState([]);
     const [totalScoreMap, setTotalScoreMap] = useState({});
     const [paramItemBest, setParamItemBest] = useState({});
 
@@ -39,7 +33,6 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
 
     useEffect(() => {
         setReason(handlerDefaultReason(result?.pk_list || []));
-        setExpandParts(handlerDefaultExpandParts(result?.pk_list || []));
     }, [result]);
 
     useEffect(() => {
@@ -111,22 +104,14 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                         key={idx + item.name}
                         idx={idx}
                         expand={expand}
-                        expandParts={expandParts}
+                        weightsState={weightsState}
                         onChange={(state, itm) => {
                             global.LogTool('PKContrast_ComparisonItemSwitch', itm.name);
-                            setExpandParts((val) => {
-                                let arr = [...val];
-                                if (state) {
-                                    arr.push(itm.name);
-                                } else {
-                                    arr = arr.filter((n) => n !== itm.name);
-                                }
-                                return arr;
+                            // 更新权重分数
+                            setWeightsState((val) => {
+                                return {...val, [itm.type]: state ? 100 : 0};
                             });
-                            // 同步给后端
                             handlerExpandApi(state, item);
-                            // 由于更新权重，所以需要刷新优质推荐
-                            DeviceEventEmitter.emit('pkDetailBackHintRefresh');
                         }}
                     />
                 ))}
@@ -166,7 +151,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                         idx={idx}
                         best={paramItemBest?.[itm.type]?.code === item.code}
                         expand={expand}
-                        expandParts={expandParts}
+                        weightsState={weightsState}
                     />
                 ))}
             </View>
@@ -184,7 +169,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                     <View key={idx} style={[{backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
                         <>
                             <View key={-1} style={{height: px(55), width: px(40), ...border}} />
-                            {expandParts.includes(item.name) &&
+                            {weightsState[item.type] > 0 &&
                                 expand &&
                                 item.sub_items?.map((_, index) => (
                                     <View key={index} style={{height: px(55), width: px(40), ...border}} />
@@ -268,7 +253,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                 <Text style={styles.expandText}>{expand ? '收起' : '展开明细'}</Text>
                 <Icon name={expand ? 'chevron-up' : 'chevron-down'} size={25} color="#0051CC" />
             </TouchableOpacity>
-            <PKWeightSet ref={weightSet} refresh={refresh} />
+            <PKWeightSet weightsState={weightsState} setWeightsState={setWeightsState} ref={weightSet} />
         </View>
     );
 };

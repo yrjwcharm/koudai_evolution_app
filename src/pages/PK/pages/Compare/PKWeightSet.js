@@ -1,15 +1,15 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Modal, ActivityIndicator, DeviceEventEmitter} from 'react-native';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, Modal, ActivityIndicator} from 'react-native';
 import {isIphoneX, px} from '../../../../utils/appUtil';
 import Mask from '~/components/Mask';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Font} from '~/common/commonStyle';
 import PKSlider from '../../components/PKSlider';
-import {weightDetail, weightReset, weightSetting} from '../../services';
+import {weightDetail, weightReset} from '../../services';
 import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
 
-const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
+const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
 
     const getData = () => {
         setLoading(true);
-        weightDetail({source: global.pkEntry})
+        weightDetail({source: global.pkEntry, weight: weightsState})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
@@ -57,21 +57,11 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
 
     const submitData = () => {
         setSubmitLoading(true);
-        weightSetting({...sliderRate, source: global.pkEntry})
-            .then((res) => {
-                global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
-                Toast.show(res.message);
-                if (res.code === '000000') {
-                    cancel();
-                    setTimeout(() => {
-                        DeviceEventEmitter.emit('pkDetailBackHintRefresh');
-                        refresh();
-                    }, 100);
-                }
-            })
-            .finally((_) => {
-                setSubmitLoading(false);
-            });
+        global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
+        Toast.show('操作成功');
+        cancel();
+        setWeightsState(sliderRate);
+        setSubmitLoading(false);
     };
 
     const cancel = () => {

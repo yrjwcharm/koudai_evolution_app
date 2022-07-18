@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Text, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import {getPKWeightBetter} from '../../services';
 import FastImage from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
 
-const BlackHint = ({addHigh}) => {
+const BlackHint = ({weightsState, addHigh}) => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [data, setData] = useState(null);
 
     const getData = () => {
         setData(null);
-        getPKWeightBetter({fund_code_list: pkProducts.join()}).then((res) => {
+        getPKWeightBetter({fund_code_list: pkProducts.join(), weight: weightsState}).then((res) => {
             const {plateid, rec_json} = res.result?.better_fund || {};
             plateid && rec_json && global.LogTool({ctrl: pkProducts.join(), event: 'rec_show', plateid, rec_json});
             setData(res.result?.better_fund);
@@ -23,17 +23,7 @@ const BlackHint = ({addHigh}) => {
     useEffect(() => {
         getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pkProducts]);
-
-    useEffect(() => {
-        DeviceEventEmitter.addListener('pkDetailBackHintRefresh', (e) => {
-            getData();
-        });
-        return () => {
-            DeviceEventEmitter.removeAllListeners('pkDetailBackHintRefresh');
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [pkProducts, weightsState]);
 
     return data ? (
         <Animatable.View animation={'fadeInUp'} duration={500} style={[styles.container]}>
