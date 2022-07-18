@@ -47,6 +47,10 @@ export const weightReset = (data) => {
     return http.get('/pk/weight/reset/20220608', data);
 };
 
+export const weightSetting = (data) => {
+    return http.post('/pk/weight/setting/20220608', data);
+};
+
 export const getPKBetter = (data) => {
     return http.get('/pk/better/20220608', data);
 };

@@ -12,7 +12,7 @@ import PKWeightSet from '../PKWeightSet';
 import {handlerDefaultReason, handlerDefaultTotalScoreMap, handlerDefaultParamItemBest} from './utils';
 import {LabelPart, ValuePart} from './parts';
 
-const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showModal, onScroll, _ref}) => {
+const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refresh, showModal, onScroll, _ref}) => {
     const [expand, setExpand] = useState(false);
     const [totalScoreMap, setTotalScoreMap] = useState({});
     const [paramItemBest, setParamItemBest] = useState({});
@@ -253,7 +253,12 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showM
                 <Text style={styles.expandText}>{expand ? '收起' : '展开明细'}</Text>
                 <Icon name={expand ? 'chevron-up' : 'chevron-down'} size={25} color="#0051CC" />
             </TouchableOpacity>
-            <PKWeightSet weightsState={weightsState} setWeightsState={setWeightsState} ref={weightSet} />
+            <PKWeightSet
+                weightsState={weightsState}
+                setWeightsState={setWeightsState}
+                refresh={refresh}
+                ref={weightSet}
+            />
         </View>
     );
 };

@@ -136,6 +136,7 @@ const Compare = () => {
                         data={list}
                         weightsState={weightsState}
                         setWeightsState={setWeightsState}
+                        refresh={getData}
                         showModal={showModal}
                         onScroll={handlerHorizontalScroll(pkParamsRef)}
                     />

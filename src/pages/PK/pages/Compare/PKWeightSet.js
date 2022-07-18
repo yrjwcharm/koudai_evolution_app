@@ -5,11 +5,11 @@ import Mask from '~/components/Mask';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Font} from '~/common/commonStyle';
 import PKSlider from '../../components/PKSlider';
-import {weightDetail, weightReset} from '../../services';
+import {weightDetail, weightReset, weightSetting} from '../../services';
 import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
 
-const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState}, ref) => {
+const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState, refresh}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [loading, setLoading] = useState(true);
@@ -53,11 +53,21 @@ const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState}, 
 
     const submitData = () => {
         setSubmitLoading(true);
-        global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
-        Toast.show('操作成功');
-        cancel();
-        setWeightsState(sliderRate);
-        setSubmitLoading(false);
+        weightSetting({...sliderRate, source: global.pkEntry})
+            .then((res) => {
+                global.LogTool('setting_click', JSON.stringify(sliderRate), pkProducts.join());
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    cancel();
+                    setWeightsState(sliderRate);
+                    setTimeout(() => {
+                        refresh();
+                    }, 100);
+                }
+            })
+            .finally((_) => {
+                setSubmitLoading(false);
+            });
     };
 
     const cancel = () => {
