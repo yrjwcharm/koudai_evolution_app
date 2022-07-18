@@ -29,11 +29,14 @@ const Index = ({navigation}) => {
             <NavBar title="计划" />
             <ScrollView style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
                 <Title style={{marginBottom: px(16)}} />
-                {data?.navigator?.items?.map((item, index) => (
-                    <View>
-                        <Image source={{uri: item.icom}} style={{width: px(32), height: px(32)}} />
-                    </View>
-                ))}
+                <View style={Style.flexRow}>
+                    {data?.navigator?.items?.map((item, index) => (
+                        <View>
+                            <Text>{item.text}</Text>
+                            <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
+                        </View>
+                    ))}
+                </View>
                 <RenderSignal />
                 <Button
                     onPress={() => {
