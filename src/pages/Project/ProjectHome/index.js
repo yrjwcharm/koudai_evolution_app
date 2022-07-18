@@ -2,20 +2,44 @@
  * @Date: 2022-07-13 14:31:50
  * @Description:计划首页
  */
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {ScrollView, StyleSheet, Text, View, Image} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import RenderSignal from './RenderSignal';
+import {Button} from '~/components/Button';
+import {useFocusEffect} from '@react-navigation/native';
+import {getProjectData} from './service';
 
-const Index = () => {
+const Index = ({navigation}) => {
+    const [data, setData] = useState({});
+    const getData = async () => {
+        let res = await getProjectData();
+        setData(res.result);
+        console.log(res.result);
+    };
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+        }, [])
+    );
     return (
         <>
             <NavBar title="计划" />
             <ScrollView style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
                 <Title style={{marginBottom: px(16)}} />
+                {data?.navigator?.items?.map((item, index) => (
+                    <View>
+                        <Image source={{uri: item.icom}} style={{width: px(32), height: px(32)}} />
+                    </View>
+                ))}
                 <RenderSignal />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('ProjectSetTrade');
+                    }}
+                />
             </ScrollView>
         </>
     );

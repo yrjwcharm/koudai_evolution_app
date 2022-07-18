@@ -16,12 +16,16 @@ import BottomMenus from './BottomMenus';
 import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
 import Header from './Header';
+import {useShowGesture} from '~/components/hooks';
+import GesturePassword from '~/pages/Settings/GesturePassword';
+import LoginMask from '~/components/LoginMask';
 const Index = ({navigation}) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
-    const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
+    const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [headHeight, setHeaderHeight] = useState(0);
+    const showGesture = useShowGesture();
     const getData = async () => {
         let res = await getInfo();
         setData(res.result);
@@ -34,11 +38,13 @@ const Index = ({navigation}) => {
         useCallback(() => {
             getData();
             getHoldingData();
-        }, [])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [is_login])
     );
-    return (
+    return !showGesture ? (
         <>
             <Header />
+            {!is_login && <LoginMask />}
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 scrollEventThrottle={1}
@@ -49,7 +55,9 @@ const Index = ({navigation}) => {
                                 nativeEvent: {contentOffset: {y: scrollY}}, // 记录滑动距离
                             },
                         ],
-                        {useNativeDriver: true}
+                        {
+                            useNativeDriver: true,
+                        }
                     ) // 使用原生动画驱动
                 }>
                 <View
@@ -59,7 +67,7 @@ const Index = ({navigation}) => {
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
                     {/* 资产卡片 */}
-                    <AssetHeaderCard />
+                    <AssetHeaderCard summary={holding?.summary} />
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                 </View>
@@ -70,6 +78,9 @@ const Index = ({navigation}) => {
                 <BottomDesc />
             </Animated.ScrollView>
         </>
+    ) : (
+        // 手势密码
+        <GesturePassword option={'verify'} />
     );
 };
 export default Index;

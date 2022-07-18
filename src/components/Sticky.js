@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 21:53:00
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 19:25:48
+ * @LastEditTime: 2022-07-16 11:15:51
  * @Description:
  */
 import * as React from 'react';
@@ -34,18 +34,26 @@ export default class StickyHeader extends React.Component {
     };
 
     render() {
-        const {stickyHeaderY, stickyScrollY, children, style} = this.props;
+        // 传入itemHeight的时候可以做多个标题轮询吸顶 参考我的资产
+        const {stickyHeaderY, stickyScrollY, children, style, itemHeight} = this.props;
         const {stickyLayoutY} = this.state;
-
         let y = stickyHeaderY !== -1 ? stickyHeaderY : stickyLayoutY;
-
         const translateY = stickyScrollY.interpolate({
             inputRange: [-1, 0, y, y + 1],
             outputRange: [0, 0, 0, 1],
         });
-
+        let t = y + itemHeight + 1 || 1000;
+        // 从距离底部40的时候开始渐变0
+        const opacity = itemHeight
+            ? stickyScrollY.interpolate({
+                  inputRange: [-1, 0, y, y + 1, t - 40, t],
+                  outputRange: [1, 1, 1, 1, 1, 0],
+              })
+            : 1;
         return (
-            <Animated.View onLayout={this._onLayout} style={[style, styles.container, {transform: [{translateY}]}]}>
+            <Animated.View
+                onLayout={this._onLayout}
+                style={[style, styles.container, {opacity, transform: [{translateY}]}]}>
                 {children}
             </Animated.View>
         );

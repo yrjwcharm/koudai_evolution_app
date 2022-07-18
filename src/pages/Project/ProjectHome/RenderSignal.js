@@ -28,7 +28,7 @@ const RenderSignal = () => {
 const RenderTag = ({tag}) => {
     // const bgColor = getTagColor(tag.tag_style);
     return (
-        <LinearGradient style={[styles.card_tag, Style.flexRowCenter]} colors={['#239B56', '#5BB883']}>
+        <View style={[styles.card_tag, Style.flexRowCenter]}>
             <Text style={{color: '#fff', fontSize: px(12), marginRight: px(4)}}>{'买'}</Text>
             <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
                 {new Array(3).fill(0).map((_, index, arr) => (
@@ -44,7 +44,7 @@ const RenderTag = ({tag}) => {
                     />
                 ))}
             </View>
-        </LinearGradient>
+        </View>
     );
 };
 export default RenderSignal;
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
         height: px(24),
         borderBottomLeftRadius: px(30),
         borderTopLeftRadius: px(30),
+        backgroundColor: '#239B56',
         // position: 'absolute',
         // right: 0,
         // top: px(20),

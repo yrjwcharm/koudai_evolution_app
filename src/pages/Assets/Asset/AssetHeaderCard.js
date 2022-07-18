@@ -13,7 +13,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import {useJump} from '~/components/hooks';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
-const AssetHeaderCard = () => {
+const AssetHeaderCard = ({summary = {}}) => {
     const [showEye, setShowEye] = useState('true');
     const jump = useJump();
     // 显示|隐藏金额信息
@@ -46,7 +46,7 @@ const AssetHeaderCard = () => {
                 {/* 资产信息 */}
                 <View style={[styles.summaryTitle, Style.flexCenter]}>
                     <Text style={styles.summaryKey}>总资产(元)</Text>
-                    <Text style={styles.date}>{'2022'}</Text>
+                    <Text style={styles.date}>{summary?.profit_date}</Text>
                     <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                         <Feather
                             name={showEye === 'true' ? 'eye' : 'eye-off'}
@@ -57,7 +57,7 @@ const AssetHeaderCard = () => {
                 </View>
                 <Text style={{textAlign: 'center'}}>
                     {showEye === 'true' ? (
-                        <Text style={styles.amount}>{(123 || '0') + '.'}</Text>
+                        <Text style={styles.amount}>{summary?.amount}</Text>
                     ) : (
                         <Text style={styles.amount}>****</Text>
                     )}
@@ -81,11 +81,11 @@ const AssetHeaderCard = () => {
                 <View style={[Style.flexRow, styles.profitContainer]}>
                     <View style={[{flex: 1}]}>
                         <Text style={styles.profitKey}>日收益</Text>
-                        <Text style={styles.profitVal}>{showEye === 'true' ? 123 || '0.00' : '****'}</Text>
+                        <Text style={styles.profitVal}>{showEye === 'true' ? summary?.profit : '****'}</Text>
                     </View>
                     <View style={[{flex: 1}]}>
                         <Text style={styles.profitKey}>累计收益</Text>
-                        <Text style={styles.profitVal}>{showEye === 'true' ? 456 || '0.00' : '****'}</Text>
+                        <Text style={styles.profitVal}>{showEye === 'true' ? summary?.profit_acc : '****'}</Text>
                     </View>
                 </View>
             </LinearGradient>

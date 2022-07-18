@@ -20,7 +20,7 @@ const Header = () => {
         <>
             <View style={[styles.header, {height: inset.top + px(42)}]}>
                 <View style={{height: inset.top}} />
-                <View style={Style.flexBetween}>
+                <View style={[Style.flexBetween, {height: px(42)}]}>
                     <TouchableOpacity
                         activeOpacity={0.9}
                         style={Style.flexRow}
