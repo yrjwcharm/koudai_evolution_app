@@ -47,12 +47,12 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showM
     }));
 
     const genLabels = () => {
-        const handlerExpandApi = (state, item) => {
+        const handlerExpandApi = (state, item, newWeightState) => {
             postPKWeightSwitch({
                 open_status: +state,
                 type: item.type,
                 fund_code_list: Object.keys(totalScoreMap || {}).join(),
-                ...weightsState,
+                ...newWeightState,
             }).then((res) => {
                 if (res.code === '000000') {
                     // 更新理由
@@ -109,10 +109,9 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, showM
                         onChange={(state, itm) => {
                             global.LogTool('PKContrast_ComparisonItemSwitch', itm.name);
                             // 更新权重分数
-                            setWeightsState((val) => {
-                                return {...val, [itm.type]: state ? 100 : 0};
-                            });
-                            handlerExpandApi(state, item);
+                            const newWeightState = {...weightsState, [itm.type]: state ? 100 : 0};
+                            setWeightsState(newWeightState);
+                            handlerExpandApi(state, item, newWeightState);
                         }}
                     />
                 ))}

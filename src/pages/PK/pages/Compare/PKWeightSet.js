@@ -28,15 +28,11 @@ const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState}, 
 
     const getData = () => {
         setLoading(true);
-        weightDetail({source: global.pkEntry, ...weightsState})
+        weightDetail({source: global.pkEntry})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    const obj = res.result?.item?.reduce?.((memo, cur) => {
-                        memo[cur.weight_type] = cur.weight;
-                        return memo;
-                    }, {});
-                    setSliderRate(obj || {});
+                    setSliderRate(weightsState);
                 }
             })
             .finally((_) => {
