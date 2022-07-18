@@ -17,6 +17,7 @@ import Attention from '~/pages/Attention/Index'; //关注
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
+import {useFocusEffect} from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
@@ -30,6 +31,12 @@ export default function Tabbar() {
             }
         });
     }, [userInfo]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            global.pkEntry = '2';
+        }, [])
+    );
     return (
         // //如需要在此插入元素,如tabbar底部弹窗 可添加 <RootSiblingParent inactive={true}>
         <Tab.Navigator
