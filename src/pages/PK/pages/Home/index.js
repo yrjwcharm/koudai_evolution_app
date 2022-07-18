@@ -121,7 +121,7 @@ const PKHome = ({navigation}) => {
         }
     };
     const handlerPress = () => {
-        jump({path: 'ToPlan'});
+        jump({path: 'UpgradeConfirm'});
     };
     return loading ? (
         <Loading />
