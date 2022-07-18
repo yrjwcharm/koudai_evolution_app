@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:16:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 11:06:14
+ * @LastEditTime: 2022-07-18 12:03:44
  * @Description:关注
  */
 import {StyleSheet, View, Animated} from 'react-native';
@@ -45,7 +45,7 @@ const Attention = () => {
         setActiveTab(0);
     }, [is_login]);
     useEffect(() => {
-        data?.follow && getFollowData({item_type: data?.follow?.tabs[activeTab].item_type});
+        data?.follow && getFollowData({item_type: data?.follow?.tabs[activeTab]?.item_type});
     }, [activeTab, data]);
     const onChangeTab = (obj) => {
         setActiveTab(obj.i);
