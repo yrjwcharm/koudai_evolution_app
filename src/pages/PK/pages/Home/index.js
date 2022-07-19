@@ -18,6 +18,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
 import withNetState from '~/components/withNetState';
+import {Button} from '~/components/Button';
 
 const handlerItemsLog = (items, data) => {
     items?.forEach?.((obj) => {
@@ -183,6 +184,7 @@ const PKHome = ({navigation}) => {
                         <Text style={{height: 50, textAlign: 'center'}} onPress={handlerPress}>
                             升级详情
                         </Text>
+                        <Button onPress={() => navigation.navigate('HoldingDetail')} title="持仓详情页" />
                         {/* pkCard */}
                         {data?.pk_list && <PKCard data={data?.pk_list} />}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>

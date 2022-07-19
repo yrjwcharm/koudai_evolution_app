@@ -210,6 +210,8 @@ import ToPortfolio from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级到
 import ToPlan from '~/pages/Assets/UpgradeDetail/ToPlan'; // 升级到计划详情
 import UpgradeConfirm from '~/pages/Assets/UpgradeDetail/UpgradeConfirm'; // 升级到计划详情
 import ProjectSetTrade from '~/pages/Project/ProjectSetTrade'; //计划设置买卖模式
+import HoldingDetail from '~/pages/Assets/HoldingDetail'; // 持仓详情页
+import MfbHome from '~/pages/Mfb/MfbHome'; // 魔方宝首页
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -819,6 +821,8 @@ export default function AppStack() {
             <Stack.Screen name="ToPortfolio" component={ToPortfolio} options={{title: '升级详情'}} />
             <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
             <Stack.Screen name="ProjectSetTrade" component={ProjectSetTrade} options={{title: '设置买卖模式'}} />
+            <Stack.Screen name="HoldingDetail" component={HoldingDetail} options={{title: ''}} />
+            <Stack.Screen name="MfbHome" component={MfbHome} options={{title: ''}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
