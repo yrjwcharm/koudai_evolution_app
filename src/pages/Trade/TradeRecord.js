@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 14:35:29
+ * @LastEditTime: 2022-07-20 21:32:56
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -27,10 +27,11 @@ const TradeRecord = ({route, navigation}) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
-    const [tabActive, setActiveTab] = useState(0);
+    const [tabActive, setActiveTab] = useState(route.params.tabActive || 0);
     const offset = useRef('');
     const jump = useJump();
     const isMfb = route?.params?.fr == 'mfb';
+    const scrollTab = useRef();
     const getData = useCallback(
         (_page, toast) => {
             let Page = _page || page;
@@ -61,7 +62,7 @@ const TradeRecord = ({route, navigation}) => {
                     console.log(err);
                 });
         },
-        [page, tabActive, route, isMfb]
+        [page, tabActive]
     );
     useEffect(() => {
         getData();
@@ -104,6 +105,9 @@ const TradeRecord = ({route, navigation}) => {
             }
         }, [refresh])
     );
+    useEffect(() => {
+        scrollTab.current?.goToPage(route.params.tabActive || 0);
+    }, []);
     const onLoadMore = ({distanceFromEnd}) => {
         if (distanceFromEnd < 100) {
             return;
@@ -263,7 +267,11 @@ const TradeRecord = ({route, navigation}) => {
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {isMfb ? (
-                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
+                <ScrollableTabView
+                    ref={scrollTab}
+                    onChangeTab={changeTab}
+                    renderTabBar={() => <TabBar />}
+                    initialPage={0}>
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>

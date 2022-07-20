@@ -184,7 +184,7 @@ const PKHome = ({navigation}) => {
                         <Text style={{height: 50, textAlign: 'center'}} onPress={handlerPress}>
                             升级详情
                         </Text>
-                        <Button onPress={() => navigation.navigate('HoldingDetail')} title="持仓详情页" />
+                        <Button onPress={() => navigation.navigate('MfbHome')} title="魔方宝" />
                         {/* pkCard */}
                         {data?.pk_list && <PKCard data={data?.pk_list} />}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
