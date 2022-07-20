@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {StyleSheet, Text, View, ScrollView, Animated} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
 import React, {useCallback, useState, useRef} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors, Style} from '~/common/commonStyle';
@@ -10,7 +10,7 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import RationalCard from './RationalCard';
 import HoldList from './HoldList';
 import {useFocusEffect} from '@react-navigation/native';
-import {getHolding, getInfo} from './service';
+import {getHolding, getInfo, getNotice, getReadMes} from './service';
 import {Button} from '~/components/Button';
 import BottomMenus from './BottomMenus';
 import BottomDesc from '~/components/BottomDesc';
@@ -19,12 +19,15 @@ import Header from './Header';
 import {useShowGesture} from '~/components/hooks';
 import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
+import YellowNotice from './YellowNotice';
 const Index = ({navigation}) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
+    const [notice, setNotice] = useState(null);
     const [holding, setHolding] = useState(null);
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [headHeight, setHeaderHeight] = useState(0);
+    const [newMes, setNewmessage] = useState(0);
     const showGesture = useShowGesture();
     const getData = async () => {
         let res = await getInfo();
@@ -34,17 +37,30 @@ const Index = ({navigation}) => {
         let res = await getHolding();
         setHolding(res.result);
     };
+    // 小黄条
+    const getNoticeData = async () => {
+        let res = await getNotice();
+        setNotice(res.result);
+    };
+    const readInterface = async () => {
+        let res = await getReadMes();
+        setNewmessage(res.result.all);
+    };
     useFocusEffect(
         useCallback(() => {
             getData();
             getHoldingData();
+            is_login && getNoticeData();
+            is_login && readInterface();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [is_login])
     );
     return !showGesture ? (
         <>
-            <Header />
+            <Header newMes={newMes} />
             {!is_login && <LoginMask />}
+            {/* 系统通知 */}
+            {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 scrollEventThrottle={1}
@@ -67,7 +83,7 @@ const Index = ({navigation}) => {
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
                     {/* 资产卡片 */}
-                    <AssetHeaderCard summary={holding?.summary} />
+                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} />
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                 </View>
@@ -84,15 +100,3 @@ const Index = ({navigation}) => {
     );
 };
 export default Index;
-const styles = StyleSheet.create({
-    table_header: {
-        borderTopLeftRadius: px(6),
-        borderTopRightRadius: px(6),
-        backgroundColor: '#fff',
-        height: px(40),
-        paddingHorizontal: px(16),
-        position: 'absolute',
-        top: 80,
-        zIndex: 100,
-    },
-});

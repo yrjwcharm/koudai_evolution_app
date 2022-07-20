@@ -13,7 +13,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import {useJump} from '~/components/hooks';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
-const AssetHeaderCard = ({summary = {}}) => {
+const AssetHeaderCard = ({summary = {}, tradeMes}) => {
     const [showEye, setShowEye] = useState('true');
     const jump = useJump();
     // 显示|隐藏金额信息
@@ -30,13 +30,6 @@ const AssetHeaderCard = ({summary = {}}) => {
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
             style={{marginBottom: px(12), paddingTop: px(12)}}>
-            {/* <ArtWave
-                surfaceWidth={100}
-                surfaceHeigth={100}
-                powerPercent={20}
-                type="dc"
-                style={{backgroundColor: '#FF7800'}}
-            /> */}
             <LinearGradient
                 colors={['#1C58E7', '#528AED']}
                 start={{x: 0, y: 0}}
@@ -63,7 +56,6 @@ const AssetHeaderCard = ({summary = {}}) => {
                     )}
                 </Text>
                 {/* 交易通知 */}
-
                 <TouchableOpacity
                     activeOpacity={0.8}
                     style={[styles.tradeNotice, Style.flexCenter]}
@@ -72,10 +64,16 @@ const AssetHeaderCard = ({summary = {}}) => {
                         // jump(notice?.trade?.url);
                     }}>
                     <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
-                    <View style={[styles.noticeBox, Style.flexRow]}>
-                        <Text style={styles.noticeText}>{'123'}</Text>
-                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                    </View>
+                    {/* 交易通知 */}
+                    {tradeMes ? (
+                        <TouchableOpacity
+                            onPress={() => jump(tradeMes.url)}
+                            activeOpacity={0.9}
+                            style={[styles.noticeBox, Style.flexRow]}>
+                            <Text style={styles.noticeText}>{tradeMes?.desc}</Text>
+                            <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
+                        </TouchableOpacity>
+                    ) : null}
                 </TouchableOpacity>
 
                 <View style={[Style.flexRow, styles.profitContainer]}>

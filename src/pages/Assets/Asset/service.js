@@ -5,8 +5,14 @@
 import http from '~/services';
 
 export const getInfo = () => {
-    return http.get('http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/asset/v7/common/20220708');
+    return http.get('/asset/v7/common/20220708');
 };
 export const getHolding = () => {
-    return http.get('http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/asset/v7/holding/20220708');
+    return http.get('/asset/v7/holding/20220708');
+};
+export const getNotice = () => {
+    return http.get('/asset/notice/20210101');
+};
+export const getReadMes = () => {
+    return http.get('/message/unread/20210101');
 };

@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-29 10:54:42
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-29 11:07:55
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-18 15:18:21
  * @Description: 胶囊ScrollTabbar
  */
 import React from 'react';
@@ -11,7 +11,7 @@ import {Colors, Font} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 
 const Index = (props) => {
-    const {activeTab = 0, boxStyle = {}, goToPage, renderTab, tabs = []} = props;
+    const {activeTab = 0, boxStyle = {}, goToPage, renderTab, tabs = [], unActiveStyle} = props;
     return (
         <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={boxStyle}>
             {tabs.map((name, page) => {
@@ -28,7 +28,7 @@ const Index = (props) => {
                         style={[
                             styles.tabBox,
                             // index === tabs.length - 1 ? {marginRight: 2 * Space.marginAlign} : {},
-                            isTabActive ? {backgroundColor: '#DEE8FF'} : {},
+                            isTabActive ? {backgroundColor: '#DEE8FF'} : unActiveStyle,
                         ]}>
                         <Text style={[styles.tabText, isTabActive ? styles.activeText : {}]}>{name}</Text>
                     </TouchableOpacity>

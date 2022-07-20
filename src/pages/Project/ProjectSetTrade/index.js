@@ -3,12 +3,23 @@
  * @Description:计划设置买卖模式
  */
 import {ScrollView, StyleSheet, Switch, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
 import RenderAutoTime from './AutoTime';
 import Ruler from './Ruler';
-const ProjectSetTrade = () => {
+import {getSetModel} from './service';
+const ProjectSetTrade = ({route}) => {
+    const poid = route?.params?.poid;
+    const [data, setData] = useState({});
+    const getData = async () => {
+        let res = await getSetModel({poid: poid || 'X04F926077'});
+        setData(res.result);
+    };
+    useEffect(() => {
+        getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Text>index</Text>

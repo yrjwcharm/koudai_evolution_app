@@ -2,26 +2,44 @@
  * @Date: 2022-07-14 17:03:11
  * @Description:
  */
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Font, Style} from '~/common/commonStyle';
-
-const RenderSignal = () => {
+import Icon from 'react-native-vector-icons/AntDesign';
+import {useJump} from '~/components/hooks';
+const RenderSignal = ({list, more, desc, style}) => {
+    const jump = useJump();
     return (
-        <>
-            <LinearGradient style={styles.con} colors={['#E0F9DC', '#EEF7ED']} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
-                <View>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(4)}}>上证指数</Text>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(15), fontFamily: Font.numFontFamily}}>
-                        1332.44
-                    </Text>
-                </View>
-                <RenderTag />
-            </LinearGradient>
-            <Text style={{color: '#BDC2CC', fontSize: px(11), marginTop: px(8)}}>更新时间 12:00</Text>
-        </>
+        <View style={style}>
+            <View style={Style.flexRow}>
+                {list?.map((item, index) => (
+                    <LinearGradient
+                        style={styles.con}
+                        key={index}
+                        colors={['#E0F9DC', '#EEF7ED']}
+                        start={{x: 0, y: 0}}
+                        end={{x: 0, y: 1}}>
+                        <View>
+                            <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(4)}}>
+                                {item.text}
+                            </Text>
+                            <Text
+                                style={{color: Colors.defaultColor, fontSize: px(15), fontFamily: Font.numFontFamily}}>
+                                1332.44
+                            </Text>
+                        </View>
+                        <RenderTag />
+                    </LinearGradient>
+                ))}
+                <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)}>
+                    <Text style={{color: Colors.lightBlackColor}}>{more?.text}</Text>
+                    <Icon name={'rightcircleo'} color={Colors.lightBlackColor} />
+                </TouchableOpacity>
+            </View>
+            <Text style={{color: '#BDC2CC', fontSize: px(11), marginTop: px(8)}}>{desc}</Text>
+        </View>
     );
 };
 //买卖信号
@@ -67,5 +85,13 @@ const styles = StyleSheet.create({
         // position: 'absolute',
         // right: 0,
         // top: px(20),
+    },
+    more: {
+        alignItems: 'center',
+        width: px(24),
+        height: px(54),
+        borderRadius: px(4),
+        backgroundColor: '#F3F4F4',
+        justifyContent: 'center',
     },
 });

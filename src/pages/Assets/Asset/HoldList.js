@@ -12,7 +12,7 @@ import StickyHeader from '~/components/Sticky';
 import {SmButton} from '~/components/Button';
 import {getAlertColor, getTagColor} from './util';
 import {useJump} from '~/components/hooks';
-
+const yellow = '#FF7D41';
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
     const [layout, setLayout] = useState({});
     const onLayout = (key, e) => {
@@ -61,17 +61,19 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
 
                                 {/* 升级的卡片 */}
                                 {account?.upgrade_list?.length
-                                    ? account?.upgrade_listaccount?.upgrade_list?.map((upgrade, _index) => (
+                                    ? account?.upgrade_list?.map((upgrade, _index) => (
                                           <View
                                               style={{
                                                   borderWidth: px(1.5),
-                                                  borderColor: '#FF7D41',
+                                                  borderColor: yellow,
                                                   borderRadius: px(6),
                                               }}>
                                               {upgrade?.items?.map((product = {}, index, arr) => {
                                                   // 卡片是否只有一个或者是最后一个
                                                   const flag = index + 1 == arr.length || index == arr.length - 1;
-                                                  return <CardItem data={product} flag={flag} key={index} />;
+                                                  return (
+                                                      <CardItem upgrade={true} data={product} flag={flag} key={index} />
+                                                  );
                                               })}
                                               {/* 升级按钮 */}
                                               <View style={{height: px(52), ...Style.flexRow}}>
@@ -82,7 +84,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                                                   <SmButton
                                                       title={'查看'}
                                                       style={{backgroundColor: '#fff'}}
-                                                      titleStyle={{color: '#FF7D41'}}
+                                                      titleStyle={{color: yellow}}
                                                   />
                                               </View>
                                           </View>
@@ -127,7 +129,7 @@ const ListTitle = ({title, desc, onLayout}) => {
         </View>
     );
 };
-const CardItem = ({data = {}, flag}) => {
+const CardItem = ({data = {}, flag, upgrade}) => {
     const {name, type_name, profit, amount, profit_acc, alert, tag} = data;
     return (
         <>
@@ -148,18 +150,30 @@ const CardItem = ({data = {}, flag}) => {
                 </View>
                 {alert && <RenderAlert alert={alert} />}
             </View>
+            {/* 画卡片分割的半圆 */}
             {!flag && (
                 <View style={[styles.line_circle]}>
                     <View
                         style={{
                             ...styles.leftCircle,
                             left: -px(5),
-                            // borderRightColor: '#FF7D41',
-                            // borderRightWidth: px(5),
+                            backgroundColor: upgrade ? yellow : Colors.bgColor,
+                            borderLeftColor: Colors.bgColor,
+                            borderLeftWidth: px(2),
                         }}
                     />
+                    {upgrade && <View style={styles.upgrade_circle} />}
                     <View style={{...styles.line, flex: 1}} />
-                    <View style={{...styles.leftCircle, right: -px(5)}} />
+                    <View
+                        style={{
+                            ...styles.leftCircle,
+                            right: -px(5),
+                            backgroundColor: upgrade ? yellow : Colors.bgColor,
+                            borderRightColor: Colors.bgColor,
+                            borderRightWidth: px(2),
+                        }}
+                    />
+                    {upgrade && <View style={[styles.upgrade_circle, {left: undefined, right: px(-6)}]} />}
                 </View>
             )}
         </>
@@ -296,5 +310,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         top: px(20),
+    },
+    upgrade_circle: {
+        position: 'absolute',
+        width: px(9),
+        height: px(8),
+        left: -px(6),
+        borderRadius: px(6),
+        backgroundColor: Colors.bgColor,
     },
 });
