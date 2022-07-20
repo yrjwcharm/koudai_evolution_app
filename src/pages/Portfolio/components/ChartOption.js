@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 16:34:09
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-20 15:03:03
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -74,7 +74,16 @@ export const baseAreaChart = (
     // range: [ 0, 1 ],
     max: ${JSON.stringify(max)},
     formatter: (value) => {
-      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
+      if (${max} >= 100000) {
+        return (value / 10000).toFixed() + "万";
+      }
+      if (${percent}) {
+        return (value * 100).toFixed(${tofixed}) + "%";
+      } else if (${tofixed}) {
+        return value.toFixed(${tofixed});
+      } else {
+        return value;
+      }
     }
   });
   chart.axis('date', {
@@ -92,7 +101,9 @@ export const baseAreaChart = (
   chart.axis('value', {
     label: function label(text) {
       const cfg = {};
-      cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+      if (${max} < 100000) {
+        cfg.text = (Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) : parseFloat(text).toFixed(${tofixed})) + (text.includes("%") ? "%" : "");
+      }
       cfg.fontFamily = 'DINAlternate-Bold';
       return cfg;
     }

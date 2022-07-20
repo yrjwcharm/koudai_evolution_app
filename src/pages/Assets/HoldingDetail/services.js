@@ -9,3 +9,5 @@ export const getPageData = (params) =>
 
 export const getChartData = (params) =>
     http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/portfolio/asset/chart/20220712', params);
+
+export const openTool = (params) => http.post('/tool/manage/open/20211207', params);

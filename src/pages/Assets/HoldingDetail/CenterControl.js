@@ -71,11 +71,12 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         }
     };
 
-    /** @name 调仓按钮 */
+    /** @name 中控内部按钮 */
     const consoleBtn = ({style, button: btn}) => {
         return btn?.text ? (
             <TouchableOpacity
                 activeOpacity={0.8}
+                key={btn.text}
                 onPress={() => jump(btn.url)}
                 style={[Style.flexCenter, styles.consoleBtn, style]}>
                 <Text style={[styles.btnText, {color: btn.avail === 0 ? '#BDC2CC' : '#fff'}]}>{btn.text}</Text>
@@ -125,7 +126,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                 tip: signalTip,
             } = item;
             return (
-                <View key={name + index} style={descBoxSty(_type)}>
+                <View key={name + index} style={[descBoxSty(_type), index > 0 ? {marginTop: px(12)} : {}]}>
                     <View style={Style.flexRow}>
                         <View
                             style={[

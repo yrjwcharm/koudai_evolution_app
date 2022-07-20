@@ -9,28 +9,35 @@ import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Picker from 'react-native-picker';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import leftQuota2 from '~/assets/personal/leftQuota2.png';
+import tip from '~/assets/img/tip.png';
 import upgradeBg from '~/assets/personal/upgradeBg.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {Chart} from '~/components/Chart';
 import CircleLegend from '~/components/CircleLegend';
+import Empty from '~/components/EmptyTip';
 import FormItem from '~/components/FormItem';
 import {useJump} from '~/components/hooks';
 import Mask from '~/components/Mask';
+import {Modal} from '~/components/Modal';
 import NumText from '~/components/NumText';
+import HTML from '~/components/RenderHtml';
 import ScrollTabbar from '~/components/ScrollTabbar';
+import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
-import {getChartData, getPageData} from './services';
+import {getChartData, getPageData, openTool} from './services';
 import CenterControl from './CenterControl';
 import {TextInput} from 'react-native-gesture-handler';
+import {debounce} from 'lodash';
 
 /** @name 顶部基金信息 */
-const TopPart = ({trade_notice = {}, top_info, top_menus}) => {
+const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
     const jump = useJump();
     const {amount, desc, name, profit, profit_acc, tags = [], top_button} = top_info;
 
@@ -52,7 +59,7 @@ const TopPart = ({trade_notice = {}, top_info, top_menus}) => {
                     <View style={[Style.flexRow, {marginTop: px(10)}]}>
                         {tags.map((tag, i) => {
                             return (
-                                <View key={tag + i} style={styles.labelBox}>
+                                <View key={tag + i} style={[styles.labelBox, i === 0 ? {marginLeft: 0} : {}]}>
                                     <Text style={styles.smallText}>{tag}</Text>
                                 </View>
                             );
@@ -110,9 +117,17 @@ const TopPart = ({trade_notice = {}, top_info, top_menus}) => {
 };
 
 /** @name 次级中控 */
-const ConsoleSub = ({data = {}}) => {
+const ConsoleSub = ({data = {}, showModal}) => {
     const jump = useJump();
-    const {button: consoleBtn, content: consoleContent, icon: consoleIcon, signal_mode, type: consoleType} = data;
+    const {
+        button: consoleBtn,
+        content: consoleContent,
+        icon: consoleIcon,
+        signal_console,
+        signal_mode,
+        type: consoleType,
+    } = data;
+    const {signal_icon, signal_items, title} = signal_console || {};
 
     const consoleSubSty = {
         adjust: {
@@ -129,10 +144,40 @@ const ConsoleSub = ({data = {}}) => {
         },
     };
 
+    const renderHeader = () => {
+        return (
+            <View style={[Style.flexRowCenter, {paddingTop: Space.padding, paddingBottom: px(8)}]}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => Modal.close({})}
+                    style={[Style.flexCenter, styles.closeBtn]}>
+                    <AntDesign name={'close'} size={18} />
+                </TouchableOpacity>
+                <Text style={styles.bigTitle}>{title}</Text>
+                <Image source={{uri: signal_icon}} style={styles.signalModeIcon} />
+            </View>
+        );
+    };
+
+    const onPress = () => {
+        if (signal_console) {
+            showModal({
+                options: {
+                    header: renderHeader(),
+                    style: {backgroundColor: signal_mode === 'buy' ? '#EDF7EC' : '#FFF2F2'},
+                },
+                renderData: {signal_items, signal_mode, type: consoleType},
+                type: 'slide',
+            });
+        } else {
+            jump(consoleBtn?.url);
+        }
+    };
+
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => jump(consoleBtn?.url)}
+            onPress={onPress}
             style={[Style.flexRow, styles.consoleSub, consoleSubSty[consoleType]]}>
             {consoleType === 'upgrade' ? <Image source={upgradeBg} style={styles.upgradeBg} /> : null}
             <Image source={{uri: consoleIcon}} style={styles.typeIcon} />
@@ -198,7 +243,7 @@ const GroupBulletIn = ({data = {}}) => {
 /** @name 图表tab */
 const ChartTabs = ({tabs = []}) => {
     return (
-        <View style={styles.chartTabs}>
+        <View style={[styles.partBox, {paddingTop: px(6)}]}>
             <ScrollableTabView
                 initialPage={0}
                 locked
@@ -226,8 +271,9 @@ const RenderChart = ({data = {}}) => {
     const {key, params, period: initPeriod} = data;
     const [period, setPeriod] = useState(initPeriod);
     const [chartData, setChartData] = useState({});
-    const {chart, label, sub_tabs, tag_position} = chartData;
+    const {chart, label, max_amount, max_ratio, sub_tabs, tag_position} = chartData;
     const [loading, setLoading] = useState(true);
+    const [showEmpty, setShowEmpty] = useState(false);
     const legendTitleArr = useRef([]);
 
     const getColor = (t) => {
@@ -266,8 +312,37 @@ const RenderChart = ({data = {}}) => {
         });
     };
 
+    /** @name 弹窗展示提示 */
+    const showTips = (tips) => {
+        const {content, img, title} = tips;
+        Modal.show(
+            {
+                children: (
+                    <View style={{padding: Space.padding}}>
+                        {img ? <Image source={{uri: img}} style={{width: '100%', height: px(140)}} /> : null}
+                        {content?.map((item, index) => {
+                            const {key: _key, val} = item;
+                            return (
+                                <View key={val + index} style={{marginTop: index === 0 ? 0 : Space.marginVertical}}>
+                                    {_key ? <HTML html={`${_key}:`} style={styles.title} /> : null}
+                                    {val ? (
+                                        <View style={{marginTop: px(4)}}>
+                                            <HTML html={val} style={styles.tipsVal} />
+                                        </View>
+                                    ) : null}
+                                </View>
+                            );
+                        })}
+                    </View>
+                ),
+                title,
+            },
+            'slide'
+        );
+    };
+
     useEffect(() => {
-        getChartData({...params, period, poid: 'X00F490481', type: key})
+        getChartData({...params, period, poid: 'X00F489835', type: key})
             .then((res) => {
                 if (res.code === '000000') {
                     setChartData(res.result);
@@ -275,6 +350,7 @@ const RenderChart = ({data = {}}) => {
             })
             .finally(() => {
                 setLoading(false);
+                setShowEmpty(true);
             });
     }, [key, params, period]);
 
@@ -284,7 +360,7 @@ const RenderChart = ({data = {}}) => {
             {label?.length > 0 ? (
                 <View style={[Style.flexRow, {marginTop: px(8)}]}>
                     {label.map((item, index) => {
-                        const {color, name, type, val} = item;
+                        const {color, name, tips, type, val} = item;
                         return (
                             <View key={name + index} style={[Style.flexCenter, {flex: 1}]}>
                                 <TextInput
@@ -302,6 +378,14 @@ const RenderChart = ({data = {}}) => {
                                         ) : null
                                     ) : null}
                                     <Text style={styles.smallText}>{name}</Text>
+                                    {tips ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => showTips(tips)}
+                                            style={{marginLeft: px(4)}}>
+                                            <Image source={tip} style={{width: px(12), height: px(12)}} />
+                                        </TouchableOpacity>
+                                    ) : null}
                                 </View>
                             </View>
                         );
@@ -309,28 +393,38 @@ const RenderChart = ({data = {}}) => {
                 </View>
             ) : null}
             <View style={{height: px(200)}}>
-                {loading ? null : (
+                {loading ? null : chart?.length > 0 ? (
                     <Chart
                         initScript={baseAreaChart(
                             chart,
-                            [Colors.red, Colors.lightBlackColor, 'transparent'],
-                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            true,
-                            2,
+                            key === 'amount_change'
+                                ? ['transparent']
+                                : [Colors.red, Colors.lightBlackColor, 'transparent'],
+                            key === 'amount_change' ? ['red'] : ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                            key === 'nav',
+                            key === 'nav' ? 2 : 0,
                             deviceWidth - px(32),
                             [10, 20, 10, 18],
                             tag_position,
                             220,
-                            chartData.max_ratio
+                            max_ratio || max_amount
                         )}
                         onChange={onChartChange}
                         onHide={onHide}
                         style={{width: '100%'}}
                     />
+                ) : (
+                    showEmpty && (
+                        <Empty
+                            style={{paddingTop: px(40)}}
+                            imageStyle={{width: px(150), resizeMode: 'contain'}}
+                            type={'part'}
+                        />
+                    )
                 )}
             </View>
             {sub_tabs?.length > 0 ? (
-                <View style={[Style.flexRowCenter, {marginTop: px(8), marginBottom: Space.marginVertical}]}>
+                <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
                     {sub_tabs.map((tab, i) => {
                         const {name, val} = tab;
                         return (
@@ -362,25 +456,145 @@ const RenderChart = ({data = {}}) => {
     );
 };
 
+/** @name 计划买卖模式 */
+const BuyMode = ({data = {}, refresh}) => {
+    const jump = useJump();
+    const {button, buy, redeem, title} = data;
+
+    /** @name 开启工具 */
+    const handleOpen = useCallback(
+        debounce(
+            (params) => {
+                openTool(params).then((res) => {
+                    if (res.code === '000000') {
+                        res.message && Toast.show(res.message);
+                        refresh?.();
+                    }
+                });
+            },
+            500,
+            {leading: true, trailing: false}
+        ),
+        [refresh]
+    );
+
+    /** @name 表格单元格内容渲染 */
+    const renderTabelCell = ({icon, params, text, type} = {}) => {
+        switch (type) {
+            case 'button':
+                return (
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => handleOpen(params)} style={styles.toolBtn}>
+                        <Text style={styles.linkText}>{text}</Text>
+                    </TouchableOpacity>
+                );
+            case 'icon':
+                return (
+                    <View style={[Style.flexRow, styles.toolNameBox]}>
+                        <Image source={{uri: icon}} style={styles.toolIcon} />
+                        <Text style={[styles.smallText, {color: Colors.defaultColor}]}>{text}</Text>
+                    </View>
+                );
+            case 'number':
+                return <HTML html={text} numberOfLines={1} style={styles.toolNum} />;
+            case 'text':
+                return (
+                    <Text numberOfLines={1} style={[styles.desc, {color: Colors.descColor}]}>
+                        {text}
+                    </Text>
+                );
+            default:
+                return null;
+        }
+    };
+
+    /** @name 渲染买卖模式 */
+    const renderMode = ({body: modeBody, header: modeHeader, tags: modeTags, title: modeTitle} = {}) => {
+        return (
+            <View style={{marginTop: Space.marginVertical}}>
+                <View style={Style.flexRow}>
+                    <Text style={[styles.tipsVal, {fontWeight: Font.weightMedium}]}>{modeTitle}</Text>
+                    {modeTags?.map((tag, i) => {
+                        return (
+                            <View key={tag + i} style={styles.labelBox}>
+                                <Text style={styles.smallText}>{tag}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
+                {modeHeader?.length > 0 && (
+                    <View style={[Style.flexRow, styles.tabelHeader]}>
+                        {modeHeader.map((item, index) => {
+                            return (
+                                <View
+                                    key={item + index}
+                                    style={[Style.flexCenter, {height: '100%', flex: index === 0 ? 1.24 : 0.92}]}>
+                                    <Text numberOfLines={1} style={[styles.desc, {color: Colors.descColor}]}>
+                                        {item}
+                                    </Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+                {modeBody?.map((row, i) => {
+                    return (
+                        <View key={i} style={[Style.flexRow, styles.tabelRow]}>
+                            {row?.map((item, index) => {
+                                return (
+                                    <View
+                                        key={item + index}
+                                        style={[Style.flexCenter, {height: '100%', flex: index === 0 ? 1.24 : 0.92}]}>
+                                        {renderTabelCell(item)}
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    );
+                })}
+            </View>
+        );
+    };
+
+    return (
+        <View style={[styles.partBox, {paddingHorizontal: Space.padding}]}>
+            <View style={Style.flexBetween}>
+                <Text style={styles.bigTitle}>{title}</Text>
+                {button?.text ? (
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={Style.flexRow}>
+                        {button.icon ? (
+                            <Image source={{uri: button.icon}} style={{width: px(15), height: px(15)}} />
+                        ) : null}
+                        <Text style={[styles.desc, {marginLeft: px(4)}]}>{button.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
+            </View>
+            {buy ? renderMode(buy) : null}
+            {redeem ? renderMode(redeem) : null}
+        </View>
+    );
+};
+
 export default ({navigation}) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
     const {
         button_list,
+        buy_mode,
         chart_tabs,
         console: consoleData,
         console_sub,
         gather_info,
         group_bulletin,
-        notice_info = {},
+        notice_info,
         service_info,
-        top_info = {},
-        top_menus = [],
+        top_info,
+        top_menus,
     } = data;
     const {desc: serviceDesc, icon: serviceIcon, title: serviceTitle, url: serviceUrl} = service_info || {};
-    const {trade_notice} = notice_info;
+    const {trade_notice} = notice_info || {};
     const [showMask, setShowMask] = useState(false);
+    const centerControl = useRef();
 
     const init = () => {
         getPageData({})
@@ -400,12 +614,27 @@ export default ({navigation}) => {
         setShowMask(false);
     };
 
+    const showSignalModal = ({options, renderData, type}) => {
+        Modal.show(
+            {
+                ...options,
+                children: (
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        {centerControl.current?.renderSignalItems(renderData)}
+                    </View>
+                ),
+            },
+            type
+        );
+    };
+
     useFocusEffect(
         useCallback(() => {
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
+
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
@@ -418,11 +647,12 @@ export default ({navigation}) => {
                         style={{flex: 1}}>
                         <TopPart trade_notice={trade_notice} top_info={top_info} top_menus={top_menus} />
                         <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
-                            <CenterControl data={consoleData} refresh={init} />
+                            <CenterControl data={consoleData} ref={centerControl} refresh={init} />
                         </LinearGradient>
                         <View style={{paddingHorizontal: Space.padding}}>
-                            {console_sub ? <ConsoleSub data={console_sub} /> : null}
+                            {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
                             {group_bulletin ? <GroupBulletIn data={group_bulletin} /> : null}
+                            {buy_mode ? <BuyMode data={buy_mode} refresh={init} /> : null}
                             {chart_tabs ? <ChartTabs tabs={chart_tabs} /> : null}
                             {service_info ? (
                                 <TouchableOpacity
@@ -564,6 +794,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
     },
+    bigTitle: {
+        fontSize: Font.textH2,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
     title: {
         fontSize: Font.textH2,
         lineHeight: px(20),
@@ -580,8 +816,13 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: Colors.brandColor,
     },
+    tipsVal: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+    },
     labelBox: {
-        marginRight: px(8),
+        marginLeft: px(8),
         paddingVertical: px(2),
         paddingHorizontal: px(6),
         borderRadius: px(2),
@@ -655,6 +896,20 @@ const styles = StyleSheet.create({
         width: px(40),
         height: px(36),
     },
+    closeBtn: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: 60,
+    },
+    signalModeIcon: {
+        position: 'absolute',
+        top: px(16),
+        right: 0,
+        width: px(34),
+        height: px(24),
+    },
     groupBulletIn: {
         marginTop: Space.marginVertical,
         padding: Space.padding,
@@ -670,8 +925,9 @@ const styles = StyleSheet.create({
         top: px(-10),
         left: 0,
     },
-    chartTabs: {
+    partBox: {
         marginTop: Space.marginVertical,
+        paddingVertical: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
         overflow: 'hidden',
@@ -739,5 +995,42 @@ const styles = StyleSheet.create({
     },
     activeTab: {
         backgroundColor: '#DEE8FF',
+    },
+    tabelHeader: {
+        marginTop: px(8),
+        borderTopLeftRadius: Space.borderRadius,
+        borderTopRightRadius: Space.borderRadius,
+        height: px(37),
+        backgroundColor: Colors.bgColor,
+    },
+    tabelRow: {
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        height: px(44),
+    },
+    toolNameBox: {
+        paddingVertical: px(1),
+        paddingRight: px(8),
+        paddingLeft: px(1),
+        borderRadius: px(20),
+        backgroundColor: Colors.bgColor,
+    },
+    toolIcon: {
+        marginRight: px(4),
+        width: px(18),
+        height: px(18),
+    },
+    toolNum: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    toolBtn: {
+        paddingVertical: px(3),
+        paddingHorizontal: px(10),
+        borderRadius: px(12),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.brandColor,
     },
 });
