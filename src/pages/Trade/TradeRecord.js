@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-20 21:32:56
+ * @LastEditTime: 2022-07-21 14:26:34
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -65,7 +65,11 @@ const TradeRecord = ({route, navigation}) => {
         [page, tabActive]
     );
     useEffect(() => {
-        getData();
+        if (route.params.tabActive) {
+            scrollTab.current?.goToPage(route.params.tabActive);
+        } else {
+            getData();
+        }
     }, [getData]);
     useEffect(() => {
         http.get('/order/others/20210101', {fr: route?.params?.fr === 'mfb' ? 'wallet' : route.params.fr || ''}).then(
@@ -105,9 +109,6 @@ const TradeRecord = ({route, navigation}) => {
             }
         }, [refresh])
     );
-    useEffect(() => {
-        scrollTab.current?.goToPage(route.params.tabActive || 0);
-    }, []);
     const onLoadMore = ({distanceFromEnd}) => {
         if (distanceFromEnd < 100) {
             return;

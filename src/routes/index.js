@@ -41,7 +41,6 @@ import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
-import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
 import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
 import BankAssets from '../pages/BankPages/BankAssets'; //银行持仓页(除平安)
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
@@ -214,6 +213,8 @@ import HoldingDetail from '~/pages/Assets/HoldingDetail'; // 持仓详情页
 import MfbHome from '~/pages/Mfb/MfbHome'; // 魔方宝首页
 import ProjectSetTradeAmount from '~/pages/Project/ProjectSetTradeAmount'; //计划设置金额
 import SubscribeManage from '~/pages/Settings/SubscribeManage'; //订阅管理
+import MfbHoldingInfo from '~/pages/Mfb/MfbHoldingInfo'; // 魔方宝持有信息
+import AutoCharge from '~/pages/Mfb/AutoCharge'; // 自动充值
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -452,7 +453,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额极速购说明'}} />
-            <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
+            <Stack.Screen name="MfbIndex" component={MfbHome} options={{headerShown: false}} />
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
@@ -828,13 +829,14 @@ export default function AppStack() {
                 options={{title: '设置买卖模式'}}
             />
             <Stack.Screen name="HoldingDetail" component={HoldingDetail} options={{title: ''}} />
-            <Stack.Screen name="MfbHome" component={MfbHome} options={{title: ''}} />
             <Stack.Screen
                 name="ProjectSetTradeAmount"
                 component={ProjectSetTradeAmount}
                 options={{title: '设置定投金额'}}
             />
             <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
+            <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
+            <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />

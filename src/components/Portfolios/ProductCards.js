@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 16:13:40
+ * @LastEditTime: 2022-07-21 17:39:04
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -222,7 +222,6 @@ const RankCard = ({data = {}, isPking}) => {
 
 /** @name 推荐卡片 */
 const RecommendCard = ({data = {}, isPking}) => {
-    console.log(data);
     const dispatch = useDispatch();
     const {
         button,
