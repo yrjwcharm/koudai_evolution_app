@@ -9,17 +9,11 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
 import {postPKWeightSwitch} from '../../../services';
 import PKWeightSet from '../PKWeightSet';
-import {
-    handlerDefaultReason,
-    handlerDefaultExpandParts,
-    handlerDefaultTotalScoreMap,
-    handlerDefaultParamItemBest,
-} from './utils';
+import {handlerDefaultReason, handlerDefaultTotalScoreMap, handlerDefaultParamItemBest} from './utils';
 import {LabelPart, ValuePart} from './parts';
 
-const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref}) => {
+const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refresh, showModal, onScroll, _ref}) => {
     const [expand, setExpand] = useState(false);
-    const [expandParts, setExpandParts] = useState([]);
     const [totalScoreMap, setTotalScoreMap] = useState({});
     const [paramItemBest, setParamItemBest] = useState({});
 
@@ -39,7 +33,6 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
 
     useEffect(() => {
         setReason(handlerDefaultReason(result?.pk_list || []));
-        setExpandParts(handlerDefaultExpandParts(result?.pk_list || []));
     }, [result]);
 
     useEffect(() => {
@@ -54,11 +47,12 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
     }));
 
     const genLabels = () => {
-        const handlerExpandApi = (state, item) => {
+        const handlerExpandApi = (state, item, newWeightState) => {
             postPKWeightSwitch({
                 open_status: +state,
                 type: item.type,
                 fund_code_list: Object.keys(totalScoreMap || {}).join(),
+                ...newWeightState,
             }).then((res) => {
                 if (res.code === '000000') {
                     // 更新理由
@@ -111,22 +105,13 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                         key={idx + item.name}
                         idx={idx}
                         expand={expand}
-                        expandParts={expandParts}
+                        weightsState={weightsState}
                         onChange={(state, itm) => {
                             global.LogTool('PKContrast_ComparisonItemSwitch', itm.name);
-                            setExpandParts((val) => {
-                                let arr = [...val];
-                                if (state) {
-                                    arr.push(itm.name);
-                                } else {
-                                    arr = arr.filter((n) => n !== itm.name);
-                                }
-                                return arr;
-                            });
-                            // 同步给后端
-                            handlerExpandApi(state, item);
-                            // 由于更新权重，所以需要刷新优质推荐
-                            DeviceEventEmitter.emit('pkDetailBackHintRefresh');
+                            // 更新权重分数
+                            const newWeightState = {...weightsState, [itm.type]: state ? 100 : 0};
+                            setWeightsState(newWeightState);
+                            handlerExpandApi(state, item, newWeightState);
                         }}
                     />
                 ))}
@@ -166,7 +151,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                         idx={idx}
                         best={paramItemBest?.[itm.type]?.code === item.code}
                         expand={expand}
-                        expandParts={expandParts}
+                        weightsState={weightsState}
                     />
                 ))}
             </View>
@@ -184,7 +169,7 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                     <View key={idx} style={[{backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
                         <>
                             <View key={-1} style={{height: px(55), width: px(40), ...border}} />
-                            {expandParts.includes(item.name) &&
+                            {weightsState[item.type] > 0 &&
                                 expand &&
                                 item.sub_items?.map((_, index) => (
                                     <View key={index} style={{height: px(55), width: px(40), ...border}} />
@@ -268,7 +253,12 @@ const PKParams = ({result, data, pkPinning, showModal, onScroll, refresh, _ref})
                 <Text style={styles.expandText}>{expand ? '收起' : '展开明细'}</Text>
                 <Icon name={expand ? 'chevron-up' : 'chevron-down'} size={25} color="#0051CC" />
             </TouchableOpacity>
-            <PKWeightSet ref={weightSet} refresh={refresh} />
+            <PKWeightSet
+                weightsState={weightsState}
+                setWeightsState={setWeightsState}
+                refresh={refresh}
+                ref={weightSet}
+            />
         </View>
     );
 };

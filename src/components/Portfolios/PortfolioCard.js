@@ -14,7 +14,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../hooks';
 import {Chart, chartOptions} from '../Chart';
 import RenderHtml from '../RenderHtml';
-const PortfolioCard = ({data, style}) => {
+const PortfolioCard = ({data, style, onPress}) => {
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -22,6 +22,7 @@ const PortfolioCard = ({data, style}) => {
             onPress={() => {
                 global.LogTool('findProduct', data?.plan_id);
                 jump(data?.url);
+                onPress?.()
             }}
             style={[styles.card, {borderRadius: 8}, Style.flexRow, style]}>
             <View style={{padding: Space.cardPadding, flex: 1}}>
@@ -67,9 +68,12 @@ const PortfolioCard = ({data, style}) => {
                     <Chart initScript={chartOptions.smChart(data?.yield?.chart)} />
                 </View>
             )}
-            <View style={{position: 'absolute', right: px(16)}}>
-                <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-            </View>
+            {data?.hide_arrow ? null : (
+                <View style={{position: 'absolute', right: px(16)}}>
+                    <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                </View>
+            )}
+
         </TouchableOpacity>
     );
 };

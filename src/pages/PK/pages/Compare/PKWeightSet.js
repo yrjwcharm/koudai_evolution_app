@@ -1,5 +1,5 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Modal, ActivityIndicator, DeviceEventEmitter} from 'react-native';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, Modal, ActivityIndicator} from 'react-native';
 import {isIphoneX, px} from '../../../../utils/appUtil';
 import Mask from '~/components/Mask';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -9,7 +9,7 @@ import {weightDetail, weightReset, weightSetting} from '../../services';
 import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
 
-const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
+const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState, refresh}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
 
     const [loading, setLoading] = useState(true);
@@ -32,11 +32,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    const obj = res.result?.item?.reduce?.((memo, cur) => {
-                        memo[cur.weight_type] = cur.weight;
-                        return memo;
-                    }, {});
-                    setSliderRate(obj || {});
+                    setSliderRate(weightsState);
                 }
             })
             .finally((_) => {
@@ -63,8 +59,8 @@ const PKWeightSet = ({total = 100, tickNum = 5, refresh}, ref) => {
                 Toast.show(res.message);
                 if (res.code === '000000') {
                     cancel();
+                    setWeightsState(sliderRate);
                     setTimeout(() => {
-                        DeviceEventEmitter.emit('pkDetailBackHintRefresh');
                         refresh();
                     }, 100);
                 }

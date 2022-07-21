@@ -547,12 +547,12 @@ const styles = StyleSheet.create({
         paddingBottom: 3,
     },
     selectItemTag: {
+        paddingVertical: 2,
         paddingHorizontal: px(4),
         backgroundColor: '#fff',
         borderRadius: 2,
         borderWidth: 0.5,
         borderColor: '#BDC2CC',
-        height: px(19),
         justifyContent: 'center',
         marginTop: 4,
         marginLeft: 3,
