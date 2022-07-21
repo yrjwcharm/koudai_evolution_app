@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 10:28:31
+ * @LastEditTime: 2022-07-18 14:06:36
  * @Description:直播模块
  */
 
@@ -26,7 +26,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
     //直播推荐位大卡片
     const isLiveRecommend = scene == 'largeLiveCard';
     //是否是回放小卡片 针对回放小卡片特殊处理
-    // const issmLiveCard = scene == 'smLiveCard';
+    const issmLiveCard = scene == 'smLiveCard';
 
     const jump = useJump();
     useFocusEffect(
@@ -169,16 +169,18 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
             <View style={[Style.flexBetween, styles.card_bottom]}>
                 {data?.avatar ? (
                     <View style={Style.flexRow}>
-                        {data?.status === 2 ? (
-                            <AnimateAvatar source={data?.avatar} />
-                        ) : (
-                            <Image
-                                source={{
-                                    uri: data?.avatar,
-                                }}
-                                style={styles.avatar}
-                            />
-                        )}
+                        {!issmLiveCard ? (
+                            data?.status === 2 ? (
+                                <AnimateAvatar source={data?.avatar} />
+                            ) : (
+                                <Image
+                                    source={{
+                                        uri: data?.avatar,
+                                    }}
+                                    style={styles.avatar}
+                                />
+                            )
+                        ) : null}
                         <View>
                             <Text
                                 style={{
@@ -186,6 +188,8 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                                     lineHeight: isLiveRecommend ? px(20) : px(18),
                                     color: Colors.lightBlackColor,
                                     marginHorizontal: px(8),
+                                    marginLeft: issmLiveCard ? 0 : px(8),
+                                    maxWidth: isLiveRecommend ? px(84) : px(78),
                                 }}>
                                 {data?.user_name}
                             </Text>

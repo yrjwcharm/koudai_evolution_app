@@ -3,15 +3,6 @@ export const handlerDefaultReason = (data) => {
     return obj?.reason || '';
 };
 
-export const handlerDefaultExpandParts = (data) => {
-    return (
-        data?.[0]?.score_info?.reduce?.((memo, cur) => {
-            if (cur.open_status) memo.push(cur.name);
-            return memo;
-        }, []) || []
-    );
-};
-
 export const handlerDefaultTotalScoreMap = (data) => {
     return data.reduce((memo, cur) => {
         memo[cur.code] = cur.total_score_info;

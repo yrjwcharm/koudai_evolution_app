@@ -4,21 +4,21 @@ import {View, Text, StyleSheet, Switch, Platform} from 'react-native';
 import {px} from '~/utils/appUtil';
 import {Font} from '~/common/commonStyle';
 
-export const LabelPart = ({item, idx, expand, expandParts, onChange}) => {
+export const LabelPart = ({item, idx, expand, weightsState, onChange}) => {
     const onValueChange = (val) => {
         onChange(val, item);
     };
     return (
         <View style={[styles.labelPart, {backgroundColor: idx % 2 === 0 ? '#F5F6F8' : '#fff'}]}>
             <View style={styles.labelWrap}>
-                <Text style={[styles.labelText, {color: expandParts.includes(item.name) ? '#545968' : '#9AA0B1'}]}>
+                <Text style={[styles.labelText, {color: weightsState[item.type] > 0 ? '#545968' : '#9AA0B1'}]}>
                     {item.name}
                 </Text>
                 <Switch
                     ios_backgroundColor={'#CCD0DB'}
                     thumbColor={'#fff'}
                     trackColor={{false: '#CCD0DB', true: '#0051CC'}}
-                    value={expandParts.includes(item.name)}
+                    value={weightsState[item.type] > 0}
                     style={[
                         {
                             width: px(28),
@@ -31,7 +31,7 @@ export const LabelPart = ({item, idx, expand, expandParts, onChange}) => {
                     onValueChange={onValueChange}
                 />
             </View>
-            {expandParts.includes(item.name) &&
+            {weightsState[item.type] > 0 &&
                 expand &&
                 item.sub_items?.map?.((itm, index) => (
                     <View style={styles.labelWrap} key={index}>
@@ -42,7 +42,7 @@ export const LabelPart = ({item, idx, expand, expandParts, onChange}) => {
     );
 };
 
-export const ValuePart = ({item, idx, best, expand, expandParts}) => {
+export const ValuePart = ({item, idx, best, expand, weightsState}) => {
     const handlerValue = (val) => {
         let state = !!(val || val === 0);
         return state ? val : '--';
@@ -54,11 +54,11 @@ export const ValuePart = ({item, idx, best, expand, expandParts}) => {
                 <PKParamRate
                     color={best ? '#E74949' : '#545968'}
                     total={item.total_score}
-                    value={expandParts.includes(item.name) ? item.score : null}
+                    value={weightsState[item.type] > 0 ? item.score : null}
                     justifyContent="flex-end"
                 />
             </View>
-            {expandParts.includes(item.name) &&
+            {weightsState[item.type] > 0 &&
                 expand &&
                 item.sub_items?.map?.((itm, index) => (
                     <View style={styles.valueWrap} key={index}>

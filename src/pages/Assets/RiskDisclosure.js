@@ -103,7 +103,7 @@ export default ({navigation, route}) => {
                 .split(',')
                 .map((poid) => () =>
                     new Promise((resolve, reject) => {
-                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid})
+                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid, to_poids})
                             .then((res) => {
                                 if (res.code === '000000') {
                                     resolve(res);
@@ -130,11 +130,12 @@ export default ({navigation, route}) => {
                     Toast.show(res.message);
                     if (res.code === '000000') {
                         setTimeout(() => {
-                            if (need_sign) {
-                                navigation.pop(3);
-                            } else {
-                                navigation.pop(2);
-                            }
+                            // if (need_sign) {
+                            //     navigation.pop(3);
+                            // } else {
+                            //     navigation.pop(2);
+                            // }
+                            navigation.navigate('Home');
                         }, 2000);
                     }
                 })
@@ -159,7 +160,8 @@ export default ({navigation, route}) => {
                         if (from_poids?.length > 0) {
                             doTransfer();
                         } else {
-                            navigation.pop(2);
+                            // navigation.pop(2);
+                            navigation.navigate('Home');
                         }
                     }, 2000);
                 }

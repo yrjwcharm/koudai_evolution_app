@@ -28,6 +28,7 @@ const Compare = () => {
     const [data, setData] = useState(null);
     const [list, setList] = useState(null);
     const [modalTipType, setModalTipType] = useState('');
+    const [weightsState, setWeightsState] = useState(null);
 
     const headerRef = useRef(null);
     const pkParamsRef = useRef(null);
@@ -36,6 +37,7 @@ const Compare = () => {
     const pkManagerInfoRef = useRef(null);
     const pkFundInfoRef = useRef(null);
     const bottomModalRef = useRef(null);
+    const num = useRef(null);
 
     const _pkProducts = useRef([]);
 
@@ -51,6 +53,8 @@ const Compare = () => {
                 if (res.code === '000000') {
                     setData(res.result);
                     setList(res.result.pk_list);
+                    num.current++ === 0 &&
+                        setWeightsState(handlerDefaultWeightsState(res.result?.pk_list?.[0]?.score_info));
                 }
             })
             .finally((_) => {
@@ -125,13 +129,15 @@ const Compare = () => {
                 scrollEventThrottle={6}
                 onScroll={handlerPageScroll}>
                 <View style={{height: px(12)}} />
-                {list && (
+                {list && weightsState && (
                     <PKParams
                         ref={pkParamsRef}
                         result={data}
                         data={list}
-                        showModal={showModal}
+                        weightsState={weightsState}
+                        setWeightsState={setWeightsState}
                         refresh={getData}
+                        showModal={showModal}
                         onScroll={handlerHorizontalScroll(pkParamsRef)}
                     />
                 )}
@@ -175,7 +181,7 @@ const Compare = () => {
                 </View>
             ) : null}
             {/* 小黑条 */}
-            <BlackHint addHigh={addHigh} />
+            {weightsState && <BlackHint weightsState={weightsState} addHigh={addHigh} />}
             {/* bottom modal */}
             <PageModal
                 ref={bottomModalRef}
@@ -212,3 +218,10 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
 });
+
+const handlerDefaultWeightsState = (data) => {
+    return data.reduce((memo, cur) => {
+        memo[cur.type] = 100;
+        return memo;
+    }, {});
+};
