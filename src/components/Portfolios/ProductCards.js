@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 19:42:28
+ * @LastEditTime: 2022-07-21 11:07:02
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -221,6 +221,7 @@ const RankCard = ({data = {}, isPking}) => {
 
 /** @name 推荐卡片 */
 const RecommendCard = ({data = {}, isPking}) => {
+    console.log(data);
     const dispatch = useDispatch();
     const {
         button,
@@ -369,14 +370,14 @@ const DefaultCard = ({data = {}, isPking}) => {
                                     ? {marginTop: px(2)}
                                     : {marginBottom: Platform.select({android: px(2), ios: 0}), marginLeft: px(8)},
                             ]}>
-                            {yield_info.text}
+                            {yield_info?.text}
                         </Text>
                     </View>
                 ) : null}
                 {rank_info ? (
                     <View>
                         <HTML html={rank_info.value} style={{...styles.profit, color: Colors.defaultColor}} />
-                        <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info.text}</Text>
+                        <Text style={[styles.label, {marginTop: px(2)}]}>{rank_info?.text}</Text>
                     </View>
                 ) : null}
                 {button?.text ? (

@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl, Animated} from 'react-native';
 import React, {useCallback, useState, useRef} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors, Style} from '~/common/commonStyle';
@@ -25,12 +25,14 @@ const Index = ({navigation}) => {
     const [data, setData] = useState(null);
     const [notice, setNotice] = useState(null);
     const [holding, setHolding] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [headHeight, setHeaderHeight] = useState(0);
     const [newMes, setNewmessage] = useState(0);
     const showGesture = useShowGesture();
     const getData = async () => {
         let res = await getInfo();
+        setRefreshing(false);
         setData(res.result);
     };
     const getHoldingData = async () => {
@@ -46,12 +48,16 @@ const Index = ({navigation}) => {
         let res = await getReadMes();
         setNewmessage(res.result.all);
     };
+    const init = (refresh) => {
+        refresh && setRefreshing(true);
+        getData();
+        getHoldingData();
+        is_login && getNoticeData();
+        is_login && readInterface();
+    };
     useFocusEffect(
         useCallback(() => {
-            getData();
-            getHoldingData();
-            is_login && getNoticeData();
-            is_login && readInterface();
+            init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [is_login])
     );
@@ -75,7 +81,8 @@ const Index = ({navigation}) => {
                             useNativeDriver: true,
                         }
                     ) // 使用原生动画驱动
-                }>
+                }
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init(true)} />}>
                 <View
                     onLayout={(e) => {
                         let {height} = e.nativeEvent.layout;

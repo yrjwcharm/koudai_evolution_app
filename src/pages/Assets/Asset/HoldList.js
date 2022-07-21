@@ -2,7 +2,7 @@
  * @Date: 2022-07-12 14:25:26
  * @Description:持仓卡片
  */
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -10,11 +10,14 @@ import {Colors, Font, Style} from '~/common/commonStyle';
 import NoAccountRender from './NoAccountRender';
 import StickyHeader from '~/components/Sticky';
 import {SmButton} from '~/components/Button';
-import {getAlertColor, getTagColor} from './util';
+import {getAlertColor} from './util';
 import {useJump} from '~/components/hooks';
+import ProductCards from '~/components/Portfolios/ProductCards';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 const yellow = '#FF7D41';
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
     const [layout, setLayout] = useState({});
+    const [showRecomend, setShowRecomend] = useState({});
     const onLayout = (key, e) => {
         e.persist();
         setLayout((prev) => {
@@ -29,16 +32,31 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
         <>
             <View style={{position: 'relative'}}>
                 {products?.map((account, key) => {
-                    let _top = (layout[key]?.top || 0) + stickyHeaderY + px(38);
+                    // px(38)--大标题高度 px(201)推荐卡片高度
+                    let _top =
+                        (layout[key]?.top || 0) + stickyHeaderY + px(38) + (account?.recommend_card ? px(201) : 0);
                     return (
                         <View key={key} style={{marginBottom: px(16)}} onLayout={(e) => onLayout(key, e)}>
                             <ListTitle title={account.title} desc={account?.desc} />
+                            {/* 推荐 */}
+                            {account?.recommend_card ? (
+                                <View style={styles.recommend_card_con}>
+                                    <TouchableOpacity style={styles.recommend_card_close}>
+                                        <AntDesign name={'close'} color={Colors.lightGrayColor} size={px(14)} />
+                                    </TouchableOpacity>
+                                    <Text style={{fontSize: px(12), lineHeight: px(17)}}>
+                                        {account?.recommend_card?.desc}
+                                    </Text>
+                                    {account?.recommend_card?.card && (
+                                        <ProductCards data={account?.recommend_card?.card} />
+                                    )}
+                                </View>
+                            ) : null}
                             <View style={styles.card_con}>
                                 {/* header */}
                                 {account?.items?.length ? (
                                     <StickyHeader
                                         stickyHeaderY={_top} // 把头部高度传入
-                                        top={_top}
                                         itemHeight={layout[key]?.height - px(67)} //px(67)是大标题和table_header的高度
                                         stickyScrollY={scrollY}>
                                         <View style={[Style.flexBetween, styles.table_header]}>
@@ -113,7 +131,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
         </>
     );
 };
-const ListTitle = ({title, desc, onLayout}) => {
+const ListTitle = ({title, desc}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(10), position: 'relative', zIndex: -10}]}>
             <View style={styles.title_tag} />
@@ -130,11 +148,12 @@ const ListTitle = ({title, desc, onLayout}) => {
     );
 };
 const CardItem = ({data = {}, flag, upgrade}) => {
-    const {name, type_name, profit, amount, profit_acc, alert, tag} = data;
+    const jump = useJump();
+    const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
     return (
         <>
-            <View style={[styles.card]}>
-                {tag && <RenderTag tag={tag} />}
+            <TouchableOpacity style={[styles.card]} activeOpacity={0.9} onPress={() => jump(url)}>
+                {tag_icon && <Image source={{uri: tag_icon}} style={styles.signal_image} />}
                 {name && (
                     <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                         <View style={styles.tag}>
@@ -149,7 +168,7 @@ const CardItem = ({data = {}, flag, upgrade}) => {
                     <Text style={styles.amount_text}>{profit_acc}</Text>
                 </View>
                 {alert && <RenderAlert alert={alert} />}
-            </View>
+            </TouchableOpacity>
             {/* 画卡片分割的半圆 */}
             {!flag && (
                 <View style={[styles.line_circle]}>
@@ -179,29 +198,7 @@ const CardItem = ({data = {}, flag, upgrade}) => {
         </>
     );
 };
-//买卖信号
-const RenderTag = ({tag}) => {
-    const bgColor = getTagColor(tag.tag_style);
-    return (
-        <View style={[styles.card_tag, Style.flexRowCenter, {backgroundColor: bgColor}]}>
-            <Text style={{color: '#fff', fontSize: px(12), marginRight: px(4)}}>{tag.tag_content}</Text>
-            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                {new Array(3).fill(0).map((_, index, arr) => (
-                    <View
-                        key={index}
-                        style={{
-                            width: px(2),
-                            backgroundColor: '#fff',
-                            opacity: index == arr.length - 1 ? 0.4 : 1,
-                            marginRight: index == arr.length - 1 ? 0 : px(2),
-                            height: px(4) + index * 3,
-                        }}
-                    />
-                ))}
-            </View>
-        </View>
-    );
-};
+
 // 信号
 const RenderAlert = ({alert}) => {
     const jump = useJump();
@@ -243,6 +240,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         position: 'relative',
         zIndex: 100,
+    },
+    recommend_card_con: {
+        height: px(189),
+        marginHorizontal: px(16),
+        borderColor: Colors.btnColor,
+        borderWidth: 0.5,
+        borderTopWidth: 2,
+        paddingHorizontal: px(12),
+        borderRadius: px(6),
+        marginBottom: px(12),
+        backgroundColor: '#F1F6FF',
+    },
+    recommend_card_close: {
+        position: 'absolute',
+        right: px(0),
+        top: px(0),
+        width: px(30),
+        height: px(30),
+        ...Style.flexRowCenter,
     },
     card_con: {
         marginHorizontal: px(16),
@@ -302,14 +318,12 @@ const styles = StyleSheet.create({
         borderRadius: px(4),
         paddingHorizontal: px(8),
     },
-    card_tag: {
-        width: px(34),
-        height: px(24),
-        borderBottomLeftRadius: px(30),
-        borderTopLeftRadius: px(30),
+    signal_image: {
         position: 'absolute',
         right: 0,
-        top: px(20),
+        height: px(24),
+        width: px(34),
+        top: px(14),
     },
     upgrade_circle: {
         position: 'absolute',

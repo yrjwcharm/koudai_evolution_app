@@ -71,12 +71,13 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        right: px(-20),
+        left: px(70),
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(6),
         paddingVertical: 3,
         paddingHorizontal: 3,
+        minWidth: px(16),
     },
     point_text: {
         color: '#fff',

@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 14:31:50
  * @Description:计划首页
  */
-import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
@@ -22,9 +22,12 @@ import Banner from './Banner';
 const Index = ({navigation}) => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
+    const [refreshing, setRefreshing] = useState(false);
     const jump = useJump();
-    const getData = async () => {
+    const getData = async (refresh) => {
+        refresh && setRefreshing(true);
         let res = await getProjectData();
+        setRefreshing(false);
         setData(res.result);
     };
     useFocusEffect(
@@ -37,7 +40,9 @@ const Index = ({navigation}) => {
         <>
             <NavBar title="计划" />
             {!is_login && <LoginMask />}
-            <ScrollView style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
+            <ScrollView
+                style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
                 <Banner data={data?.banner_list} />
                 {/* 买卖工具 */}
                 {data?.navigator ? (
@@ -103,7 +108,7 @@ const Index = ({navigation}) => {
                 ) : null}
                 <Button
                     onPress={() => {
-                        navigation.navigate('ProjectSetTrade');
+                        navigation.navigate('ProjectSetTradeAmount');
                     }}
                 />
                 <BottomDesc />

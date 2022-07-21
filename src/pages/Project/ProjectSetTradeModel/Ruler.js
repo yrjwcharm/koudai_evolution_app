@@ -4,7 +4,6 @@
  */
 import {StyleSheet, Text, View, Animated, Platform, TextInput} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
-import lodash from 'lodash';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font} from '~/common/commonStyle';
 const Ruler = (props) => {
@@ -26,6 +25,7 @@ const Ruler = (props) => {
         unit = '%',
         numberSize = px(40),
         unitSize = px(20),
+        style,
     } = props;
     const scrollViewRef = useRef();
     const scrollX = useRef(new Animated.Value(0)).current;
@@ -36,6 +36,7 @@ const Ruler = (props) => {
     const rulerWidth = (maximum - minimum) * snapSegment + width - segmentWidth;
     const spacerWidth = (width - segmentWidth) / 2;
     useEffect(() => {
+        defaultValue && scroll(defaultValue);
         const scrollListener = scrollX.addListener(({value}) => {
             textInputRef.current.setNativeProps({
                 text: `${Math.round(value / snapSegment) + minimum}`,
@@ -44,6 +45,18 @@ const Ruler = (props) => {
         return () => scrollX.removeListener(scrollListener);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    const scroll = (value) => {
+        setTimeout(() => {
+            scrollViewRef?.current?.scrollTo({
+                x: (value - minimum) * snapSegment,
+                y: 0,
+                animated: false,
+            });
+        });
+        // this.textInputRef.current.setNativeProps({
+        //     text: `${value}`,
+        // });
+    };
     const renderRuler = () => {
         const data = [...Array(maximum - minimum + 1).keys()].map((i) => i + minimum);
         const arr = new Array(data.length);
@@ -87,7 +100,7 @@ const Ruler = (props) => {
                                     key={i + 'on'}
                                     style={{
                                         width: snapSegment * step,
-                                        fontSize: px(18),
+                                        fontSize: px(13),
                                         color: '#D0D0D0',
                                         fontFamily: Font.numFontFamily,
                                     }}>
@@ -107,7 +120,7 @@ const Ruler = (props) => {
         );
     };
     return (
-        <View style={{width, height}}>
+        <View style={[{width: width, height}, style]}>
             <Animated.ScrollView
                 ref={scrollViewRef}
                 horizontal

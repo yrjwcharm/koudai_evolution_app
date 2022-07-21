@@ -118,7 +118,18 @@ const ProjectProduct = ({data = {}}) => {
                     <RenderHtml html={slogan} style={{fontSize: px(13)}} />
                 </View>
             ) : null}
-            {fit_desc ? <RenderHtml html={fit_desc} /> : null}
+            {fit_desc ? (
+                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                    {fit_desc?.key}
+                    <Text>{fit_desc.value}</Text>
+                </Text>
+            ) : null}
+            {risk_desc ? (
+                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                    {risk_desc?.key}
+                    <Text>{risk_desc.value}</Text>
+                </Text>
+            ) : null}
             {items?.length > 0 ? items?.map((item) => renderLargeCard(item)) : null}
             {serious_items?.length > 0 ? serious_items?.map((item) => renderLargeCard(item)) : null}
         </View>
