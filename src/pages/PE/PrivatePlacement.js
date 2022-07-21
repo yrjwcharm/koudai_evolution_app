@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
     View,
     StyleSheet,
     ScrollView,
     ImageBackground,
-    Platform,
     Text,
     TouchableOpacity,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {Font, Style} from '~/common/commonStyle';
@@ -25,20 +26,26 @@ const PrivatePlacement = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState({});
 
-    useEffect(() => {
-        setLoading(true);
-        http.get('/private_fund/index/20220608')
-            .then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result);
-                } else {
-                    Toast.show(res.message);
-                }
-            })
-            .finally((_) => {
-                setLoading(false);
-            });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            http.get('/private_fund/index/20220608')
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    } else {
+                        Toast.show(res.message);
+                    }
+                })
+                .finally((_) => {
+                    StatusBar.setBarStyle('light-content');
+                    setLoading(false);
+                });
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
+    );
 
     return loading ? (
         <View style={styles.loadingMask}>
