@@ -230,8 +230,8 @@ export const smChart = (data) => `(function(){
     .color('l(90) 0:#DC4949 1:#ffffff').shape('smooth');
   chart.line()
     .position('date*value')
-    .color( '#DC4949').shape('smooth').style({
-      lineWidth: 0.5
+    .color( '#DC4949').style({
+      lineWidth: 1
     });
   chart.render();
 })()

@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 15:21:36
+ * @LastEditTime: 2022-07-21 16:05:43
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -336,21 +336,27 @@ const RecommendCard = ({data = {}, isPking}) => {
 const ProjectLgCard = ({data = {}, style}) => {
     const jump = useJump();
     return (
-        <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
-            <Image source={{uri: data?.signal_info}} style={styles.signal_image} />
-            <View style={[Style.flexRow, {marginBottom: px(14)}]}>
-                <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
-                {data?.title_right_icon && (
-                    <Image
-                        source={{uri: data?.title_right_icon}}
-                        style={{height: px(16), width: px(66), marginLeft: px(8)}}
-                    />
-                )}
-            </View>
-            <View style={Style.flexRow}>
-                <View style={{width: px(95)}}>
-                    <View />
-                    <View>
+        <View
+            key={data.title}
+            style={[styles.ProjectLgCard, !data?.list && {marginBottom: px(12), paddingBottom: px(16)}, style]}>
+            <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
+                {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
+                <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                    <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
+                    {data?.title_right_icon && (
+                        <Image
+                            source={{uri: data?.title_right_icon}}
+                            style={{height: px(16), width: px(66), marginLeft: px(8)}}
+                        />
+                    )}
+                </View>
+                <View style={[Style.flexRow, {height: px(106)}]}>
+                    <View style={{width: px(100), paddingRight: px(6)}}>
+                        <View style={{height: px(59), marginBottom: px(8)}}>
+                            {data?.chart_data?.portfolio_lines?.length > 0 ? (
+                                <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
+                            ) : null}
+                        </View>
                         <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
                             {data?.yield_info?.yield}
                         </Text>
@@ -358,40 +364,72 @@ const ProjectLgCard = ({data = {}, style}) => {
                             {data?.yield_info?.yield_desc}
                         </Text>
                     </View>
-                </View>
-                <View style={styles.card_right_con}>
-                    <View>
-                        <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
-                            {data?.sub_title}
-                        </Text>
-                        <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
-                            {data?.signal_list?.map((signal, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        ...Style.flexRow,
-                                        ...styles.signal_tag,
-                                    }}>
-                                    <Image
-                                        source={{uri: signal.icon}}
-                                        style={{width: px(16), height: px(16), marginRight: px(3)}}
-                                    />
-                                    <Text style={{fontSize: px(11)}}>{signal?.name}</Text>
-                                </View>
-                            ))}
+                    <View style={styles.card_right_con}>
+                        <View>
+                            <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
+                                {data?.sub_title}
+                            </Text>
+                            <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
+                                {data?.signal_list?.map((signal, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            ...Style.flexRow,
+                                            ...styles.signal_tag,
+                                        }}>
+                                        <Image
+                                            source={{uri: signal.icon}}
+                                            style={{width: px(16), height: px(16), marginRight: px(3)}}
+                                        />
+                                        <Text style={{fontSize: px(11)}}>{signal?.name}</Text>
+                                    </View>
+                                ))}
+                            </View>
                         </View>
+                        {data?.advantage ? (
+                            <View style={styles.advantage}>
+                                <RenderHtml
+                                    style={{fontSize: px(11), lineHeight: px(15), color: Colors.lightBlackColor}}
+                                    html={data?.advantage}
+                                />
+                            </View>
+                        ) : null}
                     </View>
-                    {data?.advantage ? (
-                        <View style={styles.advantage}>
-                            <RenderHtml
-                                style={{fontSize: px(11), lineHeight: px(15), color: Colors.lightBlackColor}}
-                                html={data?.advantage}
-                            />
-                        </View>
-                    ) : null}
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+            {/* 小卡片 */}
+            {data?.list
+                ? data?.list?.map((_list, _index) => (
+                      <TouchableOpacity
+                          style={{paddingTop: px(_index == 0 ? 12 : 0)}}
+                          activeOpacity={0.9}
+                          onPress={() => jump(_list?.url)}>
+                          <View style={[styles.line_circle]}>
+                              <View
+                                  style={{
+                                      ...styles.leftCircle,
+                                      left: -px(15),
+                                  }}
+                              />
+                              <View style={{...styles.line}} />
+                              <View style={{...styles.leftCircle, right: -px(15)}} />
+                          </View>
+                          <View key={_index} style={{paddingVertical: px(12)}}>
+                              <Image source={{uri: _list?.signal_info}} style={styles.signal_image} />
+                              <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
+                                  {_list.title}
+                              </Text>
+                              <Text style={{fontSize: px(17), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
+                                  {_list?.yield_info?.yield}
+                              </Text>
+                              <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
+                                  {_list?.yield_info?.yield_desc}
+                              </Text>
+                          </View>
+                      </TouchableOpacity>
+                  ))
+                : null}
+        </View>
     );
 };
 /** @name 默认卡片 */
@@ -483,7 +521,7 @@ export default ({data = {}, style = {}}) => {
                 LogTool?.();
                 jump(url);
             }}
-            style={[styles.cardContainer, ...outerStyle]}>
+            style={[type != 'project_lg_card' && styles.cardContainer, ...outerStyle]}>
             {(() => {
                 switch (type) {
                     // 基金经理卡片
@@ -505,7 +543,8 @@ export default ({data = {}, style = {}}) => {
                         return <ProjectLgCard data={data} />;
                     // 默认卡片
                     default:
-                        return <DefaultCard data={data} isPking={isPking} />;
+                        return null;
+                    // return <DefaultCard data={data} isPking={isPking} />;
                 }
             })()}
         </TouchableOpacity>
@@ -697,5 +736,50 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: '#AD9064',
+    },
+    ProjectLgCard: {
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+        paddingHorizontal: px(12),
+        paddingVertical: px(16),
+    },
+    card_right_con: {
+        flex: 1,
+        justifyContent: 'space-between',
+        paddingLeft: px(14),
+        borderLeftWidth: 0.5,
+        borderLeftColor: Colors.lineColor,
+        height: '100%',
+    },
+    advantage: {
+        backgroundColor: '#FFF5E5',
+        borderRadius: px(4),
+        paddingHorizontal: px(8),
+        paddingVertical: px(6),
+        marginTop: px(8),
+    },
+    signal_image: {
+        position: 'absolute',
+        right: 0,
+        height: px(24),
+        width: px(34),
+        top: px(14),
+    },
+    leftCircle: {
+        width: px(10),
+        height: px(10),
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(10),
+        position: 'absolute',
+    },
+    line_circle: {
+        ...Style.flexBetween,
+        backgroundColor: '#fff',
+        zIndex: 10,
+    },
+    line: {
+        backgroundColor: '#E9EAEF',
+        height: 0.5,
+        flex: 1,
     },
 });
