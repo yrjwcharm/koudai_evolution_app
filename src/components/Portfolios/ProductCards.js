@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 16:05:43
+ * @LastEditTime: 2022-07-21 16:13:40
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -543,8 +543,7 @@ export default ({data = {}, style = {}}) => {
                         return <ProjectLgCard data={data} />;
                     // 默认卡片
                     default:
-                        return null;
-                    // return <DefaultCard data={data} isPking={isPking} />;
+                        return <DefaultCard data={data} isPking={isPking} />;
                 }
             })()}
         </TouchableOpacity>
