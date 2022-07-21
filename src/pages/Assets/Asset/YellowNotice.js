@@ -60,4 +60,17 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         flex: 1,
     },
+    btn: {
+        borderRadius: px(14),
+        paddingVertical: px(5),
+        paddingHorizontal: px(10),
+        backgroundColor: '#FF7D41',
+        marginLeft: px(12),
+    },
+    btn_text: {
+        fontWeight: '600',
+        color: '#fff',
+        fontSize: px(12),
+        lineHeight: px(17),
+    },
 });

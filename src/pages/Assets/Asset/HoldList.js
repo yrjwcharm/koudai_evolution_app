@@ -17,7 +17,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const yellow = '#FF7D41';
 const HoldList = ({products, stickyHeaderY, scrollY}) => {
     const [layout, setLayout] = useState({});
-    const [showRecomend, setShowRecomend] = useState({});
     const onLayout = (key, e) => {
         e.persist();
         setLayout((prev) => {
@@ -28,23 +27,31 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
             return tmp;
         });
     };
+    // 推荐关闭
+    const closeRecommendCard = () => {};
     return (
         <>
             <View style={{position: 'relative'}}>
                 {products?.map((account, key) => {
                     // px(38)--大标题高度 px(201)推荐卡片高度
                     let _top =
-                        (layout[key]?.top || 0) + stickyHeaderY + px(38) + (account?.recommend_card ? px(201) : 0);
+                        (layout[key]?.top || 0) + stickyHeaderY + px(38) + (account?.recommend_card ? px(213) : 0);
                     return (
                         <View key={key} style={{marginBottom: px(16)}} onLayout={(e) => onLayout(key, e)}>
                             <ListTitle title={account.title} desc={account?.desc} />
                             {/* 推荐 */}
                             {account?.recommend_card ? (
                                 <View style={styles.recommend_card_con}>
-                                    <TouchableOpacity style={styles.recommend_card_close}>
+                                    <Image
+                                        source={{uri: account?.recommend_card?.title_icon}}
+                                        style={{width: px(64), height: px(18), marginBottom: px(6)}}
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.recommend_card_close}
+                                        onPress={() => closeRecommendCard(key)}>
                                         <AntDesign name={'close'} color={Colors.lightGrayColor} size={px(14)} />
                                     </TouchableOpacity>
-                                    <Text style={{fontSize: px(12), lineHeight: px(17)}}>
+                                    <Text style={{fontSize: px(12), lineHeight: px(17)}} numberOfLines={2}>
                                         {account?.recommend_card?.desc}
                                     </Text>
                                     {account?.recommend_card?.card && (
@@ -57,7 +64,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                                 {account?.items?.length ? (
                                     <StickyHeader
                                         stickyHeaderY={_top} // 把头部高度传入
-                                        itemHeight={layout[key]?.height - px(67)} //px(67)是大标题和table_header的高度
+                                        itemHeight={layout[key]?.height - px(67) - px(213)} //px(67)是大标题和table_header的高度
                                         stickyScrollY={scrollY}>
                                         <View style={[Style.flexBetween, styles.table_header]}>
                                             <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
@@ -94,17 +101,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                                                   );
                                               })}
                                               {/* 升级按钮 */}
-                                              <View style={{height: px(52), ...Style.flexRow}}>
-                                                  <View style={{flex: 1}}>
-                                                      <Text>{upgrade?.desc}</Text>
-                                                      <Text>{upgrade?.profit_desc}</Text>
-                                                  </View>
-                                                  <SmButton
-                                                      title={'查看'}
-                                                      style={{backgroundColor: '#fff'}}
-                                                      titleStyle={{color: yellow}}
-                                                  />
-                                              </View>
+                                              <RenderUpgradeBtn upgrade={upgrade} />
                                           </View>
                                       ))
                                     : null}
@@ -217,6 +214,38 @@ const RenderAlert = ({alert}) => {
         </View>
     );
 };
+//升级按钮
+const RenderUpgradeBtn = ({upgrade}) => {
+    const jump = useJump();
+    return (
+        <View
+            style={{
+                ...Style.flexRow,
+                ...styles.upgrade_btn_con,
+            }}>
+            <Image
+                source={require('~/assets/img/index/upgrade.gif')}
+                style={{width: px(33), height: px(33), marginRight: px(12)}}
+            />
+            <View style={{flex: 1}}>
+                <Text
+                    style={{
+                        fontSize: px(12),
+                        color: '#fff',
+                        marginBottom: px(4),
+                    }}
+                    numberOfLines={1}>
+                    {upgrade?.desc}
+                </Text>
+                <Text style={{fontSize: px(12), color: '#fff'}} numberOfLines={1}>
+                    {upgrade?.profit_desc}
+                </Text>
+            </View>
+            <Image source={require('~/assets/img/index/upgradeBg.png')} style={{width: px(40), height: px(40)}} />
+            <SmButton title={'查看'} style={{backgroundColor: '#fff', borderWidth: 0}} titleStyle={{color: yellow}} />
+        </View>
+    );
+};
 export default HoldList;
 
 const styles = StyleSheet.create({
@@ -242,7 +271,8 @@ const styles = StyleSheet.create({
         zIndex: 100,
     },
     recommend_card_con: {
-        height: px(189),
+        height: px(201),
+        paddingTop: px(12),
         marginHorizontal: px(16),
         borderColor: Colors.btnColor,
         borderWidth: 0.5,
@@ -333,4 +363,5 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
         backgroundColor: Colors.bgColor,
     },
+    upgrade_btn_con: {height: px(52), backgroundColor: '#FF7D41', paddingHorizontal: px(12)},
 });

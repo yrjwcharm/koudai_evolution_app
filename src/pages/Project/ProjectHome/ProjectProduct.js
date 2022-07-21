@@ -5,11 +5,9 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
-import FitImage from 'react-native-fit-image';
 import RenderHtml from '~/components/RenderHtml';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
-
 const ProjectProduct = ({data = {}}) => {
     const {name_pic, fit_desc, items, risk_desc, serious_items, slogan} = data;
     const jump = useJump();
@@ -30,12 +28,15 @@ const ProjectProduct = ({data = {}}) => {
                     </View>
                     <View style={Style.flexRow}>
                         <View style={{width: px(95)}}>
-                            <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
-                                {item?.yield_info?.yield}
-                            </Text>
-                            <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
-                                {item?.yield_info?.yield_desc}
-                            </Text>
+                            <View />
+                            <View>
+                                <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
+                                    {item?.yield_info?.yield}
+                                </Text>
+                                <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
+                                    {item?.yield_info?.yield_desc}
+                                </Text>
+                            </View>
                         </View>
                         <View style={styles.card_right_con}>
                             <View>
@@ -89,7 +90,6 @@ const ProjectProduct = ({data = {}}) => {
                               </View>
                               <View key={_index} style={{paddingVertical: px(12)}}>
                                   <Image source={{uri: _list?.signal_info}} style={styles.signal_image} />
-
                                   <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
                                       {_list.title}
                                   </Text>
@@ -113,23 +113,25 @@ const ProjectProduct = ({data = {}}) => {
                 style={{width: px(66), height: px(18), marginBottom: px(4)}}
                 resizeMode="center"
             />
-            {slogan ? (
-                <View style={{marginBottom: px(6)}}>
-                    <RenderHtml html={slogan} style={{fontSize: px(13)}} />
-                </View>
-            ) : null}
-            {fit_desc ? (
-                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
-                    {fit_desc?.key}
-                    <Text>{fit_desc.value}</Text>
-                </Text>
-            ) : null}
-            {risk_desc ? (
-                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
-                    {risk_desc?.key}
-                    <Text>{risk_desc.value}</Text>
-                </Text>
-            ) : null}
+            <View style={{marginBottom: px(16)}}>
+                {slogan ? (
+                    <View style={{marginBottom: px(6)}}>
+                        <RenderHtml html={slogan} style={{fontSize: px(13)}} />
+                    </View>
+                ) : null}
+                {fit_desc ? (
+                    <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                        {fit_desc?.key}
+                        <Text>{fit_desc.value}</Text>
+                    </Text>
+                ) : null}
+                {risk_desc ? (
+                    <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                        {risk_desc?.key}
+                        <Text>{risk_desc.value}</Text>
+                    </Text>
+                ) : null}
+            </View>
             {items?.length > 0 ? items?.map((item) => renderLargeCard(item)) : null}
             {serious_items?.length > 0 ? serious_items?.map((item) => renderLargeCard(item)) : null}
         </View>

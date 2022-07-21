@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 21:53:00
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-16 11:15:51
+ * @LastEditTime: 2022-07-21 14:14:33
  * @Description:
  */
 import * as React from 'react';
@@ -34,7 +34,7 @@ export default class StickyHeader extends React.Component {
     };
 
     render() {
-        // 传入itemHeight的时候可以做多个标题轮询吸顶 参考我的资产
+        // 传入itemHeight的时候可以做多个标题轮询吸顶----我的资产
         const {stickyHeaderY, stickyScrollY, children, style, itemHeight} = this.props;
         const {stickyLayoutY} = this.state;
         let y = stickyHeaderY !== -1 ? stickyHeaderY : stickyLayoutY;

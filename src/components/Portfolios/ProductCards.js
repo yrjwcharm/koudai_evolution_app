@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 11:07:02
+ * @LastEditTime: 2022-07-21 15:21:36
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -21,6 +21,7 @@ import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {px} from '~/utils/appUtil';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce} from 'lodash';
+import RenderHtml from '~/components/RenderHtml';
 
 const onPressBtn = debounce(
     ({action, dispatch, item_id, item_type = 1}) => {
@@ -332,7 +333,67 @@ const RecommendCard = ({data = {}, isPking}) => {
         </View>
     );
 };
-
+const ProjectLgCard = ({data = {}, style}) => {
+    const jump = useJump();
+    return (
+        <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
+            <Image source={{uri: data?.signal_info}} style={styles.signal_image} />
+            <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
+                {data?.title_right_icon && (
+                    <Image
+                        source={{uri: data?.title_right_icon}}
+                        style={{height: px(16), width: px(66), marginLeft: px(8)}}
+                    />
+                )}
+            </View>
+            <View style={Style.flexRow}>
+                <View style={{width: px(95)}}>
+                    <View />
+                    <View>
+                        <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
+                            {data?.yield_info?.yield}
+                        </Text>
+                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
+                            {data?.yield_info?.yield_desc}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.card_right_con}>
+                    <View>
+                        <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
+                            {data?.sub_title}
+                        </Text>
+                        <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
+                            {data?.signal_list?.map((signal, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        ...Style.flexRow,
+                                        ...styles.signal_tag,
+                                    }}>
+                                    <Image
+                                        source={{uri: signal.icon}}
+                                        style={{width: px(16), height: px(16), marginRight: px(3)}}
+                                    />
+                                    <Text style={{fontSize: px(11)}}>{signal?.name}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                    {data?.advantage ? (
+                        <View style={styles.advantage}>
+                            <RenderHtml
+                                style={{fontSize: px(11), lineHeight: px(15), color: Colors.lightBlackColor}}
+                                html={data?.advantage}
+                            />
+                        </View>
+                    ) : null}
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+};
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
@@ -437,6 +498,11 @@ export default ({data = {}, style = {}}) => {
                     // 推荐卡片
                     case 'recommend_card':
                         return <RecommendCard data={data} isPking={isPking} />;
+                    //计划小卡片
+                    case 'project_sm_card':
+                        return null;
+                    case 'project_lg_card':
+                        return <ProjectLgCard data={data} />;
                     // 默认卡片
                     default:
                         return <DefaultCard data={data} isPking={isPking} />;

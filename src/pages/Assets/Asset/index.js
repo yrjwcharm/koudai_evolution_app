@@ -65,8 +65,6 @@ const Index = ({navigation}) => {
         <>
             <Header newMes={newMes} />
             {!is_login && <LoginMask />}
-            {/* 系统通知 */}
-            {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 scrollEventThrottle={1}
@@ -89,6 +87,8 @@ const Index = ({navigation}) => {
                         // console.log(e.nativeEvent.layout);
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
+                    {/* 系统通知 */}
+                    {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
                     {/* 资产卡片 */}
                     <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} />
                     {/* 理性等级和投顾 */}
