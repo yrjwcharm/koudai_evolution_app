@@ -213,6 +213,7 @@ import ProjectSetTradeModel from '~/pages/Project/ProjectSetTradeModel'; //计�
 import HoldingDetail from '~/pages/Assets/HoldingDetail'; // 持仓详情页
 import MfbHome from '~/pages/Mfb/MfbHome'; // 魔方宝首页
 import ProjectSetTradeAmount from '~/pages/Project/ProjectSetTradeAmount'; //计划设置金额
+import SubscribeManage from '~/pages/Settings/SubscribeManage'; //订阅管理
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -833,6 +834,7 @@ export default function AppStack() {
                 component={ProjectSetTradeAmount}
                 options={{title: '设置定投金额'}}
             />
+            <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
