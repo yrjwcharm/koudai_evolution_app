@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-11 10:44:19
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:38:39
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -19,7 +19,7 @@ import {Modal} from '../../components/Modal';
 import {Chart} from '../../components/Chart';
 import {areaChart} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
-const AccProfit = ({intelligent, poid}) => {
+const AccProfit = ({fund_code = '', intelligent, poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
@@ -42,6 +42,7 @@ const AccProfit = ({intelligent, poid}) => {
     const getChart = useCallback(() => {
         const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
         http.get(url, {
+            fund_code,
             period,
             poid,
         }).then((res) => {
@@ -53,7 +54,8 @@ const AccProfit = ({intelligent, poid}) => {
                 setChartData(res.result);
             }
         });
-    }, [period, poid]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [period]);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
         setRefreshing(true);

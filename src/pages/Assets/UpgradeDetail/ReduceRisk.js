@@ -6,7 +6,8 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 
-const ReduceRisk = ({onCardHeight}) => {
+const ReduceRisk = ({data = {}, onCardHeight}) => {
+    const {after_value, bottom_desc, name, now_value, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState(0);
     return (
         <View
@@ -14,17 +15,17 @@ const ReduceRisk = ({onCardHeight}) => {
             onLayout={(e) => {
                 onCardHeight(1, e.nativeEvent.layout.height);
             }}>
-            <Text style={styles.title}>严控风险底线，不惧极端市场</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#4BA471'}]}>-16.27%</Text>
+                <Text style={[styles.rateText, {color: '#4BA471'}]}>{now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                         style={styles.panelIcon}
                     />
-                    <Text style={styles.pannelDesc}>最大回撤</Text>
+                    <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>-10.40%</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
                 {true && (
@@ -61,12 +62,12 @@ const ReduceRisk = ({onCardHeight}) => {
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={styles.compareTableWrap}>
-                <CompareTable />
-            </View>
-            <Text style={styles.placeholdText}>
-                预判潜在市场风险，及时进行调整，面对极端市场，守住底线，文案内容文案内容介绍
-            </Text>
+            {upgrade_items?.length && (
+                <View style={styles.compareTableWrap}>
+                    <CompareTable data={upgrade_items} />
+                </View>
+            )}
+            {bottom_desc ? <Text style={styles.placeholdText}>{bottom_desc}</Text> : null}
         </View>
     );
 };

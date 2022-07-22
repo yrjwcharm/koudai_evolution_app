@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-08-04 12:03:32
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:41:34
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,7 +19,7 @@ import EmptyTip from '../../components/EmptyTip';
 import Dot from '../Portfolio/components/Dot';
 import {BottomModal} from '../../components/Modal';
 
-const NetValueTrend = ({poid}) => {
+const NetValueTrend = ({fund_code = '', poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [chartData, setChart] = useState({});
@@ -31,14 +31,15 @@ const NetValueTrend = ({poid}) => {
     const bottomModal = useRef(null);
 
     const init = useCallback(() => {
-        http.get('/profit/month_ratio/20210101', {poid}).then((res) => {
+        http.get('/profit/month_ratio/20210101', {fund_code, poid}).then((res) => {
             setShowEmpty(true);
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart(res.result);
             }
         });
-    }, [poid]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
         init();

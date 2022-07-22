@@ -4,29 +4,32 @@ import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import CompareTable from './CompareTable';
 
-const ExclusiveAdvisor = ({onCardHeight}) => {
+const ExclusiveAdvisor = ({data = {}, onCardHeight}) => {
+    const {after_value, desc, name, now_value, title, upgrade_items} = data;
     return (
         <View
             style={styles.container}
             onLayout={(e) => {
                 onCardHeight(3, e.nativeEvent.layout.height);
             }}>
-            <Text style={styles.title}>专属投资顾问 每日快报及时了解市场动态</Text>
-            <Text style={styles.desc}>分配专属投资顾问，实时解决投资疑问；每日快报，专家团队解读市场行情</Text>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.desc}>{desc}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>无服务</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                         style={styles.panelIcon}
                     />
-                    <Text style={styles.pannelDesc}>盈利能力</Text>
+                    <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>专属投顾</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{after_value}</Text>
             </View>
-            <View style={styles.compareTableWrap}>
-                <CompareTable />
-            </View>
+            {upgrade_items?.length > 0 && (
+                <View style={styles.compareTableWrap}>
+                    <CompareTable data={upgrade_items} />
+                </View>
+            )}
         </View>
     );
 };

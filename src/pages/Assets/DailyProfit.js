@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-06-23 11:23:48
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:35:58
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -11,11 +11,11 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text, deviceWidth} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
-const DailyProfit = ({poid}) => {
+const DailyProfit = ({fund_code = '', poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
@@ -31,6 +31,7 @@ const DailyProfit = ({poid}) => {
             canLoadRef.current = false;
             const url = poid ? '/portfolio/profit/daily/20210101' : '/profit/user_daily/20210101';
             http.get(url, {
+                fund_code,
                 page,
                 poid,
                 next: next.current,
@@ -47,7 +48,8 @@ const DailyProfit = ({poid}) => {
                 canLoadRef.current = true;
             });
         },
-        [page, poid]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {

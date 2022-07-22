@@ -82,7 +82,6 @@ import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
-import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页 此名称在WalletAutoRechargeDetail有判断
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
@@ -205,8 +204,8 @@ import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // �
 import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
 import FundNoticeCenter from '~/pages/Attention/FundNoticeCenter'; //基金消息中心
 import AppTag from '~/pages/Auth/AppTag'; //用户标签选择
-import ToPortfolio from '~/pages/Assets/UpgradeDetail/ToPortfolio'; // 升级到组合详情
-import ToPlan from '~/pages/Assets/UpgradeDetail/ToPlan'; // 升级到计划详情
+import UpgradeToPortfolio from '~/pages/Assets/UpgradeDetail/UpgradeToPortfolio'; // 升级到组合详情
+import UpgradeToPlan from '~/pages/Assets/UpgradeDetail/UpgradeToPlan'; // 升级到计划详情
 import UpgradeConfirm from '~/pages/Assets/UpgradeDetail/UpgradeConfirm'; // 升级到计划详情
 import ProjectSetTradeModel from '~/pages/Project/ProjectSetTradeModel'; //计划设置买卖模式
 import HoldingDetail from '~/pages/Assets/HoldingDetail'; // 持仓详情页
@@ -537,35 +536,6 @@ export default function AppStack() {
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
-            <Stack.Screen
-                name="PortfolioAssets"
-                component={PortfolioAssets}
-                options={{
-                    title: '',
-                    headerStyle: {
-                        backgroundColor: '#0052CD',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
-                        },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen
@@ -820,15 +790,15 @@ export default function AppStack() {
             <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
             <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
             <Stack.Screen name="AppTag" component={AppTag} options={{headerShown: false, gestureEnabled: false}} />
-            <Stack.Screen name="ToPlan" component={ToPlan} options={{title: '升级详情'}} />
-            <Stack.Screen name="ToPortfolio" component={ToPortfolio} options={{title: '升级详情'}} />
+            <Stack.Screen name="UpgradeToPlan" component={UpgradeToPlan} options={{title: ''}} />
+            <Stack.Screen name="UpgradeToPortfolio" component={UpgradeToPortfolio} options={{title: ''}} />
             <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
             <Stack.Screen
                 name="ProjectSetTradeModel"
                 component={ProjectSetTradeModel}
                 options={{title: '设置买卖模式'}}
             />
-            <Stack.Screen name="HoldingDetail" component={HoldingDetail} options={{title: ''}} />
+            <Stack.Screen name="PortfolioAssets" component={HoldingDetail} options={{title: ''}} />
             <Stack.Screen
                 name="ProjectSetTradeAmount"
                 component={ProjectSetTradeAmount}
