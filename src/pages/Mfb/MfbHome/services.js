@@ -4,5 +4,4 @@
  */
 import http from '~/services';
 
-export const getPageData = (params) =>
-    http.get('http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/wallet/v7/dashboard/20220708', params);
+export const getPageData = (params) => http.get('/wallet/v7/dashboard/20220708', params);
