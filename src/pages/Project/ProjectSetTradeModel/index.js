@@ -7,21 +7,27 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
 import Ruler from './Ruler';
-import {getSetModel} from './service';
+import {getPossible, getSetModel} from './service';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
 import {BottomModal} from '~/components/Modal';
-const ProjectSetTrade = ({route}) => {
+const ProjectSetTrade = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F026206';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
-    const jump = useJump();
+    const [needBuy, setNeedBuy] = useState(false);
+    const [toolStatus, setToolStatus] = useState({});
+    const autoTime = useRef({});
+    const targetYeild = useRef('');
+    // const jump = useJump();
     const bottomModal = useRef();
     const getData = async () => {
         let res = await getSetModel({poid});
+        setNeedBuy(res.result?.need_buy?.open_status !== 0);
+
         setData(res.result);
     };
     useEffect(() => {
@@ -32,7 +38,45 @@ const ProjectSetTrade = ({route}) => {
         setStopProfitIndex(id);
         bottomModal.current?.hide();
     };
-
+    const onToolChange = (id, value) => {
+        setToolStatus((prev) => {
+            let tmp = {...prev};
+            tmp[id] = value;
+            return tmp;
+        });
+    };
+    const onChangeAutoTime = (time) => {
+        autoTime.current = time;
+    };
+    const onTargetChange = async (value) => {
+        targetYeild.current = value;
+        let params = {
+            target: value / 100,
+            // possible: data.target_info.possible,
+            poid: poid,
+        };
+        let res = await getPossible(params);
+    };
+    const jumpNext = () => {
+        let buy_tool_id = [];
+        if (data?.buy_model?.list?.length > 0) {
+            data?.buy_model?.list.forEach((item) => {
+                if (toolStatus[item.id] == true || toolStatus[item.id] == undefined) {
+                    buy_tool_id.push(item.id);
+                }
+            });
+        }
+        let params = {
+            poid,
+            reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].name,
+            need_buy: needBuy,
+            buy_tool_id: buy_tool_id.join(''),
+            ...autoTime.current,
+            target_yield: targetYeild.current / 100,
+        };
+        console.log(params);
+        // navigation.navigate('ProjectSetTradeAmount', params);
+    };
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
@@ -45,19 +89,30 @@ const ProjectSetTrade = ({route}) => {
                     </View>
                     {/* 买入工具 */}
                     {data?.buy_model?.list?.map((tool, index) => (
-                        <Tool tool={tool} key={tool.id} />
+                        <Tool tool={tool} key={tool.id} onChange={onToolChange} onChangeAutoTime={onChangeAutoTime} />
                     ))}
                 </View>
-                <View
-                    style={{
-                        ...Style.flexBetween,
-                        ...styles.trade_con_title,
-                        ...styles.card,
-                        marginBottom: px(16),
-                    }}>
-                    <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>当日发起首次定投</Text>
-                    <Switch />
-                </View>
+                {/* 立即买一笔 */}
+                {data?.now_buy ? (
+                    <View
+                        style={{
+                            ...Style.flexBetween,
+                            ...styles.trade_con_title,
+                            ...styles.card,
+                            marginBottom: px(16),
+                        }}>
+                        <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>{data?.now_buy?.text}</Text>
+                        <Switch
+                            ios_backgroundColor={'#CCD0DB'}
+                            onValueChange={(value) => {
+                                setNeedBuy(value);
+                            }}
+                            thumbColor={'#fff'}
+                            trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                            value={needBuy}
+                        />
+                    </View>
+                ) : null}
                 <View style={styles.trade_con}>
                     <View style={[Style.flexCenter, styles.trade_con_title]}>
                         <Text style={[styles.title]}>{data?.sale_model?.sale_model_title}</Text>
@@ -73,14 +128,20 @@ const ProjectSetTrade = ({route}) => {
                     <View style={{paddingVertical: px(16)}}>
                         <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>目标收益率</Text>
                     </View>
-                    <Ruler
-                        width={deviceWidth - px(32)}
-                        height={px(80)}
-                        style={{marginBottom: px(12)}}
-                        defaultValue={data?.sale_model?.target_yeild?.default * 100}
-                        maxnum={data?.sale_model?.target_yeild?.max * 100}
-                        minnum={data?.sale_model?.target_yeild?.min * 100}
-                    />
+                    {data?.sale_model?.target_yeild ? (
+                        <Ruler
+                            width={deviceWidth - px(32)}
+                            height={px(80)}
+                            style={{marginBottom: px(12)}}
+                            maxnum={data?.sale_model?.target_yeild?.max * 100}
+                            minnum={data?.sale_model?.target_yeild?.min * 100}
+                            defaultValue={data?.sale_model?.target_yeild?.default * 100}
+                            onChangeValue={onTargetChange}
+                        />
+                    ) : null}
+                    <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
+                        根据历史数据，投资18个月实现概率：xx%
+                    </Text>
                     {/* 止盈方式 */}
                     <View style={{...Style.flexBetween, ...styles.trade_con_title, ...styles.borderTop}}>
                         <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>
@@ -144,7 +205,7 @@ const ProjectSetTrade = ({route}) => {
                 style={{position: 'relative'}}
                 title={data?.btn?.text}
                 disabled={data?.btn?.avail != 1}
-                onPress={() => jump(data?.btn?.url)}
+                onPress={jumpNext}
             />
         </View>
     );

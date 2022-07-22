@@ -56,25 +56,25 @@ const AssetHeaderCard = ({summary = {}, tradeMes}) => {
                     )}
                 </Text>
                 {/* 交易通知 */}
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={[styles.tradeNotice, Style.flexCenter]}
-                    onPress={() => {
-                        global.LogTool('click', 'tradeMsg');
-                        // jump(notice?.trade?.url);
-                    }}>
-                    <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
-                    {/* 交易通知 */}
-                    {tradeMes ? (
-                        <TouchableOpacity
-                            onPress={() => jump(tradeMes.url)}
-                            activeOpacity={0.9}
-                            style={[styles.noticeBox, Style.flexRow]}>
+                {tradeMes ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool('click', 'tradeMsg');
+                            jump(tradeMes.url);
+                        }}>
+                        <Octicons
+                            name={'triangle-up'}
+                            size={16}
+                            color={'rgba(157, 187, 255, 0.68)'}
+                            style={{left: px(18)}}
+                        />
+                        <View style={[styles.noticeBox, Style.flexRow]}>
                             <Text style={styles.noticeText}>{tradeMes?.desc}</Text>
                             <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                        </TouchableOpacity>
-                    ) : null}
-                </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
+                ) : null}
 
                 <View style={[Style.flexRow, styles.profitContainer]}>
                     <View style={[{flex: 1}]}>

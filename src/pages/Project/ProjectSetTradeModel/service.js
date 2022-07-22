@@ -1,3 +1,7 @@
+/*
+ * @Date: 2022-07-21 11:46:11
+ * @Description:
+ */
 import http from '~/services';
 
 export const getSetModel = (params) => {
@@ -5,4 +9,7 @@ export const getSetModel = (params) => {
 };
 export const getNextDay = (params) => {
     return http.get('/trade/fix_invest/next_day/20210101', params);
+};
+export const getPossible = (params) => {
+    return http.get('/trade/set/invest_target/20210101', params);
 };

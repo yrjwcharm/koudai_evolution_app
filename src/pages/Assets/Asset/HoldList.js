@@ -258,7 +258,12 @@ const RenderUpgradeBtn = ({upgrade}) => {
                 </Text>
             </View>
             <Image source={require('~/assets/img/index/upgradeBg.png')} style={{width: px(40), height: px(40)}} />
-            <SmButton title={'查看'} style={{backgroundColor: '#fff', borderWidth: 0}} titleStyle={{color: yellow}} />
+            <SmButton
+                title={'查看'}
+                style={{backgroundColor: '#fff', borderWidth: 0}}
+                titleStyle={{color: yellow}}
+                onPress={() => jump(upgrade.url)}
+            />
         </View>
     );
 };

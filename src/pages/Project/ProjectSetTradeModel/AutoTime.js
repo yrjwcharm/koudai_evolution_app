@@ -3,7 +3,7 @@
  * @Description:定投周期
  */
 import {StyleSheet, Text, View, TouchableOpacity, Keyboard} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import RenderHtml from '~/components/RenderHtml';
@@ -11,9 +11,16 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import Mask from '~/components/Mask';
 import {getNextDay} from './service';
-const RenderAutoTime = ({initalData}) => {
+const RenderAutoTime = ({initalData, onChangeAutoTime}) => {
     const [data, setData] = useState(initalData);
     const [showMask, setShowMask] = useState(false);
+    useEffect(() => {
+        onChangeAutoTime({
+            cycle: initalData?.current_date[0],
+            timing: initalData?.current_date[1],
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const _createDateData = () => {
         const {date_items} = initalData;
         var _data = [];
@@ -48,10 +55,12 @@ const RenderAutoTime = ({initalData}) => {
             selectedValue: [initalData?.current_date[0], initalData?.current_date[1]],
             onPickerConfirm: async (pickedValue) => {
                 setShowMask(false);
-                let res = await getNextDay({
+                let params = {
                     cycle: pickedValue[0],
                     timing: pickedValue[1],
-                });
+                };
+                let res = await getNextDay(params);
+                onChangeAutoTime(params);
                 if (res.code === '000000') {
                     setData((prev) => {
                         return {...prev, current_date: pickedValue, nextday: res.result.nextday};

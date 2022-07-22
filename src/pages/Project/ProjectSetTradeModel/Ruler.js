@@ -8,13 +8,13 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font} from '~/common/commonStyle';
 const Ruler = (props) => {
     const {
-        defaultValue,
+        defaultValue = 10,
+        minnum = 0,
+        maxnum = 20,
         snapSegment = px(20),
         onChangeValue,
         height = px(40),
         width = deviceWidth,
-        minimum = 0,
-        maximum = 20,
         step = 5,
         stepHeight = px(6),
         normalHeight = px(10),
@@ -32,15 +32,17 @@ const Ruler = (props) => {
     const [content, setContent] = useState();
     const textInputRef = useRef();
     const _props = Platform.OS == 'android' ? {} : {snapToInterval: snapSegment};
-    console.log(snapSegment);
-    const rulerWidth = (maximum - minimum) * snapSegment + width - segmentWidth;
+    const rulerWidth = (maxnum - minnum) * snapSegment + width - segmentWidth;
     const spacerWidth = (width - segmentWidth) / 2;
     useEffect(() => {
+        onChangeValue(defaultValue);
         defaultValue && scroll(defaultValue);
         const scrollListener = scrollX.addListener(({value}) => {
+            let _data = `${Math.round(value / snapSegment) + minnum}`;
             textInputRef.current.setNativeProps({
-                text: `${Math.round(value / snapSegment) + minimum}`,
+                text: _data,
             });
+            setContent(_data);
         });
         return () => scrollX.removeListener(scrollListener);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,7 +50,7 @@ const Ruler = (props) => {
     const scroll = (value) => {
         setTimeout(() => {
             scrollViewRef?.current?.scrollTo({
-                x: (value - minimum) * snapSegment,
+                x: (value - minnum) * snapSegment,
                 y: 0,
                 animated: false,
             });
@@ -58,7 +60,7 @@ const Ruler = (props) => {
         // });
     };
     const renderRuler = () => {
-        const data = [...Array(maximum - minimum + 1).keys()].map((i) => i + minimum);
+        const data = [...Array(maxnum - minnum + 1).keys()].map((i) => i + minnum);
         const arr = new Array(data.length);
         return (
             <View
@@ -157,7 +159,7 @@ const Ruler = (props) => {
                             color: Colors.btnColor,
                             textAlign: 'center',
                         }}
-                        defaultValue={defaultValue?.toString() || minimum.toString()}
+                        defaultValue={defaultValue?.toString() || minnum.toString()}
                     />
                     {/* Unit */}
                     <Text style={{...styles.unit, fontSize: unitSize}}>{unit}</Text>
