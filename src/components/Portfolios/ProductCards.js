@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-13 14:42:28
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 17:39:04
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -341,8 +338,14 @@ const ProjectLgCard = ({data = {}, style}) => {
             <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
                 {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
                 <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                    {!!data?.title_left_icon && (
+                        <Image
+                            source={{uri: data?.title_left_icon}}
+                            style={{width: px(18), height: px(18), marginRight: px(6)}}
+                        />
+                    )}
                     <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
-                    {data?.title_right_icon && (
+                    {!!data?.title_right_icon && (
                         <Image
                             source={{uri: data?.title_right_icon}}
                             style={{height: px(16), width: px(66), marginLeft: px(8)}}
@@ -365,9 +368,11 @@ const ProjectLgCard = ({data = {}, style}) => {
                     </View>
                     <View style={styles.card_right_con}>
                         <View>
-                            <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
-                                {data?.sub_title}
-                            </Text>
+                            {data?.sub_title ? (
+                                <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
+                                    {data?.sub_title}
+                                </Text>
+                            ) : null}
                             <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
                                 {data?.signal_list?.map((signal, index) => (
                                     <View
@@ -414,10 +419,18 @@ const ProjectLgCard = ({data = {}, style}) => {
                               <View style={{...styles.leftCircle, right: -px(15)}} />
                           </View>
                           <View key={_index} style={{paddingVertical: px(12)}}>
-                              <Image source={{uri: _list?.signal_info}} style={styles.signal_image} />
-                              <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
-                                  {_list.title}
-                              </Text>
+                              {_list?.signal_info && (
+                                  <Image source={{uri: _list?.signal_info}} style={styles.signal_image} />
+                              )}
+                              <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                                  {_list?.title_left_icon && (
+                                      <Image
+                                          source={{uri: _list?.title_left_icon}}
+                                          style={{width: px(16), height: px(16), marginRight: px(6)}}
+                                      />
+                                  )}
+                                  <Text style={{fontSize: px(13), fontWeight: '700'}}>{_list.title}</Text>
+                              </View>
                               <Text style={{fontSize: px(17), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
                                   {_list?.yield_info?.yield}
                               </Text>

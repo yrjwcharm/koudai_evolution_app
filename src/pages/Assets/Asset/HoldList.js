@@ -14,8 +14,10 @@ import {getAlertColor} from './util';
 import {useJump} from '~/components/hooks';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Modal} from '~/components/Modal';
+import {closeRecommend} from './service';
 const yellow = '#FF7D41';
-const HoldList = ({products, stickyHeaderY, scrollY}) => {
+const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
     const [layout, setLayout] = useState({});
     const onLayout = (key, e) => {
         e.persist();
@@ -28,7 +30,21 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
         });
     };
     // 推荐关闭
-    const closeRecommendCard = () => {};
+    const closeRecommendCard = (data) => {
+        Modal.show({
+            title: data?.title,
+            content: data?.content,
+            confirm: true,
+            confirmText: '感兴趣',
+            cancelText: '不感兴趣',
+            cancelCallBack: async () => {
+                let res = await closeRecommend(data?.params);
+                if (res.code == '000000') {
+                    reload();
+                }
+            },
+        });
+    };
     return (
         <>
             <View style={{position: 'relative'}}>
@@ -48,7 +64,7 @@ const HoldList = ({products, stickyHeaderY, scrollY}) => {
                                     />
                                     <TouchableOpacity
                                         style={styles.recommend_card_close}
-                                        onPress={() => closeRecommendCard(key)}>
+                                        onPress={() => closeRecommendCard(account?.recommend_card?.close)}>
                                         <AntDesign name={'close'} color={Colors.lightGrayColor} size={px(14)} />
                                     </TouchableOpacity>
                                     <Text style={{fontSize: px(12), lineHeight: px(17)}} numberOfLines={2}>
@@ -161,8 +177,8 @@ const CardItem = ({data = {}, flag, upgrade}) => {
                 )}
                 <View style={[Style.flexBetween]}>
                     <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                    <Text style={styles.amount_text}>{profit}</Text>
-                    <Text style={styles.amount_text}>{profit_acc}</Text>
+                    <Text style={[styles.amount_text, {minWidth: px(30)}]}>{profit}</Text>
+                    <Text style={[styles.amount_text, {minWidth: px(30)}]}>{profit_acc}</Text>
                 </View>
                 {alert && <RenderAlert alert={alert} />}
             </TouchableOpacity>

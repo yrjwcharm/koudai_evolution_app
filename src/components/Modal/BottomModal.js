@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-02 17:13:34
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 11:33:13
  * @Description: 底部弹窗
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -18,6 +18,7 @@ const BottomModal = React.forwardRef((props, ref) => {
     const {
         backdrop = true,
         header,
+        headerStyle,
         title = '请选择',
         sub_title = '',
         confirmText = '',
@@ -111,7 +112,7 @@ const BottomModal = React.forwardRef((props, ref) => {
                         onPress={(e) => e.stopPropagation()}
                         style={[styles.con, style]}>
                         {header || (
-                            <View style={styles.header}>
+                            <View style={[styles.header, headerStyle]}>
                                 <TouchableOpacity style={styles.close} onPress={hide}>
                                     <Icon name={'close'} size={18} />
                                 </TouchableOpacity>

@@ -1,9 +1,6 @@
 /*
  * @Author: xjh
- * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 19:03:44
  */
 
 import React, {useState, useCallback, useRef} from 'react';

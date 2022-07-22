@@ -16,3 +16,6 @@ export const getNotice = () => {
 export const getReadMes = () => {
     return http.get('/message/unread/20210101');
 };
+export const closeRecommend = (params) => {
+    return http.post('/asset/v7/close_recommend/20220708', params);
+};

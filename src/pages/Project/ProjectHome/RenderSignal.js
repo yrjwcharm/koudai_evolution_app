@@ -15,25 +15,30 @@ const RenderSignal = ({list, more, desc, style}) => {
         <View style={style}>
             <View style={Style.flexRow}>
                 {list?.map((item, index) => (
-                    <LinearGradient
-                        style={styles.con}
-                        key={index}
-                        colors={['#E0F9DC', '#EEF7ED']}
-                        start={{x: 0, y: 0}}
-                        end={{x: 0, y: 1}}>
-                        <View>
-                            <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(4)}}>
-                                {item.text}
-                            </Text>
-                            <Text
-                                style={{color: Colors.defaultColor, fontSize: px(15), fontFamily: Font.numFontFamily}}>
-                                1332.44
-                            </Text>
-                        </View>
-                        <RenderTag />
-                    </LinearGradient>
+                    <TouchableOpacity key={index} activeOpacity={0.8} onPress={() => jump(item.url)}>
+                        <LinearGradient
+                            style={styles.con}
+                            colors={['#E0F9DC', '#EEF7ED']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}>
+                            <View>
+                                <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(4)}}>
+                                    {item.text}
+                                </Text>
+                                <Text
+                                    style={{
+                                        color: Colors.defaultColor,
+                                        fontSize: px(15),
+                                        fontFamily: Font.numFontFamily,
+                                    }}>
+                                    1332.44
+                                </Text>
+                            </View>
+                            <RenderTag />
+                        </LinearGradient>
+                    </TouchableOpacity>
                 ))}
-                <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)}>
+                <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)} activeOpacity={0.8}>
                     <Text style={{color: Colors.lightBlackColor}}>{more?.text}</Text>
                     <Icon name={'rightcircleo'} color={Colors.lightBlackColor} />
                 </TouchableOpacity>

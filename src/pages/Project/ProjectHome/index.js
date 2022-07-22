@@ -44,6 +44,11 @@ const Index = ({navigation}) => {
                 style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
                 <Banner data={data?.banner_list} />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('ProjectSetTradeModel');
+                    }}
+                />
                 {/* 买卖工具 */}
                 {data?.navigator ? (
                     <>
@@ -57,6 +62,7 @@ const Index = ({navigation}) => {
                                 <TouchableOpacity
                                     style={{flex: 1, alignItems: 'center'}}
                                     key={index}
+                                    activeOpacity={0.8}
                                     onPress={() => jump(item.url)}>
                                     <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
                                     <Text style={{color: Colors.lightBlackColor, fontSize: px(12), marginTop: px(6)}}>
@@ -106,11 +112,7 @@ const Index = ({navigation}) => {
                         </ScrollableTabView>
                     </>
                 ) : null}
-                <Button
-                    onPress={() => {
-                        navigation.navigate('ProjectSetTradeAmount');
-                    }}
-                />
+
                 <BottomDesc />
             </ScrollView>
         </>

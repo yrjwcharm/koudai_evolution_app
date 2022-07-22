@@ -3,8 +3,8 @@
  * @Description:计划设置买卖模式
  */
 import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Colors, Style} from '~/common/commonStyle';
+import React, {useEffect, useState, useRef} from 'react';
+import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
 import Ruler from './Ruler';
 import {getSetModel} from './service';
@@ -13,11 +13,13 @@ import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
+import {BottomModal} from '~/components/Modal';
 const ProjectSetTrade = ({route}) => {
-    const poid = route?.params?.poid || 'X04F926077';
+    const poid = route?.params?.poid || 'X04F026206';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const jump = useJump();
+    const bottomModal = useRef();
     const getData = async () => {
         let res = await getSetModel({poid});
         setData(res.result);
@@ -26,6 +28,11 @@ const ProjectSetTrade = ({route}) => {
         getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    const onChooseProfit = (id) => {
+        setStopProfitIndex(id);
+        bottomModal.current?.hide();
+    };
+
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
@@ -79,7 +86,7 @@ const ProjectSetTrade = ({route}) => {
                         <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>
                             {data?.sale_model?.stop_profit_tab?.label}
                         </Text>
-                        <TouchableOpacity style={Style.flexRow}>
+                        <TouchableOpacity style={Style.flexRow} onPress={() => bottomModal?.current?.show()}>
                             <Text style={[styles.title, {marginRight: px(4), fontSize: px(14)}]}>
                                 {data?.sale_model?.stop_profit_tab?.list[stopProfitIndex]?.name}
                             </Text>
@@ -89,6 +96,50 @@ const ProjectSetTrade = ({route}) => {
                 </View>
                 <BottomDesc />
             </ScrollView>
+            {data?.sale_model?.stop_profit_tab?.list?.length > 0 ? (
+                <BottomModal
+                    ref={bottomModal}
+                    title={'达标止盈方式'}
+                    sub_title="止盈前可修改，修改后实时生效"
+                    headerStyle={{paddingVertical: px(5)}}>
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        {data?.sale_model?.stop_profit_tab?.list.map((option, i) => {
+                            const {desc: reason, id, name} = option;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={id}
+                                    onPress={() => onChooseProfit(i)}
+                                    style={[
+                                        styles.optionBox,
+                                        {
+                                            marginTop: i === 0 ? Space.marginVertical : px(12),
+                                            borderColor:
+                                                stopProfitIndex !== undefined && stopProfitIndex !== i
+                                                    ? '#E2E4EA'
+                                                    : Colors.brandColor,
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            {fontWeight: '700', marginBottom: px(2), fontSize: px(14)},
+                                            stopProfitIndex === i ? {color: Colors.brandColor} : {},
+                                        ]}>
+                                        {name}
+                                    </Text>
+                                    <Text
+                                        style={[
+                                            {fontSize: px(12), color: Colors.lightGrayColor},
+                                            stopProfitIndex === i ? {color: Colors.brandColor} : {},
+                                        ]}>
+                                        {reason}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </BottomModal>
+            ) : null}
             <FixedButton
                 style={{position: 'relative'}}
                 title={data?.btn?.text}
@@ -129,5 +180,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         borderTopColor: '#E2E4EA',
         borderTopWidth: 0.5,
+    },
+    optionBox: {
+        marginTop: px(12),
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        borderWidth: Space.borderWidth,
     },
 });

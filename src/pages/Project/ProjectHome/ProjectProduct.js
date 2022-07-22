@@ -6,7 +6,7 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import RenderHtml from '~/components/RenderHtml';
-import {Colors} from '~/common/commonStyle';
+import {Colors, Style} from '~/common/commonStyle';
 import ProductCards from '~/components/Portfolios/ProductCards';
 const ProjectProduct = ({data = {}}) => {
     const {name_pic, fit_desc, items, risk_desc, serious_items, slogan} = data;
@@ -27,16 +27,22 @@ const ProjectProduct = ({data = {}}) => {
                     </View>
                 ) : null}
                 {fit_desc ? (
-                    <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                    <Text style={{fontSize: px(12), color: Colors.lightGrayColor, marginBottom: px(4)}}>
                         {fit_desc?.key}
-                        <Text>{fit_desc.value}</Text>
+                        <Text style={{color: Colors.lightBlackColor}}>{fit_desc.value}</Text>
                     </Text>
                 ) : null}
                 {risk_desc ? (
-                    <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
-                        {risk_desc?.key}
-                        <Text>{risk_desc.value}</Text>
-                    </Text>
+                    <View style={{...Style.flexRow}}>
+                        <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>{risk_desc?.key}</Text>
+                        <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>{risk_desc.value}</Text>
+                        {risk_desc?.bar && (
+                            <Image
+                                source={{uri: risk_desc?.bar}}
+                                style={{height: px(12), width: px(120), marginLeft: px(8), top: px(2)}}
+                            />
+                        )}
+                    </View>
                 ) : null}
             </View>
             {items?.length > 0 ? items?.map((item) => renderLargeCard(item)) : null}

@@ -20,6 +20,7 @@ import {useShowGesture} from '~/components/hooks';
 import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
 import YellowNotice from './YellowNotice';
+import AdInfo from './AdInfo';
 const Index = ({navigation}) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
@@ -93,9 +94,16 @@ const Index = ({navigation}) => {
                     <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} />
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
+                    {/* 运营位 */}
+                    {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </View>
                 {/* 持仓列表 */}
-                <HoldList products={holding?.products} scrollY={scrollY} stickyHeaderY={headHeight} />
+                <HoldList
+                    products={holding?.products}
+                    scrollY={scrollY}
+                    stickyHeaderY={headHeight}
+                    reload={getHoldingData}
+                />
                 {/* 底部列表 */}
                 <BottomMenus data={data?.bottom_menus} />
                 <BottomDesc />

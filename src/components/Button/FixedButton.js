@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-06 18:39:56
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 17:00:00
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -17,7 +14,6 @@ export default class FixedButton extends Component {
         keyboardHeight: new Animated.Value(0),
         showCheckTag: true,
     };
-
     UNSAFE_componentWillMount() {
         Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
         Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
