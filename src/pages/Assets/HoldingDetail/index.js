@@ -4,7 +4,7 @@
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Picker from 'react-native-picker';
@@ -24,6 +24,7 @@ import FormItem from '~/components/FormItem';
 import {useJump} from '~/components/hooks';
 import Mask from '~/components/Mask';
 import {Modal} from '~/components/Modal';
+import Notice from '~/components/Notice';
 import NumText from '~/components/NumText';
 import HTML from '~/components/RenderHtml';
 import ScrollTabbar from '~/components/ScrollTabbar';
@@ -268,6 +269,7 @@ const ChartTabs = ({tabs = []}) => {
 
 /** @name 渲染图表 */
 const RenderChart = ({data = {}}) => {
+    const route = useRoute();
     const {key, params, period: initPeriod} = data;
     const [period, setPeriod] = useState(initPeriod);
     const [chartData, setChartData] = useState({});
@@ -342,7 +344,7 @@ const RenderChart = ({data = {}}) => {
     };
 
     useEffect(() => {
-        getChartData({...params, period, poid: 'X00F489835', type: key})
+        getChartData({...params, ...(route.params || {}), period, type: key})
             .then((res) => {
                 if (res.code === '000000') {
                     setChartData(res.result);
@@ -352,6 +354,7 @@ const RenderChart = ({data = {}}) => {
                 setLoading(false);
                 setShowEmpty(true);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, params, period]);
 
     return (
@@ -574,7 +577,7 @@ const BuyMode = ({data = {}, refresh}) => {
     );
 };
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
@@ -592,12 +595,12 @@ export default ({navigation}) => {
         top_menus,
     } = data;
     const {desc: serviceDesc, icon: serviceIcon, title: serviceTitle, url: serviceUrl} = service_info || {};
-    const {trade_notice} = notice_info || {};
+    const {system_notice, trade_notice} = notice_info || {};
     const [showMask, setShowMask] = useState(false);
     const centerControl = useRef();
 
     const init = () => {
-        getPageData({})
+        getPageData(route.params || {})
             .then((res) => {
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '资产详情'});
@@ -645,6 +648,7 @@ export default ({navigation}) => {
                         refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}
                         scrollIndicatorInsets={{right: 1}}
                         style={{flex: 1}}>
+                        {system_notice?.length > 0 && <Notice content={system_notice} />}
                         <TopPart trade_notice={trade_notice} top_info={top_info} top_menus={top_menus} />
                         <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                             <CenterControl data={consoleData} ref={centerControl} refresh={init} />

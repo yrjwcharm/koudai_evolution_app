@@ -182,10 +182,6 @@ const PKHome = ({navigation}) => {
                                 </TouchableOpacity>
                             ))}
                         </View>
-                        <Text style={{height: 50, textAlign: 'center'}} onPress={handlerPress}>
-                            升级详情
-                        </Text>
-                        <Button onPress={() => navigation.navigate('AutoCharge')} title="自动充值" />
                         {/* pkCard */}
                         {data?.pk_list && <PKCard data={data?.pk_list} />}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
