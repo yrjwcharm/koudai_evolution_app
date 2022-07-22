@@ -73,9 +73,10 @@ const ProjectSetTrade = ({route, navigation}) => {
             buy_tool_id: buy_tool_id.join(''),
             ...autoTime.current,
             target_yield: targetYeild.current / 100,
+            possible: 0.2,
         };
         console.log(params);
-        // navigation.navigate('ProjectSetTradeAmount', params);
+        navigation.navigate('ProjectSetTradeAmount', params);
     };
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>

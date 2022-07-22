@@ -244,25 +244,29 @@ const RenderUpgradeBtn = ({upgrade}) => {
                 style={{width: px(33), height: px(33), marginRight: px(12)}}
             />
             <View style={{flex: 1}}>
-                <Text
-                    style={{
-                        fontSize: px(12),
-                        color: '#fff',
-                        marginBottom: px(4),
-                    }}
-                    numberOfLines={1}>
-                    {upgrade?.desc}
-                </Text>
-                <Text style={{fontSize: px(12), color: '#fff'}} numberOfLines={1}>
-                    {upgrade?.profit_desc}
-                </Text>
+                {!!upgrade?.profit_desc && (
+                    <Text
+                        style={{
+                            fontSize: px(12),
+                            color: '#fff',
+                            marginBottom: px(4),
+                        }}
+                        numberOfLines={1}>
+                        {upgrade?.desc}
+                    </Text>
+                )}
+                {!!upgrade?.profit_desc && (
+                    <Text style={{fontSize: px(12), color: '#fff'}} numberOfLines={1}>
+                        {upgrade?.profit_desc}
+                    </Text>
+                )}
             </View>
             <Image source={require('~/assets/img/index/upgradeBg.png')} style={{width: px(40), height: px(40)}} />
             <SmButton
-                title={'查看'}
+                title={upgrade?.button?.text}
                 style={{backgroundColor: '#fff', borderWidth: 0}}
                 titleStyle={{color: yellow}}
-                onPress={() => jump(upgrade.url)}
+                onPress={() => jump(upgrade?.button?.url)}
             />
         </View>
     );

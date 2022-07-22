@@ -108,6 +108,7 @@ const Index = ({route, navigation}) => {
             pay_method: data?.pay_methods[bankSelect]?.pay_method,
             ...route?.params,
         };
+        console.log(params);
         let res = await postDo(params);
     };
     const render_bank = () => {
@@ -242,7 +243,7 @@ const Index = ({route, navigation}) => {
                     agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                     otherAgreement={data?.agreement}
                     suffix={data?.agreement_bottom?.agree_text}
-                    disabled={data?.button?.avail != 1 || errTip}
+                    disabled={data?.button?.avail != 1 || !!errTip}
                     onPress={showPassword}
                 />
             )}
