@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-03-18 10:57:45
- * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-29 03:47:38
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';

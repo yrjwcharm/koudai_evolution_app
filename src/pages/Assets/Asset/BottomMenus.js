@@ -24,7 +24,9 @@ const BottomMenus = ({data}) => {
                             jump(item.url);
                         }}>
                         <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                        <Text style={styles.topMenuTitle}>{item.title}</Text>
+                        <Text style={[styles.topMenuTitle, item?.id == 8 && {color: Colors.lightGrayColor}]}>
+                            {item.title}
+                        </Text>
                     </TouchableOpacity>
                 );
             })}

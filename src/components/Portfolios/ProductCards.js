@@ -329,11 +329,11 @@ const RecommendCard = ({data = {}, isPking}) => {
         </View>
     );
 };
-const ProjectLgCard = ({data = {}, style}) => {
+const ProjectLgCard = ({data, style}) => {
     const jump = useJump();
     return (
         <View
-            key={data.title}
+            key={data?.title + data?.project_id}
             style={[styles.ProjectLgCard, !data?.list && {marginBottom: px(12), paddingBottom: px(16)}, style]}>
             <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
                 {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
@@ -407,6 +407,7 @@ const ProjectLgCard = ({data = {}, style}) => {
             {data?.list
                 ? data?.list?.map((_list, _index) => (
                       <TouchableOpacity
+                          key={_index}
                           style={{paddingTop: px(_index == 0 ? 12 : 0)}}
                           activeOpacity={0.9}
                           onPress={() => jump(_list?.url)}>
@@ -452,8 +453,10 @@ const ProjectLgCard = ({data = {}, style}) => {
 const ProjectSmCard = ({data = {}}) => {
     return (
         <View style={[Style.flexRow, styles.ProjectSmCard]}>
-            <View style={{width: px(73)}}>
-                <Text>1</Text>
+            <View style={{width: px(73), height: px(66)}}>
+                {data?.chart_data?.portfolio_lines?.length > 0 ? (
+                    <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
+                ) : null}
             </View>
             <View style={{flex: 1, justifyContent: 'space-between'}}>
                 <View style={{flex: 1}}>

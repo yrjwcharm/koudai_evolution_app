@@ -10,9 +10,7 @@ import {Colors, Style} from '~/common/commonStyle';
 import ProductCards from '~/components/Portfolios/ProductCards';
 const ProjectProduct = ({data = {}}) => {
     const {name_pic, fit_desc, items, risk_desc, serious_items, slogan} = data;
-    const renderLargeCard = (item) => {
-        return <ProductCards data={item} />;
-    };
+
     return (
         <View style={styles.con}>
             <Image
@@ -45,8 +43,12 @@ const ProjectProduct = ({data = {}}) => {
                     </View>
                 ) : null}
             </View>
-            {items?.length > 0 ? items?.map((item) => renderLargeCard(item)) : null}
-            {serious_items?.length > 0 ? serious_items?.map((item) => renderLargeCard(item)) : null}
+            {items?.length > 0
+                ? items?.map((item, index) => <ProductCards data={item} key={item.title + index} />)
+                : null}
+            {serious_items?.length > 0
+                ? serious_items?.map((item, index) => <ProductCards data={item} key={item.title + index} />)
+                : null}
         </View>
     );
 };

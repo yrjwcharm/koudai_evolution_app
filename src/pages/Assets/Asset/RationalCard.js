@@ -149,18 +149,18 @@ const RationalCard = ({rational_info, im_info}) => {
                     activeOpacity={0.9}
                     style={[Style.flexBetween, styles.secure_card]}
                     onPress={handleRation}>
+                    <View style={styles.rational_circle}>
+                        <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>{rational_info?.grade}</Text>
+                    </View>
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                            {/* <FastImage
-                                resizeMode={FastImage.resizeMode.contain}
-                                style={{width: px(24), height: px(24)}}
-                                source={{uri: item.icon}}
-                            /> */}
-                            <Text style={[styles.secure_title]}>{'理性等级'}</Text>
+                            <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
+                            <AntDesign name="right" />
                         </View>
-                        <Text style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}>
-                            {'理性等级'}
-                        </Text>
+                        <RenderHtml
+                            style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}
+                            html={rational_info?.desc}
+                        />
                     </View>
                 </TouchableOpacity>
             </BoxShadow>
@@ -198,8 +198,7 @@ export default RationalCard;
 const styles = StyleSheet.create({
     secure_card: {
         width: px(166),
-        paddingVertical: px(12),
-        paddingHorizontal: px(14),
+        padding: px(12),
         height: px(63),
         borderRadius: px(6),
         backgroundColor: '#fff',
@@ -353,5 +352,14 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         backgroundColor: '#fff',
+    },
+    rational_circle: {
+        ...Style.flexCenter,
+        width: px(37),
+        height: px(37),
+        borderRadius: px(20),
+        borderColor: Colors.btnColor,
+        borderWidth: px(1),
+        marginRight: px(7),
     },
 });

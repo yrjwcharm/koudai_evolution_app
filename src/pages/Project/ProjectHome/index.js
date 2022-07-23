@@ -108,10 +108,9 @@ const Index = ({navigation}) => {
                                 );
                             })}
                         </ScrollableTabView>
+                        <BottomDesc />
                     </>
                 ) : null}
-
-                <BottomDesc />
             </ScrollView>
         </>
     );

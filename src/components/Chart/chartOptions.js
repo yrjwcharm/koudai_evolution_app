@@ -241,10 +241,11 @@ export const smChart = (data) => `(function(){
       }
     }).style('tag', {
       fill: function fill(val) {
+        //卖红色 tag是2
         if (val === 2) {
-          return '#4BA471';
-        } else if (val === 1) {
           return '#E74949';
+        } else if (val === 1) {
+          return '#4BA471';
         }else if (val === 3) {
             return '#0051CC';
          }else if(val===4){

@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-21 17:54:17
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 18:49:16
  * @Description: 公募基金首页榜单渲染组件
  */
 import React, {useRef} from 'react';
