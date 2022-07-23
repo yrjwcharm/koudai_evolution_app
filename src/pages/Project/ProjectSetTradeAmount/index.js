@@ -39,21 +39,7 @@ const Index = ({route, navigation}) => {
         let res = await getInfo({poid, project_id});
         setData(res.result);
     };
-    const showFixModal = () => {
-        Modal.show(
-            {
-                title: '定投计算方式',
-                children: (
-                    <FastImage
-                        source={require('~/assets/img/common/fixIcon.png')}
-                        resizeMode={FastImage.resizeMode.contain}
-                        style={{width: px(322), height: px(251), marginLeft: (deviceWidth - px(322)) / 2}}
-                    />
-                ),
-            },
-            'slide'
-        );
-    };
+
     useFocusEffect(
         useCallback(() => {
             getData();
@@ -84,6 +70,10 @@ const Index = ({route, navigation}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
+    useEffect(() => {
+        !!data?.pay_methods && onInput(amount);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bankSelect]);
     const onInput = (value) => {
         const {buy_info, pay_methods} = data;
         if (value < buy_info?.initial_amount) {
@@ -106,10 +96,16 @@ const Index = ({route, navigation}) => {
             password,
             amount,
             pay_method: data?.pay_methods[bankSelect]?.pay_method,
+            trade_method: 0,
             ...route?.params,
         };
         console.log(params);
+        let toast = Toast.showLoading();
         let res = await postDo(params);
+        Toast.hide(toast);
+        if (res.code !== '000000') {
+            Toast.show(res.message);
+        }
     };
     const render_bank = () => {
         const {pay_methods = []} = data;
@@ -143,6 +139,21 @@ const Index = ({route, navigation}) => {
             </View>
         );
     };
+    const showFixModal = () => {
+        Modal.show(
+            {
+                title: '定投计算方式',
+                children: (
+                    <FastImage
+                        source={require('~/assets/img/common/fixIcon.png')}
+                        resizeMode={FastImage.resizeMode.contain}
+                        style={{width: px(322), height: px(251), marginLeft: (deviceWidth - px(322)) / 2}}
+                    />
+                ),
+            },
+            'slide'
+        );
+    };
     const {buy_info, money_safe} = data;
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
@@ -154,7 +165,10 @@ const Index = ({route, navigation}) => {
                     <TouchableOpacity
                         style={{height: px(32), ...Style.flexRowCenter, backgroundColor: '#F1F6FF'}}
                         onPress={() => jump(money_safe?.url)}>
-                        <Image source={{uri: money_safe.icon}} style={{width: px(16), height: px(16)}} />
+                        <Image
+                            source={{uri: money_safe.icon}}
+                            style={{width: px(16), height: px(16), marginRight: px(4)}}
+                        />
                         <Text style={{color: Colors.btnColor, fontSize: px(12)}}>{money_safe?.label}</Text>
                         <Icon name="right" color={Colors.btnColor} size={px(12)} />
                     </TouchableOpacity>
@@ -176,11 +190,6 @@ const Index = ({route, navigation}) => {
                             }}
                             value={`${amount}`}
                         />
-                        {/* {`${amount}`.length > 0 && (
-                            <TouchableOpacity onPress={this.clearInput}>
-                                <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
-                            </TouchableOpacity>
-                        )} */}
                     </View>
                     {amount ? (
                         <>
@@ -216,6 +225,7 @@ const Index = ({route, navigation}) => {
                 select={bankSelect}
                 ref={bankCardRef}
                 onDone={(select, index) => {
+                    setBankSelect(index);
                     // this.setState(
                     //     (prev) => {
                     //         if (prev.bankSelect?.pay_method !== select?.pay_method) {

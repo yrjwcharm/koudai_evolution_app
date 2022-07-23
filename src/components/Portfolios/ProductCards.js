@@ -359,9 +359,11 @@ const ProjectLgCard = ({data = {}, style}) => {
                                 <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
                             ) : null}
                         </View>
-                        <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
-                            {data?.yield_info?.yield}
-                        </Text>
+                        <RenderHtml
+                            style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
+                            html={data?.yield_info?.yield}
+                        />
+
                         <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
                             {data?.yield_info?.yield_desc}
                         </Text>
@@ -431,10 +433,12 @@ const ProjectLgCard = ({data = {}, style}) => {
                                   )}
                                   <Text style={{fontSize: px(13), fontWeight: '700'}}>{_list.title}</Text>
                               </View>
-                              <Text style={{fontSize: px(17), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
-                                  {_list?.yield_info?.yield}
-                              </Text>
-                              <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
+                              <RenderHtml
+                                  html={_list?.yield_info?.yield}
+                                  style={{fontSize: px(17), fontFamily: Font.numFontFamily}}
+                              />
+
+                              <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginTop: px(4)}}>
                                   {_list?.yield_info?.yield_desc}
                               </Text>
                           </View>

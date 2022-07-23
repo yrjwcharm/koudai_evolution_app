@@ -18,7 +18,7 @@ const RenderSignal = ({list, more, desc, style}) => {
                     <TouchableOpacity key={index} activeOpacity={0.8} onPress={() => jump(item.url)}>
                         <LinearGradient
                             style={styles.con}
-                            colors={['#E0F9DC', '#EEF7ED']}
+                            colors={item?.background || ['#E0F9DC', '#EEF7ED']}
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}>
                             <View>
