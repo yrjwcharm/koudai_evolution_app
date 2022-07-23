@@ -448,6 +448,46 @@ const ProjectLgCard = ({data = {}, style}) => {
         </View>
     );
 };
+// 计划资产页小卡片
+const ProjectSmCard = ({data = {}}) => {
+    return (
+        <View style={[Style.flexRow, styles.ProjectSmCard]}>
+            <View style={{width: px(73)}}>
+                <Text>1</Text>
+            </View>
+            <View style={{flex: 1, justifyContent: 'space-between'}}>
+                <View style={{flex: 1}}>
+                    <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
+                    <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
+                        {data?.signal_list?.map((signal, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    ...Style.flexRow,
+                                    ...styles.signal_tag,
+                                }}>
+                                <Image
+                                    source={{uri: signal.icon}}
+                                    style={{width: px(16), height: px(16), marginRight: px(3)}}
+                                />
+                                <Text style={{fontSize: px(11)}}>{signal?.name}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+                <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginRight: px(8)}}>
+                        {data?.yield_info?.yield_desc}
+                    </Text>
+                    <RenderHtml
+                        style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
+                        html={data?.yield_info?.yield}
+                    />
+                </View>
+            </View>
+        </View>
+    );
+};
 /** @name 默认卡片 */
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
@@ -537,7 +577,7 @@ export default ({data = {}, style = {}}) => {
                 LogTool?.();
                 jump(url);
             }}
-            style={[type != 'project_lg_card' && styles.cardContainer, ...outerStyle]}>
+            style={[type != 'project_lg_card' && type != 'project_sm_card' && styles.cardContainer, ...outerStyle]}>
             {(() => {
                 switch (type) {
                     // 基金经理卡片
@@ -554,7 +594,7 @@ export default ({data = {}, style = {}}) => {
                         return <RecommendCard data={data} isPking={isPking} />;
                     //计划小卡片
                     case 'project_sm_card':
-                        return null;
+                        return <ProjectSmCard data={data} />;
                     case 'project_lg_card':
                         return <ProjectLgCard data={data} />;
                     // 默认卡片
@@ -796,5 +836,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9EAEF',
         height: 0.5,
         flex: 1,
+    },
+    ProjectSmCard: {
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+        height: px(102),
+        marginTop: px(12),
     },
 });

@@ -215,6 +215,7 @@ import SubscribeManage from '~/pages/Settings/SubscribeManage'; //订阅管理
 import MfbHoldingInfo from '~/pages/Mfb/MfbHoldingInfo'; // 魔方宝持有信息
 import AutoCharge from '~/pages/Mfb/AutoCharge'; // 自动充值
 import ProjectTradeResult from '~/pages/Project/ProjectTradeResult'; //计划确认页
+import SignalList from '~/pages/Project/SignalList'; //指数买卖信号列表
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -809,6 +810,8 @@ export default function AppStack() {
             <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
             <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
             <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: '计划确认'}} />
+            <Stack.Screen name="SignalList" component={SignalList} options={{title: '指数买卖信号'}} />
+
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />

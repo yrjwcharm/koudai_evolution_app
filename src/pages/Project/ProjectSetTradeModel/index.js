@@ -16,7 +16,7 @@ import Tool from './Tool';
 import {BottomModal} from '~/components/Modal';
 import {set} from 'immutable';
 const ProjectSetTrade = ({route, navigation}) => {
-    const poid = route?.params?.poid || 'X04F026206';
+    const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const [needBuy, setNeedBuy] = useState(false);

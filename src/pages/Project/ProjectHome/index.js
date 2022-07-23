@@ -19,6 +19,8 @@ import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
 import LoginMask from '~/components/LoginMask';
 import Banner from './Banner';
+import Icon from 'react-native-vector-icons/AntDesign';
+import {Modal} from '~/components/Modal';
 const Index = ({navigation}) => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
@@ -44,11 +46,6 @@ const Index = ({navigation}) => {
                 style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
                 <Banner data={data?.banner_list} />
-                <Button
-                    onPress={() => {
-                        navigation.navigate('ProjectSetTradeModel');
-                    }}
-                />
                 {/* 买卖工具 */}
                 {data?.navigator ? (
                     <>
@@ -80,6 +77,7 @@ const Index = ({navigation}) => {
                             style={{marginBottom: px(16)}}
                             title={data?.signal_lite?.title}
                             sub_title={data?.signal_lite?.sub_title}
+                            tip={data?.signal_lite?.tip}
                         />
 
                         <RenderSignal
@@ -118,13 +116,20 @@ const Index = ({navigation}) => {
         </>
     );
 };
-const Title = ({style, title, sub_title}) => {
+const Title = ({style, title, sub_title, tip}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(8)}]}>
             <Text style={{fontSize: px(18), fontWeight: '700', color: Colors.defaultColor, marginRight: px(8)}}>
                 {title}
             </Text>
             {sub_title ? <Text style={{fontSize: px(13), color: Colors.lightGrayColor}}>{sub_title}</Text> : null}
+            {tip ? (
+                <TouchableOpacity
+                    style={{width: px(20), alignItems: 'center'}}
+                    onPress={() => Modal.show({content: tip})}>
+                    <Icon name={'questioncircleo'} color={Colors.lightGrayColor} />
+                </TouchableOpacity>
+            ) : null}
         </View>
     );
 };

@@ -2,7 +2,7 @@
  * @Date: 2022-07-14 17:03:11
  * @Description:
  */
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,10 +31,10 @@ const RenderSignal = ({list, more, desc, style}) => {
                                         fontSize: px(15),
                                         fontFamily: Font.numFontFamily,
                                     }}>
-                                    1332.44
+                                    {item?.index_num}
                                 </Text>
                             </View>
-                            <RenderTag />
+                            <Image source={{uri: item?.strength_icon}} style={styles.icon} />
                         </LinearGradient>
                     </TouchableOpacity>
                 ))}
@@ -44,29 +44,6 @@ const RenderSignal = ({list, more, desc, style}) => {
                 </TouchableOpacity>
             </View>
             <Text style={{color: '#BDC2CC', fontSize: px(11), marginTop: px(8)}}>{desc}</Text>
-        </View>
-    );
-};
-//买卖信号
-const RenderTag = ({tag}) => {
-    // const bgColor = getTagColor(tag.tag_style);
-    return (
-        <View style={[styles.card_tag, Style.flexRowCenter]}>
-            <Text style={{color: '#fff', fontSize: px(12), marginRight: px(4)}}>{'买'}</Text>
-            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                {new Array(3).fill(0).map((_, index, arr) => (
-                    <View
-                        key={index}
-                        style={{
-                            width: px(2),
-                            backgroundColor: '#fff',
-                            opacity: index == arr.length - 1 ? 0.4 : 1,
-                            marginRight: index == arr.length - 1 ? 0 : px(2),
-                            height: px(4) + index * 3,
-                        }}
-                    />
-                ))}
-            </View>
         </View>
     );
 };
@@ -87,9 +64,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: px(30),
         borderTopLeftRadius: px(30),
         backgroundColor: '#239B56',
-        // position: 'absolute',
-        // right: 0,
-        // top: px(20),
     },
     more: {
         alignItems: 'center',
@@ -98,5 +72,12 @@ const styles = StyleSheet.create({
         borderRadius: px(4),
         backgroundColor: '#F3F4F4',
         justifyContent: 'center',
+    },
+    icon: {
+        position: 'absolute',
+        right: 0,
+        top: px(15),
+        width: px(34),
+        height: px(24),
     },
 });

@@ -233,6 +233,27 @@ export const smChart = (data) => `(function(){
     .color( '#DC4949').style({
       lineWidth: 1
     });
+    chart.point().position('date*value').size('tag', function(val) {
+      if(typeof val!='string'){
+        return val ? 3 : 0;
+      }else{
+        return 0
+      }
+    }).style('tag', {
+      fill: function fill(val) {
+        if (val === 2) {
+          return '#4BA471';
+        } else if (val === 1) {
+          return '#E74949';
+        }else if (val === 3) {
+            return '#0051CC';
+         }else if(val===4){
+           return '#EB7121';
+         }
+      },
+      stroke: '#fff',
+      lineWidth: 1
+    });
   chart.render();
 })()
 `;

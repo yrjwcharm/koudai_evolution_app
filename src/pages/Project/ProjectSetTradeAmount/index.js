@@ -19,7 +19,7 @@ import FastImage from 'react-native-fast-image';
 import {PasswordModal} from '~/components/Password';
 
 const Index = ({route, navigation}) => {
-    const poid = route?.params?.poid || 1;
+    const poid = route?.params?.poid;
     const project_id = route?.params?.project_id || 'X04F926077';
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
     const [data, setData] = useState({});
@@ -30,11 +30,7 @@ const Index = ({route, navigation}) => {
     const [btnClick, setBtnClick] = useState(true);
     const [errTip, setErrTip] = useState('');
     const jump = useJump();
-    const actual_amount = {
-        max: 1.5,
-        min: 0.5,
-        text: '实际定投金额',
-    };
+
     const getData = async () => {
         let res = await getInfo({poid, project_id});
         setData(res.result);
@@ -99,12 +95,13 @@ const Index = ({route, navigation}) => {
             trade_method: 0,
             ...route?.params,
         };
-        console.log(params);
         let toast = Toast.showLoading();
         let res = await postDo(params);
         Toast.hide(toast);
         if (res.code !== '000000') {
             Toast.show(res.message);
+        } else {
+            jump(res.result?.url);
         }
     };
     const render_bank = () => {
