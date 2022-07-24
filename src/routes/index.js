@@ -217,6 +217,8 @@ import AutoCharge from '~/pages/Mfb/AutoCharge'; // 自动充值
 import ToolWebView from '~/pages/Assets/ToolWebView'; // 工具webview
 import ProjectTradeResult from '~/pages/Project/ProjectTradeResult'; //计划确认页
 import SignalList from '~/pages/Project/SignalList'; //指数买卖信号列表
+import ProjectDetail from '~/pages/Project/ProjectDetail'; // 计划详情页
+import ProjectIntro from '~/pages/Project/ProjectIntro'; // 计划介绍页
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -813,6 +815,64 @@ export default function AppStack() {
             <Stack.Screen name="ToolWebView" component={ToolWebView} options={{title: '', headerShown: false}} />
             <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: '计划确认'}} />
             <Stack.Screen name="SignalList" component={SignalList} options={{title: '指数买卖信号'}} />
+            <Stack.Screen
+                name="ProjectDetail"
+                component={ProjectDetail}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        backgroundColor: '#FF5151',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
+            <Stack.Screen
+                name="ProjectIntro"
+                component={ProjectIntro}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        backgroundColor: '#FF5151',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
 
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
