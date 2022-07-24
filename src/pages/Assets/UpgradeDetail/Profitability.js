@@ -6,7 +6,8 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 
-const Profitability = ({onCardHeight}) => {
+const Profitability = ({data = {}, onCardHeight}) => {
+    const {after_value, bottom_desc, name, now_value, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState(0);
     return (
         <View
@@ -14,17 +15,17 @@ const Profitability = ({onCardHeight}) => {
             onLayout={(e) => {
                 onCardHeight(2, e.nativeEvent.layout.height);
             }}>
-            <Text style={styles.title}>更低风险，更高盈利能力</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>63.27%</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                         style={styles.panelIcon}
                     />
-                    <Text style={styles.pannelDesc}>收益率</Text>
+                    <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>92.36%</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
                 {true && (
@@ -61,12 +62,12 @@ const Profitability = ({onCardHeight}) => {
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={styles.compareTableWrap}>
-                <CompareTable />
-            </View>
-            <Text style={styles.placeholdText}>
-                占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数
-            </Text>
+            {upgrade_items?.length > 0 && (
+                <View style={styles.compareTableWrap}>
+                    <CompareTable data={upgrade_items} />
+                </View>
+            )}
+            {bottom_desc ? <Text style={styles.placeholdText}>{bottom_desc}</Text> : null}
         </View>
     );
 };

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 15:08:30
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:39:48
  * @Description: 组合收益明细
  */
 import React, {useEffect, useRef} from 'react';
@@ -15,6 +15,7 @@ import NetValueTrend from './NetValueTrend';
 import {Colors} from '../../common/commonStyle';
 
 const IncomeDetail = ({navigation, route}) => {
+    const {fund_code, poid} = route.params || {};
     const tabsRef = useRef(['日收益', '累计收益', '净值走势']);
 
     useEffect(() => {
@@ -29,13 +30,13 @@ const IncomeDetail = ({navigation, route}) => {
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
                 if (index === 0) {
-                    return <DailyProfit poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <DailyProfit fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
                 if (index === 1) {
-                    return <AccProfit poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <AccProfit fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
                 if (index === 2) {
-                    return <NetValueTrend poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <NetValueTrend fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
             })}
         </ScrollableTabView>

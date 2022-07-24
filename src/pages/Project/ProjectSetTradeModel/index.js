@@ -14,12 +14,14 @@ import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
 import {BottomModal} from '~/components/Modal';
+import {set} from 'immutable';
 const ProjectSetTrade = ({route, navigation}) => {
-    const poid = route?.params?.poid || 'X04F026206';
+    const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const [needBuy, setNeedBuy] = useState(false);
     const [toolStatus, setToolStatus] = useState({});
+    const [possible, setPossible] = useState(0);
     const autoTime = useRef({});
     const targetYeild = useRef('');
     // const jump = useJump();
@@ -27,17 +29,19 @@ const ProjectSetTrade = ({route, navigation}) => {
     const getData = async () => {
         let res = await getSetModel({poid});
         setNeedBuy(res.result?.need_buy?.open_status !== 0);
-
+        setPossible(res.result?.sale_model?.target_yeild?.possible);
         setData(res.result);
     };
     useEffect(() => {
         getData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    // 止盈选择
     const onChooseProfit = (id) => {
         setStopProfitIndex(id);
         bottomModal.current?.hide();
     };
+    // 工具选择
     const onToolChange = (id, value) => {
         setToolStatus((prev) => {
             let tmp = {...prev};
@@ -45,37 +49,36 @@ const ProjectSetTrade = ({route, navigation}) => {
             return tmp;
         });
     };
+    // 定投周期
     const onChangeAutoTime = (time) => {
         autoTime.current = time;
     };
+    // 目标收益
     const onTargetChange = async (value) => {
         targetYeild.current = value;
         let params = {
-            target: value / 100,
-            // possible: data.target_info.possible,
+            possible: possible,
             poid: poid,
         };
         let res = await getPossible(params);
+        setPossible(res?.result?.target_info?.possible);
     };
     const jumpNext = () => {
-        let buy_tool_id = [];
-        if (data?.buy_model?.list?.length > 0) {
-            data?.buy_model?.list.forEach((item) => {
-                if (toolStatus[item.id] == true || toolStatus[item.id] == undefined) {
-                    buy_tool_id.push(item.id);
-                }
-            });
-        }
+        let buy_tool_id = data?.buy_model?.list?.map((item) => {
+            if (toolStatus[item.id] == true || toolStatus[item.id] == undefined) {
+                return item.id;
+            }
+        });
         let params = {
             poid,
-            reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].name,
+            reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].id,
             need_buy: needBuy,
             buy_tool_id: buy_tool_id.join(''),
             ...autoTime.current,
             target_yield: targetYeild.current / 100,
-            possible: 0.2,
+            possible,
+            sale_tool_id: data?.sale_model?.list?.map((item) => item.id).join(','),
         };
-        console.log(params);
         navigation.navigate('ProjectSetTradeAmount', params);
     };
     return (
@@ -141,7 +144,8 @@ const ProjectSetTrade = ({route, navigation}) => {
                         />
                     ) : null}
                     <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
-                        根据历史数据，投资18个月实现概率：xx%
+                        根据历史数据，投资18个月实现概率：
+                        <Text style={{color: Colors.red}}>{possible * 100 + '%'}</Text>
                     </Text>
                     {/* 止盈方式 */}
                     <View style={{...Style.flexBetween, ...styles.trade_con_title, ...styles.borderTop}}>

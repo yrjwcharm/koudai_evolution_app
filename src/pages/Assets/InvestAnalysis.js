@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 11:22:56
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:40:42
  * @Description: 投资分析
  */
 import React, {useRef} from 'react';
@@ -15,6 +15,7 @@ import MonthRatio from './MonthRatio';
 import {Colors} from '../../common/commonStyle';
 
 const InvestAnalysis = ({navigation, route}) => {
+    const {fund_code, poid} = route.params || {};
     const tabsRef = useRef(['累计收益', '净值走势', '月度收益率']);
 
     return (
@@ -25,13 +26,13 @@ const InvestAnalysis = ({navigation, route}) => {
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
                 if (index === 0) {
-                    return <AccProfit poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <AccProfit fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
                 if (index === 1) {
-                    return <NetValueTrend poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <NetValueTrend fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
                 if (index === 2) {
-                    return <MonthRatio poid={route.params?.poid || ''} tabLabel={tab} key={`tab${index}`} />;
+                    return <MonthRatio fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
                 }
             })}
         </ScrollableTabView>

@@ -24,9 +24,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
 import _ from 'lodash';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import Empty from '../../components/EmptyTip';
-import {Button} from '../../components/Button';
+
 import {updateUserInfo} from '../../redux/actions/userInfo';
 // import UpdateCom from '../../components/UpdateCom';
 import {useDispatch, useSelector} from 'react-redux';
@@ -66,8 +64,6 @@ const RenderTitle = (props) => {
 };
 let bannerList = [];
 const Index = (props) => {
-    const netInfo = useNetInfo();
-    const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
@@ -124,25 +120,14 @@ const Index = (props) => {
             });
         }
     }, [userInfo, jump, dispatch]);
-    // 刷新一下
-    const refreshNetWork = useCallback(() => {
-        setHasNet(netInfo.isConnected);
-    }, [netInfo]);
 
     useFocusEffect(
         useCallback(() => {
             // showPrivacyPop();
-            hasNet && getData();
+            getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [hasNet])
+        }, [])
     );
-
-    useEffect(() => {
-        const listener = NetInfo.addEventListener((state) => {
-            setHasNet(state.isConnected);
-        });
-        return () => listener();
-    }, []);
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
@@ -211,7 +196,7 @@ const Index = (props) => {
             </View>
         );
     };
-    return hasNet ? (
+    return (
         <>
             {loading ? (
                 renderLoading()
@@ -789,16 +774,6 @@ const Index = (props) => {
                     ) : null}
                 </>
             )}
-        </>
-    ) : (
-        <>
-            <Empty
-                img={require('../../assets/img/emptyTip/noNetwork.png')}
-                text={'哎呀！网络出问题了'}
-                desc={'网络不给力，请检查您的网络设置'}
-                style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
-            />
-            <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
         </>
     );
 };

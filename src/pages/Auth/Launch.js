@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-01 14:14:24
+ * @LastEditTime: 2022-07-23 18:06:56
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -338,7 +338,7 @@ export default function Launch({navigation}) {
         timer.current = setInterval(() => {
             setTime((prev) => {
                 if (prev <= 1) {
-                    clearInterval(timer.current);
+                    timer.current && clearInterval(timer.current);
                     authLoading();
                     return 1;
                 } else {

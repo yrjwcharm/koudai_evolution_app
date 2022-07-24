@@ -30,204 +30,116 @@ const RationalCard = ({rational_info, im_info}) => {
     const [loadingChart, setLoadingChart] = useState(false);
     const gradeData = rational_info?.card_info;
     const handleRation = () => {
-        const modal = Modal.show(
-            {
-                header: <View />,
-                children: (
-                    <View style={styles.rationalBox}>
-                        {gradeData.style_type === 1 ? (
-                            <Image
-                                source={require('~/assets/img/vision/beginRationalBg.png')}
-                                style={styles.beginRationalBg}
-                            />
-                        ) : (
-                            <Image source={require('~/assets/img/vision/rationalBg.png')} style={styles.rationalBg} />
-                        )}
-                        {gradeData.style_type === 1 && (
-                            <View>
-                                <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
-                                    <View style={Style.flexRow}>
-                                        <Image
-                                            source={require('~/assets/img/vision/level_black.png')}
-                                            style={styles.levelIcon}
-                                        />
-                                        <Text style={styles.levelText}>{'理性等级'}</Text>
-                                    </View>
-                                    {gradeData.url ? (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            onPress={() => {
-                                                Modal.close(modal);
-                                                jump(gradeData.url);
-                                                global.LogTool('visionassessment');
-                                            }}>
+        if (rational_info?.grade == 0) {
+            const modal = Modal.show(
+                {
+                    header: <View />,
+                    children: (
+                        <View style={styles.rationalBox}>
+                            {gradeData.style_type === 1 ? (
+                                <Image
+                                    source={require('~/assets/img/vision/beginRationalBg.png')}
+                                    style={styles.beginRationalBg}
+                                />
+                            ) : (
+                                <Image
+                                    source={require('~/assets/img/vision/rationalBg.png')}
+                                    style={styles.rationalBg}
+                                />
+                            )}
+                            {gradeData.style_type === 1 && (
+                                <View>
+                                    <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
+                                        <View style={Style.flexRow}>
                                             <Image
-                                                source={require('~/assets/img/vision/levelTips.png')}
-                                                style={styles.levelTipsIcon}
+                                                source={require('~/assets/img/vision/level_black.png')}
+                                                style={styles.levelIcon}
                                             />
-                                        </TouchableOpacity>
+                                            <Text style={styles.levelText}>{'理性等级'}</Text>
+                                        </View>
+                                        {gradeData.url ? (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    Modal.close(modal);
+                                                    jump(gradeData.url);
+                                                    global.LogTool('visionassessment');
+                                                }}>
+                                                <Image
+                                                    source={require('~/assets/img/vision/levelTips.png')}
+                                                    style={styles.levelTipsIcon}
+                                                />
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </View>
+                                    <Text style={{...styles.levelTips, marginTop: px(10)}}>{gradeData.desc}</Text>
+                                    <View style={{height: px(144)}}>
+                                        <WebView
+                                            allowFileAccess
+                                            allowFileAccessFromFileURLs
+                                            allowUniversalAccessFromFileURLs
+                                            bounces={false}
+                                            onLoadEnd={() => setLoadingChart(false)}
+                                            onLoadStart={() => setLoadingChart(true)}
+                                            renderLoading={
+                                                Platform.OS === 'android' ? () => <PageLoading /> : undefined
+                                            }
+                                            scalesPageToFit={false}
+                                            scrollEnabled={false}
+                                            source={{
+                                                uri: `${SERVER_URL[global.env].H5}/rationalChart`,
+                                            }}
+                                            startInLoadingState={true}
+                                            style={{opacity: 0.99}}
+                                            textZoom={100}
+                                        />
+                                        {loadingChart && (
+                                            <View style={[Style.flexCenter, styles.loadingChart]}>
+                                                <ActivityIndicator color={Colors.brandColor} />
+                                            </View>
+                                        )}
+                                    </View>
+                                    {gradeData.button ? (
+                                        <Animatable.View
+                                            animation={{
+                                                0: {
+                                                    scale: 1,
+                                                    opacity: 1,
+                                                },
+                                                0.5: {
+                                                    scale: 1.05,
+                                                    opacity: 0.9,
+                                                },
+                                                1: {
+                                                    scale: 1,
+                                                    opacity: 1,
+                                                },
+                                            }}
+                                            duration={1500}
+                                            iterationCount={'infinite'}>
+                                            <Button
+                                                color="#E9CE99"
+                                                onPress={() => {
+                                                    Modal.close(modal);
+                                                    jump(gradeData.button.url);
+                                                    global.LogTool('visionassessment');
+                                                }}
+                                                style={styles.upgradeBtn}
+                                                textStyle={styles.upgradeBtnText}
+                                                title={gradeData.button.text}
+                                            />
+                                        </Animatable.View>
                                     ) : null}
                                 </View>
-                                <Text style={{...styles.levelTips, marginTop: px(10)}}>{gradeData.desc}</Text>
-                                <View style={{height: px(144)}}>
-                                    <WebView
-                                        allowFileAccess
-                                        allowFileAccessFromFileURLs
-                                        allowUniversalAccessFromFileURLs
-                                        bounces={false}
-                                        onLoadEnd={() => setLoadingChart(false)}
-                                        onLoadStart={() => setLoadingChart(true)}
-                                        renderLoading={Platform.OS === 'android' ? () => <PageLoading /> : undefined}
-                                        scalesPageToFit={false}
-                                        scrollEnabled={false}
-                                        source={{
-                                            uri: `${SERVER_URL[global.env].H5}/rationalChart`,
-                                        }}
-                                        startInLoadingState={true}
-                                        style={{opacity: 0.99}}
-                                        textZoom={100}
-                                    />
-                                    {loadingChart && (
-                                        <View style={[Style.flexCenter, styles.loadingChart]}>
-                                            <ActivityIndicator color={Colors.brandColor} />
-                                        </View>
-                                    )}
-                                </View>
-                                {gradeData.button ? (
-                                    <Animatable.View
-                                        animation={{
-                                            0: {
-                                                scale: 1,
-                                                opacity: 1,
-                                            },
-                                            0.5: {
-                                                scale: 1.05,
-                                                opacity: 0.9,
-                                            },
-                                            1: {
-                                                scale: 1,
-                                                opacity: 1,
-                                            },
-                                        }}
-                                        duration={1500}
-                                        iterationCount={'infinite'}>
-                                        <Button
-                                            color="#E9CE99"
-                                            onPress={() => {
-                                                Modal.close(modal);
-                                                jump(gradeData.button.url);
-                                                global.LogTool('visionassessment');
-                                            }}
-                                            style={styles.upgradeBtn}
-                                            textStyle={styles.upgradeBtnText}
-                                            title={gradeData.button.text}
-                                        />
-                                    </Animatable.View>
-                                ) : null}
-                            </View>
-                        )}
-                        {gradeData.style_type === 2 && (
-                            <View style={Style.flexBetween}>
-                                <View>
-                                    <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                                        <Image
-                                            source={require('~/assets/img/vision/level_black.png')}
-                                            style={styles.levelIcon}
-                                        />
-                                        <Text style={styles.levelText}>{'理性等级 '}</Text>
-                                        <Text style={styles.levelNum}>{gradeData.current_grade}</Text>
-                                    </View>
-                                    <View style={[Style.flexRow, {marginTop: px(6)}]}>
-                                        <RenderHtml html={gradeData.desc} style={styles.nextNum} />
-                                    </View>
-                                    <View style={styles.taskBar}>
-                                        <View style={[styles.taskActiveBar, {width: `${gradeData.percent}%`}]} />
-                                    </View>
-                                </View>
-                                {gradeData.button ? (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            Modal.close(modal);
-                                            jump(gradeData.button.url);
-                                            global.LogTool('visionpromote');
-                                        }}
-                                        style={styles.getRational}>
-                                        <Text style={styles.getRationalText}>{gradeData.button.text}</Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </View>
-                        )}
-                        {gradeData.style_type === 3 && (
-                            <View>
-                                <View style={styles.upgradeBox}>
-                                    <Image
-                                        source={require('~/assets/img/vision/upgrade.png')}
-                                        style={styles.upgradeImg}
-                                    />
-                                    <Text style={styles.currentLevel}>{gradeData.current_grade}级</Text>
-                                    <Text style={styles.nextLevel}>{gradeData.next_grade}级</Text>
-                                </View>
-                                <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
-                                    <Text
-                                        style={{
-                                            ...styles.levelText,
-                                            fontSize: px(18),
-                                            lineHeight: px(20),
-                                        }}>
-                                        {gradeData.name}
-                                    </Text>
-                                    <Text style={styles.levelNum}>{gradeData.next_grade}</Text>
-                                    <Text
-                                        style={{
-                                            ...styles.levelText,
-                                            fontSize: px(18),
-                                            lineHeight: px(20),
-                                        }}>
-                                        {' 级'}
-                                    </Text>
-                                </View>
-                                <View style={{marginTop: px(4)}}>
-                                    <RenderHtml html={gradeData.desc} style={styles.levelTips} />
-                                </View>
-                                {gradeData.button ? (
-                                    <Animatable.View
-                                        animation={{
-                                            0: {
-                                                scale: 1,
-                                                opacity: 1,
-                                            },
-                                            0.5: {
-                                                scale: 1.05,
-                                                opacity: 0.9,
-                                            },
-                                            1: {
-                                                scale: 1,
-                                                opacity: 1,
-                                            },
-                                        }}
-                                        duration={1500}
-                                        iterationCount={'infinite'}>
-                                        <Button
-                                            color="#E9CE99"
-                                            onPress={() => {
-                                                Modal.close(modal);
-                                                jump(gradeData.button.url);
-                                                global.LogTool('visionupgrade');
-                                            }}
-                                            style={styles.upgradeBtn}
-                                            textStyle={styles.upgradeBtnText}
-                                            title={gradeData.button.text}
-                                        />
-                                    </Animatable.View>
-                                ) : null}
-                            </View>
-                        )}
-                    </View>
-                ),
-            },
-            'slide'
-        );
+                            )}
+                        </View>
+                    ),
+                },
+                'slide'
+            );
+        } else {
+            jump(rational_info?.url);
+        }
     };
 
     return (
@@ -237,18 +149,18 @@ const RationalCard = ({rational_info, im_info}) => {
                     activeOpacity={0.9}
                     style={[Style.flexBetween, styles.secure_card]}
                     onPress={handleRation}>
+                    <View style={styles.rational_circle}>
+                        <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>{rational_info?.grade}</Text>
+                    </View>
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                            {/* <FastImage
-                                resizeMode={FastImage.resizeMode.contain}
-                                style={{width: px(24), height: px(24)}}
-                                source={{uri: item.icon}}
-                            /> */}
-                            <Text style={[styles.secure_title]}>{'理性等级'}</Text>
+                            <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
+                            <AntDesign name="right" />
                         </View>
-                        <Text style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}>
-                            {'理性等级'}
-                        </Text>
+                        <RenderHtml
+                            style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}
+                            html={rational_info?.desc}
+                        />
                     </View>
                 </TouchableOpacity>
             </BoxShadow>
@@ -286,8 +198,7 @@ export default RationalCard;
 const styles = StyleSheet.create({
     secure_card: {
         width: px(166),
-        paddingVertical: px(12),
-        paddingHorizontal: px(14),
+        padding: px(12),
         height: px(63),
         borderRadius: px(6),
         backgroundColor: '#fff',
@@ -441,5 +352,14 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         backgroundColor: '#fff',
+    },
+    rational_circle: {
+        ...Style.flexCenter,
+        width: px(37),
+        height: px(37),
+        borderRadius: px(20),
+        borderColor: Colors.btnColor,
+        borderWidth: px(1),
+        marginRight: px(7),
     },
 });

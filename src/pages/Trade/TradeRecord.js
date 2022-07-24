@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 14:26:34
+ * @LastEditTime: 2022-07-22 16:47:13
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -22,15 +22,16 @@ import {debounce} from 'lodash';
 const trade_type = [0, -1, -35, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
+    const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active} = route.params || {};
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
-    const [tabActive, setActiveTab] = useState(route.params.tabActive || 0);
+    const [tabActive, setActiveTab] = useState(active || 0);
     const offset = useRef('');
     const jump = useJump();
-    const isMfb = route?.params?.fr == 'mfb';
+    const isMfb = fr == 'mfb';
     const scrollTab = useRef();
     const getData = useCallback(
         (_page, toast) => {
@@ -39,8 +40,9 @@ const TradeRecord = ({route, navigation}) => {
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
                 type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
                 page: Page,
-                poid: route.params?.poid,
-                prod_code: route.params?.prod_code,
+                poid,
+                prod_code,
+                fund_code,
                 offset: offset.current,
             })
                 .then((res) => {
@@ -65,32 +67,30 @@ const TradeRecord = ({route, navigation}) => {
         [page, tabActive]
     );
     useEffect(() => {
-        if (route.params.tabActive) {
-            scrollTab.current?.goToPage(route.params.tabActive);
+        if (active) {
+            scrollTab.current?.goToPage(active);
         } else {
             getData();
         }
     }, [getData]);
     useEffect(() => {
-        http.get('/order/others/20210101', {fr: route?.params?.fr === 'mfb' ? 'wallet' : route.params.fr || ''}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    res.result.adviser_fee &&
-                        navigation.setOptions({
-                            headerRight: () => (
-                                <>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={[styles.topRightBtn, Style.flexCenter]}
-                                        onPress={() => jump(res.result.adviser_fee.url)}>
-                                        <Text style={styles.title}>{res.result.adviser_fee.text}</Text>
-                                    </TouchableOpacity>
-                                </>
-                            ),
-                        });
-                }
+        http.get('/order/others/20210101', {fr: fr === 'mfb' ? 'wallet' : fr || ''}).then((res) => {
+            if (res.code === '000000') {
+                res.result.adviser_fee &&
+                    navigation.setOptions({
+                        headerRight: () => (
+                            <>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.topRightBtn, Style.flexCenter]}
+                                    onPress={() => jump(res.result.adviser_fee.url)}>
+                                    <Text style={styles.title}>{res.result.adviser_fee.text}</Text>
+                                </TouchableOpacity>
+                            </>
+                        ),
+                    });
             }
-        );
+        });
     }, []);
     useEffect(() => {
         let listen = DeviceEventEmitter.addListener('cancleOrder', () => {
@@ -129,8 +129,8 @@ const TradeRecord = ({route, navigation}) => {
         offset.current = '';
         setData([]);
         setHasMore(false);
-        setActiveTab((active) => {
-            if (active == obj.i && page == 1) getData(1);
+        setActiveTab((_active) => {
+            if (_active == obj.i && page == 1) getData(1);
             return obj.i;
         });
         setPage(1);
@@ -300,7 +300,7 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="申购" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel={route.params?.adjust_name || '调仓'} style={styles.container}>
+                    <View tabLabel={adjust_name || '调仓'} style={styles.container}>
                         {renderContent()}
                     </View>
                     <View tabLabel="赎回" style={styles.container}>

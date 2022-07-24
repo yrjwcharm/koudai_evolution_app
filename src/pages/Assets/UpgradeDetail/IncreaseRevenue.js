@@ -6,7 +6,8 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 
-const IncreaseRevenue = ({onCardHeight}) => {
+const IncreaseRevenue = ({data = {}, onCardHeight}) => {
+    const {after_value, name, now_value, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState(0);
     return (
         <View
@@ -14,17 +15,17 @@ const IncreaseRevenue = ({onCardHeight}) => {
             onLayout={(e) => {
                 onCardHeight(0, e.nativeEvent.layout.height);
             }}>
-            <Text style={styles.title}>更优质的产品，提高收益</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>10.27%</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                         style={styles.panelIcon}
                     />
-                    <Text style={styles.pannelDesc}>收益率</Text>
+                    <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>20.27%</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
                 {true && (
@@ -69,9 +70,11 @@ const IncreaseRevenue = ({onCardHeight}) => {
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={styles.compareTableWrap}>
-                <CompareTable />
-            </View>
+            {upgrade_items?.length > 0 && (
+                <View style={styles.compareTableWrap}>
+                    <CompareTable data={upgrade_items} />
+                </View>
+            )}
             <Text style={styles.placeholdText}>
                 占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数
             </Text>

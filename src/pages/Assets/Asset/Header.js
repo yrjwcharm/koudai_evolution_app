@@ -34,7 +34,7 @@ const Header = ({newMes}) => {
                     {/* 消息 */}
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={{position: 'relative', ...Style.flexRow, marginRight: px(10)}}
+                        style={{position: 'relative', ...Style.flexRow, marginRight: px(16)}}
                         onPress={() => {
                             global.LogTool('indexNotificationCenter');
                             jump({path: 'RemindMessage'});
@@ -71,12 +71,12 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(70),
+        left: px(74),
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(6),
-        paddingVertical: 3,
-        paddingHorizontal: 3,
+        paddingVertical: px(2),
+        paddingHorizontal: px(3),
         minWidth: px(16),
     },
     point_text: {

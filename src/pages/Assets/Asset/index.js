@@ -2,7 +2,16 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl, Animated} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    TouchableOpacity,
+    RefreshControl,
+    Animated,
+    ActivityIndicator,
+} from 'react-native';
 import React, {useCallback, useState, useRef} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors, Style} from '~/common/commonStyle';
@@ -98,15 +107,23 @@ const Index = ({navigation}) => {
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </View>
                 {/* 持仓列表 */}
-                <HoldList
-                    products={holding?.products}
-                    scrollY={scrollY}
-                    stickyHeaderY={headHeight}
-                    reload={getHoldingData}
-                />
-                {/* 底部列表 */}
-                <BottomMenus data={data?.bottom_menus} />
-                <BottomDesc />
+                {holding?.products ? (
+                    <>
+                        <HoldList
+                            products={holding?.products}
+                            scrollY={scrollY}
+                            stickyHeaderY={headHeight}
+                            reload={getHoldingData}
+                        />
+                        {/* 底部列表 */}
+                        <BottomMenus data={data?.bottom_menus} />
+                        <BottomDesc />
+                    </>
+                ) : (
+                    <View style={{height: px(300)}}>
+                        <ActivityIndicator style={{marginTop: px(30)}} color={Colors.btnColor} />
+                    </View>
+                )}
             </Animated.ScrollView>
         </>
     ) : (

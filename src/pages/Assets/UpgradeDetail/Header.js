@@ -5,7 +5,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import {BoxShadow} from 'react-native-shadow';
 import {px} from '~/utils/appUtil';
 
-const Header = () => {
+const Header = ({data = {}}) => {
+    const {base_list, target} = data;
     const [leftSize, setLeftSize] = useState({width: 0, height: 0});
     const [rightSize, setRightSize] = useState({width: 0, height: 0});
 
@@ -33,7 +34,7 @@ const Header = () => {
                     colors={['#F5F6F8', '#fff']}
                     onLayout={handlerLeftLayout}>
                     <View style={styles.headerLeftBorderBar} />
-                    {[1].map((item, idx) => (
+                    {base_list?.map((item, idx) => (
                         <View
                             key={idx}
                             style={[
@@ -41,17 +42,10 @@ const Header = () => {
                                 idx > 0 ? {borderTopColor: '#E9EAEF', borderTopWidth: 0.5} : {},
                             ]}>
                             <Text style={styles.headerItemText} numberOfLines={1}>
-                                嘉实中证基建ETF嘉实中证基建ETF
+                                {item}
                             </Text>
                         </View>
                     ))}
-                    {false && (
-                        <View style={[styles.headerLeftItem, {borderTopColor: '#E9EAEF', borderTopWidth: 0.5}]}>
-                            <Text style={styles.headerItemText} numberOfLines={1}>
-                                ...
-                            </Text>
-                        </View>
-                    )}
                 </LinearGradient>
                 {leftSize.width ? (
                     <View style={styles.shadow}>
@@ -84,7 +78,7 @@ const Header = () => {
                     <View style={styles.headerRightBorderBar} />
                     <View style={[styles.headerRightItem]}>
                         <Text style={styles.headerItemText} numberOfLines={1}>
-                            智能 | 全天候组合
+                            {target}
                         </Text>
                     </View>
                 </LinearGradient>

@@ -11,5 +11,5 @@ export const getNextDay = (params) => {
     return http.get('/trade/fix_invest/next_day/20210101', params);
 };
 export const getPossible = (params) => {
-    return http.get('/trade/set/invest_target/20210101', params);
+    return http.get('/trade/fix_invest/target_info/20210101', params);
 };

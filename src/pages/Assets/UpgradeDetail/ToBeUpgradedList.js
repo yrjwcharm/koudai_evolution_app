@@ -1,29 +1,42 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Font} from '~/common/commonStyle';
+import HTML from '~/components/RenderHtml';
 import {px} from '~/utils/appUtil';
 
-const ToBeUpgradedList = () => {
+const ToBeUpgradedList = ({data = {}}) => {
+    const {header, list} = data;
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.label}>当前待升级基金</Text>
-                <Text style={styles.label}>持仓金额/日收益</Text>
+                {header?.map((item, index) => {
+                    return (
+                        <Text key={item + index} style={styles.label}>
+                            {item}
+                        </Text>
+                    );
+                })}
             </View>
-            {[1, 2, 3, 4, 5].map((item, idx) => (
+            {list?.map((item, idx) => (
                 <View key={idx} style={styles.item}>
                     <View style={styles.itemLeft}>
-                        <Text style={styles.itemTitle}>嘉实沪港深精选股票</Text>
+                        <Text style={styles.itemTitle}>{item.name}</Text>
                         <View style={styles.itemDesc}>
-                            <Text style={styles.itemCode}>000466</Text>
-                            <View style={styles.itemTag}>
-                                <Text style={styles.itemTagText}>大盘股</Text>
-                            </View>
+                            <Text style={styles.itemCode}>{item.code}</Text>
+                            {item.tags?.map((tag, i) => {
+                                return (
+                                    <View key={tag + i} style={styles.itemTag}>
+                                        <Text style={styles.itemTagText}>{tag}</Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
                     <View style={styles.itemRight}>
-                        <Text style={styles.itemAmount}>23,912.48</Text>
-                        <Text style={styles.itemProfit}>+51.03</Text>
+                        <Text style={styles.itemAmount}>{item.amount}</Text>
+                        <View style={{marginTop: px(2)}}>
+                            <HTML html={item.profit} style={styles.itemProfit} />
+                        </View>
                     </View>
                 </View>
             ))}

@@ -117,7 +117,7 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                                   );
                                               })}
                                               {/* 升级按钮 */}
-                                              <RenderUpgradeBtn upgrade={upgrade} />
+                                              {!!upgrade?.profit_desc && <RenderUpgradeBtn upgrade={upgrade} />}
                                           </View>
                                       ))
                                     : null}

@@ -329,11 +329,11 @@ const RecommendCard = ({data = {}, isPking}) => {
         </View>
     );
 };
-const ProjectLgCard = ({data = {}, style}) => {
+const ProjectLgCard = ({data, style}) => {
     const jump = useJump();
     return (
         <View
-            key={data.title}
+            key={data?.title + data?.project_id}
             style={[styles.ProjectLgCard, !data?.list && {marginBottom: px(12), paddingBottom: px(16)}, style]}>
             <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
                 {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
@@ -359,9 +359,11 @@ const ProjectLgCard = ({data = {}, style}) => {
                                 <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
                             ) : null}
                         </View>
-                        <Text style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
-                            {data?.yield_info?.yield}
-                        </Text>
+                        <RenderHtml
+                            style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
+                            html={data?.yield_info?.yield}
+                        />
+
                         <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
                             {data?.yield_info?.yield_desc}
                         </Text>
@@ -405,6 +407,7 @@ const ProjectLgCard = ({data = {}, style}) => {
             {data?.list
                 ? data?.list?.map((_list, _index) => (
                       <TouchableOpacity
+                          key={_index}
                           style={{paddingTop: px(_index == 0 ? 12 : 0)}}
                           activeOpacity={0.9}
                           onPress={() => jump(_list?.url)}>
@@ -431,16 +434,60 @@ const ProjectLgCard = ({data = {}, style}) => {
                                   )}
                                   <Text style={{fontSize: px(13), fontWeight: '700'}}>{_list.title}</Text>
                               </View>
-                              <Text style={{fontSize: px(17), fontFamily: Font.numFontFamily, marginBottom: px(4)}}>
-                                  {_list?.yield_info?.yield}
-                              </Text>
-                              <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
+                              <RenderHtml
+                                  html={_list?.yield_info?.yield}
+                                  style={{fontSize: px(17), fontFamily: Font.numFontFamily}}
+                              />
+
+                              <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginTop: px(4)}}>
                                   {_list?.yield_info?.yield_desc}
                               </Text>
                           </View>
                       </TouchableOpacity>
                   ))
                 : null}
+        </View>
+    );
+};
+// 计划资产页小卡片
+const ProjectSmCard = ({data = {}}) => {
+    return (
+        <View style={[Style.flexRow, styles.ProjectSmCard]}>
+            <View style={{width: px(73), height: px(66)}}>
+                {data?.chart_data?.portfolio_lines?.length > 0 ? (
+                    <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
+                ) : null}
+            </View>
+            <View style={{flex: 1, justifyContent: 'space-between'}}>
+                <View style={{flex: 1}}>
+                    <Text style={{fontSize: px(16), fontWeight: '700'}}>{data?.title}</Text>
+                    <View style={{...Style.flexRow, flexWrap: 'wrap'}}>
+                        {data?.signal_list?.map((signal, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    ...Style.flexRow,
+                                    ...styles.signal_tag,
+                                }}>
+                                <Image
+                                    source={{uri: signal.icon}}
+                                    style={{width: px(16), height: px(16), marginRight: px(3)}}
+                                />
+                                <Text style={{fontSize: px(11)}}>{signal?.name}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+                <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginRight: px(8)}}>
+                        {data?.yield_info?.yield_desc}
+                    </Text>
+                    <RenderHtml
+                        style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
+                        html={data?.yield_info?.yield}
+                    />
+                </View>
+            </View>
         </View>
     );
 };
@@ -533,7 +580,7 @@ export default ({data = {}, style = {}}) => {
                 LogTool?.();
                 jump(url);
             }}
-            style={[type != 'project_lg_card' && styles.cardContainer, ...outerStyle]}>
+            style={[type != 'project_lg_card' && type != 'project_sm_card' && styles.cardContainer, ...outerStyle]}>
             {(() => {
                 switch (type) {
                     // 基金经理卡片
@@ -550,7 +597,7 @@ export default ({data = {}, style = {}}) => {
                         return <RecommendCard data={data} isPking={isPking} />;
                     //计划小卡片
                     case 'project_sm_card':
-                        return null;
+                        return <ProjectSmCard data={data} />;
                     case 'project_lg_card':
                         return <ProjectLgCard data={data} />;
                     // 默认卡片
@@ -792,5 +839,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9EAEF',
         height: 0.5,
         flex: 1,
+    },
+    ProjectSmCard: {
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+        height: px(102),
+        marginTop: px(12),
     },
 });

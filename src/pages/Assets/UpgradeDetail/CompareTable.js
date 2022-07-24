@@ -6,10 +6,10 @@ import {px} from '~/utils/appUtil';
 
 const topRadius = {borderTopLeftRadius: px(6), borderTopRightRadius: px(6)};
 const bottomRadius = {borderBottomLeftRadius: px(6), borderBottomRightRadius: px(6)};
-const CompareTable = () => {
+const CompareTable = ({data = []}) => {
     return (
         <View style={styles.container}>
-            {[1, 2, 3].map((item, idx, arr) => (
+            {data?.map((item, idx, arr) => (
                 <View key={idx} style={styles.row}>
                     <View
                         style={[
@@ -25,11 +25,11 @@ const CompareTable = () => {
                             </View>
                         ) : null}
                         <View style={[styles.cell, idx > 0 ? {borderTopWidth: 1, borderTopColor: '#BDC2CC'} : {}]}>
-                            <Text style={[styles.rateText, {color: '#121D3A'}]}>12.23%</Text>
+                            <Text style={[styles.rateText, {color: '#121D3A'}]}>{item.now_value}</Text>
                         </View>
                     </View>
                     <View style={styles.middle}>
-                        <Text style={styles.middleText}>近一年收益率</Text>
+                        <Text style={styles.middleText}>{item.name}</Text>
                     </View>
                     <View
                         style={[styles.future, idx === 0 ? topRadius : {}, idx === arr.length - 1 ? bottomRadius : {}]}>
@@ -48,7 +48,7 @@ const CompareTable = () => {
                             </View>
                         ) : null}
                         <View style={[styles.cell, idx > 0 ? {borderTopWidth: 1, borderTopColor: '#FF7D41'} : {}]}>
-                            <Text style={[styles.rateText, {color: '#FF7D41'}]}>12.33%</Text>
+                            <Text style={[styles.rateText, {color: '#FF7D41'}]}>{item.after_value}</Text>
                         </View>
                     </View>
                 </View>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
         fontSize: px(11),
         lineHeight: px(15),
         color: '#545968',
+        textAlign: 'center',
     },
     recomIcon: {
         width: px(10),
