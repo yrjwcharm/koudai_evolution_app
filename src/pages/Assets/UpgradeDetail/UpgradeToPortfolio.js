@@ -14,7 +14,7 @@ import {getUpgradeToPortfolioData} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 
-const ToPortfolio = ({navigation, route}) => {
+const UpgradeToPortfolio = ({navigation, route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
     const [data, setData] = useState({});
@@ -58,6 +58,7 @@ const ToPortfolio = ({navigation, route}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
+                    navigation.setOptions({title: res.result.title});
                 }
             })
             .finally(() => {
@@ -80,6 +81,7 @@ const ToPortfolio = ({navigation, route}) => {
                 <>
                     <Header data={{base_list, target}} />
                     <StickyHeaderPortFolio
+                        detail={detail || []}
                         handlerCurtainHeight={handlerCurtainHeight}
                         scrollY={scrollY}
                         curtainNum={curtainNum}
@@ -93,9 +95,27 @@ const ToPortfolio = ({navigation, route}) => {
                         }}>
                         {detail && (
                             <>
-                                {detail[0] && <IncreaseRevenue data={detail[0]} onCardHeight={onCardHeight} />}
-                                {detail[1] && <ReduceRisk data={detail[1]} onCardHeight={onCardHeight} />}
-                                {detail[2] && <Profitability data={detail[2]} onCardHeight={onCardHeight} />}
+                                {detail[0] && (
+                                    <IncreaseRevenue
+                                        data={detail[0]}
+                                        onCardHeight={onCardHeight}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                )}
+                                {detail[1] && (
+                                    <ReduceRisk
+                                        upgrade_id={route.params.upgrade_id}
+                                        data={detail[1]}
+                                        onCardHeight={onCardHeight}
+                                    />
+                                )}
+                                {detail[2] && (
+                                    <Profitability
+                                        upgrade_id={route.params.upgrade_id}
+                                        data={detail[2]}
+                                        onCardHeight={onCardHeight}
+                                    />
+                                )}
                                 {detail[3] && <ExclusiveAdvisor data={detail[3]} onCardHeight={onCardHeight} />}
                                 {detail[4] && <AssetAllocation data={detail[4]} onCardHeight={onCardHeight} />}
                             </>
@@ -112,7 +132,7 @@ const ToPortfolio = ({navigation, route}) => {
     );
 };
 
-export default ToPortfolio;
+export default UpgradeToPortfolio;
 
 const styles = StyleSheet.create({
     container: {

@@ -32,7 +32,6 @@ import GuideTips from '../../components/GuideTips';
 // import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
-import {Button} from '~/components/Button';
 // let codePushOptions = {
 //     checkFrequency: CodePush.CheckFrequency.MANUAL,
 // };
@@ -146,9 +145,6 @@ const Index = (props) => {
             setAll(res.result.all);
         });
     }, []);
-    const handler = () => {
-        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/LowBuy'}});
-    };
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
@@ -291,7 +287,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-                            <Button title={'click'} onPress={handler} />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity

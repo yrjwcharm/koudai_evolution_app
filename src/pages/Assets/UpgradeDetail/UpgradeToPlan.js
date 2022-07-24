@@ -8,10 +8,16 @@ import SaleReminder from './SaleReminder';
 import TaurenSignal from './TaurenSignal';
 import FallBuy from './FallBuy';
 import ProbabilitySignal from './ProbabilitySignal';
+import {getUpgradeToPlanData} from './services';
+import {useFocusEffect} from '@react-navigation/native';
+import Loading from '~/pages/Portfolio/components/PageLoading';
 
-const UpgradeToPlan = () => {
+const UpgradeToPlan = ({route, navigation}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
+    const [data, setData] = useState({});
+    const {base_list, button, button2, detail, fund_list, fund_list_header, target} = data;
+    const [loading, setLoading] = useState(true);
     const cardsHeight = useRef([]);
     const cardsPosition = useRef([]);
     const curtainHeight = useRef(0);
@@ -43,24 +49,84 @@ const UpgradeToPlan = () => {
             cardsPosition.current = arr.filter((item) => item);
         }
     }, []);
+
+    const init = () => {
+        getUpgradeToPlanData(route.params || {})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    navigation.setOptions({title: res.result.title});
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
     return (
         <View style={styles.container}>
-            <Header />
-            <StickyHeaderPlan scrollY={scrollY} curtainNum={curtainNum} handlerCurtainHeight={handlerCurtainHeight} />
-            <ScrollView
-                style={{flex: 1}}
-                scrollEventThrottle={3}
-                onScroll={handlerScroll}
-                onLayout={(e) => {
-                    setScrollY(e.nativeEvent.layout.y);
-                }}>
-                <SaleReminder onCardHeight={onCardHeight} />
-                <TaurenSignal onCardHeight={onCardHeight} />
-                <FallBuy onCardHeight={onCardHeight} />
-                <ProbabilitySignal onCardHeight={onCardHeight} />
-                <View style={{height: px(30)}} />
-            </ScrollView>
-            <FixBottom />
+            {loading ? (
+                <Loading />
+            ) : (
+                <>
+                    <Header data={{base_list, target}} />
+                    <StickyHeaderPlan
+                        scrollY={scrollY}
+                        curtainNum={curtainNum}
+                        handlerCurtainHeight={handlerCurtainHeight}
+                        detail={detail || []}
+                    />
+                    <ScrollView
+                        style={{flex: 1}}
+                        scrollEventThrottle={3}
+                        onScroll={handlerScroll}
+                        onLayout={(e) => {
+                            setScrollY(e.nativeEvent.layout.y);
+                        }}>
+                        {detail && (
+                            <>
+                                {detail[0] && (
+                                    <SaleReminder
+                                        onCardHeight={onCardHeight}
+                                        data={detail[0]}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                )}
+                                {detail[1] && (
+                                    <TaurenSignal
+                                        onCardHeight={onCardHeight}
+                                        data={detail[1]}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                )}
+                                {detail[2] && (
+                                    <FallBuy
+                                        onCardHeight={onCardHeight}
+                                        data={detail[2]}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                )}
+                                {detail[3] && (
+                                    <ProbabilitySignal
+                                        onCardHeight={onCardHeight}
+                                        data={detail[3]}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                )}
+                            </>
+                        )}
+                        <View style={{height: px(30)}} />
+                    </ScrollView>
+                    {button && button2 ? <FixBottom button={button} button2={button2} /> : null}
+                </>
+            )}
         </View>
     );
 };

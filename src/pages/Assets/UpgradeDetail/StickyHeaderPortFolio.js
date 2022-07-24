@@ -3,9 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 
-const a = ['1. 提高收益', '2. 降低风险', '3. 盈利能力', '4. 专属投顾', '5. 资产配置'];
-
-const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight}) => {
+const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detail}) => {
     return (
         <View
             style={[styles.container, {top: scrollY}]}
@@ -16,10 +14,10 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight}) => {
                 <View key={idx}>
                     <View style={[styles.item, idx > 0 ? {borderTopColor: '#F4F5F7', borderTopWidth: 1} : {}]}>
                         <View style={styles.itemLeft}>
-                            <Text style={styles.itemTitle}>{a[idx]}</Text>
+                            <Text style={styles.itemTitle}>{detail?.[idx]?.item_title}</Text>
                         </View>
                         <View style={styles.itemRight}>
-                            <Text style={styles.rate}>15.36%</Text>
+                            <Text style={styles.rate}>{detail?.[idx]?.now_value}</Text>
                             <FastImage
                                 source={{
                                     uri:
@@ -27,7 +25,7 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight}) => {
                                 }}
                                 style={styles.panelIcon}
                             />
-                            <Text style={styles.rate}>15.36%</Text>
+                            <Text style={styles.rate}>{detail?.[idx]?.after_value}</Text>
                         </View>
                     </View>
                 </View>

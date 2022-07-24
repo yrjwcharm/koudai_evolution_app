@@ -1,14 +1,33 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
+import {getUpgradeToPortfolioChart} from './services';
 
-const Profitability = ({data = {}, onCardHeight}) => {
-    const {after_value, bottom_desc, name, now_value, title, upgrade_items} = data;
-    const [activeTab, setTabActive] = useState(0);
+const Profitability = ({data = {}, upgrade_id, onCardHeight}) => {
+    const {bottom_desc, name, title, upgrade_items} = data;
+    const [activeTab, setTabActive] = useState();
+
+    const [chart, setChart] = useState({});
+
+    const getData = (period) => {
+        getUpgradeToPortfolioChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
+            if (res.code === '000000') {
+                setChart(res.result);
+                if (!activeTab) {
+                    let obj = res.result?.subtabs?.find?.((item) => item.active);
+                    if (obj) setTabActive(obj.val);
+                }
+            }
+        });
+    };
+
+    useEffect(() => {
+        getData(null);
+    }, []);
     return (
         <View
             style={styles.container}
@@ -17,7 +36,7 @@ const Profitability = ({data = {}, onCardHeight}) => {
             }}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{chart?.now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -25,12 +44,12 @@ const Profitability = ({data = {}, onCardHeight}) => {
                     />
                     <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>{after_value}</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{chart?.after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
-                {true && (
+                {chart?.chart && (
                     <Chart
-                        initScript={baseAreaChart(undefined, true, 2, null, [10, 8, 10, 0])}
+                        initScript={baseAreaChart(chart?.chart || [], chart.lines || [], true, 2, null, [10, 8, 10, 0])}
                         style={{width: '100%'}}
                     />
                 )}
@@ -39,25 +58,26 @@ const Profitability = ({data = {}, onCardHeight}) => {
                 <View style={styles.legendRow}>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[1]}]} />
-                        <Text style={styles.legendRowText}>嘉实中证基建ETF发起式联接A</Text>
+                        <Text style={styles.legendRowText}>{chart.legends?.[0].name}</Text>
                     </View>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[0]}]} />
-                        <Text style={styles.legendRowText}>某某某组合名称</Text>
+                        <Text style={styles.legendRowText}>{chart?.legends?.[1].name}</Text>
                     </View>
                 </View>
             </View>
             <View style={styles.tabsWrap}>
-                {[1, 2, 3].map((item, idx) => (
+                {chart?.subtabs?.map((item, idx) => (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={idx}
-                        style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#F5F6F8'}]}
+                        style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
-                            setTabActive(idx);
+                            setTabActive(item.val);
+                            getData(item.val);
                         }}>
-                        <Text style={[styles.tabText, {color: activeTab === idx ? '#0051cc' : '#545968'}]}>
-                            持有以来
+                        <Text style={[styles.tabText, {color: activeTab === item.val ? '#0051cc' : '#545968'}]}>
+                            {item.key}
                         </Text>
                     </TouchableOpacity>
                 ))}
@@ -186,78 +206,8 @@ const areaColors = ['#FFF3D9', '#fff'];
 const deviceWidth = Dimensions.get('window').width;
 
 const baseAreaChart = (
-    data = [
-        {
-            type: '交银施罗德持续成长',
-            value: 0.3,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.65,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.2,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.5,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.75,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.91,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.65,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.68,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.55,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.85,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-    ],
+    data,
+    lines,
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
@@ -266,7 +216,7 @@ const baseAreaChart = (
     showDate = true,
     max = null // 是否使用对象里自带的颜色
 ) => {
-    return `
+    let str = `
 (function(){
 chart = new F2.Chart({
 id: 'chart',
@@ -364,8 +314,36 @@ chart.line()
 .style('type', {
   lineWidth: 1,
 });
+${lines.reduce((memo, item, idx) => {
+    memo += `chart.guide().line({
+      start:['min',${item}],
+      end:['max',${item}],
+      style:{
+        stroke: "${colors[idx]}"
+      }
+    });
+    chart.guide().html({
+        position: ['max', ${item}],
+        html: "<div style='background: ${
+            ['rgba(255,125,65,0.15)', 'rgba(84,89,104,0.15)'][idx]
+        };width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: ${
+        colors[idx]
+    };width:6px;height:6px;border-radius:50%;'></div></div>",
+    });
+    chart.guide().rect({
+        start: ['min','min'],
+        end: ['max',${item}],
+        style: {
+          lineWidth: 1, // 辅助框的边框宽度
+          fill: "#F2F2F3", // 辅助框填充的颜色
+        }, // 辅助框的图形样式属性
+      });
+    `;
+    return memo;
+}, '')}
 chart.render();
 })();
 console.log(123)
 `;
+    return str;
 };

@@ -1,14 +1,34 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
+import {getUpgradeToPortfolioChart} from './services';
 
-const IncreaseRevenue = ({data = {}, onCardHeight}) => {
-    const {after_value, name, now_value, title, upgrade_items} = data;
-    const [activeTab, setTabActive] = useState(0);
+const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
+    const {name, title, upgrade_items} = data;
+    const [activeTab, setTabActive] = useState();
+
+    const [chart, setChart] = useState({});
+
+    const getData = (period) => {
+        getUpgradeToPortfolioChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
+            if (res.code === '000000') {
+                setChart(res.result);
+                if (!activeTab) {
+                    let obj = res.result?.subtabs?.find?.((item) => item.active);
+                    if (obj) setTabActive(obj.val);
+                }
+            }
+        });
+    };
+
+    useEffect(() => {
+        getData(null);
+    }, []);
+
     return (
         <View
             style={styles.container}
@@ -17,7 +37,7 @@ const IncreaseRevenue = ({data = {}, onCardHeight}) => {
             }}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{chart?.now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -25,12 +45,12 @@ const IncreaseRevenue = ({data = {}, onCardHeight}) => {
                     />
                     <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>{after_value}</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{chart?.after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
-                {true && (
+                {chart?.chart && (
                     <Chart
-                        initScript={baseAreaChart(undefined, true, 2, null, [10, 8, 10, 0])}
+                        initScript={baseAreaChart(chart?.chart || [], chart.tags || [], true, 2, null, [10, 8, 10, 0])}
                         style={{width: '100%'}}
                     />
                 )}
@@ -39,33 +59,34 @@ const IncreaseRevenue = ({data = {}, onCardHeight}) => {
                 <View style={styles.legendRow}>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[1]}]} />
-                        <Text style={styles.legendRowText}>持有基金</Text>
+                        <Text style={styles.legendRowText}>{chart.legends?.[0].name}</Text>
                     </View>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[0]}]} />
-                        <Text style={styles.legendRowText}>某某某组合名称</Text>
+                        <Text style={styles.legendRowText}>{chart?.legends?.[1].name}</Text>
                     </View>
                 </View>
                 <View style={styles.lengendCol}>
-                    {[1, 2, 3].map((item, idx) => (
+                    {chart.legends?.[0].items.map((item, idx) => (
                         <View key={idx} style={[styles.legendItem, {marginTop: px(8)}]}>
                             <View style={[styles.colIcon, {backgroundColor: colors[idx + 2]}]} />
-                            <Text style={styles.legendColText}>某某某组合名称</Text>
+                            <Text style={styles.legendColText}>{item?.name?.name}</Text>
                         </View>
                     ))}
                 </View>
             </View>
             <View style={styles.tabsWrap}>
-                {[1, 2, 3].map((item, idx) => (
+                {chart?.subtabs?.map((item, idx) => (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={idx}
-                        style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#F5F6F8'}]}
+                        style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
-                            setTabActive(idx);
+                            setTabActive(item.val);
+                            getData(item.val);
                         }}>
-                        <Text style={[styles.tabText, {color: activeTab === idx ? '#0051cc' : '#545968'}]}>
-                            持有以来
+                        <Text style={[styles.tabText, {color: activeTab === item.val ? '#0051cc' : '#545968'}]}>
+                            {item.key}
                         </Text>
                     </TouchableOpacity>
                 ))}
@@ -75,9 +96,7 @@ const IncreaseRevenue = ({data = {}, onCardHeight}) => {
                     <CompareTable data={upgrade_items} />
                 </View>
             )}
-            <Text style={styles.placeholdText}>
-                占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数占位文案不限行数
-            </Text>
+            {data?.bottom_desc && <Text style={styles.placeholdText}>{data.bottom_desc}</Text>}
         </View>
     );
 };
@@ -208,148 +227,8 @@ const areaColors = ['l(90) 0:#FFF9ED 1:#fff', 'transparent'];
 const deviceWidth = Dimensions.get('window').width;
 
 const baseAreaChart = (
-    data = [
-        {
-            type: '交银施罗德持续成长',
-            value: 0.65,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.3,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.2,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.25,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.5,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.2,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.3,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.35,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.91,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.75,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.4,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.55,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.67,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.65,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.25,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.65,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.85,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: '富国转型机遇',
-            value: 0.55,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'aaa',
-            value: 0.35,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: 'bbb',
-            value: 0.65,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-    ],
+    data,
+    tags,
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
@@ -358,7 +237,7 @@ const baseAreaChart = (
     showDate = true,
     max = null // 是否使用对象里自带的颜色
 ) => {
-    return `
+    let str = `
 (function(){
 chart = new F2.Chart({
   id: 'chart',
@@ -456,35 +335,33 @@ chart.line()
   .style('type', {
     lineWidth: 1,
   });
-  chart.guide().html({
-    position: ['2021-07-21', 0.85],
-    html: "<div style='background: rgba(255,125,65,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #FF7D41;width:6px;height:6px;border-radius:50%;'></div></div>",
-    alignY: 'bottom',
-    offsetY: 5,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.55],
-    html: "<div style='background: rgba(84,89,104,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #545968;width:6px;height:6px;border-radius:50%;'></div></div>",
-    alignY: 'bottom',
-    offsetY: 5,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.85],
-    html: "<div style='padding:5px 6px;border-radius:5px;background-color:#FF7D41;position:relative;display:flex;align-items:center;white-space: nowrap;'><div style='background-color:#fff;border-radius:2px;padding:1px 2px;font-size:10px;line-height:14px;color:#ff7d41'>升级后</div><span style='margin-left:4px;font-size:10px;line-height:14px;color:#fff;'>持有收益<span style='font-size:14px;color:#fff;font-weight:bold;font-family: DIN Alternate-Bold, DIN Alternate;margin:0 3px;vertical-align: bottom;'>2,353.70</span>元</span><div style='position:absolute;right:0px;bottom:-5px;width:0;height:0;border-color:transparent #FF7D41 transparent transparent;border-style:solid;border-width:0 7px 8px 0;'></div></div>",
-    alignX: 'right',
-    alignY: 'bottom',
-    offsetY: -25,
-    offsetX: -12,
-  });
-  chart.guide().html({
-    position: ['2021-07-21', 0.55],
-    html: "<div style='padding:5px 6px;border-radius:5px;background-color:#545968;position:relative;display:flex;align-items:center;white-space: nowrap;'><div style='background-color:#fff;border-radius:2px;padding:1px 2px;font-size:10px;line-height:14px;color:#545968'>当前</div><span style='margin-left:4px;font-size:10px;line-height:14px;color:#fff;'>持有收益<span style='font-size:14px;color:#fff;font-weight:bold;font-family: DIN Alternate-Bold, DIN Alternate;margin:0 3px;vertical-align: bottom;'>2,353.70</span>元</span><div style='position:absolute;right:0px;top:-5px;width:0;height:0;border-color:transparent #545968 transparent transparent;border-style:solid;border-width:8px 7px 0 0;'></div></div>",
-    alignX: 'right',
-    alignY: 'top',
-    offsetY: 8,
-    offsetX: -12,
-  });
+  ${tags.reduce((memo, item, idx) => {
+      let offset =
+          idx === 1
+              ? `alignX: 'right',
+        alignY: 'bottom',
+        offsetY: -25,
+        offsetX: -12,`
+              : `alignX: 'right',
+        alignY: 'top',
+        offsetY: 8,
+        offsetX: -12,`;
+      memo += `chart.guide().html({
+        position: ${JSON.stringify(item.position)},
+        html: "${item.point_html}",
+        alignY: 'bottom',
+        offsetY: 5,
+      });
+      chart.guide().html({
+        position: ${JSON.stringify(item.position)},
+        html: "${item.content_html}",
+        ${offset}
+      });
+      `;
+      return memo;
+  }, '')}
 chart.render();
 })();
 `;
+    return str;
 };

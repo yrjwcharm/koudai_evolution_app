@@ -1,13 +1,31 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
+import {getUpgradeToPlanChart} from './services';
 
-const TaurenSignal = ({onCardHeight}) => {
-    const [activeTab, setTabActive] = useState(0);
+const TaurenSignal = ({data, upgrade_id, onCardHeight}) => {
+    const [activeTab, setTabActive] = useState();
+    const [chart, setChart] = useState({});
+
+    const getData = (period) => {
+        getUpgradeToPlanChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
+            if (res.code === '000000') {
+                setChart(res.result);
+                if (!activeTab) {
+                    let obj = res.result?.subtabs?.find?.((item) => item.active);
+                    if (obj) setTabActive(obj.val);
+                }
+            }
+        });
+    };
+
+    useEffect(() => {
+        getData(null);
+    }, []);
     return (
         <View
             style={styles.container}
@@ -19,23 +37,28 @@ const TaurenSignal = ({onCardHeight}) => {
                     source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/probability-signal.png'}}
                     style={{width: px(22), height: px(22), marginRight: px(8)}}
                 />
-                <Text style={styles.title}>牛人信号</Text>
+                <Text style={styles.title}>{data.title}</Text>
             </View>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>2,300.34</Text>
+                <Text style={[styles.rateText, {color: '#121D3A'}]}>{chart.now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                         style={styles.panelIcon}
                     />
-                    <Text style={styles.pannelDesc}>累计收益</Text>
+                    <Text style={styles.pannelDesc}>{data.name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>9,560.43</Text>
+                <Text style={[styles.rateText, {color: '#E74949'}]}>{chart.after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
-                {true && (
+                {chart?.chart && (
                     <Chart
-                        initScript={baseAreaChart(undefined, true, 2, null, [10, 8, 10, 0])}
+                        initScript={baseAreaChart(chart?.chart || [], chart.tag_legends || [], true, 2, null, [
+                            10,
+                            8,
+                            10,
+                            0,
+                        ])}
                         style={{width: '100%'}}
                     />
                 )}
@@ -44,32 +67,35 @@ const TaurenSignal = ({onCardHeight}) => {
                 <View style={styles.legendRow}>
                     <View style={styles.legendItem}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[1]}]} />
-                        <Text style={styles.legendRowText}>当前产品名称</Text>
+                        <Text style={styles.legendRowText}>{chart.legends?.[0]?.name}</Text>
                     </View>
-                    <View style={styles.legendItem}>
+                    <View style={[styles.legendItem, {marginLeft: px(16)}]}>
                         <View style={[styles.rowIcon, {backgroundColor: colors[0]}]} />
-                        <Text style={styles.legendRowText}>升级后产品名称</Text>
+                        <Text style={styles.legendRowText}>{chart.legends?.[1]?.name}</Text>
                     </View>
                 </View>
             </View>
             <View style={styles.tabsWrap}>
-                {[1, 2, 3].map((item, idx) => (
+                {chart?.subtabs?.map((item, idx) => (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={idx}
-                        style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#F5F6F8'}]}
+                        style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
-                            setTabActive(idx);
+                            setTabActive(item.val);
+                            getData(item.val);
                         }}>
-                        <Text style={[styles.tabText, {color: activeTab === idx ? '#0051cc' : '#545968'}]}>
-                            持有以来
+                        <Text style={[styles.tabText, {color: activeTab === item.val ? '#0051cc' : '#545968'}]}>
+                            {item.key}
                         </Text>
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={styles.compareTableWrap}>
-                <CompareTable />
-            </View>
+            {data?.upgrade_items?.length > 0 && (
+                <View style={styles.compareTableWrap}>
+                    <CompareTable data={data?.upgrade_items} />
+                </View>
+            )}
         </View>
     );
 };
@@ -120,7 +146,7 @@ const styles = StyleSheet.create({
     },
     legendRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     legendItem: {
@@ -188,50 +214,8 @@ const areaColors = ['l(90) 0:#FFF9ED 1:#fff', 'transparent'];
 const deviceWidth = Dimensions.get('window').width;
 
 const baseAreaChart = (
-    data = [
-        {
-            type: '交银施罗德持续成长',
-            value: 0.65,
-            date: '2021-07-15',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.5,
-            date: '2021-07-16',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.91,
-            date: '2021-07-19',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.67,
-            date: '2021-07-20',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.85,
-            date: '2021-07-21',
-            line: '',
-            area: '',
-        },
-        {
-            type: '交银施罗德持续成长',
-            value: 0.55,
-            date: '2021-07-22',
-            line: '',
-            area: '',
-        },
-    ],
+    data,
+    tag_legends,
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
@@ -338,34 +322,41 @@ chart.line()
 .style('type', {
   lineWidth: 1,
 });
-chart.guide().tag({
-  position: ['2021-07-16', 0.5],
-  content: '你的买点',
-  background:{
-    fill: '#545968'
-  },
-  pointStyle:{
-    fill: '#545968',
-    r: 5, 
-  }
-});
-chart.guide().tag({
-  position: ['2021-07-19', 0.91],
-  content: '买入信号',
-  background:{
-    fill: '#048152'
-  },
-  pointStyle:{
-    fill: '#4BA471',
-    r: 5, 
-  }
-});
+${tag_legends.reduce((memo, item, idx) => {
+    memo += `chart.guide().tag({
+      position: ${JSON.stringify(item.position)},
+      content: "${item.content}",
+      background:{
+        fill: "${['#545968', '#048152'][item.tag - 1]}"
+      },
+      pointStyle:{
+        fill: "${['#545968', '#4BA471'][item.tag - 1]}",
+        r: 3, 
+      }
+    });
+    `;
+    return memo;
+}, '')}
 chart.guide().html({
-  position: ['2021-07-22', 0.55],
-  html: "<div style='background: rgba(255,125,65,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #FF7D41;width:6px;height:6px;border-radius:50%;'></div></div>",
+  position: ["${data[data.length - 1].date}", ${data[data.length - 1].value}],
+  html: "<div style='background: rgba(255,125,65,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #FF7D41;width:8px;height:8px;border-radius:50%;'></div></div>",
   alignY: 'bottom',
   offsetY: 5,
 });
+chart.point().position('date*value').size('tag', function(val) {
+    return val ? 5 : 0;
+  }).style('tag', {
+    fill: function fill(val) {
+      if (val === 1) {
+        return '#545968';
+      } else if (val === 2) {
+        return '#4BA471';
+      }
+    },
+    stroke: '#fff',
+    lineWidth: 1
+  });
+
 chart.render();
 })();
 `;

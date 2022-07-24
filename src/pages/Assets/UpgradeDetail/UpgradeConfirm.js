@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -7,15 +7,42 @@ import {Font} from '~/common/commonStyle';
 import Agreements from '~/components/Agreements';
 import BottomDesc from '~/components/BottomDesc';
 import {Button} from '~/components/Button';
+import {PasswordModal} from '~/components/Password';
 import {isIphoneX, px} from '~/utils/appUtil';
+import {upgradeConfirm, upgradeDo} from './services';
 
 const UpgradeConfirm = () => {
+    const [data, setData] = useState(null);
     const [curCardLayout, setCurCardLayout] = useState(null);
     const [futureCardLayout, setFutureCardLayout] = useState(null);
-    const [showCheckTag, setShowCheckTag] = useState(false);
     const [check, setCheck] = useState(false);
 
-    return (
+    const {part1, part2, part3, button, bottom_agreements} = useMemo(() => {
+        return data || {};
+    }, [data]);
+
+    const passwordModal = useRef(null);
+
+    useEffect(() => {
+        upgradeConfirm({upgrade_id: 1}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
+    }, []);
+
+    const confirm = useCallback(() => {
+        passwordModal.current.show();
+    }, []);
+
+    const submit = useCallback((password) => {
+        console.log(password);
+        upgradeDo({password, upgrade_id: 1}).then((res) => {
+            console.log(res);
+        });
+    }, []);
+
+    return data ? (
         <View style={styles.container}>
             <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 0.3}} colors={['#fff', '#F5F7F8']} style={{flex: 1}}>
                 <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
@@ -33,13 +60,13 @@ const UpgradeConfirm = () => {
                                 <View style={{height: px(2), backgroundColor: '#9AA0B1', borderRadius: px(4)}} />
                                 <View style={styles.assetsWrap}>
                                     <View style={styles.header}>
-                                        <Text style={styles.headerLabel}>持仓产品</Text>
-                                        <Text style={styles.headerLabel}>当前持仓金额(元)</Text>
+                                        <Text style={styles.headerLabel}>{part1?.head?.[0]}</Text>
+                                        <Text style={styles.headerLabel}>{part1?.head?.[1]}</Text>
                                     </View>
-                                    {[1, 2].map((item, idx) => (
+                                    {part1?.items?.map((item, idx) => (
                                         <View key={idx} style={[styles.item, {marginTop: px(12)}]}>
-                                            <Text style={styles.bigName}>国投瑞银新能源混合A</Text>
-                                            <Text style={styles.bigAmount}>120,000.00</Text>
+                                            <Text style={styles.bigName}>{item.name}</Text>
+                                            <Text style={styles.bigAmount}>{item.amount}</Text>
                                         </View>
                                     ))}
                                 </View>
@@ -81,23 +108,25 @@ const UpgradeConfirm = () => {
                                 <View style={{height: px(2), backgroundColor: '#FF7D41', borderRadius: px(4)}} />
                                 <View style={styles.assetsWrap}>
                                     <View style={styles.header}>
-                                        <Text style={styles.headerLabel}>升级产品</Text>
-                                        <Text style={styles.headerLabel}>升级后总持仓金额(元)</Text>
+                                        <Text style={styles.headerLabel}>{part2?.head?.[0]}</Text>
+                                        <Text style={styles.headerLabel}>{part2?.head?.[1]}</Text>
                                     </View>
-                                    <View style={[styles.item, {marginTop: px(12)}]}>
-                                        <Text style={styles.bigName}>某某某某某某组合全称</Text>
-                                        <Text style={styles.bigAmount}>120,000.00</Text>
-                                    </View>
+                                    {part2?.items?.map((item, idx) => (
+                                        <View key={idx} style={[styles.item, {marginTop: px(12)}]}>
+                                            <Text style={styles.bigName}>{item.name}</Text>
+                                            <Text style={styles.bigAmount}>{item.amount}</Text>
+                                        </View>
+                                    ))}
                                     {/* 具体 */}
                                     <View style={styles.detail}>
                                         <View style={styles.header}>
-                                            <Text style={styles.headerLabel}>产品名称</Text>
-                                            <Text style={styles.headerLabel}>升级后持仓(元)</Text>
+                                            <Text style={styles.headerLabel}>{part3?.head?.[0]}</Text>
+                                            <Text style={styles.headerLabel}>{part3?.head?.[1]}</Text>
                                         </View>
-                                        {[1, 2, 3, 4, 5, 6].map((item, idx) => (
+                                        {part3?.items?.map?.((item, idx) => (
                                             <View key={idx} style={[styles.item, {marginTop: px(16)}]}>
-                                                <Text style={styles.smallName}>某某某某某某组合全称</Text>
-                                                <Text style={styles.smallAmount}>120,000.00</Text>
+                                                <Text style={styles.smallName}>{item.name}</Text>
+                                                <Text style={styles.smallAmount}>{item.amount}</Text>
                                             </View>
                                         ))}
                                     </View>
@@ -126,34 +155,45 @@ const UpgradeConfirm = () => {
             </LinearGradient>
             <View style={styles.bottomWrap}>
                 {/* agreement agreement_bottom button */}
-                {/* {agreement?.radio_text && showCheckTag && !check ? (
-                    <View style={styles.checkTag}>
-                        <Text style={{fontSize: px(14), lineHeight: px(20), color: '#fff'}}>
-                            {agreement?.radio_text}
-                        </Text>
-                        <View style={styles.qualTag} />
-                    </View>
-                ) : null}
-                <Agreements
-                    check={agreement_bottom?.default_agree}
-                    data={agreement_bottom?.list}
-                    otherAgreement={agreement}
-                    otherParam={otherParam}
-                    title={agreement_bottom?.text}
-                    text1={agreement_bottom?.text1}
-                    onChange={(checkStatus) => {
-                        setCheck(checkStatus);
-                        setShowCheckTag(!checkStatus);
-                    }}
-                    suffix={agreement_bottom.agree_text}
-                />
+                <View style={{marginHorizontal: px(16)}}>
+                    {!check ? (
+                        <View style={styles.checkTag}>
+                            <Text style={{fontSize: px(14), lineHeight: px(20), color: '#fff'}}>请勾选</Text>
+                            <View style={styles.qualTag} />
+                        </View>
+                    ) : null}
+                    <Agreements
+                        check={false}
+                        title={data.agreement_before}
+                        data={bottom_agreements}
+                        text1={data.agreement_after}
+                        onChange={(checkStatus) => {
+                            setCheck(checkStatus);
+                        }}
+                    />
+                </View>
+                <View style={styles.feeWrap}>
+                    <Text style={styles.feeBlack}>{data.fee_text}：</Text>
+                    <Text
+                        style={[
+                            styles.feeBlack,
+                            {
+                                textDecorationLine: 'line-through',
+                            },
+                        ]}>
+                        {data.old_fee}
+                    </Text>
+                    <Text style={styles.feeHigh}>{data.fee}</Text>
+                </View>
                 <Button
-                    style={{paddingVertical: px(8), paddingHorizontal: px(15)}}
+                    style={{marginTop: px(8), marginHorizontal: px(16)}}
                     disabled={!check || button.avail === 0}
-                /> */}
+                    onPress={confirm}
+                />
             </View>
+            <PasswordModal ref={passwordModal} onDone={submit} />
         </View>
-    );
+    ) : null;
 };
 
 export default UpgradeConfirm;
@@ -224,9 +264,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(8),
         paddingVertical: px(6),
         position: 'absolute',
-        top: -px(30),
+        top: -px(43),
         zIndex: 10,
-        left: px(12),
+        left: px(-6),
         borderRadius: px(4),
     },
     qualTag: {
@@ -238,7 +278,30 @@ const styles = StyleSheet.create({
         bottom: -px(12),
     },
     bottomWrap: {
+        paddingTop: px(10),
         paddingBottom: isIphoneX() ? 34 : px(8),
         backgroundColor: '#fff',
+    },
+    feeWrap: {
+        borderTopColor: '#F4F5F7',
+        borderBottomColor: '#F4F5F7',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        paddingVertical: px(8),
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: px(16),
+        marginTop: px(8),
+    },
+    feeBlack: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#545968',
+    },
+    feeHigh: {
+        fontSize: px(12),
+        lineHeight: px(21),
+        color: '#ff7d41',
+        marginLeft: px(4),
     },
 });

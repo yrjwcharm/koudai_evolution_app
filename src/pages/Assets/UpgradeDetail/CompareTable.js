@@ -48,7 +48,21 @@ const CompareTable = ({data = []}) => {
                             </View>
                         ) : null}
                         <View style={[styles.cell, idx > 0 ? {borderTopWidth: 1, borderTopColor: '#FF7D41'} : {}]}>
-                            <Text style={[styles.rateText, {color: '#FF7D41'}]}>{item.after_value}</Text>
+                            {Array.isArray(item.after_value) ? (
+                                <View style={styles.afterValueWrap}>
+                                    {item.after_value.map((itm, index) => (
+                                        <View key={index} style={styles.afterValueItem}>
+                                            <FastImage
+                                                source={{uri: itm.icon}}
+                                                style={{width: px(18), height: px(18), borderRadius: px(18)}}
+                                            />
+                                            <Text style={styles.afterValueItemText}>{itm.name}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ) : (
+                                <Text style={[styles.rateText, {color: '#FF7D41'}]}>{item.after_value}</Text>
+                            )}
                         </View>
                     </View>
                 </View>
@@ -120,5 +134,23 @@ const styles = StyleSheet.create({
         lineHeight: px(21),
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
+    },
+    afterValueWrap: {
+        alignItems: 'center',
+    },
+    afterValueItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: px(6),
+        backgroundColor: '#fff',
+        borderRadius: px(287),
+        paddingRight: px(8),
+        paddingLeft: px(2),
+    },
+    afterValueItemText: {
+        fontSize: px(11),
+        lineHeight: px(16),
+        color: '#ff7d41',
+        marginLeft: px(3),
     },
 });

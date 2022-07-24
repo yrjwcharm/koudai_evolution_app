@@ -3,9 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 
-const a = ['1. 提高收益', '牛人信号', '越跌越买', '概率信号'];
-
-const StickyHeaderPlan = ({scrollY, curtainNum, handlerCurtainHeight}) => {
+const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight}) => {
     return (
         <View
             style={[styles.container, {top: scrollY}]}
@@ -15,17 +13,17 @@ const StickyHeaderPlan = ({scrollY, curtainNum, handlerCurtainHeight}) => {
             {curtainNum > 0 && (
                 <View style={[styles.item]}>
                     <View style={styles.itemLeft}>
-                        <Text style={styles.itemTitle}>{a[0]}</Text>
+                        <Text style={styles.itemTitle}>{detail[0].item_title}</Text>
                     </View>
                     <View style={styles.itemRight}>
-                        <Text style={styles.rate}>3,500.34</Text>
+                        <Text style={styles.rate}>{detail?.[0]?.now_value}</Text>
                         <FastImage
                             source={{
                                 uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
                             }}
                             style={styles.panelIcon}
                         />
-                        <Text style={styles.rate}>15,000.43</Text>
+                        <Text style={styles.rate}>{detail?.[0]?.after_value}</Text>
                     </View>
                 </View>
             )}
@@ -41,15 +39,14 @@ const StickyHeaderPlan = ({scrollY, curtainNum, handlerCurtainHeight}) => {
                             <View style={styles.subItemLeft}>
                                 <FastImage
                                     source={{
-                                        uri:
-                                            'http://static.licaimofang.com/wp-content/uploads/2022/07/probability-signal.png',
+                                        uri: detail[idx + 1].item_icon,
                                     }}
                                     style={{width: px(18), height: px(18)}}
                                 />
-                                <Text style={styles.itemSubTitle}>{a[idx + 1]}</Text>
+                                <Text style={styles.itemSubTitle}>{detail[idx + 1].item_title}</Text>
                             </View>
                             <View style={styles.itemRight}>
-                                <Text style={styles.rate}>3,500.34</Text>
+                                <Text style={styles.rate}>{detail[idx + 1].now_value}</Text>
                                 <FastImage
                                     source={{
                                         uri:
@@ -57,7 +54,7 @@ const StickyHeaderPlan = ({scrollY, curtainNum, handlerCurtainHeight}) => {
                                     }}
                                     style={styles.panelIcon}
                                 />
-                                <Text style={styles.rate}>15,000.43</Text>
+                                <Text style={styles.rate}>{detail[idx + 1].after_value}</Text>
                             </View>
                         </View>
                     ))}
