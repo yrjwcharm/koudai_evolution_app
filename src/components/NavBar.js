@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
+import FastImage from 'react-native-fast-image';
 const topbarHeight = px2dp(44);
 
 // NavBar.propTypes = {
@@ -119,9 +120,17 @@ const NavBar = React.forwardRef((props, ref) => {
     return (
         <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}]}>
             {renderBtn('left')}
-            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
-                {props.title}
-            </Animated.Text>
+            <View style={styles.titleWrap}>
+                {!!props.titleIcon && (
+                    <FastImage
+                        source={{uri: props.titleIcon}}
+                        style={{width: px(22), height: px(22), marginRight: px(4)}}
+                    />
+                )}
+                <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
+                    {props.title}
+                </Animated.Text>
+            </View>
             {renderBtn('right')}
         </View>
     );
@@ -141,16 +150,21 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: 'center',
     },
+    titleWrap: {
+        width: px(200),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bottom: px(12),
+        position: 'absolute',
+        left: (deviceWidth - px(200)) / 2,
+    },
     title: {
         color: Colors.navTitleColor,
         fontWeight: 'bold',
         fontSize: px2dp(17),
         flex: 1,
         textAlign: 'center',
-        position: 'absolute',
-        left: (deviceWidth - px(200)) / 2,
-        bottom: px(12),
-        width: px(200),
     },
     text_ty: {
         // marginRight: px2dp(16),

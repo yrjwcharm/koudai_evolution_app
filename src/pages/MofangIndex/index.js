@@ -160,7 +160,9 @@ const Index = (props) => {
             setAll(res.result.all);
         });
     }, []);
-
+    const handler = () => {
+        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/TaurenSignal'}});
+    };
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
@@ -303,6 +305,7 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
+                            <Button title={'click'} onPress={handler} />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity

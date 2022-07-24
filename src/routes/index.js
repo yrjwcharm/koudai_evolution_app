@@ -215,6 +215,7 @@ import ProjectSetTradeAmount from '~/pages/Project/ProjectSetTradeAmount'; //计
 import SubscribeManage from '~/pages/Settings/SubscribeManage'; //订阅管理
 import MfbHoldingInfo from '~/pages/Mfb/MfbHoldingInfo'; // 魔方宝持有信息
 import AutoCharge from '~/pages/Mfb/AutoCharge'; // 自动充值
+import ToolWebView from '~/pages/Assets/ToolWebView'; // 工具webview
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -837,6 +838,7 @@ export default function AppStack() {
             <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
             <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
             <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
+            <Stack.Screen name="ToolWebView" component={ToolWebView} options={{title: '', headerShown: false}} />
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
             <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
