@@ -9,7 +9,7 @@ import TaurenSignal from './TaurenSignal';
 import FallBuy from './FallBuy';
 import ProbabilitySignal from './ProbabilitySignal';
 
-const ToPlan = () => {
+const UpgradeToPlan = () => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
     const cardsHeight = useRef([]);
@@ -65,7 +65,7 @@ const ToPlan = () => {
     );
 };
 
-export default ToPlan;
+export default UpgradeToPlan;
 
 const styles = StyleSheet.create({
     container: {
