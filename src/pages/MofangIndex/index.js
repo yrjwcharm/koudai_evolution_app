@@ -32,6 +32,7 @@ import GuideTips from '../../components/GuideTips';
 // import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
 import LiveCard from '../../components/Article/LiveCard';
+import {Button} from '~/components/Button';
 // let codePushOptions = {
 //     checkFrequency: CodePush.CheckFrequency.MANUAL,
 // };
@@ -146,7 +147,7 @@ const Index = (props) => {
         });
     }, []);
     const handler = () => {
-        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/TaurenSignal'}});
+        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/ProbabilitySignal'}});
     };
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
