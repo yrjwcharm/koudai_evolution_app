@@ -120,17 +120,23 @@ const NavBar = React.forwardRef((props, ref) => {
     return (
         <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}]}>
             {renderBtn('left')}
-            <View style={styles.titleWrap}>
-                {!!props.titleIcon && (
-                    <FastImage
-                        source={{uri: props.titleIcon}}
-                        style={{width: px(22), height: px(22), marginRight: px(4)}}
-                    />
-                )}
-                <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
+            {props.titleIcon ? (
+                <View style={styles.titleWrap}>
+                    {!!props.titleIcon && (
+                        <FastImage
+                            source={{uri: props.titleIcon}}
+                            style={{width: px(22), height: px(22), marginRight: px(4)}}
+                        />
+                    )}
+                    <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
+                        {props.title}
+                    </Animated.Text>
+                </View>
+            ) : (
+                <Animated.Text numberOfLines={1} style={[styles.title, styles.titleWrap, titleStyle, props.fontStyle]}>
                     {props.title}
                 </Animated.Text>
-            </View>
+            )}
             {renderBtn('right')}
         </View>
     );

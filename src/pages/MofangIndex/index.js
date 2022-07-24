@@ -147,7 +147,7 @@ const Index = (props) => {
         });
     }, []);
     const handler = () => {
-        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/ProbabilitySignal'}});
+        jump({path: 'ToolWebView', params: {link: 'http://192.168.189.29:3000/LowBuy'}});
     };
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
