@@ -1,15 +1,14 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-28 14:36:27
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-25 14:33:05
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useRoute} from '@react-navigation/native';
 import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -21,8 +20,7 @@ import EmptyTip from '../../components/EmptyTip';
 import {BottomModal} from '../../components/Modal';
 import {throttle} from 'lodash';
 
-const NetValueTrend = ({poid}) => {
-    const insets = useSafeAreaInsets();
+const NetValueTrend = ({fund_code = '', poid = ''}) => {
     const route = useRoute();
     const [refreshing, setRefreshing] = useState(false);
     const [period, setPeriod] = useState(route.params.period || 'm1');
@@ -37,7 +35,7 @@ const NetValueTrend = ({poid}) => {
 
     const init = useCallback(() => {
         setChart_data([]);
-        http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
+        http.get('/profit/portfolio_nav/20210101', {fund_code, period, poid}).then((res) => {
             setShowEmpty(true);
             if (res.code === '000000') {
                 setRefreshing(false);
@@ -45,11 +43,9 @@ const NetValueTrend = ({poid}) => {
                 setChart_data(res.result.chart);
             }
         });
-    }, [period, poid]);
-    // 下拉刷新回调
-    const onRefresh = useCallback(() => {
-        init();
-    }, [init]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [period]);
+
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
         if (!t) {
@@ -63,6 +59,7 @@ const NetValueTrend = ({poid}) => {
             return Colors.red;
         }
     }, []);
+
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -79,6 +76,7 @@ const NetValueTrend = ({poid}) => {
         },
         [getColor]
     );
+
     // 图表滑动结束
     const onHide = useCallback(() => {
         chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
@@ -101,14 +99,16 @@ const NetValueTrend = ({poid}) => {
     useEffect(() => {
         init();
     }, [init]);
+
     useEffect(() => {
         if (chartData.label) {
             onHide();
         }
     }, [chartData, onHide]);
+
     return (
         <ScrollView
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={init} />}
             scrollEventThrottle={1000}
             style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
             {chartData.chart ? (
@@ -405,7 +405,8 @@ const styles = StyleSheet.create({
 });
 
 NetValueTrend.propTypes = {
-    poid: PropTypes.string.isRequired,
+    fund_code: PropTypes.string,
+    poid: PropTypes.string,
 };
 
 export default NetValueTrend;
