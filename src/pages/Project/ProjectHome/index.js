@@ -8,7 +8,6 @@ import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import RenderSignal from './RenderSignal';
-import {Button} from '~/components/Button';
 import {useFocusEffect} from '@react-navigation/native';
 import {getProjectData} from './service';
 import {useJump} from '~/components/hooks';
@@ -21,7 +20,7 @@ import LoginMask from '~/components/LoginMask';
 import Banner from './Banner';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
-const Index = ({navigation}) => {
+const Index = () => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [refreshing, setRefreshing] = useState(false);
@@ -115,7 +114,7 @@ const Index = ({navigation}) => {
         </>
     );
 };
-const Title = ({style, title, sub_title, tip}) => {
+const Title = ({title, sub_title, tip}) => {
     return (
         <View style={[Style.flexRow, {marginBottom: px(8)}]}>
             <Text style={{fontSize: px(18), fontWeight: '700', color: Colors.defaultColor, marginRight: px(8)}}>
@@ -133,5 +132,3 @@ const Title = ({style, title, sub_title, tip}) => {
     );
 };
 export default Index;
-
-const styles = StyleSheet.create({});

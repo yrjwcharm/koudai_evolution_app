@@ -81,6 +81,7 @@ const Header = (props) => {
                                     : {backgroundColor: '#fff', borderWidth: 0.5, borderColor: '#0051CC'},
                             ]}
                             onPress={() => {
+                                global.LogTool({event: 'click', oid: item.code});
                                 jump(item.buy_button.url);
                             }}>
                             <Text style={[styles.btnText, {color: item.tip ? '#fff' : '#0051CC'}]}>

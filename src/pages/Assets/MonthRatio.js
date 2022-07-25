@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-22 16:41:34
+ * @LastEditTime: 2022-07-25 14:30:28
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,7 +19,7 @@ import EmptyTip from '../../components/EmptyTip';
 import Dot from '../Portfolio/components/Dot';
 import {BottomModal} from '../../components/Modal';
 
-const NetValueTrend = ({fund_code = '', poid = ''}) => {
+const MonthRatio = ({fund_code = '', poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [chartData, setChart] = useState({});
@@ -288,8 +288,9 @@ const styles = StyleSheet.create({
     },
 });
 
-NetValueTrend.propTypes = {
-    poid: PropTypes.string.isRequired,
+MonthRatio.propTypes = {
+    fund_code: PropTypes.string,
+    poid: PropTypes.string,
 };
 
-export default NetValueTrend;
+export default MonthRatio;

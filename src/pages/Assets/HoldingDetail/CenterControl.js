@@ -79,9 +79,15 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         return btn?.text ? (
             <TouchableOpacity
                 activeOpacity={0.8}
+                disabled={btn.avail === 0}
                 key={btn.text}
                 onPress={() => jump(btn.url)}
-                style={[Style.flexCenter, styles.consoleBtn, style]}>
+                style={[
+                    Style.flexCenter,
+                    styles.consoleBtn,
+                    btn.avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
+                    style,
+                ]}>
                 <Text style={[styles.btnText, {color: btn.avail === 0 ? '#BDC2CC' : '#fff'}]}>{btn.text}</Text>
             </TouchableOpacity>
         ) : null;

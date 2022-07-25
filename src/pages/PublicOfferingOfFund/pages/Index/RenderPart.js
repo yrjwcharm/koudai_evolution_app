@@ -65,8 +65,16 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
                     onChangeTab={(value) => {
                         pageRef.current = value.i;
                         pointKey && global.LogTool({ctrl: value.i + 1, event: pointKey});
-                        const {plateid, rec_json} = tabs[value.i];
-                        plateid && rec_json && global.LogTool({event: 'rec_show', plateid, rec_json});
+                        const {items: list, plateid, rank_type, rec_json} = tabs[value.i];
+                        if (plateid && rec_json) {
+                            global.LogTool({event: 'rec_show', plateid, rec_json});
+                        } else {
+                            global.LogTool({
+                                event: 'top_show',
+                                ctrl: rank_type,
+                                oid: list.map((item) => item.code).join(','),
+                            });
+                        }
                     }}
                     prerenderingSiblingsNumber={Infinity}
                     renderTabBar={() => <CapsuleTabbar boxStyle={[styles.tabsContainer, tabsStyle]} />}
@@ -81,9 +89,15 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
                                             data={{
                                                 ...item,
                                                 LogTool: () => {
-                                                    plateid &&
-                                                        rec_json &&
+                                                    if (plateid && rec_json) {
                                                         global.LogTool({event: 'rec_click', plateid, rec_json});
+                                                    } else {
+                                                        global.LogTool({
+                                                            event: 'top_click',
+                                                            ctrl: rank_type,
+                                                            oid: item.code,
+                                                        });
+                                                    }
                                                 },
                                             }}
                                             key={index}

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-22 16:38:39
+ * @LastEditTime: 2022-07-25 15:05:06
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -432,9 +432,11 @@ const styles = StyleSheet.create({
 });
 
 AccProfit.propTypes = {
+    fund_code: PropTypes.string,
     poid: PropTypes.string,
 };
 AccProfit.defaultProps = {
+    fund_code: '',
     poid: '',
 };
 

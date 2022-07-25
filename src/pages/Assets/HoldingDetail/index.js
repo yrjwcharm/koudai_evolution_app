@@ -6,6 +6,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
+import {TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Picker from 'react-native-picker';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -35,7 +36,6 @@ import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {getChartData, getPageData, openTool, setDividend} from './services';
 import CenterControl from './CenterControl';
-import {TextInput} from 'react-native-gesture-handler';
 import {debounce} from 'lodash';
 
 /** @name 顶部基金信息 */
@@ -405,8 +405,8 @@ const RenderChart = ({data = {}}) => {
                                 ? ['transparent']
                                 : [Colors.red, Colors.lightBlackColor, 'transparent'],
                             key === 'amount_change' ? ['red'] : ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            key === 'nav',
-                            key === 'nav' ? 2 : 0,
+                            ['nav', 'roe7d'].includes(key),
+                            ['nav', 'roe7d'].includes(key) ? 2 : 0,
                             deviceWidth - px(32),
                             [10, 20, 10, 18],
                             tag_position,
@@ -583,6 +583,7 @@ export default ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
     const {
+        ad_info,
         button_list,
         buy_mode,
         chart_tabs,
@@ -667,6 +668,17 @@ export default ({navigation, route}) => {
                         </LinearGradient>
                         <View style={{paddingHorizontal: Space.padding}}>
                             {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
+                            {ad_info ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(ad_info.url)}
+                                    style={{marginTop: Space.marginVertical}}>
+                                    <Image
+                                        source={{uri: ad_info.cover}}
+                                        style={{height: px(60), borderRadius: px(30)}}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
                             {group_bulletin ? <GroupBulletIn data={group_bulletin} /> : null}
                             {buy_mode ? <BuyMode data={buy_mode} refresh={init} /> : null}
                             {chart_tabs ? <ChartTabs tabs={chart_tabs} /> : null}

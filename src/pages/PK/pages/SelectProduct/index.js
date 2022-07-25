@@ -91,7 +91,7 @@ const SelectProduct = (props) => {
     };
 
     const deleteSelectedItem = (item) => {
-        global.LogTool({ctrl: item.code, event: 'ProductSelection_DelFund'});
+        global.LogTool({oid: item.code, event: 'ProductSelection_DelFund'});
         setSelectData((val) => {
             return val.filter((itm) => item.code !== itm.code);
         });
@@ -103,22 +103,23 @@ const SelectProduct = (props) => {
         const {plateid, rec_json} = logParams.current;
         // 整理selectData
         let state = selectData.find((itm) => itm.code === item.code);
+        const _logParams = {oid: item.code, plateid, rec_json, tag: curTab + 1};
+        _logParams.event = plateid && rec_json ? 'rec_click' : 'click';
         if (state) {
-            plateid &&
-                rec_json &&
-                global.LogTool({ctrl: 'cancel', event: 'rec_click', oid: item.code, plateid, rec_json});
+            _logParams.ctrl = 'cancel';
             setSelectData((val) => {
                 return val.filter((itm) => item.code !== itm.code);
             });
         } else {
             if (selectData.length === 6) return Toast.show('您PK的基金过多，最多选择6只');
-            plateid && rec_json && global.LogTool({ctrl: 'add', event: 'rec_click', oid: item.code, plateid, rec_json});
+            _logParams.ctrl = 'add';
             setSelectData((val) => {
                 let arr = [...val];
                 arr.push(item);
                 return arr;
             });
         }
+        global.LogTool(_logParams);
         // 整理redux
         if (props.pkProducts.includes(item.code)) {
             props.delProduct(item.code);

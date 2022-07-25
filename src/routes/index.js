@@ -457,7 +457,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额极速购说明'}} />
-            <Stack.Screen name="MfbIndex" component={MfbHome} options={{headerShown: false}} />
+            <Stack.Screen name="MfbIndex" component={MfbHome} options={{title: ''}} />
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
