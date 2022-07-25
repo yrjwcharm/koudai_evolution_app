@@ -18,7 +18,6 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
 import withNetState from '~/components/withNetState';
-import {Button} from '~/components/Button';
 
 const handlerItemsLog = (items, data) => {
     items?.forEach?.((obj) => {
@@ -91,7 +90,7 @@ const PKHome = ({navigation}) => {
     );
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('tabPress', (e) => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
             if (isFocused) {
                 getData(0);
                 scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
@@ -121,9 +120,6 @@ const PKHome = ({navigation}) => {
                 handlerItemsLog(itm.items, data);
             });
         }
-    };
-    const handlerPress = () => {
-        jump({path: 'ToPortfolio'});
     };
     return loading ? (
         <Loading />

@@ -3,24 +3,28 @@
  * @Description: 计划详情页
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {Linking, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {WebView} from 'react-native-webview';
 import shareFund from '~/assets/img/icon/shareFund.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
-import {BottomModal, ShareModal} from '~/components/Modal';
+import {BottomModal, Modal, ShareModal} from '~/components/Modal';
+import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import {isIphoneX, px} from '~/utils/appUtil';
+import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
 import {getPageData} from './services';
 import {SERVER_URL} from '~/services/config';
 import URI from 'urijs';
 import {useFocusEffect} from '@react-navigation/native';
+import {useHeaderHeight} from '@react-navigation/stack';
 
 export default ({navigation, route}) => {
     const jump = useJump();
+    const headerHeight = useHeaderHeight();
     const {project_id = 1} = route.params;
     const bottomModal = useRef();
     const shareModal = useRef();
@@ -29,7 +33,8 @@ export default ({navigation, route}) => {
     const timeStamp = useRef(Date.now());
     const playTime = useRef();
     const [data, setData] = useState({});
-    const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, share_button: {share_info} = {}} = data;
+    const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, notice, share_button: {share_info} = {}} = data;
+    const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
 
     const init = () => {
         getPageData({project_id}).then((res) => {
@@ -57,16 +62,22 @@ export default ({navigation, route}) => {
 
     const onMessage = (event) => {
         const _data = event.nativeEvent.data;
-        console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-        if (_data?.indexOf('logParams=') > -1) {
-            const logParams = JSON.parse(_data?.split('logParams=')[1] || []);
+        // console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+        if (_data?.indexOf('height=') > -1) {
+            const height = JSON.parse(_data?.split('height=')[1]);
+            height && setHeight(height);
+        } else if (_data?.indexOf('logParams=') > -1) {
+            const logParams = JSON.parse(_data?.split('logParams=')[1]);
             global.LogTool(...logParams);
-        } else if (_data && _data.indexOf('url=') > -1) {
+        } else if (_data?.indexOf('url=') > -1) {
             const url = JSON.parse(_data.split('url=')[1]);
             jump(url);
-        } else if (_data?.indexOf('playTime=')) {
+        } else if (_data?.indexOf('playTime=') > -1) {
             playTime.current = parseInt(_data.split('playTime=')[1], 10);
-        } else if (_data && _data.indexOf('https') <= -1) {
+        } else if (_data?.indexOf('modalContent=') > -1) {
+            const modalContent = JSON.parse(_data.split('modalContent=')[1]);
+            showTips(modalContent);
+        } else if (_data?.indexOf('phone=') > -1) {
             const url = _data.split('phone=')[1] ? `tel:${_data.split('phone=')[1]}` : '';
             if (url) {
                 global.LogTool('call');
@@ -80,6 +91,35 @@ export default ({navigation, route}) => {
                     .catch((err) => Toast.show(err));
             }
         }
+    };
+
+    /** @name 弹窗展示提示 */
+    const showTips = (tips) => {
+        const {content, img, title} = tips;
+        Modal.show(
+            {
+                children: (
+                    <View style={{padding: Space.padding}}>
+                        {img ? <Image source={{uri: img}} style={{width: '100%', height: px(140)}} /> : null}
+                        {content?.map((item, index) => {
+                            const {key: _key, val} = item;
+                            return (
+                                <View key={val + index} style={{marginTop: index === 0 ? 0 : Space.marginVertical}}>
+                                    {_key ? <HTML html={`${_key}:`} style={styles.title} /> : null}
+                                    {val ? (
+                                        <View style={{marginTop: px(4)}}>
+                                            <HTML html={val} style={styles.tipsVal} />
+                                        </View>
+                                    ) : null}
+                                </View>
+                            );
+                        })}
+                    </View>
+                ),
+                title,
+            },
+            'slide'
+        );
     };
 
     // 咨询弹窗内容渲染
@@ -152,7 +192,11 @@ export default ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
+            StatusBar.setBarStyle('light-content');
             init();
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -160,42 +204,56 @@ export default ({navigation, route}) => {
     return (
         <View style={styles.container}>
             <ShareModal ref={shareModal} title={share_info?.title} shareContent={share_info || {}} />
-            <WebView
-                bounces={false}
-                javaScriptEnabled
-                onError={(syntheticEvent) => {
-                    const {nativeEvent} = syntheticEvent;
-                    console.warn('WebView error: ', nativeEvent);
-                }}
-                onHttpError={(syntheticEvent) => {
-                    const {nativeEvent} = syntheticEvent;
-                    console.warn('WebView received error status code: ', nativeEvent.statusCode);
-                }}
-                onLoadEnd={async () => {
-                    const loginStatus = await Storage.get('loginStatus');
-                    // console.log(loginStatus);
-                    webview.current.postMessage(
-                        JSON.stringify({
-                            ...loginStatus,
-                            did: global.did,
-                            timeStamp: timeStamp.current + '',
-                            ver: global.ver,
-                        })
-                    );
-                }}
-                onMessage={onMessage}
-                originWhitelist={['*']}
-                ref={webview}
-                renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
-                source={{
-                    uri: URI(`${SERVER_URL[global.env].H5}/projectDetail/${project_id}`)
-                        .addQuery({timeStamp: timeStamp.current})
-                        .valueOf(),
-                }}
-                startInLoadingState
-                style={{flex: 1, opacity: 0.9999}}
-                textZoom={100}
-            />
+            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
+                <View style={{height: webviewHeight}}>
+                    <WebView
+                        bounces={false}
+                        javaScriptEnabled
+                        onError={(syntheticEvent) => {
+                            const {nativeEvent} = syntheticEvent;
+                            console.warn('WebView error: ', nativeEvent);
+                        }}
+                        onHttpError={(syntheticEvent) => {
+                            const {nativeEvent} = syntheticEvent;
+                            console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                        }}
+                        onLoadEnd={async () => {
+                            const loginStatus = await Storage.get('loginStatus');
+                            // console.log(loginStatus);
+                            webview.current.postMessage(
+                                JSON.stringify({
+                                    ...loginStatus,
+                                    did: global.did,
+                                    timeStamp: timeStamp.current + '',
+                                    ver: global.ver,
+                                })
+                            );
+                        }}
+                        onMessage={onMessage}
+                        originWhitelist={['*']}
+                        ref={webview}
+                        renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
+                        source={{
+                            uri: URI(
+                                `${
+                                    true ? 'http://localhost:3000' : SERVER_URL[global.env].H5
+                                }/projectDetail/${project_id}`
+                            )
+                                .addQuery({timeStamp: timeStamp.current})
+                                .valueOf(),
+                        }}
+                        startInLoadingState
+                        style={{flex: 1, opacity: 0.9999}}
+                        textZoom={100}
+                    />
+                </View>
+                <BottomDesc />
+            </ScrollView>
+            {notice ? (
+                <View style={styles.bottomNotice}>
+                    <HTML html={notice} style={styles.smText} />
+                </View>
+            ) : null}
             {data.bottom_btns ? (
                 <View style={[Style.flexRow, styles.bottomBtns]}>
                     {icon_btns?.map((btn, i) => {
@@ -220,12 +278,12 @@ export default ({navigation, route}) => {
                     })}
                     <View style={[Style.flexRow, styles.rightBtns]}>
                         {simple_btns?.map((btn, i, arr) => {
-                            const {avail, event_id, text, url} = btn;
+                            const {avail, event_id, title, url} = btn;
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     disabled={avail === 0}
-                                    key={text + i}
+                                    key={title + i}
                                     onPress={() => {
                                         global.LogTool({ctrl: project_id, event: event_id});
                                         jump(url);
@@ -244,7 +302,7 @@ export default ({navigation, route}) => {
                                             i === 0 ? {color: avail === 0 ? '#fff' : Colors.brandColor} : {},
                                             i === arr.length - 1 ? {color: '#fff'} : {},
                                         ]}>
-                                        {text}
+                                        {title}
                                     </Text>
                                 </TouchableOpacity>
                             );
@@ -334,5 +392,26 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(16),
         color: Colors.descColor,
+    },
+    title: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    tipsVal: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+    },
+    bottomNotice: {
+        paddingVertical: px(6),
+        paddingHorizontal: px(14),
+        backgroundColor: '#FFF5E5',
+    },
+    smText: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.defaultColor,
     },
 });

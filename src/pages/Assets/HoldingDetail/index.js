@@ -26,13 +26,14 @@ import Mask from '~/components/Mask';
 import {Modal} from '~/components/Modal';
 import Notice from '~/components/Notice';
 import NumText from '~/components/NumText';
+import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
-import {getChartData, getPageData, openTool} from './services';
+import {getChartData, getPageData, openTool, setDividend} from './services';
 import CenterControl from './CenterControl';
 import {TextInput} from 'react-native-gesture-handler';
 import {debounce} from 'lodash';
@@ -598,6 +599,7 @@ export default ({navigation, route}) => {
     const {system_notice, trade_notice} = notice_info || {};
     const [showMask, setShowMask] = useState(false);
     const centerControl = useRef();
+    const passwordModal = useRef();
 
     const init = () => {
         getPageData(route.params || {})
@@ -631,6 +633,15 @@ export default ({navigation, route}) => {
         );
     };
 
+    const onDone = (password, params) => {
+        setDividend({password, ...params}).then((res) => {
+            if (res.code === '000000') {
+                res.message && Toast.show(res.message);
+                init();
+            }
+        });
+    };
+
     useFocusEffect(
         useCallback(() => {
             init();
@@ -641,6 +652,7 @@ export default ({navigation, route}) => {
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
+            <PasswordModal onDone={onDone} ref={passwordModal} />
             <View style={styles.topLine} />
             {Object.keys(data).length > 0 ? (
                 <>
@@ -688,7 +700,14 @@ export default ({navigation, route}) => {
                                                 <View style={{height: px(60)}}>
                                                     <FormItem
                                                         data={item}
-                                                        onChange={(val) => console.log(val)}
+                                                        onChange={(val) => {
+                                                            console.log(val);
+                                                            item.label === '分红方式' &&
+                                                                passwordModal.current?.show({
+                                                                    dividend: val,
+                                                                    ...item.params,
+                                                                });
+                                                        }}
                                                         setShowMask={setShowMask}
                                                     />
                                                 </View>

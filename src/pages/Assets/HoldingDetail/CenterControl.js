@@ -10,7 +10,9 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {BottomModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
+import Toast from '~/components/Toast';
 import {px} from '~/utils/appUtil';
+import {postUnFavor} from './services';
 
 const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
     const jump = useJump();
@@ -22,6 +24,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         content,
         desc: adjustDesc,
         date: adjustDate,
+        id: consoleId,
         ratio_info,
         signal_icon,
         signal_items,
@@ -176,8 +179,16 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
     /** @name 选择不感兴趣理由 */
     const onChooseReason = (id) => {
         setSelected(id);
-        bottomModal.current?.hide();
-        refresh();
+        postUnFavor({id: consoleId, option_id: id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    res.message && Toast.show(res.message);
+                    refresh();
+                }
+            })
+            .finally(() => {
+                bottomModal.current?.hide();
+            });
     };
 
     useImperativeHandle(ref, () => ({
