@@ -128,7 +128,7 @@ const NavBar = React.forwardRef((props, ref) => {
                             style={{width: px(22), height: px(22), marginRight: px(4)}}
                         />
                     )}
-                    <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
+                    <Animated.Text numberOfLines={1} style={[styles.title, {flex: 0}, titleStyle, props.fontStyle]}>
                         {props.title}
                     </Animated.Text>
                 </View>

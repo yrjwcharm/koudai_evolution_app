@@ -71,7 +71,7 @@ const ToolWebView = ({route}) => {
         return res.title
             ? {
                   title: res.title,
-                  titleIcon: res.titleIcon,
+                  titleIcon: res.title_icon,
                   fontStyle: {color: res.type === 'index' ? '#121D3A' : '#fff'},
                   renderRight: topButton ? renderRight() : null,
                   style: {backgroundColor: res.type === 'index' ? '#fff' : '#1E5AE7'},
@@ -103,7 +103,7 @@ const ToolWebView = ({route}) => {
                                 setRes(_res);
                             } else if (data?.indexOf('url=') > -1) {
                                 const url = JSON.parse(data.split('url=')[1]);
-                                jump(url);
+                                jump(url, url.path === 'ToolWebView' ? 'push' : 'navigate');
                             }
                             if (data * 1) {
                                 setHeight(data * 1 || deviceHeight);
