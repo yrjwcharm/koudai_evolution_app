@@ -234,11 +234,7 @@ export default ({navigation, route}) => {
                         ref={webview}
                         renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
                         source={{
-                            uri: URI(
-                                `${
-                                    true ? 'http://localhost:3000' : SERVER_URL[global.env].H5
-                                }/projectDetail/${project_id}`
-                            )
+                            uri: URI(`${SERVER_URL[global.env].H5}/projectDetail/${project_id}`)
                                 .addQuery({timeStamp: timeStamp.current})
                                 .valueOf(),
                         }}
