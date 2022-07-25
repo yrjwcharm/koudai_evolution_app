@@ -405,8 +405,8 @@ const RenderChart = ({data = {}}) => {
                                 ? ['transparent']
                                 : [Colors.red, Colors.lightBlackColor, 'transparent'],
                             key === 'amount_change' ? ['red'] : ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            key === 'nav',
-                            key === 'nav' ? 2 : 0,
+                            ['nav', 'roe7d'].includes(key),
+                            ['nav', 'roe7d'].includes(key) ? 2 : 0,
                             deviceWidth - px(32),
                             [10, 20, 10, 18],
                             tag_position,
