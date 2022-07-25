@@ -1,5 +1,8 @@
 /*
  * @Date: 2022-06-13 14:42:28
+ * @Author: dx
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-21 11:59:14
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -127,7 +130,7 @@ const PrivateCard = ({data: {data}}) => {
                     ) : null}
                     {data.nav_info ? (
                         <View style={{flex: 1}}>
-                            <HTML style={[styles.profit, {fontSize: px(18)}]} html={data.nav_info?.value} />
+                            <HTML style={{...styles.profit, fontSize: px(18)}} html={data.nav_info?.value} />
                             <Text style={[styles.label, {marginTop: px(2)}]}>{data.nav_info?.text}</Text>
                         </View>
                     ) : null}

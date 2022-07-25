@@ -2,7 +2,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-07-12 19:35:14
+ * @LastEditTime: 2022-07-21 11:42:05
  * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -165,7 +165,7 @@ const TradeProcessing = ({navigation, route}) => {
     }, [hasNet]);
     const finishClick = () => {
         dispatch(getUserInfo());
-        if (route?.params?.fr == 'trade_buy') {
+        if (['trade_buy', 'fund_trade_buy'].includes(route?.params?.fr)) {
             navigation.pop(2);
         } else {
             jump(data.button.url);
