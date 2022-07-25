@@ -21,6 +21,7 @@ export default ({navigation, route}) => {
     const init = () => {
         getPageData(route.params || {}).then((res) => {
             if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
                 setData(res.result);
                 navigation.setOptions({title: res.result.title || '计划介绍'});
             }
@@ -29,7 +30,6 @@ export default ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            StatusBar.setBarStyle('light-content');
             init();
             return () => {
                 StatusBar.setBarStyle('dark-content');

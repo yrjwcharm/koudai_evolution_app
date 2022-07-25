@@ -367,7 +367,7 @@ const TradeRecords = ({data = {}}) => {
                 renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}
                 style={{flex: 1}}>
                 {types.map((tab) => {
-                    const {key, list, val} = tab;
+                    const {has_more, key, list, val} = tab;
                     return (
                         <View key={key} tabLabel={val}>
                             {list?.length > 0 ? (
@@ -456,19 +456,21 @@ const TradeRecords = ({data = {}}) => {
                             ) : (
                                 <Empty text={'暂无数据'} />
                             )}
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() =>
-                                    jump({
-                                        path: 'TradeRecord',
-                                        params: {fr: 'mfb', tabActive: pageRef.current},
-                                        type: 1,
-                                    })
-                                }
-                                style={[Style.flexRowCenter, {paddingVertical: Space.padding}]}>
-                                <Text style={[styles.desc, {color: Colors.brandColor}]}>{'查看更多'}</Text>
-                                <Feather name={'chevron-right'} size={16} color={Colors.brandColor} />
-                            </TouchableOpacity>
+                            {has_more === 1 ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() =>
+                                        jump({
+                                            path: 'TradeRecord',
+                                            params: {fr: 'mfb', tabActive: pageRef.current},
+                                            type: 1,
+                                        })
+                                    }
+                                    style={[Style.flexRowCenter, {paddingVertical: Space.padding}]}>
+                                    <Text style={[styles.desc, {color: Colors.brandColor}]}>{'查看更多'}</Text>
+                                    <Feather name={'chevron-right'} size={16} color={Colors.brandColor} />
+                                </TouchableOpacity>
+                            ) : null}
                         </View>
                     );
                 })}
