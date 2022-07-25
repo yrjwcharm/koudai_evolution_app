@@ -187,7 +187,10 @@ export default function DetailAccount({route, navigation}) {
                     </View>
                     {data.line_info?.line_desc?.tip ? (
                         <View style={{padding: px(16), paddingTop: 0, backgroundColor: '#fff'}}>
-                            <Html html={data.line_info?.line_desc?.tip} style={[styles.bottomTip, styles.chart_desc]} />
+                            <Html
+                                html={data.line_info?.line_desc?.tip}
+                                style={{...styles.bottomTip, ...styles.chart_desc}}
+                            />
                         </View>
                     ) : null}
                     <View style={{paddingHorizontal: Space.padding}}>

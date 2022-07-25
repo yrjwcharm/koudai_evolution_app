@@ -185,7 +185,7 @@ export default ({navigation, route}) => {
         global.LogTool(logParams);
         if (event_id === 'consult_click') {
             bottomModal.current.show();
-        } else if (event_id === 'intro_click') {
+        } else if (event_id === 'project_click') {
             jump(url);
         }
     };

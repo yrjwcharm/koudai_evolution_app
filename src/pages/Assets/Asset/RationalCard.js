@@ -30,7 +30,7 @@ const RationalCard = ({rational_info, im_info}) => {
     const [loadingChart, setLoadingChart] = useState(false);
     const gradeData = rational_info?.card_info;
     const handleRation = () => {
-        if (rational_info?.grade == 0) {
+        if (rational_info?.show_open_card === 1) {
             const modal = Modal.show(
                 {
                     header: <View />,

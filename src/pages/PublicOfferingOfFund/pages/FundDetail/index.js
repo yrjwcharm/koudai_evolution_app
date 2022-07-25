@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 17:36:39
+ * @LastEditTime: 2022-07-25 17:59:53
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -64,16 +64,16 @@ const Index = ({navigation, route}) => {
 
     const onMessage = (event) => {
         const _data = event.nativeEvent.data;
-        console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+        // console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
         if (_data?.indexOf('logParams=') > -1) {
             const logParams = JSON.parse(_data?.split('logParams=')[1] || []);
             global.LogTool(...logParams);
-        } else if (_data && _data.indexOf('url=') > -1) {
+        } else if (_data?.indexOf('url=') > -1) {
             const url = JSON.parse(_data.split('url=')[1]);
             jump(url);
-        } else if (_data?.indexOf('playTime=')) {
+        } else if (_data?.indexOf('playTime=') > -1) {
             playTime.current = parseInt(_data.split('playTime=')[1], 10);
-        } else if (_data && _data.indexOf('https') <= -1) {
+        } else if (_data?.indexOf('phone=') > -1) {
             const url = _data.split('phone=')[1] ? `tel:${_data.split('phone=')[1]}` : '';
             if (url) {
                 global.LogTool('call');

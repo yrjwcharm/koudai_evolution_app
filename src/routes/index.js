@@ -850,7 +850,7 @@ export default function AppStack() {
                 options={{
                     title: '',
                     headerStyle: {
-                        backgroundColor: '#FF5151',
+                        backgroundColor: '#FA4F4F',
                         shadowOpacity: 0,
                         shadowOffset: {
                             height: 0,
