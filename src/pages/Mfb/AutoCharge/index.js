@@ -29,9 +29,6 @@ export default ({navigation, route}) => {
                     const {title} = res.result;
                     navigation.setOptions({title: title || '自动充值'});
                     setData(res.result);
-                    setTimeout(() => {
-                        scrollTab.current?.goToPage(active);
-                    }, 500);
                 }
             })
             .finally(() => {
@@ -52,6 +49,7 @@ export default ({navigation, route}) => {
                 <Loading />
             ) : (
                 <ScrollableTabView
+                    initialPage={active}
                     renderTabBar={() => <ScrollTabbar boxStyle={styles.tabSty} />}
                     ref={scrollTab}
                     style={{flex: 1}}>
