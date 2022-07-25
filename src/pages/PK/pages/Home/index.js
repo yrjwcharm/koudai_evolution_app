@@ -22,11 +22,11 @@ import withNetState from '~/components/withNetState';
 const handlerItemsLog = (items, data) => {
     items?.forEach?.((obj) => {
         obj.LogTool = () => {
-            global.LogTool(obj.code ? 'pk_details' : 'pk_combinationdetails');
+            global.LogTool(obj.code ? 'pk_details' : 'pk_combinationdetails', '', obj.code || obj.plan_id);
         };
         if (obj.button)
             obj.button.LogTool = (notActive) => {
-                notActive && global.LogTool(obj.code ? 'pk_ratio' : 'pk_focus', obj.code || obj.plan_id);
+                notActive && global.LogTool(obj.code ? 'pk_ratio' : 'pk_focus', '', obj.code || obj.plan_id);
                 notActive &&
                     global.LogTool(
                         {
