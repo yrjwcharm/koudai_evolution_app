@@ -2,25 +2,15 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {
-    StyleSheet,
-    Text,
-    View,
-    ScrollView,
-    TouchableOpacity,
-    RefreshControl,
-    Animated,
-    ActivityIndicator,
-} from 'react-native';
+import {View, RefreshControl, Animated, ActivityIndicator} from 'react-native';
 import React, {useCallback, useState, useRef} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
-import {Colors, Style} from '~/common/commonStyle';
-import {deviceWidth, px} from '~/utils/appUtil';
+import {Colors} from '~/common/commonStyle';
+import {px} from '~/utils/appUtil';
 import RationalCard from './RationalCard';
 import HoldList from './HoldList';
 import {useFocusEffect} from '@react-navigation/native';
 import {getHolding, getInfo, getNotice, getReadMes} from './service';
-import {Button} from '~/components/Button';
 import BottomMenus from './BottomMenus';
 import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
