@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -13,9 +13,14 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
 
     const [chart, setChart] = useState({});
 
+    const initScript = useMemo(() => {
+        return baseAreaChart(chart?.chart || [], chart.tags || [], true, 2, null, [10, 8, 10, 0]);
+    }, [chart]);
+
     const getData = (period) => {
         getUpgradeToPortfolioChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
             if (res.code === '000000') {
+                setChart({});
                 setChart(res.result);
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
@@ -48,12 +53,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
                 <Text style={[styles.rateText, {color: '#E74949'}]}>{chart?.after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
-                {chart?.chart && (
-                    <Chart
-                        initScript={baseAreaChart(chart?.chart || [], chart.tags || [], true, 2, null, [10, 8, 10, 0])}
-                        style={{width: '100%'}}
-                    />
-                )}
+                {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
             </View>
             <View style={styles.legendWrap}>
                 <View style={styles.legendRow}>
@@ -67,7 +67,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
                     </View>
                 </View>
                 <View style={styles.lengendCol}>
-                    {chart.legends?.[0].items.map((item, idx) => (
+                    {chart.legends?.[0]?.items?.map?.((item, idx) => (
                         <View key={idx} style={[styles.legendItem, {marginTop: px(8)}]}>
                             <View style={[styles.colIcon, {backgroundColor: colors[idx + 2]}]} />
                             <Text style={styles.legendColText}>{item?.name?.name}</Text>
@@ -363,5 +363,6 @@ chart.line()
 chart.render();
 })();
 `;
+    console.log(123);
     return str;
 };

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -13,9 +13,14 @@ const Profitability = ({data = {}, upgrade_id, onCardHeight}) => {
 
     const [chart, setChart] = useState({});
 
+    const initScript = useMemo(() => {
+        return baseAreaChart(chart?.chart || [], chart.lines || [], true, 2, null, [10, 8, 10, 0]);
+    }, [chart]);
+
     const getData = (period) => {
         getUpgradeToPortfolioChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
             if (res.code === '000000') {
+                setChart({});
                 setChart(res.result);
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
@@ -47,12 +52,7 @@ const Profitability = ({data = {}, upgrade_id, onCardHeight}) => {
                 <Text style={[styles.rateText, {color: '#E74949'}]}>{chart?.after_value}</Text>
             </View>
             <View style={{height: px(210)}}>
-                {chart?.chart && (
-                    <Chart
-                        initScript={baseAreaChart(chart?.chart || [], chart.lines || [], true, 2, null, [10, 8, 10, 0])}
-                        style={{width: '100%'}}
-                    />
-                )}
+                {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
             </View>
             <View style={styles.legendWrap}>
                 <View style={styles.legendRow}>
@@ -335,7 +335,7 @@ ${lines.reduce((memo, item, idx) => {
         end: ['max',${item}],
         style: {
           lineWidth: 1, // 辅助框的边框宽度
-          fill: "#F2F2F3", // 辅助框填充的颜色
+          fill: "${['rgba(255, 175, 0, 0.15)', 'rgba(84, 89, 104, 0.15)'][idx]}", // 辅助框填充的颜色
         }, // 辅助框的图形样式属性
       });
     `;
