@@ -5,5 +5,5 @@
 import http from '~/services';
 
 export const getProjectData = () => {
-    return http.get('/fund/project/index/20220713');
+    return http.get('/project/index/20220713');
 };
