@@ -15,6 +15,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 const UpgradeToPlan = ({route, navigation}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
+    const [cardsRate, setCardsRate] = useState([]);
     const [data, setData] = useState({});
     const {base_list, button, button2, detail, target} = data;
     const [loading, setLoading] = useState(true);
@@ -37,17 +38,28 @@ const UpgradeToPlan = ({route, navigation}) => {
         curtainHeight.current = val;
     }, []);
 
-    const onCardHeight = useCallback((index, height) => {
-        cardsHeight.current[index] = height;
-        if (cardsHeight.current.length === 4) {
-            const arr = [px(40)];
-            cardsHeight.current.reduce((memo, cur, idx) => {
-                memo += cur;
-                arr[idx + 1] = memo;
-                return memo;
-            }, px(40));
-            cardsPosition.current = arr.filter((item) => item);
-        }
+    const onCardHeight = useCallback(
+        (index, height) => {
+            cardsHeight.current[index] = height;
+            if (cardsHeight.current.length === detail.length) {
+                const arr = [px(40)];
+                cardsHeight.current.reduce((memo, cur, idx) => {
+                    memo += cur;
+                    arr[idx + 1] = memo;
+                    return memo;
+                }, px(40));
+                cardsPosition.current = arr.filter((item) => item);
+            }
+        },
+        [detail]
+    );
+
+    const onCardRate = useCallback((index, obj) => {
+        setCardsRate((val) => {
+            let newVal = [...val];
+            newVal[index] = obj;
+            return newVal.filter((item) => item);
+        });
     }, []);
 
     const init = () => {
@@ -82,6 +94,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                         curtainNum={curtainNum}
                         handlerCurtainHeight={handlerCurtainHeight}
                         detail={detail || []}
+                        cardsRate={cardsRate}
                     />
                     <ScrollView
                         style={{flex: 1}}
@@ -94,6 +107,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                             <>
                                 {detail[0] && (
                                     <SaleReminder
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                         data={detail[0]}
                                         upgrade_id={route.params.upgrade_id}
@@ -101,6 +115,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                                 )}
                                 {detail[1] && (
                                     <TaurenSignal
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                         data={detail[1]}
                                         upgrade_id={route.params.upgrade_id}
@@ -108,6 +123,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                                 )}
                                 {detail[2] && (
                                     <FallBuy
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                         data={detail[2]}
                                         upgrade_id={route.params.upgrade_id}
@@ -115,6 +131,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                                 )}
                                 {detail[3] && (
                                     <ProbabilitySignal
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                         data={detail[3]}
                                         upgrade_id={route.params.upgrade_id}

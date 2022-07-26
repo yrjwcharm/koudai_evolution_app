@@ -7,7 +7,7 @@ import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 import {getUpgradeToPlanChart} from './services';
 
-const ProbabilitySignal = ({data, upgrade_id, onCardHeight}) => {
+const ProbabilitySignal = ({data, upgrade_id, onCardHeight, onCardRate}) => {
     const [activeTab, setTabActive] = useState();
     const [chart, setChart] = useState({});
 
@@ -20,6 +20,7 @@ const ProbabilitySignal = ({data, upgrade_id, onCardHeight}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
+                onCardRate?.(3, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -341,7 +342,7 @@ ${tag_legends.reduce((memo, item, idx) => {
     return memo;
 }, '')}
 chart.guide().html({
-  position: ["${data[data.length - 1].date}", ${data[data.length - 1].value}],
+  position: ["${data[data.length - 1]?.date}", ${data[data.length - 1]?.value}],
   html: "<div style='background: rgba(255,125,65,0.15);width:16px;height:16px;border-radius:50%;display:flex;justify-content:center;align-items:center'><div style='background: #FF7D41;width:8px;height:8px;border-radius:50%;'></div></div>",
   alignY: 'bottom',
   offsetY: 5,

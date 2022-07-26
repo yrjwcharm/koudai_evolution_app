@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 
-const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight}) => {
+const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight, cardsRate}) => {
     return (
         <View
             style={[styles.container, {top: scrollY}]}
@@ -16,14 +16,14 @@ const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight}) =
                         <Text style={styles.itemTitle}>{detail[0].item_title}</Text>
                     </View>
                     <View style={styles.itemRight}>
-                        <Text style={styles.rate}>{detail?.[0]?.now_value}</Text>
+                        <Text style={styles.rate}>{cardsRate?.[0]?.now_value || detail?.[0]?.now_value}</Text>
                         <FastImage
                             source={{
                                 uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
                             }}
                             style={styles.panelIcon}
                         />
-                        <Text style={styles.rate}>{detail?.[0]?.after_value}</Text>
+                        <Text style={styles.rate}>{cardsRate?.[0]?.after_value || detail?.[0]?.after_value}</Text>
                     </View>
                 </View>
             )}
@@ -46,7 +46,9 @@ const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight}) =
                                 <Text style={styles.itemSubTitle}>{detail[idx + 1].item_title}</Text>
                             </View>
                             <View style={styles.itemRight}>
-                                <Text style={styles.rate}>{detail[idx + 1].now_value}</Text>
+                                <Text style={styles.rate}>
+                                    {cardsRate[idx + 1]?.now_value || detail[idx + 1]?.now_value}
+                                </Text>
                                 <FastImage
                                     source={{
                                         uri:
@@ -54,7 +56,9 @@ const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight}) =
                                     }}
                                     style={styles.panelIcon}
                                 />
-                                <Text style={styles.rate}>{detail[idx + 1].after_value}</Text>
+                                <Text style={styles.rate}>
+                                    {cardsRate[idx + 1]?.after_value || detail[idx + 1]?.after_value}
+                                </Text>
                             </View>
                         </View>
                     ))}
