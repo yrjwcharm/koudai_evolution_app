@@ -151,6 +151,13 @@ const RationalCard = ({rational_info, im_info}) => {
                     onPress={handleRation}>
                     <View style={styles.rational_circle}>
                         <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>{rational_info?.grade}</Text>
+                        <Animatable.Image
+                            animation={'fadeInUp'}
+                            iterationDelay={1000}
+                            source={require('~/assets/img/index/rationalLine.png')}
+                            resizeMode="stretch"
+                            style={[styles.ration_line, {height: (rational_info?.percent * px(40)) / 100 || 0}]}
+                        />
                     </View>
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
@@ -354,6 +361,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     rational_circle: {
+        overflow: 'hidden',
         ...Style.flexCenter,
         width: px(37),
         height: px(37),
@@ -361,5 +369,11 @@ const styles = StyleSheet.create({
         borderColor: Colors.btnColor,
         borderWidth: px(1),
         marginRight: px(7),
+    },
+    ration_line: {
+        width: px(37),
+        position: 'absolute',
+        bottom: 0,
+        zIndex: -10,
     },
 });

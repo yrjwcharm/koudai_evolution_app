@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 11:10:25
+ * @LastEditTime: 2022-07-26 15:31:57
  * @Description: 基金榜单
  */
 import React, {useEffect, useState} from 'react';
@@ -32,11 +32,7 @@ const Index = ({route}) => {
     const [scrollY, setScrollY] = useState(0);
 
     /** @name 上拉加载 */
-    const onEndReached = ({distanceFromEnd}) => {
-        // console.log(distanceFromEnd);
-        // if (distanceFromEnd < 0) {
-        //     return false;
-        // }
+    const onEndReached = () => {
         if (hasMore) {
             setPage((p) => p + 1);
         }
@@ -45,7 +41,18 @@ const Index = ({route}) => {
     const renderItem = ({item, index}) => {
         return (
             <View style={{paddingHorizontal: Space.padding}}>
-                <ProductCards data={item} style={index === 0 ? {marginTop: px(-80)} : {}} />
+                <ProductCards
+                    data={{
+                        ...item,
+                        LogTool: () =>
+                            global.LogTool({
+                                event: 'top_click',
+                                ctrl: title,
+                                oid: item.code,
+                            }),
+                    }}
+                    style={index === 0 ? {marginTop: px(-80)} : {}}
+                />
             </View>
         );
     };
@@ -213,13 +220,19 @@ const Index = ({route}) => {
                                                               data={{
                                                                   ...item,
                                                                   LogTool: () => {
-                                                                      plateid &&
-                                                                          rec_json &&
+                                                                      if (plateid && rec_json) {
                                                                           global.LogTool({
                                                                               event: 'rec_click',
                                                                               plateid,
                                                                               rec_json,
                                                                           });
+                                                                      } else {
+                                                                          global.LogTool({
+                                                                              event: 'top_click',
+                                                                              ctrl: key,
+                                                                              oid: item.code,
+                                                                          });
+                                                                      }
                                                                   },
                                                               }}
                                                               key={index}

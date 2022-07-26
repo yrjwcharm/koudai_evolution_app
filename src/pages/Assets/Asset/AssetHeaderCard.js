@@ -5,7 +5,6 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
-import ArtWave from '~/components/ArtWave';
 import Storage from '~/utils/storage';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Feather from 'react-native-vector-icons/Feather';

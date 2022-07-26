@@ -39,6 +39,7 @@ export default ({navigation, route}) => {
     const init = () => {
         getPageData({project_id}).then((res) => {
             if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
                 const {share_button, title} = res.result;
                 navigation.setOptions({
                     headerRight: () =>
@@ -192,7 +193,6 @@ export default ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            StatusBar.setBarStyle('light-content');
             init();
             return () => {
                 StatusBar.setBarStyle('dark-content');

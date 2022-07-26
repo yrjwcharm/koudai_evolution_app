@@ -97,6 +97,13 @@ const Index = () => {
                         />
                         <ScrollableTabView
                             initialPage={0}
+                            onChangeTab={(obj) => {
+                                global.LogTool({
+                                    event: 'ProjectHome',
+                                    plateid: 'financila_plan',
+                                    ctrl: data?.project_list?.tab_list[obj.i]?.title,
+                                });
+                            }}
                             renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
                             style={{flex: 1}}>
                             {data?.project_list?.tab_list?.map((tab, index) => {
