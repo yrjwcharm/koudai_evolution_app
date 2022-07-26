@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-08 14:37:42
+ * @LastEditTime: 2022-07-26 15:25:06
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -98,7 +98,13 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const renderItem = ({item, index}) => {
         const {code, is_favor, name, nav, url, yield: nav_inc} = item;
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={[Style.flexRow, styles.fundItem]}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                    global.LogTool({ctrl: activeTab, event: 'fund_click', oid: code});
+                    jump(url);
+                }}
+                style={[Style.flexRow, styles.fundItem]}>
                 <View style={[Style.flexRow, styles.nameBox, {width: px(220)}]}>
                     <TouchableOpacity activeOpacity={0.8} onPress={() => onFavor(item, index)}>
                         <Image source={is_favor ? favor : not_favor} style={styles.collectIcon} />
