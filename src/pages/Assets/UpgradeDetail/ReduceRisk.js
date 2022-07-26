@@ -7,7 +7,7 @@ import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 import {getUpgradeToPortfolioChart} from './services';
 
-const ReduceRisk = ({data = {}, upgrade_id, onCardHeight}) => {
+const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
     const {bottom_desc, name, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState();
 
@@ -22,6 +22,7 @@ const ReduceRisk = ({data = {}, upgrade_id, onCardHeight}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
+                onCardRate?.(1, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -202,7 +203,7 @@ const colors = [
     'rgba(235, 221, 105, 0.3)',
 ];
 
-const areaColors = ['l(90) 0:#FFAF00 1:#FFAF00', 'l(90) 0:#545968 1:#545968'];
+const areaColors = ['rgba(255, 175, 0, 0.25)', 'rgba(84, 89, 104, 0.25)'];
 
 const deviceWidth = Dimensions.get('window').width;
 

@@ -7,7 +7,7 @@ import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 import {getUpgradeToPortfolioChart} from './services';
 
-const Profitability = ({data = {}, upgrade_id, onCardHeight}) => {
+const Profitability = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
     const {bottom_desc, name, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState();
 
@@ -22,6 +22,7 @@ const Profitability = ({data = {}, upgrade_id, onCardHeight}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
+                onCardRate?.(2, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -335,7 +336,7 @@ ${lines.reduce((memo, item, idx) => {
         end: ['max',${item}],
         style: {
           lineWidth: 1, // 辅助框的边框宽度
-          fill: "${['rgba(255, 175, 0, 0.15)', 'rgba(84, 89, 104, 0.15)'][idx]}", // 辅助框填充的颜色
+          fill: "${['rgba(255, 175, 0, 0.25)', 'rgba(84, 89, 104, 0.25)'][idx]}", // 辅助框填充的颜色
         }, // 辅助框的图形样式属性
       });
     `;
@@ -343,7 +344,6 @@ ${lines.reduce((memo, item, idx) => {
 }, '')}
 chart.render();
 })();
-console.log(123)
 `;
     return str;
 };

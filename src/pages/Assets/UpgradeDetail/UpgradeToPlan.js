@@ -16,7 +16,7 @@ const UpgradeToPlan = ({route, navigation}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
     const [data, setData] = useState({});
-    const {base_list, button, button2, detail, fund_list, fund_list_header, target} = data;
+    const {base_list, button, button2, detail, target} = data;
     const [loading, setLoading] = useState(true);
     const cardsHeight = useRef([]);
     const cardsPosition = useRef([]);

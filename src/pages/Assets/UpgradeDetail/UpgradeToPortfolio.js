@@ -17,6 +17,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 const UpgradeToPortfolio = ({navigation, route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
+    const [cardsRate, setCardsRate] = useState([]);
     const [data, setData] = useState({});
     const {base_list, button, button2, detail, fund_list, fund_list_header, target} = data;
     const [loading, setLoading] = useState(true);
@@ -40,17 +41,28 @@ const UpgradeToPortfolio = ({navigation, route}) => {
         curtainHeight.current = val;
     }, []);
 
-    const onCardHeight = useCallback((index, height) => {
-        cardsHeight.current[index] = height;
-        if (cardsHeight.current.length === 5) {
-            const arr = [px(40)];
-            cardsHeight.current.reduce((memo, cur, idx) => {
-                memo += cur;
-                arr[idx + 1] = memo;
-                return memo;
-            }, px(40));
-            cardsPosition.current = arr.filter((item) => item);
-        }
+    const onCardHeight = useCallback(
+        (index, height) => {
+            cardsHeight.current[index] = height;
+            if (cardsHeight.current.length === detail.length) {
+                const arr = [px(40)];
+                cardsHeight.current.reduce((memo, cur, idx) => {
+                    memo += cur;
+                    arr[idx + 1] = memo;
+                    return memo;
+                }, px(40));
+                cardsPosition.current = arr.filter((item) => item);
+            }
+        },
+        [detail]
+    );
+
+    const onCardRate = useCallback((index, obj) => {
+        setCardsRate((val) => {
+            let newVal = [...val];
+            newVal[index] = obj;
+            return newVal.filter((item) => item);
+        });
     }, []);
 
     const init = () => {
@@ -85,6 +97,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                         handlerCurtainHeight={handlerCurtainHeight}
                         scrollY={scrollY}
                         curtainNum={curtainNum}
+                        cardsRate={cardsRate}
                     />
                     <ScrollView
                         style={{flex: 1}}
@@ -98,6 +111,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                                 {detail[0] && (
                                     <IncreaseRevenue
                                         data={detail[0]}
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                         upgrade_id={route.params.upgrade_id}
                                     />
@@ -106,6 +120,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                                     <ReduceRisk
                                         upgrade_id={route.params.upgrade_id}
                                         data={detail[1]}
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                     />
                                 )}
@@ -113,6 +128,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                                     <Profitability
                                         upgrade_id={route.params.upgrade_id}
                                         data={detail[2]}
+                                        onCardRate={onCardRate}
                                         onCardHeight={onCardHeight}
                                     />
                                 )}

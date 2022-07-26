@@ -7,7 +7,7 @@ import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 import {getUpgradeToPortfolioChart} from './services';
 
-const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
+const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
     const {name, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState();
 
@@ -22,6 +22,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
+                onCardRate?.(0, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -363,6 +364,5 @@ chart.line()
 chart.render();
 })();
 `;
-    console.log(123);
     return str;
 };

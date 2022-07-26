@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 
-const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detail}) => {
+const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detail, cardsRate}) => {
     return (
         <View
             style={[styles.container, {top: scrollY}]}
@@ -17,7 +17,7 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detai
                             <Text style={styles.itemTitle}>{detail?.[idx]?.item_title}</Text>
                         </View>
                         <View style={styles.itemRight}>
-                            <Text style={styles.rate}>{detail?.[idx]?.now_value}</Text>
+                            <Text style={styles.rate}>{cardsRate?.[idx]?.now_value || detail?.[idx]?.now_value}</Text>
                             <FastImage
                                 source={{
                                     uri:
@@ -25,7 +25,9 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detai
                                 }}
                                 style={styles.panelIcon}
                             />
-                            <Text style={styles.rate}>{detail?.[idx]?.after_value}</Text>
+                            <Text style={styles.rate}>
+                                {cardsRate?.[idx]?.after_value || detail?.[idx]?.after_value}
+                            </Text>
                         </View>
                     </View>
                 </View>
