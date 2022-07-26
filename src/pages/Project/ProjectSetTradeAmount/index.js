@@ -4,7 +4,7 @@
  */
 import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, Image, TextInput, Keyboard} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceWidth, onlyNumber, px} from '~/utils/appUtil';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
@@ -19,20 +19,17 @@ import FastImage from 'react-native-fast-image';
 import {PasswordModal} from '~/components/Password';
 
 const Index = ({route, navigation}) => {
-    const poid = route?.params?.poid;
-    const project_id = route?.params?.project_id || 'X04F926077';
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
     const [data, setData] = useState({});
     const passwordModal = useRef();
     const [bankSelect, setBankSelect] = useState(0);
     const bankCardRef = useRef();
     const [amount, setAmount] = useState('');
-    const [btnClick, setBtnClick] = useState(true);
     const [errTip, setErrTip] = useState('');
     const jump = useJump();
 
     const getData = async () => {
-        let res = await getInfo({poid, project_id});
+        let res = await getInfo(route?.params);
         setData(res.result);
     };
 

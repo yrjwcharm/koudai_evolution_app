@@ -100,8 +100,9 @@ const Index = () => {
                             onChangeTab={(obj) => {
                                 global.LogTool({
                                     event: 'ProjectHome',
-                                    plateid: 'financila_plan',
+                                    plateid: data?.project_list?.tab_list[obj.i]?.plateid,
                                     ctrl: data?.project_list?.tab_list[obj.i]?.title,
+                                    oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
                                 });
                             }}
                             renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
@@ -109,7 +110,7 @@ const Index = () => {
                             {data?.project_list?.tab_list?.map((tab, index) => {
                                 return (
                                     <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
-                                        <ProjectProduct data={tab} />
+                                        <ProjectProduct data={tab} tabLabel={tab.title} />
                                     </View>
                                 );
                             })}
