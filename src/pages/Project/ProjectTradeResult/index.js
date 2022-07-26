@@ -58,6 +58,7 @@ const Index = ({route}) => {
                         </View>
                     ))}
                 </View>
+                {data?.tip ? <Text style={styles.tip}>{data?.tip}</Text> : null}
                 <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
                     <Text style={styles.key}>卖出模式</Text>
                     <Text style={styles.value}>{data?.sale_model?.sale_model_title}</Text>
@@ -68,7 +69,7 @@ const Index = ({route}) => {
                         <Text style={styles.key}>目标收益率</Text>
                         <Text style={styles.key}>达标止盈方式</Text>
                     </View>
-                    {data?.buy_model?.list?.map((item, index) => (
+                    {data?.sale_model?.list?.map((item, index) => (
                         <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
                             <Text style={styles.value}>{item?.name}</Text>
                             <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>{item?.amount}</Text>
@@ -107,5 +108,12 @@ const styles = StyleSheet.create({
         paddingTop: px(11),
         paddingBottom: px(4),
         marginBottom: px(20),
+    },
+    tip: {
+        fontSize: px(12),
+        color: '#FF7D41',
+        lineHeight: px(21),
+        marginTop: px(-12),
+        marginBottom: px(21),
     },
 });
