@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 21:53:00
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 14:14:33
+ * @LastEditTime: 2022-07-26 10:40:21
  * @Description:
  */
 import * as React from 'react';
@@ -42,7 +42,7 @@ export default class StickyHeader extends React.Component {
             inputRange: [-1, 0, y, y + 1],
             outputRange: [0, 0, 0, 1],
         });
-        let t = y + itemHeight + 1 || 1000;
+        let t = y + itemHeight + 1 || 2000;
         // 从距离底部40的时候开始渐变0
         const opacity = itemHeight
             ? stickyScrollY.interpolate({

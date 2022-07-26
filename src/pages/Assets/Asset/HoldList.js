@@ -80,7 +80,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                 {account?.items?.length ? (
                                     <StickyHeader
                                         stickyHeaderY={_top} // 把头部高度传入
-                                        // itemHeight={layout[key]?.height - px(67) - px(213)} //px(67)是大标题和table_header的高度 //@TODO 崩溃
+                                        itemHeight={
+                                            layout[key]?.height - px(67) - (account?.recommend_card ? px(213) : 0)
+                                        } //px(67)是大标题和table_header的高度 //@TODO 崩溃
                                         stickyScrollY={scrollY}>
                                         <View style={[Style.flexBetween, styles.table_header]}>
                                             <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>

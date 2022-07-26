@@ -85,6 +85,7 @@ const Index = ({navigation}) => {
                     onLayout={(e) => {
                         let {height} = e.nativeEvent.layout;
                         // console.log(e.nativeEvent.layout);
+                        console.log(height);
                         setHeaderHeight(height); // 给头部高度赋值
                     }}>
                     {/* 系统通知 */}
