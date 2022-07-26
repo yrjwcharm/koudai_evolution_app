@@ -65,11 +65,13 @@ const ProjectSetTrade = ({route, navigation}) => {
         setPossible(res?.result?.target_info?.possible);
     };
     const jumpNext = async () => {
-        let buy_tool_id = data?.buy_model?.list?.map((item) => {
-            if (toolStatus[item.id] == true || toolStatus[item.id] == undefined) {
-                return item.id;
-            }
-        });
+        let buy_tool_id = data?.buy_model?.list
+            ?.filter((item) => {
+                if (toolStatus[item.id]) {
+                    return item.id;
+                }
+            })
+            .map((_k) => _k.id);
         let params = {
             poid,
             reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].id,
