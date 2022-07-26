@@ -74,7 +74,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             poid,
             reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].id,
             need_buy: needBuy.current,
-            buy_tool_id: buy_tool_id.join(''),
+            buy_tool_id: buy_tool_id.join(','),
             ...autoTime.current,
             target_yield: targetYeild.current / 100,
             possible: possible || 0,
