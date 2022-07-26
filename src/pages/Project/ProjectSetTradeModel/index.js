@@ -7,28 +7,25 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
 import Ruler from './Ruler';
-import {getPossible, getSetModel} from './service';
+import {getNextPath, getPossible, getSetModel} from './service';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
-import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
 import {BottomModal} from '~/components/Modal';
-import {set} from 'immutable';
+import Toast from '~/components/Toast';
 const ProjectSetTrade = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
-    const [needBuy, setNeedBuy] = useState(false);
     const [toolStatus, setToolStatus] = useState({});
     const [possible, setPossible] = useState(0);
     const autoTime = useRef({});
+    const needBuy = useRef();
     const targetYeild = useRef('');
-    // const jump = useJump();
     const bottomModal = useRef();
     const getData = async () => {
         let res = await getSetModel({poid});
-        setNeedBuy(res.result?.need_buy?.open_status !== 0);
         setPossible(res.result?.sale_model?.target_yeild?.possible);
         setData(res.result);
     };
@@ -53,6 +50,10 @@ const ProjectSetTrade = ({route, navigation}) => {
     const onChangeAutoTime = (time) => {
         autoTime.current = time;
     };
+    //选择是否买一笔
+    const onChangeNowBuy = (value) => {
+        needBuy.current = value;
+    };
     // 目标收益
     const onTargetChange = async (value) => {
         targetYeild.current = value;
@@ -63,7 +64,7 @@ const ProjectSetTrade = ({route, navigation}) => {
         let res = await getPossible(params);
         setPossible(res?.result?.target_info?.possible);
     };
-    const jumpNext = () => {
+    const jumpNext = async () => {
         let buy_tool_id = data?.buy_model?.list?.map((item) => {
             if (toolStatus[item.id] == true || toolStatus[item.id] == undefined) {
                 return item.id;
@@ -72,14 +73,19 @@ const ProjectSetTrade = ({route, navigation}) => {
         let params = {
             poid,
             reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].id,
-            need_buy: needBuy,
+            need_buy: needBuy.current,
             buy_tool_id: buy_tool_id.join(''),
             ...autoTime.current,
             target_yield: targetYeild.current / 100,
-            possible,
+            possible: possible || 0,
             sale_tool_id: data?.sale_model?.list?.map((item) => item.id).join(','),
         };
-        navigation.navigate('ProjectSetTradeAmount', params);
+        let res = await getNextPath(params);
+        if (res.code == '000000') {
+            navigation.navigate(res.result?.path, params);
+        } else {
+            Toast.show(res.message);
+        }
     };
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
@@ -93,30 +99,16 @@ const ProjectSetTrade = ({route, navigation}) => {
                     </View>
                     {/* 买入工具 */}
                     {data?.buy_model?.list?.map((tool, index) => (
-                        <Tool tool={tool} key={tool.id} onChange={onToolChange} onChangeAutoTime={onChangeAutoTime} />
+                        <Tool
+                            tool={tool}
+                            key={tool.id}
+                            onChange={onToolChange}
+                            onChangeAutoTime={onChangeAutoTime}
+                            onChangeNowBuy={onChangeNowBuy}
+                        />
                     ))}
                 </View>
-                {/* 立即买一笔 */}
-                {data?.now_buy ? (
-                    <View
-                        style={{
-                            ...Style.flexBetween,
-                            ...styles.trade_con_title,
-                            ...styles.card,
-                            marginBottom: px(16),
-                        }}>
-                        <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>{data?.now_buy?.text}</Text>
-                        <Switch
-                            ios_backgroundColor={'#CCD0DB'}
-                            onValueChange={(value) => {
-                                setNeedBuy(value);
-                            }}
-                            thumbColor={'#fff'}
-                            trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
-                            value={needBuy}
-                        />
-                    </View>
-                ) : null}
+
                 <View style={styles.trade_con}>
                     <View style={[Style.flexCenter, styles.trade_con_title]}>
                         <Text style={[styles.title]}>{data?.sale_model?.sale_model_title}</Text>
@@ -128,37 +120,41 @@ const ProjectSetTrade = ({route, navigation}) => {
                             <Text style={styles.title}>{tool?.name}</Text>
                         </View>
                     ))}
-                    {/* 目标收益率 */}
-                    <View style={{paddingVertical: px(16)}}>
-                        <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>目标收益率</Text>
-                    </View>
                     {data?.sale_model?.target_yeild ? (
-                        <Ruler
-                            width={deviceWidth - px(32)}
-                            height={px(80)}
-                            style={{marginBottom: px(12)}}
-                            maxnum={data?.sale_model?.target_yeild?.max * 100}
-                            minnum={data?.sale_model?.target_yeild?.min * 100}
-                            defaultValue={data?.sale_model?.target_yeild?.default * 100}
-                            onChangeValue={onTargetChange}
-                        />
-                    ) : null}
-                    <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
-                        根据历史数据，投资18个月实现概率：
-                        <Text style={{color: Colors.red}}>{possible * 100 + '%'}</Text>
-                    </Text>
-                    {/* 止盈方式 */}
-                    <View style={{...Style.flexBetween, ...styles.trade_con_title, ...styles.borderTop}}>
-                        <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>
-                            {data?.sale_model?.stop_profit_tab?.label}
-                        </Text>
-                        <TouchableOpacity style={Style.flexRow} onPress={() => bottomModal?.current?.show()}>
-                            <Text style={[styles.title, {marginRight: px(4), fontSize: px(14)}]}>
-                                {data?.sale_model?.stop_profit_tab?.list[stopProfitIndex]?.name}
+                        <>
+                            {/* 目标收益率 */}
+                            <View style={{paddingVertical: px(16)}}>
+                                <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>目标收益率</Text>
+                            </View>
+                            <Ruler
+                                width={deviceWidth - px(32)}
+                                height={px(80)}
+                                style={{marginBottom: px(12)}}
+                                maxnum={data?.sale_model?.target_yeild?.max * 100}
+                                minnum={data?.sale_model?.target_yeild?.min * 100}
+                                defaultValue={data?.sale_model?.target_yeild?.default * 100}
+                                onChangeValue={onTargetChange}
+                            />
+                            <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
+                                根据历史数据，投资18个月实现概率：
+                                <Text style={{color: Colors.red}}>{possible * 100 + '%'}</Text>
                             </Text>
-                            <Icon name={'right'} size={px(8)} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
-                    </View>
+                        </>
+                    ) : null}
+                    {/* 止盈方式 */}
+                    {data?.sale_model?.stop_profit_tab ? (
+                        <View style={{...Style.flexBetween, ...styles.trade_con_title, ...styles.borderTop}}>
+                            <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>
+                                {data?.sale_model?.stop_profit_tab?.label}
+                            </Text>
+                            <TouchableOpacity style={Style.flexRow} onPress={() => bottomModal?.current?.show()}>
+                                <Text style={[styles.title, {marginRight: px(4), fontSize: px(14)}]}>
+                                    {data?.sale_model?.stop_profit_tab?.list[stopProfitIndex]?.name}
+                                </Text>
+                                <Icon name={'right'} size={px(8)} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
+                        </View>
+                    ) : null}
                 </View>
                 <BottomDesc />
             </ScrollView>

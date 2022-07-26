@@ -13,3 +13,6 @@ export const getNextDay = (params) => {
 export const getPossible = (params) => {
     return http.get('/trade/fix_invest/target_info/20210101', params);
 };
+export const getNextPath = (parmas) => {
+    return http.post('/project/setting/get_next_step', parmas);
+};

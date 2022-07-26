@@ -3,17 +3,27 @@
  * @Description:
  */
 import {StyleSheet, Switch, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import RenderAutoTime from './AutoTime';
 import {px} from '~/utils/appUtil';
 
-const Tool = ({tool, onChange, onChangeAutoTime}) => {
+const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy}) => {
     const [status, setStatus] = useState(tool.open_status != 0);
+    const [needBuy, setNeedBuy] = useState(tool?.open_status == 1);
+    const [showConfig, setShowConfig] = useState(true);
     const onValueChange = (value) => {
         setStatus(value);
         onChange && onChange(tool.id, value);
+        if (tool.id == 3) {
+            //估值信号
+            setShowConfig(value);
+        }
     };
+    useEffect(() => {
+        onChangeNowBuy(needBuy);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <>
             <View style={{...Style.flexBetween, ...styles.trade_con_title}}>
@@ -28,7 +38,36 @@ const Tool = ({tool, onChange, onChangeAutoTime}) => {
                     trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
                 />
             </View>
-            {tool?.period_info && <RenderAutoTime initalData={tool?.period_info} onChangeAutoTime={onChangeAutoTime} />}
+            {showConfig && (
+                <>
+                    {tool?.period_info && (
+                        <RenderAutoTime initalData={tool?.period_info} onChangeAutoTime={onChangeAutoTime} />
+                    )}
+                    {/* 立即买一笔 */}
+                    {tool?.now_buy ? (
+                        <View
+                            style={{
+                                ...Style.flexBetween,
+                                ...styles.trade_con_title,
+                                borderBottomWidth: 0,
+                                borderTopWidth: 0.5,
+                                borderTopColor: '#E2E4EA',
+                            }}>
+                            <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>{tool?.now_buy?.text}</Text>
+                            <Switch
+                                ios_backgroundColor={'#CCD0DB'}
+                                onValueChange={(value) => {
+                                    setNeedBuy(value);
+                                    onChangeNowBuy(value);
+                                }}
+                                thumbColor={'#fff'}
+                                trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
+                                value={needBuy}
+                            />
+                        </View>
+                    ) : null}
+                </>
+            )}
         </>
     );
 };

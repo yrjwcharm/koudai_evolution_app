@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 11:59:14
+ * @LastEditTime: 2022-07-26 12:03:45
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -425,7 +425,7 @@ const ProjectLgCard = ({data, style}) => {
                               <View style={{...styles.leftCircle, right: -px(15)}} />
                           </View>
                           <View key={_index} style={{paddingVertical: px(12)}}>
-                              {_list?.signal_info && (
+                              {!!_list?.signal_info && (
                                   <Image source={{uri: _list?.signal_info}} style={styles.signal_image} />
                               )}
                               <View style={[Style.flexRow, {marginBottom: px(10)}]}>
