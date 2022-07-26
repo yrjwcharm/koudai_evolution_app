@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-12-20 11:36:16
- * @LastEditors: yhc
+ * @LastEditTime: 2022-07-26 14:19:15
+ * @LastEditors: Please set LastEditors
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
@@ -23,7 +23,7 @@ const Part1 = () => {
     const headerHeight = useHeaderHeight();
     const route = useRoute();
     const [data, setData] = useState({});
-    const [isPlan, setIsPlan] = useState();
+    const [, setIsPlan] = useState();
     useEffect(() => {
         const {upid, poid, allocation_id, risk, scene} = route.params || {};
         if (scene === 'adviser') {
@@ -131,15 +131,15 @@ const Part1 = () => {
                     <View style={[styles.feeDescBox]}>
                         <Html style={{...styles.feeDesc, lineHeight: text(20)}} html={data?.redeem?.content} />
                     </View>
-                    {Object.values(data?.desc_list)?.map((item) => (
-                        <>
+                    {Object.values(data?.desc_list)?.map((item, index) => (
+                        <View key={item.title + index}>
                             <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
                                 {item.title}
                             </Text>
                             <View style={[styles.feeDescBox, {paddingTop: 0}]}>
                                 <Html html={item.content} style={{...styles.feeDesc, color: Colors.descColor}} />
                             </View>
-                        </>
+                        </View>
                     ))}
                 </>
             )}
