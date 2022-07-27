@@ -2,7 +2,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-07-27 16:36:49
+ * @LastEditTime: 2022-07-27 18:56:57
  * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -143,6 +143,7 @@ const TradeProcessing = ({navigation, route}) => {
     };
     useFocusEffect(
         useCallback(() => {
+            init();
             const listener = BackHandler.addEventListener('hardwareBackPress', () => true);
             return () => {
                 listener.remove();
