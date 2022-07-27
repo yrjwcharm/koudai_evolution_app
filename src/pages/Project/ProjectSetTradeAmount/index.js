@@ -17,6 +17,7 @@ import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import {PasswordModal} from '~/components/Password';
+import Header from '~/pages/Assets/UpgradeDetail/Header';
 
 const Index = ({route, navigation}) => {
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
@@ -153,6 +154,7 @@ const Index = ({route, navigation}) => {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
             <Image source={require('~/assets/img/trade/setModel2.png')} style={{width: deviceWidth, height: px(42)}} />
+            {/* <Header data={{base_list, target}} /> */}
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
                 {money_safe ? (

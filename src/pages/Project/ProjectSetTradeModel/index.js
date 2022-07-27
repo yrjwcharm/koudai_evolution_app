@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
 import {BottomModal} from '~/components/Modal';
 import Toast from '~/components/Toast';
+import Header from '~/pages/Assets/UpgradeDetail/Header';
 const ProjectSetTrade = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
@@ -93,6 +94,7 @@ const ProjectSetTrade = ({route, navigation}) => {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
             <Image source={require('~/assets/img/trade/setMode1.png')} style={{width: deviceWidth, height: px(42)}} />
+            {/* <Header data={{base_list, target}} /> */}
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
                 <View style={styles.trade_con}>
