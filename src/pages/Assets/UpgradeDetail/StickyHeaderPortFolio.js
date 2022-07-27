@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
+import RenderHtml from '~/components/RenderHtml';
 
 const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detail, cardsRate}) => {
     return (
@@ -17,7 +18,10 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detai
                             <Text style={styles.itemTitle}>{detail?.[idx]?.item_title}</Text>
                         </View>
                         <View style={styles.itemRight}>
-                            <Text style={styles.rate}>{cardsRate?.[idx]?.now_value || detail?.[idx]?.now_value}</Text>
+                            <RenderHtml
+                                html={cardsRate?.[idx]?.now_value || detail?.[idx]?.now_value}
+                                style={styles.rate}
+                            />
                             <FastImage
                                 source={{
                                     uri:
@@ -25,9 +29,10 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detai
                                 }}
                                 style={styles.panelIcon}
                             />
-                            <Text style={styles.rate}>
-                                {cardsRate?.[idx]?.after_value || detail?.[idx]?.after_value}
-                            </Text>
+                            <RenderHtml
+                                html={cardsRate?.[idx]?.after_value || detail?.[idx]?.after_value}
+                                style={styles.rate}
+                            />
                         </View>
                     </View>
                 </View>
