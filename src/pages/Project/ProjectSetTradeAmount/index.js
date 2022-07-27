@@ -228,23 +228,6 @@ const Index = ({route, navigation}) => {
                 ref={bankCardRef}
                 onDone={(select, index) => {
                     setBankSelect(index);
-                    // this.setState(
-                    //     (prev) => {
-                    //         if (prev.bankSelect?.pay_method !== select?.pay_method) {
-                    //             if (select?.pop_risk_disclosure) {
-                    //                 setTimeout(() => {
-                    //                     this.showRiskDisclosure(prev.data);
-                    //                 }, 300);
-                    //             }
-                    //         }
-                    //         return {bankSelect: select, bankSelectIndex: index};
-                    //     },
-                    //     () => {
-                    //         if (!this.state.isLargeAmount) {
-                    //             this.onInput(this.state.amount);
-                    //         }
-                    //     }
-                    // );
                 }}
             />
             <PasswordModal onDone={onSubmit} ref={passwordModal} />
@@ -255,7 +238,7 @@ const Index = ({route, navigation}) => {
                     agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                     otherAgreement={data?.agreement}
                     suffix={data?.agreement_bottom?.agree_text}
-                    disabled={data?.button?.avail != 1 || !!errTip}
+                    disabled={data?.button?.avail != 1 || !!errTip || !amount}
                     onPress={showPassword}
                 />
             )}

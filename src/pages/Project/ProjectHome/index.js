@@ -60,7 +60,9 @@ const Index = () => {
                                     key={index}
                                     activeOpacity={0.8}
                                     onPress={() => jump(item.url)}>
-                                    <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
+                                    {!!item.icon && (
+                                        <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
+                                    )}
                                     <Text style={{color: Colors.lightBlackColor, fontSize: px(12), marginTop: px(6)}}>
                                         {item.text}
                                     </Text>
