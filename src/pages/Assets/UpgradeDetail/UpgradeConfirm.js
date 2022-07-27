@@ -191,6 +191,7 @@ const UpgradeConfirm = ({route, navigation}) => {
                 <Button
                     style={{marginTop: px(8), marginHorizontal: px(16)}}
                     disabled={!check || button.avail === 0}
+                    title={button.text}
                     onPress={confirm}
                 />
             </View>
