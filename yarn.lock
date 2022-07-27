@@ -7302,10 +7302,10 @@ react-native-date-picker@^4.2.1:
   resolved "https://registry.npmmirror.com/react-native-date-picker/-/react-native-date-picker-4.2.1.tgz#36d97c56c651e5b5c848c511585b0c548f90e3b9"
   integrity sha512-buJkmVkyJIQwqeV1/1YYLVmBj9ah1L9AFJVFad20aObJuyxPSqJZClmuwDjVH1kf9jqXICDHJEH3bbagtr6Hfg==
 
-react-native-device-info@^7.0.2:
-  version "7.4.0"
-  resolved "https://registry.nlark.com/react-native-device-info/download/react-native-device-info-7.4.0.tgz"
-  integrity sha1-aU3t38beD/cmj/Rj2EaT7pgMaDw=
+react-native-device-info@^10.0.2:
+  version "10.0.2"
+  resolved "https://registry.npmmirror.com/react-native-device-info/-/react-native-device-info-10.0.2.tgz#17cd96df277cca5a22fb80409527c181a08d4ed1"
+  integrity sha512-6XY8EctYqNEX6EHDoHxz3yONOYxCHKrgEdStP7HZDYzFXb1JB5BFt7UbXDWrmihXUZDv06sBsjN26+Tp0EajXw==
 
 react-native-draggable-flatlist@^3.1.2:
   version "3.1.2"
