@@ -18,6 +18,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
 import withNetState from '~/components/withNetState';
+import {copilot, CopilotStep} from 'react-native-copilot';
 
 const handlerItemsLog = (items, data) => {
     items?.forEach?.((obj) => {
@@ -41,7 +42,7 @@ const handlerItemsLog = (items, data) => {
     });
 };
 
-const PKHome = ({navigation}) => {
+const PKHome = ({navigation, start}) => {
     const insets = useSafeAreaInsets();
     const dimensions = useWindowDimensions();
     const jump = useJump();
@@ -64,6 +65,7 @@ const PKHome = ({navigation}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
+                    start?.(false, scrollViewRef.current);
                 } else {
                     Toast.show(res.message);
                 }
@@ -179,7 +181,11 @@ const PKHome = ({navigation}) => {
                             ))}
                         </View>
                         {/* pkCard */}
-                        {data?.pk_list && <PKCard data={data?.pk_list} />}
+                        {data?.pk_list && (
+                            <CopilotStep text="第一步" order={1} name="pkCard">
+                                <PKCard data={data?.pk_list} />
+                            </CopilotStep>
+                        )}
                         <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
                             {data?.sub_list?.map?.((item, index) => {
                                 handlerListLog(item);
@@ -207,7 +213,9 @@ const PKHome = ({navigation}) => {
                         <BottomDesc />
                     </LinearGradient>
                 </ScrollView>
-                <PKBall />
+                <CopilotStep text="第二步" order={2} name="pkBall">
+                    <PKBall />
+                </CopilotStep>
             </View>
             {!userInfo.toJS().is_login && <LoginMask />}
         </>
@@ -282,4 +290,16 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
 });
-export default withNetState(PKHome);
+
+const _PKHome = copilot({
+    overlay: 'svg',
+    animated: true,
+    backdropColor: 'rgba(30,30,32,0.8)',
+    labels: {
+        previous: '上一步',
+        next: '下一步',
+        skip: '跳过',
+        finish: '完成',
+    },
+})(PKHome);
+export default withNetState(_PKHome);

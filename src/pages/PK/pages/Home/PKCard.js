@@ -13,7 +13,7 @@ import RenderHtml from '~/components/RenderHtml';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import {useFocusEffect} from '@react-navigation/native';
 
-const PKCard = ({data = {}}) => {
+const PKCard = ({data = {}, copilot}) => {
     const jump = useJump();
     const dispatch = useDispatch();
 
@@ -47,7 +47,8 @@ const PKCard = ({data = {}}) => {
             activeOpacity={data?.is_enter_pk ? 0.8 : 1}
             onPress={() => {
                 data?.is_enter_pk && handlerEnter();
-            }}>
+            }}
+            {...copilot}>
             <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
                 <View style={styles.pkInfoLeft}>
                     <Text style={styles.pkInfoName}>{leftObj.name}</Text>
