@@ -100,7 +100,7 @@ const PKBall = ({style, copilot}, ref) => {
     };
 
     return (
-        <TouchableOpacity activeOpacity={0.9} style={[styles.container, style]} onPress={handlerJump} {...copilot}>
+        <TouchableOpacity activeOpacity={0.9} style={[styles.container, style]} onPress={handlerJump}>
             <Animatable.View
                 ref={animatableRef}
                 iterationCount={1}
@@ -155,6 +155,7 @@ const PKBall = ({style, copilot}, ref) => {
                     source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png'}}
                     resizeMode="cover"
                     style={{width: px(66), height: px(66)}}
+                    {...copilot}
                 />
                 {pkProducts.length ? (
                     <ImageBackground

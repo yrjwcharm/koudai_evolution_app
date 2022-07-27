@@ -182,7 +182,7 @@ const PKHome = ({navigation, start}) => {
                         </View>
                         {/* pkCard */}
                         {data?.pk_list && (
-                            <CopilotStep text="第一步" order={1} name="pkCard">
+                            <CopilotStep text="左右滑动 查看多种类型基金PK" order={1} name="pkCard">
                                 <PKCard data={data?.pk_list} />
                             </CopilotStep>
                         )}
@@ -213,7 +213,7 @@ const PKHome = ({navigation, start}) => {
                         <BottomDesc />
                     </LinearGradient>
                 </ScrollView>
-                <CopilotStep text="第二步" order={2} name="pkBall">
+                <CopilotStep text="添加基金，选择六大板块对比权重进行产品PK" order={2} name="pkBall">
                     <PKBall />
                 </CopilotStep>
             </View>
