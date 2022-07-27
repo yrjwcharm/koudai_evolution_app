@@ -10,7 +10,7 @@ import {px} from '~/utils/appUtil';
 
 const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy}) => {
     const [status, setStatus] = useState(tool.open_status != 0);
-    const [needBuy, setNeedBuy] = useState(tool?.open_status == 1);
+    const [needBuy, setNeedBuy] = useState(tool?.now_buy?.open_status == 1);
     const [showConfig, setShowConfig] = useState(true);
     const onValueChange = (value) => {
         setStatus(value);
