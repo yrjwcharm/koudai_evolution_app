@@ -6,6 +6,7 @@ import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
 import {getUpgradeToPlanChart} from './services';
+import RenderHtml from '~/components/RenderHtml';
 
 const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate}) => {
     const [activeTab, setTabActive] = useState();
@@ -46,7 +47,7 @@ const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate}) => {
                 <Text style={styles.title}>{data.title}</Text>
             </View>
             <View style={styles.ratePanel}>
-                <Text style={[styles.rateText, {color: '#121D3A'}]}>{chart.now_value}</Text>
+                <RenderHtml html={chart.now_value} style={{...styles.rateText, color: '#121D3A'}} />
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -54,7 +55,7 @@ const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate}) => {
                     />
                     <Text style={styles.pannelDesc}>{data.name}</Text>
                 </View>
-                <Text style={[styles.rateText, {color: '#E74949'}]}>{chart.after_value}</Text>
+                <RenderHtml html={chart.after_value} style={{...styles.rateText, color: '#E74949'}} />
             </View>
             <View style={{height: px(210)}}>
                 {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
