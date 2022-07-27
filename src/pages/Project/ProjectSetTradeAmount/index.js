@@ -153,8 +153,14 @@ const Index = ({route, navigation}) => {
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
-            <Image source={require('~/assets/img/trade/setModel2.png')} style={{width: deviceWidth, height: px(42)}} />
-            {/* <Header data={{base_list, target}} /> */}
+            {data?.upgrade ? (
+                <Header data={{base_list: data?.upgrade.base_list, target: data?.upgrade.target}} />
+            ) : (
+                <Image
+                    source={require('~/assets/img/trade/setModel2.png')}
+                    style={{width: deviceWidth, height: px(42)}}
+                />
+            )}
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
                 {money_safe ? (

@@ -26,7 +26,7 @@ const ProjectSetTrade = ({route, navigation}) => {
     const targetYeild = useRef('');
     const bottomModal = useRef();
     const getData = async () => {
-        let res = await getSetModel({poid});
+        let res = await getSetModel({poid, upgrade_id: route.params?.upgrade_id});
         setPossible(res.result?.sale_model?.target_yeild?.possible);
         setData(res.result);
     };
@@ -82,6 +82,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             target_yield: targetYeild.current / 100,
             possible: possible || 0,
             sale_tool_id: data?.sale_model?.list?.map((item) => item.id).join(','),
+            upgrade_id: route.params?.upgrade_id,
         };
         let res = await getNextPath(params);
         if (res.code == '000000') {
@@ -93,8 +94,15 @@ const ProjectSetTrade = ({route, navigation}) => {
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
-            <Image source={require('~/assets/img/trade/setMode1.png')} style={{width: deviceWidth, height: px(42)}} />
-            {/* <Header data={{base_list, target}} /> */}
+            {data?.upgrade ? (
+                <Header data={{base_list: data.upgrade.base_list, target: data?.upgrade.target}} />
+            ) : (
+                <Image
+                    source={require('~/assets/img/trade/setMode1.png')}
+                    style={{width: deviceWidth, height: px(42)}}
+                />
+            )}
+
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
                 <View style={styles.trade_con}>

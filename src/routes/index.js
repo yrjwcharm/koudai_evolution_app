@@ -813,7 +813,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
             <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
             <Stack.Screen name="ToolWebView" component={ToolWebView} options={{title: '', headerShown: false}} />
-            <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: '计划确认'}} />
+            <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: ''}} />
             <Stack.Screen name="SignalList" component={SignalList} options={{title: '指数买卖信号'}} />
             <Stack.Screen
                 name="ProjectDetail"

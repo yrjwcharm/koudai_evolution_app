@@ -11,13 +11,13 @@ import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RenderHtml from '~/components/RenderHtml';
-const Index = ({route}) => {
-    const poid = route?.params?.poid || 'X04F193369';
+const Index = ({route, navigation}) => {
     const [data, setData] = useState({});
     const jump = useJump();
     const getInfo = async () => {
-        let res = await getData({poid});
+        let res = await getData(route?.params);
         setData(res.result);
+        res.result.title && navigation.setOptions({title: res.result.title});
     };
     useEffect(() => {
         getInfo();
@@ -33,7 +33,7 @@ const Index = ({route}) => {
                     </Text>
                 </View>
                 <View style={[Style.flexBetween, {marginBottom: px(22)}]}>
-                    <Text style={styles.key}>{'计划名称'}</Text>
+                    <Text style={styles.key}>{data?.name_label}</Text>
                     <Text style={styles.value}>{data?.name}</Text>
                 </View>
                 <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
