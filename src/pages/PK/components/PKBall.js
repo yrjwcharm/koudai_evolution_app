@@ -150,12 +150,11 @@ const PKBall = ({style, copilot}, ref) => {
                     )}
                 </View>
             </Animatable.View>
-            <View style={styles.circleWrap}>
+            <View style={styles.circleWrap} {...copilot}>
                 <FastImage
                     source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png'}}
                     resizeMode="cover"
                     style={{width: px(66), height: px(66)}}
-                    {...copilot}
                 />
                 {pkProducts.length ? (
                     <ImageBackground

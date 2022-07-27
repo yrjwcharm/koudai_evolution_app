@@ -66,7 +66,7 @@ const PKHome = ({navigation, start}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
-                    start?.(false, scrollViewRef.current);
+                    type === 1 && start?.(false, scrollViewRef.current);
                 } else {
                     Toast.show(res.message);
                 }
