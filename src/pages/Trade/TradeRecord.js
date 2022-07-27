@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-22 16:47:13
+ * @LastEditTime: 2022-07-27 16:50:07
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -32,7 +32,6 @@ const TradeRecord = ({route, navigation}) => {
     const offset = useRef('');
     const jump = useJump();
     const isMfb = fr == 'mfb';
-    const scrollTab = useRef();
     const getData = useCallback(
         (_page, toast) => {
             let Page = _page || page;
@@ -67,11 +66,7 @@ const TradeRecord = ({route, navigation}) => {
         [page, tabActive]
     );
     useEffect(() => {
-        if (active) {
-            scrollTab.current?.goToPage(active);
-        } else {
-            getData();
-        }
+        getData();
     }, [getData]);
     useEffect(() => {
         http.get('/order/others/20210101', {fr: fr === 'mfb' ? 'wallet' : fr || ''}).then((res) => {
@@ -268,11 +263,7 @@ const TradeRecord = ({route, navigation}) => {
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {isMfb ? (
-                <ScrollableTabView
-                    ref={scrollTab}
-                    onChangeTab={changeTab}
-                    renderTabBar={() => <TabBar />}
-                    initialPage={0}>
+                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={tabActive}>
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
@@ -287,7 +278,7 @@ const TradeRecord = ({route, navigation}) => {
                 <ScrollableTabView
                     onChangeTab={changeTab}
                     renderTabBar={() => <TabBar />}
-                    initialPage={0}
+                    initialPage={tabActive}
                     onScroll={(a) => {
                         // console.log(a);
                     }}>
