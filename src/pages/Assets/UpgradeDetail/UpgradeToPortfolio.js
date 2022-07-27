@@ -17,7 +17,7 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 const UpgradeToPortfolio = ({navigation, route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [curtainNum, setCurtainNum] = useState(0);
-    const [cardsRate, setCardsRate] = useState([]);
+    const [cardsRate, setCardsRate] = useState({});
     const [data, setData] = useState({});
     const {base_list, button, button2, detail, fund_list, fund_list_header, target} = data;
     const [loading, setLoading] = useState(true);
@@ -58,11 +58,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
     );
 
     const onCardRate = useCallback((index, obj) => {
-        setCardsRate((val) => {
-            let newVal = [...val];
-            newVal[index] = obj;
-            return newVal.filter((item) => item);
-        });
+        setCardsRate((val) => ({...val, [index]: obj}));
     }, []);
 
     const init = () => {
