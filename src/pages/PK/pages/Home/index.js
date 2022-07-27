@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';

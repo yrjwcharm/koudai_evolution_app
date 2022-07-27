@@ -2,19 +2,17 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-07-21 11:42:05
+ * @LastEditTime: 2022-07-27 16:36:49
  * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {StyleSheet, ScrollView, View, Text, BackHandler} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import NetInfo from '@react-native-community/netinfo';
 import {px as text} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import Empty from '~/components/EmptyTip';
 import {VerifyCodeModal, Modal} from '~/components/Modal';
 import http from '~/services';
 import Header from '~/components/NavBar';
@@ -23,6 +21,7 @@ import {useJump} from '~/components/hooks';
 import Toast from '~/components/Toast';
 import FastImage from 'react-native-fast-image';
 import Html from '~/components/RenderHtml';
+import withNetState from '~/components/withNetState';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import {useFocusEffect} from '@react-navigation/native';
@@ -41,7 +40,6 @@ const TradeProcessing = ({navigation, route}) => {
     const scrollRef = useRef();
     const timerRef = useRef(null);
     const signFlag = useRef(false);
-    const [hasNet, setHasNet] = useState(false);
     const init = useCallback((sign = false, refused = 0) => {
         http.get('/trade/order/processing/20210101', {
             txn_id: txn_id,
@@ -151,18 +149,6 @@ const TradeProcessing = ({navigation, route}) => {
             };
         }, [])
     );
-    useEffect(() => {
-        const listener = NetInfo.addEventListener((state) => {
-            setHasNet(state.isConnected);
-        });
-        return () => listener();
-    }, []);
-    useEffect(() => {
-        hasNet && init();
-        return () => {
-            timerRef.current !== null && clearTimeout(timerRef.current);
-        };
-    }, [hasNet]);
     const finishClick = () => {
         dispatch(getUserInfo());
         if (['trade_buy', 'fund_trade_buy'].includes(route?.params?.fr)) {
@@ -171,7 +157,7 @@ const TradeProcessing = ({navigation, route}) => {
             jump(data.button.url);
         }
     };
-    return hasNet ? (
+    return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
                 title="交易确认"
@@ -276,13 +262,6 @@ const TradeProcessing = ({navigation, route}) => {
                 getCode={signSendAgain}
             />
         </View>
-    ) : (
-        <Empty
-            img={require('~/assets/img/emptyTip/noNetwork.png')}
-            text={'哎呀！网络出问题了'}
-            desc={'网络不给力，请检查您的网络设置'}
-            style={{paddingTop: text(100), paddingBottom: text(60)}}
-        />
     );
 };
 
@@ -375,4 +354,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TradeProcessing;
+export default withNetState(TradeProcessing);
