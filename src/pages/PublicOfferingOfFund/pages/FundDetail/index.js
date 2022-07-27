@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-25 17:59:53
+ * @LastEditTime: 2022-07-27 15:24:06
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -41,6 +41,7 @@ const Index = ({navigation, route}) => {
     const init = () => {
         getPageData({code}).then((res) => {
             if (res.code === '000000') {
+                global.LogTool({event: 'fund_detail', oid: code});
                 const {share_button, title} = res.result;
                 navigation.setOptions({
                     headerRight: () =>
@@ -148,8 +149,8 @@ const Index = ({navigation, route}) => {
             return false;
         }
         const {event_id, is_follow, url} = btn;
-        const logParams = {ctrl: code, event: event_id};
-        event_id === 'follow_click' && (logParams.oid = is_follow ? 'cancel' : 'add');
+        const logParams = {event: event_id, oid: code};
+        event_id === 'follow_click' && (logParams.ctrl = is_follow ? 'cancel' : 'add');
         global.LogTool(logParams);
         if (event_id === 'consult_click') {
             bottomModal.current.show();
@@ -246,7 +247,7 @@ const Index = ({navigation, route}) => {
                                 disabled={avail === 0}
                                 key={text + i}
                                 onPress={() => {
-                                    global.LogTool({ctrl: code, event: event_id});
+                                    global.LogTool({event: event_id, oid: code});
                                     jump(url);
                                 }}
                                 style={[
