@@ -8,10 +8,11 @@ import Agreements from '~/components/Agreements';
 import BottomDesc from '~/components/BottomDesc';
 import {Button} from '~/components/Button';
 import {PasswordModal} from '~/components/Password';
+import Toast from '~/components/Toast';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {upgradeConfirm, upgradeDo} from './services';
 
-const UpgradeConfirm = () => {
+const UpgradeConfirm = ({route, navigation}) => {
     const [data, setData] = useState(null);
     const [curCardLayout, setCurCardLayout] = useState(null);
     const [futureCardLayout, setFutureCardLayout] = useState(null);
@@ -24,7 +25,7 @@ const UpgradeConfirm = () => {
     const passwordModal = useRef(null);
 
     useEffect(() => {
-        upgradeConfirm({upgrade_id: 1}).then((res) => {
+        upgradeConfirm(route.params).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -36,9 +37,11 @@ const UpgradeConfirm = () => {
     }, []);
 
     const submit = useCallback((password) => {
-        console.log(password);
-        upgradeDo({password, upgrade_id: 1}).then((res) => {
-            console.log(res);
+        upgradeDo({password, upgrade_id: route.params?.upgrade_id}).then((res) => {
+            Toast.show(res.result?.message || res.message);
+            if (res.code === '000000') {
+                navigation.pop(2);
+            }
         });
     }, []);
 
