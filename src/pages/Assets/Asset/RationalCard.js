@@ -164,10 +164,12 @@ const RationalCard = ({rational_info, im_info}) => {
                             <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
                             <AntDesign name="right" />
                         </View>
-                        <RenderHtml
-                            style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}
-                            html={rational_info?.desc}
-                        />
+                        {!!rational_info?.desc && (
+                            <RenderHtml
+                                style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}
+                                html={rational_info?.desc}
+                            />
+                        )}
                     </View>
                 </TouchableOpacity>
             </BoxShadow>
