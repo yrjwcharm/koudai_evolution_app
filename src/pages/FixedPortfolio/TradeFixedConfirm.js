@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 15:37:25
- * @LastEditors: yhc
+ * @LastEditors: Please set LastEditors
  * @Description: 定投确认页
- * @LastEditTime: 2021-04-09 10:40:18
+ * @LastEditTime: 2022-07-26 17:59:35
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -12,7 +12,6 @@ import Html from '../../components/RenderHtml';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Button} from '../../components/Button';
 import Http from '../../services';
-import Header from '../../components/NavBar';
 export default class TradeFixedConfirm extends Component {
     constructor(props) {
         super(props);

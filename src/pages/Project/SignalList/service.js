@@ -5,5 +5,5 @@
 import http from '~/services';
 
 export const getList = () => {
-    return http.get('tool/signal/list/20220713');
+    return http.get('index/manager/detail/20220713');
 };

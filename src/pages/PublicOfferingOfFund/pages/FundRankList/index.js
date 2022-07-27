@@ -2,11 +2,12 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-26 15:31:57
+ * @LastEditTime: 2022-07-26 15:40:15
  * @Description: 基金榜单
  */
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {FlatList, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -145,6 +146,15 @@ const Index = ({route}) => {
                 });
         }
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            StatusBar.setBarStyle('light-content');
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
+    );
 
     useEffect(() => {
         global.LogTool({ctrl: rank_type || 'mofang', event: 'view'});

@@ -8,8 +8,6 @@ export const getPageData = (params) => http.get('/portfolio/asset/detail/2022071
 
 export const getChartData = (params) => http.get('/portfolio/asset/chart/20220712', params);
 
-export const openTool = (params) => http.post('/tool/manage/open/20211207', params);
-
 export const setDividend = (params) => http.post('/portfolio/fund/dividend/20220712', params);
 
 export const postUnFavor = (params) => http.post('/portfolio/asset/close_upgrade/20220712', params);

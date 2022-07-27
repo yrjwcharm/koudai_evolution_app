@@ -84,7 +84,7 @@ export default ({navigation, route}) => {
                                         </View>
                                         {items.map((row, idx, arr) => {
                                             const {amount, button, name} = row;
-                                            const disabled = button.avail === 0;
+                                            const disabled = button?.avail === 0;
                                             return (
                                                 <View key={name + idx}>
                                                     <View style={[Style.flexRow, styles.row]}>

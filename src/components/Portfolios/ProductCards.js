@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-26 12:03:45
+ * @LastEditTime: 2022-07-26 16:50:20
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -332,13 +332,23 @@ const RecommendCard = ({data = {}, isPking}) => {
         </View>
     );
 };
-const ProjectLgCard = ({data, style}) => {
+const ProjectLgCard = ({data, style, tabLabel}) => {
     const jump = useJump();
     return (
         <View
             key={data?.title + data?.project_id}
             style={[styles.ProjectLgCard, !data?.list && {marginBottom: px(12), paddingBottom: px(16)}, style]}>
-            <TouchableOpacity onPress={() => jump(data?.url)} activeOpacity={0.8}>
+            <TouchableOpacity
+                onPress={() => {
+                    jump(data?.url);
+                    global.LogTool({
+                        event: 'rec_click',
+                        plateid: data?.plateid,
+                        ctrl: tabLabel,
+                        oid: data?.project_id,
+                    });
+                }}
+                activeOpacity={0.8}>
                 {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
                 <View style={[Style.flexRow, {marginBottom: px(14)}]}>
                     {!!data?.title_left_icon && (
@@ -413,7 +423,15 @@ const ProjectLgCard = ({data, style}) => {
                           key={_index}
                           style={{paddingTop: px(_index == 0 ? 12 : 0)}}
                           activeOpacity={0.9}
-                          onPress={() => jump(_list?.url)}>
+                          onPress={() => {
+                              jump(_list?.url);
+                              global.LogTool({
+                                  event: 'rec_click',
+                                  plateid: _list?.plateid,
+                                  ctrl: tabLabel,
+                                  oid: _list?.project_id,
+                              });
+                          }}>
                           <View style={[styles.line_circle]}>
                               <View
                                   style={{
@@ -561,7 +579,7 @@ const DefaultCard = ({data = {}, isPking}) => {
     );
 };
 
-export default ({data = {}, style = {}}) => {
+export default ({data = {}, style = {}, tabLabel = ''}) => {
     const jump = useJump();
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
     const {code, type, url, LogTool} = data;
@@ -602,7 +620,7 @@ export default ({data = {}, style = {}}) => {
                     case 'project_sm_card':
                         return <ProjectSmCard data={data} />;
                     case 'project_lg_card':
-                        return <ProjectLgCard data={data} />;
+                        return <ProjectLgCard data={data} tabLabel={tabLabel} />;
                     // 默认卡片
                     default:
                         return <DefaultCard data={data} isPking={isPking} />;

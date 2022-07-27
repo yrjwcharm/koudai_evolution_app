@@ -8,9 +8,8 @@ import {px} from '~/utils/appUtil';
 import RenderHtml from '~/components/RenderHtml';
 import {Colors, Style} from '~/common/commonStyle';
 import ProductCards from '~/components/Portfolios/ProductCards';
-const ProjectProduct = ({data = {}}) => {
+const ProjectProduct = ({data = {}, tabLabel}) => {
     const {name_pic, fit_desc, items, risk_desc, serious_items, slogan} = data;
-
     return (
         <View style={styles.con}>
             <Image
@@ -44,10 +43,12 @@ const ProjectProduct = ({data = {}}) => {
                 ) : null}
             </View>
             {items?.length > 0
-                ? items?.map((item, index) => <ProductCards data={item} key={item.title + index} />)
+                ? items?.map((item, index) => <ProductCards data={item} key={item.title + index} tabLabel={tabLabel} />)
                 : null}
             {serious_items?.length > 0
-                ? serious_items?.map((item, index) => <ProductCards data={item} key={item.title + index} />)
+                ? serious_items?.map((item, index) => (
+                      <ProductCards data={item} key={item.title + index} tabLabel={tabLabel} />
+                  ))
                 : null}
         </View>
     );

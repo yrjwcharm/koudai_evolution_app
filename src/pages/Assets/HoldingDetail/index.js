@@ -34,9 +34,8 @@ import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
-import {getChartData, getPageData, openTool, setDividend} from './services';
+import {getChartData, getPageData, setDividend} from './services';
 import CenterControl from './CenterControl';
-import {debounce} from 'lodash';
 
 /** @name 顶部基金信息 */
 const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
@@ -465,29 +464,12 @@ const BuyMode = ({data = {}, refresh}) => {
     const jump = useJump();
     const {button, buy, redeem, title} = data;
 
-    /** @name 开启工具 */
-    const handleOpen = useCallback(
-        debounce(
-            (params) => {
-                openTool(params).then((res) => {
-                    if (res.code === '000000') {
-                        res.message && Toast.show(res.message);
-                        refresh?.();
-                    }
-                });
-            },
-            500,
-            {leading: true, trailing: false}
-        ),
-        [refresh]
-    );
-
     /** @name 表格单元格内容渲染 */
-    const renderTabelCell = ({icon, params, text, type} = {}) => {
+    const renderTabelCell = ({icon, params, text, type, url} = {}) => {
         switch (type) {
             case 'button':
                 return (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => handleOpen(params)} style={styles.toolBtn}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={styles.toolBtn}>
                         <Text style={styles.linkText}>{text}</Text>
                     </TouchableOpacity>
                 );

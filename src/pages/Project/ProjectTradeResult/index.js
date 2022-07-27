@@ -72,10 +72,12 @@ const Index = ({route}) => {
                     {data?.sale_model?.list?.map((item, index) => (
                         <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
                             <Text style={styles.value}>{item?.name}</Text>
-                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>{item?.amount}</Text>
-                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
-                                {item?.next_trade_date}
-                            </Text>
+                            {!!item?.target_yield && (
+                                <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
+                                    {item?.target_yield * 100 + '%'}
+                                </Text>
+                            )}
+                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>{item?.select}</Text>
                         </View>
                     ))}
                 </View>
