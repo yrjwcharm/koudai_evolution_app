@@ -82,7 +82,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             target_yield: targetYeild.current / 100,
             possible: possible || 0,
             sale_tool_id: data?.sale_model?.list?.map((item) => item.id).join(','),
-            upgrade_id: route.params?.upgrade_id,
+            upgrade_id: route.params?.upgrade_id || 0,
         };
         let res = await getNextPath(params);
         if (res.code == '000000') {
