@@ -106,6 +106,7 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                 {account?.upgrade_list?.length
                                     ? account?.upgrade_list?.map((upgrade, _index) => (
                                           <View
+                                              key={_index}
                                               style={{
                                                   borderWidth: px(1.5),
                                                   borderColor: yellow,
@@ -133,10 +134,12 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                 ) : account.title == '魔方宝' ? (
                                     <CardItem data={account} flag={true} />
                                 ) : (
-                                    <NoAccountRender
-                                        empty_button={account?.empty_button}
-                                        empty_desc={account?.empty_desc}
-                                    />
+                                    !!account?.empty_button && (
+                                        <NoAccountRender
+                                            empty_button={account?.empty_button}
+                                            empty_desc={account?.empty_desc}
+                                        />
+                                    )
                                 )}
                             </View>
                         </View>
@@ -165,6 +168,10 @@ const ListTitle = ({title, desc}) => {
 const CardItem = ({data = {}, flag, upgrade}) => {
     const jump = useJump();
     const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
+    const getAmountColor = (value) => {
+        value = value?.replace(/,/g, '');
+        return value == 0 ? Colors.defaultColor : value > 0 ? Colors.red : Colors.green;
+    };
     return (
         <>
             <TouchableOpacity style={[styles.card]} activeOpacity={0.9} onPress={() => jump(url)}>
@@ -174,15 +181,21 @@ const CardItem = ({data = {}, flag, upgrade}) => {
                         <View style={styles.tag}>
                             <Text style={styles.tag_text}>{type_name}</Text>
                         </View>
-                        <Text numberOfLines={1}>{name}</Text>
+                        <Text numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}}>
+                            {name}
+                        </Text>
                     </View>
                 )}
                 <View style={[Style.flexBetween]}>
                     <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30)}]}>{profit}</Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30)}]}>{profit_acc}</Text>
+                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit)}]}>
+                        {profit.replace(/,/g, '') > 0 ? '+' + profit : profit}
+                    </Text>
+                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit_acc)}]}>
+                        {profit_acc.replace(/,/g, '') > 0 ? '+' + profit_acc : profit_acc}
+                    </Text>
                 </View>
-                {alert && <RenderAlert alert={alert} />}
+                {!!alert && <RenderAlert alert={alert} />}
             </TouchableOpacity>
             {/* 画卡片分割的半圆 */}
             {!flag && (

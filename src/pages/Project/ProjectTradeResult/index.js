@@ -10,6 +10,7 @@ import {getData} from './service';
 import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
+import RenderHtml from '~/components/RenderHtml';
 const Index = ({route}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
@@ -48,13 +49,8 @@ const Index = ({route}) => {
                     {data?.buy_model?.list?.map((item, index) => (
                         <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
                             <Text style={styles.value}>{item?.name}</Text>
-                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>{item?.amount}</Text>
-                            <View style={{alignItems: 'flex-end'}}>
-                                <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
-                                    {item?.next_trade_date}
-                                </Text>
-                                <Text style={styles.key}>{'(非交易日顺延)'}</Text>
-                            </View>
+                            <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
+                            <RenderHtml html={item?.next_trade_date} style={{fontSize: px(13)}} />
                         </View>
                     ))}
                 </View>
