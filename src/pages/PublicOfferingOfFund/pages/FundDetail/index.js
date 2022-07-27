@@ -2,7 +2,7 @@
  * @Date: 2022-06-28 13:48:18
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-27 15:24:06
+ * @LastEditTime: 2022-07-27 15:52:07
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -41,7 +41,6 @@ const Index = ({navigation, route}) => {
     const init = () => {
         getPageData({code}).then((res) => {
             if (res.code === '000000') {
-                global.LogTool({event: 'fund_detail', oid: code});
                 const {share_button, title} = res.result;
                 navigation.setOptions({
                     headerRight: () =>
