@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-22 11:33:13
+ * @LastEditTime: 2022-07-28 17:16:21
  * @Description: 底部弹窗
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -114,7 +114,7 @@ const BottomModal = React.forwardRef((props, ref) => {
                         {header || (
                             <View style={[styles.header, headerStyle]}>
                                 <TouchableOpacity style={styles.close} onPress={hide}>
-                                    <Icon name={'close'} size={18} />
+                                    <Icon color={Colors.descColor} name={'close'} size={18} />
                                 </TouchableOpacity>
                                 <View style={{alignItems: 'center'}}>
                                     <Text style={styles.title}>{title}</Text>

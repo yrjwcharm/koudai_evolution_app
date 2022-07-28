@@ -226,16 +226,20 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                     <View style={descBoxSty(type)}>
                         {type === 'upgrade' ? <Image source={leftQuota1} style={styles.leftQuota} /> : null}
                         <HTML html={content} numberOfLines={3} style={styles.desc} />
-                        <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                            {adjustDesc ? (
-                                <HTML html={adjustDesc} style={styles.desc} />
-                            ) : (
-                                <>
-                                    <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>{adjustDate}</Text>
-                                    {consoleBtn({button})}
-                                </>
-                            )}
-                        </View>
+                        {adjustDate || adjustDesc ? (
+                            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                {adjustDesc ? (
+                                    <HTML html={adjustDesc} style={styles.desc} />
+                                ) : (
+                                    <>
+                                        <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
+                                            {adjustDate}
+                                        </Text>
+                                        {consoleBtn({button})}
+                                    </>
+                                )}
+                            </View>
+                        ) : null}
                         {adjustTip ? (
                             <>
                                 <View style={styles.divider} />

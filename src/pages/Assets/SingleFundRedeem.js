@@ -13,6 +13,7 @@ import {BankCardModal, Modal} from '../../components/Modal';
 import Radio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {PasswordModal} from '../../components/Password';
+import Loading from '../Portfolio/components/PageLoading';
 
 const SingleFundRedeem = ({navigation, route}) => {
     const jump = useJump();
@@ -59,7 +60,13 @@ const SingleFundRedeem = ({navigation, route}) => {
 
     useEffect(() => {
         getData();
-    }, [navigation, route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        debounceGetFee(inputVal);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeRatio, bankSelectObj, inputVal]);
 
     const getFee = async (share) => {
         try {
@@ -92,7 +99,7 @@ const SingleFundRedeem = ({navigation, route}) => {
     const handlerInputVal = (value, integer = false) => {
         if (value && typeof value == 'string') {
             //先把非数字的都替换掉，除了数字和.
-            value = value.replace(/[^\d\.]/g, '');
+            value = value.replace(/[^\d.]/g, '');
             //前两位不能是0加数字
             value = value.replace(/^0\d[0-9]*/g, '');
             if (integer) {
@@ -116,12 +123,14 @@ const SingleFundRedeem = ({navigation, route}) => {
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
         let all = bankSelectObj.select.all_share;
-        if (+newVal === +all) {
+        if (newVal === '') {
+            setErrText('');
+        } else if (+newVal === +all) {
             setErrText('');
         } else if (newVal < min) {
             setErrText('当前卖出份额小于最小卖出份额' + min);
         } else if (newVal > max && newVal < all) {
-            setErrText('当前保留份额小于最小保留份额' + ((all * 1000 - max * 1000) / 1000));
+            setErrText('当前保留份额小于最小保留份额' + (all * 1000 - max * 1000) / 1000);
         } else if (newVal > all) {
             setErrText('卖出份额大于当前页面所选银行卡可卖出份额');
         } else {
@@ -203,205 +212,222 @@ const SingleFundRedeem = ({navigation, route}) => {
         setReminder('');
     };
 
-    return loading ? (
+    return (
         <View style={{flex: 1}}>
-            <ActivityIndicator color={Colors.brandColor} size="large" style={{width: '100%', height: px(42)}} />
-        </View>
-    ) : (
-        <>
-            <View style={[styles.container, {paddingBottom: btnHeight}]}>
-                <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
-                    <View style={styles.fundInfo}>
-                        <Text style={styles.fundInfoName}>{data.fund_info?.name}</Text>
-                        <Text style={styles.fundInfoCode}>{data.fund_info?.code}</Text>
-                    </View>
-                    <View style={styles.card}>
-                        <View style={[styles.cardHeader, Style.flexBetween]}>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.cardHeaderTitle}>{data.share_info?.title}</Text>
-                                <Text style={styles.cardHeaderTip}>{data.share_info?.tip}</Text>
+            {loading ? (
+                <Loading />
+            ) : (
+                <>
+                    <View style={[styles.container, {paddingBottom: btnHeight}]}>
+                        <ScrollView bounces={false} style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
+                            <View style={styles.fundInfo}>
+                                <Text style={styles.fundInfoName}>{data.fund_info?.name}</Text>
+                                <Text style={styles.fundInfoCode}>{data.fund_info?.code}</Text>
                             </View>
-                            {data.rule_btn ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        jump(data.rule_btn?.url);
-                                    }}>
-                                    <Text style={styles.tradeRule}>{data.rule_btn?.text}</Text>
-                                </TouchableOpacity>
-                            ) : null}
-                        </View>
-                        <View style={styles.cardInput}>
-                            <View style={Style.flexRow}>
-                                <TextInput
-                                    keyboardType="numeric"
-                                    style={[styles.inputStyle, {fontFamily: Font.numMedium}]}
-                                    placeholder={`最多可卖出${bankSelectObj.select?.all_share || 0}份`}
-                                    placeholderTextColor={Colors.placeholderColor}
-                                    onChangeText={onChangeText}
-                                    value={inputVal}
-                                />
-                                {inputVal ? (
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            clear();
-                                        }}>
-                                        <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
-                                    </TouchableOpacity>
-                                ) : null}
+                            <View style={styles.card}>
+                                <View style={[styles.cardHeader, Style.flexBetween]}>
+                                    <View style={Style.flexRow}>
+                                        <Text style={styles.cardHeaderTitle}>{data.share_info?.title}</Text>
+                                        <Text style={styles.cardHeaderTip}>{data.share_info?.tip}</Text>
+                                    </View>
+                                    {data.rule_btn ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump(data.rule_btn?.url);
+                                            }}>
+                                            <Text style={styles.tradeRule}>{data.rule_btn?.text}</Text>
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </View>
+                                <View style={styles.cardInput}>
+                                    <View style={Style.flexRow}>
+                                        <TextInput
+                                            keyboardType="numeric"
+                                            style={[styles.inputStyle, {fontFamily: Font.numMedium}]}
+                                            placeholder={`最多可卖出${bankSelectObj.select?.all_share || 0}份`}
+                                            placeholderTextColor={Colors.placeholderColor}
+                                            onChangeText={onChangeText}
+                                            value={inputVal}
+                                        />
+                                        {inputVal ? (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    clear();
+                                                }}>
+                                                <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </View>
+                                    {errText ? <Text style={styles.errText}>{errText}</Text> : null}
+                                </View>
+                                <View style={styles.cardOption}>
+                                    {data.share_info?.options?.map?.((item, idx) => (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            key={idx}
+                                            style={[
+                                                styles.optionBtn,
+                                                {
+                                                    marginLeft: idx > 0 ? px(8) : 0,
+                                                    borderColor: activeOption === item ? '#0051CC' : '#BDC2CC',
+                                                    backgroundColor: activeOption === item ? '#F1F6FF' : '#fff',
+                                                },
+                                            ]}
+                                            onPress={() => {
+                                                setActiveOption(item);
+                                                let rVal = bankSelectObj.select.all_share * item.percent;
+                                                let nrVal = rVal.toFixed(2) + '';
+                                                setInputVal(nrVal);
+                                                handlerErrText(nrVal);
+                                                debounceGetFee(nrVal);
+                                            }}>
+                                            <Text
+                                                style={[
+                                                    styles.optionBtnText,
+                                                    {color: activeOption === item ? '#0051CC' : '#9AA0B1'},
+                                                ]}>
+                                                {item.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                                <View style={styles.cardDesc}>
+                                    {feeText || reminder ? (
+                                        <>
+                                            {feeText ? <Html html={feeText} style={styles.feeText} /> : null}
+                                            {reminder ? (
+                                                <View style={{marginTop: px(4)}}>
+                                                    <Html html={reminder} style={styles.feeText} />
+                                                </View>
+                                            ) : null}
+                                        </>
+                                    ) : (
+                                        <View style={[Style.flexCenter]}>
+                                            <ActivityIndicator color={Colors.lightGrayColor} />
+                                        </View>
+                                    )}
+                                </View>
                             </View>
-                            {errText ? <Text style={styles.errText}>{errText}</Text> : null}
-                        </View>
-                        <View style={styles.cardOption}>
-                            {data.share_info?.options?.map?.((item, idx) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    key={idx}
-                                    style={[
-                                        styles.optionBtn,
-                                        {
-                                            marginLeft: idx > 0 ? px(8) : 0,
-                                            borderColor: activeOption === item ? '#0051CC' : '#BDC2CC',
-                                            backgroundColor: activeOption === item ? '#F1F6FF' : '#fff',
-                                        },
-                                    ]}
-                                    onPress={() => {
-                                        setActiveOption(item);
-                                        let rVal = bankSelectObj.select.all_share * item.percent;
-                                        let nrVal = rVal.toFixed(2) + '';
-                                        setInputVal(nrVal);
-                                        handlerErrText(nrVal);
-                                        debounceGetFee(nrVal);
-                                    }}>
-                                    <Text
+                            <View style={styles.bankWrap}>
+                                <Text style={styles.bankTitle}>赎回至{['银行卡', '魔方宝'][activeRatio]}</Text>
+                                <View style={styles.bankCard}>
+                                    <View
                                         style={[
-                                            styles.optionBtnText,
-                                            {color: activeOption === item ? '#0051CC' : '#9AA0B1'},
+                                            styles.bankCardItem,
+                                            {justifyContent: 'space-between'},
+                                            walletData ? {borderBottomColor: '#DDDDDD', borderBottomWidth: 0.5} : null,
                                         ]}>
-                                        {item.text}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                        <View style={styles.cardDesc}>
-                            {feeText && inputVal ? <Html html={feeText} style={styles.serviceCharge} /> : null}
-                            {reminder && inputVal ? <Html html={reminder} style={styles.reminder} /> : null}
-                        </View>
-                    </View>
-                    <View style={styles.bankWrap}>
-                        <Text style={styles.bankTitle}>赎回至{['银行卡', '魔方宝'][activeRatio]}</Text>
-                        <View style={styles.bankCard}>
-                            <View
-                                style={[
-                                    styles.bankCardItem,
-                                    {justifyContent: 'space-between'},
-                                    walletData ? {borderBottomColor: '#DDDDDD', borderBottomWidth: 0.5} : null,
-                                ]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        if (activeRatio === 1) {
-                                            clear();
-                                        }
-                                        setActiveRatio(0);
-                                    }}
-                                    style={Style.flexCenter}>
-                                    <Radio
-                                        style={{marginRight: px(10)}}
-                                        index={0}
-                                        click={true}
-                                        checked={activeRatio === 0}
-                                    />
-                                </TouchableOpacity>
-                                <View style={[styles.bankCardItemDetail, {flex: 1}]}>
-                                    <FastImage
-                                        source={{uri: bankSelectObj.select?.bank_icon}}
-                                        style={styles.bankCardItemDetailIcon}
-                                    />
-                                    <View style={styles.bankCardItemDetailInfo}>
-                                        <Text style={styles.bankCardItemDetailInfoName}>
-                                            {bankSelectObj.select?.bank_name}({bankSelectObj.select?.bank_no})
-                                        </Text>
-                                        <Text style={styles.bankCardItemDetailInfoDesc}>
-                                            {bankSelectObj.select?.desc}
-                                        </Text>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                // if (activeRatio === 1) {
+                                                //     clear();
+                                                // }
+                                                setActiveRatio(0);
+                                            }}
+                                            style={Style.flexCenter}>
+                                            <Radio
+                                                style={{marginRight: px(10)}}
+                                                index={0}
+                                                click={true}
+                                                checked={activeRatio === 0}
+                                            />
+                                        </TouchableOpacity>
+                                        <View style={[styles.bankCardItemDetail, {flex: 1}]}>
+                                            <FastImage
+                                                source={{uri: bankSelectObj.select?.bank_icon}}
+                                                style={styles.bankCardItemDetailIcon}
+                                            />
+                                            <View style={styles.bankCardItemDetailInfo}>
+                                                <Text style={styles.bankCardItemDetailInfoName}>
+                                                    {bankSelectObj.select?.bank_name}({bankSelectObj.select?.bank_no})
+                                                </Text>
+                                                <Text style={styles.bankCardItemDetailInfoDesc}>
+                                                    {bankSelectObj.select?.desc}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={{}}
+                                            onPress={() => {
+                                                bankCardRef.current?.show?.();
+                                            }}>
+                                            <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                                                切换
+                                                <Icon name={'right'} size={px(12)} />
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <View />
                                     </View>
+                                    {walletData ? (
+                                        <View style={styles.bankCardItem}>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    // if (activeRatio === 0) {
+                                                    //     clear();
+                                                    // }
+                                                    setActiveRatio(1);
+                                                }}
+                                                style={Style.flexCenter}>
+                                                <Radio
+                                                    style={{marginRight: px(10)}}
+                                                    index={1}
+                                                    click={true}
+                                                    checked={activeRatio === 1}
+                                                />
+                                            </TouchableOpacity>
+                                            <View style={styles.bankCardItemDetail}>
+                                                <FastImage
+                                                    source={{uri: walletData?.bank_icon}}
+                                                    style={styles.bankCardItemDetailIcon}
+                                                />
+                                                <Text style={styles.bankCardItemDetailName}>
+                                                    {walletData.bank_name}
+                                                </Text>
+                                                <Text style={styles.bankCardItemDetailDesc}>{walletData.desc}</Text>
+                                            </View>
+                                        </View>
+                                    ) : null}
                                 </View>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{}}
-                                    onPress={() => {
-                                        bankCardRef.current?.show?.();
-                                    }}>
-                                    <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                        切换
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
-                                </TouchableOpacity>
-                                <View />
                             </View>
-                            {walletData ? (
-                                <View style={styles.bankCardItem}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            if (activeRatio === 0) {
-                                                clear();
-                                            }
-                                            setActiveRatio(1);
-                                        }}
-                                        style={Style.flexCenter}>
-                                        <Radio
-                                            style={{marginRight: px(10)}}
-                                            index={1}
-                                            click={true}
-                                            checked={activeRatio === 1}
-                                        />
-                                    </TouchableOpacity>
-                                    <View style={styles.bankCardItemDetail}>
-                                        <FastImage
-                                            source={{uri: walletData?.bank_icon}}
-                                            style={styles.bankCardItemDetailIcon}
-                                        />
-                                        <Text style={styles.bankCardItemDetailName}>{walletData.bank_name}</Text>
-                                        <Text style={styles.bankCardItemDetailDesc}>{walletData.desc}</Text>
-                                    </View>
-                                </View>
-                            ) : null}
-                        </View>
+                            <BottomDesc />
+                        </ScrollView>
                     </View>
-                    <BottomDesc />
-                </ScrollView>
-            </View>
-            {data.button ? (
-                <FixedButton
-                    title={data.button?.text}
-                    disabled={!(+inputVal && !errText)}
-                    onPress={confirm}
-                    heightChange={(height) => setBtnHeight(height)}
-                />
-            ) : null}
-            <BankCardModal
-                type={'hidden'}
-                title="请选择银行卡"
-                data={data.pay_methods || []}
-                select={bankSelectObj?.index}
-                ref={(ref) => {
-                    bankCardRef.current = ref;
-                }}
-                onDone={(select, index) => {
-                    setBankSelectObj({select, index});
-                    clear();
-                    console.log(select, index);
-                }}
-            />
-            <PasswordModal
-                ref={(ref) => {
-                    passwordModalRef.current = ref;
-                }}
-                onDone={submit}
-            />
-        </>
+                    {data.button ? (
+                        <FixedButton
+                            title={data.button?.text}
+                            disabled={!(+inputVal && !errText)}
+                            onPress={confirm}
+                            heightChange={(height) => setBtnHeight(height)}
+                        />
+                    ) : null}
+                    <BankCardModal
+                        type={'hidden'}
+                        title="请选择银行卡"
+                        data={data.pay_methods || []}
+                        select={bankSelectObj?.index}
+                        ref={(ref) => {
+                            bankCardRef.current = ref;
+                        }}
+                        onDone={(select, index) => {
+                            setBankSelectObj({select, index});
+                            clear();
+                            // console.log(select, index);
+                        }}
+                    />
+                    <PasswordModal
+                        ref={(ref) => {
+                            passwordModalRef.current = ref;
+                        }}
+                        onDone={submit}
+                    />
+                </>
+            )}
+        </View>
     );
 };
 
@@ -478,6 +504,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingVertical: px(4),
         paddingHorizontal: px(24),
+        flex: 1,
     },
     optionBtnText: {
         fontSize: px(13),
@@ -488,17 +515,10 @@ const styles = StyleSheet.create({
     cardDesc: {
         marginTop: px(20),
     },
-    serviceCharge: {
-        fontSize: px(12),
+    feeText: {
+        fontSize: Font.textH3,
         lineHeight: px(17),
-        color: '#545968',
-        textAlignVertical: 'center',
-        marginBottom: px(4),
-    },
-    reminder: {
-        fontSize: px(12),
-        lineHeight: px(17),
-        color: '#545968',
+        color: Colors.descColor,
     },
     bankWrap: {},
     bankTitle: {

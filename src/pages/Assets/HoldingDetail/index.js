@@ -3,10 +3,9 @@
  * @Description: 持仓详情页
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import {TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Picker from 'react-native-picker';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -409,7 +408,7 @@ const RenderChart = ({data = {}}) => {
                             deviceWidth - px(32),
                             [10, 20, 10, 18],
                             tag_position,
-                            220,
+                            px(200),
                             max_ratio || max_amount
                         )}
                         onChange={onChartChange}
@@ -695,7 +694,7 @@ export default ({navigation, route}) => {
                                                     <FormItem
                                                         data={item}
                                                         onChange={(val) => {
-                                                            console.log(val);
+                                                            // console.log(val);
                                                             item.label === '分红方式' &&
                                                                 passwordModal.current?.show({
                                                                     dividend: val,
@@ -715,7 +714,7 @@ export default ({navigation, route}) => {
                     </ScrollView>
                     {button_list?.length > 0 && (
                         <View style={[Style.flexRow, styles.bottomBtns]}>
-                            {button_list.map((btn, i) => {
+                            {button_list.map((btn, i, arr) => {
                                 const {avail, text, url} = btn;
                                 if (i === 0) {
                                     return (
@@ -734,7 +733,7 @@ export default ({navigation, route}) => {
                                             </Text>
                                         </TouchableOpacity>
                                     );
-                                } else if (i === 1) {
+                                } else {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -743,40 +742,18 @@ export default ({navigation, route}) => {
                                             key={text + i}
                                             style={[
                                                 Style.flexCenter,
-                                                styles.fixedBtn,
-                                                {backgroundColor: avail === 0 ? Colors.bgColor : '#E6F0FF'},
+                                                i === 1 ? styles.fixedBtn : {},
+                                                i === arr.length - 1 ? styles.buyBtn : {},
+                                                i === arr.length - 1
+                                                    ? {backgroundColor: avail === 0 ? '#E9EAEF' : Colors.brandColor}
+                                                    : {backgroundColor: avail === 0 ? Colors.bgColor : '#E6F0FF'},
                                             ]}>
                                             <Text
                                                 style={[
                                                     styles.bottomBtnText,
-                                                    {
-                                                        color: avail === 0 ? '#BDC2CC' : Colors.brandColor,
-                                                        fontWeight: Font.weightMedium,
-                                                    },
-                                                ]}>
-                                                {text}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                } else if (i === 2) {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            disabled={avail === 0}
-                                            onPress={() => jump(url)}
-                                            key={text + i}
-                                            style={[
-                                                Style.flexCenter,
-                                                styles.buyBtn,
-                                                {backgroundColor: avail === 0 ? '#E9EAEF' : Colors.brandColor},
-                                            ]}>
-                                            <Text
-                                                style={[
-                                                    styles.bottomBtnText,
-                                                    {
-                                                        color: avail === 0 ? '#BDC2CC' : '#fff',
-                                                        fontWeight: Font.weightMedium,
-                                                    },
+                                                    i === arr.length - 1
+                                                        ? {color: avail === 0 ? '#BDC2CC' : '#fff'}
+                                                        : {color: avail === 0 ? '#BDC2CC' : Colors.brandColor},
                                                 ]}>
                                                 {text}
                                             </Text>
@@ -975,6 +952,7 @@ const styles = StyleSheet.create({
     bottomBtnText: {
         fontSize: px(15),
         lineHeight: px(21),
+        fontWeight: Font.weightMedium,
     },
     fixedBtn: {
         borderTopLeftRadius: Space.borderRadius,
@@ -994,7 +972,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: px(22),
         color: Colors.defaultColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         width: '100%',
         textAlign: 'center',
     },

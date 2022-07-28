@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-26 16:50:20
+ * @LastEditTime: 2022-07-28 17:59:50
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -237,11 +237,19 @@ const RecommendCard = ({data = {}, isPking}) => {
         yield_info,
     } = data;
     const btnText = isPking ? 'PK中' : button?.text;
+    const [showChart, setShowChart] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            chart?.length > 0 && setShowChart(true);
+        }, 500);
+    }, [chart]);
+
     return (
         <View>
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
-                    {chart?.length > 0 ? <Chart initScript={chartOptions.smChart(chart)} /> : null}
+                    {showChart ? <Chart initScript={chartOptions.smChart(chart)} /> : null}
                     {leftLabel?.length > 0 && (
                         <>
                             {leftLabel[0] ? (
@@ -334,6 +342,14 @@ const RecommendCard = ({data = {}, isPking}) => {
 };
 const ProjectLgCard = ({data, style, tabLabel}) => {
     const jump = useJump();
+    const [showChart, setShowChart] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            data?.chart_data?.portfolio_lines?.length > 0 && setShowChart(true);
+        }, 500);
+    }, [data]);
+
     return (
         <View
             key={data?.title + data?.project_id}
@@ -368,7 +384,7 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
                 <View style={[Style.flexRow, {height: px(106)}]}>
                     <View style={{width: px(100), paddingRight: px(6)}}>
                         <View style={{height: px(59), marginBottom: px(8)}}>
-                            {data?.chart_data?.portfolio_lines?.length > 0 ? (
+                            {showChart ? (
                                 <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
                             ) : null}
                         </View>
@@ -472,12 +488,18 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
 };
 // 计划资产页小卡片
 const ProjectSmCard = ({data = {}}) => {
+    const [showChart, setShowChart] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            data?.chart_data?.portfolio_lines?.length > 0 && setShowChart(true);
+        }, 500);
+    }, [data]);
+
     return (
         <View style={[Style.flexRow, styles.ProjectSmCard]}>
             <View style={{width: px(73), height: px(66)}}>
-                {data?.chart_data?.portfolio_lines?.length > 0 ? (
-                    <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
-                ) : null}
+                {showChart ? <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} /> : null}
             </View>
             <View style={{flex: 1, justifyContent: 'space-between'}}>
                 <View style={{flex: 1}}>
