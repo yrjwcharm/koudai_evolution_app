@@ -20,6 +20,7 @@ import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';
 import withNetState from '~/components/withNetState';
 import {copilot, CopilotStep} from 'react-native-copilot';
+import TooltipComponent from './TooltipComponent';
 
 const handlerItemsLog = (items, data) => {
     items?.forEach?.((obj) => {
@@ -43,7 +44,7 @@ const handlerItemsLog = (items, data) => {
     });
 };
 
-const PKHome = ({navigation, start}) => {
+const PKHome = ({navigation, start, copilotEvents}) => {
     const insets = useSafeAreaInsets();
     const dimensions = useWindowDimensions();
     const jump = useJump();
@@ -183,7 +184,7 @@ const PKHome = ({navigation, start}) => {
                         </View>
                         {/* pkCard */}
                         {data?.pk_list && (
-                            <CopilotStep text="左右滑动 查看多种类型基金PK" order={1} name="pkCard">
+                            <CopilotStep order={1} name="pkCard">
                                 <PKCard data={data?.pk_list} />
                             </CopilotStep>
                         )}
@@ -214,8 +215,8 @@ const PKHome = ({navigation, start}) => {
                         <BottomDesc />
                     </LinearGradient>
                 </ScrollView>
-                <CopilotStep text="添加基金，选择六大板块对比权重进行产品PK" order={2} name="pkBall">
-                    <PKBall />
+                <CopilotStep order={2} name="pkBall">
+                    <PKBall copilotEvents={copilotEvents} />
                 </CopilotStep>
             </View>
             {!userInfo.toJS().is_login && <LoginMask />}
@@ -296,11 +297,14 @@ const _PKHome = copilot({
     overlay: 'svg',
     animated: true,
     backdropColor: 'rgba(30,30,32,0.8)',
-    labels: {
-        previous: '上一步',
-        next: '下一步',
-        skip: '跳过',
-        finish: '完成',
+    tooltipComponent: TooltipComponent,
+    stepNumberComponent: () => null,
+    arrowColor: 'transparent',
+    tooltipStyle: {
+        backgroundColor: 'transparent',
+        width: '100%',
+        overflow: 'visible',
     },
+    contentPadding: 0,
 })(PKHome);
 export default withNetState(_PKHome);

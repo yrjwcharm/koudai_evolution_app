@@ -9,8 +9,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import {getPKBetter} from '../services';
 import {useFocusEffect} from '@react-navigation/native';
+import copilotHand from '~/assets/img/copilot-hand.png';
 
-const PKBall = ({style, copilot}, ref) => {
+const PKBall = ({style, copilot = {}, copilotEvents}, ref) => {
     const pkProducts = useSelector((state) => state.pkProducts['2']);
     const dispatch = useDispatch();
     const jump = useJump();
@@ -18,6 +19,7 @@ const PKBall = ({style, copilot}, ref) => {
     // 1有PK产品  2优选产品
     const [layoutType, updateLayoutType] = useState(1);
     const [better, setBetter] = useState(null);
+    const [copilotStep, setCopilotStep] = useState(-1);
 
     const animatableRef = useRef(null);
     const animateViewWidthRef = useRef(0);
@@ -26,8 +28,21 @@ const PKBall = ({style, copilot}, ref) => {
     const layoutTypeRef = useRef(null);
 
     useEffect(() => {
-        () => {
+        copilotEvents?.on?.('start', (obj) => {
+            setCopilotStep(0);
+        });
+        copilotEvents?.on?.('stepChange', (obj) => {
+            setTimeout(() => {
+                setCopilotStep(obj?.order);
+            }, 400);
+        });
+        copilotEvents?.on?.('stop', (obj) => {
+            setCopilotStep(-1);
+        });
+        return () => {
             // @ts-ignore
+            copilotEvents?.off?.('stepChange');
+            copilotEvents?.off?.('stop');
             clearTimeout(timer.current);
             timer.current = null;
         };
@@ -150,20 +165,31 @@ const PKBall = ({style, copilot}, ref) => {
                     )}
                 </View>
             </Animatable.View>
-            <View style={styles.circleWrap} {...copilot}>
-                <FastImage
-                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png'}}
-                    resizeMode="cover"
-                    style={{width: px(66), height: px(66)}}
-                />
-                {pkProducts.length ? (
-                    <ImageBackground
+            <View
+                style={[
+                    styles.circleWrap,
+                    copilotStep > -1 ? {height: px(100)} : {},
+                    copilotStep === 2 ? {backgroundColor: 'rgba(30,30,32,0.8)'} : {},
+                ]}
+                {...copilot}>
+                <View style={copilotStep === 2 ? styles.circlePadding : {}}>
+                    <FastImage
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/pkBall.png'}}
                         resizeMode="cover"
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar-badge.png'}}
-                        style={styles.badge}>
-                        <Text style={styles.badgeText}>{pkProducts.length}</Text>
-                    </ImageBackground>
-                ) : null}
+                        style={{width: px(66), height: px(66)}}
+                    />
+                    {pkProducts.length ? (
+                        <ImageBackground
+                            resizeMode="cover"
+                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-bar-badge.png'}}
+                            style={styles.badge}>
+                            <Text style={styles.badgeText}>{pkProducts.length}</Text>
+                        </ImageBackground>
+                    ) : null}
+                    {copilotStep === 2 ? (
+                        <FastImage source={copilotHand} resizeMode="cover" style={styles.handIcon} />
+                    ) : null}
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -219,6 +245,17 @@ const styles = StyleSheet.create({
     noticePushText: {
         fontSize: px(11),
         color: '#ffaf00',
+    },
+    circlePadding: {
+        borderRadius: px(500),
+        backgroundColor: '#fff',
+    },
+    handIcon: {
+        width: px(48),
+        height: px(57),
+        position: 'absolute',
+        top: px(42),
+        left: px(10),
     },
 });
 export default forwardRef(PKBall);

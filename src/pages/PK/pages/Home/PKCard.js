@@ -89,21 +89,18 @@ const PKCard = ({data = {}, copilot}) => {
                         paddingBottom: px(20),
                     }}>
                     <View style={styles.pkParams}>
-                        {leftObj.score_info?.map((item, idx) => {
+                        {leftObj.score_info?.slice(0, 3)?.map((item, idx) => {
                             let rItem = rightObj.score_info?.[idx] || {};
                             return (
                                 <View key={idx} style={styles.pkParamsItem}>
+                                    <PKParamRate value={item.score} total={item.total_score} color="#1A4FEB" />
                                     <Text style={styles.pkParamsItemTitle}>{item.name}</Text>
-                                    <View style={styles.pkParamsItemRate}>
-                                        <PKParamRate value={item.score} total={item.total_score} color="#1A4FEB" />
-                                        <View style={{width: px(40)}} />
-                                        <PKParamRate
-                                            value={rItem.score}
-                                            total={rItem.total_score}
-                                            justifyContent="flex-end"
-                                            color="#E74949"
-                                        />
-                                    </View>
+                                    <PKParamRate
+                                        value={rItem.score}
+                                        total={rItem.total_score}
+                                        justifyContent="flex-end"
+                                        color="#E74949"
+                                    />
                                 </View>
                             );
                         })}
@@ -194,21 +191,21 @@ const styles = StyleSheet.create({
     },
     pkParams: {
         alignItems: 'center',
-        paddingHorizontal: px(44),
+        paddingHorizontal: px(20),
     },
     pkParamsItem: {
         marginTop: px(16),
         width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     pkParamsItemTitle: {
         textAlign: 'center',
         fontSize: px(13),
         color: '#121D3A',
         lineHeight: px(18),
-    },
-    pkParamsItemRate: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        marginHorizontal: px(20),
+        alignSelf: 'flex-end',
     },
     pkParamsTip: {
         fontSize: px(12),
