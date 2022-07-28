@@ -2,7 +2,7 @@
  * @Date: 2020-11-04 15:30:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-16 13:42:33
+ * @LastEditTime: 2022-07-28 17:46:45
  * @Description: 全局配置及异常机型处理
  */
 import * as React from 'react';
@@ -13,7 +13,6 @@ const defaultFontFamily = {
     ...Platform.select({
         android: {fontFamily: ' '},
     }),
-    color: Colors.defaultColor,
 };
 const oldRender = Text.render;
 Text.render = function (...args) {
@@ -23,5 +22,5 @@ Text.render = function (...args) {
     });
 };
 //控制字体不受手机字体影响
-Text.defaultProps = Object.assign({}, Text.defaultProps, {allowFontScaling: false});
+Text.defaultProps = Object.assign({}, Text.defaultProps, {allowFontScaling: false, color: Colors.defaultColor});
 TextInput.defaultProps = Object.assign({}, TextInput.defaultProps, {allowFontScaling: false});

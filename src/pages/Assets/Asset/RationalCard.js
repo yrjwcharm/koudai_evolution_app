@@ -175,12 +175,14 @@ const RationalCard = ({rational_info, im_info}) => {
                             />
                         )}
                     </View>
-                    <SmButton
-                        title={rational_info?.button?.text}
-                        style={{backgroundColor: Colors.btnColor}}
-                        titleStyle={{color: '#fff'}}
-                        onPress={handleRation}
-                    />
+                    {rational_info?.button && (
+                        <SmButton
+                            title={rational_info?.button?.text}
+                            style={{backgroundColor: Colors.btnColor}}
+                            titleStyle={{color: '#fff'}}
+                            onPress={handleRation}
+                        />
+                    )}
                 </TouchableOpacity>
             </BoxShadow>
             <BoxShadow setting={{...shadow, width: px(166), height: px(63)}}>

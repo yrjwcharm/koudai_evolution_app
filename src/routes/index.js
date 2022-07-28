@@ -274,7 +274,6 @@ export default function AppStack() {
                         <Feather
                             name="chevron-left"
                             size={px(26)}
-                            color={Colors.navTitleColor}
                             style={{marginLeft: Platform.select({ios: 10, android: 0})}}
                         />
                     );
