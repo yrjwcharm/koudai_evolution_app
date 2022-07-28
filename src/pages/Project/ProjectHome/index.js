@@ -117,7 +117,7 @@ const Index = () => {
                                 );
                             })}
                         </ScrollableTabView>
-                        <BottomDesc />
+                        <BottomDesc style={{paddingHorizontal: 0}} />
                     </>
                 ) : null}
             </ScrollView>

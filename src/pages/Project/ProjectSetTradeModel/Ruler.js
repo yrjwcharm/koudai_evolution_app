@@ -155,7 +155,7 @@ const Ruler = (props) => {
                         ref={textInputRef}
                         style={{
                             fontSize: numberSize,
-                            fontFamily: Font.numFontFamily,
+                            fontFamily: Font.numMedium,
                             color: Colors.btnColor,
                             textAlign: 'center',
                         }}

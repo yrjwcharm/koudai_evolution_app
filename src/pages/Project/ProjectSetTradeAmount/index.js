@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: px(35),
+        fontSize: px(30),
         marginLeft: px(14),
         letterSpacing: 2,
         padding: 0,
