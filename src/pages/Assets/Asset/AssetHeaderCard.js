@@ -168,5 +168,6 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: '#fff',
+        marginRight: px(4),
     },
 });
