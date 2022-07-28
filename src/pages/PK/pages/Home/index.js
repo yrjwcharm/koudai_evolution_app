@@ -67,7 +67,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
-                    type === 1 && start?.(false, scrollViewRef.current);
+                    // type === 1 && start?.(false, scrollViewRef.current);
                 } else {
                     Toast.show(res.message);
                 }
