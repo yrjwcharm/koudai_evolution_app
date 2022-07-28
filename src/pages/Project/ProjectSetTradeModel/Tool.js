@@ -15,8 +15,8 @@ const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy}) => {
     const onValueChange = (value) => {
         setStatus(value);
         onChange && onChange(tool.id, value);
-        if (tool.id == 3) {
-            //估值信号
+        if (tool.id == 3 || tool.id == 4) {
+            //估值信号 概率工具
             setShowConfig(value);
         }
     };
