@@ -15,7 +15,7 @@ import {SERVER_URL} from '~/services/config';
 import {WebView} from 'react-native-webview';
 import * as Animatable from 'react-native-animatable';
 import RenderHtml from '~/components/RenderHtml';
-import {Button} from '~/components/Button';
+import {Button, SmButton} from '~/components/Button';
 import PageLoading from '~/pages/Portfolio/components/PageLoading';
 const shadow = {
     color: '#E3E6EE',
@@ -149,20 +149,24 @@ const RationalCard = ({rational_info, im_info}) => {
                     activeOpacity={0.9}
                     style={[Style.flexBetween, styles.secure_card]}
                     onPress={handleRation}>
-                    <View style={styles.rational_circle}>
-                        <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>{rational_info?.grade}</Text>
-                        <Animatable.Image
-                            animation={'fadeInUp'}
-                            iterationDelay={1000}
-                            source={require('~/assets/img/index/rationalLine.png')}
-                            resizeMode="stretch"
-                            style={[styles.ration_line, {height: (rational_info?.percent * px(40)) / 100 || 0}]}
-                        />
-                    </View>
+                    {!rational_info?.button && (
+                        <View style={styles.rational_circle}>
+                            <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>
+                                {rational_info?.grade}
+                            </Text>
+                            <Animatable.Image
+                                animation={'fadeInUp'}
+                                iterationDelay={1000}
+                                source={require('~/assets/img/index/rationalLine.png')}
+                                resizeMode="stretch"
+                                style={[styles.ration_line, {height: (rational_info?.percent * px(40)) / 100 || 0}]}
+                            />
+                        </View>
+                    )}
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
                             <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
-                            <AntDesign name="right" />
+                            {!rational_info?.button && <AntDesign name="right" />}
                         </View>
                         {!!rational_info?.desc && (
                             <RenderHtml
@@ -171,6 +175,12 @@ const RationalCard = ({rational_info, im_info}) => {
                             />
                         )}
                     </View>
+                    <SmButton
+                        title={rational_info?.button?.text}
+                        style={{backgroundColor: Colors.btnColor}}
+                        titleStyle={{color: '#fff'}}
+                        onPress={handleRation}
+                    />
                 </TouchableOpacity>
             </BoxShadow>
             <BoxShadow setting={{...shadow, width: px(166), height: px(63)}}>
