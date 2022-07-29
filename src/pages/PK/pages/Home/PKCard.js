@@ -29,7 +29,13 @@ const PKCard = ({data = {}, copilot}) => {
         global.LogTool('pk_button');
         global.LogTool({event: 'rec_click', plateid: data.plateid, rec_json: data.rec_json});
         dispatch(initCart([leftObj.code, rightObj.code]));
-        jump(data.btns.url);
+        jump({
+            path: data.btns?.url?.path,
+            params: {
+                ...(data.btns.url.params || {}),
+                fund_code: [leftObj?.code, rightObj?.code],
+            },
+        });
     };
 
     const onIndexChanged = useCallback(
@@ -37,6 +43,7 @@ const PKCard = ({data = {}, copilot}) => {
             setTimeout(() => {
                 setCurObj([data?.list?.[index]?.[0], data?.list?.[index]?.[1]]);
             }, 0);
+            global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json});
         },
         [data]
     );
@@ -320,9 +327,9 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                 </View>
                 <View>
                     <View style={styles.tagsWrap}>
-                        {[1, 2].map((item, idx) => (
+                        {leftObj?.tags?.map((item, idx) => (
                             <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
-                                <Text style={styles.tagText}>基础建设</Text>
+                                <Text style={styles.tagText}>{item}</Text>
                             </View>
                         ))}
                     </View>
@@ -343,9 +350,9 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                 </View>
                 <View>
                     <View style={[styles.tagsWrap, {alignSelf: 'flex-end'}]}>
-                        {[1, 2].map((item, idx) => (
+                        {rightObj?.tags?.map((item, idx) => (
                             <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
-                                <Text style={[styles.tagText, {color: '#1A4DE6'}]}>基础建设</Text>
+                                <Text style={[styles.tagText, {color: '#1A4DE6'}]}>{item}</Text>
                             </View>
                         ))}
                     </View>

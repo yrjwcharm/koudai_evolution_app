@@ -42,6 +42,7 @@ const PKBall = ({style, copilot = {}, copilotEvents}, ref) => {
         return () => {
             // @ts-ignore
             copilotEvents?.off?.('stepChange');
+            copilotEvents?.off?.('start');
             copilotEvents?.off?.('stop');
             clearTimeout(timer.current);
             timer.current = null;

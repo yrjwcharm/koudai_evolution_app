@@ -14,7 +14,7 @@ import {useJump} from '~/components/hooks';
 import RenderCate from '~/pages/Vision/components/RenderCate';
 import {deviceWidth, px} from '~/utils/appUtil';
 
-export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
+export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRight}) => {
     const jump = useJump();
     const {items = [], more = '', sub_title = '', tab_list: tabs = [], title = ''} = data;
     const pageRef = useRef(0);
@@ -31,6 +31,7 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}}) => {
                         <Text style={styles.title}>{title}</Text>
                         {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
                     </View>
+                    {HeaderRight && <HeaderRight />}
                     {more?.text ? (
                         <TouchableOpacity
                             activeOpacity={0.8}

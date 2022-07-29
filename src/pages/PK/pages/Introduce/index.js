@@ -16,7 +16,7 @@ import Toast from '~/components/Toast';
 import {useJump} from '~/components/hooks';
 import RenderHtml from '~/components/RenderHtml';
 
-const Introduce = () => {
+const Introduce = ({route}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
     const [tableSize, setTableSize] = useState({});
@@ -26,7 +26,7 @@ const Introduce = () => {
     }, [data]);
 
     useEffect(() => {
-        pkIntroduce().then((res) => {
+        pkIntroduce(route?.params).then((res) => {
             console.log(res);
             if (res.code === '000000') {
                 setData(res.result);
@@ -102,7 +102,7 @@ const Introduce = () => {
                                 {/* 总pk分 */}
                                 <View style={styles.paramsRow}>
                                     <ParamsCellWrapOfSum style={{...styles.cellBorderR, width: px(82)}}>
-                                        <Text style={styles.paramsLabelOfSum}>总PK分</Text>
+                                        <Text style={styles.paramsLabelOfSum}>总PK值</Text>
                                     </ParamsCellWrapOfSum>
                                     <ParamsCellWrapOfSum data={leftObj} style={styles.cellBorderR}>
                                         <PKParamsRateOfSum

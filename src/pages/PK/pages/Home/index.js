@@ -59,6 +59,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     const isFirst = useRef(1);
     const listLayout = useRef({});
     const scrollViewRef = useRef();
+    const isFocusedRef = useRef(isFocused);
 
     const getData = (type) => {
         type === 0 && setRefreshing(true);
@@ -68,7 +69,15 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
-                    type === 1 && start?.(false, scrollViewRef.current);
+                    res.result.sub_list.forEach((item) => {
+                        handlerListLog(item);
+                    });
+
+                    setTimeout(() => {
+                        if (isFocusedRef.current && type === 1) {
+                            start?.();
+                        }
+                    }, 0);
                 } else {
                     Toast.show(res.message);
                 }
@@ -95,6 +104,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     );
 
     useEffect(() => {
+        isFocusedRef.current = isFocused;
         const unsubscribe = navigation.addListener('tabPress', () => {
             if (isFocused) {
                 getData(0);
@@ -113,19 +123,52 @@ const PKHome = ({navigation, start, copilotEvents}) => {
         if (listLayout.current.status && y > listLayout.current.start) {
             listLayout.current.status = false;
             let cur = data.sub_list[0];
-            let code = cur.items?.map?.((item) => item.code)?.join?.();
+            let code = cur.items[recommendIndex]?.map?.((item) => item.code)?.join?.();
             global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json}, null, code);
         }
     };
 
     const handlerListLog = (item) => {
-        if (item.items) handlerItemsLog(item.items, data);
+        if (item.items)
+            handlerItemsLog(
+                item.items.reduce((memo, cur) => memo.concat(cur), []),
+                data
+            );
         if (item.tab_list) {
             item.tab_list.forEach((itm) => {
                 handlerItemsLog(itm.items, data);
             });
         }
     };
+
+    const HeaderRight = () => {
+        return (
+            <TouchableOpacity
+                style={Style.flexRowCenter}
+                activeOpacity={0.8}
+                onPress={() => {
+                    let len = data?.sub_list?.[0]?.items.length;
+                    setRecommendIndex((val) => {
+                        let newVal = val + 1;
+                        if (newVal > len - 1) newVal = 0;
+
+                        // 埋点
+                        let cur = data.sub_list[0];
+                        let code = cur.items[newVal]?.map?.((item) => item.code)?.join?.();
+                        global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json}, null, code);
+
+                        return newVal;
+                    });
+                }}>
+                <FastImage
+                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/exchange-dollar-fill.png'}}
+                    style={{width: px(12), height: px(12), marginRight: px(3)}}
+                />
+                <Text style={{fontSize: px(12), lineHeight: px(17), color: '#545968'}}>换一换</Text>
+            </TouchableOpacity>
+        );
+    };
+
     return loading ? (
         <Loading />
     ) : (
@@ -191,7 +234,6 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         )}
                         <View style={{paddingHorizontal: Space.padding}}>
                             {data?.sub_list?.map?.((item, index) => {
-                                handlerListLog(item);
                                 return (
                                     <RenderPart
                                         data={
@@ -200,6 +242,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                                                 : item
                                         }
                                         key={item.title + index}
+                                        HeaderRight={index === 0 ? HeaderRight : null}
                                         onLayout={
                                             index === 0
                                                 ? (layout) => {

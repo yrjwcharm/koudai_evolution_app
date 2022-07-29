@@ -65,12 +65,12 @@ const PrivatePlacement = () => {
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 1}}
                         colors={['#FFF7EC', '#FFFFFF']}
-                        style={{borderRadius: px(8)}}>
-                        <View style={styles.swiperHeader}>
+                        style={{borderRadius: px(8), paddingTop: px(22)}}>
+                        {/* <View style={styles.swiperHeader}>
                             <View style={styles.highStemp}>
                                 <Text style={styles.highStempText}>{data.recommend?.rank_tag}</Text>
                             </View>
-                        </View>
+                        </View> */}
                         <Text style={styles.swiperTitle}>{data.recommend?.title}</Text>
                         <View style={styles.swiperMiddle}>
                             <View style={styles.swiperMiddleLeft}>

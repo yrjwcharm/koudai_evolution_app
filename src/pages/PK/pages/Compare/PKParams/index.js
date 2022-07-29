@@ -90,7 +90,7 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
                         onPress={() => {
                             showModal('PKParams');
                         }}>
-                        <Text style={styles.totalLabelText}>总PK分</Text>
+                        <Text style={styles.totalLabelText}>总PK值</Text>
                         {result?.pk_explain ? (
                             <FastImage
                                 style={{width: px(14), height: px(14), marginLeft: 3}}
