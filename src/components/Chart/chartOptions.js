@@ -216,11 +216,15 @@ export const baseComChart = (data, width, height) => `(function(){
 `;
 //发现页小图
 export const smChart = (data) => `(function(){
-  const chart = new F2.Chart({
-    id: 'chart',
-    pixelRatio: window.devicePixelRatio,
-    padding: 0
-  });
+  if (chart) {
+    chart.clear();
+  } else {
+    chart = new F2.Chart({
+      id: 'chart',
+      pixelRatio: window.devicePixelRatio,
+      padding: 0
+    });
+  }
   chart.source(${JSON.stringify(data)});
   chart.axis(false);
   chart.legend(false);

@@ -617,8 +617,8 @@ export default ({navigation, route}) => {
 
     const onDone = (password, params) => {
         setDividend({password, ...params}).then((res) => {
+            res.message && Toast.show(res.message);
             if (res.code === '000000') {
-                res.message && Toast.show(res.message);
                 init();
             }
         });
