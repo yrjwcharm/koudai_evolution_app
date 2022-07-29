@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-13 14:42:28
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-28 19:18:05
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -395,7 +392,7 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
                             ) : null}
                         </View>
                         <RenderHtml
-                            style={{fontSize: px(20), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
+                            style={{fontSize: px(15), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
                             html={data?.yield_info?.yield}
                         />
 

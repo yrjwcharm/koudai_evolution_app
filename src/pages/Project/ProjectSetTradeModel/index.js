@@ -98,7 +98,7 @@ const ProjectSetTrade = ({route, navigation}) => {
                 <Header data={{base_list: data.upgrade.base_list, target: data?.upgrade.target}} />
             ) : (
                 <Image
-                    source={require('~/assets/img/trade/setMode1.png')}
+                    source={require('~/assets/img/trade/setModel1.png')}
                     style={{width: deviceWidth, height: px(42)}}
                 />
             )}
@@ -215,10 +215,12 @@ const ProjectSetTrade = ({route, navigation}) => {
                 </BottomModal>
             ) : null}
             <FixedButton
-                style={{position: 'relative'}}
+                containerStyle={{position: 'relative'}}
                 title={data?.btn?.text}
                 disabled={data?.btn?.avail != 1}
                 onPress={jumpNext}
+                agreement={{list: data?.agreement_bottom ? data?.agreement_bottom : undefined}}
+                suffix={data?.agreement_after}
             />
         </View>
     );

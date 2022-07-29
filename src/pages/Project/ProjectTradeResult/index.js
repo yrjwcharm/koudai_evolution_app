@@ -42,9 +42,11 @@ const Index = ({route, navigation}) => {
                 </View>
                 <View style={styles.list_con}>
                     <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                        <Text style={styles.key}>买入工具</Text>
-                        <Text style={styles.key}>定投金额(元)</Text>
-                        <Text style={styles.key}>跟投时间</Text>
+                        {data?.buy_model?.table_header?.map((item, index) => (
+                            <Text key={index} style={styles.key}>
+                                {item}
+                            </Text>
+                        ))}
                     </View>
                     {data?.buy_model?.list?.map((item, index) => (
                         <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
@@ -61,9 +63,11 @@ const Index = ({route, navigation}) => {
                 </View>
                 <View style={styles.list_con}>
                     <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                        <Text style={styles.key}>卖出工具</Text>
-                        <Text style={styles.key}>目标收益率</Text>
-                        <Text style={styles.key}>达标止盈方式</Text>
+                        {data?.sale_model?.table_header?.map((item, index) => (
+                            <Text key={index} style={styles.key}>
+                                {item}
+                            </Text>
+                        ))}
                     </View>
                     {data?.sale_model?.list?.map((item, index) => (
                         <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>

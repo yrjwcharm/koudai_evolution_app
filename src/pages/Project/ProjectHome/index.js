@@ -24,6 +24,7 @@ const Index = () => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [refreshing, setRefreshing] = useState(false);
+    const [currentTab, setCurrentTab] = useState(0);
     const jump = useJump();
     const getData = async (refresh) => {
         refresh && setRefreshing(true);
@@ -99,7 +100,9 @@ const Index = () => {
                         />
                         <ScrollableTabView
                             initialPage={0}
+                            prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
                             onChangeTab={(obj) => {
+                                setCurrentTab(obj.i);
                                 global.LogTool({
                                     event: 'ProjectHome',
                                     plateid: data?.project_list?.tab_list[obj.i]?.plateid,
@@ -112,7 +115,10 @@ const Index = () => {
                             {data?.project_list?.tab_list?.map((tab, index) => {
                                 return (
                                     <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
-                                        <ProjectProduct data={tab} tabLabel={tab.title} />
+                                        <ProjectProduct
+                                            data={data?.project_list?.tab_list[currentTab]}
+                                            tabLabel={tab.title}
+                                        />
                                     </View>
                                 );
                             })}
