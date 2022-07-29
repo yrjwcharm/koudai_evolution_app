@@ -25,7 +25,7 @@ const UpgradeConfirm = ({route, navigation}) => {
     const [check, setCheck] = useState(false);
     const isFocused = useIsFocused();
 
-    const {part1, part2, part3, button, agreement_bottom} = useMemo(() => {
+    const {part1, part2, part3, button, agreement_bottom, agreement} = useMemo(() => {
         return data || {};
     }, [data]);
 
@@ -276,6 +276,7 @@ const UpgradeConfirm = ({route, navigation}) => {
                         data={agreement_bottom?.list}
                         title={agreement_bottom.text}
                         text1={agreement_bottom.text1}
+                        otherAgreement={agreement}
                         onChange={(checkStatus) => {
                             setCheck(checkStatus);
                         }}
