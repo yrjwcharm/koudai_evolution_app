@@ -17,9 +17,9 @@ const TooltipComponent = ({
         if (currentStep?.order === 2) {
             setTimeout(() => {
                 handlerTooltipStyle((state) => {
-                    return {tooltip: {...state.tooltip, bottom: state.tooltip.bottom - px(85)}};
+                    return {tooltip: {...state.tooltip, bottom: px(80)}};
                 });
-            }, 100);
+            }, 150);
         }
     }, [currentStep, handlerTooltipStyle]);
     return (
