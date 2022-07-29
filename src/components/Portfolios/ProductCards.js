@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 14:42:28
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-28 17:59:50
+ * @LastEditTime: 2022-07-28 19:18:05
  * @Description: v7产品卡片
  */
 import React, {useEffect, useState} from 'react';
@@ -249,7 +249,13 @@ const RecommendCard = ({data = {}, isPking}) => {
         <View>
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
-                    {showChart ? <Chart initScript={chartOptions.smChart(chart)} /> : null}
+                    {showChart ? (
+                        <Chart
+                            data={chart}
+                            initScript={chartOptions.smChart(chart)}
+                            updateScript={chartOptions.smChart}
+                        />
+                    ) : null}
                     {leftLabel?.length > 0 && (
                         <>
                             {leftLabel[0] ? (
