@@ -2,7 +2,7 @@
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-22 16:40:42
+ * @LastEditTime: 2022-07-29 16:55:26
  * @Description: 投资分析
  */
 import React, {useRef} from 'react';
@@ -15,14 +15,14 @@ import MonthRatio from './MonthRatio';
 import {Colors} from '../../common/commonStyle';
 
 const InvestAnalysis = ({navigation, route}) => {
-    const {fund_code, poid} = route.params || {};
+    const {fund_code, poid, type} = route.params || {};
     const tabsRef = useRef(['累计收益', '净值走势', '月度收益率']);
 
     return (
         <ScrollableTabView
             style={[styles.container]}
             renderTabBar={() => <Tab />}
-            initialPage={Number(route.params?.type) || 0}
+            initialPage={Number(type) || 0}
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
                 if (index === 0) {
