@@ -3,34 +3,141 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {BoxShadow} from 'react-native-shadow';
-import {Font} from '~/common/commonStyle';
+import {Colors, Font, Space} from '~/common/commonStyle';
 import Agreements from '~/components/Agreements';
 import BottomDesc from '~/components/BottomDesc';
 import {Button} from '~/components/Button';
+import {Modal} from '~/components/Modal';
+import Html from '../../../components/RenderHtml';
 import {PasswordModal} from '~/components/Password';
 import Toast from '~/components/Toast';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {upgradeConfirm, upgradeDo} from './services';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useJump} from '~/components/hooks';
 
 const UpgradeConfirm = ({route, navigation}) => {
+    const jump = useJump();
+
     const [data, setData] = useState(null);
     const [curCardLayout, setCurCardLayout] = useState(null);
     const [futureCardLayout, setFutureCardLayout] = useState(null);
     const [check, setCheck] = useState(false);
+    const isFocused = useIsFocused();
 
-    const {part1, part2, part3, button, bottom_agreements} = useMemo(() => {
+    const {part1, part2, part3, button, agreement_bottom} = useMemo(() => {
         return data || {};
     }, [data]);
 
     const passwordModal = useRef(null);
+    const riskDisclosureModalRef = useRef(null);
+    const show_risk_disclosure = useRef(true);
+    const isFocusedRef = useRef(isFocused);
 
     useEffect(() => {
-        upgradeConfirm(route.params).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-            }
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
+
+    useFocusEffect(
+        useCallback(() => {
+            upgradeConfirm(route.params).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    if (
+                        isFocusedRef.current &&
+                        res.result?.risk_disclosure &&
+                        res.result?.pop_risk_disclosure &&
+                        show_risk_disclosure.current
+                    ) {
+                        showRiskDisclosure(res.result);
+                    } else if (isFocusedRef.current && res.result?.risk_pop) {
+                        showRishPop(res.result);
+                    }
+                }
+            });
+        }, [])
+    );
+
+    const showRiskDisclosure = (data) => {
+        show_risk_disclosure.current = false;
+        Modal.show({
+            children: () => {
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                marginTop: px(2),
+                                fontSize: Font.textH2,
+                                lineHeight: px(20),
+                                color: Colors.red,
+                                textAlign: 'center',
+                            }}>
+                            {data.risk_disclosure.sub_title}
+                        </Text>
+                        <ScrollView
+                            bounces={false}
+                            style={{
+                                marginVertical: Space.marginVertical,
+                                paddingHorizontal: px(20),
+                                maxHeight: px(352),
+                            }}
+                            ref={(e) => (riskDisclosureModalRef.current = e)}>
+                            <Html
+                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}
+                                html={data.risk_disclosure.content}
+                            />
+                        </ScrollView>
+                    </View>
+                );
+            },
+            confirmCallBack: () => {
+                // http.post('/advisor/action/report/20220422', {
+                //     action: 'read',
+                //     poids: [poid],
+                // });
+            },
+            confirmText: '关闭',
+            countdown: data.risk_disclosure.countdown,
+            isTouchMaskToClose: false,
+            onCloseCallBack: () => navigation.goBack(),
+            onCountdownChange: (val) => {
+                if (+val == 1) {
+                    riskDisclosureModalRef.current.scrollToEnd({animated: true});
+                }
+            },
+            title: data.risk_disclosure.title,
         });
-    }, []);
+    };
+
+    const showRishPop = (data) => {
+        Modal.show({
+            cancelCallBack: () => {
+                // global.LogTool('RiskWarningWindows_No');
+                if (data.risk_pop.cancel?.act == 'back') {
+                    navigation.goBack();
+                } else if (data.risk_pop.cancel?.act == 'jump') {
+                    jump(data.risk_pop.cancel?.url);
+                }
+            },
+            cancelText: data.risk_pop.cancel.text,
+            confirm: true,
+            confirmCallBack: () => {
+                // global.LogTool('RiskWarningWindows_Yes');
+                // this.setState({is_continue_buy: true});
+                if (data.risk_pop.confirm?.act == 'back') {
+                    navigation.goBack();
+                } else if (data.risk_pop.confirm?.act == 'jump') {
+                    jump(data.risk_pop.confirm?.url);
+                } else if (data.risk_pop.confirm?.act == 'pop_risk_disclosure') {
+                    showRiskDisclosure(data);
+                }
+            },
+            confirmText: data.risk_pop.confirm.text,
+            content: data.risk_pop.content,
+            isTouchMaskToClose: false,
+            title: data.risk_pop.title,
+        });
+    };
 
     const confirm = useCallback(() => {
         passwordModal.current.show();
@@ -157,7 +264,6 @@ const UpgradeConfirm = ({route, navigation}) => {
                 </ScrollView>
             </LinearGradient>
             <View style={styles.bottomWrap}>
-                {/* agreement agreement_bottom button */}
                 <View style={{marginHorizontal: px(16)}}>
                     {!check ? (
                         <View style={styles.checkTag}>
@@ -166,10 +272,10 @@ const UpgradeConfirm = ({route, navigation}) => {
                         </View>
                     ) : null}
                     <Agreements
-                        check={false}
-                        title={data.agreement_before}
-                        data={bottom_agreements}
-                        text1={data.agreement_after}
+                        check={agreement_bottom.default_agree}
+                        data={agreement_bottom?.list}
+                        title={agreement_bottom.text}
+                        text1={agreement_bottom.text1}
                         onChange={(checkStatus) => {
                             setCheck(checkStatus);
                         }}
