@@ -175,19 +175,21 @@ const UpgradeConfirm = ({route, navigation}) => {
                         }}
                     />
                 </View>
-                <View style={styles.feeWrap}>
-                    <Text style={styles.feeBlack}>{data.fee_text}：</Text>
-                    <Text
-                        style={[
-                            styles.feeBlack,
-                            {
-                                textDecorationLine: 'line-through',
-                            },
-                        ]}>
-                        {data.old_fee}
-                    </Text>
-                    <Text style={styles.feeHigh}>{data.fee}</Text>
-                </View>
+                {!!data.fee_text && (
+                    <View style={styles.feeWrap}>
+                        <Text style={styles.feeBlack}>{data.fee_text}：</Text>
+                        <Text
+                            style={[
+                                styles.feeBlack,
+                                {
+                                    textDecorationLine: 'line-through',
+                                },
+                            ]}>
+                            {data.old_fee}
+                        </Text>
+                        <Text style={styles.feeHigh}>{data.fee}</Text>
+                    </View>
+                )}
                 <Button
                     style={{marginTop: px(8), marginHorizontal: px(16)}}
                     disabled={!check || button.avail === 0}

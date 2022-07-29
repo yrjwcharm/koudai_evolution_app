@@ -2,6 +2,7 @@
  * @Date: 2022-07-21 14:16:18
  * @Description:
  */
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useJump} from '~/components/hooks';
@@ -9,6 +10,7 @@ import {isIphoneX, px} from '~/utils/appUtil';
 
 const FixBottom = ({button, button2}) => {
     const jump = useJump();
+    const navigation = useNavigation();
     return (
         <>
             <View
@@ -19,7 +21,12 @@ const FixBottom = ({button, button2}) => {
                 }}
             />
             <View style={[styles.fixBottom, {paddingBottom: isIphoneX() ? 34 : px(8)}]}>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button2.url)} style={styles.btnLeft}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        navigation.goBack();
+                    }}
+                    style={styles.btnLeft}>
                     <Text style={styles.btnLeftText}>{button2?.text}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={styles.btnRight}>
