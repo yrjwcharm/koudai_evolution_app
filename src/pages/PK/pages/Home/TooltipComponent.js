@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {px} from '~/utils/appUtil';
+import {isIphoneX, px} from '~/utils/appUtil';
 import gesture from '~/assets/animation/gesture.gif';
 
 const TooltipComponent = ({
@@ -17,7 +17,7 @@ const TooltipComponent = ({
         if (currentStep?.order === 2) {
             setTimeout(() => {
                 handlerTooltipStyle((state) => {
-                    return {tooltip: {...state.tooltip, bottom: px(80)}};
+                    return {tooltip: {...state.tooltip, bottom: isIphoneX() ? px(120) : px(80)}};
                 });
             }, 150);
         }
