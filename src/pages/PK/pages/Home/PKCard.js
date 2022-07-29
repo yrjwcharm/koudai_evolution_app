@@ -1,7 +1,7 @@
-import React, {useCallback, useMemo} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ImageBackground} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, ImageBackground, Platform} from 'react-native';
 import pkCardBg from '../../../../assets/img/pk/pkCardBg.png';
-import pkIcon from '../../../../assets/img/pk/pkIcon.png';
+import pkIcon2 from '../../../../assets/img/pk/pkIcon2.png';
 import PKParamRate from '../../components/PKParamRate';
 import {px} from '../../../../utils/appUtil';
 import {Font} from '../../../../common/commonStyle';
@@ -10,22 +10,19 @@ import {useJump} from '~/components/hooks';
 import {useDispatch} from 'react-redux';
 import {initCart} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import {useFocusEffect} from '@react-navigation/native';
+import Swiper from 'react-native-swiper';
 
 const PKCard = ({data = {}, copilot}) => {
     const jump = useJump();
     const dispatch = useDispatch();
+    const [yellowTipVisible, setYellowTipVisible] = useState(false);
+    const [cardHeight, setCardHeight] = useState(0);
 
-    const [leftObj = {}, rightObj = {}] = useMemo(() => {
-        return [data?.list?.[0], data?.list?.[1]];
-    }, [data]);
-
-    const handlerRate = (rate) => {
-        let val = ((rate || 0) * 100).toFixed(2);
-        if (val >= 0) val = '+' + val;
-        return val + '%';
-    };
+    const [[leftObj = {}, rightObj = {}], setCurObj] = useState([
+        data?.list?.[0]?.[0] || {},
+        data?.list?.[0]?.[1] || {},
+    ]);
 
     const handlerEnter = () => {
         global.pkEntry = '1';
@@ -35,71 +32,81 @@ const PKCard = ({data = {}, copilot}) => {
         jump(data.btns.url);
     };
 
+    const onIndexChanged = useCallback(
+        (index) => {
+            setTimeout(() => {
+                setCurObj([data?.list?.[index]?.[0], data?.list?.[index]?.[1]]);
+            }, 0);
+        },
+        [data]
+    );
+
+    const onCardLayoutHeight = useCallback((height) => {
+        setCardHeight((val) => (val > height ? val : height));
+    }, []);
+
     useFocusEffect(
         useCallback(() => {
             global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json});
         }, [data])
     );
 
+    useEffect(() => {
+        let timer = null;
+        if (data?.tip) {
+            setYellowTipVisible(true);
+            timer = setTimeout(() => {
+                setYellowTipVisible(false);
+            }, 3000);
+        }
+        return () => timer && clearTimeout(timer);
+    }, [data]);
+
     return (
-        <TouchableOpacity
-            style={styles.pkCard}
-            activeOpacity={data?.is_enter_pk ? 0.8 : 1}
-            onPress={() => {
-                data?.is_enter_pk && handlerEnter();
-            }}
-            {...copilot}>
-            <ImageBackground source={pkCardBg} resizeMode="stretch" style={styles.pkInfo}>
-                <View style={styles.pkInfoLeft}>
-                    <Text style={styles.pkInfoName}>{leftObj.name}</Text>
-                    <View>
-                        <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
-                        <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+        <View style={styles.pkCard} activeOpacity={data?.is_enter_pk ? 0.8 : 1} {...copilot}>
+            <View style={styles.swiperWrap}>
+                <Swiper
+                    height={cardHeight ? cardHeight : 'auto'}
+                    removeClippedSubviews={true}
+                    loadMinimal={Platform.OS == 'ios' ? true : false}
+                    showsPagination={false}
+                    onIndexChanged={onIndexChanged}>
+                    {data?.list?.map((item, idx) => (
+                        <TouchableOpacity key={idx} activeOpacity={0.9} onPress={handlerEnter}>
+                            <CardItem
+                                leftObj={item[0]}
+                                rightObj={item[1]}
+                                height={cardHeight}
+                                onCardLayoutHeight={onCardLayoutHeight}
+                            />
+                        </TouchableOpacity>
+                    ))}
+                </Swiper>
+                {yellowTipVisible ? (
+                    <View style={styles.yellowTip}>
+                        <Text style={styles.yellowTipText}>今日更新5组，左右滑动查看</Text>
                     </View>
-                </View>
-                <View style={styles.pkInfoRight}>
-                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
-                    <View>
-                        <Text style={[styles.priceRate, {textAlign: 'right'}]}>
-                            {handlerRate(rightObj?.yield_info?.year)}
-                        </Text>
-                        <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
-                    </View>
-                </View>
-                {data?.is_enter_pk ? (
-                    <View
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: [{translateX: px(-41)}, {translateY: px(-41)}],
-                        }}>
-                        <FastImage
-                            source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/pk_button.png'}}
-                            style={styles.pkIconStyle2}
-                        />
-                    </View>
-                ) : (
-                    <FastImage source={pkIcon} style={styles.pkIconStyle} />
-                )}
-            </ImageBackground>
+                ) : null}
+            </View>
             {!data?.is_enter_pk ? (
-                <View
+                <TouchableOpacity
                     style={{
                         paddingBottom: px(20),
-                    }}>
+                    }}
+                    activeOpacity={0.9}
+                    onPress={handlerEnter}>
                     <View style={styles.pkParams}>
-                        {leftObj.score_info?.slice(0, 3)?.map((item, idx) => {
+                        {leftObj.score_info?.slice?.(0, 3)?.map((item, idx) => {
                             let rItem = rightObj.score_info?.[idx] || {};
                             return (
                                 <View key={idx} style={styles.pkParamsItem}>
-                                    <PKParamRate value={item.score} total={item.total_score} color="#1A4FEB" />
+                                    <PKParamRate value={item.score} total={item.total_score} color="#E74949" />
                                     <Text style={styles.pkParamsItemTitle}>{item.name}</Text>
                                     <PKParamRate
                                         value={rItem.score}
                                         total={rItem.total_score}
                                         justifyContent="flex-end"
-                                        color="#E74949"
+                                        color="#1A4FEB"
                                     />
                                 </View>
                             );
@@ -110,33 +117,16 @@ const PKCard = ({data = {}, copilot}) => {
                             <RenderHtml html={data.tip} style={styles.pkParamsTip} />
                         </View>
                     ) : null}
-                    {data.btns && (
-                        <TouchableOpacity activeOpacity={0.8} style={styles.pkBtn} onPress={handlerEnter}>
-                            <Text style={styles.pkBtnText}>{data.btns.title}</Text>
-                            <Icon
-                                name="arrow-right"
-                                size={10}
-                                color="#121D3A"
-                                style={{marginLeft: px(3), marginTop: px(2)}}
-                            />
-                        </TouchableOpacity>
-                    )}
-                </View>
-            ) : data.tip ? (
-                <View style={styles.pkTipWrap}>
-                    <RenderHtml html={data.tip} style={styles.pkTipText} />
-                </View>
+                </TouchableOpacity>
             ) : null}
-        </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     pkCard: {
-        marginTop: px(15),
-        borderRadius: px(6),
+        marginTop: px(16),
         backgroundColor: '#fff',
-        marginHorizontal: px(16),
     },
     pkInfo: {
         borderTopLeftRadius: px(6),
@@ -162,10 +152,10 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         color: '#fff',
         lineHeight: px(20),
-        width: '100%',
+        flex: 1,
     },
     priceRate: {
-        marginTop: px(8),
+        marginTop: px(12),
         color: '#fff',
         lineHeight: px(28),
         fontWeight: '500',
@@ -178,12 +168,12 @@ const styles = StyleSheet.create({
         lineHeight: px(15),
     },
     pkIconStyle: {
-        width: px(88),
-        height: px(44),
+        width: px(98),
+        height: px(42),
         position: 'absolute',
         top: '50%',
         left: '50%',
-        transform: [{translateX: px(-44)}, {translateY: px(-22)}],
+        transform: [{translateX: px(-49)}, {translateY: px(-21)}],
     },
     pkIconStyle2: {
         width: px(82),
@@ -242,5 +232,130 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         lineHeight: px(17),
     },
+    tagsWrap: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: px(8),
+    },
+    tag: {
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
+        paddingVertical: px(2),
+        backgroundColor: '#fff',
+    },
+    tagText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#EA5245',
+    },
+    titleWrap: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end',
+    },
+    followWrap: {
+        borderRadius: px(2),
+        borderWidth: 1,
+        borderColor: '#fff',
+        paddingHorizontal: px(4),
+        paddingVertical: px(2),
+        position: 'absolute',
+        top: 0,
+        left: 0,
+    },
+    followText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#fff',
+    },
+    yellowTip: {
+        paddingHorizontal: px(6),
+        paddingVertical: px(3),
+        borderTopLeftRadius: px(6),
+        borderTopRightRadius: px(6),
+        backgroundColor: '#FFC651',
+        position: 'absolute',
+        bottom: 0,
+        left: '50%',
+        transform: [{translateX: px(-76)}],
+    },
+    yellowTipText: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#121d3a',
+    },
 });
 export default PKCard;
+
+const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => {
+    const handlerRate = (rate) => {
+        let val = ((rate || 0) * 100).toFixed(2);
+        if (val >= 0) val = '+' + val;
+        return val + '%';
+    };
+
+    return (
+        <ImageBackground
+            source={pkCardBg}
+            resizeMode="stretch"
+            style={[styles.pkInfo, height ? {height} : {}]}
+            onLayout={(e) => {
+                onCardLayoutHeight(e.nativeEvent.layout.height);
+            }}>
+            <View style={styles.pkInfoLeft}>
+                <View style={styles.titleWrap}>
+                    <Text style={styles.pkInfoName}>
+                        {false ? (
+                            <Text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
+                        ) : null}
+                        {leftObj.name}
+                    </Text>
+                    {false ? (
+                        <View style={styles.followWrap}>
+                            <Text style={styles.followText}>已关注</Text>
+                        </View>
+                    ) : (
+                        false
+                    )}
+                </View>
+                <View>
+                    <View style={styles.tagsWrap}>
+                        {[1, 2].map((item, idx) => (
+                            <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
+                                <Text style={styles.tagText}>基础建设</Text>
+                            </View>
+                        ))}
+                    </View>
+                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
+                    <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+                </View>
+            </View>
+            <View style={styles.pkInfoRight}>
+                <View style={styles.titleWrap}>
+                    {false ? (
+                        <View style={[styles.followWrap, {position: 'relative', marginRight: px(6)}]}>
+                            <Text style={styles.followText}>已关注</Text>
+                        </View>
+                    ) : null}
+                    <Text style={[styles.pkInfoName, {textAlign: 'right'}, false ? {flex: 0, maxWidth: px(100)} : {}]}>
+                        {rightObj.name}
+                    </Text>
+                </View>
+                <View>
+                    <View style={[styles.tagsWrap, {alignSelf: 'flex-end'}]}>
+                        {[1, 2].map((item, idx) => (
+                            <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
+                                <Text style={[styles.tagText, {color: '#1A4DE6'}]}>基础建设</Text>
+                            </View>
+                        ))}
+                    </View>
+                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
+                        {handlerRate(rightObj?.yield_info?.year)}
+                    </Text>
+                    <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
+                </View>
+            </View>
+            <FastImage source={pkIcon2} style={styles.pkIconStyle} />
+        </ImageBackground>
+    );
+};

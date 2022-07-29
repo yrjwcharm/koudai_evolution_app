@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar.js';
 import {px} from '~/utils/appUtil';
 import pkIcon from '~/assets/img/pk/pkIcon.png';
+import pkIntroduceCardPkBg from '~/assets/img/pk/pkIntroduceCardPkBg.png';
 import {Font, Style} from '~/common/commonStyle';
 import PKParamsRateOfSum from '../../components/PKParamsRateOfSum';
 import PKParamRate from '../../components/PKParamRate';
@@ -77,13 +78,7 @@ const Introduce = () => {
                         </View>
                         <View style={styles.pkDetail}>
                             {/* pk info */}
-                            <ImageBackground
-                                source={{
-                                    uri:
-                                        'http://wp0.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-pk-bg.png',
-                                }}
-                                resizeMode="stretch"
-                                style={styles.pkInfo}>
+                            <ImageBackground source={pkIntroduceCardPkBg} resizeMode="stretch" style={styles.pkInfo}>
                                 <View style={styles.pkInfoLeft}>
                                     <Text style={styles.pkInfoName}>{leftObj.name}</Text>
                                     <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>

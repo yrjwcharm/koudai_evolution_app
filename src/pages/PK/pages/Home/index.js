@@ -54,6 +54,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState(null);
+    const [recommendIndex, setRecommendIndex] = useState(0);
 
     const isFirst = useRef(1);
     const listLayout = useRef({});
@@ -67,7 +68,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
-                    // type === 1 && start?.(false, scrollViewRef.current);
+                    type === 1 && start?.(false, scrollViewRef.current);
                 } else {
                     Toast.show(res.message);
                 }
@@ -188,12 +189,16 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                                 <PKCard data={data?.pk_list} />
                             </CopilotStep>
                         )}
-                        <View style={{paddingHorizontal: Space.padding}} key={data?.sub_list}>
+                        <View style={{paddingHorizontal: Space.padding}}>
                             {data?.sub_list?.map?.((item, index) => {
                                 handlerListLog(item);
                                 return (
                                     <RenderPart
-                                        data={item}
+                                        data={
+                                            index === 0
+                                                ? {title: item.title, items: item.items?.[recommendIndex]}
+                                                : item
+                                        }
                                         key={item.title + index}
                                         onLayout={
                                             index === 0
@@ -303,7 +308,6 @@ const _PKHome = copilot({
     tooltipStyle: {
         backgroundColor: 'transparent',
         width: '100%',
-        overflow: 'visible',
     },
     contentPadding: 0,
 })(PKHome);

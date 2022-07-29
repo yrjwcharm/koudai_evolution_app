@@ -1,10 +1,27 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import gesture from '~/assets/animation/gesture.gif';
 
-const TooltipComponent = ({isFirstStep, isLastStep, handleNext, handlePrev, handleStop, currentStep}) => {
+const TooltipComponent = ({
+    isFirstStep,
+    isLastStep,
+    handleNext,
+    handlePrev,
+    handleStop,
+    currentStep,
+    handlerTooltipStyle,
+}) => {
+    useEffect(() => {
+        if (currentStep?.order === 2) {
+            setTimeout(() => {
+                handlerTooltipStyle((state) => {
+                    return {tooltip: {...state.tooltip, bottom: state.tooltip.bottom - px(85)}};
+                });
+            }, 100);
+        }
+    }, [currentStep, handlerTooltipStyle]);
     return (
         <View style={styles.container}>
             {currentStep?.order === 1 ? (
@@ -15,7 +32,11 @@ const TooltipComponent = ({isFirstStep, isLastStep, handleNext, handlePrev, hand
                     <Button title="我知道了" style={{marginTop: px(12)}} onPress={handleNext} />
                 </View>
             ) : currentStep?.order === 2 ? (
-                <View style={{alignItems: 'flex-end', width: px(154), top: px(100)}}>
+                <View
+                    style={{
+                        alignItems: 'flex-end',
+                        width: px(154),
+                    }}>
                     <Text style={[styles.text, {textAlign: 'right'}]}>添加基金，选择六大板块对比权重进行产品PK</Text>
                     <Button title="我知道了" style={{marginTop: px(12)}} onPress={handleStop} />
                 </View>
