@@ -122,6 +122,22 @@ export default function Tabbar() {
                                 />
                             );
                         }
+                    } else if (route.name === 'ProjectHome') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/projectActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/project.png')}
+                                />
+                            );
+                        }
                     }
                 },
             })}
