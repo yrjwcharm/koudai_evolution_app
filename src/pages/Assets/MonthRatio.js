@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-25 14:30:28
+ * @LastEditTime: 2022-07-29 18:44:45
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -61,12 +61,12 @@ const MonthRatio = ({fund_code = '', poid = ''}) => {
     const onChartChange = useCallback(
         ({items}) => {
             // console.log(items);
-            textTime.current.setNativeProps({text: items[0]?.title});
-            textThisFund.current.setNativeProps({
+            textTime.current?.setNativeProps({text: items[0]?.title});
+            textThisFund.current?.setNativeProps({
                 text: `${items[0]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
             });
-            textBenchmark.current.setNativeProps({
+            textBenchmark.current?.setNativeProps({
                 text: `${items[1]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
             });
@@ -75,14 +75,14 @@ const MonthRatio = ({fund_code = '', poid = ''}) => {
     );
     // 图表滑动结束
     const onHide = useCallback(() => {
-        chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
+        chartData.label[0] && textTime.current?.setNativeProps({text: chartData.label[0]?.val});
         chartData.label[1] &&
-            textThisFund.current.setNativeProps({
+            textThisFund.current?.setNativeProps({
                 text: `${chartData.label[1]?.val}`,
                 style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
             });
         chartData.label[2] &&
-            textBenchmark.current.setNativeProps({
+            textBenchmark.current?.setNativeProps({
                 text: `${chartData.label[2]?.val}`,
                 style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
             });
