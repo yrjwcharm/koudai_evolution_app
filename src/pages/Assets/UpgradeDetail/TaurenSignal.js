@@ -41,7 +41,7 @@ const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate}) => {
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/probability-signal.png'}}
+                    source={{uri: data.title_icon}}
                     style={{width: px(22), height: px(22), marginRight: px(8)}}
                 />
                 <Text style={styles.title}>{data.title}</Text>
