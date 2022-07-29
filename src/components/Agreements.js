@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 09:58:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-29 17:53:52
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -72,7 +72,7 @@ function Agreements(props) {
                 <TouchableHighlight
                     onPress={toggle}
                     underlayColor="transparent"
-                    style={{width: px(20), height: px(40)}}>
+                    style={{width: px(20), minHeight: px(20)}}>
                     {container}
                 </TouchableHighlight>
             )}

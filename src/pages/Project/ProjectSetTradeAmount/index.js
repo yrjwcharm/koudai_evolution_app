@@ -73,7 +73,7 @@ const Index = ({route, navigation}) => {
         if (value < buy_info?.initial_amount) {
             setErrTip(`起购金额${buy_info?.initial_amount}`);
         } else if (value > pay_methods[bankSelect]?.day_limit) {
-            setErrTip(`最大单笔购买金额为${pay_methods[bankSelect]?.day_limit}元`);
+            setErrTip(`最大单日购买金额为${pay_methods[bankSelect]?.day_limit}元`);
         } else if (value >= 100000000) {
             setErrTip('金额需小于1亿');
         } else {
@@ -208,7 +208,12 @@ const Index = ({route, navigation}) => {
                                                 amount * data?.actual_amount.min +
                                                 '~¥' +
                                                 amount * data?.actual_amount.max +
-                                                '元'}
+                                                '元' +
+                                                '（' +
+                                                data?.actual_amount.min +
+                                                '~' +
+                                                data?.actual_amount.max +
+                                                '份）'}
                                         </Text>
                                     </Text>
                                     <Text style={{color: Colors.btnColor, fontSize: px(12)}} onPress={showFixModal}>
@@ -233,7 +238,7 @@ const Index = ({route, navigation}) => {
             <PasswordModal onDone={onSubmit} ref={passwordModal} />
             {data?.button && (
                 <FixedButton
-                    style={{position: 'relative'}}
+                    containerStyle={{position: 'relative'}}
                     title={data?.button?.text}
                     agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                     otherAgreement={data?.agreement}
