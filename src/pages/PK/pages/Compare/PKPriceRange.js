@@ -72,7 +72,7 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
     const genValues = (item, key) => {
         if (!item) return null;
         const handlerVal = (val) => {
-            if (!val && val !== 0) return '--';
+            if (!val) return '--';
             return (val * 100).toFixed(2) + '%';
         };
         const handlerBg = (k) => {

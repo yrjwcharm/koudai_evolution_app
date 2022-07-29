@@ -52,11 +52,7 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
                         justifyContent: 'center',
                         paddingHorizontal: px(8),
                     }}>
-                    {item.holding_rate || item.holding_rate === 0 ? (
-                        <PositionRate rate={item.holding_rate} />
-                    ) : (
-                        <Text>--</Text>
-                    )}
+                    {item.holding_rate ? <PositionRate rate={item.holding_rate} /> : <Text>--</Text>}
                 </View>
                 <View style={styles.valueWrap}>
                     <Text style={styles.valueText}>{item?.company_info?.name || '--'}</Text>

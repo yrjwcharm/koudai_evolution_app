@@ -44,7 +44,7 @@ export const LabelPart = ({item, idx, expand, weightsState, onChange}) => {
 
 export const ValuePart = ({item, idx, best, expand, weightsState}) => {
     const handlerValue = (val) => {
-        let state = !!(val || val === 0);
+        let state = !!val;
         return state ? val : '--';
     };
 

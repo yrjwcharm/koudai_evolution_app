@@ -19,7 +19,7 @@ const PKParamRate = ({total = 100, value, color = '#9AA0B1', barsNum = 5, justif
     }, [total, value, barsNum]);
 
     const handlerValue = (val) => {
-        let state = !!(val || val === 0);
+        let state = !!val;
         return state ? Math.round(val) : '--';
     };
 
