@@ -1,0 +1,71 @@
+diff --git a/node_modules/react-native-copilot/src/components/CopilotModal.js b/node_modules/react-native-copilot/src/components/CopilotModal.js
+index 00a610f..8d0412a 100644
+--- a/node_modules/react-native-copilot/src/components/CopilotModal.js
++++ b/node_modules/react-native-copilot/src/components/CopilotModal.js
+@@ -236,6 +236,10 @@ class CopilotModal extends Component<Props, State> {
+     }
+   };
+ 
++  handlerTooltipStyle = (arg1,arg2) => {
++    this.setState(arg1,arg2)
++  }
++
+   renderMask() {
+     /* eslint-disable global-require */
+     const MaskComponent = this.props.overlay === 'svg'
+@@ -292,6 +296,7 @@ class CopilotModal extends Component<Props, State> {
+           handlePrev={this.handlePrev}
+           handleStop={this.handleStop}
+           labels={this.props.labels}
++          handlerTooltipStyle={this.handlerTooltipStyle}
+         />
+       </Animated.View>,
+     ];
+diff --git a/node_modules/react-native-copilot/src/components/style.js b/node_modules/react-native-copilot/src/components/style.js
+index ce9fdfc..67ededc 100644
+--- a/node_modules/react-native-copilot/src/components/style.js
++++ b/node_modules/react-native-copilot/src/components/style.js
+@@ -5,7 +5,7 @@ export const STEP_NUMBER_RADIUS: number = 14;
+ export const STEP_NUMBER_DIAMETER: number = STEP_NUMBER_RADIUS * 2;
+ export const ZINDEX: number = 100;
+ export const MARGIN: number = 13;
+-export const OFFSET_WIDTH: number = 4;
++export const OFFSET_WIDTH: number = 0;
+ export const ARROW_SIZE: number = 6;
+ 
+ export default StyleSheet.create({
+diff --git a/node_modules/react-native-copilot/src/hocs/copilot.js b/node_modules/react-native-copilot/src/hocs/copilot.js
+index 85d0965..32677a9 100644
+--- a/node_modules/react-native-copilot/src/hocs/copilot.js
++++ b/node_modules/react-native-copilot/src/hocs/copilot.js
+@@ -8,7 +8,6 @@ import mitt from 'mitt';
+ import hoistStatics from 'hoist-non-react-statics';
+ 
+ import CopilotModal from '../components/CopilotModal';
+-import { OFFSET_WIDTH } from '../components/style';
+ 
+ import { getFirstStep, getLastStep, getStepNumber, getPrevStep, getNextStep } from '../utilities';
+ 
+@@ -44,6 +43,7 @@ const copilot = ({
+   verticalOffset = 0,
+   wrapperStyle,
+   arrowColor,
++  contentPadding = 4
+ } = {}) =>
+   (WrappedComponent) => {
+     class Copilot extends Component<any, State> {
+@@ -183,10 +183,10 @@ const copilot = ({
+         const size = await this.state.currentStep.target.measure();
+ 
+         await this.modal.animateMove({
+-          width: size.width + OFFSET_WIDTH,
+-          height: size.height + OFFSET_WIDTH,
+-          left: size.x - (OFFSET_WIDTH / 2),
+-          top: (size.y - (OFFSET_WIDTH / 2)) + verticalOffset,
++          width: size.width + contentPadding,
++          height: size.height + contentPadding,
++          left: size.x - (contentPadding / 2),
++          top: (size.y - (contentPadding / 2)) + verticalOffset,
+         });
+       }
+ 
