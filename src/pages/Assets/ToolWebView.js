@@ -20,8 +20,9 @@ const ToolWebView = ({route}) => {
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
     const [listData, setListData] = useState(null);
     const [topButton, setTopButton] = useState(null);
-    const webview = useRef(null);
 
+    const httpFlag = useRef(true);
+    const webview = useRef(null);
     const timeStamp = useRef(Date.now());
 
     useEffect(() => {
@@ -45,16 +46,21 @@ const ToolWebView = ({route}) => {
 
     const renderRight = () => {
         const onPress = () => {
+            if (!httpFlag.current) return;
+            httpFlag.current = false;
             http.post('/project/set/subscribe/conf/202207', {
                 item_id: topButton.item_id,
                 status: 'ON',
-            }).then((result) => {
-                console.log(result);
-                if (result.code === '000000') {
-                    setTopButton(null);
-                    Toast.show('订阅成功');
-                }
-            });
+            })
+                .then((result) => {
+                    if (result.code === '000000') {
+                        setTopButton(null);
+                        Toast.show('订阅成功');
+                    }
+                })
+                .finally((_) => {
+                    httpFlag.current = true;
+                });
         };
         return (
             <TouchableOpacity style={Style.flexRowCenter} activeOpacity={0.8} onPress={onPress}>
