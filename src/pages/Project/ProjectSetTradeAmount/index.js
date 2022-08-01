@@ -253,7 +253,7 @@ const Index = ({route, navigation}) => {
                                 </View>
                             ) : data?.actual_amount ? (
                                 <View style={[styles.tip, Style.flexBetween, {paddingLeft: px(3)}]}>
-                                    <Text style={{fontSize: px(12), flexShrink: 1}} numberOfLines={1}>
+                                    <Text style={{fontSize: px(12), flexShrink: 1}}>
                                         实际定投金额:
                                         <Text style={{color: Colors.yellow}}>
                                             {'¥' +
