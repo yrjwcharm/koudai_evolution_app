@@ -207,6 +207,7 @@ export default ({navigation, route}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                 <View style={{height: webviewHeight}}>
                     <WebView
+                        allowsFullscreenVideo
                         bounces={false}
                         javaScriptEnabled
                         onError={(syntheticEvent) => {
