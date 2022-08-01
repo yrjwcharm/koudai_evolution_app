@@ -8,7 +8,7 @@ import CompareTable from './CompareTable';
 import {getUpgradeToPortfolioChart} from './services';
 import RenderHtml from '~/components/RenderHtml';
 
-const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
+const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
     const {bottom_desc, name, title, upgrade_items} = data;
     const [activeTab, setTabActive] = useState();
 
@@ -23,7 +23,7 @@ const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
-                onCardRate?.(1, {now_value: res.result?.now_value, after_value: res.result?.after_value});
+                onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -40,7 +40,7 @@ const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate}) => {
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(1, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height);
             }}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>

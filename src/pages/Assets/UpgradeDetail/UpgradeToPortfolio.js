@@ -44,7 +44,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
     const onCardHeight = useCallback(
         (index, height) => {
             cardsHeight.current[index] = height;
-            if (cardsHeight.current.length === detail.length) {
+            if (cardsHeight.current.length === Object.keys(detail).length) {
                 const arr = [px(40)];
                 cardsHeight.current.reduce((memo, cur, idx) => {
                     memo += cur;
@@ -89,7 +89,7 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                 <>
                     <Header data={{base_list, target}} />
                     <StickyHeaderPortFolio
-                        detail={detail || []}
+                        detail={Object.values(detail) || []}
                         handlerCurtainHeight={handlerCurtainHeight}
                         scrollY={scrollY}
                         curtainNum={curtainNum}
@@ -102,36 +102,64 @@ const UpgradeToPortfolio = ({navigation, route}) => {
                         onLayout={(e) => {
                             setScrollY(e.nativeEvent.layout.y);
                         }}>
-                        {detail && (
-                            <>
-                                {detail[0] && (
-                                    <IncreaseRevenue
-                                        data={detail[0]}
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                        upgrade_id={route.params.upgrade_id}
-                                    />
-                                )}
-                                {detail[1] && (
-                                    <ReduceRisk
-                                        upgrade_id={route.params.upgrade_id}
-                                        data={detail[1]}
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                    />
-                                )}
-                                {detail[2] && (
-                                    <Profitability
-                                        upgrade_id={route.params.upgrade_id}
-                                        data={detail[2]}
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                    />
-                                )}
-                                {detail[3] && <ExclusiveAdvisor data={detail[3]} onCardHeight={onCardHeight} />}
-                                {detail[4] && <AssetAllocation data={detail[4]} onCardHeight={onCardHeight} />}
-                            </>
-                        )}
+                        {detail &&
+                            Object.keys(detail).map((key, idx) => {
+                                switch (+key) {
+                                    case 0:
+                                        return (
+                                            <IncreaseRevenue
+                                                idx={idx}
+                                                key={idx}
+                                                data={detail[0]}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                                upgrade_id={route.params.upgrade_id}
+                                            />
+                                        );
+                                    case 1:
+                                        return (
+                                            <ReduceRisk
+                                                idx={idx}
+                                                key={idx}
+                                                upgrade_id={route.params.upgrade_id}
+                                                data={detail[1]}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                            />
+                                        );
+                                    case 2:
+                                        return (
+                                            <Profitability
+                                                key={idx}
+                                                idx={idx}
+                                                upgrade_id={route.params.upgrade_id}
+                                                data={detail[2]}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                            />
+                                        );
+                                    case 3:
+                                        return (
+                                            <ExclusiveAdvisor
+                                                key={idx}
+                                                idx={idx}
+                                                data={detail[3]}
+                                                onCardHeight={onCardHeight}
+                                            />
+                                        );
+                                    case 4:
+                                        return (
+                                            <AssetAllocation
+                                                key={idx}
+                                                idx={idx}
+                                                data={detail[4]}
+                                                onCardHeight={onCardHeight}
+                                            />
+                                        );
+                                    default:
+                                        return null;
+                                }
+                            })}
                         {fund_list?.length > 0 && (
                             <ToBeUpgradedList data={{header: fund_list_header, list: fund_list}} />
                         )}

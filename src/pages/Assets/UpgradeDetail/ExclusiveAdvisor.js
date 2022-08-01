@@ -4,13 +4,13 @@ import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import CompareTable from './CompareTable';
 
-const ExclusiveAdvisor = ({data = {}, onCardHeight}) => {
+const ExclusiveAdvisor = ({data = {}, onCardHeight, idx: componentIdx}) => {
     const {after_value, desc, name, now_value, title, upgrade_items} = data;
     return (
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(3, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height);
             }}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.desc}>{desc}</Text>
