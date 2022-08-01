@@ -29,6 +29,7 @@ const Index = ({navigation}) => {
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [headHeight, setHeaderHeight] = useState(0);
     const [newMes, setNewmessage] = useState(0);
+    const showEye = useRef(true);
     const showGesture = useShowGesture();
     const getData = async () => {
         let res = await getInfo();
@@ -47,6 +48,11 @@ const Index = ({navigation}) => {
     const readInterface = async () => {
         let res = await getReadMes();
         setNewmessage(res.result.all);
+    };
+    const eyeChange = (value) => {
+        // console.log(value);
+        showEye.current = value;
+        // setShowEye(value);
     };
     const init = (refresh) => {
         refresh && setRefreshing(true);
@@ -89,7 +95,7 @@ const Index = ({navigation}) => {
                     {/* 系统通知 */}
                     {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
                     {/* 资产卡片 */}
-                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} />
+                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} eyeChange={eyeChange} />
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                     {/* 运营位 */}

@@ -80,7 +80,6 @@ const ProjectSetTrade = ({route, navigation}) => {
         let res = await getPossible(params);
         setPossible(res?.result?.target_info?.possible);
     };
-    console.log(toolStatus);
     const jumpNext = async () => {
         let buy_tool_id = [];
         for (var i in toolStatus) {

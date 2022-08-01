@@ -158,15 +158,7 @@ const Index = ({route, navigation}) => {
                             style={{borderRadius: px(6), borderColor: '#E9EAEF', borderWidth: 0.5, overflow: 'hidden'}}>
                             <View style={{backgroundColor: '#F7F8FA', ...Style.flexRow}}>
                                 {data?.formula_mode?.table_header?.map((i, index) => (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            ...Style.flexCenter,
-                                            width: px(114),
-                                            height: px(44),
-                                            borderColor: '#E9EAEF',
-                                            borderRightWidth: 0.5,
-                                        }}>
+                                    <View key={index} style={styles.item}>
                                         <Text style={{fontSize: px(12), fontWeight: '700'}}>{i}</Text>
                                     </View>
                                 ))}
@@ -176,22 +168,28 @@ const Index = ({route, navigation}) => {
                                     key={index}
                                     style={{backgroundColor: index % 2 == 0 ? '#fff' : '#F7F8FA', ...Style.flexRow}}>
                                     {item?.map((tmp, _i) => (
-                                        <View
-                                            key={_i}
-                                            style={{
-                                                ...Style.flexCenter,
-                                                width: px(114),
-                                                height: px(44),
-                                                borderColor: '#E9EAEF',
-                                                borderRightWidth: 0.5,
-                                            }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: px(12),
-                                                    color: _i == 1 ? Colors.red : Colors.defaultColor,
-                                                }}>
-                                                {tmp}
-                                            </Text>
+                                        <View key={_i} style={styles.item}>
+                                            {typeof tmp == 'object' ? (
+                                                <View style={Style.flexRowCenter}>
+                                                    <View
+                                                        style={{...styles.icon, backgroundColor: tmp?.color || '#fff'}}
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(12),
+                                                        }}>
+                                                        {tmp.value}
+                                                    </Text>
+                                                </View>
+                                            ) : (
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(12),
+                                                        color: _i == 1 ? Colors.red : Colors.defaultColor,
+                                                    }}>
+                                                    {tmp}
+                                                </Text>
+                                            )}
                                         </View>
                                     ))}
                                 </View>
@@ -358,5 +356,17 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         color: Colors.lightBlackColor,
         lineHeight: px(17),
+    },
+    item: {
+        ...Style.flexCenter,
+        width: px(114),
+        height: px(44),
+        borderColor: '#E9EAEF',
+        borderRightWidth: 0.5,
+    },
+    icon: {
+        width: px(8),
+        height: px(8),
+        marginRight: px(2),
     },
 });
