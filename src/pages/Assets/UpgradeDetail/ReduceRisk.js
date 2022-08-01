@@ -85,11 +85,11 @@ const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: compo
                     </TouchableOpacity>
                 ))}
             </View>
-            {upgrade_items?.length && (
+            {upgrade_items?.length ? (
                 <View style={styles.compareTableWrap}>
                     <CompareTable data={upgrade_items} />
                 </View>
-            )}
+            ) : null}
             {bottom_desc ? <Text style={styles.placeholdText}>{bottom_desc}</Text> : null}
         </View>
     );
