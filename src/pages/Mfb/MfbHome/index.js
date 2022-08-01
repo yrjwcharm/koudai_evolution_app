@@ -333,6 +333,7 @@ const TradeRecords = ({data = {}}) => {
     const jump = useJump();
     const {title, types} = data;
     const pageRef = useRef(0);
+    const [currentTab, setCurrentTab] = useState(0);
 
     /** @name 交易记录tag颜色 */
     const tradeStuatusColor = (status) => {
@@ -360,14 +361,16 @@ const TradeRecords = ({data = {}}) => {
             <Text style={styles.bigTitle}>{title}</Text>
             <ScrollableTabView
                 initialPage={0}
-                onChangeTab={(value) => {
-                    pageRef.current = value.i;
+                onChangeTab={({i}) => {
+                    pageRef.current = i;
+                    setCurrentTab(i);
                 }}
                 prerenderingSiblingsNumber={Infinity}
                 renderTabBar={() => <CapsuleTabbar boxStyle={styles.tabsContainer} />}
                 style={{flex: 1}}>
                 {types.map((tab) => {
-                    const {has_more, key, list, val} = tab;
+                    const {has_more, key, val} = tab;
+                    const {list} = types[currentTab];
                     return (
                         <View key={key} tabLabel={val}>
                             {list?.length > 0 ? (

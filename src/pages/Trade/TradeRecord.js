@@ -3,11 +3,20 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-27 16:50:07
+ * @LastEditTime: 2022-08-01 15:34:38
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, DeviceEventEmitter} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    TouchableOpacity,
+    ActivityIndicator,
+    DeviceEventEmitter,
+    Platform,
+} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import http from '../../services/index.js';
@@ -32,6 +41,7 @@ const TradeRecord = ({route, navigation}) => {
     const offset = useRef('');
     const jump = useJump();
     const isMfb = fr == 'mfb';
+    const scrollTab = useRef();
     const getData = useCallback(
         (_page, toast) => {
             let Page = _page || page;
@@ -65,6 +75,9 @@ const TradeRecord = ({route, navigation}) => {
         },
         [page, tabActive]
     );
+    useEffect(() => {
+        Platform.OS === 'android' && scrollTab.current?.goToPage(active);
+    }, [active]);
     useEffect(() => {
         getData();
     }, [getData]);
@@ -263,7 +276,11 @@ const TradeRecord = ({route, navigation}) => {
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {isMfb ? (
-                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={tabActive}>
+                <ScrollableTabView
+                    onChangeTab={changeTab}
+                    renderTabBar={() => <TabBar />}
+                    ref={scrollTab}
+                    initialPage={tabActive}>
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>

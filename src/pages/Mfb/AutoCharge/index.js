@@ -2,8 +2,8 @@
  * @Date: 2022-07-21 15:19:00
  * @Description: 自动充值
  */
-import React, {useCallback, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -42,6 +42,12 @@ export default ({navigation, route}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
+
+    useEffect(() => {
+        if (!loading) {
+            active !== 0 && Platform.OS === 'android' && scrollTab.current?.goToPage(active);
+        }
+    }, [active, loading]);
 
     return (
         <View style={styles.container}>

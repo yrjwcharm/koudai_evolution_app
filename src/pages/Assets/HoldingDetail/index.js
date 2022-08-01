@@ -498,7 +498,7 @@ const BuyMode = ({data = {}, refresh}) => {
             <View style={{marginTop: Space.marginVertical}}>
                 <View style={Style.flexRow}>
                     <Text style={[styles.tipsVal, {fontWeight: Font.weightMedium}]}>{modeTitle}</Text>
-                    {modeTags?.map((tag, i) => {
+                    {modeTags?.map?.((tag, i) => {
                         return (
                             <View key={tag + i} style={styles.labelBox}>
                                 <Text style={styles.smallText}>{tag}</Text>
