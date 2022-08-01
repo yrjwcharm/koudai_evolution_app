@@ -368,7 +368,9 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
                     });
                 }}
                 activeOpacity={0.8}>
-                {data?.signal_info ? <Image source={{uri: data?.signal_info}} style={styles.signal_image} /> : null}
+                {data?.signal_info ? (
+                    <Image source={{uri: data?.signal_info}} style={[styles.signal_image, {top: 0}]} />
+                ) : null}
                 <View style={[Style.flexRow, {marginBottom: px(14)}]}>
                     {!!data?.title_left_icon && (
                         <Image

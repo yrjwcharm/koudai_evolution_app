@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 10:31:10
- * @LastEditTime: 2022-07-15 19:52:21
+ * @LastEditTime: 2022-08-01 14:40:16
  * @LastEditors: Please set LastEditors
  * @Description: 用户协议(接口返回内容)
  * @FilePath: /koudai_evolution_app/src/pages/Index/Agreement.js
@@ -25,8 +25,7 @@ export class Agreement extends Component {
         });
     }
     render() {
-        // const {agreement} = this.state.data;
-        const agreement = `<div style="width:80%;padding:10px;height:600px"><img  src="https://static.licaimofang.com/wp-content/uploads/2022/07/WechatIMG2041.png" style="position:absolute;left:40px;width:320px"/></div>`;
+        const {agreement} = this.state.data;
         return (
             <ScrollView style={styles.container}>
                 <View style={{paddingHorizontal: text(14), marginBottom: isIphoneX() ? 42 : 8}}>

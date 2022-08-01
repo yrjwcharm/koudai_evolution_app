@@ -2,22 +2,40 @@
  * @Date: 2022-07-20 16:41:11
  * @Description:
  */
-import {StyleSheet, Switch, Text, View} from 'react-native';
+import {StyleSheet, Switch, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import RenderAutoTime from './AutoTime';
 import {px} from '~/utils/appUtil';
+import {Modal} from '~/components/Modal';
+import RenderHtml from '~/components/RenderHtml';
+import {postLeaveTrace} from './service';
 
-const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy}) => {
+const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy, poid}) => {
     const [status, setStatus] = useState(tool.open_status != 0);
     const [needBuy, setNeedBuy] = useState(tool?.now_buy?.open_status == 1);
     const [showConfig, setShowConfig] = useState(true);
     const onValueChange = (value) => {
         setStatus(value);
         onChange && onChange(tool.id, value);
+
         if (tool.id == 3 || tool.id == 4) {
             //估值信号 概率工具
             setShowConfig(value);
+        }
+        //曾经关闭再次开启弹窗提示
+        if (value && tool?.pop_tool_risk_reminder) {
+            Modal.show({
+                title: tool?.pop_tool_risk_reminder?.title,
+                children: () => (
+                    <ScrollView style={{margin: px(16), height: px(300)}} showsVerticalScrollIndicator={false}>
+                        <RenderHtml style={styles.contentText} html={tool?.pop_tool_risk_reminder?.content} />
+                    </ScrollView>
+                ),
+                confirmCallBack: () => {
+                    postLeaveTrace({poid, tool_id: tool.id});
+                },
+            });
         }
     };
     useEffect(() => {
@@ -81,4 +99,5 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E2E4EA',
         borderBottomWidth: 0.5,
     },
+    contentText: {fontSize: px(14), color: Colors.lightBlackColor, lineHeight: px(20)},
 });

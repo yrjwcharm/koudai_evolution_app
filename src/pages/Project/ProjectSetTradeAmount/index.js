@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import {PasswordModal} from '~/components/Password';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
+import RenderHtml from '~/components/RenderHtml';
 
 const Index = ({route, navigation}) => {
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
@@ -31,6 +32,7 @@ const Index = ({route, navigation}) => {
 
     const getData = async () => {
         let res = await getInfo(route?.params);
+        navigation.setOptions({title: res.result?.label});
         setData(res.result);
     };
 
@@ -137,13 +139,65 @@ const Index = ({route, navigation}) => {
     const showFixModal = () => {
         Modal.show(
             {
-                title: '定投计算方式',
+                title: data?.formula_mode?.title,
                 children: (
-                    <FastImage
-                        source={require('~/assets/img/common/fixIcon.png')}
-                        resizeMode={FastImage.resizeMode.contain}
-                        style={{width: px(322), height: px(251), marginLeft: (deviceWidth - px(322)) / 2}}
-                    />
+                    <View style={{padding: px(16)}}>
+                        <Text style={{fontWeight: '700', fontSize: px(14), textAlign: 'center', marginBottom: px(8)}}>
+                            {data?.formula_mode?.condition}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: px(12),
+                                color: Colors.lightGrayColor,
+                                textAlign: 'center',
+                                marginBottom: px(16),
+                            }}>
+                            {data?.formula_mode?.formula_mode}
+                        </Text>
+                        <View
+                            style={{borderRadius: px(6), borderColor: '#E9EAEF', borderWidth: 0.5, overflow: 'hidden'}}>
+                            <View style={{backgroundColor: '#F7F8FA', ...Style.flexRow}}>
+                                {data?.formula_mode?.table_header?.map((i, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            ...Style.flexCenter,
+                                            width: px(114),
+                                            height: px(44),
+                                            borderColor: '#E9EAEF',
+                                            borderRightWidth: 0.5,
+                                        }}>
+                                        <Text style={{fontSize: px(12), fontWeight: '700'}}>{i}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                            {data?.formula_mode?.table_body?.map((item, index) => (
+                                <View
+                                    key={index}
+                                    style={{backgroundColor: index % 2 == 0 ? '#fff' : '#F7F8FA', ...Style.flexRow}}>
+                                    {item?.map((tmp, _i) => (
+                                        <View
+                                            key={_i}
+                                            style={{
+                                                ...Style.flexCenter,
+                                                width: px(114),
+                                                height: px(44),
+                                                borderColor: '#E9EAEF',
+                                                borderRightWidth: 0.5,
+                                            }}>
+                                            <Text
+                                                style={{
+                                                    fontSize: px(12),
+                                                    color: _i == 1 ? Colors.red : Colors.defaultColor,
+                                                }}>
+                                                {tmp}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                    </View>
                 ),
             },
             'slide'
@@ -223,6 +277,17 @@ const Index = ({route, navigation}) => {
                             ) : null}
                         </>
                     ) : null}
+                    {!!data?.notice_for_follow && (
+                        <View
+                            style={{
+                                paddingVertical: px(12),
+                                paddingLeft: px(2),
+                                ...styles.tip,
+                                height: 'auto',
+                            }}>
+                            <RenderHtml style={styles.text} html={data?.notice_for_follow} />
+                        </View>
+                    )}
                 </View>
                 {render_bank()}
                 <BottomDesc />
@@ -288,5 +353,10 @@ const styles = StyleSheet.create({
         width: px(28),
         height: px(28),
         marginRight: px(9),
+    },
+    text: {
+        fontSize: px(12),
+        color: Colors.lightBlackColor,
+        lineHeight: px(17),
     },
 });

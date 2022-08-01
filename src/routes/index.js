@@ -804,11 +804,7 @@ export default function AppStack() {
                 options={{title: '设置买卖模式'}}
             />
             <Stack.Screen name="PortfolioAssets" component={HoldingDetail} options={{title: ''}} />
-            <Stack.Screen
-                name="ProjectSetTradeAmount"
-                component={ProjectSetTradeAmount}
-                options={{title: '设置定投金额'}}
-            />
+            <Stack.Screen name="ProjectSetTradeAmount" component={ProjectSetTradeAmount} options={{title: ''}} />
             <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
             <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
             <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />

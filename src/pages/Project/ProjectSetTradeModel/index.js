@@ -7,14 +7,15 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
 import Ruler from './Ruler';
-import {getNextPath, getPossible, getSetModel} from './service';
+import {getNextPath, getPossible, getSetModel, postLeaveTrace} from './service';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Tool from './Tool';
-import {BottomModal} from '~/components/Modal';
+import {BottomModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
+import RenderHtml from '~/components/RenderHtml';
 const ProjectSetTrade = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
@@ -27,6 +28,20 @@ const ProjectSetTrade = ({route, navigation}) => {
     const bottomModal = useRef();
     const getData = async () => {
         let res = await getSetModel({poid, upgrade_id: route.params?.upgrade_id});
+
+        if (res.result?.pop_tool_risk_reminder) {
+            Modal.show({
+                title: res.result?.pop_tool_risk_reminder?.title,
+                children: () => (
+                    <ScrollView style={{margin: px(16), height: px(300)}} showsVerticalScrollIndicator={false}>
+                        <RenderHtml style={styles.contentText} html={res.result?.pop_tool_risk_reminder?.content} />
+                    </ScrollView>
+                ),
+                confirmCallBack: () => {
+                    postLeaveTrace({poid, tool_id: 0});
+                },
+            });
+        }
         setPossible(res.result?.sale_model?.target_yeild?.possible);
         setData(res.result);
     };
@@ -65,23 +80,23 @@ const ProjectSetTrade = ({route, navigation}) => {
         let res = await getPossible(params);
         setPossible(res?.result?.target_info?.possible);
     };
+    console.log(toolStatus);
     const jumpNext = async () => {
-        let buy_tool_id = data?.buy_model?.list
-            ?.filter((item) => {
-                if (toolStatus[item.id]) {
-                    return item.id;
-                }
-            })
-            .map((_k) => _k.id);
+        let buy_tool_id = [];
+        for (var i in toolStatus) {
+            if (toolStatus[i]) {
+                buy_tool_id.push(i);
+            }
+        }
         let params = {
             poid,
             reach_target: data?.sale_model?.stop_profit_tab?.list[stopProfitIndex].id,
             need_buy: needBuy.current,
-            buy_tool_id: buy_tool_id.join(','),
+            buy_tool_id: buy_tool_id?.join(','),
             ...autoTime.current,
             target_yield: targetYeild.current / 100,
             possible: possible || 0,
-            sale_tool_id: data?.sale_model?.list?.map((item) => item.id).join(','),
+            sale_tool_id: (data?.sale_model?.list?.map((item) => item.id) || [])?.join(','),
             upgrade_id: route.params?.upgrade_id || 0,
         };
         let res = await getNextPath(params);
@@ -105,21 +120,24 @@ const ProjectSetTrade = ({route, navigation}) => {
 
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
-                <View style={styles.trade_con}>
-                    <View style={[Style.flexCenter, styles.trade_con_title]}>
-                        <Text style={[styles.title]}>{data?.buy_model?.buy_model_title}</Text>
+                {data?.buy_model?.map((list, index) => (
+                    <View style={styles.trade_con} key={index}>
+                        <View style={[Style.flexCenter, styles.trade_con_title]}>
+                            <Text style={[styles.title]}>{list?.buy_model_title}</Text>
+                        </View>
+                        {/* 买入工具 */}
+                        {list?.list?.map((tool) => (
+                            <Tool
+                                tool={tool}
+                                poid={poid}
+                                key={tool.id}
+                                onChange={onToolChange}
+                                onChangeAutoTime={onChangeAutoTime}
+                                onChangeNowBuy={onChangeNowBuy}
+                            />
+                        ))}
                     </View>
-                    {/* 买入工具 */}
-                    {data?.buy_model?.list?.map((tool, index) => (
-                        <Tool
-                            tool={tool}
-                            key={tool.id}
-                            onChange={onToolChange}
-                            onChangeAutoTime={onChangeAutoTime}
-                            onChangeNowBuy={onChangeNowBuy}
-                        />
-                    ))}
-                </View>
+                ))}
 
                 <View style={styles.trade_con}>
                     <View style={[Style.flexCenter, styles.trade_con_title]}>
@@ -263,4 +281,5 @@ const styles = StyleSheet.create({
         borderRadius: Space.borderRadius,
         borderWidth: Space.borderWidth,
     },
+    contentText: {fontSize: px(14), color: Colors.lightBlackColor, lineHeight: px(20)},
 });

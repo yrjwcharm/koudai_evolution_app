@@ -16,3 +16,6 @@ export const getPossible = (params) => {
 export const getNextPath = (parmas) => {
     return http.post('/project/setting/get_next_step', parmas);
 };
+export const postLeaveTrace = (params) => {
+    return http.post('/project/setting/leave_trace/202207', params);
+};
