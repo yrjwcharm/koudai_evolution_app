@@ -41,7 +41,7 @@ const UpgradeToPlan = ({route, navigation}) => {
     const onCardHeight = useCallback(
         (index, height) => {
             cardsHeight.current[index] = height;
-            if (cardsHeight.current.length === detail.length) {
+            if (cardsHeight.current.length === Object.keys(detail).length) {
                 const arr = [px(40)];
                 cardsHeight.current.reduce((memo, cur, idx) => {
                     memo += cur;
@@ -89,7 +89,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                         scrollY={scrollY}
                         curtainNum={curtainNum}
                         handlerCurtainHeight={handlerCurtainHeight}
-                        detail={detail || []}
+                        detail={Object.values(detail) || []}
                         cardsRate={cardsRate}
                     />
                     <ScrollView
@@ -99,42 +99,57 @@ const UpgradeToPlan = ({route, navigation}) => {
                         onLayout={(e) => {
                             setScrollY(e.nativeEvent.layout.y);
                         }}>
-                        {detail && (
-                            <>
-                                {detail[0] && (
-                                    <SaleReminder
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                        data={detail[0]}
-                                        upgrade_id={route.params.upgrade_id}
-                                    />
-                                )}
-                                {detail[1] && (
-                                    <TaurenSignal
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                        data={detail[1]}
-                                        upgrade_id={route.params.upgrade_id}
-                                    />
-                                )}
-                                {detail[2] && (
-                                    <FallBuy
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                        data={detail[2]}
-                                        upgrade_id={route.params.upgrade_id}
-                                    />
-                                )}
-                                {detail[3] && (
-                                    <ProbabilitySignal
-                                        onCardRate={onCardRate}
-                                        onCardHeight={onCardHeight}
-                                        data={detail[3]}
-                                        upgrade_id={route.params.upgrade_id}
-                                    />
-                                )}
-                            </>
-                        )}
+                        {detail &&
+                            Object.keys(detail).map((key, idx) => {
+                                switch (+key) {
+                                    case 0:
+                                        return (
+                                            <SaleReminder
+                                                idx={idx}
+                                                key={idx}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                                data={detail[0]}
+                                                upgrade_id={route.params.upgrade_id}
+                                            />
+                                        );
+                                    case 1:
+                                        return (
+                                            <TaurenSignal
+                                                idx={idx}
+                                                key={idx}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                                data={detail[1]}
+                                                upgrade_id={route.params.upgrade_id}
+                                            />
+                                        );
+                                    case 2:
+                                        return (
+                                            <FallBuy
+                                                idx={idx}
+                                                key={idx}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                                data={detail[2]}
+                                                upgrade_id={route.params.upgrade_id}
+                                            />
+                                        );
+                                    case 4:
+                                        return (
+                                            <ProbabilitySignal
+                                                idx={idx}
+                                                key={idx}
+                                                onCardRate={onCardRate}
+                                                onCardHeight={onCardHeight}
+                                                data={detail[4]}
+                                                upgrade_id={route.params.upgrade_id}
+                                            />
+                                        );
+                                    default:
+                                        return null;
+                                }
+                            })}
                         <View style={{height: px(30)}} />
                     </ScrollView>
                     {button && button2 ? <FixBottom button={button} button2={button2} /> : null}

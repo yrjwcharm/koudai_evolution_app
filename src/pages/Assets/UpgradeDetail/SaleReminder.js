@@ -8,7 +8,7 @@ import CompareTable from './CompareTable';
 import {getUpgradeToPlanChart} from './services';
 import RenderHtml from '~/components/RenderHtml';
 
-const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate}) => {
+const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
     const [activeTab, setTabActive] = useState();
     const [chart, setChart] = useState({});
 
@@ -21,7 +21,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate}) => {
             if (res.code === '000000') {
                 setChart({});
                 setChart(res.result);
-                onCardRate?.(0, {now_value: res.result?.now_value, after_value: res.result?.after_value});
+                onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
                     let obj = res.result?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
@@ -37,7 +37,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate}) => {
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(0, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height);
             }}>
             <Text style={styles.title}>{data.title}</Text>
             <View style={styles.ratePanel}>
