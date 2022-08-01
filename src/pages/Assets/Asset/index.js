@@ -3,7 +3,7 @@
  * @Description:我的资产新版
  */
 import {View, RefreshControl, Animated, ActivityIndicator} from 'react-native';
-import React, {useCallback, useState, useRef} from 'react';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
@@ -20,6 +20,7 @@ import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
 import YellowNotice from './YellowNotice';
 import AdInfo from './AdInfo';
+import withNetState from '~/components/withNetState';
 const Index = ({navigation}) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
@@ -50,7 +51,7 @@ const Index = ({navigation}) => {
         setNewmessage(res.result.all);
     };
     const eyeChange = (value) => {
-        // console.log(value);
+        console.log(value);
         showEye.current = value;
         // setShowEye(value);
     };
@@ -67,6 +68,15 @@ const Index = ({navigation}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [is_login])
     );
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            if (is_login) {
+                global.LogTool('tabDoubleClick', 'Home');
+            }
+        });
+        return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [is_login]);
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
@@ -107,6 +117,7 @@ const Index = ({navigation}) => {
                         <HoldList
                             products={holding?.products}
                             scrollY={scrollY}
+                            showEye={showEye.current}
                             stickyHeaderY={headHeight}
                             reload={getHoldingData}
                         />
@@ -126,4 +137,4 @@ const Index = ({navigation}) => {
         <GesturePassword option={'verify'} />
     );
 };
-export default Index;
+export default withNetState(Index);

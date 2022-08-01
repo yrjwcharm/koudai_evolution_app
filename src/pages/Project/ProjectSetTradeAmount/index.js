@@ -257,9 +257,9 @@ const Index = ({route, navigation}) => {
                                         实际定投金额:
                                         <Text style={{color: Colors.yellow}}>
                                             {'¥' +
-                                                amount * data?.actual_amount.min +
+                                                (amount * data?.actual_amount.min).toFixed(2) +
                                                 '~¥' +
-                                                amount * data?.actual_amount.max +
+                                                (amount * data?.actual_amount.max).toFixed(2) +
                                                 '元' +
                                                 '（' +
                                                 data?.actual_amount.min +

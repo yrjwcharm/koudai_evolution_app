@@ -3,7 +3,7 @@
  * @Description:持仓卡片
  */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -17,7 +17,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
 import {closeRecommend} from './service';
 const yellow = '#FF7D41';
-const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
+const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
     const [layout, setLayout] = useState({});
     const onLayout = (key, e) => {
         e.persist();
@@ -45,6 +45,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
             },
         });
     };
+    useEffect(() => {
+        console.log(showEye);
+    }, [showEye]);
     return (
         <>
             <View style={{position: 'relative'}}>
