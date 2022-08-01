@@ -5,25 +5,25 @@ import FastImage from 'react-native-fast-image';
 import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
-import {getUpgradeToPlanChart} from './services';
+import {getUpgradeToPlanCard} from './services';
 import RenderHtml from '~/components/RenderHtml';
 
 const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
     const [activeTab, setTabActive] = useState();
-    const [chart, setChart] = useState({});
+    const [{chart = {}, upgrade_items = [], bottom_desc, now_value, after_value}, setData] = useState({});
 
     const initScript = useMemo(() => {
         return baseAreaChart(chart?.chart || [], chart.tag_legends || [], true, 2, null, [10, 8, 10, 0]);
     }, [chart]);
 
     const getData = (period) => {
-        getUpgradeToPlanChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
+        getUpgradeToPlanCard({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
             if (res.code === '000000') {
-                setChart({});
-                setChart(res.result);
+                setData({});
+                setData(res.result);
                 onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
-                    let obj = res.result?.subtabs?.find?.((item) => item.active);
+                    let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
                 }
             }
@@ -41,7 +41,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
             }}>
             <Text style={styles.title}>{data.title}</Text>
             <View style={styles.ratePanel}>
-                <RenderHtml style={{...styles.rateText, color: '#121D3A'}} html={chart.now_value} />
+                <RenderHtml style={{...styles.rateText, color: '#121D3A'}} html={now_value} />
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -49,7 +49,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                     />
                     <Text style={styles.pannelDesc}>{data.name}</Text>
                 </View>
-                <RenderHtml style={{...styles.rateText, color: '#E74949'}} html={chart.after_value} />
+                <RenderHtml style={{...styles.rateText, color: '#E74949'}} html={after_value} />
             </View>
             <View style={{height: px(210)}}>
                 {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
@@ -82,12 +82,12 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                     </TouchableOpacity>
                 ))}
             </View>
-            {data?.upgrade_items?.length > 0 && (
+            {upgrade_items?.length > 0 && (
                 <View style={styles.compareTableWrap}>
-                    <CompareTable data={data?.upgrade_items} />
+                    <CompareTable data={upgrade_items} />
                 </View>
             )}
-            {data?.bottom_desc && <Text style={styles.placeholdText}>{data.bottom_desc}</Text>}
+            {bottom_desc && <Text style={styles.placeholdText}>{bottom_desc}</Text>}
         </View>
     );
 };

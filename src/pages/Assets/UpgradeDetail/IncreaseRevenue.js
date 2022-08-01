@@ -5,27 +5,26 @@ import FastImage from 'react-native-fast-image';
 import {Font} from '~/common/commonStyle';
 import {Chart} from '~/components/Chart';
 import CompareTable from './CompareTable';
-import {getUpgradeToPortfolioChart} from './services';
+import {getUpgradeToPortfolioCard} from './services';
 import RenderHtml from '~/components/RenderHtml';
 
 const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
-    const {name, title, upgrade_items} = data;
+    const {name, title} = data;
     const [activeTab, setTabActive] = useState();
 
-    const [chart, setChart] = useState({});
+    const [{chart = {}, upgrade_items = [], bottom_desc, now_value, after_value}, setData] = useState({});
 
     const initScript = useMemo(() => {
         return baseAreaChart(chart?.chart || [], chart.tags || [], true, 2, null, [10, 8, 10, 0]);
     }, [chart]);
 
     const getData = (period) => {
-        getUpgradeToPortfolioChart({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
+        getUpgradeToPortfolioCard({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
             if (res.code === '000000') {
-                setChart({});
-                setChart(res.result);
+                setData(res.result);
                 onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
                 if (!activeTab) {
-                    let obj = res.result?.subtabs?.find?.((item) => item.active);
+                    let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
                     if (obj) setTabActive(obj.val);
                 }
             }
@@ -44,7 +43,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
             }}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
-                <RenderHtml html={chart?.now_value} style={{...styles.rateText, color: '#121D3A'}} />
+                <RenderHtml html={now_value} style={{...styles.rateText, color: '#121D3A'}} />
                 <View style={styles.panelMiddle}>
                     <FastImage
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
@@ -52,7 +51,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
                     />
                     <Text style={styles.pannelDesc}>{name}</Text>
                 </View>
-                <RenderHtml html={chart?.after_value} style={{...styles.rateText, color: '#E74949'}} />
+                <RenderHtml html={after_value} style={{...styles.rateText, color: '#E74949'}} />
             </View>
             <View style={{height: px(210)}}>
                 {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
@@ -98,7 +97,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
                     <CompareTable data={upgrade_items} />
                 </View>
             )}
-            {data?.bottom_desc && <Text style={styles.placeholdText}>{data.bottom_desc}</Text>}
+            {bottom_desc && <Text style={styles.placeholdText}>{bottom_desc}</Text>}
         </View>
     );
 };
