@@ -5,32 +5,16 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
-import Storage from '~/utils/storage';
+
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import Feather from 'react-native-vector-icons/Feather';
+
 import Octicons from 'react-native-vector-icons/Octicons';
 import {useJump} from '~/components/hooks';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
-const AssetHeaderCard = ({summary = {}, tradeMes, eyeChange}) => {
-    const [showEye, setShowEye] = useState('true');
+const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const jump = useJump();
-    useEffect(() => {
-        Storage.get('myAssetsEye').then((res) => {
-            eyeChange(res ? res == 'true' : true);
-            setShowEye(res ? res : 'true');
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    // 显示|隐藏金额信息
-    const toggleEye = () => {
-        setShowEye((show) => {
-            global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
-            Storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
-            eyeChange(show === 'true');
-            return show === 'true' ? 'false' : 'true';
-        });
-    };
+
     return (
         <LinearGradient
             colors={['#F1F9FF', Colors.bgColor]}
@@ -47,13 +31,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, eyeChange}) => {
                 <View style={[styles.summaryTitle, Style.flexCenter]}>
                     <Text style={styles.summaryKey}>总资产(元)</Text>
                     <Text style={styles.date}>{summary?.profit_date}</Text>
-                    <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
-                        <Feather
-                            name={showEye === 'true' ? 'eye' : 'eye-off'}
-                            size={px(16)}
-                            color={'rgba(255, 255, 255, 0.8)'}
-                        />
-                    </TouchableOpacity>
+                    {children}
                 </View>
                 <Text style={{textAlign: 'center'}}>
                     {showEye === 'true' ? (

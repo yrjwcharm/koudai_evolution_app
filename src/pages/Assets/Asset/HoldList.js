@@ -45,9 +45,6 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
             },
         });
     };
-    useEffect(() => {
-        console.log(showEye);
-    }, [showEye]);
     return (
         <>
             <View style={{position: 'relative'}}>
@@ -119,7 +116,13 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                                   // 卡片是否只有一个或者是最后一个
                                                   const flag = index + 1 == arr.length || index == arr.length - 1;
                                                   return (
-                                                      <CardItem upgrade={true} data={product} flag={flag} key={index} />
+                                                      <CardItem
+                                                          showEye={showEye}
+                                                          upgrade={true}
+                                                          data={product}
+                                                          flag={flag}
+                                                          key={index}
+                                                      />
                                                   );
                                               })}
                                               {/* 升级按钮 */}
@@ -132,10 +135,10 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                     account?.items?.map((product = {}, index, arr) => {
                                         // 卡片是否只有一个或者是最后一个
                                         const flag = index + 1 == arr.length || index == arr.length - 1;
-                                        return <CardItem data={product} flag={flag} key={index} />;
+                                        return <CardItem showEye={showEye} data={product} flag={flag} key={index} />;
                                     })
                                 ) : account.title == '魔方宝' ? (
-                                    <CardItem data={account} flag={true} />
+                                    <CardItem data={account} showEye={showEye} flag={true} />
                                 ) : (
                                     !!account?.empty_button && (
                                         <NoAccountRender
@@ -168,7 +171,7 @@ const ListTitle = ({title, desc}) => {
         </View>
     );
 };
-const CardItem = ({data = {}, flag, upgrade}) => {
+const CardItem = ({data = {}, flag, upgrade, showEye}) => {
     const jump = useJump();
     const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
     const getAmountColor = (value) => {
@@ -191,11 +194,26 @@ const CardItem = ({data = {}, flag, upgrade}) => {
                 )}
                 <View style={[Style.flexBetween]}>
                     <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit)}]}>
-                        {profit.replace(/,/g, '') > 0 ? '+' + profit : profit}
+                    <Text
+                        style={[
+                            styles.amount_text,
+                            {minWidth: px(30), color: showEye == 'true' ? getAmountColor(profit) : Colors.defaultColor},
+                        ]}>
+                        {showEye == 'true' ? (profit.replace(/,/g, '') > 0 ? '+' + profit : profit) : '****'}
                     </Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit_acc)}]}>
-                        {profit_acc.replace(/,/g, '') > 0 ? '+' + profit_acc : profit_acc}
+                    <Text
+                        style={[
+                            styles.amount_text,
+                            {
+                                minWidth: px(30),
+                                color: showEye == 'true' ? getAmountColor(profit_acc) : Colors.defaultColor,
+                            },
+                        ]}>
+                        {showEye == 'true'
+                            ? profit_acc.replace(/,/g, '') > 0
+                                ? '+' + profit_acc
+                                : profit_acc
+                            : '****'}
                     </Text>
                 </View>
                 {!!alert && <RenderAlert alert={alert} />}
