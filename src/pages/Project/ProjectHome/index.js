@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 14:31:50
  * @Description:计划首页
  */
-import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
+import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';

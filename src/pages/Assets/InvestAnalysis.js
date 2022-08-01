@@ -2,11 +2,11 @@
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-29 19:28:36
+ * @LastEditTime: 2022-08-01 15:36:52
  * @Description: 投资分析
  */
 import React, {useEffect, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../components/TabBar';
 import AccProfit from './AccProfit';
@@ -15,19 +15,19 @@ import MonthRatio from './MonthRatio';
 import {Colors} from '../../common/commonStyle';
 
 const InvestAnalysis = ({navigation, route}) => {
-    const {fund_code, poid, type} = route.params || {};
+    const {fund_code, poid, type = 0} = route.params || {};
     const tabsRef = useRef(['累计收益', '净值走势', '月度收益率']);
     const scrollTab = useRef();
 
     useEffect(() => {
-        scrollTab.current?.goToPage(type || 0);
+        Platform.OS === 'android' && type !== 0 && scrollTab.current?.goToPage(type);
     }, [type]);
 
     return (
         <ScrollableTabView
             style={[styles.container]}
             renderTabBar={() => <Tab />}
-            initialPage={0}
+            initialPage={type}
             ref={scrollTab}
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
