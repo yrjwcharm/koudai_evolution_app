@@ -60,7 +60,7 @@ const PKCard = ({data = {}, copilot}) => {
 
     useEffect(() => {
         let timer = null;
-        if (data?.tip) {
+        if (data?.tip_for_pk_card) {
             setYellowTipVisible(true);
             timer = setTimeout(() => {
                 setYellowTipVisible(false);
@@ -74,7 +74,7 @@ const PKCard = ({data = {}, copilot}) => {
             <View style={styles.swiperWrap}>
                 <Swiper
                     height={cardHeight ? cardHeight : 'auto'}
-                    removeClippedSubviews={true}
+                    removeClippedSubviews={false}
                     loadMinimal={Platform.OS == 'ios' ? true : false}
                     showsPagination={false}
                     onIndexChanged={onIndexChanged}>
@@ -91,7 +91,7 @@ const PKCard = ({data = {}, copilot}) => {
                 </Swiper>
                 {yellowTipVisible ? (
                     <View style={styles.yellowTip}>
-                        <Text style={styles.yellowTipText}>今日更新5组，左右滑动查看</Text>
+                        <Text style={styles.yellowTipText}>{data.tip_for_pk_card}</Text>
                     </View>
                 ) : null}
             </View>
@@ -312,18 +312,16 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
             <View style={styles.pkInfoLeft}>
                 <View style={styles.titleWrap}>
                     <Text style={styles.pkInfoName}>
-                        {false ? (
+                        {leftObj.favor ? (
                             <Text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
                         ) : null}
                         {leftObj.name}
                     </Text>
-                    {false ? (
+                    {leftObj.favor ? (
                         <View style={styles.followWrap}>
                             <Text style={styles.followText}>已关注</Text>
                         </View>
-                    ) : (
-                        false
-                    )}
+                    ) : null}
                 </View>
                 <View>
                     <View style={styles.tagsWrap}>
@@ -333,18 +331,23 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                             </View>
                         ))}
                     </View>
-                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
-                    <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield?.ratio)}</Text>
+                    <Text style={styles.priceDesc}>{leftObj?.yield?.title}</Text>
                 </View>
             </View>
             <View style={styles.pkInfoRight}>
                 <View style={styles.titleWrap}>
-                    {false ? (
+                    {rightObj.favor ? (
                         <View style={[styles.followWrap, {position: 'relative', marginRight: px(6)}]}>
                             <Text style={styles.followText}>已关注</Text>
                         </View>
                     ) : null}
-                    <Text style={[styles.pkInfoName, {textAlign: 'right'}, false ? {flex: 0, maxWidth: px(100)} : {}]}>
+                    <Text
+                        style={[
+                            styles.pkInfoName,
+                            {textAlign: 'right'},
+                            rightObj.favor ? {flex: 0, maxWidth: px(100)} : {},
+                        ]}>
                         {rightObj.name}
                     </Text>
                 </View>
@@ -356,10 +359,8 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                             </View>
                         ))}
                     </View>
-                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
-                        {handlerRate(rightObj?.yield_info?.year)}
-                    </Text>
-                    <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
+                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>{handlerRate(rightObj?.yield?.ratio)}</Text>
+                    <Text style={[styles.priceDesc, {textAlign: 'right'}]}>{rightObj?.yield?.title}</Text>
                 </View>
             </View>
             <FastImage source={pkIcon2} style={styles.pkIconStyle} />

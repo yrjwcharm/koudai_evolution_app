@@ -60,6 +60,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     const listLayout = useRef({});
     const scrollViewRef = useRef();
     const isFocusedRef = useRef(isFocused);
+    const showCopilot = useRef(false);
 
     const getData = (type) => {
         type === 0 && setRefreshing(true);
@@ -73,11 +74,16 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         handlerListLog(item);
                     });
 
+                    if (userInfo.toJS().is_login && res.result?.is_guide_page === 1) {
+                        showCopilot.current = true;
+                    }
+
                     setTimeout(() => {
-                        if (userInfo.toJS().is_login && isFocusedRef.current && type === 1) {
+                        if (isFocusedRef.current && showCopilot.current) {
                             start?.();
+                            showCopilot.current = false;
                         }
-                    }, 0);
+                    }, 10);
                 } else {
                     Toast.show(res.message);
                 }
