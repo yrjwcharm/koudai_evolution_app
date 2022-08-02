@@ -19,6 +19,7 @@ import {closeRecommend} from './service';
 const yellow = '#FF7D41';
 const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
     const [layout, setLayout] = useState({});
+    const jump = useJump();
     const onLayout = (key, e) => {
         e.persist();
         setLayout((prev) => {
@@ -77,30 +78,48 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                             ) : null}
                             <View style={styles.card_con}>
                                 {/* header */}
-                                {account?.items?.length ? (
-                                    <StickyHeader
-                                        stickyHeaderY={_top} // 把头部高度传入
-                                        itemHeight={
-                                            layout[key]?.height - px(67) - (account?.recommend_card ? px(213) : 0)
-                                        } //px(67)是大标题和table_header的高度 //@TODO 崩溃
-                                        stickyScrollY={scrollY}>
-                                        <View style={[Style.flexBetween, styles.table_header]}>
-                                            <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                            <Text style={styles.light_text}>日收益</Text>
-                                            <Text style={styles.light_text}>累计收益</Text>
-                                        </View>
-                                        <View style={styles.line} />
-                                    </StickyHeader>
-                                ) : (
-                                    <>
-                                        <View style={[Style.flexBetween, styles.table_header]}>
-                                            <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                            <Text style={styles.light_text}>日收益</Text>
-                                            <Text style={styles.light_text}>累计收益</Text>
-                                        </View>
-                                        <View style={styles.line} />
-                                    </>
-                                )}
+
+                                {
+                                    // 保险
+                                    account?.id == 11 ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={{padding: px(16), ...Style.flexRow}}
+                                            onPress={() => jump(account.url)}>
+                                            <View style={{flex: 1}}>
+                                                <Text style={[styles.light_text, {marginBottom: px(5)}]}>我的保额</Text>
+                                                <Text style={styles.amount_text}>{account?.amount}</Text>
+                                            </View>
+                                            <View style={{flex: 1}}>
+                                                <Text style={[styles.light_text, {marginBottom: px(5)}]}>我的保额</Text>
+                                                <Text style={styles.amount_text}>{account?.count}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ) : account?.items?.length ? (
+                                        <StickyHeader
+                                            stickyHeaderY={_top} // 把头部高度传入
+                                            itemHeight={
+                                                layout[key]?.height - px(67) - (account?.recommend_card ? px(213) : 0)
+                                            } //px(67)是大标题和table_header的高度 //@TODO 崩溃
+                                            stickyScrollY={scrollY}>
+                                            <View style={[Style.flexBetween, styles.table_header]}>
+                                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>累计收益</Text>
+                                            </View>
+                                            <View style={styles.line} />
+                                        </StickyHeader>
+                                    ) : (
+                                        <>
+                                            <View style={[Style.flexBetween, styles.table_header]}>
+                                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>累计收益</Text>
+                                            </View>
+                                            <View style={styles.line} />
+                                        </>
+                                    )
+                                }
 
                                 {/* 升级的卡片 */}
                                 {account?.upgrade_list?.length

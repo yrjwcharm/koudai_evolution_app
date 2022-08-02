@@ -22,13 +22,13 @@ const ProjectSetTrade = ({route, navigation}) => {
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const [toolStatus, setToolStatus] = useState({});
     const [possible, setPossible] = useState(0);
+    const [agreement, setAgreement] = useState([]);
     const autoTime = useRef({});
     const needBuy = useRef();
     const targetYeild = useRef('');
     const bottomModal = useRef();
     const getData = async () => {
         let res = await getSetModel({poid, upgrade_id: route.params?.upgrade_id});
-
         if (res.result?.pop_tool_risk_reminder) {
             Modal.show({
                 title: res.result?.pop_tool_risk_reminder?.title,
@@ -43,6 +43,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             });
         }
         setPossible(res.result?.sale_model?.target_yeild?.possible);
+        setAgreement(res.result?.agreement_bottom);
         setData(res.result);
     };
     useEffect(() => {
@@ -56,6 +57,13 @@ const ProjectSetTrade = ({route, navigation}) => {
     };
     // 工具选择
     const onToolChange = (id, value) => {
+        setAgreement((prev) => {
+            let tmp = [...prev];
+            let index = tmp.findIndex((item) => id == item.tool_id);
+            tmp[index || 0].show = value;
+            return tmp;
+        });
+
         setToolStatus((prev) => {
             let tmp = {...prev};
             tmp[id] = value;
@@ -231,12 +239,17 @@ const ProjectSetTrade = ({route, navigation}) => {
                     </View>
                 </BottomModal>
             ) : null}
+
             <FixedButton
                 containerStyle={{position: 'relative'}}
                 title={data?.btn?.text}
                 disabled={data?.btn?.avail != 1}
                 onPress={jumpNext}
-                agreement={{list: data?.agreement_bottom ? data?.agreement_bottom : undefined}}
+                agreement={
+                    agreement.filter((item) => item.show !== false)?.length > 0
+                        ? {list: agreement.filter((item) => item.show !== false)}
+                        : undefined
+                }
                 suffix={data?.agreement_after}
             />
         </View>
