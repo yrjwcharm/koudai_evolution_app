@@ -94,7 +94,6 @@ const Index = ({navigation, _ref}) => {
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
-            {!is_login && <LoginMask />}
             <Animated.ScrollView
                 ref={scrollRef}
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
@@ -154,6 +153,7 @@ const Index = ({navigation, _ref}) => {
                     </View>
                 )}
             </Animated.ScrollView>
+            {!is_login && <LoginMask />}
         </>
     ) : (
         // 手势密码

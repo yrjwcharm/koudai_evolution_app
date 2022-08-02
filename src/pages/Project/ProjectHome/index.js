@@ -41,7 +41,7 @@ const Index = () => {
     return (
         <>
             <NavBar title="计划" />
-            {!is_login && <LoginMask />}
+
             <ScrollView
                 style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
@@ -127,6 +127,7 @@ const Index = () => {
                     </>
                 ) : null}
             </ScrollView>
+            {!is_login && <LoginMask />}
         </>
     );
 };
