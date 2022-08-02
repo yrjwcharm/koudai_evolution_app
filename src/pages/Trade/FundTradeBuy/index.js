@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-01 16:27:36
+ * @LastEditTime: 2022-08-02 18:49:41
  * @Description: 基金购买
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -100,7 +100,14 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
     );
 };
 
-const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = {}, setIsLarge}) => {
+const PayMethod = ({
+    bankCardModal,
+    isLarge,
+    large_pay_method = {},
+    pay_method = {},
+    setIsLarge,
+    large_pay_show_type,
+}) => {
     const jump = useJump();
     const {bank_icon, bank_name, bank_no, limit_desc} = pay_method;
     const {
@@ -115,11 +122,13 @@ const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = 
             <Text style={styles.payTitle}>{'付款方式'}</Text>
             <View style={styles.partBox}>
                 <View style={Style.flexRow}>
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(false)} style={styles.radioBox}>
-                        <View style={styles.radioWrap}>
-                            <View style={[styles.radioPoint, isLarge ? {backgroundColor: 'transparent'} : {}]} />
-                        </View>
-                    </TouchableOpacity>
+                    {large_pay_show_type == 2 && (
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(false)} style={styles.radioBox}>
+                            <View style={styles.radioWrap}>
+                                <View style={[styles.radioPoint, isLarge ? {backgroundColor: 'transparent'} : {}]} />
+                            </View>
+                        </TouchableOpacity>
+                    )}
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => bankCardModal.current.show()}
@@ -140,7 +149,7 @@ const PayMethod = ({bankCardModal, isLarge, large_pay_method = {}, pay_method = 
                         </View>
                     </TouchableOpacity>
                 </View>
-                {large_pay_method.pay_method ? (
+                {large_pay_method.pay_method && large_pay_show_type == 2 ? (
                     <View style={[styles.payMethodBox, styles.borderTop]}>
                         <View style={Style.flexRow}>
                             <TouchableOpacity
@@ -208,6 +217,7 @@ const Index = ({navigation, route}) => {
         button,
         buy_info,
         large_pay_method,
+        large_pay_show_type, //arge_pay_show_type  1为显示在内层列表 2为显示在外层
         large_pay_tip,
         pay_methods = [],
         rule_button,
@@ -386,6 +396,7 @@ const Index = ({navigation, route}) => {
                         <PayMethod
                             bankCardModal={bankCardModal}
                             isLarge={isLarge}
+                            large_pay_show_type={large_pay_show_type}
                             large_pay_method={large_pay_method ? {...large_pay_method, large_pay_tip} : undefined}
                             pay_method={pay_methods[bankSelectIndex]}
                             setIsLarge={setIsLarge}
@@ -393,7 +404,7 @@ const Index = ({navigation, route}) => {
                         <BottomDesc />
                     </ScrollView>
                     <BankCardModal
-                        data={pay_methods}
+                        data={[...pay_methods, large_pay_show_type == 1 && large_pay_method] || []}
                         onDone={(select, index) => {
                             setIndex(index);
                         }}

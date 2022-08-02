@@ -2,7 +2,7 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 17:08:01
+ * @LastEditTime: 2022-08-02 18:19:47
  * @Description: 银行卡选择
  */
 
@@ -16,6 +16,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../../common/commonStyle';
 import Mask from '../Mask';
 import {useNavigation} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+import {useJump} from '../hooks';
 
 const BankCardModal = React.forwardRef((props, ref) => {
     const {
@@ -33,6 +35,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         isTouchMaskToClose = true,
     } = props;
     const navigation = useNavigation();
+    const jump = useJump();
     const [visible, setVisible] = React.useState(false);
     const [select, setSelect] = React.useState(props.select); //默认选中的银行卡
     const show = () => {
@@ -65,7 +68,6 @@ const BankCardModal = React.forwardRef((props, ref) => {
         };
     });
     React.useEffect(() => {
-        // console.log(props.select);
         setSelect(props.select);
     }, [props.select, visible]);
     const renderItem = ({item, index}) => {
@@ -73,20 +75,51 @@ const BankCardModal = React.forwardRef((props, ref) => {
             item && (
                 <TouchableHighlight
                     underlayColor={type === 'hidden' ? '#fff' : '#f5f5f5'}
-                    style={[styles.bankCard]}
                     onPress={() => {
+                        //大额极速购
+                        if (item?.button) return;
                         confirmClick(index);
                     }}>
                     <>
-                        <Image style={styles.bank_icon} source={{uri: item.bank_icon}} />
-                        <View style={{flex: 1}}>
-                            <Text style={[{marginBottom: 8}, styles.text]}>
-                                {item?.bank_name}
-                                {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
-                            </Text>
-                            <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc || item?.desc}</Text>
+                        <View style={[styles.bankCard]}>
+                            <Image style={styles.bank_icon} source={{uri: item.bank_icon}} />
+                            <View style={{flex: 1}}>
+                                <Text style={[{marginBottom: 8}, styles.text]}>
+                                    {item?.bank_name}
+                                    {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
+                                </Text>
+                                <Text style={{color: '#80899B', fontSize: text(11)}}>
+                                    {item?.limit_desc || item?.desc}
+                                </Text>
+                            </View>
+                            {select == index ? <Entypo name={'check'} size={14} color={'#0051CC'} /> : null}
                         </View>
-                        {select == index ? <Entypo name={'check'} size={14} color={'#0051CC'} /> : null}
+                        {item?.button ? (
+                            <TouchableOpacity
+                                style={[styles.yel_btn]}
+                                onPress={() => {
+                                    jump(item?.button?.url);
+                                    hide();
+                                }}>
+                                <Text style={{color: Colors.yellow}}>
+                                    {item?.button?.text}
+                                    <Icon name={'right'} size={px(12)} />
+                                </Text>
+                            </TouchableOpacity>
+                        ) : null}
+                        {!!item?.large_pay_tip && (
+                            <View style={{backgroundColor: '#fff', paddingBottom: px(19)}}>
+                                <View style={styles.large_tip}>
+                                    <Text style={styles.large_text}>
+                                        <FastImage
+                                            source={require('../../assets/img/trade/fire.png')}
+                                            style={styles.large_icon}
+                                        />
+                                        {item?.large_pay_tip}
+                                    </Text>
+                                </View>
+                            </View>
+                        )}
                     </>
                 </TouchableHighlight>
             )
@@ -214,6 +247,33 @@ const styles = StyleSheet.create({
         height: text(32),
         marginRight: 14,
         resizeMode: 'contain',
+    },
+    large_tip: {
+        backgroundColor: '#FFF5E5',
+        padding: px(6),
+        borderRadius: px(4),
+        marginHorizontal: px(16),
+    },
+    large_icon: {
+        width: px(14),
+        height: px(14),
+        marginRight: px(3),
+    },
+    large_text: {
+        fontSize: px(12),
+        lineHeight: px(18),
+        color: Colors.orange,
+    },
+    yel_btn: {
+        paddingVertical: px(5),
+        paddingHorizontal: px(8),
+        borderColor: Colors.yellow,
+        borderWidth: 0.5,
+        borderRadius: px(4),
+        textAlign: 'center',
+        position: 'absolute',
+        right: 0,
+        top: px(16),
     },
 });
 

@@ -112,7 +112,16 @@ const Index = ({route, navigation}) => {
                     index: routes.length - 1,
                 });
             });
-            jump(res.result?.url, 'replace');
+            jump(
+                {
+                    path: res.result?.url?.path,
+                    params: {
+                        ...res.result?.url?.params,
+                        password,
+                    },
+                },
+                'replace'
+            );
         }
     };
     const render_bank = () => {

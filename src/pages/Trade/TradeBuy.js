@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-22 16:53:56
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-02 18:13:26
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -744,7 +744,7 @@ class TradeBuy extends Component {
     }
     render_bank() {
         const {data, bankSelect, type, autoChargeStatus} = this.state;
-        const {pay_methods, large_pay_method} = data;
+        const {pay_methods, large_pay_method, large_pay_show_type} = data;
         return (
             <View style={{marginBottom: px(12)}}>
                 {data?.adviser_fee ? (
@@ -756,7 +756,7 @@ class TradeBuy extends Component {
                     </View>
                 ) : null}
                 <View style={[Style.flexRow, styles.bankCard]}>
-                    {large_pay_method ? (
+                    {large_pay_method && large_pay_show_type == 2 ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
@@ -801,7 +801,7 @@ class TradeBuy extends Component {
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
-                                {bankSelect.pay_method == 'wallet' ? (
+                                {bankSelect.pay_method == 'wallet' && large_pay_show_type == 2 ? (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => {
@@ -829,7 +829,8 @@ class TradeBuy extends Component {
                         <Html style={styles.autoChargeHintText} html={data.auto_charge?.conflict_tip} />
                     </View>
                 )}
-                {large_pay_method ? (
+                {/* large_pay_show_type  1为显示在内层列表 2为显示在外层 */}
+                {large_pay_show_type == 2 && large_pay_method ? (
                     <View
                         style={[
                             styles.bankCard,
@@ -880,7 +881,7 @@ class TradeBuy extends Component {
                         ) : null}
                     </View>
                 ) : null}
-                {this.state.data.large_pay_tip ? (
+                {this.state.data.large_pay_tip && large_pay_show_type == 2 ? (
                     <View style={{backgroundColor: '#fff', paddingBottom: px(19)}}>
                         <View style={styles.large_tip}>
                             <Text style={styles.large_text}>
@@ -968,7 +969,7 @@ class TradeBuy extends Component {
     //购买
     render_buy() {
         const {data, type, planData, errTip, amount, mfbTip} = this.state;
-        const {buy_info, sub_title, pay_methods} = data;
+        const {buy_info, sub_title, pay_methods, large_pay_method, large_pay_show_type} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
@@ -1152,7 +1153,7 @@ class TradeBuy extends Component {
                     />
                 </BottomModal>
                 <BankCardModal
-                    data={pay_methods || []}
+                    data={[...pay_methods, large_pay_show_type == 1 && large_pay_method] || []}
                     type={data.add_payment_disable ? 'hidden' : ''}
                     select={this.state.bankSelectIndex}
                     ref={(ref) => {
