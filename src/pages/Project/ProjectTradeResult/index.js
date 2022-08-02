@@ -11,9 +11,11 @@ import {FixedButton} from '~/components/Button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RenderHtml from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
+import {useJump} from '~/components/hooks';
 const Index = ({route, navigation}) => {
     const [data, setData] = useState({});
     const [status, setStatus] = useState(false);
+    const jump = useJump();
     const getInfo = async () => {
         let res = await getData(route?.params);
         setStatus(res.result?.wallet?.wallet_auto_charge == 1);
@@ -117,7 +119,15 @@ const Index = ({route, navigation}) => {
                                     trackColor={{false: '#CCD0DB', true: Colors.brandColor}}
                                 />
                             </View>
-                            <Text style={styles.wallet_auto_desc}>{data?.wallet?.wallet_auto_desc}</Text>
+
+                            <Text style={styles.wallet_auto_desc}>
+                                {data?.wallet?.wallet_auto_desc}
+                                <Text
+                                    style={{color: Colors.btnColor}}
+                                    onPress={() => jump(data?.wallet?.wallet_link?.url)}>
+                                    {data?.wallet?.wallet_link?.text}
+                                </Text>
+                            </Text>
                         </View>
                         <Text
                             style={{
