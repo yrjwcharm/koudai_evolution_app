@@ -8,12 +8,10 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {getData} from './service';
 import {FixedButton} from '~/components/Button';
-import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RenderHtml from '~/components/RenderHtml';
 const Index = ({route, navigation}) => {
     const [data, setData] = useState({});
-    const jump = useJump();
     const getInfo = async () => {
         let res = await getData(route?.params);
         setData(res.result);
@@ -93,7 +91,7 @@ const Index = ({route, navigation}) => {
                     </>
                 ) : null}
             </ScrollView>
-            <FixedButton title={data?.btn?.text} onPress={() => jump(data?.btn?.url)} />
+            <FixedButton title={data?.btn?.text} onPress={() => navigation.pop(3)} />
         </View>
     );
 };

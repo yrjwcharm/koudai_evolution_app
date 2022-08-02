@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:29:30
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 12:06:05
+ * @LastEditTime: 2022-08-02 15:14:28
  * @Description:埋点
  *
  */
@@ -19,8 +19,8 @@ const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
     }
     _params.event = event !== undefined ? event : 'click';
     setTimeout(() => {
-        _params.pageid = pid || global.previousRoutePageId || global.currentRoutePageId || ''; //点击事件的pid是当前页面的 注意判断按钮是否是跳转，如果不跳转取当前页面的pid
-        _params.ref = ref !== undefined ? ref : ''; //点击事件不传ref
+        _params.pageid = pid || global.currentRoutePageId || ''; //点击事件的pid是当前页面的 注意判断按钮是否是跳转，如果不跳转取当前页面的pid
+        _params.ref = ref !== undefined ? ref : global.previousRoutePageId;
     });
     _params.staytime = staytime !== undefined ? staytime : ''; //页面停留时间
     _params.ctrl = ctrl !== undefined ? ctrl : ''; //当前页面控件标识
@@ -35,7 +35,7 @@ const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
         //     return;
         // }
         http.get(sUrl, _params);
-        global.previousRoutePageId = '';
+        // global.previousRoutePageId = '';
     }, 200);
 };
 global.LogTool = LogTool;
