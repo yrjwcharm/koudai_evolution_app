@@ -30,7 +30,7 @@ const WalletAutoRechargeDetail = ({navigation, route}) => {
     }, [navigation, route]);
 
     const getData = () => {
-        http.get('/trade/invest_plan/auto_charge_detail/20210101').then((res) => {
+        http.get('/trade/invest_plan/auto_charge_detail/20210101', {invest_id: route.params?.invest_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             } else {
