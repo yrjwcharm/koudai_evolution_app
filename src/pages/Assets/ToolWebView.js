@@ -147,7 +147,7 @@ const ToolWebView = ({route}) => {
                 {listData && (
                     <View style={styles.listDataWrap}>
                         <Text style={styles.title}>
-                            使用了{['牛人', '牛人', '估值', '概率'][res.tool_id - 1]}信号的计划
+                            使用了{['牛人信号', '越跌越买', '估值信号', '概率信号'][res.tool_id - 1]}的计划
                         </Text>
                         {listData.map((item, idx) => (
                             <View style={styles.listDataItem} key={idx}>
