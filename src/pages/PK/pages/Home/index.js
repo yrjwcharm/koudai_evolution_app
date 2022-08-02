@@ -249,6 +249,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                                         }
                                         key={item.title + index}
                                         HeaderRight={index === 0 ? HeaderRight : null}
+                                        tabsStyle={{flex: 1}}
                                         onLayout={
                                             index === 0
                                                 ? (layout) => {

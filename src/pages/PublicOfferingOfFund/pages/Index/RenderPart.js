@@ -78,7 +78,7 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRig
                         }
                     }}
                     prerenderingSiblingsNumber={Infinity}
-                    renderTabBar={() => <CapsuleTabbar boxStyle={[styles.tabsContainer, tabsStyle]} />}
+                    renderTabBar={() => <CapsuleTabbar boxStyle={[styles.tabsContainer, tabsStyle]} tab_list={tabs} />}
                     style={{flex: 1}}>
                     {tabs.map((tab) => {
                         const {items: tabItems = [], plateid, rank_type, rec_json, title: tabTitle} = tab;
