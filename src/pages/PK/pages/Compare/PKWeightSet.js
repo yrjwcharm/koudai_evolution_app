@@ -61,7 +61,7 @@ const PKWeightSet = ({total = 100, tickNum = 5, weightsState, setWeightsState, r
                     cancel();
                     setWeightsState(sliderRate);
                     setTimeout(() => {
-                        refresh();
+                        refresh(sliderRate);
                     }, 100);
                 }
             })

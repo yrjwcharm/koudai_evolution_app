@@ -45,10 +45,10 @@ const Compare = () => {
         _pkProducts.current = pkProducts;
     }, [pkProducts]);
 
-    const getData = useCallback(() => {
+    const getData = useCallback((params = {}) => {
         // 更新data
         setLoading(true);
-        getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry})
+        getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry, ...params})
             .then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
