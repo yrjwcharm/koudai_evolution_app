@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {BankCardModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
 import {useSelector} from 'react-redux';
-import FastImage from 'react-native-fast-image';
+import {CommonActions} from '@react-navigation/native';
 import {PasswordModal} from '~/components/Password';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
@@ -101,7 +101,18 @@ const Index = ({route, navigation}) => {
         if (res.code !== '000000') {
             Toast.show(res.message);
         } else {
-            jump(res.result?.url);
+            navigation.dispatch((state) => {
+                // Remove the home route from the stack
+                const routes = state.routes.filter((r) => {
+                    return r.name !== 'ProjectSetTradeModel';
+                });
+                return CommonActions.reset({
+                    ...state,
+                    routes,
+                    index: routes.length - 1,
+                });
+            });
+            jump(res.result?.url, 'replace');
         }
     };
     const render_bank = () => {

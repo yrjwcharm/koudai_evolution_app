@@ -91,7 +91,7 @@ const Index = ({route, navigation}) => {
                     </>
                 ) : null}
             </ScrollView>
-            <FixedButton title={data?.btn?.text} onPress={() => navigation.pop(3)} />
+            <FixedButton title={data?.btn?.text} onPress={() => navigation.pop(1)} />
         </View>
     );
 };
