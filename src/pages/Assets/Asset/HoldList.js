@@ -3,7 +3,7 @@
  * @Description:持仓卡片
  */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -17,8 +17,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
 import {closeRecommend} from './service';
 const yellow = '#FF7D41';
-const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
+const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
     const [layout, setLayout] = useState({});
+    const jump = useJump();
     const onLayout = (key, e) => {
         e.persist();
         setLayout((prev) => {
@@ -77,30 +78,48 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                             ) : null}
                             <View style={styles.card_con}>
                                 {/* header */}
-                                {account?.items?.length ? (
-                                    <StickyHeader
-                                        stickyHeaderY={_top} // 把头部高度传入
-                                        itemHeight={
-                                            layout[key]?.height - px(67) - (account?.recommend_card ? px(213) : 0)
-                                        } //px(67)是大标题和table_header的高度 //@TODO 崩溃
-                                        stickyScrollY={scrollY}>
-                                        <View style={[Style.flexBetween, styles.table_header]}>
-                                            <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                            <Text style={styles.light_text}>日收益</Text>
-                                            <Text style={styles.light_text}>累计收益</Text>
-                                        </View>
-                                        <View style={styles.line} />
-                                    </StickyHeader>
-                                ) : (
-                                    <>
-                                        <View style={[Style.flexBetween, styles.table_header]}>
-                                            <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                            <Text style={styles.light_text}>日收益</Text>
-                                            <Text style={styles.light_text}>累计收益</Text>
-                                        </View>
-                                        <View style={styles.line} />
-                                    </>
-                                )}
+
+                                {
+                                    // 保险
+                                    account?.id == 11 ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={{padding: px(16), ...Style.flexRow}}
+                                            onPress={() => jump(account.url)}>
+                                            <View style={{flex: 1}}>
+                                                <Text style={[styles.light_text, {marginBottom: px(5)}]}>我的保额</Text>
+                                                <Text style={styles.amount_text}>{account?.amount}</Text>
+                                            </View>
+                                            <View style={{flex: 1}}>
+                                                <Text style={[styles.light_text, {marginBottom: px(5)}]}>我的保额</Text>
+                                                <Text style={styles.amount_text}>{account?.count}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ) : account?.items?.length ? (
+                                        <StickyHeader
+                                            stickyHeaderY={_top} // 把头部高度传入
+                                            itemHeight={
+                                                layout[key]?.height - px(67) - (account?.recommend_card ? px(213) : 0)
+                                            } //px(67)是大标题和table_header的高度 //@TODO 崩溃
+                                            stickyScrollY={scrollY}>
+                                            <View style={[Style.flexBetween, styles.table_header]}>
+                                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>累计收益</Text>
+                                            </View>
+                                            <View style={styles.line} />
+                                        </StickyHeader>
+                                    ) : (
+                                        <>
+                                            <View style={[Style.flexBetween, styles.table_header]}>
+                                                <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
+                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>累计收益</Text>
+                                            </View>
+                                            <View style={styles.line} />
+                                        </>
+                                    )
+                                }
 
                                 {/* 升级的卡片 */}
                                 {account?.upgrade_list?.length
@@ -116,7 +135,13 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                                   // 卡片是否只有一个或者是最后一个
                                                   const flag = index + 1 == arr.length || index == arr.length - 1;
                                                   return (
-                                                      <CardItem upgrade={true} data={product} flag={flag} key={index} />
+                                                      <CardItem
+                                                          showEye={showEye}
+                                                          upgrade={true}
+                                                          data={product}
+                                                          flag={flag}
+                                                          key={index}
+                                                      />
                                                   );
                                               })}
                                               {/* 升级按钮 */}
@@ -129,10 +154,10 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload}) => {
                                     account?.items?.map((product = {}, index, arr) => {
                                         // 卡片是否只有一个或者是最后一个
                                         const flag = index + 1 == arr.length || index == arr.length - 1;
-                                        return <CardItem data={product} flag={flag} key={index} />;
+                                        return <CardItem showEye={showEye} data={product} flag={flag} key={index} />;
                                     })
                                 ) : account.title == '魔方宝' ? (
-                                    <CardItem data={account} flag={true} />
+                                    <CardItem data={account} showEye={showEye} flag={true} />
                                 ) : (
                                     !!account?.empty_button && (
                                         <NoAccountRender
@@ -165,7 +190,7 @@ const ListTitle = ({title, desc}) => {
         </View>
     );
 };
-const CardItem = ({data = {}, flag, upgrade}) => {
+const CardItem = ({data = {}, flag, upgrade, showEye}) => {
     const jump = useJump();
     const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
     const getAmountColor = (value) => {
@@ -188,11 +213,26 @@ const CardItem = ({data = {}, flag, upgrade}) => {
                 )}
                 <View style={[Style.flexBetween]}>
                     <Text style={[styles.amount_text, {width: px(120)}]}>{amount}</Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit)}]}>
-                        {profit.replace(/,/g, '') > 0 ? '+' + profit : profit}
+                    <Text
+                        style={[
+                            styles.amount_text,
+                            {minWidth: px(30), color: showEye == 'true' ? getAmountColor(profit) : Colors.defaultColor},
+                        ]}>
+                        {showEye == 'true' ? (profit.replace(/,/g, '') > 0 ? '+' + profit : profit) : '****'}
                     </Text>
-                    <Text style={[styles.amount_text, {minWidth: px(30), color: getAmountColor(profit_acc)}]}>
-                        {profit_acc.replace(/,/g, '') > 0 ? '+' + profit_acc : profit_acc}
+                    <Text
+                        style={[
+                            styles.amount_text,
+                            {
+                                minWidth: px(30),
+                                color: showEye == 'true' ? getAmountColor(profit_acc) : Colors.defaultColor,
+                            },
+                        ]}>
+                        {showEye == 'true'
+                            ? profit_acc.replace(/,/g, '') > 0
+                                ? '+' + profit_acc
+                                : profit_acc
+                            : '****'}
                     </Text>
                 </View>
                 {!!alert && <RenderAlert alert={alert} />}

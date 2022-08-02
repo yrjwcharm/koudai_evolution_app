@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 19:25:59
+ * @LastEditTime: 2022-08-01 16:27:36
  * @Description: 基金购买
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,6 +32,7 @@ import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
 import {fundBuyDo, getBuyFee, getBuyInfo} from './services';
+import http from '~/services';
 
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
     const jump = useJump();
@@ -308,14 +309,45 @@ const Index = ({navigation, route}) => {
         }, [userInfo])
     );
 
+    const showRiskPop = (pop) => {
+        const {cancel, confirm, content, title} = pop;
+        Modal.show({
+            backButtonClose: false,
+            cancelCallBack: () => {
+                const {act, url} = cancel;
+                if (act === 'jump') {
+                    jump(url);
+                } else if (act === 'back') {
+                    navigation.goBack();
+                }
+            },
+            cancelText: cancel.text,
+            confirm: cancel?.text ? true : false,
+            confirmCallBack: () => {
+                const {act, url} = confirm;
+                if (act === 'jump') {
+                    jump(url);
+                } else if (act === 'back') {
+                    navigation.goBack();
+                } else if (act === 'report') {
+                    http.post(url, {fund_code: code});
+                }
+            },
+            confirmText: confirm.text,
+            content,
+            isTouchMaskToClose: false,
+            title,
+        });
+    };
+
     useFocusEffect(
         useCallback(() => {
             global.LogTool({ctrl: code, event: 'buy_detail_view'});
             getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
                 if (res.code === '000000') {
-                    navigation.setOptions({
-                        title: res.result.title || '买入',
-                    });
+                    const {risk_pop, title = '买入'} = res.result;
+                    risk_pop && showRiskPop(risk_pop);
+                    navigation.setOptions({title});
                     setData(res.result);
                 }
             });

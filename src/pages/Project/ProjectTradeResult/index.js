@@ -36,51 +36,62 @@ const Index = ({route, navigation}) => {
                     <Text style={styles.key}>{data?.name_label}</Text>
                     <Text style={styles.value}>{data?.name}</Text>
                 </View>
-                <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                    <Text style={styles.key}>买入模式</Text>
-                    <Text style={styles.value}>{data?.buy_model?.buy_model_title}</Text>
-                </View>
-                <View style={styles.list_con}>
-                    <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                        {data?.buy_model?.table_header?.map((item, index) => (
-                            <Text key={index} style={styles.key}>
-                                {item}
-                            </Text>
-                        ))}
-                    </View>
-                    {data?.buy_model?.list?.map((item, index) => (
-                        <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
-                            <Text style={styles.value}>{item?.name}</Text>
-                            <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
-                            <RenderHtml html={item?.date} style={{fontSize: px(13)}} />
+                {data?.buy_model?.map((_item, _index) => (
+                    <React.Fragment key={_index}>
+                        <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                            <Text style={styles.key}>{_item.label}</Text>
+                            <Text style={styles.value}>{_item.title}</Text>
                         </View>
-                    ))}
-                </View>
+                        <View style={styles.list_con}>
+                            <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                                {_item?.table_header?.map((item, index) => (
+                                    <Text key={index} style={styles.key}>
+                                        {item}
+                                    </Text>
+                                ))}
+                            </View>
+                            {_item?.list?.map((item, index) => (
+                                <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
+                                    <Text style={styles.value}>{item?.name}</Text>
+                                    <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
+                                    <RenderHtml html={item?.date} style={{fontSize: px(13)}} />
+                                </View>
+                            ))}
+                        </View>
+                    </React.Fragment>
+                ))}
+
                 {data?.tip ? <Text style={styles.tip}>{data?.tip}</Text> : null}
-                <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                    <Text style={styles.key}>卖出模式</Text>
-                    <Text style={styles.value}>{data?.sale_model?.sale_model_title}</Text>
-                </View>
-                <View style={styles.list_con}>
-                    <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                        {data?.sale_model?.table_header?.map((item, index) => (
-                            <Text key={index} style={styles.key}>
-                                {item}
-                            </Text>
-                        ))}
-                    </View>
-                    {data?.sale_model?.list?.map((item, index) => (
-                        <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
-                            <Text style={styles.value}>{item?.name}</Text>
-                            {!!item?.target_yield && (
-                                <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
-                                    {item?.target_yield * 100 + '%'}
-                                </Text>
-                            )}
-                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>{item?.select}</Text>
+                {data?.sale_model?.table_header ? (
+                    <>
+                        <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                            <Text style={styles.key}>卖出模式</Text>
+                            <Text style={styles.value}>{data?.sale_model?.sale_model_title}</Text>
                         </View>
-                    ))}
-                </View>
+                        <View style={styles.list_con}>
+                            <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                                {data?.sale_model?.table_header?.map((item, index) => (
+                                    <Text key={index} style={styles.key}>
+                                        {item}
+                                    </Text>
+                                ))}
+                            </View>
+                            {data?.sale_model?.list?.map((item, index) => (
+                                <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
+                                    <Text style={styles.value}>{item?.name}</Text>
+                                    {!!item?.target_yield && (
+                                        <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
+                                            {item?.target_yield * 100 + '%'}
+                                        </Text>
+                                    )}
+                                    <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
+                                        {item?.select}
+                                    </Text>
+                                </View>
+                            ))}
+                        </View>
+                    </>
+                ) : null}
             </ScrollView>
             <FixedButton title={data?.btn?.text} onPress={() => jump(data?.btn?.url)} />
         </View>

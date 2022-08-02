@@ -5,7 +5,7 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
-import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {Colors, Font, Style} from '~/common/commonStyle';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '~/components/hooks';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';

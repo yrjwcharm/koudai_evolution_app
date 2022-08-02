@@ -2,8 +2,8 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, Animated, ActivityIndicator} from 'react-native';
-import React, {useCallback, useState, useRef} from 'react';
+import {View, RefreshControl, Animated, ActivityIndicator, TouchableOpacity} from 'react-native';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
@@ -20,7 +20,10 @@ import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
 import YellowNotice from './YellowNotice';
 import AdInfo from './AdInfo';
-const Index = ({navigation}) => {
+import withNetState from '~/components/withNetState';
+import Feather from 'react-native-vector-icons/Feather';
+import Storage from '~/utils/storage';
+const Index = ({navigation, _ref}) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
     const [notice, setNotice] = useState(null);
@@ -29,6 +32,8 @@ const Index = ({navigation}) => {
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [headHeight, setHeaderHeight] = useState(0);
     const [newMes, setNewmessage] = useState(0);
+    const [showEye, setShowEye] = useState('true');
+    const scrollRef = useRef();
     const showGesture = useShowGesture();
     const getData = async () => {
         let res = await getInfo();
@@ -48,6 +53,14 @@ const Index = ({navigation}) => {
         let res = await getReadMes();
         setNewmessage(res.result.all);
     };
+    // 显示|隐藏金额信息
+    const toggleEye = () => {
+        setShowEye((show) => {
+            global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
+            Storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
+            return show === 'true' ? 'false' : 'true';
+        });
+    };
     const init = (refresh) => {
         refresh && setRefreshing(true);
         getData();
@@ -61,11 +74,29 @@ const Index = ({navigation}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [is_login])
     );
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            if (is_login) {
+                scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                init(true);
+                global.LogTool('tabDoubleClick', 'Home');
+            }
+        });
+        return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [is_login]);
+    useEffect(() => {
+        Storage.get('myAssetsEye').then((res) => {
+            setShowEye(res ? res : 'true');
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
             {!is_login && <LoginMask />}
             <Animated.ScrollView
+                ref={scrollRef}
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 scrollEventThrottle={1}
                 onScroll={
@@ -89,7 +120,15 @@ const Index = ({navigation}) => {
                     {/* 系统通知 */}
                     {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
                     {/* 资产卡片 */}
-                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} />
+                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} showEye={showEye}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
+                            <Feather
+                                name={showEye === 'true' ? 'eye' : 'eye-off'}
+                                size={px(16)}
+                                color={'rgba(255, 255, 255, 0.8)'}
+                            />
+                        </TouchableOpacity>
+                    </AssetHeaderCard>
                     {/* 理性等级和投顾 */}
                     <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                     {/* 运营位 */}
@@ -101,6 +140,7 @@ const Index = ({navigation}) => {
                         <HoldList
                             products={holding?.products}
                             scrollY={scrollY}
+                            showEye={showEye}
                             stickyHeaderY={headHeight}
                             reload={getHoldingData}
                         />
@@ -120,4 +160,4 @@ const Index = ({navigation}) => {
         <GesturePassword option={'verify'} />
     );
 };
-export default Index;
+export default withNetState(Index);
