@@ -16,7 +16,6 @@ import {WebView} from 'react-native-webview';
 import * as Animatable from 'react-native-animatable';
 import RenderHtml from '~/components/RenderHtml';
 import {Button, SmButton} from '~/components/Button';
-import PageLoading from '~/pages/Portfolio/components/PageLoading';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -81,9 +80,6 @@ const RationalCard = ({rational_info, im_info}) => {
                                             bounces={false}
                                             onLoadEnd={() => setLoadingChart(false)}
                                             onLoadStart={() => setLoadingChart(true)}
-                                            renderLoading={
-                                                Platform.OS === 'android' ? () => <PageLoading /> : undefined
-                                            }
                                             scalesPageToFit={false}
                                             scrollEnabled={false}
                                             source={{
@@ -241,7 +237,6 @@ const styles = StyleSheet.create({
         borderRadius: px(8),
     },
     rationalBox: {
-        marginTop: px(4),
         marginBottom: px(16),
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
