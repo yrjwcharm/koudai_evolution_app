@@ -74,7 +74,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                     });
 
                     setTimeout(() => {
-                        if (isFocusedRef.current && type === 1) {
+                        if (userInfo.toJS().is_login && isFocusedRef.current && type === 1) {
                             start?.();
                         }
                     }, 0);
