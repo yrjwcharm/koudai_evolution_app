@@ -1,22 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-01-29 17:11:34
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-01 15:34:38
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    FlatList,
-    TouchableOpacity,
-    ActivityIndicator,
-    DeviceEventEmitter,
-    Platform,
-} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import http from '../../services/index.js';
@@ -31,7 +19,7 @@ import {debounce} from 'lodash';
 const trade_type = [0, -1, -35, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
-    const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active} = route.params || {};
+    const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active = 0} = route.params || {};
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [data, setData] = useState([]);
@@ -76,7 +64,7 @@ const TradeRecord = ({route, navigation}) => {
         [page, tabActive]
     );
     useEffect(() => {
-        Platform.OS === 'android' && scrollTab.current?.goToPage(active);
+        active !== 0 && scrollTab.current?.goToPage(active);
     }, [active]);
     useEffect(() => {
         getData();
@@ -280,7 +268,7 @@ const TradeRecord = ({route, navigation}) => {
                     onChangeTab={changeTab}
                     renderTabBar={() => <TabBar />}
                     ref={scrollTab}
-                    initialPage={tabActive}>
+                    initialPage={0}>
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
@@ -295,7 +283,8 @@ const TradeRecord = ({route, navigation}) => {
                 <ScrollableTabView
                     onChangeTab={changeTab}
                     renderTabBar={() => <TabBar />}
-                    initialPage={tabActive}
+                    initialPage={0}
+                    ref={scrollTab}
                     onScroll={(a) => {
                         // console.log(a);
                     }}>
