@@ -71,7 +71,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                     listLayout.current.status = true;
                     setData(res.result);
                     res.result.sub_list.forEach((item) => {
-                        handlerListLog(item);
+                        handlerListLog(item, res.result);
                     });
 
                     if (userInfo.toJS().is_login && res.result?.is_guide_page === 1) {
@@ -134,7 +134,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
         }
     };
 
-    const handlerListLog = (item) => {
+    const handlerListLog = (item, data) => {
         if (item.items)
             handlerItemsLog(
                 item.items.reduce((memo, cur) => memo.concat(cur), []),
