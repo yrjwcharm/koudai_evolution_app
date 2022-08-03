@@ -25,6 +25,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         desc: adjustDesc,
         date: adjustDate,
         id: consoleId,
+        notice: consoleNotice,
         ratio_info,
         signal_icon,
         signal_items,
@@ -69,6 +70,21 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                 return {marginTop: px(12)};
             case 'upgrade':
                 return {marginTop: px(14)};
+            default:
+                return {};
+        }
+    };
+    const noticeBoxSty = (_type) => {
+        switch (_type) {
+            case 'adjust':
+            case 'signal':
+                return {
+                    marginTop: px(8),
+                };
+            case 'default':
+                return {marginTop: px(12)};
+            case 'upgrade':
+                return {marginTop: px(12), marginBottom: -px(4)};
             default:
                 return {};
         }
@@ -336,6 +352,11 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                 {button.text}
                             </Text>
                         </TouchableOpacity>
+                    </View>
+                ) : null}
+                {consoleNotice ? (
+                    <View style={noticeBoxSty(type)}>
+                        <HTML html={consoleNotice} style={{...styles.smallText, color: Colors.lightGrayColor}} />
                     </View>
                 ) : null}
             </ContentBox>
