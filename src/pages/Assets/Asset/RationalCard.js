@@ -162,11 +162,17 @@ const RationalCard = ({rational_info, im_info}) => {
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
                             <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
-                            {!rational_info?.button && <AntDesign name="right" />}
+                            {!rational_info?.button && (
+                                <View style={styles.upgrade_sm_btn}>
+                                    <Text style={{fontSize: px(11), color: '#fff'}}>升级</Text>
+                                    <AntDesign name="right" color="#fff" size={px(8)} />
+                                </View>
+                            )}
                         </View>
                         {!!rational_info?.desc && (
                             <RenderHtml
                                 style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightGrayColor}}
+                                numberOfLines={1}
                                 html={rational_info?.desc}
                             />
                         )}
@@ -258,6 +264,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         right: 0,
+    },
+    upgrade_sm_btn: {
+        backgroundColor: Colors.btnColor,
+        ...Style.flexRow,
+        borderRadius: px(16),
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
+        marginTop: px(-2),
     },
     levelIcon: {
         marginRight: px(5),
