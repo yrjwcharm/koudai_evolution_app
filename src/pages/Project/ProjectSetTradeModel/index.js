@@ -63,7 +63,6 @@ const ProjectSetTrade = ({route, navigation}) => {
             (tmp[index || 0] || {}).show = value;
             return tmp;
         });
-
         setToolStatus((prev) => {
             let tmp = {...prev};
             tmp[id] = value;

@@ -58,7 +58,9 @@ const Index = ({route, navigation}) => {
                             <View style={styles.list_con}>
                                 <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
                                     {_item?.table_header?.map((item, index) => (
-                                        <Text key={index} style={styles.key}>
+                                        <Text
+                                            key={index}
+                                            style={[styles.key, index == 2 && {width: px(80), textAlign: 'right'}]}>
                                             {item}
                                         </Text>
                                     ))}
