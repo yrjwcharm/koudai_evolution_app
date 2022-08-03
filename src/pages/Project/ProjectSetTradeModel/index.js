@@ -60,7 +60,7 @@ const ProjectSetTrade = ({route, navigation}) => {
         setAgreement((prev) => {
             let tmp = [...prev];
             let index = tmp.findIndex((item) => id == item.tool_id);
-            tmp[index || 0].show = value;
+            (tmp[index || 0] || {}).show = value;
             return tmp;
         });
 
