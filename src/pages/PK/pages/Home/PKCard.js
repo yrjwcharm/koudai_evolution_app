@@ -43,7 +43,7 @@ const PKCard = ({data = {}, copilot}) => {
             setTimeout(() => {
                 setCurObj([data?.list?.[index]?.[0], data?.list?.[index]?.[1]]);
             }, 0);
-            global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json});
+            global.LogTool({event: 'pk_slide', plateid: 'pk_home', rec_json: data.rec_json}, index);
         },
         [data]
     );

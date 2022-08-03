@@ -159,9 +159,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         if (newVal > len - 1) newVal = 0;
 
                         // 埋点
-                        let cur = data.sub_list[0];
-                        let code = cur.items[newVal]?.map?.((item) => item.code)?.join?.();
-                        global.LogTool({event: 'rec_show', plateid: data.plateid, rec_json: data.rec_json}, null, code);
+                        global.LogTool({event: 'chenge_click', plateid: data.plateid, rec_json: data.rec_json});
 
                         return newVal;
                     });
