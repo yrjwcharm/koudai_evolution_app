@@ -89,7 +89,6 @@ const Index = ({navigation, _ref}) => {
         Storage.get('myAssetsEye').then((res) => {
             setShowEye(res ? res : 'true');
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return !showGesture ? (
         <>

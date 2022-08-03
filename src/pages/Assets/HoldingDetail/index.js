@@ -11,6 +11,7 @@ import Picker from 'react-native-picker';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import leftQuota2 from '~/assets/personal/leftQuota2.png';
 import tip from '~/assets/img/tip.png';
@@ -33,13 +34,35 @@ import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
+import Storage from '~/utils/storage';
 import {getChartData, getPageData, setDividend} from './services';
 import CenterControl from './CenterControl';
 
 /** @name 顶部基金信息 */
 const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
     const jump = useJump();
-    const {amount, desc, name, profit, profit_acc, tags = [], top_button} = top_info;
+    const {amount, desc, name, profit, profit_acc, profit_date, tags = [], top_button} = top_info;
+    const [showEye, setShowEye] = useState('true');
+
+    /** @name 显示|隐藏金额信息 */
+    const toggleEye = useCallback(() => {
+        setShowEye((show) => {
+            global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
+            Storage.save('portfolioAssets', show === 'true' ? 'false' : 'true');
+            return show === 'true' ? 'false' : 'true';
+        });
+    }, []);
+
+    /** @name 处理隐藏金额信息 */
+    const hideAmount = (value) => {
+        return showEye === 'true' ? value : '****';
+    };
+
+    useEffect(() => {
+        Storage.get('portfolioAssets').then((res) => {
+            setShowEye(res ? res : 'true');
+        });
+    }, []);
 
     return (
         <View style={styles.topPart}>
@@ -68,17 +91,37 @@ const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
                 )}
                 <View style={[Style.flexBetween, {marginTop: px(20)}]}>
                     <View>
-                        <Text style={[styles.desc, {opacity: 0.6}]}>{amount.label}</Text>
-                        <Text style={[styles.bigNumText, {marginTop: px(6)}]}>{amount.value}</Text>
+                        <View style={Style.flexRow}>
+                            <Text style={[styles.desc, {opacity: 0.6}]}>
+                                {amount.label}
+                                {profit_date}
+                            </Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={toggleEye} style={{marginLeft: px(8)}}>
+                                <Ionicons
+                                    color={Colors.defaultColor}
+                                    name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                    size={px(14)}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={[styles.bigNumText, {marginTop: px(6)}]}>{hideAmount(amount.value)}</Text>
                     </View>
                     <View>
                         <View style={Style.flexRow}>
                             <Text style={[styles.desc, {opacity: 0.6}]}>{profit.label}</Text>
-                            <NumText style={styles.profitText} text={profit.value} />
+                            <NumText
+                                style={styles.profitText}
+                                text={hideAmount(profit.value)}
+                                type={showEye === 'true' ? 1 : 2}
+                            />
                         </View>
                         <View style={[Style.flexRow, {marginTop: px(12)}]}>
                             <Text style={[styles.desc, {opacity: 0.6}]}>{profit_acc.label}</Text>
-                            <NumText style={styles.profitText} text={profit_acc.value} />
+                            <NumText
+                                style={styles.profitText}
+                                text={hideAmount(profit_acc.value)}
+                                type={showEye === 'true' ? 1 : 2}
+                            />
                         </View>
                     </View>
                 </View>
