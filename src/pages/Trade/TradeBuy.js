@@ -948,6 +948,7 @@ class TradeBuy extends Component {
                             this.jumpPage(data?.auto_charge?.button?.url?.path, {
                                 title: data?.auto_charge?.button?.url?.params.title,
                                 img: data?.auto_charge?.detail_img,
+                                poid: data?.auto_charge?.button?.url?.params?.poid,
                             });
                         }}>
                         <Text style={{fontSize: px(12), fontWeight: '400', color: '#0051cc', lineHeight: px(17)}}>

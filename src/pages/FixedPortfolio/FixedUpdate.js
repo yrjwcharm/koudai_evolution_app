@@ -303,7 +303,7 @@ export default function FixedUpdate({navigation, route}) {
                                 path: auto_charge?.button?.url?.path,
                                 params: {
                                     title: auto_charge?.button?.url?.params.title,
-                                    invest_id: auto_charge?.button?.url?.params?.invest_id,
+                                    poid: auto_charge?.button?.url?.params?.poid,
                                     img: auto_charge?.detail_img,
                                 },
                             });
