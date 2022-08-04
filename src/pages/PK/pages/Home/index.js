@@ -124,15 +124,15 @@ const PKHome = ({navigation, start, copilotEvents}) => {
         }
     };
 
-    const handlerListLog = (item, data) => {
+    const handlerListLog = (item, _data) => {
         if (item.items)
             handlerItemsLog(
                 item.items.reduce((memo, cur) => memo.concat(cur), []),
-                data
+                _data
             );
         if (item.tab_list) {
             item.tab_list.forEach((itm) => {
-                handlerItemsLog(itm.items, data);
+                handlerItemsLog(itm.items, _data);
             });
         }
     };
@@ -230,11 +230,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                             {data?.sub_list?.map?.((item, index) => {
                                 return (
                                     <RenderPart
-                                        data={
-                                            index === 0
-                                                ? {title: item.title, items: item.items?.[recommendIndex]}
-                                                : item
-                                        }
+                                        data={index === 0 ? {...item, items: item.items?.[recommendIndex]} : item}
                                         key={item.title + index}
                                         HeaderRight={index === 0 ? HeaderRight : null}
                                         tabsStyle={{flex: 1}}
