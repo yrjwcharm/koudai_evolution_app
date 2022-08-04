@@ -91,7 +91,12 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRig
                                                 ...item,
                                                 LogTool: () => {
                                                     if (plateid && rec_json) {
-                                                        global.LogTool({event: 'rec_click', plateid, rec_json});
+                                                        global.LogTool({
+                                                            event: 'rec_click',
+                                                            oid: item.code,
+                                                            plateid,
+                                                            rec_json,
+                                                        });
                                                     } else {
                                                         global.LogTool({
                                                             event: 'top_click',
@@ -114,7 +119,26 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRig
                 </ScrollableTabView>
             ) : (
                 items.map((item, index) => (
-                    <ProductCards data={item} key={index} style={index === 0 ? {marginTop: px(8)} : {}} />
+                    <ProductCards
+                        data={{
+                            ...item,
+                            LogTool: () => {
+                                const {plateid, rec_json} = data;
+                                console.log(data);
+                                if (plateid && rec_json) {
+                                    global.LogTool({event: 'rec_click', oid: item.code, plateid, rec_json});
+                                } else {
+                                    global.LogTool({
+                                        event: 'top_click',
+                                        ctrl: title,
+                                        oid: item.code,
+                                    });
+                                }
+                            },
+                        }}
+                        key={index}
+                        style={index === 0 ? {marginTop: px(8)} : {}}
+                    />
                 ))
             )}
         </View>

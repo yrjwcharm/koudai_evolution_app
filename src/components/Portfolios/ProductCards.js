@@ -626,7 +626,9 @@ export default ({data = {}, style = {}, tabLabel = ''}) => {
             activeOpacity={0.8}
             onPress={() => {
                 LogTool?.();
-                jump(url);
+                setTimeout(() => {
+                    jump(url);
+                }, 10);
             }}
             style={[type != 'project_lg_card' && type != 'project_sm_card' && styles.cardContainer, ...outerStyle]}>
             {(() => {
