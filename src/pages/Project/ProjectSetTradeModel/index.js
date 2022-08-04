@@ -124,7 +124,11 @@ const ProjectSetTrade = ({route, navigation}) => {
         let res = await getNextPath(params);
         Toast.hide(toast);
         if (res.code == '000000') {
-            navigation.navigate(res.result?.path, params);
+            if (res.result?.path == 'ProjectTradeResult') {
+                navigation.replace(res.result?.path, params);
+            } else {
+                navigation.navigate(res.result?.path, params);
+            }
         } else {
             Toast.show(res.message);
         }
