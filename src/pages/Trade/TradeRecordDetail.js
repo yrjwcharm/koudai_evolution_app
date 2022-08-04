@@ -20,6 +20,7 @@ import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import FastImage from 'react-native-fast-image';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
@@ -134,6 +135,173 @@ const TradeRecordDetail = (props) => {
         global.LogTool('click', 'hideSystemMsg');
         setHideMsg(true);
     };
+
+    const handlerCardContent = (item, index) => {
+        if (!(item?.children && showMore[index])) return null;
+        switch (item.type) {
+            case 'adjust_compare':
+                return (
+                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
+                        {item?.children?.head ? (
+                            <View style={[Style.flexBetween, {height: px(30)}]}>
+                                {item?.children?.head.map((text, key) => (
+                                    <Text key={key} style={[styles.light_text, {width: key == 0 ? px(163) : 'auto'}]}>
+                                        {text}
+                                    </Text>
+                                ))}
+                            </View>
+                        ) : null}
+
+                        {item?.children
+                            ? item?.children?.body.map((child, key) => (
+                                  <View key={key} style={[Style.flexBetween, styles.fund_item]}>
+                                      <Text numberOfLines={1} style={styles.fund_name}>
+                                          {child?.name}
+                                      </Text>
+                                      <Text style={styles.fund_amount}>{child?.src}</Text>
+                                      <View style={Style.flexRow}>
+                                          <Text
+                                              style={[
+                                                  styles.fund_amount,
+                                                  {
+                                                      color: child?.type
+                                                          ? child?.type == 'down'
+                                                              ? Colors.green
+                                                              : Colors.red
+                                                          : Colors.lightBlackColor,
+                                                  },
+                                              ]}>
+                                              {child?.dst}
+                                          </Text>
+                                          {child.type ? (
+                                              <Icon
+                                                  name={`arrow-long-${child?.type}`}
+                                                  color={child?.type == 'down' ? Colors.green : Colors.red}
+                                              />
+                                          ) : null}
+                                      </View>
+                                  </View>
+                              ))
+                            : null}
+                    </View>
+                );
+            case 'upgrade_compare':
+                return (
+                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
+                        {item?.children?.head && (
+                            <View style={[Style.flexBetween, {height: px(30)}]}>
+                                {item?.children?.head.map((text, key) => (
+                                    <Text key={key} style={[styles.light_text, {textAlign: 'left', width: px(113)}]}>
+                                        {text}
+                                    </Text>
+                                ))}
+                            </View>
+                        )}
+                        <View
+                            style={[
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingBottom: px(14),
+                                },
+                            ]}>
+                            {item?.children.src && (
+                                <View>
+                                    {item?.children.src.map((itm, idx) => (
+                                        <Text
+                                            key={idx}
+                                            numberOfLines={1}
+                                            style={{
+                                                fontSize: px(13),
+                                                color: '#545B6C',
+                                                lineHeight: px(18),
+                                                marginTop: idx > 0 ? px(4) : 0,
+                                                width: px(113),
+                                                textAlign: 'left',
+                                            }}>
+                                            {itm}
+                                        </Text>
+                                    ))}
+                                </View>
+                            )}
+                            <FastImage
+                                source={{
+                                    uri:
+                                        'http://static.licaimofang.com/wp-content/uploads/2022/08/trade-record-detail-arrow.png',
+                                }}
+                                resizeMode="contain"
+                                style={{width: px(21), height: px(12)}}
+                            />
+                            {item?.children.dst && (
+                                <View>
+                                    {item?.children.dst.map((itm, idx) => (
+                                        <Text
+                                            key={idx}
+                                            numberOfLines={1}
+                                            style={{
+                                                fontSize: px(13),
+                                                color: '#545B6C',
+                                                lineHeight: px(18),
+                                                marginTop: px(4),
+                                                width: px(113),
+                                            }}>
+                                            {itm}
+                                        </Text>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                );
+            default:
+                return (
+                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
+                        {item?.children?.head && (
+                            <View style={[Style.flexBetween, {height: px(30)}]}>
+                                {item?.children?.head.map((text, key) => (
+                                    <Text key={key} style={styles.light_text}>
+                                        {text}
+                                    </Text>
+                                ))}
+                            </View>
+                        )}
+                        {item?.children?.body?.map((child, key) => (
+                            <View style={styles.fund_item} key={key}>
+                                <TouchableOpacity
+                                    onPress={() => jump(child.url)}
+                                    activeOpacity={1}
+                                    style={[Style.flexBetween, {marginBottom: px(4)}]}>
+                                    <Text style={styles.fund_name}>{child?.k}</Text>
+                                    <Text style={styles.fund_amount}>{child?.v}</Text>
+                                </TouchableOpacity>
+                                {child?.ds ? (
+                                    child?.ds?.map(
+                                        (_ds, _key) =>
+                                            _ds?.k ? (
+                                                <HTML html={_ds?.k} style={{fontSize: px(12), lineHeight: px(17)}} />
+                                            ) : null
+                                        // <Text
+                                        //     key={_key}
+                                        //     style={[styles.light_text, {color: Colors.green}]}>
+                                        //     {_ds?.k}
+                                        // </Text>
+                                    )
+                                ) : child?.d ? (
+                                    child?.d ? (
+                                        <HTML html={child?.d} style={{fontSize: px(12), lineHeight: px(17)}} />
+                                    ) : null
+                                ) : // <Text style={[styles.light_text, {color: Colors.green}]}>
+                                //     {child?.d}
+                                // </Text>
+                                null}
+                            </View>
+                        ))}
+                    </View>
+                );
+        }
+    };
+
     const {notice} = data || {};
     return (
         <ScrollView bounces={false} style={styles.container}>
@@ -343,108 +511,7 @@ const TradeRecordDetail = (props) => {
                                     </TouchableOpacity>
                                 </View>
 
-                                {item?.type == 'adjust_compare' && item?.children && showMore[index] ? (
-                                    // 调仓
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
-                                        {item?.children?.head ? (
-                                            <View style={[Style.flexBetween, {height: px(30)}]}>
-                                                {item?.children?.head.map((text, key) => (
-                                                    <Text
-                                                        key={key}
-                                                        style={[
-                                                            styles.light_text,
-                                                            {width: key == 0 ? px(163) : 'auto'},
-                                                        ]}>
-                                                        {text}
-                                                    </Text>
-                                                ))}
-                                            </View>
-                                        ) : null}
-
-                                        {item?.children
-                                            ? item?.children?.body.map((child, key) => (
-                                                  <View key={key} style={[Style.flexBetween, styles.fund_item]}>
-                                                      <Text numberOfLines={1} style={styles.fund_name}>
-                                                          {child?.name}
-                                                      </Text>
-                                                      <Text style={styles.fund_amount}>{child?.src}</Text>
-                                                      <View style={Style.flexRow}>
-                                                          <Text
-                                                              style={[
-                                                                  styles.fund_amount,
-                                                                  {
-                                                                      color: child?.type
-                                                                          ? child?.type == 'down'
-                                                                              ? Colors.green
-                                                                              : Colors.red
-                                                                          : Colors.lightBlackColor,
-                                                                  },
-                                                              ]}>
-                                                              {child?.dst}
-                                                          </Text>
-                                                          {child.type ? (
-                                                              <Icon
-                                                                  name={`arrow-long-${child?.type}`}
-                                                                  color={
-                                                                      child?.type == 'down' ? Colors.green : Colors.red
-                                                                  }
-                                                              />
-                                                          ) : null}
-                                                      </View>
-                                                  </View>
-                                              ))
-                                            : null}
-                                    </View>
-                                ) : item?.children && showMore[index] ? (
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
-                                        {item?.children?.head && (
-                                            <View style={[Style.flexBetween, {height: px(30)}]}>
-                                                {item?.children?.head.map((text, key) => (
-                                                    <Text key={key} style={styles.light_text}>
-                                                        {text}
-                                                    </Text>
-                                                ))}
-                                            </View>
-                                        )}
-                                        {item?.children?.body?.map((child, key) => (
-                                            <View style={styles.fund_item} key={key}>
-                                                <TouchableOpacity
-                                                    onPress={() => jump(child.url)}
-                                                    activeOpacity={1}
-                                                    style={[Style.flexBetween, {marginBottom: px(4)}]}>
-                                                    <Text style={styles.fund_name}>{child?.k}</Text>
-                                                    <Text style={styles.fund_amount}>{child?.v}</Text>
-                                                </TouchableOpacity>
-                                                {child?.ds ? (
-                                                    child?.ds?.map(
-                                                        (_ds, _key) =>
-                                                            _ds?.k ? (
-                                                                <HTML
-                                                                    html={_ds?.k}
-                                                                    style={{fontSize: px(12), lineHeight: px(17)}}
-                                                                />
-                                                            ) : null
-                                                        // <Text
-                                                        //     key={_key}
-                                                        //     style={[styles.light_text, {color: Colors.green}]}>
-                                                        //     {_ds?.k}
-                                                        // </Text>
-                                                    )
-                                                ) : child?.d ? (
-                                                    child?.d ? (
-                                                        <HTML
-                                                            html={child?.d}
-                                                            style={{fontSize: px(12), lineHeight: px(17)}}
-                                                        />
-                                                    ) : null
-                                                ) : // <Text style={[styles.light_text, {color: Colors.green}]}>
-                                                //     {child?.d}
-                                                // </Text>
-                                                null}
-                                            </View>
-                                        ))}
-                                    </View>
-                                ) : null}
+                                {handlerCardContent(item, index)}
                             </View>
                         </View>
                     ))}
