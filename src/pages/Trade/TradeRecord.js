@@ -7,6 +7,7 @@ import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
+import ScrollTabbar from '~/components/ScrollTabbar.js';
 import http from '../../services/index.js';
 import EmptyTip from '../../components/EmptyTip';
 import {Colors, Style, Font, Space} from '../../common/commonStyle.js';
@@ -16,7 +17,7 @@ import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {debounce} from 'lodash';
-const trade_type = [0, -1, -35, 6, 4, 7];
+const trade_type = [0, -1, -2, -35, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
     const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active = 0} = route.params || {};
@@ -282,7 +283,7 @@ const TradeRecord = ({route, navigation}) => {
             ) : (
                 <ScrollableTabView
                     onChangeTab={changeTab}
-                    renderTabBar={() => <TabBar />}
+                    renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: '#fff', paddingLeft: px(8)}} />}
                     initialPage={0}
                     ref={scrollTab}
                     onScroll={(a) => {
@@ -292,6 +293,9 @@ const TradeRecord = ({route, navigation}) => {
                         {renderContent()}
                     </View>
                     <View tabLabel="投顾服务" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="升级" style={styles.container}>
                         {renderContent()}
                     </View>
                     <View tabLabel="申购" style={styles.container}>
