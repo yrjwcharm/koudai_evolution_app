@@ -3,14 +3,49 @@
  * @Description:
  */
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useJump} from '~/components/hooks';
+import {Modal} from '~/components/Modal';
+import {PasswordModal} from '~/components/Password';
+import Toast from '~/components/Toast';
 import {isIphoneX, px} from '~/utils/appUtil';
+import {upgradeDo} from './services';
 
-const FixBottom = ({button, button2}) => {
+const FixBottom = ({button, button2, routeParams = {}}) => {
     const jump = useJump();
     const navigation = useNavigation();
+
+    const passwordModal = useRef(null);
+
+    const handlerClick = () => {
+        if (button.popup) {
+            const popup = button.popup;
+            Modal.show({
+                backButtonClose: popup.back_close,
+                cancelText: popup.cancel?.text,
+                confirm: popup.cancel ? true : false,
+                confirmCallBack: () => {
+                    passwordModal.current.show();
+                },
+                confirmText: popup.confirm?.text,
+                content: popup.content,
+                isTouchMaskToClose: popup.touch_close,
+                title: popup.title,
+            });
+        } else {
+            jump(button.url);
+        }
+    };
+
+    const submit = (password) => {
+        upgradeDo({password, upgrade_id: routeParams.upgrade_id}).then((res) => {
+            Toast.show(res.result?.message || res.message);
+            if (res.code === '000000') {
+                jump(button.url);
+            }
+        });
+    };
     return (
         <>
             <View
@@ -29,10 +64,11 @@ const FixBottom = ({button, button2}) => {
                     style={styles.btnLeft}>
                     <Text style={styles.btnLeftText}>{button2?.text}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={styles.btnRight}>
+                <TouchableOpacity activeOpacity={0.8} onPress={handlerClick} style={styles.btnRight}>
                     <Text style={styles.btnRightText}>{button?.text}</Text>
                 </TouchableOpacity>
             </View>
+            <PasswordModal ref={passwordModal} onDone={submit} />
         </>
     );
 };

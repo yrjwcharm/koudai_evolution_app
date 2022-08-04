@@ -152,7 +152,9 @@ const UpgradeToPlan = ({route, navigation}) => {
                             })}
                         <View style={{height: px(30)}} />
                     </ScrollView>
-                    {button && button2 ? <FixBottom button={button} button2={button2} /> : null}
+                    {button && button2 ? (
+                        <FixBottom routeParams={route.params} button={button} button2={button2} />
+                    ) : null}
                 </>
             )}
         </View>
