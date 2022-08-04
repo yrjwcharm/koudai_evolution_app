@@ -96,18 +96,16 @@ const FormItem = ({data, onChange, setShowMask}) => {
                             let _label = '';
                             if (type === 'bankcard') {
                                 const i = pay_methods.findIndex((v) => v.pay_method === value);
-                                _label = i !== -1 ? `${pay_methods[i].bank_name} (${pay_methods[i].bank_no})` : '';
+                                _label =
+                                    i !== -1 ? `${pay_methods[i].bank_name} (${pay_methods[i].bank_no})` : '请选择';
                             }
                             if (type === 'select') {
                                 const i = options.findIndex((v) => v.value === value);
-                                _label = options[i]?.label || '';
+                                _label = options[i]?.label || '请选择';
                             }
                             return (
                                 <>
-                                    <HTML
-                                        html={_label || value || (type === 'jump' ? ' ' : '请选择')}
-                                        style={styles.itemLabel}
-                                    />
+                                    {_label || value ? <HTML html={_label || value} style={styles.itemLabel} /> : null}
                                     {type === 'text' ? null : (
                                         <Feather color={Colors.defaultColor} name="chevron-right" size={18} />
                                     )}
