@@ -273,9 +273,13 @@ const RenderAlert = ({alert}) => {
     const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
     return (
         <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
-            <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
-                {alert?.alert_content}
-            </Text>
+            <View style={[Style.flexRow, {flex: 1}]}>
+                <Image source={{uri: alert?.alert_icon}} style={{width: px(32), height: px(16), marginRight: px(8)}} />
+                <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
+                    {alert?.alert_content}
+                </Text>
+            </View>
+
             <SmButton
                 title={alert?.alert_button?.text}
                 style={{borderColor: buttonColor}}

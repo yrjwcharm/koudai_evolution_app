@@ -49,7 +49,11 @@ export const generateOptions = (modal) => {
                 </View>
                 <Text style={styles.codeTips}>{'打开微信扫一扫二维码直接添加'}</Text>
                 <Button
-                    onPress={() => saveImg(modal.business_card, () => Modal.close({}, 'slide'))}
+                    onPress={() => {
+                        const img = modal.business_card;
+                        Modal.close();
+                        saveImg(img);
+                    }}
                     style={styles.saveBtn}
                     title="保存投顾二维码"
                 />
