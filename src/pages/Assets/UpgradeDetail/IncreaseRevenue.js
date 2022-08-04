@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -14,21 +14,31 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
 
     const [{chart = {}, upgrade_items = [], bottom_desc, now_value, after_value}, setData] = useState({});
 
+    const httpFlag = useRef();
+
     const initScript = useMemo(() => {
         return baseAreaChart(chart?.chart || [], chart.tags || [], true, 2, null, [10, 8, 10, 0]);
     }, [chart]);
 
     const getData = (period) => {
-        getUpgradeToPortfolioCard({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-                onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
-                if (!activeTab) {
-                    let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
-                    if (obj) setTabActive(obj.val);
+        httpFlag.current = true;
+        getUpgradeToPortfolioCard({upgrade_id: upgrade_id, type: data.type, period})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    onCardRate?.(componentIdx, {
+                        now_value: res.result?.now_value,
+                        after_value: res.result?.after_value,
+                    });
+                    if (!activeTab) {
+                        let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
+                        if (obj) setTabActive(obj.val);
+                    }
                 }
-            }
-        });
+            })
+            .finally((_) => {
+                httpFlag.current = false;
+            });
     };
 
     useEffect(() => {
@@ -83,6 +93,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
                         key={idx}
                         style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
+                            if (httpFlag.current) return;
                             setTabActive(item.val);
                             getData(item.val);
                         }}>
