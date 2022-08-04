@@ -885,7 +885,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     tradeMsgBox: {
-        marginTop: -5,
+        marginTop: -6.5,
         paddingVertical: px(4),
         paddingHorizontal: px(12),
         borderRadius: px(40),
