@@ -86,7 +86,7 @@ const ProjectSetTrade = ({route, navigation}) => {
         let params = {
             possible: possible,
             poid: poid,
-            target: value,
+            target: value / 100,
         };
         let res = await getPossible(params);
         setPossible(res?.result?.target_info?.possible);
