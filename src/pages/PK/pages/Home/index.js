@@ -30,16 +30,6 @@ const handlerItemsLog = (items, data) => {
         if (obj.button)
             obj.button.LogTool = (notActive) => {
                 notActive && global.LogTool(obj.code ? 'pk_ratio' : 'pk_focus', '', obj.code || obj.plan_id);
-                notActive &&
-                    global.LogTool(
-                        {
-                            event: 'rec_click',
-                            rec_json: data.rec_json,
-                            plateid: data.plateid,
-                        },
-                        null,
-                        items?.map?.((t) => t.code || t.plan_id)?.join?.()
-                    );
             };
     });
 };
