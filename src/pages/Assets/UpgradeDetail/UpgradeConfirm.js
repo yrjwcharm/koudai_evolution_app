@@ -147,7 +147,9 @@ const UpgradeConfirm = ({route, navigation}) => {
         upgradeDo({password, upgrade_id: route.params?.upgrade_id}).then((res) => {
             Toast.show(res.result?.message || res.message);
             if (res.code === '000000') {
-                navigation.pop(2);
+                if (res.code === '000000') {
+                    jump(res.result?.url);
+                }
             }
         });
     }, []);
