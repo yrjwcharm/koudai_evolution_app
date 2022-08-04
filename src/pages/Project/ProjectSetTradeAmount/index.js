@@ -89,11 +89,11 @@ const Index = ({route, navigation}) => {
     };
     const onSubmit = async (password) => {
         let params = {
-            password,
             amount,
             pay_method: data?.pay_methods[bankSelect]?.pay_method,
             trade_method: 0,
             ...route?.params,
+            password,
         };
         let toast = Toast.showLoading();
         let res = await postDo(params);

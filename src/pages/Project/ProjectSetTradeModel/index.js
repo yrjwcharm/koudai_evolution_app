@@ -102,6 +102,7 @@ const ProjectSetTrade = ({route, navigation}) => {
         }
     };
     const handlePost = async (password) => {
+        let toast = Toast.showLoading();
         let buy_tool_id = [];
         for (var i in toolStatus) {
             if (toolStatus[i]) {
@@ -121,6 +122,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             password,
         };
         let res = await getNextPath(params);
+        Toast.hide(toast);
         if (res.code == '000000') {
             navigation.navigate(res.result?.path, params);
         } else {
