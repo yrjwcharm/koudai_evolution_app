@@ -114,19 +114,7 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRig
                 </ScrollableTabView>
             ) : (
                 items.map((item, index) => (
-                    <ProductCards
-                        data={{
-                            ...item,
-                            LogTool: () =>
-                                global.LogTool({
-                                    event: 'top_click',
-                                    ctrl: title,
-                                    oid: item.code,
-                                }),
-                        }}
-                        key={index}
-                        style={index === 0 ? {marginTop: px(8)} : {}}
-                    />
+                    <ProductCards data={item} key={index} style={index === 0 ? {marginTop: px(8)} : {}} />
                 ))
             )}
         </View>
