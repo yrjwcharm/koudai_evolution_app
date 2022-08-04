@@ -16,6 +16,7 @@ import {BottomModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
+import {PasswordModal} from '~/components/Password';
 const ProjectSetTrade = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
@@ -27,6 +28,8 @@ const ProjectSetTrade = ({route, navigation}) => {
     const needBuy = useRef();
     const targetYeild = useRef('');
     const bottomModal = useRef();
+    const passwordModal = useRef();
+    const allToolClose = Object.values(toolStatus).every((i) => i == false); //工具是否全部关闭
     const getData = async () => {
         let res = await getSetModel({poid, upgrade_id: route.params?.upgrade_id});
         if (res.result?.pop_tool_risk_reminder) {
@@ -83,11 +86,22 @@ const ProjectSetTrade = ({route, navigation}) => {
         let params = {
             possible: possible,
             poid: poid,
+            target: value,
         };
         let res = await getPossible(params);
         setPossible(res?.result?.target_info?.possible);
     };
+    const onSubmit = (password) => {
+        handlePost(password);
+    };
     const jumpNext = async () => {
+        if (data?.pop_trade_password && allToolClose) {
+            passwordModal?.current?.show();
+        } else {
+            handlePost();
+        }
+    };
+    const handlePost = async (password) => {
         let buy_tool_id = [];
         for (var i in toolStatus) {
             if (toolStatus[i]) {
@@ -104,6 +118,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             possible: possible || 0,
             sale_tool_id: (data?.sale_model?.list?.map((item) => item.id) || [])?.join(','),
             upgrade_id: route.params?.upgrade_id || 0,
+            password,
         };
         let res = await getNextPath(params);
         if (res.code == '000000') {
@@ -112,6 +127,7 @@ const ProjectSetTrade = ({route, navigation}) => {
             Toast.show(res.message);
         }
     };
+
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
@@ -238,7 +254,7 @@ const ProjectSetTrade = ({route, navigation}) => {
                     </View>
                 </BottomModal>
             ) : null}
-
+            <PasswordModal onDone={onSubmit} ref={passwordModal} />
             <FixedButton
                 containerStyle={{position: 'relative'}}
                 title={data?.btn?.text}

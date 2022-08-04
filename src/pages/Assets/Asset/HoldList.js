@@ -279,7 +279,6 @@ const RenderAlert = ({alert}) => {
                     {alert?.alert_content}
                 </Text>
             </View>
-
             <SmButton
                 title={alert?.alert_button?.text}
                 style={{borderColor: buttonColor}}
