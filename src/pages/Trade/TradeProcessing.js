@@ -11,7 +11,7 @@ import React, {useState, useCallback, useRef} from 'react';
 import {StyleSheet, ScrollView, View, Text, BackHandler} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '~/utils/appUtil';
+import {px, px as text} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {VerifyCodeModal, Modal} from '~/components/Modal';
 import http from '~/services';
@@ -158,6 +158,79 @@ const TradeProcessing = ({navigation, route}) => {
             jump(data.button.url);
         }
     };
+
+    const handlerChildren = (item) => {
+        switch (item.type) {
+            case 'upgrade_compare':
+                return (
+                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
+                        {item?.children?.head && (
+                            <View style={[Style.flexBetween, {height: px(30)}]}>
+                                {item?.children?.head.map((text, key) => (
+                                    <Text key={key} style={[styles.light_text, {textAlign: 'left', width: px(113)}]}>
+                                        {text}
+                                    </Text>
+                                ))}
+                            </View>
+                        )}
+                        <View
+                            style={[
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingBottom: px(14),
+                                },
+                            ]}>
+                            {item?.children.src && (
+                                <View>
+                                    {item?.children.src.map((itm, idx) => (
+                                        <Text
+                                            key={idx}
+                                            numberOfLines={1}
+                                            style={[
+                                                styles.compareText,
+                                                {
+                                                    marginTop: idx > 0 ? px(4) : 0,
+                                                },
+                                            ]}>
+                                            {itm}
+                                        </Text>
+                                    ))}
+                                </View>
+                            )}
+                            <FastImage
+                                source={{
+                                    uri:
+                                        'http://static.licaimofang.com/wp-content/uploads/2022/08/trade-record-detail-arrow.png',
+                                }}
+                                resizeMode="contain"
+                                style={{width: px(21), height: px(12)}}
+                            />
+                            {item?.children.dst && (
+                                <View>
+                                    {item?.children.dst.map((itm, idx) => (
+                                        <Text
+                                            key={idx}
+                                            numberOfLines={1}
+                                            style={[
+                                                styles.compareText,
+                                                {
+                                                    marginTop: idx > 0 ? px(4) : 0,
+                                                },
+                                            ]}>
+                                            {itm}
+                                        </Text>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                );
+            default:
+                return null;
+        }
+    };
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
@@ -237,6 +310,7 @@ const TradeProcessing = ({navigation, route}) => {
                                                     })}
                                                 </View>
                                             )}
+                                            {item.children && handlerChildren(item)}
                                         </View>
                                     </View>
                                 </View>
@@ -352,6 +426,22 @@ const styles = StyleSheet.create({
     coverImage: {
         width: text(50),
         height: text(50),
+    },
+    buy_table: {
+        borderTopWidth: 0.5,
+        borderColor: Colors.borderColor,
+    },
+    light_text: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: Colors.lightGrayColor,
+    },
+    compareText: {
+        fontSize: px(13),
+        color: '#545B6C',
+        lineHeight: px(18),
+        marginTop: px(4),
+        width: px(113),
     },
 });
 

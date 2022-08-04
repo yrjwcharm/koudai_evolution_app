@@ -212,14 +212,12 @@ const TradeRecordDetail = (props) => {
                                         <Text
                                             key={idx}
                                             numberOfLines={1}
-                                            style={{
-                                                fontSize: px(13),
-                                                color: '#545B6C',
-                                                lineHeight: px(18),
-                                                marginTop: idx > 0 ? px(4) : 0,
-                                                width: px(113),
-                                                textAlign: 'left',
-                                            }}>
+                                            style={[
+                                                styles.compareText,
+                                                {
+                                                    marginTop: idx > 0 ? px(4) : 0,
+                                                },
+                                            ]}>
                                             {itm}
                                         </Text>
                                     ))}
@@ -239,13 +237,12 @@ const TradeRecordDetail = (props) => {
                                         <Text
                                             key={idx}
                                             numberOfLines={1}
-                                            style={{
-                                                fontSize: px(13),
-                                                color: '#545B6C',
-                                                lineHeight: px(18),
-                                                marginTop: px(4),
-                                                width: px(113),
-                                            }}>
+                                            style={[
+                                                styles.compareText,
+                                                {
+                                                    marginTop: idx > 0 ? px(4) : 0,
+                                                },
+                                            ]}>
                                             {itm}
                                         </Text>
                                     ))}
@@ -671,6 +668,12 @@ const styles = StyleSheet.create({
         margin: px(16),
         marginBottom: 0,
         borderRadius: px(6),
+    },
+    compareText: {
+        fontSize: px(13),
+        color: '#545B6C',
+        lineHeight: px(18),
+        width: px(113),
     },
 });
 export default TradeRecordDetail;
