@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -12,22 +12,32 @@ const FallBuy = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}
     const [activeTab, setTabActive] = useState();
     const [{chart = {}, upgrade_items = [], now_value, after_value}, setData] = useState({});
 
+    const httpFlag = useRef();
+
     const initScript = useMemo(() => {
         return baseAreaChart(chart?.chart || [], chart.tag_legends || [], true, 2, null, [10, 8, 10, 0]);
     }, [chart]);
 
     const getData = (period) => {
-        getUpgradeToPlanCard({upgrade_id: upgrade_id, type: data.type, period}).then((res) => {
-            if (res.code === '000000') {
-                setData({});
-                setData(res.result);
-                onCardRate?.(componentIdx, {now_value: res.result?.now_value, after_value: res.result?.after_value});
-                if (!activeTab) {
-                    let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
-                    if (obj) setTabActive(obj.val);
+        httpFlag.current = true;
+        getUpgradeToPlanCard({upgrade_id: upgrade_id, type: data.type, period})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData({});
+                    setData(res.result);
+                    onCardRate?.(componentIdx, {
+                        now_value: res.result?.now_value,
+                        after_value: res.result?.after_value,
+                    });
+                    if (!activeTab) {
+                        let obj = res.result?.chart?.subtabs?.find?.((item) => item.active);
+                        if (obj) setTabActive(obj.val);
+                    }
                 }
-            }
-        });
+            })
+            .finally((_) => {
+                httpFlag.current = false;
+            });
     };
 
     useEffect(() => {
@@ -80,6 +90,7 @@ const FallBuy = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}
                         key={idx}
                         style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
+                            if (httpFlag.current) return;
                             setTabActive(item.val);
                             getData(item.val);
                         }}>
