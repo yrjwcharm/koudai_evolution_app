@@ -25,6 +25,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
         getUpgradeToPortfolioCard({upgrade_id: upgrade_id, type: data.type, period})
             .then((res) => {
                 if (res.code === '000000') {
+                    setData({});
                     setData(res.result);
                     onCardRate?.(componentIdx, {
                         now_value: res.result?.now_value,
