@@ -60,6 +60,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
+                    setRecommendIndex(0);
                     res.result.sub_list.forEach((item) => {
                         handlerListLog(item, res.result);
                     });
