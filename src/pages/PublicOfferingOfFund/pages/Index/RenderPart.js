@@ -124,7 +124,6 @@ export default ({data = {}, scene, onLayout, pointKey, tabsStyle = {}, HeaderRig
                             ...item,
                             LogTool: () => {
                                 const {plateid, rec_json} = data;
-                                console.log(data);
                                 if (plateid && rec_json) {
                                     global.LogTool({event: 'rec_click', oid: item.code, plateid, rec_json});
                                 } else {

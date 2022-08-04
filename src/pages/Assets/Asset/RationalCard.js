@@ -162,11 +162,12 @@ const RationalCard = ({rational_info, im_info}) => {
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(4)}]}>
                             <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
-                            {!rational_info?.button && (
+                            {!rational_info?.button && rational_info?.percent == 100 ? (
                                 <View style={styles.upgrade_sm_btn}>
                                     <Text style={{fontSize: px(11), color: '#fff'}}>升级</Text>
-                                    <AntDesign name="right" color="#fff" size={px(8)} />
                                 </View>
+                            ) : (
+                                <AntDesign name="right" size={px(10)} />
                             )}
                         </View>
                         {!!rational_info?.desc && (

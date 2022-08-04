@@ -8,11 +8,13 @@ import leftQuota1 from '~/assets/personal/leftQuota1.png';
 import upgrade from '~/assets/personal/upgrade.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
-import {BottomModal} from '~/components/Modal';
+import {BottomModal, Modal} from '~/components/Modal';
+import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import {px} from '~/utils/appUtil';
 import {postUnFavor} from './services';
+import {upgradeDo} from '../UpgradeDetail/services';
 
 const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
     const jump = useJump();
@@ -38,6 +40,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
     const {increase, ratio_dst, ratio_src, text} = ratio_info || {};
     const increaseBox = useRef();
     const bottomModal = useRef();
+    const passwordModal = useRef();
     const [selected, setSelected] = useState();
     const borderSty = {
         adjust: {
@@ -213,6 +216,20 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
             });
     };
 
+    /** @name 一键升级输完交易密码 */
+    const onDone = (password) => {
+        upgradeDo({password, upgrade_id: consoleId}).then((res) => {
+            const {
+                message,
+                result: {url},
+            } = res;
+            message && Toast.show(message);
+            if (res.code === '000000') {
+                jump(url);
+            }
+        });
+    };
+
     useImperativeHandle(ref, () => ({
         renderSignalItems,
     }));
@@ -325,7 +342,26 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             disabled={button_list[1].avail === 0}
-                            onPress={() => jump(button_list[1].url)}
+                            onPress={() => {
+                                if (button_list[1].action === 'jump') {
+                                    jump(button_list[1].url);
+                                } else if (button_list[1].action === 'popup') {
+                                    const {cancel, confirm, content: modalContent, title: alertTitle} =
+                                        button_list[1].popup || {};
+                                    Modal.show({
+                                        backButtonClose: false,
+                                        cancelText: cancel?.text,
+                                        confirm: cancel?.text ? true : false,
+                                        confirmCallBack: () => {
+                                            passwordModal.current?.show();
+                                        },
+                                        confirmText: confirm?.text,
+                                        content: modalContent,
+                                        isTouchMaskToClose: false,
+                                        title: alertTitle,
+                                    });
+                                }
+                            }}
                             style={[
                                 Style.flexCenter,
                                 styles.primaryBtn,
@@ -391,6 +427,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                     </View>
                 </BottomModal>
             ) : null}
+            <PasswordModal onDone={onDone} ref={passwordModal} />
         </View>
     );
 });

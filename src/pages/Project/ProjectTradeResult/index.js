@@ -68,8 +68,11 @@ const Index = ({route, navigation}) => {
                                 {_item?.list?.map((item, index) => (
                                     <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
                                         <Text style={styles.value}>{item?.name}</Text>
+
                                         <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
-                                        <RenderHtml html={item?.date} style={{fontSize: px(13)}} />
+                                        <View style={{minWidth: px(80), alignItems: 'flex-end'}}>
+                                            <RenderHtml html={item?.date} style={{fontSize: px(13)}} />
+                                        </View>
                                     </View>
                                 ))}
                             </View>
@@ -146,7 +149,14 @@ const Index = ({route, navigation}) => {
             <FixedButton
                 title={data?.btn?.text}
                 containerStyle={{position: 'relative'}}
-                onPress={() => navigation.pop(1)}
+                onPress={() => {
+                    //升级的返回两层
+                    if (route?.params?.upgrade_id) {
+                        navigation.pop(2);
+                    } else {
+                        navigation.pop(1);
+                    }
+                }}
             />
         </View>
     );

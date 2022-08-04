@@ -41,6 +41,7 @@ const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy, poid}) => {
     useEffect(() => {
         onChange(tool.id, status);
         onChangeNowBuy(needBuy);
+        onValueChange(status);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
