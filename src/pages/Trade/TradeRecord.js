@@ -146,8 +146,8 @@ const TradeRecord = ({route, navigation}) => {
     };
 
     const handlerName = (val = '') => {
-        if (val.length > 9) {
-            val = val.slice(0, 5) + '...' + val.slice(-4);
+        if (val.length > 12) {
+            val = val.slice(0, 10) + '...' + val.slice(-2);
         }
         return val;
     };
@@ -183,7 +183,7 @@ const TradeRecord = ({route, navigation}) => {
                                 <View
                                     style={[
                                         Style.tag,
-                                        {marginRight: px(8), backgroundColor: tagColor(item?.type?.val).bg_color},
+                                        {marginRight: px(6), backgroundColor: tagColor(item?.type?.val).bg_color},
                                     ]}>
                                     <Text style={{fontSize: px(11), color: tagColor(item?.type?.val).text_color}}>
                                         {item?.type?.text}
