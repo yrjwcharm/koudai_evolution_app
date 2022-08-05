@@ -71,7 +71,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                                     html={`${fee_text.split('：')[0]}：`}
                                     style={{...styles.desc, color: Colors.descColor}}
                                 />
-                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}%</Text> : null}
+                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
                                 <HTML
                                     html={`${fee_text.split('：')[1]}`}
                                     style={{...styles.desc, color: Colors.descColor}}
