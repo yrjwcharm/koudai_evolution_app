@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 10:44:44
+ * @LastEditTime: 2022-08-05 11:43:22
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -249,7 +249,9 @@ function useJump() {
                     });
             } else {
                 url.toast && Toast.show(url.toast);
-                navigation[type](url.path, url.params || {});
+                setTimeout(() => {
+                    navigation[type](url.path, url.params || {});
+                }, 10);
             }
             setTimeout(() => {
                 flagRef.current = true;
