@@ -218,11 +218,11 @@ const AutoCharge = ({data = {}}) => {
                                         },
                                     }) => {
                                         const left = (barLength * pay_percent) / 100 - width / 2;
-                                        const maxLeft = barLength - width;
+                                        const maxLeft = px(4) + barLength - width;
                                         amountBox.current?.setNativeProps({
                                             style: [
                                                 styles.amountBox,
-                                                {marginLeft: left < -px(4) ? -px(4) : left > maxLeft ? maxLeft : left},
+                                                {left: left < -px(4) ? -px(4) : left > maxLeft ? maxLeft : left},
                                             ],
                                         });
                                     }}
@@ -233,7 +233,10 @@ const AutoCharge = ({data = {}}) => {
                             </View>
                             <Image
                                 source={mfbArrow}
-                                style={[styles.mfbArrow, {marginLeft: (barLength * pay_percent) / 100 - px(4)}]}
+                                style={[
+                                    styles.mfbArrow,
+                                    {marginLeft: (barLength * pay_percent) / 100 - (pay_percent > 50 ? px(4) : px(3))},
+                                ]}
                             />
                             <View
                                 onLayout={({
@@ -722,7 +725,7 @@ const styles = StyleSheet.create({
         borderRadius: px(4),
         borderWidth: Space.borderWidth,
         borderColor: Colors.brandColor,
-        flexGrow: 0.5,
+        position: 'relative',
     },
     amountText: {
         fontSize: Font.textH3,
