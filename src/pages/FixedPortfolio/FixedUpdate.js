@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: dx
- * @LastEditTime: 2021-12-22 18:33:45
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-05 18:53:37
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView, Switch} from 'react-native';
@@ -345,7 +345,7 @@ export default function FixedUpdate({navigation, route}) {
     ) : (
         <>
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                <ScrollView keyboardShouldPersistTaps="handled" style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {showMask && (
                         <Mask
                             onClick={() => {
@@ -358,6 +358,9 @@ export default function FixedUpdate({navigation, route}) {
                     <InputModal {...modalProps} ref={inputModal}>
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
+                            {`${iptVal}`.length === 0 && (
+                                <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
+                            )}
                             <TextInput
                                 clearButtonMode={'never'}
                                 keyboardType={'decimal-pad'}
@@ -366,9 +369,6 @@ export default function FixedUpdate({navigation, route}) {
                                 style={[styles.inputStyle]}
                                 value={iptVal}
                             />
-                            {`${iptVal}`.length === 0 && (
-                                <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
-                            )}
                             {`${iptVal}`.length > 0 && (
                                 <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                                     <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
