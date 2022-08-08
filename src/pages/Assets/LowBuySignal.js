@@ -1248,7 +1248,6 @@ chart.tooltip({
   },
   onShow: function onShow(ev) {
     if(!ev.items) return;
-    window.ReactNativeWebView.postMessage(JSON.stringify(ev.items));
     const item = ev.items[0];
     let str = '<div>'+item.title+'</div>';
     if(data[0].type){
