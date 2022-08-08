@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 12:51:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-08 10:45:11
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
@@ -44,7 +44,9 @@ export default function PlanDetail(props) {
                 .then((res) => {
                     setLoading(false);
                     if (res.code === '000000') {
-                        setData(res.result);
+                        const {list, title = '计划详情'} = res.result || {};
+                        props.navigation.setOptions({title});
+                        setData(list || []);
                     }
                     setShowEmpty(true);
                 })
@@ -52,7 +54,8 @@ export default function PlanDetail(props) {
                     setLoading(false);
                     setShowEmpty(true);
                 });
-        }, [props.route])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
     const jumpPage = (invest_id) => {
         props.navigation.navigate('FixedPlanDetail', {invest_id});
