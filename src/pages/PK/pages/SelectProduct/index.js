@@ -510,7 +510,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     selectItemHeader: {
-        ...Style.flexBetween,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
     },
     highStamp: {
         paddingHorizontal: 4,

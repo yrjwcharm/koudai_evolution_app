@@ -27,7 +27,6 @@ const Introduce = ({route}) => {
 
     useEffect(() => {
         pkIntroduce(route?.params).then((res) => {
-            console.log(res);
             if (res.code === '000000') {
                 setData(res.result);
             } else {
@@ -81,15 +80,23 @@ const Introduce = ({route}) => {
                             <ImageBackground source={pkIntroduceCardPkBg} resizeMode="stretch" style={styles.pkInfo}>
                                 <View style={styles.pkInfoLeft}>
                                     <Text style={styles.pkInfoName}>{leftObj.name}</Text>
-                                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield_info?.year)}</Text>
-                                    <Text style={styles.priceDesc}>近一年涨跌幅</Text>
+                                    <View style={styles.tagsWrap}>
+                                        {leftObj?.tags?.map((item, idx) => (
+                                            <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
+                                                <Text style={styles.tagText}>{item}</Text>
+                                            </View>
+                                        ))}
+                                    </View>
                                 </View>
                                 <View style={styles.pkInfoRight}>
                                     <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
-                                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>
-                                        {handlerRate(rightObj?.yield_info?.year)}
-                                    </Text>
-                                    <Text style={[styles.priceDesc, {textAlign: 'right'}]}>近一年涨跌幅</Text>
+                                    <View style={[styles.tagsWrap, {alignSelf: 'flex-end'}]}>
+                                        {rightObj?.tags?.map((item, idx) => (
+                                            <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
+                                                <Text style={[styles.tagText, {color: '#1A4DE6'}]}>{item}</Text>
+                                            </View>
+                                        ))}
+                                    </View>
                                 </View>
                                 <FastImage source={pkIcon} style={styles.pkIconStyle} />
                             </ImageBackground>
@@ -298,21 +305,41 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         color: '#e74949',
         textAlign: 'center',
+        marginTop: px(10),
+    },
+    tagsWrap: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: px(8),
     },
     paramsLabel: {
         fontSize: px(12),
         lineHeight: px(17),
         color: '#121d3a',
         textAlign: 'center',
+        marginTop: px(3),
     },
     paramsCellOfSum: {
         padding: px(8),
         flex: 1,
+        height: '100%',
     },
     paramsCell: {
         paddingHorizontal: px(8),
         paddingVertical: px(11),
         flex: 1,
+        height: '100%',
+    },
+    tag: {
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
+        paddingVertical: px(2),
+        backgroundColor: '#fff',
+    },
+    tagText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#EA5245',
     },
     highStamp: {
         alignSelf: 'flex-start',

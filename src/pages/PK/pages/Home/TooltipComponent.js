@@ -19,7 +19,7 @@ const TooltipComponent = ({
                 handlerTooltipStyle((state) => {
                     return {tooltip: {...state.tooltip, bottom: isIphoneX() ? px(120) : px(80)}};
                 });
-            }, 150);
+            }, 350);
         }
     }, [currentStep, handlerTooltipStyle]);
     return (

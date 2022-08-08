@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         color: '#121D3A',
         lineHeight: px(18),
-        marginHorizontal: px(20),
+        width: px(119),
         alignSelf: 'flex-end',
     },
     pkParamsTip: {
