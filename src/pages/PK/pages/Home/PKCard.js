@@ -300,12 +300,6 @@ const styles = StyleSheet.create({
 export default PKCard;
 
 const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => {
-    const handlerRate = (rate) => {
-        let val = ((rate || 0) * 100).toFixed(2);
-        if (val >= 0) val = '+' + val;
-        return val + '%';
-    };
-
     return (
         <ImageBackground
             source={pkCardBg}
@@ -336,7 +330,7 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                             </View>
                         ))}
                     </View>
-                    <Text style={styles.priceRate}>{handlerRate(leftObj?.yield?.ratio)}</Text>
+                    <Text style={styles.priceRate}>{rightObj?.yield?.ratio}</Text>
                     <Text style={styles.priceDesc}>{leftObj?.yield?.title}</Text>
                 </View>
             </View>
@@ -364,7 +358,7 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                             </View>
                         ))}
                     </View>
-                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>{handlerRate(rightObj?.yield?.ratio)}</Text>
+                    <Text style={[styles.priceRate, {textAlign: 'right'}]}>{rightObj?.yield?.ratio}</Text>
                     <Text style={[styles.priceDesc, {textAlign: 'right'}]}>{rightObj?.yield?.title}</Text>
                 </View>
             </View>
