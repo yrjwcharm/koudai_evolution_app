@@ -202,7 +202,7 @@ const TradeProcessing = ({navigation, route}) => {
                             <FastImage
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/08/trade-record-detail-arrow.png',
+                                        'http://static.licaimofang.com/wp-content/uploads/2022/08/trade-record-detail-arrow-1.png',
                                 }}
                                 resizeMode="contain"
                                 style={{width: px(21), height: px(12)}}
