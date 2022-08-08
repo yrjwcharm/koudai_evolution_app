@@ -6,6 +6,13 @@ import {px} from '~/utils/appUtil';
 
 const topRadius = {borderTopLeftRadius: px(6), borderTopRightRadius: px(6)};
 const bottomRadius = {borderBottomLeftRadius: px(6), borderBottomRightRadius: px(6)};
+const handlerTextSize = (text) => {
+    let obj = {};
+    if (!text) return obj;
+    obj.fontSize = /[\u4e00-\u9fa5]/g.test(text) ? px(14) : px(15);
+    return obj;
+};
+
 const CompareTable = ({data = []}) => {
     return (
         <View style={styles.container}>
@@ -24,8 +31,10 @@ const CompareTable = ({data = []}) => {
                                 </View>
                             </View>
                         ) : null}
-                        <View style={[styles.cell, idx > 0 ? {borderTopWidth: 1, borderTopColor: '#BDC2CC'} : {}]}>
-                            <Text style={[styles.rateText, {color: '#121D3A'}]}>{item.now_value}</Text>
+                        <View style={[styles.cell, idx > 0 ? {borderTopWidth: 0.5, borderTopColor: '#BDC2CC'} : {}]}>
+                            <Text style={[styles.rateText, {color: '#121D3A'}, handlerTextSize(item.now_value)]}>
+                                {item.now_value}
+                            </Text>
                         </View>
                     </View>
                     <View style={styles.middle}>
@@ -47,7 +56,7 @@ const CompareTable = ({data = []}) => {
                                 </View>
                             </View>
                         ) : null}
-                        <View style={[styles.cell, idx > 0 ? {borderTopWidth: 1, borderTopColor: '#FF7D41'} : {}]}>
+                        <View style={[styles.cell, idx > 0 ? {borderTopWidth: 0.5, borderTopColor: '#FF7D41'} : {}]}>
                             {Array.isArray(item.after_value) ? (
                                 <View style={styles.afterValueWrap}>
                                     {item.after_value.map((itm, index) => (
@@ -61,7 +70,9 @@ const CompareTable = ({data = []}) => {
                                     ))}
                                 </View>
                             ) : (
-                                <Text style={[styles.rateText, {color: '#FF7D41'}]}>{item.after_value}</Text>
+                                <Text style={[styles.rateText, {color: '#FF7D41'}, handlerTextSize(item.after_value)]}>
+                                    {item.after_value}
+                                </Text>
                             )}
                         </View>
                     </View>
@@ -79,7 +90,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     middle: {
-        paddingHorizontal: px(18),
+        paddingHorizontal: px(10),
         paddingVertical: px(15),
         justifyContent: 'center',
         alignItems: 'center',
@@ -125,7 +136,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     cell: {
-        paddingVertical: px(16),
+        paddingVertical: px(14),
         flex: 1,
         justifyContent: 'center',
     },
