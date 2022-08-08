@@ -67,15 +67,12 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     <>
                         {fee_text ? (
                             <View style={Style.flexRow}>
-                                <HTML
-                                    html={`${fee_text.split('：')[0]}：`}
-                                    style={{...styles.desc, color: Colors.descColor}}
-                                />
-                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
+                                <HTML html={`${fee_text}`} style={{...styles.desc, color: Colors.descColor}} />
+                                {/* {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
                                 <HTML
                                     html={`${fee_text.split('：')[1]}`}
                                     style={{...styles.desc, color: Colors.descColor}}
-                                />
+                                /> */}
                             </View>
                         ) : null}
                         {date_text ? (
