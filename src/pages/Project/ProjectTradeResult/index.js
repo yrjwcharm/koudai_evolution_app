@@ -99,7 +99,7 @@ const Index = ({route, navigation}) => {
                                         <Text style={styles.value}>{item?.name}</Text>
                                         {!!item?.target_yield && (
                                             <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
-                                                {item?.target_yield * 100 + '%'}
+                                                {(item?.target_yield * 100)?.toFixed(0) + '%'}
                                             </Text>
                                         )}
                                         <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
