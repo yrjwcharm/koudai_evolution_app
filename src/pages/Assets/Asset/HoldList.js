@@ -212,7 +212,7 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                     </View>
                 )}
                 <View style={[Style.flexBetween]}>
-                    <Text style={[styles.amount_text, {width: px(120)}]}>{showEye == 'true' ? (amount.replace(/,/g, '') > 0 ? '+' + amount : amount) : '****'}</Text>
+                    <Text style={[styles.amount_text, {width: px(120)}]}>{showEye == 'true' ? amount : '****'}</Text>
                     <Text
                         style={[
                             styles.amount_text,
