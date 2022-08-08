@@ -330,7 +330,7 @@ const CardItem = ({leftObj = {}, rightObj = {}, height, onCardLayoutHeight}) => 
                             </View>
                         ))}
                     </View>
-                    <Text style={styles.priceRate}>{rightObj?.yield?.ratio}</Text>
+                    <Text style={styles.priceRate}>{leftObj?.yield?.ratio}</Text>
                     <Text style={styles.priceDesc}>{leftObj?.yield?.title}</Text>
                 </View>
             </View>
