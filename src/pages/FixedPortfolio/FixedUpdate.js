@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-05 18:53:37
+ * @LastEditTime: 2022-08-08 14:18:15
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView, Switch} from 'react-native';
@@ -473,36 +473,28 @@ export default function FixedUpdate({navigation, route}) {
                         </View>
                     )}
                     {render_deductionHint()}
-                    <View
-                        style={[
-                            Style.flexRow,
-                            {justifyContent: 'space-between', marginHorizontal: text(16), marginTop: text(16)},
-                        ]}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={{
-                                borderColor: '#4E556C',
-                                borderWidth: 0.5,
-                                borderRadius: text(6),
-                                flex: 1,
-                                marginRight: text(10),
-                            }}
-                            onPress={() => handleClick('redeem')}>
-                            <Text style={styles.btn_sty}>{data.button[0].text}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 0.8}
-                            style={{
-                                backgroundColor: '#0051CC',
-                                borderRadius: text(6),
-                                flex: 1,
-                                opacity: payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 1,
-                            }}
-                            disabled={payMethod.pay_method == 'wallet' && autoChargeStatus}
-                            onPress={() => handleClick('update')}>
-                            <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
-                        </TouchableOpacity>
-                    </View>
+                    {data?.button?.text ? (
+                        <View
+                            style={[
+                                Style.flexRow,
+                                {marginHorizontal: Space.marginAlign, marginTop: Space.marginVertical},
+                            ]}>
+                            <TouchableOpacity
+                                activeOpacity={payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 0.8}
+                                style={{
+                                    backgroundColor: Colors.brandColor,
+                                    borderRadius: Space.borderRadius,
+                                    flex: 1,
+                                    opacity: payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 1,
+                                }}
+                                disabled={
+                                    data.button.avail === 0 || (payMethod.pay_method == 'wallet' && autoChargeStatus)
+                                }
+                                onPress={() => handleClick('update')}>
+                                <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button.text}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : null}
                     <BottomDesc />
                 </ScrollView>
             )}

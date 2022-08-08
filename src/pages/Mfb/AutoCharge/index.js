@@ -89,10 +89,13 @@ export default ({navigation, route}) => {
                                             })}
                                         </View>
                                         {items.map((row, idx, arr) => {
-                                            const {amount, button, name} = row;
+                                            const {amount, button, name, url} = row;
                                             const disabled = button?.avail === 0;
                                             return (
-                                                <View key={name + idx}>
+                                                <TouchableOpacity
+                                                    activeOpacity={url ? 0.8 : 1}
+                                                    key={name + idx}
+                                                    onPress={() => jump(url)}>
                                                     <View style={[Style.flexRow, styles.row]}>
                                                         <Text style={styles.name}>{name}</Text>
                                                         <Text style={styles.amount}>{amount}</Text>
@@ -121,7 +124,7 @@ export default ({navigation, route}) => {
                                                             <View style={[styles.circle, styles.rightCircle]} />
                                                         </View>
                                                     )}
-                                                </View>
+                                                </TouchableOpacity>
                                             );
                                         })}
                                     </View>
