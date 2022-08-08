@@ -169,7 +169,7 @@ const PKBall = ({style, copilot = {}, copilotEvents}, ref) => {
             <View
                 style={[
                     styles.circleWrap,
-                    copilotStep > -1 ? {height: px(100)} : {},
+                    copilotStep > -1 ? {height: px(100), padding: 2} : {},
                     copilotStep === 2 ? {backgroundColor: 'rgba(30,30,32,0.8)'} : {},
                 ]}
                 {...copilot}>

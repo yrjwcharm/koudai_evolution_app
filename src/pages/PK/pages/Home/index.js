@@ -344,6 +344,6 @@ const _PKHome = copilot({
         backgroundColor: 'transparent',
         width: '100%',
     },
-    contentPadding: 0,
+    contentPadding: -2,
 })(PKHome);
 export default withNetState(_PKHome);
