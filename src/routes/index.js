@@ -540,7 +540,7 @@ export default function AppStack() {
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
-            <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
+            <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen

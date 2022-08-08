@@ -67,7 +67,7 @@ export const generateOptions = (modal) => {
                 style={styles.modalBg}>
                 <TouchableOpacity
                     activeOpacity={1}
-                    onPress={() => Modal.close({}, 'slide')}
+                    onPress={() => Modal.close()}
                     style={[Style.flexCenter, styles.close]}>
                     <AntDesign color={'#fff'} name="close" size={24} />
                 </TouchableOpacity>

@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-23 16:05:46
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-02 18:49:41
  * @Description: 基金购买
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -74,7 +71,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                                     html={`${fee_text.split('：')[0]}：`}
                                     style={{...styles.desc, color: Colors.descColor}}
                                 />
-                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}%</Text> : null}
+                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
                                 <HTML
                                     html={`${fee_text.split('：')[1]}`}
                                     style={{...styles.desc, color: Colors.descColor}}
@@ -265,7 +262,7 @@ const Index = ({navigation, route}) => {
 
     const buyClick = () => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
-        global.LogTool({ctrl: code, event: 'buy_button_click', oid: `${method.pay_method},${amount}`});
+        global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
         Keyboard.dismiss();
         passwordModal.current.show();
     };

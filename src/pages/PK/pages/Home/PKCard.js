@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ImageBackground, Platform} from 'react-native';
 import pkCardBg from '../../../../assets/img/pk/pkCardBg.png';
 import pkIcon2 from '../../../../assets/img/pk/pkIcon2.png';
@@ -27,7 +27,12 @@ const PKCard = ({data = {}, copilot}) => {
     const handlerEnter = () => {
         global.pkEntry = '1';
         global.LogTool('pk_button');
-        global.LogTool({event: 'rec_click', plateid: data.plateid, rec_json: data.rec_json});
+        global.LogTool({
+            event: 'rec_click',
+            oid: `${leftObj.code},${rightObj.code}`,
+            plateid: data.plateid,
+            rec_json: data.rec_json,
+        });
         dispatch(initCart([leftObj.code, rightObj.code]));
         jump({
             path: data.btns?.url?.path,

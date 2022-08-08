@@ -94,7 +94,7 @@ const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
                         <View style={Style.flexRow}>
                             <Text style={[styles.desc, {opacity: 0.6}]}>
                                 {amount.label}
-                                {profit_date}
+                                &nbsp;{profit_date}
                             </Text>
                             <TouchableOpacity activeOpacity={0.8} onPress={toggleEye} style={{marginLeft: px(8)}}>
                                 <Ionicons
@@ -403,18 +403,23 @@ const RenderChart = ({data = {}}) => {
         <>
             {/* 根据key区分不同图表 */}
             {label?.length > 0 ? (
-                <View style={[Style.flexRow, {marginTop: px(8)}]}>
-                    {label.map((item, index) => {
+                <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
+                    {label.map((item, index, arr) => {
                         const {color, name, tips, type, val} = item;
                         return (
-                            <View key={name + index} style={[Style.flexCenter, {flex: 1}]}>
+                            <View
+                                key={name + index}
+                                style={[
+                                    Style.flexCenter,
+                                    index === 1 ? {marginLeft: px(40), marginRight: arr.length === 3 ? px(40) : 0} : {},
+                                ]}>
                                 <TextInput
                                     defaultValue={`${val}`}
                                     editable={false}
                                     ref={(ref) => (legendTitleArr.current[index] = ref)}
                                     style={[styles.legendTitle, index > 0 ? {color: getColor(val)} : {}]}
                                 />
-                                <View style={Style.flexRowCenter}>
+                                <View style={[Style.flexRowCenter, {marginTop: px(4)}]}>
                                     {type ? (
                                         type === 'circle' ? (
                                             <CircleLegend color={color} />
@@ -1012,8 +1017,8 @@ const styles = StyleSheet.create({
     },
     legendTitle: {
         padding: 0,
-        fontSize: Font.textH1,
-        lineHeight: px(22),
+        fontSize: px(13),
+        lineHeight: px(19),
         color: Colors.defaultColor,
         fontFamily: Font.numMedium,
         width: '100%',
