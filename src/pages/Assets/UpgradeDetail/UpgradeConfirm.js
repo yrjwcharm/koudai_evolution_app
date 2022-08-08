@@ -211,7 +211,7 @@ const UpgradeConfirm = ({route, navigation}) => {
                         <View>
                             <LinearGradient
                                 start={{x: 0, y: 0}}
-                                end={{x: 0, y: 0.2}}
+                                end={{x: 0, y: 0.06}}
                                 colors={['#FFF2E1', '#fff']}
                                 style={{borderRadius: px(4), zIndex: 1}}
                                 onLayout={(e) => {
@@ -387,10 +387,10 @@ const styles = StyleSheet.create({
     qualTag: {
         position: 'absolute',
         borderWidth: px(6),
-        borderTopColor: 'rgba(0, 0, 0, 0.7)',
+        borderTopColor: 'rgba(0, 0, 0, 0.6)',
         borderColor: 'transparent',
         left: px(8),
-        bottom: -px(12),
+        bottom: -12,
     },
     bottomWrap: {
         paddingTop: px(10),
