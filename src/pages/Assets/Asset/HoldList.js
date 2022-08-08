@@ -279,12 +279,15 @@ const RenderAlert = ({alert}) => {
                     {alert?.alert_content}
                 </Text>
             </View>
+            {
+               !! alert?.alert_button&&
             <SmButton
                 title={alert?.alert_button?.text}
                 style={{borderColor: buttonColor}}
                 titleStyle={{color: buttonColor}}
                 onPress={() => jump(alert?.alert_button?.url)}
             />
+            }
         </View>
     );
 };
