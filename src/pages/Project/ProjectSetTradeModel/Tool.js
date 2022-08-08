@@ -15,7 +15,7 @@ const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy, poid}) => {
     const [status, setStatus] = useState(tool.open_status != 0);
     const [needBuy, setNeedBuy] = useState(tool?.now_buy?.open_status == 1);
     const [showConfig, setShowConfig] = useState(true);
-    const onValueChange = (value) => {
+    const onValueChange = (value,init) => {
         setStatus(value);
         onChange && onChange(tool.id, value);
 
@@ -24,7 +24,7 @@ const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy, poid}) => {
             setShowConfig(value);
         }
         //曾经关闭再次开启弹窗提示
-        if (value && tool?.pop_tool_risk_reminder) {
+        if (!init&&value && tool?.pop_tool_risk_reminder) {
             Modal.show({
                 title: tool?.pop_tool_risk_reminder?.title,
                 children: () => (
@@ -41,7 +41,7 @@ const Tool = ({tool, onChange, onChangeAutoTime, onChangeNowBuy, poid}) => {
     useEffect(() => {
         onChange(tool.id, status);
         onChangeNowBuy(needBuy);
-        onValueChange(status);
+        onValueChange(status,'init');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (

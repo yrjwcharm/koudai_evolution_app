@@ -195,7 +195,7 @@ const ProjectSetTrade = ({route, navigation}) => {
                             />
                             <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
                                 根据历史数据，投资18个月实现概率：
-                                <Text style={{color: Colors.red}}>{possible * 100 + '%'}</Text>
+                                <Text style={{color: Colors.red}}>{(possible * 100).toFixed(0) + '%'}</Text>
                             </Text>
                         </>
                     ) : null}
