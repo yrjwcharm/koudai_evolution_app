@@ -15,7 +15,7 @@ const UpgradeToPlan = ({route, navigation}) => {
     const [curtainNum, setCurtainNum] = useState(0);
     const [cardsRate, setCardsRate] = useState({});
     const [data, setData] = useState({});
-    const {base_list, button, button2, detail, sub_detail, target} = data;
+    const {base_list, button, button2, top_detail, sub_detail, target} = data;
     const [loading, setLoading] = useState(true);
     const cardsHeight = useRef([]);
     const cardsPosition = useRef([]);
@@ -39,7 +39,7 @@ const UpgradeToPlan = ({route, navigation}) => {
     const onCardHeight = useCallback(
         (index, height) => {
             cardsHeight.current[index] = height;
-            if (cardsHeight.current.length === Object.keys(detail).length) {
+            if (cardsHeight.current.length === sub_detail.length + 1) {
                 const arr = [px(40)];
                 cardsHeight.current.reduce((memo, cur, idx) => {
                     memo += cur;
@@ -49,7 +49,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                 cardsPosition.current = arr.filter((item) => item);
             }
         },
-        [detail]
+        [sub_detail]
     );
 
     const onCardRate = useCallback((index, obj) => {
@@ -87,7 +87,7 @@ const UpgradeToPlan = ({route, navigation}) => {
                         scrollY={scrollY}
                         curtainNum={curtainNum}
                         handlerCurtainHeight={handlerCurtainHeight}
-                        detail={Object.values(detail) || []}
+                        detail={[top_detail, ...sub_detail]}
                         cardsRate={cardsRate}
                     />
                     <ScrollView
@@ -97,13 +97,13 @@ const UpgradeToPlan = ({route, navigation}) => {
                         onLayout={(e) => {
                             setScrollY(e.nativeEvent.layout.y);
                         }}>
-                        {detail && (
+                        {top_detail && (
                             <SaleReminder
                                 idx={0}
                                 key={0}
                                 onCardRate={onCardRate}
                                 onCardHeight={onCardHeight}
-                                data={detail[0]}
+                                data={top_detail}
                                 upgrade_id={route.params.upgrade_id}
                             />
                         )}
