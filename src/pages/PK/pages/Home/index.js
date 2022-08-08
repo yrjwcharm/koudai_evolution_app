@@ -69,9 +69,9 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         showCopilot.current = true;
                     }
 
+                    start?.(false, scrollViewRef.current);
                     setTimeout(() => {
                         if (isFocusedRef.current && showCopilot.current) {
-                            start?.(false, scrollViewRef.current);
                             showCopilot.current = false;
                         }
                     }, 10);
