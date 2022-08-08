@@ -8,7 +8,7 @@ import CompareTable from './CompareTable';
 import {getUpgradeToPlanCard} from './services';
 import RenderHtml from '~/components/RenderHtml';
 
-const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
+const ToolSignalOfToPlan = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
     const [activeTab, setTabActive] = useState();
     const [{chart = {}, upgrade_items = [], now_value, after_value}, setData] = useState({});
 
@@ -43,13 +43,18 @@ const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
     useEffect(() => {
         getData(null);
     }, []);
+
     return (
         <View
-            style={styles.container}
+            style={[styles.container, componentIdx > 1 ? {paddingTop: 0} : {marginTop: px(12)}]}
             onLayout={(e) => {
                 onCardHeight(componentIdx, e.nativeEvent.layout.height);
             }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+                style={[
+                    {flexDirection: 'row', alignItems: 'center'},
+                    componentIdx > 1 ? {borderTopColor: '#E9EAEF', borderTopWidth: 1, paddingTop: px(16)} : {},
+                ]}>
                 <FastImage
                     source={{uri: data.title_icon}}
                     style={{width: px(22), height: px(22), marginRight: px(8)}}
@@ -108,13 +113,12 @@ const TaurenSignal = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
     );
 };
 
-export default TaurenSignal;
+export default ToolSignalOfToPlan;
 
 const styles = StyleSheet.create({
     container: {
         padding: px(16),
         backgroundColor: '#fff',
-        marginTop: px(12),
     },
     title: {
         fontSize: px(16),

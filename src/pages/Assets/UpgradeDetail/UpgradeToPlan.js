@@ -5,9 +5,7 @@ import Header from './Header';
 import FixBottom from './FixBottom';
 import StickyHeaderPlan from './StickyHeaderPlan';
 import SaleReminder from './SaleReminder';
-import TaurenSignal from './TaurenSignal';
-import FallBuy from './FallBuy';
-import ProbabilitySignal from './ProbabilitySignal';
+import ToolSignalOfToPlan from './ToolSignalOfToPlan';
 import {getUpgradeToPlanData} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import Loading from '~/pages/Portfolio/components/PageLoading';
@@ -17,7 +15,7 @@ const UpgradeToPlan = ({route, navigation}) => {
     const [curtainNum, setCurtainNum] = useState(0);
     const [cardsRate, setCardsRate] = useState({});
     const [data, setData] = useState({});
-    const {base_list, button, button2, detail, target} = data;
+    const {base_list, button, button2, detail, sub_detail, target} = data;
     const [loading, setLoading] = useState(true);
     const cardsHeight = useRef([]);
     const cardsPosition = useRef([]);
@@ -99,56 +97,28 @@ const UpgradeToPlan = ({route, navigation}) => {
                         onLayout={(e) => {
                             setScrollY(e.nativeEvent.layout.y);
                         }}>
-                        {detail &&
-                            Object.keys(detail).map((key, idx) => {
-                                switch (+key) {
-                                    case 0:
-                                        return (
-                                            <SaleReminder
-                                                idx={idx}
-                                                key={idx}
-                                                onCardRate={onCardRate}
-                                                onCardHeight={onCardHeight}
-                                                data={detail[0]}
-                                                upgrade_id={route.params.upgrade_id}
-                                            />
-                                        );
-                                    case 1:
-                                        return (
-                                            <TaurenSignal
-                                                idx={idx}
-                                                key={idx}
-                                                onCardRate={onCardRate}
-                                                onCardHeight={onCardHeight}
-                                                data={detail[1]}
-                                                upgrade_id={route.params.upgrade_id}
-                                            />
-                                        );
-                                    case 2:
-                                        return (
-                                            <FallBuy
-                                                idx={idx}
-                                                key={idx}
-                                                onCardRate={onCardRate}
-                                                onCardHeight={onCardHeight}
-                                                data={detail[2]}
-                                                upgrade_id={route.params.upgrade_id}
-                                            />
-                                        );
-                                    case 4:
-                                        return (
-                                            <ProbabilitySignal
-                                                idx={idx}
-                                                key={idx}
-                                                onCardRate={onCardRate}
-                                                onCardHeight={onCardHeight}
-                                                data={detail[4]}
-                                                upgrade_id={route.params.upgrade_id}
-                                            />
-                                        );
-                                    default:
-                                        return null;
-                                }
+                        {detail && (
+                            <SaleReminder
+                                idx={0}
+                                key={0}
+                                onCardRate={onCardRate}
+                                onCardHeight={onCardHeight}
+                                data={detail[0]}
+                                upgrade_id={route.params.upgrade_id}
+                            />
+                        )}
+                        {sub_detail &&
+                            sub_detail.map((item, idx) => {
+                                return (
+                                    <ToolSignalOfToPlan
+                                        idx={idx + 1}
+                                        key={idx + 1}
+                                        onCardRate={onCardRate}
+                                        onCardHeight={onCardHeight}
+                                        data={item}
+                                        upgrade_id={route.params.upgrade_id}
+                                    />
+                                );
                             })}
                         <View style={{height: px(30)}} />
                     </ScrollView>
