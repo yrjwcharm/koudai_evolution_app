@@ -369,7 +369,12 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
                 }}
                 activeOpacity={0.8}>
                 {data?.signal_info ? (
-                    <Image source={{uri: data?.signal_info}} style={[styles.signal_image, {top: 0}]} />
+                    <Image
+                        source={{
+                            uri: data?.signal_info,
+                        }}
+                        style={[styles.signal_image, {top: 0}]}
+                    />
                 ) : null}
                 <View style={[Style.flexRow, {marginBottom: px(14)}]}>
                     {!!data?.title_left_icon && (
@@ -386,26 +391,27 @@ const ProjectLgCard = ({data, style, tabLabel}) => {
                         />
                     )}
                 </View>
-                <View style={[Style.flexRow, {height: px(106)}]}>
-                    <View style={{width: px(100), paddingRight: px(6)}}>
+                <View style={[Style.flexRow, {flex: 1}]}>
+                    <View style={styles.card_left_con}>
                         <View style={{height: px(59), marginBottom: px(8)}}>
                             {showChart ? (
                                 <Chart initScript={chartOptions.smChart(data?.chart_data?.portfolio_lines)} />
                             ) : null}
                         </View>
-                        <RenderHtml
-                            style={{fontSize: px(15), fontFamily: Font.numFontFamily, marginBottom: px(4)}}
-                            html={data?.yield_info?.yield}
-                        />
-
-                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
-                            {data?.yield_info?.yield_desc}
-                        </Text>
+                        <View>
+                            <RenderHtml
+                                style={{fontSize: px(15), fontFamily: Font.numFontFamily}}
+                                html={data?.yield_info?.yield}
+                            />
+                            <Text style={{fontSize: px(11), color: Colors.lightGrayColor, marginTop: px(4)}}>
+                                {data?.yield_info?.yield_desc}
+                            </Text>
+                        </View>
                     </View>
                     <View style={styles.card_right_con}>
                         <View>
                             {data?.sub_title ? (
-                                <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(10)}}>
+                                <Text style={{fontSize: px(13), fontWeight: '700', marginBottom: px(8)}}>
                                     {data?.sub_title}
                                 </Text>
                             ) : null}
@@ -851,6 +857,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
         paddingVertical: px(16),
     },
+    card_left_con: {
+        width: px(100),
+        paddingRight: px(6),
+        height: '100%',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+    },
     card_right_con: {
         flex: 1,
         justifyContent: 'space-between',
@@ -868,10 +881,19 @@ const styles = StyleSheet.create({
     },
     signal_image: {
         position: 'absolute',
-        right: 0,
+        right: px(-12),
         height: px(24),
         width: px(34),
         top: px(14),
+    },
+    signal_tag: {
+        marginRight: px(8),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(278),
+        paddingRight: px(6),
+        paddingVertical: px(3),
+        paddingLeft: px(3),
+        marginBottom: px(6),
     },
     leftCircle: {
         width: px(10),

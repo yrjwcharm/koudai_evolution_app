@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-28 13:48:18
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-27 15:52:07
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -166,6 +163,8 @@ const Index = ({navigation, route}) => {
             });
         } else if (event_id === 'pk_click') {
             dispatch(addProduct(code));
+            jump(url);
+        } else {
             jump(url);
         }
     };

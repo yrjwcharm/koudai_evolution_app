@@ -188,6 +188,8 @@ export default ({navigation, route}) => {
             bottomModal.current.show();
         } else if (event_id === 'project_click') {
             jump(url);
+        } else {
+            jump(url);
         }
     };
 

@@ -68,7 +68,6 @@ const Index = ({route, navigation}) => {
                                 {_item?.list?.map((item, index) => (
                                     <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
                                         <Text style={styles.value}>{item?.name}</Text>
-
                                         <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
                                         <View style={{minWidth: px(80), alignItems: 'flex-end'}}>
                                             <RenderHtml html={item?.date} style={{fontSize: px(13)}} />

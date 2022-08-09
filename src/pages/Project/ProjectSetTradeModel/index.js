@@ -17,7 +17,7 @@ import Toast from '~/components/Toast';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
 import {PasswordModal} from '~/components/Password';
-const ProjectSetTrade = ({route, navigation}) => {
+const ProjectSetTradeModel = ({route, navigation}) => {
     const poid = route?.params?.poid || 'X04F193369';
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
@@ -267,7 +267,7 @@ const ProjectSetTrade = ({route, navigation}) => {
                 disabled={data?.btn?.avail != 1}
                 onPress={jumpNext}
                 agreement={
-                    agreement.filter((item) => item.show !== false)?.length > 0
+                    agreement?.filter((item) => item.show !== false)?.length > 0
                         ? {list: agreement.filter((item) => item.show !== false)}
                         : undefined
                 }
@@ -277,7 +277,7 @@ const ProjectSetTrade = ({route, navigation}) => {
     );
 };
 
-export default ProjectSetTrade;
+export default ProjectSetTradeModel;
 
 const styles = StyleSheet.create({
     title: {

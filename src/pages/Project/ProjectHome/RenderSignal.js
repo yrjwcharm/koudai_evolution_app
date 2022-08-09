@@ -39,7 +39,7 @@ const RenderSignal = ({list, more, desc, style}) => {
                     </TouchableOpacity>
                 ))}
                 <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)} activeOpacity={0.8}>
-                    <Text style={{color: Colors.lightBlackColor}}>{more?.text}</Text>
+                    <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{more?.text}</Text>
                     <Icon name={'rightcircleo'} color={Colors.lightBlackColor} />
                 </TouchableOpacity>
             </View>
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     more: {
         alignItems: 'center',
         width: px(24),
+        paddingHorizontal: px(6),
         height: px(54),
         borderRadius: px(4),
         backgroundColor: '#F3F4F4',

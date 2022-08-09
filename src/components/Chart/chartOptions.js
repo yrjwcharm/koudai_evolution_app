@@ -229,7 +229,9 @@ export const smChart = (data) => `(function(){
   chart.axis(false);
   chart.legend(false);
   chart.tooltip(false);
-  chart.area()
+  chart.area({
+    startOnZero: false,
+  })
     .position('date*value')
     .color('l(90) 0:#DC4949 1:#ffffff').shape('smooth');
   chart.line()

@@ -216,7 +216,11 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                     <Text
                         style={[
                             styles.amount_text,
-                            {minWidth: px(30), color: showEye == 'true' ? getAmountColor(profit) : Colors.defaultColor},
+                            {
+                                flex: 1,
+                                textAlign: 'right',
+                                color: showEye == 'true' ? getAmountColor(profit) : Colors.defaultColor,
+                            },
                         ]}>
                         {showEye == 'true' ? (profit.replace(/,/g, '') > 0 ? '+' + profit : profit) : '****'}
                     </Text>
@@ -224,7 +228,8 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                         style={[
                             styles.amount_text,
                             {
-                                minWidth: px(30),
+                                flex: 1.2,
+                                textAlign: 'right',
                                 color: showEye == 'true' ? getAmountColor(profit_acc) : Colors.defaultColor,
                             },
                         ]}>
@@ -279,15 +284,14 @@ const RenderAlert = ({alert}) => {
                     {alert?.alert_content}
                 </Text>
             </View>
-            {
-               !! alert?.alert_button&&
-            <SmButton
-                title={alert?.alert_button?.text}
-                style={{borderColor: buttonColor}}
-                titleStyle={{color: buttonColor}}
-                onPress={() => jump(alert?.alert_button?.url)}
-            />
-            }
+            {!!alert?.alert_button && (
+                <SmButton
+                    title={alert?.alert_button?.text}
+                    style={{borderColor: buttonColor}}
+                    titleStyle={{color: buttonColor}}
+                    onPress={() => jump(alert?.alert_button?.url)}
+                />
+            )}
         </View>
     );
 };

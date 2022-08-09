@@ -1,8 +1,6 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2022-08-05 11:43:48
- * @LastEditors: Please set LastEditors
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -82,7 +80,7 @@ const FixedBtn = (props) => {
         if (!clickRef.current) {
             return false;
         }
-        const {event_id, is_follow, item_type, plan_id} = btn;
+        const {event_id, is_follow, item_type, plan_id, url} = btn;
         const logParams = {ctrl: plan_id, event: event_id};
         event_id === 'follow_click' && (logParams.oid = is_follow ? 'cancel' : 'add');
         global.LogTool(logParams);
@@ -99,6 +97,8 @@ const FixedBtn = (props) => {
                     DeviceEventEmitter.emit('attentionRefresh');
                 }
             });
+        } else {
+            jump(url);
         }
     };
 
