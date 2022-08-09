@@ -49,6 +49,7 @@ const Index = ({route, navigation}) => {
                         <Text style={styles.key}>{data?.name_label}</Text>
                         <Text style={styles.value}>{data?.name}</Text>
                     </View>
+                    {/* 买入模式 */}
                     {data?.buy_model?.map((_item, _index) => (
                         <React.Fragment key={_index}>
                             <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
@@ -57,20 +58,30 @@ const Index = ({route, navigation}) => {
                             </View>
                             <View style={styles.list_con}>
                                 <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                                    {_item?.table_header?.map((item, index) => (
+                                    {_item?.table_header?.map((item, index, arr) => (
                                         <Text
                                             key={index}
-                                            style={[styles.key, index == 2 && {width: px(80), textAlign: 'right'}]}>
+                                            style={[
+                                                styles.key,
+                                                {flex: 1, textAlign: 'center'},
+                                                index == 0 && {textAlign: 'left'},
+                                                arr.length - 1 == index && {textAlign: 'right'},
+                                            ]}>
                                             {item}
                                         </Text>
                                     ))}
                                 </View>
                                 {_item?.list?.map((item, index) => (
                                     <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
-                                        <Text style={styles.value}>{item?.name}</Text>
-                                        <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
-                                        <View style={{minWidth: px(80), alignItems: 'flex-end'}}>
-                                            <RenderHtml html={item?.date} style={{fontSize: px(13)}} />
+                                        <Text style={{...styles.value, flex: 1}}>{item?.name}</Text>
+                                        <View style={{flex: 1, alignItems: 'center'}}>
+                                            <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
+                                        </View>
+                                        <View style={{alignItems: 'flex-end', flex: 1}}>
+                                            <RenderHtml
+                                                html={item?.date}
+                                                style={{fontSize: px(13), textAlign: 'right'}}
+                                            />
                                         </View>
                                     </View>
                                 ))}
@@ -79,6 +90,7 @@ const Index = ({route, navigation}) => {
                     ))}
 
                     {data?.tip ? <Text style={styles.tip}>{data?.tip}</Text> : null}
+                    {/* 卖出模式 */}
                     {data?.sale_model?.table_header ? (
                         <>
                             <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
@@ -87,21 +99,36 @@ const Index = ({route, navigation}) => {
                             </View>
                             <View style={styles.list_con}>
                                 <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                                    {data?.sale_model?.table_header?.map((item, index) => (
-                                        <Text key={index} style={styles.key}>
+                                    {data?.sale_model?.table_header?.map((item, index, arr) => (
+                                        <Text
+                                            key={index}
+                                            style={[
+                                                styles.key,
+                                                {flex: 1, textAlign: 'center'},
+                                                index == 0 && {textAlign: 'left'},
+                                                arr.length - 1 == index && {textAlign: 'right'},
+                                            ]}>
                                             {item}
                                         </Text>
                                     ))}
                                 </View>
                                 {data?.sale_model?.list?.map((item, index) => (
                                     <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
-                                        <Text style={styles.value}>{item?.name}</Text>
-                                        {!!item?.target_yield && (
-                                            <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
-                                                {(item?.target_yield * 100)?.toFixed(0) + '%'}
-                                            </Text>
-                                        )}
-                                        <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
+                                        <Text style={{flex: 1, ...styles.value}}>{item?.name}</Text>
+                                        <View style={{flex: 1, alignItems: 'center'}}>
+                                            {!!item?.target_yield && (
+                                                <Text style={{fontFamily: Font.numFontFamily, fontSize: px(13)}}>
+                                                    {(item?.target_yield * 100)?.toFixed(0) + '%'}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <Text
+                                            style={{
+                                                fontFamily: Font.numFontFamily,
+                                                fontSize: px(13),
+                                                textAlign: 'right',
+                                                flex: 1,
+                                            }}>
                                             {item?.select}
                                         </Text>
                                     </View>
