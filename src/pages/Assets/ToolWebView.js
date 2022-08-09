@@ -65,7 +65,7 @@ const ToolWebView = ({route}) => {
         return (
             <TouchableOpacity style={Style.flexRowCenter} activeOpacity={0.8} onPress={onPress}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/subscribe.png'}}
+                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/08/订阅@3x.png'}}
                     style={{width: px(16), height: px(16), marginRight: px(2)}}
                 />
                 <Text style={styles.rightText}>{topButton.text}</Text>
