@@ -152,10 +152,6 @@ export default function Tabbar() {
                 },
                 style: {height: isIphoneX() ? px(90) : px(56), paddinsgTop: isIphoneX() ? 0 : px(4)},
             }}>
-            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
-            <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
-            <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
                     name="Vision"
@@ -174,6 +170,11 @@ export default function Tabbar() {
                     component={Vision}
                 />
             ) : null}
+            {/* <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} /> */}
+            <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
+            <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
+            <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />
+
             <Tab.Screen
                 name="Home"
                 options={{

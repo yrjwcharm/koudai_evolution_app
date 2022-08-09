@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-02 17:47:39
+ * @LastEditTime: 2022-08-09 15:23:41
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -13,26 +13,33 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import RenderTitle from './components/RenderTitle.js';
-import RecommendCard from '../../components/Article/RecommendCard';
 import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import Empty from '../../components/EmptyTip';
-import {Button} from '../../components/Button';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 import LoadingTips from '../../components/LoadingTips.js';
 import LiveCard from '../../components/Article/LiveCard.js';
-
+import FastImage from 'react-native-fast-image';
+import Swiper from 'react-native-swiper';
+import {BoxShadow} from 'react-native-shadow';
+import _ from 'lodash';
+const shadow = {
+    color: '#E3E6EE',
+    border: 8,
+    radius: 1,
+    opacity: 0.2,
+    x: 0,
+    y: 2,
+    width: deviceWidth - px(32),
+};
 const Vision = ({navigation}) => {
     const isFocused = useIsFocused();
-    const netInfo = useNetInfo();
-    const [hasNet, setHasNet] = useState(true);
+
     const inset = useSafeAreaInsets();
     const scrollRef = useRef(null);
     const [refreshing, setRefreshing] = useState(false);
@@ -60,23 +67,18 @@ const Vision = ({navigation}) => {
             dispatch(updateVision({visionUpdate: ''}));
         }, [init, dispatch, readInterface, userInfo.is_login])
     );
-    useEffect(() => {
-        const listener = NetInfo.addEventListener((state) => {
-            setHasNet(state.isConnected);
-        });
-        return () => listener();
-    }, []);
+
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
             if (isFocused && userInfo.is_login) {
                 scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-                hasNet && init('refresh');
+                init('refresh');
                 global.LogTool('tabDoubleClick', 'Vision');
             }
         });
         return () => listener();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasNet, isFocused, userInfo.is_login]);
+    }, [isFocused, userInfo.is_login]);
     //上传滚动百分比
     const onScroll = (evt) => {
         const event = evt.nativeEvent;
@@ -85,25 +87,7 @@ const Vision = ({navigation}) => {
             Math.round((event.contentOffset.y / (event.contentSize.height - event.layoutMeasurement.height)) * 100)
         );
     };
-    const NetError = () => {
-        return (
-            <>
-                <Empty
-                    img={require('../../assets/img/emptyTip/noNetwork.png')}
-                    text={'哎呀！网络出问题了'}
-                    desc={'网络不给力，请检查您的网络设置'}
-                    style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
-                />
-                <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
-            </>
-        );
-    };
-    // 刷新一下
-    const refreshNetWork = useCallback(() => {
-        init();
-        setHasNet(netInfo.isConnected);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [netInfo]);
+
     const header = () => {
         return (
             <>
@@ -157,6 +141,36 @@ const Vision = ({navigation}) => {
             </>
         );
     };
+    const renderSecurity = (menu_list, bottom) => {
+        return menu_list ? (
+            <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
+                {menu_list.map((item, index) => (
+                    <BoxShadow key={index} setting={{...shadow, width: px(167), height: px(61)}}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={[Style.flexBetween, styles.secure_card, styles.common_card]}
+                            onPress={() => {
+                                index == 0 ? global.LogTool('indexSecurity') : global.LogTool('indexInvestPhilosophy');
+                                jump(item?.url);
+                            }}>
+                            <View>
+                                <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                                    <FastImage
+                                        resizeMode={FastImage.resizeMode.contain}
+                                        style={{width: px(24), height: px(24)}}
+                                        source={{uri: item.icon}}
+                                    />
+                                    <Text style={[styles.secure_title, {marginLeft: px(4)}]}>{item.title}</Text>
+                                </View>
+                                <Text style={styles.light_text}>{item.desc}</Text>
+                            </View>
+                            <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
+                        </TouchableOpacity>
+                    </BoxShadow>
+                ))}
+            </View>
+        ) : null;
+    };
     const renderContent = () => {
         return (
             <>
@@ -175,14 +189,45 @@ const Vision = ({navigation}) => {
                             colors={['#fff', '#F5F6F8']}
                             style={styles.con_bg}>
                             <View style={{paddingHorizontal: px(16)}}>
-                                {/* 推荐位 */}
-                                <RecommendCard
-                                    style={{marginBottom: px(16)}}
-                                    data={data?.part2}
-                                    onPress={() => {
-                                        global.LogTool('visionRecArticle', data?.part2);
-                                    }}
-                                />
+                                <View style={styles.swiper}>
+                                    {data?.part2?.banner_list?.length > 0 && (
+                                        <Swiper
+                                            height={px(120)}
+                                            autoplay
+                                            loadMinimal={Platform.OS == 'ios' ? true : false}
+                                            removeClippedSubviews={false}
+                                            autoplayTimeout={4}
+                                            paginationStyle={{
+                                                bottom: px(5),
+                                            }}
+                                            dotStyle={{
+                                                opacity: 0.5,
+                                                width: px(4),
+                                                ...styles.dotStyle,
+                                            }}
+                                            activeDotStyle={{
+                                                width: px(12),
+                                                ...styles.dotStyle,
+                                            }}>
+                                            {data?.part2?.banner_list?.map((banner, index) => (
+                                                <TouchableOpacity
+                                                    key={index}
+                                                    activeOpacity={0.9}
+                                                    onPress={() => {
+                                                        global.LogTool('swiper', banner.id);
+                                                        jump(banner.url);
+                                                    }}>
+                                                    <FastImage
+                                                        style={styles.slide}
+                                                        source={{
+                                                            uri: banner.cover,
+                                                        }}
+                                                    />
+                                                </TouchableOpacity>
+                                            ))}
+                                        </Swiper>
+                                    )}
+                                </View>
                                 {/* 其他模块 */}
                                 {data?.part3?.map((item, index) => {
                                     return (
@@ -227,6 +272,97 @@ const Vision = ({navigation}) => {
                                         </View>
                                     );
                                 })}
+                                <>
+                                    <RenderTitle title={'关于理财魔方'} />
+                                    {/* 安全保障 */}
+                                    {renderSecurity(data?.part4?.menu_list, px(12))}
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={styles.aboutCard}
+                                        onPress={() => {
+                                            global.LogTool('indexAboutMofang');
+                                            jump(data?.part4?.about_info?.url);
+                                        }}>
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                {height: px(89), paddingHorizontal: px(16), backgroundColor: '#1A61CD'},
+                                            ]}>
+                                            {data?.part4?.about_info?.header.map((text, index) => (
+                                                <View key={index} style={{marginRight: index == 0 ? px(60) : 0}}>
+                                                    <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                                        <Text style={styles.large_num}>{text?.value}</Text>
+                                                        <Text style={styles.num_unit}>{text?.unit}</Text>
+                                                    </View>
+                                                    <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                                        {text?.content}
+                                                    </Text>
+                                                </View>
+                                            ))}
+                                            <FastImage
+                                                source={require('../../assets/img/index/aboutBg.png')}
+                                                style={styles.aboutBg}
+                                            />
+                                        </View>
+                                        <BoxShadow
+                                            setting={{
+                                                color: Colors.brandColor,
+                                                width: px(28),
+                                                height: px(28),
+                                                radius: 6,
+                                                border: 6,
+                                                opacity: 0.08,
+                                                x: 0,
+                                                y: 2,
+                                                style: {position: 'absolute', right: px(12), top: px(75), zIndex: 10},
+                                            }}>
+                                            <View style={styles.right}>
+                                                <FontAwesome name={'angle-right'} color={Colors.btnColor} size={18} />
+                                            </View>
+                                        </BoxShadow>
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                {
+                                                    flex: 1,
+                                                    backgroundColor: '#fff',
+                                                },
+                                            ]}>
+                                            {data?.part4?.about_info?.items?.map((item, index) => (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    key={index}
+                                                    onPress={(e) => {
+                                                        e.stopPropagation();
+                                                        const url = _.cloneDeep(data?.part4?.about_info?.url);
+                                                        url.params.link += `/${index}`;
+                                                        jump(url);
+                                                    }}
+                                                    style={{
+                                                        alignItems: 'flex-start',
+                                                        flex: 1,
+                                                        paddingLeft: Space.padding,
+                                                    }}>
+                                                    <FastImage source={{uri: item.icon}} style={styles.icon} />
+                                                    <Text
+                                                        style={{
+                                                            color: Colors.defaultColor,
+                                                            fontWeight: 'bold',
+                                                            fontSize: px(14),
+                                                            marginBottom: px(6),
+                                                        }}>
+                                                        {item.name}
+                                                    </Text>
+                                                    <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
+                                                        {item.desc}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                            <View style={styles.leftLine} />
+                                            <View style={styles.rightLine} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </>
                             </View>
                             <BottomDesc />
                         </LinearGradient>
@@ -240,7 +376,7 @@ const Vision = ({navigation}) => {
         );
     };
 
-    return hasNet ? renderContent() : NetError();
+    return renderContent();
 };
 
 export default Vision;
@@ -421,5 +557,83 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         backgroundColor: '#fff',
+    },
+    swiper: {
+        marginBottom: px(12),
+        marginTop: px(5),
+        height: px(120),
+    },
+    common_card: {
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+        marginRight: px(12),
+    },
+    slide: {
+        height: px(120),
+        borderRadius: px(6),
+    },
+    dotStyle: {
+        backgroundColor: '#fff',
+        borderRadius: 0,
+        height: px(3),
+    },
+    secure_card: {
+        width: px(165),
+        paddingVertical: px(12),
+        paddingHorizontal: px(14),
+        height: px(61),
+    },
+    large_num: {
+        fontSize: px(28),
+        fontFamily: Font.numMedium,
+        color: '#fff',
+        marginRight: px(4),
+    },
+    num_unit: {
+        fontSize: px(14),
+        color: '#fff',
+        marginTop: px(10),
+    },
+    aboutCard: {
+        borderRadius: px(6),
+        overflow: 'hidden',
+        height: px(191),
+        flexDirection: 'column',
+    },
+    right: {
+        backgroundColor: '#fff',
+        width: px(28),
+        height: px(28),
+        borderRadius: 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    aboutBg: {
+        width: px(121),
+        height: px(83),
+        position: 'absolute',
+        top: px(8),
+        right: 0,
+    },
+    leftLine: {
+        position: 'absolute',
+        left: px(114),
+        bottom: px(21),
+        width: Space.borderWidth,
+        height: px(33),
+        backgroundColor: Colors.borderColor,
+    },
+    rightLine: {
+        position: 'absolute',
+        right: px(113),
+        bottom: px(21),
+        width: Space.borderWidth,
+        height: px(33),
+        backgroundColor: Colors.borderColor,
+    },
+    icon: {
+        width: px(24),
+        height: px(24),
+        marginBottom: px(4),
     },
 });
