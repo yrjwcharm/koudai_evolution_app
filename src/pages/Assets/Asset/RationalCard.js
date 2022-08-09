@@ -160,7 +160,7 @@ const RationalCard = ({rational_info, im_info}) => {
                         </View>
                     )}
                     <View style={{flex: 1}}>
-                        <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                        <View style={[Style.flexRow, {marginBottom: px(2)}]}>
                             <Text style={[styles.secure_title, {marginRight: px(2)}]}>{rational_info?.name}</Text>
                             {!rational_info?.button && rational_info?.percent == 100 ? (
                                 <View style={styles.upgrade_sm_btn}>
@@ -180,8 +180,8 @@ const RationalCard = ({rational_info, im_info}) => {
                     </View>
                     {rational_info?.button && (
                         <SmButton
-                            title={rational_info?.button?.text}
-                            style={{backgroundColor: Colors.btnColor}}
+                            title={rational_info?.button?.text || '开启'}
+                            style={{backgroundColor: Colors.btnColor, paddingHorizontal: px(8)}}
                             titleStyle={{color: '#fff'}}
                             onPress={handleRation}
                         />
