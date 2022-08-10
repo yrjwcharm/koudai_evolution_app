@@ -284,7 +284,10 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                         <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
                                             {adjustDate}
                                         </Text>
-                                        {consoleBtn({button})}
+                                        {consoleBtn({
+                                            button,
+                                            textStyle: {color: button?.avail === 0 ? '#BDC2CC' : '#fff'},
+                                        })}
                                     </>
                                 )}
                             </View>
@@ -302,7 +305,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                             {adjustTip}
                                         </Text>
                                     </View>
-                                    {consoleBtn({button})}
+                                    {consoleBtn({button, textStyle: {color: button?.avail === 0 ? '#BDC2CC' : '#fff'}})}
                                 </View>
                             </>
                         ) : null}
