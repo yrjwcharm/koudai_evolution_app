@@ -200,12 +200,14 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
     return (
         <>
             <TouchableOpacity style={[styles.card]} activeOpacity={0.9} onPress={() => jump(url)}>
-                {tag_icon && <Image source={{uri: tag_icon}} style={styles.signal_image} />}
+                {!!tag_icon && <Image source={{uri: tag_icon}} style={styles.signal_image} />}
                 {name && (
                     <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                        <View style={styles.tag}>
-                            <Text style={styles.tag_text}>{type_name}</Text>
-                        </View>
+                        {!!type_name && (
+                            <View style={styles.tag}>
+                                <Text style={styles.tag_text}>{type_name}</Text>
+                            </View>
+                        )}
                         <Text numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}}>
                             {name}
                         </Text>
