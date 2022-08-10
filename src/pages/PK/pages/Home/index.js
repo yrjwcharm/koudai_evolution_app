@@ -4,7 +4,7 @@ import {DeviceEventEmitter, View, StyleSheet, Text, RefreshControl, useWindowDim
 import FastImage from 'react-native-fast-image';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Space, Style} from '../../../../common/commonStyle';
+import {Colors, Space, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import PKCard from './PKCard';
@@ -165,7 +165,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     };
 
     return loading ? (
-        <Loading />
+        <Loading color={Colors.btnColor} />
     ) : (
         <>
             <View style={[styles.container, {paddingTop: insets.top}]}>

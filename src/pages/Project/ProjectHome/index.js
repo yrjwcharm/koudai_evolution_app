@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 14:31:50
  * @Description:计划首页
  */
-import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
+import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
@@ -41,92 +41,96 @@ const Index = () => {
     return (
         <>
             <NavBar title="计划" />
+            {data ? (
+                <ScrollView
+                    style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
+                    <Banner data={data?.banner_list} />
+                    {/* 买卖工具 */}
+                    {data?.navigator ? (
+                        <>
+                            <Title
+                                style={{marginBottom: px(16)}}
+                                title={data?.navigator?.title}
+                                sub_title={data?.navigator?.sub_title}
+                            />
+                            <View style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
+                                {data?.navigator?.items?.map((item, index) => (
+                                    <TouchableOpacity
+                                        style={{flex: 1, alignItems: 'center'}}
+                                        key={index}
+                                        activeOpacity={0.8}
+                                        onPress={() => jump(item.url)}>
+                                        {!!item.icon && (
+                                            <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
+                                        )}
+                                        <Text
+                                            style={{color: Colors.lightBlackColor, fontSize: px(12), marginTop: px(6)}}>
+                                            {item.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </>
+                    ) : null}
+                    {/* 指数买卖 */}
+                    {data?.signal_lite ? (
+                        <>
+                            <Title
+                                style={{marginBottom: px(16)}}
+                                title={data?.signal_lite?.title}
+                                sub_title={data?.signal_lite?.sub_title}
+                                tip={data?.signal_lite?.tip}
+                            />
 
-            <ScrollView
-                style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData(true)} />}>
-                <Banner data={data?.banner_list} />
-                {/* 买卖工具 */}
-                {data?.navigator ? (
-                    <>
-                        <Title
-                            style={{marginBottom: px(16)}}
-                            title={data?.navigator?.title}
-                            sub_title={data?.navigator?.sub_title}
-                        />
-                        <View style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
-                            {data?.navigator?.items?.map((item, index) => (
-                                <TouchableOpacity
-                                    style={{flex: 1, alignItems: 'center'}}
-                                    key={index}
-                                    activeOpacity={0.8}
-                                    onPress={() => jump(item.url)}>
-                                    {!!item.icon && (
-                                        <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
-                                    )}
-                                    <Text style={{color: Colors.lightBlackColor, fontSize: px(12), marginTop: px(6)}}>
-                                        {item.text}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                    </>
-                ) : null}
-                {/* 指数买卖 */}
-                {data?.signal_lite ? (
-                    <>
-                        <Title
-                            style={{marginBottom: px(16)}}
-                            title={data?.signal_lite?.title}
-                            sub_title={data?.signal_lite?.sub_title}
-                            tip={data?.signal_lite?.tip}
-                        />
-
-                        <RenderSignal
-                            list={data?.signal_lite?.list}
-                            more={data?.signal_lite?.more}
-                            desc={data?.signal_lite?.desc}
-                            style={{marginBottom: px(24)}}
-                        />
-                    </>
-                ) : null}
-                {/* 理财有计划 */}
-                {data?.project_list ? (
-                    <>
-                        <Title
-                            style={{marginBottom: px(16)}}
-                            title={data?.project_list?.title}
-                            sub_title={data?.project_list?.sub_title}
-                        />
-                        <ScrollableTabView
-                            initialPage={0}
-                            prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
-                            onChangeTab={(obj) => {
-                                setCurrentTab(obj.i);
-                                global.LogTool({
-                                    event: 'ProjectHome',
-                                    plateid: data?.project_list?.tab_list[obj.i]?.plateid,
-                                    ctrl: data?.project_list?.tab_list[obj.i]?.title,
-                                    oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
-                                });
-                            }}
-                            renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
-                            style={{flex: 1}}>
-                            {data?.project_list?.tab_list?.map((tab, index) => {
-                                return (
-                                    <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
-                                        <ProjectProduct
-                                            data={data?.project_list?.tab_list[currentTab]}
-                                            tabLabel={tab.title}
-                                        />
-                                    </View>
-                                );
-                            })}
-                        </ScrollableTabView>
-                        <BottomDesc style={{paddingHorizontal: 0}} />
-                    </>
-                ) : null}
-            </ScrollView>
+                            <RenderSignal
+                                list={data?.signal_lite?.list}
+                                more={data?.signal_lite?.more}
+                                desc={data?.signal_lite?.desc}
+                                style={{marginBottom: px(24)}}
+                            />
+                        </>
+                    ) : null}
+                    {/* 理财有计划 */}
+                    {data?.project_list ? (
+                        <>
+                            <Title
+                                style={{marginBottom: px(16)}}
+                                title={data?.project_list?.title}
+                                sub_title={data?.project_list?.sub_title}
+                            />
+                            <ScrollableTabView
+                                initialPage={0}
+                                prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
+                                onChangeTab={(obj) => {
+                                    setCurrentTab(obj.i);
+                                    global.LogTool({
+                                        event: 'ProjectHome',
+                                        plateid: data?.project_list?.tab_list[obj.i]?.plateid,
+                                        ctrl: data?.project_list?.tab_list[obj.i]?.title,
+                                        oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
+                                    });
+                                }}
+                                renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
+                                style={{flex: 1}}>
+                                {data?.project_list?.tab_list?.map((tab, index) => {
+                                    return (
+                                        <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
+                                            <ProjectProduct
+                                                data={data?.project_list?.tab_list[currentTab]}
+                                                tabLabel={tab.title}
+                                            />
+                                        </View>
+                                    );
+                                })}
+                            </ScrollableTabView>
+                            <BottomDesc style={{paddingHorizontal: 0}} />
+                        </>
+                    ) : null}
+                </ScrollView>
+            ) : (
+                <ActivityIndicator color={Colors.btnColor} style={{marginTop: px(40)}} />
+            )}
             {!is_login && <LoginMask />}
         </>
     );
