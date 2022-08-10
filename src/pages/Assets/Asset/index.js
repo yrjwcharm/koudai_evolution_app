@@ -9,7 +9,7 @@ import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import RationalCard from './RationalCard';
 import HoldList from './HoldList';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {getHolding, getInfo, getNotice, getReadMes} from './service';
 import BottomMenus from './BottomMenus';
 import BottomDesc from '~/components/BottomDesc';
@@ -35,6 +35,7 @@ const Index = ({navigation, _ref}) => {
     const [showEye, setShowEye] = useState('true');
     const scrollRef = useRef();
     const showGesture = useShowGesture();
+    const isFocused = useIsFocused();
     const getData = async () => {
         let res = await getInfo();
         setRefreshing(false);
@@ -76,7 +77,7 @@ const Index = ({navigation, _ref}) => {
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            if (is_login) {
+            if (isFocused) {
                 scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
                 init(true);
                 global.LogTool('tabDoubleClick', 'Home');
@@ -84,7 +85,7 @@ const Index = ({navigation, _ref}) => {
         });
         return () => listener();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [is_login]);
+    }, [isFocused]);
     useEffect(() => {
         Storage.get('myAssetsEye').then((res) => {
             setShowEye(res ? res : 'true');

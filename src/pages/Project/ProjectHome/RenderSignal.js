@@ -51,7 +51,7 @@ export default RenderSignal;
 
 const styles = StyleSheet.create({
     con: {
-        width: px(100),
+        width: px(98),
         height: px(54),
         borderRadius: px(5),
         marginRight: px(8),
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#239B56',
     },
     more: {
-        alignItems: 'center',
-        width: px(24),
+        flex: 1,
         paddingHorizontal: px(6),
         height: px(54),
         borderRadius: px(4),
+        alignContent: 'center',
         backgroundColor: '#F3F4F4',
         justifyContent: 'center',
     },

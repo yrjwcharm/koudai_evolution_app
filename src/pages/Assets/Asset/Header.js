@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(74),
-        top: px(-5),
+        left: px(68),
+        top: px(-8),
         backgroundColor: Colors.red,
         borderRadius: px(6),
         paddingVertical: px(2),

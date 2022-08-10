@@ -353,7 +353,9 @@ const TradeRecordDetail = (props) => {
                             {data?.part1?.type?.text}
                         </Text>
                     </View>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
+                    <Text style={{color: Colors.defaultColor, fontSize: px(16), maxWidth: px(300)}}>
+                        {data?.part1?.name}
+                    </Text>
                 </View>
                 {data?.part1?.table ? (
                     <View style={[Style.flexRow, {width: '100%', paddingHorizontal: px(20)}]}>

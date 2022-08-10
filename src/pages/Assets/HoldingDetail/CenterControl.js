@@ -94,7 +94,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
     };
 
     /** @name 中控内部按钮 */
-    const consoleBtn = ({style, button: btn}) => {
+    const consoleBtn = ({style = {}, button: btn, textStyle = {}}) => {
         return btn?.text ? (
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -107,7 +107,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                     btn.avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
                     style,
                 ]}>
-                <Text style={[styles.btnText, {color: btn.avail === 0 ? '#BDC2CC' : '#fff'}]}>{btn.text}</Text>
+                <Text style={[styles.btnText, textStyle]}>{btn.text}</Text>
             </TouchableOpacity>
         ) : null;
     };
@@ -192,6 +192,14 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                         i === arr.length - 1
                                             ? {backgroundColor: mode === 'buy' ? Colors.green : Colors.red}
                                             : styles.defaultConsoleBtn,
+                                    textStyle: {
+                                        color:
+                                            btn.avail === 0
+                                                ? '#BDC2CC'
+                                                : i === arr.length - 1
+                                                ? '#fff'
+                                                : Colors.descColor,
+                                    },
                                 });
                             })}
                         </View>
