@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-27 15:51:55
+ * @LastEditTime: 2022-08-10 18:08:42
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -67,6 +67,7 @@ function App(props) {
             } else {
                 http.post('/mapi/report/app_log/20210101', {
                     error: error,
+                    is_fatal: isFatal,
                 });
             }
         }, true);
