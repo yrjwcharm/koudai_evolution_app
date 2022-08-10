@@ -154,8 +154,12 @@ const Index = ({navigation, route}) => {
                                                     style={{...styles.tableText, color: Colors.defaultColor}}
                                                 />
                                             </View>
-                                            <NumText style={{...styles.tableText, ...styles.numText}} text={ratio} />
-                                            <Text style={[styles.tableText, styles.numText]}>{inc}</Text>
+                                            <NumText
+                                                style={{...styles.tableText, ...styles.numText}}
+                                                text={inc}
+                                                type={inc === '--' ? 2 : 1}
+                                            />
+                                            <Text style={[styles.tableText, styles.numText]}>{ratio}</Text>
                                         </View>
                                     );
                                 })}
