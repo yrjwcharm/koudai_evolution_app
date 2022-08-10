@@ -11,3 +11,5 @@ export const getChartData = (params) => http.get('/portfolio/asset/chart/2022071
 export const setDividend = (params) => http.post('/portfolio/fund/dividend/20220712', params);
 
 export const postUnFavor = (params) => http.post('/portfolio/asset/close_upgrade/20220712', params);
+
+export const postRenewal = (params) => http.post('/tool/signal/renewal/20220810', params);

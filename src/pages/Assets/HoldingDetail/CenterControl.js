@@ -13,7 +13,7 @@ import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import {px} from '~/utils/appUtil';
-import {postUnFavor} from './services';
+import {postRenewal, postUnFavor} from './services';
 import {upgradeDo} from '../UpgradeDetail/services';
 
 const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
@@ -28,6 +28,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         date: adjustDate,
         id: consoleId,
         notice: consoleNotice,
+        poid,
         ratio_info,
         signal_icon,
         signal_items,
@@ -95,19 +96,26 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
 
     /** @name 中控内部按钮 */
     const consoleBtn = ({style = {}, button: btn, textStyle = {}}) => {
-        return btn?.text ? (
+        const {action, avail, text: btnText, url} = btn || {};
+        return btnText ? (
             <TouchableOpacity
                 activeOpacity={0.8}
-                disabled={btn.avail === 0}
-                key={btn.text}
-                onPress={() => jump(btn.url)}
-                style={[
-                    Style.flexCenter,
-                    styles.consoleBtn,
-                    btn.avail === 0 ? {backgroundColor: '#E9EAEF'} : {},
-                    style,
-                ]}>
-                <Text style={[styles.btnText, textStyle]}>{btn.text}</Text>
+                disabled={avail === 0}
+                key={btnText}
+                onPress={() => {
+                    if (action === 'renewal') {
+                        postRenewal({poid}).then((res) => {
+                            res.message && Toast.show(res.message);
+                            if (res.code === '000000') {
+                                refresh?.();
+                            }
+                        });
+                    } else {
+                        jump(url);
+                    }
+                }}
+                style={[Style.flexCenter, styles.consoleBtn, avail === 0 ? {backgroundColor: '#E9EAEF'} : {}, style]}>
+                <Text style={[styles.btnText, avail === 0 ? {color: '#BDC2CC'} : {}, textStyle]}>{btnText}</Text>
             </TouchableOpacity>
         ) : null;
     };
