@@ -1,14 +1,10 @@
 /*
- * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 16:55:37
  */
-// import _ from 'lodash';
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
-import {px, px as text} from '../../../utils/appUtil';
+import {px as text} from '../../../utils/appUtil';
 export const baseChart = (data) => `(function(){
   const chart = new F2.Chart({
     id: 'chart',

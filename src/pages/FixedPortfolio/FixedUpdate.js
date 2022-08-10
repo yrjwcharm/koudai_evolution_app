@@ -1,9 +1,6 @@
 /*
- * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-08 14:18:15
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView, Switch} from 'react-native';
@@ -141,6 +138,7 @@ export default function FixedUpdate({navigation, route}) {
             })
                 .then((res) => {
                     if (res.code === '000000') {
+                        navigation.setOptions({title: res.result.title || '修改计划'});
                         if (isFocused && res.result.risk_disclosure && show_risk_disclosure.current) {
                             if (res.result?.pay_methods[0]?.pop_risk_disclosure) {
                                 showRiskDisclosure(res.result.risk_disclosure);

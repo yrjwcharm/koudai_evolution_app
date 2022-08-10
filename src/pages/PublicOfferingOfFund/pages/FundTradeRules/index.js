@@ -127,16 +127,26 @@ const Index = ({navigation, route}) => {
                                         )}
                                         {tr_list?.map?.((tr, i, arr) => {
                                             return (
-                                                <View key={`tr${i}`} style={[Style.flexBetween, styles.tr]}>
+                                                <View key={`tr${i}`} style={[Style.flexRow, styles.tr]}>
                                                     {i % 2 === 1 && <View style={styles.tableBg} />}
                                                     {i === arr.length - 1 && i % 2 === 0 && (
                                                         <View style={styles.tableBorder} />
                                                     )}
-                                                    {tr.map?.((r, idx) => {
+                                                    {tr.map?.((r, idx, _tr) => {
                                                         return (
-                                                            <View key={r + idx}>
+                                                            <View key={r + idx} style={{flex: idx === 0 ? 1.5 : 1}}>
                                                                 {typeof r === 'string' ? (
-                                                                    <Html html={r} style={styles.tableText} />
+                                                                    <View
+                                                                        style={{
+                                                                            alignItems:
+                                                                                idx === 0
+                                                                                    ? 'flex-start'
+                                                                                    : idx === _tr.length - 1
+                                                                                    ? 'flex-end'
+                                                                                    : 'center',
+                                                                        }}>
+                                                                        <Html html={r} style={styles.tableText} />
+                                                                    </View>
                                                                 ) : (
                                                                     <View style={Style.flexRow}>
                                                                         <Text
@@ -152,7 +162,7 @@ const Index = ({navigation, route}) => {
                                                                         <View
                                                                             style={{
                                                                                 alignItems: 'flex-end',
-                                                                                minWidth: px(50),
+                                                                                flex: 1,
                                                                             }}>
                                                                             <Html
                                                                                 html={r[1]}
@@ -260,12 +270,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         left: -Space.padding,
+        width: deviceWidth,
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
     },
     originText: {
+        flex: 2,
         color: Colors.descColor,
         fontFamily: Font.numFontFamily,
+        textAlign: 'right',
         textDecorationColor: Colors.defaultColor,
         textDecorationLine: 'line-through',
     },

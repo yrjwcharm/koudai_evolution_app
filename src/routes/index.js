@@ -220,6 +220,7 @@ import SignalList from '~/pages/Project/SignalList'; //指数买卖信号列表
 import ProjectDetail from '~/pages/Project/ProjectDetail'; // 计划详情页
 import ProjectIntro from '~/pages/Project/ProjectIntro'; // 计划介绍页
 import FundTradeRules from '~/pages/PublicOfferingOfFund/pages/FundTradeRules'; // 基金交易规则
+import FundHolding from '~/pages/PublicOfferingOfFund/pages/FundHolding'; // 基金持仓
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -542,7 +543,7 @@ export default function AppStack() {
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
-            <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
+            <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: ''}} />
             <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen
                 name="RemindMessage"
@@ -871,6 +872,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="FundTradeRules" component={FundTradeRules} options={{title: ''}} />
+            <Stack.Screen name="FundHolding" component={FundHolding} options={{title: ''}} />
 
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
