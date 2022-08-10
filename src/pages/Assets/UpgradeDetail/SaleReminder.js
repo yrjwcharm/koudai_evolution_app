@@ -47,7 +47,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(componentIdx, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height + px(12));
             }}>
             <Text style={styles.title}>{data.title}</Text>
             <View style={styles.ratePanel}>

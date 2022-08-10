@@ -10,7 +10,7 @@ const AssetAllocation = ({data = {}, onCardHeight, idx: componentIdx}) => {
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(componentIdx, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height + px(12));
             }}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.desc}>{desc}</Text>

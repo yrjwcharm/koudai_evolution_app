@@ -24,8 +24,12 @@ const UpgradeToPlan = ({route, navigation}) => {
     const handlerScroll = useCallback((e) => {
         let height = e.nativeEvent.contentOffset.y;
         let arr = cardsPosition.current;
-        for (let i = arr.length - 2; i >= -1; i--) {
-            if (height + curtainHeight.current > (arr[i] || 0)) {
+        for (let i = arr.length - 2; i > -1; i--) {
+            let titleY = arr[i] - curtainHeight.current;
+            if (i === 0 && height < 20) {
+                setCurtainNum(0);
+                break;
+            } else if (height > titleY) {
                 setCurtainNum(i + 1);
                 break;
             }
@@ -40,12 +44,12 @@ const UpgradeToPlan = ({route, navigation}) => {
         (index, height) => {
             cardsHeight.current[index] = height;
             if (cardsHeight.current.length === sub_detail.length + 1) {
-                const arr = [px(40)];
+                const arr = [px(38)];
                 cardsHeight.current.reduce((memo, cur, idx) => {
                     memo += cur;
                     arr[idx + 1] = memo;
                     return memo;
-                }, px(40));
+                }, px(38));
                 cardsPosition.current = arr.filter((item) => item);
             }
         },

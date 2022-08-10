@@ -50,7 +50,7 @@ const IncreaseRevenue = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: 
         <View
             style={styles.container}
             onLayout={(e) => {
-                onCardHeight(componentIdx, e.nativeEvent.layout.height);
+                onCardHeight(componentIdx, e.nativeEvent.layout.height + px(12));
             }}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.ratePanel}>
