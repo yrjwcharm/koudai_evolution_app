@@ -3,7 +3,7 @@
  * @Description:资产页金额卡片
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {px} from '~/utils/appUtil';
 
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -14,7 +14,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const jump = useJump();
-
     return (
         <LinearGradient
             colors={['#F1F9FF', Colors.bgColor]}
@@ -50,7 +49,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                         }}>
                         <Octicons
                             name={'triangle-up'}
-                            size={16}
+                            size={px(16)}
                             color={'rgba(157, 187, 255, 0.68)'}
                             style={{left: px(18)}}
                         />
@@ -93,7 +92,6 @@ const styles = StyleSheet.create({
         width: px(150),
         height: px(220),
     },
-
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.marginAlign,
@@ -144,8 +142,8 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     noticeBox: {
-        marginTop: -5,
-        paddingVertical: px(2),
+        marginTop: -px(6),
+        paddingVertical: px(4),
         paddingHorizontal: Space.marginAlign,
         backgroundColor: 'rgba(157, 187, 255, 0.68)',
         borderRadius: px(12),
