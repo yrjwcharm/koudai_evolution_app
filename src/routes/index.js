@@ -765,7 +765,35 @@ export default function AppStack() {
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
-            <Stack.Screen name="OldPortfolioAssets" component={PortfolioAssets} options={{title: ''}} />
+            <Stack.Screen
+                name="OldPortfolioAssets"
+                component={PortfolioAssets}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        backgroundColor: '#0052CD',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
             {/* v7新页面 Start */}
             <Stack.Screen
                 name="SearchHome"
