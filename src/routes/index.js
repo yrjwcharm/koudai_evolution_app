@@ -241,6 +241,7 @@ import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须
 import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
 import Find from '~/pages/Find'; // 投顾组合
+import PortfolioAssets from '~/pages/Assets/PortfolioAssets'; // 老版本持仓详情页
 
 const Stack = createStackNavigator();
 
@@ -764,6 +765,7 @@ export default function AppStack() {
             <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
             <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
             <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
+            <Stack.Screen name="OldPortfolioAssets" component={PortfolioAssets} options={{title: ''}} />
             {/* v7新页面 Start */}
             <Stack.Screen
                 name="SearchHome"
