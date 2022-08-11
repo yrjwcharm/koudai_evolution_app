@@ -2,13 +2,14 @@
 /*
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 15:02:28
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-11 15:08:03
  * @Description: 私募风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     ActivityIndicator,
+    BackHandler,
     Platform,
     ScrollView,
     StyleSheet,
@@ -145,6 +146,19 @@ const PEQuestionnaire = () => {
             }
         });
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            const fun = () => true;
+            if (route.params.fr === 'private_index_risk') {
+                navigation.setOptions({gestureEnabled: false, headerBackImage: () => null});
+                BackHandler.addEventListener('hardwareBackPress', fun);
+            }
+            return () => {
+                BackHandler.removeEventListener('hardwareBackPress', fun);
+            };
+        }, [])
+    );
 
     useFocusEffect(
         useCallback(() => {

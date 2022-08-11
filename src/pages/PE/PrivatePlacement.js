@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     StatusBar,
+    DeviceEventEmitter,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
@@ -26,24 +27,44 @@ const PrivatePlacement = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState({});
 
+    const init = () => {
+        setLoading(true);
+        http.get('/private_fund/index/20220608')
+            .then((res) => {
+                if (res.code === '000000') {
+                    const {next_url} = res.result;
+                    if (next_url) {
+                        jump(next_url);
+                    } else {
+                        setData(res.result);
+                    }
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally((_) => {
+                StatusBar.setBarStyle('light-content');
+                setLoading(false);
+            });
+    };
+
     useFocusEffect(
         useCallback(() => {
-            setLoading(true);
-            http.get('/private_fund/index/20220608')
-                .then((res) => {
-                    if (res.code === '000000') {
-                        setData(res.result);
-                    } else {
-                        Toast.show(res.message);
-                    }
-                })
-                .finally((_) => {
-                    StatusBar.setBarStyle('light-content');
-                    setLoading(false);
-                });
+            const listener = DeviceEventEmitter.addListener('sign_password_refresh', init);
+            return () => {
+                listener?.remove?.();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -101,7 +122,7 @@ const PrivatePlacement = () => {
                     </LinearGradient>
                     {/* card list */}
                     <View style={styles.cardList}>
-                        {data.fof_list.map((item, idx) => (
+                        {data.fof_list?.map((item, idx) => (
                             <ProductCards key={idx} data={{type: 'private_card', data: item, url: item.url}} />
                         ))}
                     </View>
