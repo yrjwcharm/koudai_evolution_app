@@ -35,9 +35,8 @@ const PrivatePlacement = () => {
                     const {next_url} = res.result;
                     if (next_url) {
                         jump(next_url);
-                    } else {
-                        setData(res.result);
                     }
+                    setData(res.result);
                 } else {
                     Toast.show(res.message);
                 }

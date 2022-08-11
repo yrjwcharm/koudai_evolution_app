@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-28 17:16:21
+ * @LastEditTime: 2022-08-11 15:44:16
  * @Description: 底部弹窗
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -32,6 +32,7 @@ const BottomModal = React.forwardRef((props, ref) => {
         backButtonClose = true,
         onClose = () => {},
         destroy = () => {},
+        showClose = true,
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -113,9 +114,11 @@ const BottomModal = React.forwardRef((props, ref) => {
                         style={[styles.con, style]}>
                         {header || (
                             <View style={[styles.header, headerStyle]}>
-                                <TouchableOpacity style={styles.close} onPress={hide}>
-                                    <Icon color={Colors.descColor} name={'close'} size={18} />
-                                </TouchableOpacity>
+                                {showClose && (
+                                    <TouchableOpacity style={styles.close} onPress={hide}>
+                                        <Icon color={Colors.descColor} name={'close'} size={18} />
+                                    </TouchableOpacity>
+                                )}
                                 <View style={{alignItems: 'center'}}>
                                     <Text style={styles.title}>{title}</Text>
                                     {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}

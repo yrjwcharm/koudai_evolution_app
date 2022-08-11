@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-05 11:43:22
+ * @LastEditTime: 2022-08-11 15:46:41
  * @Description: 自定义跳转钩子
  */
 import React, {useRef} from 'react';
@@ -79,6 +79,7 @@ function useJump() {
                 } else if (popup.type === 'choose_object' || popup.type === 'sign_password') {
                     Modal.show(
                         {
+                            backButtonClose: popup.back_close,
                             children: (
                                 <PopupContent
                                     data={popup}
@@ -89,6 +90,7 @@ function useJump() {
                                 />
                             ),
                             isTouchMaskToClose: popup.touch_close,
+                            showClose: popup.show_close,
                             title: popup.title,
                         },
                         'slide'
