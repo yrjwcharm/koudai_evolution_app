@@ -198,7 +198,7 @@ const RationalCard = ({rational_info, im_info}) => {
                     <View>
                         <FastImage
                             resizeMode={FastImage.resizeMode.contain}
-                            style={{width: px(37), height: px(37), marginRight: px(6)}}
+                            style={{width: px(37), height: px(37), marginRight: px(6), borderRadius: px(20)}}
                             source={{uri: im_info?.avatar}}
                         />
                         {im_info?.unread_num > 0 && <View style={styles.circle} />}

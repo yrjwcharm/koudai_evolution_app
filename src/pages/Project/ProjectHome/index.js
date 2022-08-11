@@ -3,12 +3,12 @@
  * @Description:计划首页
  */
 import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useRef} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import RenderSignal from './RenderSignal';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {getProjectData} from './service';
 import {useJump} from '~/components/hooks';
 import CapsuleTabbar from '~/components/CapsuleTabbar';
@@ -20,17 +20,28 @@ import LoginMask from '~/components/LoginMask';
 import Banner from './Banner';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
-const Index = () => {
+import {copilot, CopilotStep, walkthroughable} from 'react-native-copilot';
+import TooltipComponent from './TooltipComponent';
+import withNetState from '~/components/withNetState';
+const CopilotText = walkthroughable(View);
+
+const Index = ({start}) => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [refreshing, setRefreshing] = useState(false);
     const [currentTab, setCurrentTab] = useState(0);
+    const isFocused = useIsFocused();
     const jump = useJump();
     const getData = async (refresh) => {
         refresh && setRefreshing(true);
         let res = await getProjectData();
         setRefreshing(false);
         setData(res.result);
+        if (is_login && res.result?.is_guide_page === 1 && isFocused) {
+            setTimeout(() => {
+                start?.();
+            }, 20);
+        }
     };
     useFocusEffect(
         useCallback(() => {
@@ -54,23 +65,32 @@ const Index = () => {
                                 title={data?.navigator?.title}
                                 sub_title={data?.navigator?.sub_title}
                             />
-                            <View style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
-                                {data?.navigator?.items?.map((item, index) => (
-                                    <TouchableOpacity
-                                        style={{flex: 1, alignItems: 'center'}}
-                                        key={index}
-                                        activeOpacity={0.8}
-                                        onPress={() => jump(item.url)}>
-                                        {!!item.icon && (
-                                            <Image source={{uri: item.icon}} style={{width: px(32), height: px(32)}} />
-                                        )}
-                                        <Text
-                                            style={{color: Colors.lightBlackColor, fontSize: px(12), marginTop: px(6)}}>
-                                            {item.text}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
+                            <CopilotStep order={1} name="navigator">
+                                <CopilotText style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
+                                    {data?.navigator?.items?.map((item, index) => (
+                                        <TouchableOpacity
+                                            style={{flex: 1, alignItems: 'center'}}
+                                            key={index}
+                                            activeOpacity={0.8}
+                                            onPress={() => jump(item.url)}>
+                                            {!!item.icon && (
+                                                <Image
+                                                    source={{uri: item.icon}}
+                                                    style={{width: px(32), height: px(32)}}
+                                                />
+                                            )}
+                                            <Text
+                                                style={{
+                                                    color: Colors.lightBlackColor,
+                                                    fontSize: px(12),
+                                                    marginTop: px(6),
+                                                }}>
+                                                {item.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </CopilotText>
+                            </CopilotStep>
                         </>
                     ) : null}
                     {/* 指数买卖 */}
@@ -82,13 +102,14 @@ const Index = () => {
                                 sub_title={data?.signal_lite?.sub_title}
                                 tip={data?.signal_lite?.tip}
                             />
-
-                            <RenderSignal
-                                list={data?.signal_lite?.list}
-                                more={data?.signal_lite?.more}
-                                desc={data?.signal_lite?.desc}
-                                style={{marginBottom: px(24)}}
-                            />
+                            <CopilotStep order={2} name="signalLite">
+                                <RenderSignal
+                                    list={data?.signal_lite?.list}
+                                    more={data?.signal_lite?.more}
+                                    desc={data?.signal_lite?.desc}
+                                    style={{marginBottom: px(24)}}
+                                />
+                            </CopilotStep>
                         </>
                     ) : null}
                     {/* 理财有计划 */}
@@ -152,4 +173,17 @@ const Title = ({title, sub_title, tip}) => {
         </View>
     );
 };
-export default Index;
+const ProjectHome = copilot({
+    overlay: 'svg',
+    animated: true,
+    backdropColor: 'rgba(30,30,32,0.8)',
+    tooltipComponent: TooltipComponent,
+    stepNumberComponent: () => null,
+    arrowColor: 'transparent',
+    tooltipStyle: {
+        backgroundColor: 'transparent',
+        width: '100%',
+    },
+    contentPadding: -2,
+})(Index);
+export default withNetState(ProjectHome);

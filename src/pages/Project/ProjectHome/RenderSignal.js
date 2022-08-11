@@ -9,11 +9,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useJump} from '~/components/hooks';
-const RenderSignal = ({list, more, desc, style}) => {
+const RenderSignal = ({list, more, desc, style, copilot}) => {
     const jump = useJump();
     return (
         <View style={style}>
-            <View style={Style.flexRow}>
+            <View style={Style.flexRow} {...copilot}>
                 {list?.map((item, index) => (
                     <TouchableOpacity key={index} activeOpacity={0.8} onPress={() => jump(item.url)}>
                         <LinearGradient
