@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 const CopilotView = walkthroughable(View);
 const CopilotText = walkthroughable(Text);
 
-const SignalList = ({navigation, start, copilotEvents}) => {
+const SignalList = ({navigation, start}) => {
     const jump = useJump();
     const isFocused = useIsFocused();
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
@@ -67,11 +67,9 @@ const SignalList = ({navigation, start, copilotEvents}) => {
         }, [])
     );
 
-    useEffect(
-        useCallback(() => {
-            isFocusedRef.current = isFocused;
-        }, [isFocused])
-    );
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
 
     return (
         <>

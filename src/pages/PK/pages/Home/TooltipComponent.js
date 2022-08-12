@@ -4,15 +4,7 @@ import FastImage from 'react-native-fast-image';
 import {isIphoneX, px} from '~/utils/appUtil';
 import gesture from '~/assets/animation/gesture.gif';
 
-const TooltipComponent = ({
-    isFirstStep,
-    isLastStep,
-    handleNext,
-    handlePrev,
-    handleStop,
-    currentStep,
-    handlerTooltipStyle,
-}) => {
+const TooltipComponent = ({handleNext, handleStop, currentStep, handlerTooltipStyle}) => {
     useEffect(() => {
         if (currentStep?.order === 2) {
             setTimeout(() => {

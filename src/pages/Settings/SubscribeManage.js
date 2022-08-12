@@ -1,14 +1,24 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import http from '~/services';
 import {useJump} from '~/components/hooks';
+import {useSelector} from 'react-redux';
+import {copilot, CopilotStep, walkthroughable} from 'react-native-copilot';
+import {useIsFocused} from '@react-navigation/native';
+const CopilotView = walkthroughable(View);
 
-const SubscribeManage = () => {
+const SubscribeManage = ({start}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
     const [status, setStatus] = useState([]);
+
+    const isFocused = useIsFocused();
+    const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
+    const isFocusedRef = useRef(isFocused);
+    const showCopilot = useRef(false);
+    const scrollViewRef = useRef();
 
     const getData = () => {
         http.get('/project/get/subscribe/conf/202207').then((res) => {
@@ -20,12 +30,26 @@ const SubscribeManage = () => {
                         return memo;
                     }, {})
                 );
+
+                if (is_login && res.result?.is_guide_page === 1) {
+                    showCopilot.current = true;
+                }
+                setTimeout(() => {
+                    if (isFocusedRef.current && showCopilot.current) {
+                        start?.(false, scrollViewRef.current);
+                        showCopilot.current = false;
+                    }
+                }, 20);
             }
         });
     };
     useEffect(() => {
         getData();
     }, []);
+
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
 
     useEffect(() => {
         let arr = Object.values(status).slice(1);
@@ -76,10 +100,27 @@ const SubscribeManage = () => {
                 ) : null}
             </View>
             <View style={{marginTop: px(12)}} />
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
+            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} ref={scrollViewRef}>
                 <View>
-                    {data.list.map((item, idx) => (
-                        <View key={idx} style={[styles.switchCell, idx > 0 ? styles.borderTop : {}]}>
+                    <CopilotStep order={0} name="all">
+                        <CopilotView key={-1} style={[styles.switchCell]}>
+                            <View style={styles.switchCellLeft}>
+                                <Text style={styles.switchCellTitle}>{data.list[0].index_name}</Text>
+                                <Text style={styles.switchCellDesc}>{data.list[0].desc}</Text>
+                            </View>
+                            <View>
+                                <Switch
+                                    ios_backgroundColor={'#CCD0DB'}
+                                    thumbColor={'#fff'}
+                                    trackColor={{false: '#CCD0DB', true: '#0051CC'}}
+                                    value={status[data.list[0].item_id]}
+                                    onValueChange={(state) => handlerCellSwitch(state, data.list[0].item_id, 0)}
+                                />
+                            </View>
+                        </CopilotView>
+                    </CopilotStep>
+                    {data.list?.slice?.(1).map((item, idx) => (
+                        <View key={idx} style={[styles.switchCell, styles.borderTop]}>
                             <View style={styles.switchCellLeft}>
                                 <Text style={styles.switchCellTitle}>{item.index_name}</Text>
                                 <Text style={styles.switchCellDesc}>{item.desc}</Text>
@@ -90,7 +131,7 @@ const SubscribeManage = () => {
                                     thumbColor={'#fff'}
                                     trackColor={{false: '#CCD0DB', true: '#0051CC'}}
                                     value={status[item.item_id]}
-                                    onValueChange={(state) => handlerCellSwitch(state, item.item_id, idx)}
+                                    onValueChange={(state) => handlerCellSwitch(state, item.item_id, idx + 1)}
                                 />
                             </View>
                         </View>
@@ -101,8 +142,50 @@ const SubscribeManage = () => {
         </View>
     ) : null;
 };
-
-export default SubscribeManage;
+const TooltipComponent = ({handleStop}) => {
+    return (
+        <View style={{width: '100%', alignItems: 'center'}}>
+            <Text
+                style={[
+                    {
+                        fontSize: px(14),
+                        lineHeight: px(20),
+                        color: '#fff',
+                        textAlign: 'center',
+                    },
+                ]}>
+                滑动开启一键订阅，发出信号时微信公众号和APP将会第一时间通知您
+            </Text>
+            <TouchableOpacity
+                style={{
+                    borderRadius: px(14),
+                    paddingHorizontal: px(12),
+                    paddingVertical: px(5),
+                    borderWidth: 1,
+                    borderColor: '#fff',
+                    width: 'auto',
+                    marginTop: px(12),
+                }}
+                activeOpacity={0.8}
+                onPress={handleStop}>
+                <Text style={{fontSize: px(13), lineHeight: px(18), color: '#fff'}}>{'我知道了'}</Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+export default copilot({
+    overlay: 'svg',
+    animated: true,
+    backdropColor: 'rgba(30,30,32,0.8)',
+    tooltipComponent: TooltipComponent,
+    stepNumberComponent: () => null,
+    arrowColor: 'transparent',
+    tooltipStyle: {
+        backgroundColor: 'transparent',
+        width: '100%',
+    },
+    contentPadding: 2,
+})(SubscribeManage);
 
 const styles = StyleSheet.create({
     container: {

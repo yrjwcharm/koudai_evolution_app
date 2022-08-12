@@ -2,15 +2,7 @@ import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {px} from '~/utils/appUtil';
 
-const TooltipComponent = ({
-    isFirstStep,
-    isLastStep,
-    handleNext,
-    handlePrev,
-    handleStop,
-    currentStep,
-    handlerTooltipStyle,
-}) => {
+const TooltipComponent = ({handleNext, handleStop, currentStep}) => {
     return (
         <View style={styles.container}>
             {currentStep?.order === 1 ? (
