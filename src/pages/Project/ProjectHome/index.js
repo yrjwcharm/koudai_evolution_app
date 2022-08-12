@@ -3,7 +3,7 @@
  * @Description:计划首页
  */
 import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
-import React, {useCallback, useState, useRef} from 'react';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
@@ -23,7 +23,7 @@ import {Modal} from '~/components/Modal';
 import {copilot, CopilotStep, walkthroughable} from 'react-native-copilot';
 import TooltipComponent from './TooltipComponent';
 import withNetState from '~/components/withNetState';
-const CopilotText = walkthroughable(View);
+const CopilotView = walkthroughable(View);
 
 const Index = ({start}) => {
     const [data, setData] = useState({});
@@ -32,16 +32,24 @@ const Index = ({start}) => {
     const [currentTab, setCurrentTab] = useState(0);
     const isFocused = useIsFocused();
     const jump = useJump();
+
+    const isFocusedRef = useRef(isFocused);
+    const showCopilot = useRef(false);
     const getData = async (refresh) => {
         refresh && setRefreshing(true);
         let res = await getProjectData();
         setRefreshing(false);
         setData(res.result);
-        if (is_login && res.result?.is_guide_page === 1 && isFocused) {
-            setTimeout(() => {
-                start?.();
-            }, 20);
+
+        if (is_login && res.result?.is_guide_page === 1) {
+            showCopilot.current = true;
         }
+        setTimeout(() => {
+            if (isFocusedRef.current && showCopilot.current) {
+                start?.();
+                showCopilot.current = false;
+            }
+        }, 20);
     };
     useFocusEffect(
         useCallback(() => {
@@ -49,6 +57,11 @@ const Index = ({start}) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [is_login])
     );
+
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
+
     return (
         <>
             <NavBar title="计划" />
@@ -66,7 +79,7 @@ const Index = ({start}) => {
                                 sub_title={data?.navigator?.sub_title}
                             />
                             <CopilotStep order={1} name="navigator">
-                                <CopilotText style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
+                                <CopilotView style={[Style.flexRow, {marginTop: px(7), marginBottom: px(24)}]}>
                                     {data?.navigator?.items?.map((item, index) => (
                                         <TouchableOpacity
                                             style={{flex: 1, alignItems: 'center'}}
@@ -89,7 +102,7 @@ const Index = ({start}) => {
                                             </Text>
                                         </TouchableOpacity>
                                     ))}
-                                </CopilotText>
+                                </CopilotView>
                             </CopilotStep>
                         </>
                     ) : null}
