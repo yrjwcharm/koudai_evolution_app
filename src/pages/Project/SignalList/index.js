@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
         height: px(91),
         borderRadius: px(5),
         marginBottom: px(10),
-        paddingLeft: px(8),
         alignItems: 'center',
     },
     text: {
