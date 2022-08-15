@@ -2,7 +2,7 @@
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-01 15:36:52
+ * @LastEditTime: 2022-08-15 14:36:13
  * @Description: 投资分析
  */
 import React, {useEffect, useRef} from 'react';
@@ -14,9 +14,15 @@ import NetValueTrend from './NetValueTrend';
 import MonthRatio from './MonthRatio';
 import {Colors} from '../../common/commonStyle';
 
+const comObj = {
+    累计收益: AccProfit,
+    净值走势: NetValueTrend,
+    月度收益率: MonthRatio,
+};
+
 const InvestAnalysis = ({navigation, route}) => {
-    const {fund_code, poid, type = 0} = route.params || {};
-    const tabsRef = useRef(['累计收益', '净值走势', '月度收益率']);
+    const {fund_code, poid, tabs, type = 0} = route.params || {};
+    const tabsRef = useRef(tabs || ['累计收益', '净值走势', '月度收益率']);
     const scrollTab = useRef();
 
     useEffect(() => {
@@ -31,15 +37,8 @@ const InvestAnalysis = ({navigation, route}) => {
             ref={scrollTab}
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
-                if (index === 0) {
-                    return <AccProfit fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
-                }
-                if (index === 1) {
-                    return <NetValueTrend fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
-                }
-                if (index === 2) {
-                    return <MonthRatio fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
-                }
+                const Com = comObj[tab];
+                return <Com fund_code={fund_code} poid={poid} tabLabel={tab} key={`tab${index}`} />;
             })}
         </ScrollableTabView>
     );
