@@ -6,7 +6,7 @@ import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {px, isIphoneX} from '../utils/appUtil';
-import Index from '../pages/MofangIndex'; //魔方首页
+// import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/Asset'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
@@ -38,7 +38,7 @@ export default function Tabbar() {
     return (
         // //如需要在此插入元素,如tabbar底部弹窗 可添加 <RootSiblingParent inactive={true}>
         <Tab.Navigator
-            initialRouteName="Index"
+            initialRouteName="Vision"
             screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
                     global.navigation = navigation;

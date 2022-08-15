@@ -254,7 +254,8 @@ function useStateChange({homeShowModal, store}) {
                             (!prev.is_login && next.is_login) ||
                             (!prev.has_account && next.has_account) ||
                             (!prev.buy_status && next.buy_status) ||
-                            (!prev.buy_status_for_vision && next.buy_status_for_vision)
+                            (!prev.buy_status_for_vision && next.buy_status_for_vision) ||
+                            (!prev.hide_preference && next.hide_preference)
                         ) {
                             getModalData();
                             global.pkEntry = '2';
@@ -402,7 +403,7 @@ function useStateChange({homeShowModal, store}) {
                         if (modal.page.includes(navigation?.getCurrentRoute?.()?.name)) {
                             showModal(modal);
                         }
-                    } else if (navigation?.getCurrentRoute?.()?.name === 'Index') {
+                    } else if (navigation?.getCurrentRoute?.()?.name === 'Vision') {
                         showModal(modal);
                     }
                 }
@@ -636,7 +637,7 @@ function useStateChange({homeShowModal, store}) {
                         showModal(modal);
                     }
                 }
-            } else if (currentRouteName === 'Index') {
+            } else if (currentRouteName === 'Vision') {
                 showModal(modal);
             }
         }

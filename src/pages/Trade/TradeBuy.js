@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-02 18:13:26
+ * @LastEditTime: 2022-08-15 17:55:13
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -19,26 +19,28 @@ import {
     Switch,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import TabBar from '../../components/TabBar.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
-import {px, isIphoneX, onlyNumber, deviceWidth} from '../../utils/appUtil.js';
+import TabBar from '~/components/TabBar.js';
+import {Colors, Font, Space, Style} from '~/common/commonStyle.js';
+import {px, isIphoneX, onlyNumber, deviceWidth} from '~/utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {FixedButton} from '../../components/Button';
-import {BankCardModal, Modal, BottomModal} from '../../components/Modal';
-import {PasswordModal} from '../../components/Password';
-import Mask from '../../components/Mask';
-import http from '../../services';
+import {FixedButton} from '~/components/Button';
+import {BankCardModal, Modal, BottomModal} from '~/components/Modal';
+import {PasswordModal} from '~/components/Password';
+import Mask from '~/components/Mask';
+import http from '~/services';
 import Picker from 'react-native-picker';
-import HTML from '../../components/RenderHtml';
-import Toast from '../../components/Toast/Toast.js';
+import HTML from '~/components/RenderHtml';
+import Toast from '~/components/Toast/Toast.js';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import BottomDesc from '../../components/BottomDesc';
-import Ratio from '../../components/Radio';
+import BottomDesc from '~/components/BottomDesc';
+import Ratio from '~/components/Radio';
 import FastImage from 'react-native-fast-image';
-import {useJump} from '../../components/hooks';
+import {useJump} from '~/components/hooks';
 import {useSelector} from 'react-redux';
-import Html from '../../components/RenderHtml';
+import Html from '~/components/RenderHtml';
 import memoize from 'memoize-one';
+import {Questionnaire} from './FundTradeBuy';
+import {getBuyQuestionnaire} from './FundTradeBuy/services';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -438,11 +440,47 @@ class TradeBuy extends Component {
      * @param {*} buyClick
      * @return {*}
      */
-    buyClick = () => {
-        const {type, data} = this.state;
+    buyClick = async () => {
+        const {type, data, poid} = this.state;
         global.LogTool('buy');
-        http.post('/advisor/action/report/20220422', {action: 'confirm', poids: [this.state.poid]});
+        http.post('/advisor/action/report/20220422', {action: 'confirm', poids: [poid]});
         Keyboard.dismiss();
+        const res = await getBuyQuestionnaire({fr: 'compliance', poid});
+        const flag = await new Promise((resolve) => {
+            const {code, result: {list, summary_id} = {}} = res || {};
+            if (code === '000000' && summary_id) {
+                Modal.show(
+                    {
+                        backButtonClose: false,
+                        children: (
+                            <Questionnaire
+                                callback={(action) => {
+                                    Modal.close();
+                                    if (action === 'close') {
+                                        resolve(false);
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }}
+                                data={list}
+                                summary_id={summary_id}
+                            />
+                        ),
+                        header: <View />,
+                        isTouchMaskToClose: false,
+                        style: {
+                            minHeight: 0,
+                        },
+                    },
+                    'slide'
+                );
+            } else {
+                resolve(true);
+            }
+        });
+        if (!flag) {
+            return false;
+        }
         if (data?.buy_do_pop) {
             Modal.show({
                 title: data?.buy_do_pop?.title,
@@ -747,14 +785,14 @@ class TradeBuy extends Component {
         const {pay_methods, large_pay_method, large_pay_show_type} = data;
         return (
             <View style={{marginBottom: px(12)}}>
-                {data?.adviser_fee ? (
+                {/* {data?.adviser_fee ? (
                     <View style={{paddingHorizontal: Space.padding, paddingBottom: px(12)}}>
                         <HTML
                             html={data?.adviser_fee}
                             style={{fontSize: Font.textH3, lineHeight: px(17), color: Colors.lightGrayColor}}
                         />
                     </View>
-                ) : null}
+                ) : null} */}
                 <View style={[Style.flexRow, styles.bankCard]}>
                     {large_pay_method && large_pay_show_type == 2 ? (
                         <TouchableOpacity
@@ -1051,6 +1089,14 @@ class TradeBuy extends Component {
                                                 <HTML
                                                     style={{fontSize: px(12), color: Colors.lightGrayColor}}
                                                     html={planData?.score_text}
+                                                />
+                                            </View>
+                                        ) : null}
+                                        {data?.adviser_fee ? (
+                                            <View style={styles.tip}>
+                                                <HTML
+                                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                                    html={data.adviser_fee}
                                                 />
                                             </View>
                                         ) : null}
