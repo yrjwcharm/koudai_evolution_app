@@ -113,7 +113,11 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
         return (
             <View style={styles.valuesWrap} key={key + item.code}>
                 {/* 总分 */}
-                <View style={[styles.totalValue, {height: totalRowHeight, justifyContent: item.tip ? '' : 'center'}]}>
+                <View
+                    style={[
+                        styles.totalValue,
+                        {height: totalRowHeight, justifyContent: item.tip ? 'flex-start' : 'center'},
+                    ]}>
                     {!!item.tip && (
                         <View style={[styles.highStamp]}>
                             <FastImage
