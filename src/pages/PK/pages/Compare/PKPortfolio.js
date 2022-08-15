@@ -33,7 +33,7 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
             const len = cur?.stock_deploy?.length || 0;
             return len > memo ? len : memo;
         }, 0);
-        return max * 25;
+        return max * 23 + 20;
     }, [data]);
 
     useImperativeHandle(_ref, () => ({
