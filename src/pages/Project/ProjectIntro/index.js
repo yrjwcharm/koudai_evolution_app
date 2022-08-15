@@ -2,11 +2,11 @@
  * @Date: 2022-07-24 20:50:46
  * @Description: 计划介绍
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
-import FitImage from 'react-native-fit-image';
+import Image from 'react-native-fast-image';
 import {Colors, Space} from '~/common/commonStyle';
-import {isIphoneX} from '~/utils/appUtil';
+import {deviceWidth, isIphoneX} from '~/utils/appUtil';
 import {getPageData} from './services';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
@@ -17,6 +17,7 @@ export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {btn, image_url} = data;
+    const imgArr = useRef([]);
 
     const init = () => {
         getPageData(route.params || {}).then((res) => {
@@ -43,7 +44,23 @@ export default ({navigation, route}) => {
                 <>
                     <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                         {image_url?.map((img, i) => {
-                            return <FitImage key={img} source={{uri: img}} />;
+                            return (
+                                <Image
+                                    key={img}
+                                    onLoad={(e) => {
+                                        // console.log(e.nativeEvent);
+                                        const {width, height} = e.nativeEvent;
+                                        imgArr.current[i]?.setNativeProps({
+                                            style: {
+                                                height: (deviceWidth * height) / width,
+                                            },
+                                        });
+                                    }}
+                                    ref={(ref) => (imgArr.current[i] = ref)}
+                                    source={{uri: img}}
+                                    style={{width: '100%'}}
+                                />
+                            );
                         })}
                     </ScrollView>
                     {btn?.title ? (
