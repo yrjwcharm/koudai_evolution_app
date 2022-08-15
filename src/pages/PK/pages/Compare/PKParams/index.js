@@ -4,7 +4,6 @@ import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {px} from '~/utils/appUtil';
-import PKParamsRateOfSum from '../../../components/PKParamsRateOfSum';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
 import {postPKWeightSwitch} from '../../../services';
@@ -24,11 +23,13 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
     const [reason, setReason] = useState('');
 
     const totalRowHeight = useMemo(() => {
-        let height = 55;
+        let height = 35;
         let obj = data.find((item) => item.tip);
         if (obj) height += 16;
         if (reason) height += 24;
-        return height;
+        if (reason.length > 10) height += 14;
+        if (reason.length > 20) height += 14;
+        return px(height);
     }, [data, reason]);
 
     useEffect(() => {
@@ -125,24 +126,33 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
         return (
             <View style={styles.valuesWrap} key={key + item.code}>
                 {/* 总分 */}
-                <View style={[styles.totalValue, {height: totalRowHeight}]}>
-                    <View style={[styles.highStamp, {opacity: item.tip ? 1 : 0}]}>
-                        <FastImage
-                            source={{
-                                uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
-                            }}
-                            style={{width: px(10), height: px(10), marginRight: 2}}
-                        />
-                        <Text style={styles.highStampText}>{item.tip}</Text>
-                    </View>
-                    <PKParamsRateOfSum
-                        style={{marginTop: px(16)}}
-                        color={paramItemBest?.ts?.code === item.code ? '#E74949' : '#545968'}
-                        value={totalScoreMap[item.code]}
-                    />
-                    <View style={[styles.tag, {opacity: item.tip && reason ? 1 : 0}]}>
-                        <Text style={styles.tagText}>{reason}</Text>
-                    </View>
+                <View style={[styles.totalValue, {height: totalRowHeight, justifyContent: item.tip ? '' : 'center'}]}>
+                    {!!item.tip && (
+                        <View style={[styles.highStamp]}>
+                            <FastImage
+                                source={{
+                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                }}
+                                style={{width: px(10), height: px(10), marginRight: 2}}
+                            />
+                            <Text style={styles.highStampText}>{item.tip}</Text>
+                        </View>
+                    )}
+                    <Text
+                        style={{
+                            marginTop: item.tip ? px(16) : 0,
+                            color: paramItemBest?.ts?.code === item.code ? '#E74949' : '#545968',
+                            fontSize: px(18),
+                            lineHeight: px(25),
+                            textAlign: 'center',
+                        }}>
+                        {totalScoreMap[item.code]}
+                    </Text>
+                    {!!(item.tip && reason) && (
+                        <View style={[styles.tag]}>
+                            <Text style={styles.tagText}>{reason}</Text>
+                        </View>
+                    )}
                 </View>
                 {item?.score_info?.map((itm, idx) => (
                     <ValuePart
@@ -326,7 +336,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: '#E74949',
         paddingHorizontal: px(4),
-        paddingVertical: 2,
+        paddingVertical: px(2),
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomRightRadius: px(6),
@@ -338,10 +348,10 @@ const styles = StyleSheet.create({
     },
     tag: {
         paddingHorizontal: px(4),
-        paddingVertical: 3,
+        paddingVertical: px(3),
         backgroundColor: '#FFF2F2',
         borderRadius: 2,
-        marginTop: 4,
+        marginTop: px(4),
     },
     tagText: {
         fontSize: px(10),
