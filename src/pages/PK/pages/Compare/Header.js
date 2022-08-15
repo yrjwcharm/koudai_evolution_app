@@ -90,7 +90,7 @@ const Header = (props) => {
                         </TouchableOpacity>
                     ) : (
                         <>
-                            {item.tags[0] ? (
+                            {item.tags?.[0] ? (
                                 <View style={[styles.groupItemTag]}>
                                     <Text style={styles.groupItemTagText}>{item.tags[0]}</Text>
                                 </View>
