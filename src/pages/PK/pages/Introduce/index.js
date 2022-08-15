@@ -194,7 +194,7 @@ const Introduce = ({route}) => {
                         title={data.btn.title}
                         onPress={() => {
                             global.LogTool('PKIntroduce_StartPK');
-                            jump(data.btn.url);
+                            jump(data.btn.url, 'replace');
                         }}
                     />
                 </View>
