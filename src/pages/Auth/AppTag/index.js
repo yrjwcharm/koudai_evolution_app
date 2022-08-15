@@ -4,13 +4,17 @@
  */
 import {BackHandler, StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {getTagData, handleDone, handleQuestion} from './service';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
+import {getUserInfo} from '~/redux/actions/userInfo';
+import Toast from '~/components/Toast';
 const Index = ({navigation}) => {
+    const dispatch = useDispatch();
     const [data, setData] = useState({});
     const inset = useSafeAreaInsets();
     const [current, setCurrent] = useState(0);
@@ -65,8 +69,13 @@ const Index = ({navigation}) => {
     const goNextPage = async () => {
         if (current == data.length - 1) {
             //答完题目
+            const toast = Toast.showLoading();
             await handleDone();
-            navigation.goBack();
+            dispatch(getUserInfo());
+            setTimeout(() => {
+                Toast.hide(toast);
+                navigation.goBack();
+            }, 500);
         } else {
             setCurrent((pre) => ++pre);
         }
@@ -85,7 +94,7 @@ const Index = ({navigation}) => {
                 <ScrollView bounces={false} style={{marginTop: px(56)}}>
                     <Text style={styles.title}>{data[current]?.tag_name}</Text>
                     <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
-                    <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                    <View style={[Style.flexRow, {flexWrap: 'wrap', paddingHorizontal: deviceWidth / 8}]}>
                         {data[current]?.sub_list?.map((item, index) => (
                             <TouchableOpacity
                                 key={index}
@@ -98,7 +107,7 @@ const Index = ({navigation}) => {
                                         item.tag_id
                                     )
                                 }
-                                style={{width: deviceWidth / 2, alignItems: 'center', marginBottom: px(40)}}>
+                                style={{width: (deviceWidth * 3) / 8, alignItems: 'center', marginBottom: px(40)}}>
                                 <ImageBackground
                                     source={{uri: item.tag_icon}}
                                     style={[

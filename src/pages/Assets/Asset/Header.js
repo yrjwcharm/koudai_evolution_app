@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 15:22:30
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -71,10 +71,10 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(68),
-        top: px(-8),
+        left: px(70),
+        bottom: px(12),
         backgroundColor: Colors.red,
-        borderRadius: px(6),
+        borderRadius: px(40),
         paddingVertical: px(2),
         paddingHorizontal: px(3),
         minWidth: px(16),

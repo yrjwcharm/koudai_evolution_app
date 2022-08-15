@@ -4,7 +4,9 @@ import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import arrowUp from '~/assets/personal/arrowUp.png';
+import checked from '~/assets/img/login/checked.png';
 import leftQuota1 from '~/assets/personal/leftQuota1.png';
+import notChecked from '~/assets/img/login/notChecked.png';
 import upgrade from '~/assets/personal/upgrade.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
@@ -427,19 +429,25 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                     key={id}
                                     onPress={() => onChooseReason(id)}
                                     style={[
-                                        Style.flexRow,
+                                        Style.flexBetween,
                                         styles.optionBox,
                                         {
                                             marginTop: i === 0 ? Space.marginVertical : px(12),
-                                            borderColor:
-                                                selected !== undefined && selected !== id
-                                                    ? '#E2E4EA'
-                                                    : Colors.brandColor,
+                                            borderColor: selected === id ? Colors.brandColor : Colors.borderColor,
                                         },
                                     ]}>
-                                    <Text style={[styles.desc, selected === id ? {color: Colors.brandColor} : {}]}>
+                                    <Text
+                                        style={[
+                                            styles.desc,
+                                            {maxWidth: px(280)},
+                                            selected === id ? {color: Colors.brandColor} : {},
+                                        ]}>
                                         {reason}
                                     </Text>
+                                    <Image
+                                        source={selected === id ? checked : notChecked}
+                                        style={{width: px(16), height: px(16)}}
+                                    />
                                 </TouchableOpacity>
                             );
                         })}

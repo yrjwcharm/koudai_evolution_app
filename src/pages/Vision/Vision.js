@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-09 15:23:41
+ * @LastEditTime: 2022-08-15 15:10:52
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -51,9 +51,11 @@ const Vision = ({navigation}) => {
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
         http.get('/vision/index/20220215').then((res) => {
+            jump(res?.result?.app_tag_url);
             setData(res.result);
             setRefreshing(false);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const readInterface = useCallback(() => {
         http.get('/message/unread/20210101').then((res) => {
@@ -192,7 +194,7 @@ const Vision = ({navigation}) => {
                                 <View style={styles.swiper}>
                                     {data?.part2?.banner_list?.length > 0 && (
                                         <Swiper
-                                            height={px(120)}
+                                            height={px(190)}
                                             autoplay
                                             loadMinimal={Platform.OS == 'ios' ? true : false}
                                             removeClippedSubviews={false}
@@ -561,7 +563,7 @@ const styles = StyleSheet.create({
     swiper: {
         marginBottom: px(12),
         marginTop: px(5),
-        height: px(120),
+        height: px(190),
     },
     common_card: {
         backgroundColor: '#fff',
@@ -569,7 +571,7 @@ const styles = StyleSheet.create({
         marginRight: px(12),
     },
     slide: {
-        height: px(120),
+        height: px(190),
         borderRadius: px(6),
     },
     dotStyle: {

@@ -277,9 +277,14 @@ const RecommendCard = ({data = {}, isPking}) => {
                     <View style={Style.flexRow}>
                         <Text style={styles.title}>{name}</Text>
                         {labels?.length > 0 ? (
-                            <View style={{marginLeft: px(8)}}>
+                            <View style={{marginLeft: px(8), flex: 1}}>
                                 {labels.map((label, i) => (
-                                    <HTML html={i === 0 ? label : `| ${label}`} key={label + i} style={styles.desc} />
+                                    <HTML
+                                        html={i === 0 ? label : `| ${label}`}
+                                        key={label + i}
+                                        numberOfLines={1}
+                                        style={styles.desc}
+                                    />
                                 ))}
                             </View>
                         ) : null}

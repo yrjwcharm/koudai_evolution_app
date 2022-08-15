@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-19 13:33:08
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-02 18:19:47
  * @Description: 银行卡选择
  */
 
@@ -10,13 +7,14 @@ import React, {useCallback} from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList} from 'react-native';
 import Image from 'react-native-fast-image';
 import {constants} from './util';
-import {isIphoneX, px as text, px} from '../../utils/appUtil';
+import {isIphoneX, px as text, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Colors} from '../../common/commonStyle';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Colors, Style} from '~/common/commonStyle';
 import Mask from '../Mask';
 import {useNavigation} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
+// import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 
 const BankCardModal = React.forwardRef((props, ref) => {
@@ -77,44 +75,47 @@ const BankCardModal = React.forwardRef((props, ref) => {
                     underlayColor={type === 'hidden' ? '#fff' : '#f5f5f5'}
                     onPress={() => {
                         //大额极速购
-                        if (item?.button) return;
+                        // if (item?.button) return;
                         confirmClick(index);
                     }}>
                     <>
                         <View style={[styles.bankCard]}>
                             <Image style={styles.bank_icon} source={{uri: item.bank_icon}} />
                             <View style={{flex: 1}}>
-                                <Text style={[{marginBottom: 8}, styles.text]}>
-                                    {item?.bank_name}
-                                    {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
-                                </Text>
+                                <View style={[Style.flexRow, {marginBottom: 8}]}>
+                                    <Text style={styles.text}>
+                                        {item?.bank_name}
+                                        {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
+                                    </Text>
+                                    {item?.button?.text ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump(item?.button?.url);
+                                                hide();
+                                            }}
+                                            style={[Style.flexRow, {marginLeft: px(8)}]}>
+                                            <Text style={[styles.text, {color: Colors.brandColor, marginRight: px(4)}]}>
+                                                {item.button.text}
+                                            </Text>
+                                            <FontAwesome color={Colors.brandColor} name="angle-right" size={16} />
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </View>
                                 <Text style={{color: '#80899B', fontSize: text(11)}}>
                                     {item?.limit_desc || item?.desc}
                                 </Text>
                             </View>
                             {select == index ? <Entypo name={'check'} size={14} color={'#0051CC'} /> : null}
                         </View>
-                        {item?.button ? (
-                            <TouchableOpacity
-                                style={[styles.yel_btn]}
-                                onPress={() => {
-                                    jump(item?.button?.url);
-                                    hide();
-                                }}>
-                                <Text style={{color: Colors.yellow}}>
-                                    {item?.button?.text}
-                                    <Icon name={'right'} size={px(12)} />
-                                </Text>
-                            </TouchableOpacity>
-                        ) : null}
                         {!!item?.large_pay_tip && (
                             <View style={{backgroundColor: '#fff', paddingBottom: px(19)}}>
                                 <View style={styles.large_tip}>
                                     <Text style={styles.large_text}>
-                                        <FastImage
+                                        {/* <FastImage
                                             source={require('../../assets/img/trade/fire.png')}
                                             style={styles.large_icon}
-                                        />
+                                        /> */}
                                         {item?.large_pay_tip}
                                     </Text>
                                 </View>
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5E5',
         padding: px(6),
         borderRadius: px(4),
-        marginHorizontal: px(16),
+        marginLeft: px(8),
     },
     large_icon: {
         width: px(14),

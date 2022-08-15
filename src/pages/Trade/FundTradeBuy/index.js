@@ -18,9 +18,11 @@ import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import checked from '~/assets/img/login/checked.png';
+import notChecked from '~/assets/img/login/notChecked.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
-import {FixedButton} from '~/components/Button';
+import {Button, FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import {BankCardModal, Modal} from '~/components/Modal';
 import {PasswordModal} from '~/components/Password';
@@ -28,8 +30,93 @@ import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
-import {fundBuyDo, getBuyFee, getBuyInfo} from './services';
+import {fundBuyDo, getBuyFee, getBuyInfo, getBuyQuestionnaire, postQuestionAnswer} from './services';
 import http from '~/services';
+import {debounce} from 'lodash';
+
+export const Questionnaire = ({callback, data = [], summary_id}) => {
+    const [current, setIndex] = useState(0);
+    const [selected, setSelected] = useState();
+    const question = data[current];
+    const {btn, id: questionId, name, options, title} = question || {};
+
+    return (
+        <View style={{padding: Space.padding, paddingTop: px(20)}}>
+            <Text style={[styles.buyTitle, title ? {textAlign: 'center'} : {}]}>{title || name}</Text>
+            {options?.map?.((option, i) => {
+                const {content, id: optionId, next_quest_id} = option;
+                const active = selected === optionId;
+                return (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={selected ? true : false}
+                        key={optionId}
+                        onPress={debounce(
+                            () => {
+                                setSelected(optionId);
+                                postQuestionAnswer({
+                                    option_id: optionId,
+                                    option_val: content,
+                                    question_id: questionId,
+                                    summary_id,
+                                }).then((res) => {
+                                    if (res.code === '000000') {
+                                        if (next_quest_id === 0) {
+                                            callback?.('continue');
+                                        } else {
+                                            const idx = data?.findIndex?.((q) => q.id === next_quest_id);
+                                            setSelected();
+                                            setIndex(idx);
+                                        }
+                                    }
+                                });
+                            },
+                            300,
+                            {leading: true, trailing: false}
+                        )}
+                        style={[
+                            Style.flexBetween,
+                            styles.questionOp,
+                            {marginTop: Space.marginVertical},
+                            {borderColor: active ? Colors.brandColor : Colors.borderColor},
+                        ]}>
+                        <Text
+                            style={[
+                                styles.title,
+                                {maxWidth: px(280)},
+                                active ? {color: Colors.brandColor} : {fontWeight: '400'},
+                            ]}>
+                            {content}
+                        </Text>
+                        <Image source={active ? checked : notChecked} style={{width: px(16), height: px(16)}} />
+                    </TouchableOpacity>
+                );
+            })}
+            {btn?.length > 0 && (
+                <>
+                    <View style={{paddingTop: Space.padding}}>
+                        <Text style={styles.questionContent}>{name}</Text>
+                    </View>
+                    <View style={[Style.flexRow, {paddingTop: px(20)}]}>
+                        {btn.map?.((b, i) => {
+                            const {text, type} = b;
+                            return (
+                                <Button
+                                    key={text + i}
+                                    onPress={() => callback?.(type === 2 ? 'continue' : 'close')}
+                                    style={{marginLeft: i === 0 ? 0 : px(12), flex: 1, height: px(40)}}
+                                    textStyle={{fontSize: Font.textH2, lineHeight: px(20)}}
+                                    title={text}
+                                    type={i === 0 ? 'minor' : 'primary'}
+                                />
+                            );
+                        })}
+                    </View>
+                </>
+            )}
+        </View>
+    );
+};
 
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
     const jump = useJump();
@@ -67,12 +154,15 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     <>
                         {fee_text ? (
                             <View style={Style.flexRow}>
-                                <HTML html={`${fee_text}`} style={{...styles.desc, color: Colors.descColor}} />
-                                {/* {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
+                                <HTML
+                                    html={`${fee_text.split('：')[0]}：`}
+                                    style={{...styles.desc, color: Colors.descColor}}
+                                />
+                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
                                 <HTML
                                     html={`${fee_text.split('：')[1]}`}
                                     style={{...styles.desc, color: Colors.descColor}}
-                                /> */}
+                                />
                             </View>
                         ) : null}
                         {date_text ? (
@@ -194,7 +284,7 @@ const PayMethod = ({
 
 const Index = ({navigation, route}) => {
     const jump = useJump();
-    const {amount: _amount = '', code} = route.params;
+    const {amount: _amount = '', code, type = 0} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
     const [amount, setAmount] = useState(_amount);
@@ -213,6 +303,7 @@ const Index = ({navigation, route}) => {
         large_pay_method,
         large_pay_show_type, //arge_pay_show_type  1为显示在内层列表 2为显示在外层
         large_pay_tip,
+        money_safe,
         pay_methods = [],
         rule_button,
         sub_title,
@@ -261,7 +352,38 @@ const Index = ({navigation, route}) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
         Keyboard.dismiss();
-        passwordModal.current.show();
+        getBuyQuestionnaire({fr: 'compliance', scene: 'fund'}).then((res) => {
+            if (res.code === '000000') {
+                const {list, summary_id} = res.result;
+                if (summary_id) {
+                    Modal.show(
+                        {
+                            backButtonClose: false,
+                            children: (
+                                <Questionnaire
+                                    callback={(action) => {
+                                        Modal.close();
+                                        action === 'continue' && passwordModal.current.show();
+                                    }}
+                                    data={list}
+                                    summary_id={summary_id}
+                                />
+                            ),
+                            header: <View />,
+                            isTouchMaskToClose: false,
+                            style: {
+                                minHeight: 0,
+                            },
+                        },
+                        'slide'
+                    );
+                } else {
+                    passwordModal.current.show();
+                }
+            } else {
+                passwordModal.current.show();
+            }
+        });
     };
 
     const onSubmit = (password) => {
@@ -347,7 +469,7 @@ const Index = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             global.LogTool({ctrl: code, event: 'buy_detail_view'});
-            getBuyInfo({amount, fund_code: code, type: 0}).then((res) => {
+            getBuyInfo({amount, fund_code: code, type}).then((res) => {
                 if (res.code === '000000') {
                     const {risk_pop, title = '买入'} = res.result;
                     risk_pop && showRiskPop(risk_pop);
@@ -379,6 +501,18 @@ const Index = ({navigation, route}) => {
                             <Text style={styles.title}>{sub_title}</Text>
                             <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
                         </View>
+                        {money_safe ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(money_safe.url)}
+                                style={[Style.flexRowCenter, styles.fundSafe]}>
+                                <Image source={{uri: money_safe.icon}} style={styles.safeIcon} />
+                                <Text style={[styles.desc, {marginRight: px(4), color: Colors.brandColor}]}>
+                                    {money_safe.label}
+                                </Text>
+                                <FontAwesome color={Colors.brandColor} name="angle-right" size={16} />
+                            </TouchableOpacity>
+                        ) : null}
                         <InputBox
                             buy_info={buy_info}
                             errTip={errTip}
@@ -392,15 +526,21 @@ const Index = ({navigation, route}) => {
                             isLarge={isLarge}
                             large_pay_show_type={large_pay_show_type}
                             large_pay_method={large_pay_method ? {...large_pay_method, large_pay_tip} : undefined}
-                            pay_method={pay_methods[bankSelectIndex]}
+                            pay_method={isLarge ? large_pay_method : pay_methods[bankSelectIndex]}
                             setIsLarge={setIsLarge}
                         />
                         <BottomDesc />
                     </ScrollView>
                     <BankCardModal
-                        data={[...pay_methods, large_pay_show_type == 1 && large_pay_method] || []}
+                        data={large_pay_show_type === 1 ? [...pay_methods, large_pay_method] : pay_methods}
                         onDone={(select, index) => {
-                            setIndex(index);
+                            if (index === pay_methods.length) {
+                                setIsLarge(true);
+                                setIndex(index);
+                            } else {
+                                setIndex(index);
+                                setIsLarge(false);
+                            }
                         }}
                         ref={bankCardModal}
                         select={bankSelectIndex}
@@ -445,6 +585,17 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.lightGrayColor,
+    },
+    fundSafe: {
+        paddingVertical: px(8),
+        borderTopWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        backgroundColor: '#F1F6FF',
+    },
+    safeIcon: {
+        marginRight: px(2),
+        width: px(16),
+        height: px(16),
     },
     originFee: {
         marginRight: px(4),
@@ -562,6 +713,18 @@ const styles = StyleSheet.create({
         lineHeight: px(16),
         color: Colors.lightGrayColor,
         textAlign: 'justify',
+    },
+    questionOp: {
+        marginTop: px(12),
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        borderWidth: Space.borderWidth,
+        overflow: 'hidden',
+    },
+    questionContent: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.descColor,
     },
 });
 
