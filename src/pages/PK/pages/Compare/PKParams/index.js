@@ -85,20 +85,7 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
             <View style={styles.labelsWrap}>
                 {/* 总分 */}
                 <View style={[styles.totalLabel, {height: totalRowHeight}]}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={{flexDirection: 'row', alignItems: 'center'}}
-                        onPress={() => {
-                            showModal('PKParams');
-                        }}>
-                        <Text style={styles.totalLabelText}>总PK值</Text>
-                        {result?.pk_explain ? (
-                            <FastImage
-                                style={{width: px(14), height: px(14), marginLeft: 3}}
-                                source={require('../../../../../assets/img/tip.png')}
-                            />
-                        ) : null}
-                    </TouchableOpacity>
+                    <Text style={styles.totalLabelText}>总PK分</Text>
                 </View>
                 {obj?.score_info?.map((item, idx) => (
                     <LabelPart
@@ -194,7 +181,20 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>PK</Text>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={{flexDirection: 'row', alignItems: 'center'}}
+                    onPress={() => {
+                        showModal('PKParams');
+                    }}>
+                    <Text style={styles.title}>PK</Text>
+                    {result?.pk_explain ? (
+                        <FastImage
+                            style={{width: px(14), height: px(14), marginLeft: 3}}
+                            source={require('../../../../../assets/img/tip.png')}
+                        />
+                    ) : null}
+                </TouchableOpacity>
                 {result.weight_button ? (
                     <Text
                         style={styles.rightBtn}
