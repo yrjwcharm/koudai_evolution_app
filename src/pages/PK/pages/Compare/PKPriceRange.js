@@ -1,5 +1,5 @@
 import React, {forwardRef, useRef, useImperativeHandle, useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {connect} from 'react-redux';
 import {px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/EvilIcons';
@@ -138,7 +138,11 @@ const PKPriceRange = ({data, pkPinning, onScroll, _ref}) => {
             <View style={styles.title}>
                 <Text style={styles.titleText}>涨跌幅</Text>
             </View>
-            <View style={[styles.content, expand ? {} : {height: px(136), overflow: 'hidden'}]}>
+            <View
+                style={[
+                    styles.content,
+                    expand ? {} : {height: px(Platform.OS === 'ios' ? 136 : 134), overflow: 'hidden'},
+                ]}>
                 {/* labels */}
                 {genLabels()}
                 {/* 占位 */}
