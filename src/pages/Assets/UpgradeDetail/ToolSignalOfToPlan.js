@@ -10,7 +10,7 @@ import RenderHtml from '~/components/RenderHtml';
 
 const ToolSignalOfToPlan = ({data, upgrade_id, onCardHeight, onCardRate, idx: componentIdx}) => {
     const [activeTab, setTabActive] = useState();
-    const [{chart = {}, upgrade_items = [], now_value, after_value}, setData] = useState({});
+    const [{chart = {}, upgrade_items = [], now_value, after_value, bottom_desc}, setData] = useState({});
 
     const httpFlag = useRef();
 
@@ -109,6 +109,7 @@ const ToolSignalOfToPlan = ({data, upgrade_id, onCardHeight, onCardRate, idx: co
                     <CompareTable data={upgrade_items} />
                 </View>
             )}
+            {bottom_desc && <Text style={styles.placeholdText}>{bottom_desc}</Text>}
         </View>
     );
 };
