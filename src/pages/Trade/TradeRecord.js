@@ -17,8 +17,7 @@ import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {debounce} from 'lodash';
-const trade_type = [0, -1, -2, -35, 6, 4, 7];
-const mfb_type = [0, 1, 2];
+
 const TradeRecord = ({route, navigation}) => {
     const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active = 0} = route.params || {};
     const [page, setPage] = useState(1);
@@ -31,12 +30,14 @@ const TradeRecord = ({route, navigation}) => {
     const jump = useJump();
     const isMfb = fr == 'mfb';
     const scrollTab = useRef();
+    const tradeType = useRef([0, -1, -2, -35, 6, 4, 7]);
+    const mfbType = useRef([0, 1, 2]);
     const getData = useCallback(
         (_page, toast) => {
             let Page = _page || page;
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
-                type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
+                type: isMfb ? mfbType.current[tabActive] : tradeType.current[tabActive],
                 page: Page,
                 poid,
                 prod_code,
@@ -65,13 +66,18 @@ const TradeRecord = ({route, navigation}) => {
         [page, tabActive]
     );
     useEffect(() => {
+        if (fund_code) {
+            tradeType.current = [0, -2, -35, 4, 7];
+        }
+    }, []);
+    useEffect(() => {
         active !== 0 && scrollTab.current?.goToPage(active);
     }, [active]);
     useEffect(() => {
         getData();
     }, [getData]);
     useEffect(() => {
-        http.get('/order/others/20210101', {fr: fr === 'mfb' ? 'wallet' : fr || ''}).then((res) => {
+        http.get('/order/others/20210101', {fr: fr === 'mfb' ? 'wallet' : fr || '', fund_code, poid}).then((res) => {
             if (res.code === '000000') {
                 res.result.adviser_fee &&
                     navigation.setOptions({
@@ -292,18 +298,22 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="投顾服务" style={styles.container}>
-                        {renderContent()}
-                    </View>
+                    {!fund_code ? (
+                        <View tabLabel="投顾服务" style={styles.container}>
+                            {renderContent()}
+                        </View>
+                    ) : null}
                     <View tabLabel="升级" style={styles.container}>
                         {renderContent()}
                     </View>
                     <View tabLabel="申购" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel={adjust_name || '调仓'} style={styles.container}>
-                        {renderContent()}
-                    </View>
+                    {!fund_code ? (
+                        <View tabLabel={adjust_name || '调仓'} style={styles.container}>
+                            {renderContent()}
+                        </View>
+                    ) : null}
                     <View tabLabel="赎回" style={styles.container}>
                         {renderContent()}
                     </View>

@@ -128,7 +128,7 @@ export default function DetailAccount({route, navigation}) {
     ) : (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView bounces={false} style={{flex: 1}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={{color: '#4E556C', fontSize: text(13), paddingTop: text(6), textAlign: 'center'}}>
