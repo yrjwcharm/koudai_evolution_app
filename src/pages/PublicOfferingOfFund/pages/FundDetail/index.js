@@ -11,7 +11,8 @@ import shareFund from '~/assets/img/icon/shareFund.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
-import {BottomModal, ShareModal} from '~/components/Modal';
+import {BottomModal, Modal, ShareModal} from '~/components/Modal';
+import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import Loading from '~/pages/Portfolio/components/PageLoading';
@@ -77,6 +78,9 @@ const Index = ({navigation, route}) => {
             jump(url);
         } else if (_data?.indexOf('playTime=') > -1) {
             playTime.current = parseInt(_data.split('playTime=')[1], 10);
+        } else if (_data?.indexOf('modalContent=') > -1) {
+            const modalContent = JSON.parse(_data.split('modalContent=')[1]);
+            showTips(modalContent);
         } else if (_data?.indexOf('phone=') > -1) {
             const url = _data.split('phone=')[1] ? `tel:${_data.split('phone=')[1]}` : '';
             if (url) {
@@ -91,6 +95,35 @@ const Index = ({navigation, route}) => {
                     .catch((err) => Toast.show(err));
             }
         }
+    };
+
+    /** @name 弹窗展示提示 */
+    const showTips = (tips) => {
+        const {content, img, title} = tips;
+        Modal.show(
+            {
+                children: (
+                    <View style={{padding: Space.padding}}>
+                        {img ? <Image source={{uri: img}} style={{width: '100%', height: px(140)}} /> : null}
+                        {content?.map((item, index) => {
+                            const {key: _key, val} = item;
+                            return (
+                                <View key={val + index} style={{marginTop: index === 0 ? 0 : Space.marginVertical}}>
+                                    {_key ? <HTML html={`${_key}:`} style={styles.title} /> : null}
+                                    {val ? (
+                                        <View style={{marginTop: px(4)}}>
+                                            <HTML html={val} style={styles.tipsVal} />
+                                        </View>
+                                    ) : null}
+                                </View>
+                            );
+                        })}
+                    </View>
+                ),
+                title,
+            },
+            'slide'
+        );
     };
 
     // 咨询弹窗内容渲染
@@ -368,6 +401,17 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(16),
         color: Colors.descColor,
+    },
+    title: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    tipsVal: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
     },
 });
 

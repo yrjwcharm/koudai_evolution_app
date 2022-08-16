@@ -21,6 +21,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
+import {Button} from '~/components/Button';
 
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
@@ -471,26 +472,31 @@ export default function FixedUpdate({navigation, route}) {
                         </View>
                     )}
                     {render_deductionHint()}
-                    {data?.button?.text ? (
+                    {data?.button?.length > 0 ? (
                         <View
                             style={[
                                 Style.flexRow,
                                 {marginHorizontal: Space.marginAlign, marginTop: Space.marginVertical},
                             ]}>
-                            <TouchableOpacity
-                                activeOpacity={payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 0.8}
-                                style={{
-                                    backgroundColor: Colors.brandColor,
-                                    borderRadius: Space.borderRadius,
-                                    flex: 1,
-                                    opacity: payMethod.pay_method == 'wallet' && autoChargeStatus ? 0.3 : 1,
-                                }}
-                                disabled={
-                                    data.button.avail === 0 || (payMethod.pay_method == 'wallet' && autoChargeStatus)
-                                }
-                                onPress={() => handleClick('update')}>
-                                <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button.text}</Text>
-                            </TouchableOpacity>
+                            {data.button.map?.((btn, i, arr) => {
+                                const {avail, text: btnText} = btn;
+                                return (
+                                    <Button
+                                        disabled={
+                                            (i === arr.length - 1 &&
+                                                payMethod.pay_method === 'wallet' &&
+                                                autoChargeStatus) ||
+                                            avail === 0
+                                        }
+                                        key={btnText + i}
+                                        onPress={() => handleClick(i === 0 && arr.length > 1 ? 'redeem' : 'update')}
+                                        style={{flex: 1, marginLeft: i > 0 ? text(12) : 0}}
+                                        textStyle={{fontSize: Font.textH2}}
+                                        title={btnText}
+                                        type={i === 0 && arr.length > 1 ? 'minor' : 'primary'}
+                                    />
+                                );
+                            })}
                         </View>
                     ) : null}
                     <BottomDesc />
