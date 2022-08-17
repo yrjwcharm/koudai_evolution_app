@@ -18,7 +18,7 @@ import {Modal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import {closeRecommend} from './service';
 const yellow = '#FF7D41';
-const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
+const HoldList = ({products, summary, stickyHeaderY, scrollY, reload, showEye}) => {
     const [layout, setLayout] = useState({});
     const jump = useJump();
     const onLayout = (key, e) => {
@@ -105,7 +105,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                             stickyScrollY={scrollY}>
                                             <View style={[Style.flexBetween, styles.table_header]}>
                                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>
+                                                    {summary?.profit_label || '日收益'}
+                                                </Text>
                                                 <Text style={styles.light_text}>累计收益</Text>
                                             </View>
                                             <View style={styles.line} />
@@ -114,7 +116,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                         <>
                                             <View style={[Style.flexBetween, styles.table_header]}>
                                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>
+                                                    {summary?.profit_label || '日收益'}
+                                                </Text>
                                                 <Text style={styles.light_text}>累计收益</Text>
                                             </View>
                                             <View style={styles.line} />
@@ -211,8 +215,8 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                         )}
                         <HTML html={name} numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}} />
                         {reminder ? (
-                            <View style={{marginLeft: px(4)}}>
-                                <HTML html={reminder} numberOfLines={1} style={{fontSize: Font.textH3}} />
+                            <View style={{marginLeft: px(6)}}>
+                                <HTML html={reminder} numberOfLines={1} style={{fontSize: Font.textSm}} />
                             </View>
                         ) : null}
                     </View>
