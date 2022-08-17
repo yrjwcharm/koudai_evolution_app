@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-05-18 11:10:23
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-15 15:10:52
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -16,7 +13,6 @@ import RenderTitle from './components/RenderTitle.js';
 import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
-import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -113,7 +109,11 @@ const Vision = ({navigation}) => {
                             activeOpacity={0.8}
                             onPress={() => {
                                 global.LogTool('visionMisc');
-                                jump({path: 'VisionCollect'});
+                                if (userInfo.is_login) {
+                                    jump({path: 'VisionCollect'});
+                                } else {
+                                    jump({path: 'Login'});
+                                }
                             }}>
                             <Image
                                 source={require('../../assets/img/vision/collect_icon.png')}
@@ -126,7 +126,11 @@ const Vision = ({navigation}) => {
                             style={{position: 'relative'}}
                             onPress={() => {
                                 global.LogTool('indexNotificationCenter');
-                                jump({path: 'RemindMessage'});
+                                if (userInfo.is_login) {
+                                    jump({path: 'RemindMessage'});
+                                } else {
+                                    jump({path: 'Login'});
+                                }
                             }}>
                             {allMsg ? (
                                 <View style={[styles.point_sty, Style.flexCenter]}>
@@ -372,8 +376,6 @@ const Vision = ({navigation}) => {
                         <LoadingTips loadingStyle={{marginTop: px(100)}} />
                     )}
                 </ScrollView>
-
-                {!userInfo.is_login && <LoginMask scene="vision" />}
             </>
         );
     };

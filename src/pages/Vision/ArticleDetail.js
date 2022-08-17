@@ -94,13 +94,15 @@ const ArticleDetail = ({navigation, route}) => {
             http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
                 setRecommendData(result.result);
             });
-            http.get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1}).then(
-                (res) => {
-                    setCommentData(res.result);
-                }
-            );
+            userInfo.is_login &&
+                http
+                    .get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1})
+                    .then((res) => {
+                        setCommentData(res.result);
+                    });
         },
-        [route, fr]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
     );
 
     const onMessage = (event) => {
@@ -507,7 +509,12 @@ const ArticleDetail = ({navigation, route}) => {
                                     </View>
                                 ) : null}
                                 {/* 问答 */}
-                                <RenderInteract article_id={route.params.article_id} style={{marginVertical: px(24)}} />
+                                {userInfo.is_login && (
+                                    <RenderInteract
+                                        article_id={route.params.article_id}
+                                        style={{marginVertical: px(24)}}
+                                    />
+                                )}
                                 {/* 评论 */}
                                 <RenderTitle title={'评论'} style={{paddingLeft: px(16)}} />
                                 <View style={{padding: px(16)}}>

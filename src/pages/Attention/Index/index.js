@@ -26,6 +26,7 @@ const Attention = () => {
     const [followData, setFollowData] = useState();
     const [activeTab, setActiveTab] = useState(0);
     const [headHeight, setHeaderHeight] = useState(0);
+    const scrollTab = useRef();
     const jump = useJump();
     const scrollY = useRef(new Animated.Value(0)).current;
     const _getData = async () => {
@@ -35,7 +36,6 @@ const Attention = () => {
     useFocusEffect(
         useCallback(() => {
             _getData();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
     useEffect(() => {
@@ -45,6 +45,8 @@ const Attention = () => {
         data?.follow?.tabs &&
             getFollowData({
                 item_type: data?.follow?.tabs[activeTab]?.item_type || data?.follow?.tabs[0]?.item_type || 1,
+            }).then(() => {
+                scrollTab.current?.goToPage?.(data?.follow?.tabs?.[activeTab]?.item_type ? activeTab : 0);
             });
     }, [activeTab, data]);
     const onChangeTab = (obj) => {
@@ -106,12 +108,13 @@ const Attention = () => {
                             prerenderingSiblingsNumber={data?.follow?.tabs?.length}
                             locked={true}
                             renderTabBar={() => <ScrollTabbar boxStyle={{paddingLeft: px(8)}} />}
-                            onChangeTab={onChangeTab}>
+                            onChangeTab={onChangeTab}
+                            ref={scrollTab}>
                             {data?.follow?.tabs?.map((tab, index) => (
                                 <View key={index} tabLabel={tab?.type_text}>
                                     <FollowTable
                                         data={followData}
-                                        activeTab={data?.follow?.tabs[activeTab].item_type}
+                                        activeTab={data?.follow?.tabs?.[activeTab]?.item_type || 0}
                                         handleSort={getFollowData}
                                         tabButton={data?.follow?.tabs[activeTab]?.button_list}
                                         scrollY={scrollY}
