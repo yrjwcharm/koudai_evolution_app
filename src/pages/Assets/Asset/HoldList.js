@@ -3,7 +3,7 @@
  * @Description:持仓卡片
  */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -15,6 +15,7 @@ import {useJump} from '~/components/hooks';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
+import HTML from '~/components/RenderHtml';
 import {closeRecommend} from './service';
 const yellow = '#FF7D41';
 const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
@@ -192,7 +193,7 @@ const ListTitle = ({title, desc}) => {
 };
 const CardItem = ({data = {}, flag, upgrade, showEye}) => {
     const jump = useJump();
-    const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
+    const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url, reminder} = data;
     const getAmountColor = (value) => {
         value = value?.replace(/,/g, '');
         return value == 0 ? Colors.defaultColor : value > 0 ? Colors.red : Colors.green;
@@ -208,9 +209,12 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                                 <Text style={styles.tag_text}>{type_name}</Text>
                             </View>
                         )}
-                        <Text numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}}>
-                            {name}
-                        </Text>
+                        <HTML html={name} numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}} />
+                        {reminder ? (
+                            <View style={{marginLeft: px(4)}}>
+                                <HTML html={reminder} numberOfLines={1} style={{fontSize: Font.textH3}} />
+                            </View>
+                        ) : null}
                     </View>
                 )}
                 <View style={[Style.flexBetween]}>

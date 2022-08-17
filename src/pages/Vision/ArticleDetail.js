@@ -193,7 +193,7 @@ const ArticleDetail = ({navigation, route}) => {
                 }, 100);
                 if (res.code !== '000000') {
                     setTimeout(() => {
-                        shareModal.current.hide();
+                        shareModal.current?.hide();
                     }, 1000);
                 }
             });
@@ -226,7 +226,7 @@ const ArticleDetail = ({navigation, route}) => {
                 }, 100);
                 if (res.code !== '000000') {
                     setTimeout(() => {
-                        shareModal.current.hide();
+                        shareModal.current?.hide();
                     }, 1000);
                 }
             });
