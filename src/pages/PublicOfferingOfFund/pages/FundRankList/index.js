@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-26 15:40:15
+ * @LastEditTime: 2022-08-18 15:37:05
  * @Description: 基金榜单
  */
 import {useFocusEffect} from '@react-navigation/native';
@@ -155,6 +155,14 @@ const Index = ({route}) => {
             };
         }, [])
     );
+
+    useEffect(() => {
+        if (scrollY > 0 || scrollY < -20) {
+            StatusBar.setBarStyle('dark-content');
+        } else {
+            StatusBar.setBarStyle('light-content');
+        }
+    }, [scrollY]);
 
     useEffect(() => {
         global.LogTool({ctrl: rank_type || 'mofang', event: 'view'});

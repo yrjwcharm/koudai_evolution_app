@@ -221,6 +221,7 @@ import ProjectDetail from '~/pages/Project/ProjectDetail'; // 计划详情页
 import ProjectIntro from '~/pages/Project/ProjectIntro'; // 计划介绍页
 import FundTradeRules from '~/pages/PublicOfferingOfFund/pages/FundTradeRules'; // 基金交易规则
 import FundHolding from '~/pages/PublicOfferingOfFund/pages/FundHolding'; // 基金持仓
+import Activity from '~/pages/Common/Activity'; // 通用全图活动页
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -903,6 +904,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="FundTradeRules" component={FundTradeRules} options={{title: ''}} />
             <Stack.Screen name="FundHolding" component={FundHolding} options={{title: ''}} />
+            <Stack.Screen name="Activity" component={Activity} options={{headerShown: false}} />
 
             {/* v7新页面 End */}
             <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
