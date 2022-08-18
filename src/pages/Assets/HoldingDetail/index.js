@@ -700,9 +700,11 @@ export default ({navigation, route}) => {
                         style={{flex: 1}}>
                         {system_notice?.length > 0 && <Notice content={system_notice} />}
                         <TopPart trade_notice={trade_notice} top_info={top_info} top_menus={top_menus} />
-                        <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
-                            <CenterControl data={consoleData} ref={centerControl} refresh={init} />
-                        </LinearGradient>
+                        {consoleData ? (
+                            <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                                <CenterControl data={consoleData} ref={centerControl} refresh={init} />
+                            </LinearGradient>
+                        ) : null}
                         <View style={{paddingHorizontal: Space.padding}}>
                             {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
                             {ad_info ? (

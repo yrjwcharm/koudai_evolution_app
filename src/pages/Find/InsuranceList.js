@@ -2,13 +2,12 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-04 15:44:53
+ * @LastEditTime: 2022-08-18 17:13:29
  * @Description:
  */
 import React, {useState, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
@@ -21,7 +20,6 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '../../components/ScrollTabbar';
 import LoadingTips from '../../components/LoadingTips';
 const InsuranceList = (props) => {
-    const insets = useSafeAreaInsets();
     const jump = useJump();
     const [data, setData] = useState({});
     const [activeTab, setActiveTab] = useState('');
@@ -39,24 +37,14 @@ const InsuranceList = (props) => {
     };
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={[styles.close_img, {top: insets.top}]}
-                onPress={() => {
-                    props.navigation.goBack();
-                }}>
-                <FastImage
-                    style={{width: px(24), height: px(24)}}
-                    source={require('../../assets/img/find/close.png')}
-                />
-            </TouchableOpacity>
-            <ScrollView scrollIndicatorInsets={{right: 1}} style={{backgroundColor: Colors.bgColor}}>
+            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{backgroundColor: Colors.bgColor}}>
                 <FastImage
                     style={{
-                        height: px(330),
+                        height: px(288),
                     }}
                     source={{uri: data?.part1?.background}}
                 />
-                <View style={[styles.header, {top: insets.top + px(8)}]}>
+                <View style={[styles.header, {top: px(8)}]}>
                     <Text style={styles.img_desc}>{data?.part1?.name}</Text>
                     <Text style={styles.img_title}>{data?.part1?.slogan}</Text>
                 </View>
@@ -171,7 +159,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         borderColor: Colors.bgColor,
-        borderWidth: 0.5,
+        borderBottomWidth: 0.5,
     },
     card: {
         width: px(343),
