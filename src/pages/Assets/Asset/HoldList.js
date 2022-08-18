@@ -283,7 +283,7 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
 };
 
 // 信号
-const RenderAlert = ({alert}) => {
+export const RenderAlert = ({alert}) => {
     const jump = useJump();
     const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
     return (

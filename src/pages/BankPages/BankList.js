@@ -1,23 +1,19 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-23 17:29:21
- * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 22:49:16
+ * @Description: 银行产品
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
-import Notice from '../../components/Notice';
-import {Colors, Font, Space, Style} from '../../common//commonStyle';
-import {px as text, px, isIphoneX} from '../../utils/appUtil';
-import Http from '../../services';
+import Notice from '~/components/Notice';
+import {Colors, Font, Space, Style} from '~/common//commonStyle';
+import {px as text, px, isIphoneX} from '~/utils/appUtil';
+import Http from '~/services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import LinearGradient from 'react-native-linear-gradient';
-import {useJump} from '../../components/hooks';
+import {RenderAlert} from '../Assets/Asset/HoldList';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
-    const jump = useJump();
     useEffect(() => {
         Http.get('/bank/asset/list/20210101').then((res) => {
             setData(res.result);
@@ -30,44 +26,6 @@ export default function BankList({navigation, route}) {
         } else {
             navigation.navigate(url.path, url.params);
         }
-    };
-    const renderGroupBulletin = (data) => {
-        let content = data.content?.slice?.(0, 38);
-        return (
-            <LinearGradient
-                colors={['#FFF9F0', '#FFF2DC']}
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                style={styles.groupBulletin}>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.groupBulletinTop}
-                    onPress={() => {
-                        jump(data.jumpUrl);
-                    }}>
-                    <Image source={{uri: data.icon}} style={{width: px(42), height: px(42)}} />
-                    <Text style={styles.groupBulletinTitle}>{data.title}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        jump(data.jumpUrl);
-                    }}
-                    style={styles.groupBulletinBottom}>
-                    <Text style={styles.groupBulletinBottomContent}>
-                        {content}
-                        {content.length > 44 ? '...' : ''}
-                    </Text>
-                    <TouchableOpacity
-                        style={styles.groupBulletinBtnTextWrapper}
-                        onPress={() => {
-                            jump(data.jumpUrl);
-                        }}>
-                        <Text style={styles.groupBulletinBtnText}>{data.jumpUrl?.text || '查看'}</Text>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-            </LinearGradient>
-        );
     };
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
@@ -123,7 +81,12 @@ export default function BankList({navigation, route}) {
                                                 </View>
                                                 <AntDesign name={'right'} size={12} color={Colors.descColor} />
                                             </TouchableOpacity>
-                                            {_p.group_bulletin && renderGroupBulletin(_p.group_bulletin)}
+                                            {_p.alert ? (
+                                                <>
+                                                    <RenderAlert alert={_p.alert} />
+                                                    <View style={{paddingBottom: Space.padding}} />
+                                                </>
+                                            ) : null}
                                         </>
                                     );
                                 })}
