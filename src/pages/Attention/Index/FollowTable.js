@@ -160,8 +160,8 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                                                 : sortDown
                                                                         }
                                                                         style={{
-                                                                            width: px(6),
-                                                                            height: px(12),
+                                                                            width: px(8),
+                                                                            height: px(18),
                                                                             marginLeft: px(2),
                                                                         }}
                                                                     />

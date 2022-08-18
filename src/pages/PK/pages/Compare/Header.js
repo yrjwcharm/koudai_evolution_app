@@ -58,7 +58,12 @@ const Header = (props) => {
                 </View>
                 {/* title */}
                 <View style={styles.groupItemContent}>
-                    <Text style={styles.groupItemTitle} numberOfLines={props.pageScroll ? 1 : 3}>
+                    <Text
+                        style={styles.groupItemTitle}
+                        numberOfLines={props.pageScroll ? 1 : 3}
+                        onPress={() => {
+                            jump(item.buy_button.url);
+                        }}>
                         {item.name}
                     </Text>
                 </View>

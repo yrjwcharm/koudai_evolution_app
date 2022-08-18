@@ -125,7 +125,9 @@ const Lengend = ({name, items, index}) => {
     let value = items?.find?.((itm) => itm.name === name)?.value;
     return (
         <View style={[styles.lengendItemWrap, index % 2 === 0 ? {paddingRight: px(8)} : {paddingLeft: px(8)}]}>
-            <View style={[styles.circle_black, {backgroundColor: colors[index], borderColor: areaColors[index]}]} />
+            <View style={[styles.circle_black_wrap, {backgroundColor: areaColors[index]}]}>
+                <View style={[styles.circle_black_in, {backgroundColor: colors[index]}]} />
+            </View>
             <Text style={styles.langendWrapRightName} numberOfLines={1}>
                 {name}
             </Text>
@@ -173,11 +175,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '50%',
     },
-    circle_black: {
+    circle_black_wrap: {
+        width: px(13),
+        height: px(13),
+        borderRadius: px(8),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    circle_black_in: {
         width: px(5),
         height: px(5),
         borderRadius: px(5),
-        borderWidth: px(3),
     },
     langendWrapRightRate: {
         fontSize: px(14),
