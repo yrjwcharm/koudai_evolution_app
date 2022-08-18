@@ -11,12 +11,14 @@ import PKPriceRange from './PKPriceRange';
 import PKPortfolio from './PKPortfolio';
 import PKManagerInfo from './PKManagerInfo';
 import PKFundInfo from './PKFundInfo';
-import {getPKDetailData} from '../../services';
+import {getPKDetailData, sortCode} from '../../services';
 import BlackHint from './BlackHint';
-import {addProduct, delProduct} from '~/redux/actions/pk/pkProducts';
+import {addProduct, delProduct, initCart} from '~/redux/actions/pk/pkProducts';
 import {pinningProduct} from '~/redux/actions/pk/pkPinning';
 import {PageModal} from '~/components/Modal';
 import ModalTip from './ModalTip';
+import PageLoading from '~/pages/Portfolio/components/PageLoading';
+import Toast from '~/components/Toast';
 
 const Compare = () => {
     const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
@@ -73,7 +75,7 @@ const Compare = () => {
 
     const addHigh = useCallback(
         (code) => {
-            let item = list.find((itm) => itm.tip);
+            let item = list.find((itm) => itm.is_better_fund === 1);
             if (item) {
                 dispatch(delProduct(item.code));
                 if (item.code === pkPinning) dispatch(pinningProduct(null));
@@ -200,7 +202,27 @@ const Compare = () => {
         </View>
     );
 };
-export default Compare;
+export default (props) => {
+    const pkProducts = useSelector((state) => state.pkProducts[global.pkEntry]);
+    const dispatch = useDispatch();
+
+    const [state, setState] = useState(false);
+    useEffect(() => {
+        sortCode({
+            fund_code_list: pkProducts.join(),
+        }).then((res) => {
+            if (res.code === '000000') {
+                dispatch(initCart(res.result));
+                setTimeout(() => {
+                    setState(true);
+                }, 0);
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    }, []);
+    return state ? <Compare {...props} /> : <PageLoading />;
+};
 
 const styles = StyleSheet.create({
     container: {flex: 1},

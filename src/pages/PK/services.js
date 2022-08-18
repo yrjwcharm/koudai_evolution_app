@@ -3,6 +3,10 @@ export const getPKHomeData = () => {
     return http.get('/pk/index/20220608');
 };
 
+export const sortCode = (data) => {
+    return http.get('/pk/cart/fund/sort/20220608', data);
+};
+
 export const getFundRankData = (data) => {
     return http.get('/fund/rank/list/20220608', data);
 };
