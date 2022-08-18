@@ -43,20 +43,20 @@
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
 		00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		00E3FB5D27CE11F600FCFD34 /* PTRIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */; };
-		0AB3CF52AB0A6D2FB14AFDC1 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFB025A330AF2516D08D9F21 /* libPods-EvolutionApp-tvOSTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1D9D47155F79632F4585A394 /* libPods-EvolutionApp-EvolutionAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60B27811E8C373AF54F73B69 /* libPods-EvolutionApp-EvolutionAppTests.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
+		4CF40ACFDD8D8B7BDA6B3FD2 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30C29D5D41669426363AAC44 /* libPods-EvolutionApp-tvOSTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		95DC865293AC2285D40F75B1 /* libPods-EvolutionApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C70F7A7023877203050EDD1 /* libPods-EvolutionApp.a */; };
+		8378B52C4719F3EBFAF2B73C /* libPods-EvolutionApp-EvolutionAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D1FE0BF070B6B369281EC69 /* libPods-EvolutionApp-EvolutionAppTests.a */; };
+		CBA4EA302E0DD6B0129FB554 /* libPods-EvolutionApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DEA4DCC65A7C99B0A9536BD /* libPods-EvolutionApp.a */; };
 		D059087E25C260C000EFA6CA /* DIN-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = D059087D25C260C000EFA6CA /* DIN-Medium.otf */; };
 		D07853A025B8050600274C2D /* DIN-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D078539F25B8050600274C2D /* DIN-Regular.otf */; };
-		FA3A4176B2F41F60F22C84E6 /* libPods-EvolutionApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9655EEC71E24B194AF39B48 /* libPods-EvolutionApp-tvOS.a */; };
+		E18C04168C98794F7175ED2D /* libPods-EvolutionApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 864440A15350EC23F9FFF19B /* libPods-EvolutionApp-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,8 +146,8 @@
 		00E3FB5927CDF9FA00FCFD34 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		00E3FB5B27CE11F600FCFD34 /* PTRIDFA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PTRIDFA.h; path = EvolutionApp/PTRIDFA.h; sourceTree = "<group>"; };
 		00E3FB5C27CE11F600FCFD34 /* PTRIDFA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PTRIDFA.m; path = EvolutionApp/PTRIDFA.m; sourceTree = "<group>"; };
-		02D0C9B46284A337BA11C652 /* Pods-EvolutionApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		0C70F7A7023877203050EDD1 /* libPods-EvolutionApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C84F041B799074D44AEDD3C /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0D1FE0BF070B6B369281EC69 /* libPods-EvolutionApp-EvolutionAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-EvolutionAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* EvolutionApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvolutionApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = EvolutionApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = EvolutionApp/AppDelegate.m; sourceTree = "<group>"; };
@@ -156,25 +156,25 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EvolutionApp/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* EvolutionApp-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EvolutionApp-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* EvolutionApp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EvolutionApp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		368213CB0A4BE23B4E385CEE /* Pods-EvolutionApp-tvOS.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.staging.xcconfig"; sourceTree = "<group>"; };
-		403BEECE380903978BE9D8F3 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		42D87CA593525E6A4630C213 /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig"; sourceTree = "<group>"; };
-		609CB28C9844EB427DE32570 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.staging.xcconfig"; sourceTree = "<group>"; };
-		60B27811E8C373AF54F73B69 /* libPods-EvolutionApp-EvolutionAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-EvolutionAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73FE87D84CB4D5AD13928C2B /* Pods-EvolutionApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.release.xcconfig"; sourceTree = "<group>"; };
+		30C29D5D41669426363AAC44 /* libPods-EvolutionApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AFA216A0EDC77BE56FEEFEA /* Pods-EvolutionApp-tvOS.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.staging.xcconfig"; sourceTree = "<group>"; };
+		3D7D7F500142C1D10FF8FC28 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.staging.xcconfig"; sourceTree = "<group>"; };
+		4D3A51CCCBCA07717C0434CE /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4DEA4DCC65A7C99B0A9536BD /* libPods-EvolutionApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5484E5D180D42CED8C8A63A9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7DF3280EEBA4269EA80A5AC3 /* Pods-EvolutionApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EvolutionApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		88D95393D6EA51CD05016B35 /* Pods-EvolutionApp.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.staging.xcconfig"; sourceTree = "<group>"; };
-		A15509808A457166349D0346 /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig"; sourceTree = "<group>"; };
-		A9655EEC71E24B194AF39B48 /* libPods-EvolutionApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C039B38CC320A9D7F194C7D9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		864440A15350EC23F9FFF19B /* libPods-EvolutionApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DE01887E00699389127E843 /* Pods-EvolutionApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.release.xcconfig"; sourceTree = "<group>"; };
+		A10B60D4DD6C6593A7AD7E20 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		B9BF7476F4FDE4029FD66B91 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		BACC71ED590867BC933C57A0 /* Pods-EvolutionApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.debug.xcconfig"; sourceTree = "<group>"; };
+		CCA2A51B41B4E289451692FC /* Pods-EvolutionApp.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.staging.xcconfig"; sourceTree = "<group>"; };
 		D059087D25C260C000EFA6CA /* DIN-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DIN-Medium.otf"; sourceTree = "<group>"; };
 		D07216DB27717293006AFA8D /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		D07216DD27717393006AFA8D /* libJPush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libJPush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D078539F25B8050600274C2D /* DIN-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DIN-Regular.otf"; sourceTree = "<group>"; };
-		D4BB7FFB02959DFA1BFA8054 /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		DBBE450400B0FE5865E33A32 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOSTests/Pods-EvolutionApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		DFB025A330AF2516D08D9F21 /* libPods-EvolutionApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0E15E009BEF9FDE55745038 /* Pods-EvolutionApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp.debug.xcconfig"; path = "Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp.debug.xcconfig"; sourceTree = "<group>"; };
+		DDE71E2199B03D05F547223E /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -184,7 +184,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D9D47155F79632F4585A394 /* libPods-EvolutionApp-EvolutionAppTests.a in Frameworks */,
+				8378B52C4719F3EBFAF2B73C /* libPods-EvolutionApp-EvolutionAppTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +207,7 @@
 				00E3FB5A27CDF9FA00FCFD34 /* AdSupport.framework in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
-				95DC865293AC2285D40F75B1 /* libPods-EvolutionApp.a in Frameworks */,
+				CBA4EA302E0DD6B0129FB554 /* libPods-EvolutionApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,7 +215,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3A4176B2F41F60F22C84E6 /* libPods-EvolutionApp-tvOS.a in Frameworks */,
+				E18C04168C98794F7175ED2D /* libPods-EvolutionApp-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +223,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AB3CF52AB0A6D2FB14AFDC1 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */,
+				4CF40ACFDD8D8B7BDA6B3FD2 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,10 +327,10 @@
 				002DFB7F258B442700501EA5 /* libz.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				0C70F7A7023877203050EDD1 /* libPods-EvolutionApp.a */,
-				60B27811E8C373AF54F73B69 /* libPods-EvolutionApp-EvolutionAppTests.a */,
-				A9655EEC71E24B194AF39B48 /* libPods-EvolutionApp-tvOS.a */,
-				DFB025A330AF2516D08D9F21 /* libPods-EvolutionApp-tvOSTests.a */,
+				4DEA4DCC65A7C99B0A9536BD /* libPods-EvolutionApp.a */,
+				0D1FE0BF070B6B369281EC69 /* libPods-EvolutionApp-EvolutionAppTests.a */,
+				864440A15350EC23F9FFF19B /* libPods-EvolutionApp-tvOS.a */,
+				30C29D5D41669426363AAC44 /* libPods-EvolutionApp-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -345,18 +345,18 @@
 		4D18E038FAA73600344F3B03 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E0E15E009BEF9FDE55745038 /* Pods-EvolutionApp.debug.xcconfig */,
-				73FE87D84CB4D5AD13928C2B /* Pods-EvolutionApp.release.xcconfig */,
-				88D95393D6EA51CD05016B35 /* Pods-EvolutionApp.staging.xcconfig */,
-				A15509808A457166349D0346 /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */,
-				403BEECE380903978BE9D8F3 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */,
-				42D87CA593525E6A4630C213 /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */,
-				C039B38CC320A9D7F194C7D9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */,
-				02D0C9B46284A337BA11C652 /* Pods-EvolutionApp-tvOS.release.xcconfig */,
-				368213CB0A4BE23B4E385CEE /* Pods-EvolutionApp-tvOS.staging.xcconfig */,
-				D4BB7FFB02959DFA1BFA8054 /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */,
-				DBBE450400B0FE5865E33A32 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */,
-				609CB28C9844EB427DE32570 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */,
+				BACC71ED590867BC933C57A0 /* Pods-EvolutionApp.debug.xcconfig */,
+				8DE01887E00699389127E843 /* Pods-EvolutionApp.release.xcconfig */,
+				CCA2A51B41B4E289451692FC /* Pods-EvolutionApp.staging.xcconfig */,
+				0C84F041B799074D44AEDD3C /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */,
+				B9BF7476F4FDE4029FD66B91 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */,
+				DDE71E2199B03D05F547223E /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */,
+				5484E5D180D42CED8C8A63A9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */,
+				7DF3280EEBA4269EA80A5AC3 /* Pods-EvolutionApp-tvOS.release.xcconfig */,
+				3AFA216A0EDC77BE56FEEFEA /* Pods-EvolutionApp-tvOS.staging.xcconfig */,
+				4D3A51CCCBCA07717C0434CE /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */,
+				A10B60D4DD6C6593A7AD7E20 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */,
+				3D7D7F500142C1D10FF8FC28 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -411,12 +411,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EvolutionAppTests" */;
 			buildPhases = (
-				7A952ED38DD4DA318E7901A7 /* [CP] Check Pods Manifest.lock */,
+				0E6657F8FD3F074D832B5B52 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				727AEC6289B4F0AA8CB95668 /* [CP] Embed Pods Frameworks */,
-				9EB2064C9E8049FDCAA12605 /* [CP] Copy Pods Resources */,
+				A7193522558A1A6C6C478B84 /* [CP] Embed Pods Frameworks */,
+				33C6B7C52E6CBDC09DF30BA9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -432,7 +432,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EvolutionApp" */;
 			buildPhases = (
-				BAA15831398A689F188F302A /* [CP] Check Pods Manifest.lock */,
+				B18AB3A5B999A316E4C20E7B /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
@@ -440,8 +440,8 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				008044E1259046430083350B /* Embed Frameworks */,
 				0003BA622602FB0E0010E86D /* ShellScript */,
-				AE4E7A9D0BF531BDD948AFA7 /* [CP] Embed Pods Frameworks */,
-				8786916A40B7CA68C598DCA5 /* [CP] Copy Pods Resources */,
+				6D1A4F5C68E2EA53C1981BE5 /* [CP] Embed Pods Frameworks */,
+				2611596097D4DAC05ECB51D7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -456,7 +456,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "EvolutionApp-tvOS" */;
 			buildPhases = (
-				C8F91533126D8DEE912B6318 /* [CP] Check Pods Manifest.lock */,
+				F3E0EEB7DF1107BE2702070A /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -475,7 +475,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "EvolutionApp-tvOSTests" */;
 			buildPhases = (
-				3EB477D98E74F3A5CB7ED6D6 /* [CP] Check Pods Manifest.lock */,
+				A7416053FE807883EA4C3D64 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -610,63 +610,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		3EB477D98E74F3A5CB7ED6D6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-EvolutionApp-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		727AEC6289B4F0AA8CB95668 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraAIDenoiseExtension.framework/AgoraAIDenoiseExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraCIExtension.framework/AgoraCIExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraCore.framework/AgoraCore",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraDav1dExtension.framework/AgoraDav1dExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraJNDExtension.framework/AgoraJNDExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraRtcKit.framework/AgoraRtcKit",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraSoundTouch.framework/AgoraSoundTouch",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/Agorafdkaac.framework/Agorafdkaac",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/Agoraffmpeg.framework/Agoraffmpeg",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCIExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraDav1dExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraJNDExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraSoundTouch.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7A952ED38DD4DA318E7901A7 /* [CP] Check Pods Manifest.lock */ = {
+		0E6657F8FD3F074D832B5B52 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -688,7 +632,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8786916A40B7CA68C598DCA5 /* [CP] Copy Pods Resources */ = {
+		2611596097D4DAC05ECB51D7 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -744,7 +688,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9EB2064C9E8049FDCAA12605 /* [CP] Copy Pods Resources */ = {
+		33C6B7C52E6CBDC09DF30BA9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -800,7 +744,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AE4E7A9D0BF531BDD948AFA7 /* [CP] Embed Pods Frameworks */ = {
+		6D1A4F5C68E2EA53C1981BE5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -834,7 +778,63 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BAA15831398A689F188F302A /* [CP] Check Pods Manifest.lock */ = {
+		A7193522558A1A6C6C478B84 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraAIDenoiseExtension.framework/AgoraAIDenoiseExtension",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraCIExtension.framework/AgoraCIExtension",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraCore.framework/AgoraCore",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraDav1dExtension.framework/AgoraDav1dExtension",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraJNDExtension.framework/AgoraJNDExtension",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraRtcKit.framework/AgoraRtcKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/AgoraSoundTouch.framework/AgoraSoundTouch",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/Agorafdkaac.framework/Agorafdkaac",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcEngine_iOS/Agoraffmpeg.framework/Agoraffmpeg",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCIExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraDav1dExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraJNDExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraSoundTouch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A7416053FE807883EA4C3D64 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EvolutionApp-tvOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B18AB3A5B999A316E4C20E7B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -856,7 +856,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C8F91533126D8DEE912B6318 /* [CP] Check Pods Manifest.lock */ = {
+		F3E0EEB7DF1107BE2702070A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1044,7 +1044,7 @@
 		};
 		008046C3259360780083350B /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88D95393D6EA51CD05016B35 /* Pods-EvolutionApp.staging.xcconfig */;
+			baseConfigurationReference = CCA2A51B41B4E289451692FC /* Pods-EvolutionApp.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1134,7 +1134,7 @@
 		};
 		008046C4259360780083350B /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 42D87CA593525E6A4630C213 /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */;
+			baseConfigurationReference = DDE71E2199B03D05F547223E /* Pods-EvolutionApp-EvolutionAppTests.staging.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -1159,7 +1159,7 @@
 		};
 		008046C5259360780083350B /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 368213CB0A4BE23B4E385CEE /* Pods-EvolutionApp-tvOS.staging.xcconfig */;
+			baseConfigurationReference = 3AFA216A0EDC77BE56FEEFEA /* Pods-EvolutionApp-tvOS.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1191,7 +1191,7 @@
 		};
 		008046C6259360780083350B /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 609CB28C9844EB427DE32570 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */;
+			baseConfigurationReference = 3D7D7F500142C1D10FF8FC28 /* Pods-EvolutionApp-tvOSTests.staging.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1223,7 +1223,7 @@
 		};
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A15509808A457166349D0346 /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */;
+			baseConfigurationReference = 0C84F041B799074D44AEDD3C /* Pods-EvolutionApp-EvolutionAppTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1251,7 +1251,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 403BEECE380903978BE9D8F3 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */;
+			baseConfigurationReference = B9BF7476F4FDE4029FD66B91 /* Pods-EvolutionApp-EvolutionAppTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -1276,7 +1276,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0E15E009BEF9FDE55745038 /* Pods-EvolutionApp.debug.xcconfig */;
+			baseConfigurationReference = BACC71ED590867BC933C57A0 /* Pods-EvolutionApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1368,7 +1368,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 73FE87D84CB4D5AD13928C2B /* Pods-EvolutionApp.release.xcconfig */;
+			baseConfigurationReference = 8DE01887E00699389127E843 /* Pods-EvolutionApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1459,7 +1459,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C039B38CC320A9D7F194C7D9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 5484E5D180D42CED8C8A63A9 /* Pods-EvolutionApp-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1491,7 +1491,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 02D0C9B46284A337BA11C652 /* Pods-EvolutionApp-tvOS.release.xcconfig */;
+			baseConfigurationReference = 7DF3280EEBA4269EA80A5AC3 /* Pods-EvolutionApp-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1523,7 +1523,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D4BB7FFB02959DFA1BFA8054 /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 4D3A51CCCBCA07717C0434CE /* Pods-EvolutionApp-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1555,7 +1555,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBBE450400B0FE5865E33A32 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = A10B60D4DD6C6593A7AD7E20 /* Pods-EvolutionApp-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

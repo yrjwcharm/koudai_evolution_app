@@ -45,22 +45,25 @@ const Compare = () => {
         _pkProducts.current = pkProducts;
     }, [pkProducts]);
 
-    const getData = useCallback((params = {}) => {
-        // 更新data
-        setLoading(true);
-        getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry, ...params})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result);
-                    setList(res.result.pk_list);
-                    num.current++ === 0 &&
-                        setWeightsState(handlerDefaultWeightsState(res.result?.pk_list?.[0]?.score_info));
-                }
-            })
-            .finally((_) => {
-                setLoading(false);
-            });
-    }, []);
+    const getData = useCallback(
+        (params = {}) => {
+            // 更新data
+            setLoading(true);
+            getPKDetailData({fund_code_list: _pkProducts.current, source: global.pkEntry, ...weightsState, ...params})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                        setList(res.result.pk_list);
+                        num.current++ === 0 &&
+                            setWeightsState(handlerDefaultWeightsState(res.result?.pk_list?.[0]?.score_info));
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        },
+        [weightsState]
+    );
 
     useFocusEffect(getData);
 
