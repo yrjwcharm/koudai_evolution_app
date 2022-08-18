@@ -107,7 +107,11 @@ const Index = ({navigation}) => {
                                         item.tag_id
                                     )
                                 }
-                                style={{width: (deviceWidth * 3) / 8, alignItems: 'center', marginBottom: px(40)}}>
+                                style={{
+                                    width: (deviceWidth * 3) / 8 - 0.5,
+                                    alignItems: 'center',
+                                    marginBottom: px(40),
+                                }}>
                                 <ImageBackground
                                     source={{uri: item.tag_icon}}
                                     style={[
