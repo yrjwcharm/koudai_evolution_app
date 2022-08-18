@@ -30,7 +30,7 @@ const TradeRecord = ({route, navigation}) => {
     const jump = useJump();
     const isMfb = fr == 'mfb';
     const scrollTab = useRef();
-    const tradeType = useRef([0, -1, -2, -35, 6, 4, 7]);
+    const tradeType = useRef([0, -35, 4, -2, -1, 6, 7]);
     const mfbType = useRef([0, 1, 2]);
     const getData = useCallback(
         (_page, toast) => {
@@ -67,7 +67,7 @@ const TradeRecord = ({route, navigation}) => {
     );
     useEffect(() => {
         if (fund_code) {
-            tradeType.current = [0, -2, -35, 4, 7];
+            tradeType.current = [0, -35, 4, -2, 7];
         }
     }, []);
     useEffect(() => {
@@ -298,25 +298,25 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
+                    <View tabLabel="申购" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="赎回" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="升级" style={styles.container}>
+                        {renderContent()}
+                    </View>
                     {!fund_code ? (
                         <View tabLabel="投顾服务" style={styles.container}>
                             {renderContent()}
                         </View>
                     ) : null}
-                    <View tabLabel="升级" style={styles.container}>
-                        {renderContent()}
-                    </View>
-                    <View tabLabel="申购" style={styles.container}>
-                        {renderContent()}
-                    </View>
                     {!fund_code ? (
                         <View tabLabel={adjust_name || '调仓'} style={styles.container}>
                             {renderContent()}
                         </View>
                     ) : null}
-                    <View tabLabel="赎回" style={styles.container}>
-                        {renderContent()}
-                    </View>
                     <View tabLabel="分红" style={styles.container}>
                         {renderContent()}
                     </View>
