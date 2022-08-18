@@ -207,7 +207,7 @@ const RankCard = ({data = {}, isPking}) => {
                                 button.avail === 0 ? {backgroundColor: '#ddd', borderColor: '#ddd'} : {},
                             ]}>
                             <Text style={[styles.btnText, button.avail === 0 ? {color: '#fff'} : {}]}>
-                                {isPking ? 'PK中' : button.text}
+                                {isPking ? 'PK中' : button?.text}
                             </Text>
                         </TouchableOpacity>
                     ) : null}
@@ -554,7 +554,7 @@ const ProjectSmCard = ({data = {}}) => {
 const DefaultCard = ({data = {}, isPking}) => {
     const dispatch = useDispatch();
     const {button, code, item_type, labels, name, rank_info, tags = [], yield_info} = data;
-    const btnText = isPking ? 'PK中' : button.text;
+    const btnText = isPking ? 'PK中' : button?.text;
     return (
         <View>
             <View style={Style.flexRow}>
