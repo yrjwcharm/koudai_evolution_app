@@ -321,8 +321,8 @@ const styles = StyleSheet.create({
     totalLabel: {
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.5,
-        padding: px(16),
         backgroundColor: '#fff',
+        justifyContent: 'center',
     },
     totalLabelText: {
         fontSize: px(13),

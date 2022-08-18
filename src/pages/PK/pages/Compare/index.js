@@ -75,10 +75,7 @@ const Compare = () => {
                 dispatch(delProduct(item.code));
                 if (item.code === pkPinning) dispatch(pinningProduct(null));
             }
-            dispatch(addProduct({code, isHigh: true}));
-            setTimeout(() => {
-                getData();
-            }, 0);
+            dispatch(addProduct({code, isHigh: true, afterFn: getData}));
         },
         [dispatch, getData, list, pkPinning]
     );

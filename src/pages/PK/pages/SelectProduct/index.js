@@ -70,7 +70,7 @@ const SelectProduct = (props) => {
         global.LogTool('ProductSelection_Clicktab', idx + 1);
         setCurTab(idx);
         !doNotLoad && setLoading(true);
-        [followListLite, hotpkData, borwseListData]
+        [hotpkData, followListLite, borwseListData]
             [idx]()
             .then((res) => {
                 const {plateid, rec_json} = res.result;
@@ -342,7 +342,7 @@ const SelectProduct = (props) => {
                         {/* tabs */}
                         <View style={styles.tabsWrap}>
                             <PKBtnTab
-                                data={['我的关注', '热门PK', '历史浏览']}
+                                data={['热门PK', '我的关注', '历史浏览']}
                                 active={curTab}
                                 btnDefaultStyle={{backgroundColor: '#F5F6F8'}}
                                 onChange={onTabChange}

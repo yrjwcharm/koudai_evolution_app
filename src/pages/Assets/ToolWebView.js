@@ -137,7 +137,7 @@ const ToolWebView = ({route}) => {
                         }}
                         renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                         startInLoadingState={true}
-                        style={{height: webviewHeight}}
+                        style={{height: webviewHeight, opacity: 0.99}}
                         source={{
                             uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
                         }}

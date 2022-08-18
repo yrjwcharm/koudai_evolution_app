@@ -112,7 +112,7 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
                         allowUniversalAccessFromFileURLs
                         javaScriptEnabled
                         scrollEnabled={false}
-                        style={{opacity: 0.99999, width: px(90)}}
+                        style={{opacity: 0.99, width: px(90)}}
                         renderLoading={() => <LoadingWebview />}
                         source={source}
                         injectedJavaScript={initScript}
