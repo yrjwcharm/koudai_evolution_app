@@ -677,7 +677,35 @@ export default function AppStack() {
                 component={IntelligentInvestAnalysis}
                 options={{title: '投资分析'}}
             />
-            <Stack.Screen name="InsuranceList" options={{headerShown: false}} component={InsuranceList} />
+            <Stack.Screen
+                name="InsuranceList"
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#F1BE66',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                    title: '',
+                }}
+                component={InsuranceList}
+            />
             <Stack.Screen name="PrivacySetting" component={PrivacySetting} options={{title: '隐私设置'}} />
             <Stack.Screen
                 name="PersonalizedRecommend"

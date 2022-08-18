@@ -2,15 +2,15 @@
  * @Date: 2022-07-20 17:00:22
  * @Description:
  */
-import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, Image, TextInput, Keyboard} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, TextInput, Keyboard} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, onlyNumber, px} from '~/utils/appUtil';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import {getInfo, postDo} from './service';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {BankCardModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
@@ -19,8 +19,10 @@ import {CommonActions} from '@react-navigation/native';
 import {PasswordModal} from '~/components/Password';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
+import http from '~/services';
 
 const Index = ({route, navigation}) => {
+    const isFocused = useIsFocused();
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
     const [data, setData] = useState({});
     const passwordModal = useRef();
@@ -29,11 +31,74 @@ const Index = ({route, navigation}) => {
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
     const jump = useJump();
+    const showRiskDisclosureRef = useRef(true);
+    const riskDisclosureModalRef = useRef();
 
     const getData = async () => {
-        let res = await getInfo(route?.params);
+        const res = await getInfo(route?.params);
+        const {pop_risk_disclosure, risk_disclosure} = res.result || {};
+        if (isFocused && pop_risk_disclosure && risk_disclosure && showRiskDisclosureRef.current) {
+            showRiskDisclosure(risk_disclosure);
+        }
         navigation.setOptions({title: res.result?.label});
         setData(res.result);
+    };
+
+    /**
+     * @description 展示风险揭示书
+     * @param {any} _data 风险揭示书内容
+     * @returns void
+     */
+    const showRiskDisclosure = (_data) => {
+        showRiskDisclosureRef.current = false;
+        const {poid} = route.params || {};
+        Modal.show({
+            children: () => {
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                marginTop: px(2),
+                                fontSize: Font.textH2,
+                                lineHeight: px(20),
+                                color: Colors.red,
+                                textAlign: 'center',
+                            }}>
+                            {_data.sub_title}
+                        </Text>
+                        <ScrollView
+                            bounces={false}
+                            style={{
+                                marginVertical: Space.marginVertical,
+                                paddingHorizontal: px(20),
+                                maxHeight: px(352),
+                            }}
+                            ref={riskDisclosureModalRef}>
+                            <RenderHtml
+                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}
+                                html={_data.content}
+                            />
+                        </ScrollView>
+                    </View>
+                );
+            },
+            confirmCallBack: () => {
+                http.post('/advisor/action/report/20220422', {
+                    action: 'read',
+                    poids: [poid],
+                });
+            },
+            confirmText: '关闭',
+            countdown: _data.countdown,
+            isTouchMaskToClose: false,
+            onCloseCallBack: () => navigation.goBack(),
+            onCountdownChange: (val) => {
+                if (+val === 1) {
+                    riskDisclosureModalRef.current?.scrollToEnd?.({animated: true});
+                }
+            },
+            title: _data.title,
+        });
     };
 
     useFocusEffect(
