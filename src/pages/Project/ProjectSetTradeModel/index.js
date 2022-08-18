@@ -194,7 +194,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
                                 onChangeValue={onTargetChange}
                             />
                             <Text style={{fontSize: px(12), textAlign: 'center', marginBottom: px(12)}}>
-                                根据历史数据，投资18个月实现概率：
+                                根据历史数据，投资18个月参考实现概率：
                                 <Text style={{color: Colors.red}}>{(possible * 100).toFixed(0) + '%'}</Text>
                             </Text>
                         </>
