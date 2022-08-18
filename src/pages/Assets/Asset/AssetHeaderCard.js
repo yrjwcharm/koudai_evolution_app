@@ -62,7 +62,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
 
                 <View style={[Style.flexRow, styles.profitContainer]}>
                     <View style={[{flex: 1}]}>
-                        <Text style={styles.profitKey}>日收益</Text>
+                        <Text style={styles.profitKey}>{summary?.profit_label || '日收益'}</Text>
                         <Text style={styles.profitVal}>{showEye === 'true' ? summary?.profit : '****'}</Text>
                     </View>
                     <View style={[{flex: 1}]}>

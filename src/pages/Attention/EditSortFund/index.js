@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 21:52:14
+ * @LastEditTime: 2022-08-17 11:15:53
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -16,7 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
 
-export default function EditSortFund({route}) {
+export default function EditSortFund({navigation, route}) {
     const [data, setData] = useState([]);
     const [check, setCheck] = useState(0); // 0没有选中 1部分选中 2全选
     const getData = async () => {
@@ -69,12 +69,12 @@ export default function EditSortFund({route}) {
     const itemSeparatorComponent = () => {
         return <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />;
     };
-    const onDragEnd = ({data, from, to}) => {
-        setData(data);
+    const onDragEnd = ({_data, from, to}) => {
+        setData(_data);
         const params = {
-            current_id: data[to].id,
-            after_id: data[to == 0 ? 0 : to - 1].id,
-            item_type: data[to].item_type,
+            current_id: _data[to].id,
+            after_id: _data[to == 0 ? 0 : to - 1].id,
+            item_type: _data[to].item_type,
         };
         changeSort(params);
     };
@@ -118,7 +118,7 @@ export default function EditSortFund({route}) {
                 };
                 let res = await handleCancle(params);
                 if (res.code === '000000') getData();
-                Toast.show(res.message);
+                Toast.show(res.message, {onHidden: () => navigation.goBack()});
             },
         });
     };
@@ -130,7 +130,7 @@ export default function EditSortFund({route}) {
                     data={data}
                     ItemSeparatorComponent={itemSeparatorComponent}
                     onDragEnd={onDragEnd}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => item.code + index}
                     renderItem={renderItem}
                 />
             </View>

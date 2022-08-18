@@ -142,24 +142,32 @@ const Index = ({navigation, route}) => {
                                     })}
                                 </View>
                                 {stock_group.items?.map?.((row, i) => {
-                                    const {inc, name, ratio} = row;
+                                    const {code, inc, name, ratio} = row;
                                     return (
                                         <View
                                             key={name + i}
                                             style={[Style.flexRow, {marginTop: i === 0 ? 0 : Space.marginVertical}]}>
-                                            <View style={{width: px(154)}}>
+                                            <View style={[Style.flexRow, {width: px(154)}]}>
                                                 <HTML
-                                                    html={name}
+                                                    html={
+                                                        code
+                                                            ? `${name} <span style="color: ${Colors.lightGrayColor};fontFamily: ${Font.numRegular};">${code}</span>`
+                                                            : name
+                                                    }
                                                     numberOfLines={1}
                                                     style={{...styles.tableText, color: Colors.defaultColor}}
                                                 />
                                             </View>
-                                            <NumText
-                                                style={{...styles.tableText, ...styles.numText}}
-                                                text={inc}
-                                                type={inc === '--' ? 2 : 1}
-                                            />
-                                            <Text style={[styles.tableText, styles.numText]}>{ratio}</Text>
+                                            {inc ? (
+                                                <NumText
+                                                    style={{...styles.tableText, ...styles.numText}}
+                                                    text={inc}
+                                                    type={inc === '--' ? 2 : 1}
+                                                />
+                                            ) : null}
+                                            {ratio ? (
+                                                <Text style={[styles.tableText, styles.numText]}>{ratio}</Text>
+                                            ) : null}
                                         </View>
                                     );
                                 })}
@@ -233,6 +241,10 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
         textAlign: 'right',
+    },
+    code: {
+        color: Colors.lightGrayColor,
+        fontFamily: Font.numRegular,
     },
 });
 

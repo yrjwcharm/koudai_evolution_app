@@ -14,8 +14,9 @@ import {
     View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
+import Picker from 'react-native-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import checked from '~/assets/img/login/checked.png';
@@ -24,13 +25,22 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {Button, FixedButton} from '~/components/Button';
 import {useJump} from '~/components/hooks';
+import Mask from '~/components/Mask';
 import {BankCardModal, Modal} from '~/components/Modal';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
-import {fundBuyDo, getBuyFee, getBuyInfo, getBuyQuestionnaire, postQuestionAnswer} from './services';
+import {
+    fundBuyDo,
+    fundFixDo,
+    getBuyFee,
+    getBuyInfo,
+    getBuyQuestionnaire,
+    getNextDay,
+    postQuestionAnswer,
+} from './services';
 import http from '~/services';
 import {debounce} from 'lodash';
 
@@ -120,6 +130,8 @@ export const Questionnaire = ({callback, data = [], summary_id}) => {
 
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
     const jump = useJump();
+    const route = useRoute();
+    const {type} = route.params || {};
     const {hidden_text, title} = buy_info;
     const {date_text, fee_text, origin_fee} = feeData;
     return (
@@ -147,40 +159,110 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     </TouchableOpacity>
                 )}
             </View>
-            <View style={styles.tipsBox}>
-                {errTip ? (
-                    <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
-                ) : fee_text || date_text ? (
-                    <>
-                        {fee_text ? (
-                            <View style={Style.flexRow}>
-                                <HTML
-                                    html={`${fee_text.split('：')[0]}：`}
-                                    style={{...styles.desc, color: Colors.descColor}}
-                                />
-                                {origin_fee ? <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text> : null}
-                                <HTML
-                                    html={`${fee_text.split('：')[1]}`}
-                                    style={{...styles.desc, color: Colors.descColor}}
-                                />
-                            </View>
-                        ) : null}
-                        {date_text ? (
-                            <View style={{marginTop: px(4)}}>
-                                <HTML
-                                    html={date_text}
-                                    style={{...styles.desc, color: Colors.descColor, marginTop: px(4)}}
-                                />
-                            </View>
-                        ) : null}
-                    </>
-                ) : (
-                    <View style={Style.flexCenter}>
-                        <ActivityIndicator color={Colors.lightGrayColor} />
-                    </View>
-                )}
-            </View>
+            {type === 1 && !errTip ? null : (
+                <View style={styles.tipsBox}>
+                    {errTip ? (
+                        <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
+                    ) : fee_text || date_text ? (
+                        <>
+                            {fee_text ? (
+                                <View style={Style.flexRow}>
+                                    <HTML
+                                        html={`${fee_text.split('：')[0]}：`}
+                                        style={{...styles.desc, color: Colors.descColor}}
+                                    />
+                                    {origin_fee ? (
+                                        <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text>
+                                    ) : null}
+                                    <HTML
+                                        html={`${fee_text.split('：')[1]}`}
+                                        style={{...styles.desc, color: Colors.descColor}}
+                                    />
+                                </View>
+                            ) : null}
+                            {date_text ? (
+                                <View style={{marginTop: px(4)}}>
+                                    <HTML
+                                        html={date_text}
+                                        style={{...styles.desc, color: Colors.descColor, marginTop: px(4)}}
+                                    />
+                                </View>
+                            ) : null}
+                        </>
+                    ) : (
+                        <View style={Style.flexCenter}>
+                            <ActivityIndicator color={Colors.lightGrayColor} />
+                        </View>
+                    )}
+                </View>
+            )}
         </View>
+    );
+};
+
+/** @name 定投周期 */
+const FixedInvestCycle = ({current_date = [], date_items = [], nextday, onChange, setShowMask, text}) => {
+    const pickerData = useRef();
+    /** @name 生成定投周期选择器数据 */
+    const createPickerData = () => {
+        return date_items.map((item) => {
+            const {key, val} = item;
+            return {
+                [key]: val,
+            };
+        });
+    };
+    /** @name 展示定投周期选择器 */
+    const showPicker = () => {
+        Keyboard.dismiss();
+        setShowMask(true);
+        Picker.init({
+            pickerTitleText: '定投周期',
+            pickerCancelBtnText: '取消',
+            pickerConfirmBtnText: '确定',
+            pickerBg: [255, 255, 255, 1],
+            pickerData: pickerData.current,
+            pickerFontColor: [33, 33, 33, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            pickerTextEllipsisLen: 100,
+            wheelFlex: [1, 1],
+            selectedValue: [current_date[0], current_date[1]],
+            onPickerConfirm: (pickedValue) => {
+                setShowMask(false);
+                onChange(pickedValue);
+            },
+            onPickerCancel: () => {
+                setShowMask(false);
+            },
+        });
+        Picker.show();
+    };
+
+    useEffect(() => {
+        pickerData.current = createPickerData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return (
+        <TouchableOpacity activeOpacity={0.8} onPress={showPicker} style={styles.fixedInvestCycle}>
+            <View style={Style.flexBetween}>
+                <Text style={styles.buyTitle}>{text}</Text>
+                <View style={Style.flexRow}>
+                    <Text style={[styles.buyTitle, {fontWeight: '400', marginRight: px(4)}]}>
+                        {current_date.join(' ')}
+                    </Text>
+                    <AntDesign color={Colors.lightGrayColor} name="right" size={px(12)} />
+                </View>
+            </View>
+            {nextday ? (
+                <View style={{marginTop: px(8)}}>
+                    <HTML html={nextday} style={styles.desc} />
+                </View>
+            ) : null}
+        </TouchableOpacity>
     );
 };
 
@@ -206,7 +288,7 @@ const PayMethod = ({
             <Text style={styles.payTitle}>{'付款方式'}</Text>
             <View style={styles.partBox}>
                 <View style={Style.flexRow}>
-                    {large_pay_show_type == 2 && (
+                    {large_pay_show_type === 2 && (
                         <TouchableOpacity activeOpacity={0.8} onPress={() => setIsLarge(false)} style={styles.radioBox}>
                             <View style={styles.radioWrap}>
                                 <View style={[styles.radioPoint, isLarge ? {backgroundColor: 'transparent'} : {}]} />
@@ -233,7 +315,7 @@ const PayMethod = ({
                         </View>
                     </TouchableOpacity>
                 </View>
-                {large_pay_method.pay_method && large_pay_show_type == 2 ? (
+                {large_pay_method.pay_method && large_pay_show_type === 2 ? (
                     <View style={[styles.payMethodBox, styles.borderTop]}>
                         <View style={Style.flexRow}>
                             <TouchableOpacity
@@ -294,6 +376,7 @@ const Index = ({navigation, route}) => {
     const [bankSelectIndex, setIndex] = useState(0);
     const [deltaHeight, setDeltaHeight] = useState(0);
     const [errTip, setErrTip] = useState('');
+    const [showMask, setShowMask] = useState(false);
     const {
         add_payment_disable = false,
         agreement,
@@ -301,10 +384,11 @@ const Index = ({navigation, route}) => {
         button,
         buy_info,
         large_pay_method,
-        large_pay_show_type, //arge_pay_show_type  1为显示在内层列表 2为显示在外层
+        large_pay_show_type, // 1为显示在内层列表 2为显示在外层
         large_pay_tip,
         money_safe,
         pay_methods = [],
+        period_info,
         rule_button,
         sub_title,
     } = data;
@@ -315,9 +399,10 @@ const Index = ({navigation, route}) => {
         setAmount(onlyNumber(val >= 100000000 ? '99999999.99' : val));
     };
 
+    /** @name 输入金额获取交易费用等信息 */
     const onInput = () => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
-        if (amount > method.left_amount) {
+        if (amount > method.left_amount && type === 0) {
             setErrTip(
                 method.pay_method !== 'wallet'
                     ? `您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`
@@ -335,19 +420,22 @@ const Index = ({navigation, route}) => {
             setFeeData({});
         } else {
             setErrTip('');
-            timer.current && clearTimeout(timer.current);
-            timer.current = setTimeout(() => {
-                getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
-                    if (res.code === '000000') {
-                        setFeeData(res.result);
-                    } else {
-                        setErrTip(res.message);
-                    }
-                });
-            }, 300);
+            if (type === 0) {
+                timer.current && clearTimeout(timer.current);
+                timer.current = setTimeout(() => {
+                    getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
+                        if (res.code === '000000') {
+                            setFeeData(res.result);
+                        } else {
+                            setErrTip(res.message);
+                        }
+                    });
+                }, 300);
+            }
         }
     };
 
+    /** @name 点击购买/定投按钮 */
     const buyClick = () => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
@@ -386,14 +474,26 @@ const Index = ({navigation, route}) => {
         });
     };
 
+    /** @name 输入完交易密码确认交易 */
     const onSubmit = (password) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
-        fundBuyDo({amount, fund_code: code, password, pay_method: method.pay_method})
+        const params = {amount, fund_code: code, password, pay_method: method.pay_method, poid: data.poid};
+        if (type === 1) {
+            params.cycle = period_info.current_date[0];
+            params.need_buy = false;
+            params.timing = period_info.current_date[1];
+            params.trade_method = method.pay_type;
+            params.wallet_auto_charge = 0;
+        }
+        (type === 0 ? fundBuyDo : fundFixDo)(params)
             .then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
-                    navigation.navigate('TradeProcessing', res.result);
+                    navigation[type === 0 ? 'navigate' : 'replace'](
+                        type === 0 ? 'TradeProcessing' : 'TradeFixedConfirm',
+                        res.result
+                    );
                 } else {
                     res.message &&
                         Toast.show(res.message, {
@@ -410,31 +510,7 @@ const Index = ({navigation, route}) => {
             });
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            const {anti_pop} = userInfo;
-            if (anti_pop) {
-                const {cancel_action, confirm_action, content, title} = anti_pop;
-                Modal.show({
-                    title: title,
-                    content: content,
-                    confirm: true,
-                    backButtonClose: false,
-                    isTouchMaskToClose: false,
-                    cancelCallBack: () => {
-                        navigation.goBack();
-                    },
-                    confirmCallBack: () => {
-                        jump(confirm_action?.url);
-                    },
-                    cancelText: cancel_action?.text,
-                    confirmText: confirm_action?.text,
-                });
-            }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [userInfo])
-    );
-
+    /** @name 弹出风险弹窗 */
     const showRiskPop = (pop) => {
         const {cancel, confirm, content, title} = pop;
         Modal.show({
@@ -466,6 +542,44 @@ const Index = ({navigation, route}) => {
         });
     };
 
+    /** @name 更改定投周期 */
+    const onChangeDate = (date) => {
+        getNextDay({cycle: date[0], timing: date[1]}).then((res) => {
+            if (res.code === '000000') {
+                setData((prev) => {
+                    prev.period_info.current_date = date;
+                    prev.period_info.nextday = res.result.nextday;
+                    return {...prev};
+                });
+            }
+        });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            const {anti_pop} = userInfo;
+            if (anti_pop) {
+                const {cancel_action, confirm_action, content, title} = anti_pop;
+                Modal.show({
+                    title: title,
+                    content: content,
+                    confirm: true,
+                    backButtonClose: false,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => {
+                        navigation.goBack();
+                    },
+                    confirmCallBack: () => {
+                        jump(confirm_action?.url);
+                    },
+                    cancelText: cancel_action?.text,
+                    confirmText: confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
+
     useFocusEffect(
         useCallback(() => {
             global.LogTool({ctrl: code, event: 'buy_detail_view'});
@@ -490,6 +604,14 @@ const Index = ({navigation, route}) => {
 
     return (
         <View style={[styles.container, {paddingBottom: (isIphoneX() ? px(86) : px(60)) + deltaHeight}]}>
+            {showMask && (
+                <Mask
+                    onClick={() => {
+                        Picker.hide();
+                        setShowMask(false);
+                    }}
+                />
+            )}
             {Object.keys(data).length > 0 ? (
                 <>
                     <ScrollView
@@ -521,6 +643,9 @@ const Index = ({navigation, route}) => {
                             rule_button={rule_button}
                             value={amount}
                         />
+                        {period_info ? (
+                            <FixedInvestCycle {...period_info} onChange={onChangeDate} setShowMask={setShowMask} />
+                        ) : null}
                         <PayMethod
                             bankCardModal={bankCardModal}
                             isLarge={isLarge}
@@ -532,9 +657,13 @@ const Index = ({navigation, route}) => {
                         <BottomDesc />
                     </ScrollView>
                     <BankCardModal
-                        data={large_pay_show_type === 1 ? [...pay_methods, large_pay_method] : pay_methods}
+                        data={
+                            large_pay_show_type === 1 && large_pay_method
+                                ? [...pay_methods, large_pay_method]
+                                : pay_methods
+                        }
                         onDone={(select, index) => {
-                            if (index === pay_methods.length) {
+                            if (select.pay_method === 'wallet' && index === pay_methods.length) {
                                 setIsLarge(true);
                                 setIndex(index);
                             } else {
@@ -725,6 +854,12 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(18),
         color: Colors.descColor,
+    },
+    fixedInvestCycle: {
+        marginTop: px(12),
+        paddingVertical: px(12),
+        paddingHorizontal: Space.padding,
+        backgroundColor: '#fff',
     },
 });
 

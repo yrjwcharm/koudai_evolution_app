@@ -3,7 +3,7 @@
  * @Description:持仓卡片
  */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -15,9 +15,10 @@ import {useJump} from '~/components/hooks';
 import ProductCards from '~/components/Portfolios/ProductCards';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Modal} from '~/components/Modal';
+import HTML from '~/components/RenderHtml';
 import {closeRecommend} from './service';
 const yellow = '#FF7D41';
-const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
+const HoldList = ({products, summary, stickyHeaderY, scrollY, reload, showEye}) => {
     const [layout, setLayout] = useState({});
     const jump = useJump();
     const onLayout = (key, e) => {
@@ -104,7 +105,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                             stickyScrollY={scrollY}>
                                             <View style={[Style.flexBetween, styles.table_header]}>
                                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>
+                                                    {summary?.profit_label || '日收益'}
+                                                </Text>
                                                 <Text style={styles.light_text}>累计收益</Text>
                                             </View>
                                             <View style={styles.line} />
@@ -113,7 +116,9 @@ const HoldList = ({products, stickyHeaderY, scrollY, reload, showEye}) => {
                                         <>
                                             <View style={[Style.flexBetween, styles.table_header]}>
                                                 <Text style={[styles.light_text, {width: px(120)}]}>总金额</Text>
-                                                <Text style={styles.light_text}>日收益</Text>
+                                                <Text style={styles.light_text}>
+                                                    {summary?.profit_label || '日收益'}
+                                                </Text>
                                                 <Text style={styles.light_text}>累计收益</Text>
                                             </View>
                                             <View style={styles.line} />
@@ -192,7 +197,7 @@ const ListTitle = ({title, desc}) => {
 };
 const CardItem = ({data = {}, flag, upgrade, showEye}) => {
     const jump = useJump();
-    const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url} = data;
+    const {name, type_name, profit, amount, profit_acc, alert, tag_icon, url, reminder} = data;
     const getAmountColor = (value) => {
         value = value?.replace(/,/g, '');
         return value == 0 ? Colors.defaultColor : value > 0 ? Colors.red : Colors.green;
@@ -208,9 +213,12 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
                                 <Text style={styles.tag_text}>{type_name}</Text>
                             </View>
                         )}
-                        <Text numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}}>
-                            {name}
-                        </Text>
+                        <HTML html={name} numberOfLines={1} style={{fontWeight: '700', fontSize: px(14)}} />
+                        {reminder ? (
+                            <View style={{marginLeft: px(6)}}>
+                                <HTML html={reminder} numberOfLines={1} style={{fontSize: Font.textSm}} />
+                            </View>
+                        ) : null}
                     </View>
                 )}
                 <View style={[Style.flexBetween]}>

@@ -2,7 +2,7 @@
  * @Date: 2022-07-16 11:43:48
  * @Description:计划设置买卖模式
  */
-import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, Image} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
@@ -18,7 +18,7 @@ import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
 import {PasswordModal} from '~/components/Password';
 const ProjectSetTradeModel = ({route, navigation}) => {
-    const poid = route?.params?.poid || 'X04F193369';
+    const {fr = '', poid = '', upgrade_id = 0} = route?.params || {};
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const [toolStatus, setToolStatus] = useState({});
@@ -31,7 +31,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
     const passwordModal = useRef();
     const allToolClose = Object.values(toolStatus).every((i) => i == false); //工具是否全部关闭
     const getData = async () => {
-        let res = await getSetModel({poid, upgrade_id: route.params?.upgrade_id});
+        let res = await getSetModel({fr, poid, upgrade_id});
         if (res.result?.pop_tool_risk_reminder) {
             Modal.show({
                 title: res.result?.pop_tool_risk_reminder?.title,
@@ -118,7 +118,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
             target_yield: targetYeild.current / 100,
             possible: possible || 0,
             sale_tool_id: (data?.sale_model?.list?.map((item) => item.id) || [])?.join(','),
-            upgrade_id: route.params?.upgrade_id || 0,
+            upgrade_id,
             password,
         };
         let res = await getNextPath(params);

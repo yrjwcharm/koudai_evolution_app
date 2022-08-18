@@ -138,6 +138,7 @@ const Index = ({navigation, _ref}) => {
                     <>
                         <HoldList
                             products={holding?.products}
+                            summary={holding?.summary}
                             scrollY={scrollY}
                             showEye={showEye}
                             stickyHeaderY={headHeight}

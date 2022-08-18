@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-08 10:45:11
+ * @LastEditTime: 2022-08-17 14:33:31
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
@@ -19,6 +19,7 @@ export default function PlanDetail(props) {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
+    const {fund_code = '', poid = ''} = props.route?.params || {};
 
     useEffect(() => {
         props.navigation.dispatch((state) => {
@@ -40,7 +41,7 @@ export default function PlanDetail(props) {
 
     useFocusEffect(
         useCallback(() => {
-            Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid})
+            Http.get('/trade/invest_plan/list/20210101', {fund_code, poid})
                 .then((res) => {
                     setLoading(false);
                     if (res.code === '000000') {

@@ -4,21 +4,23 @@
  */
 
 import React, {useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, DeviceEventEmitter} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, DeviceEventEmitter, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, px} from '../../../utils/appUtil';
-import Http from '../../../services';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {px as text, px, deviceWidth} from '~/utils/appUtil';
+import Http from '~/services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import BottomDesc from '../../../components/BottomDesc';
-import FitImage from 'react-native-fit-image';
+import BottomDesc from '~/components/BottomDesc';
 import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
-import {useJump} from '../../../components/hooks';
-import Notice from '../../../components/Notice';
+import {useJump} from '~/components/hooks';
+import Notice from '~/components/Notice';
 import RenderChart from '../components/RenderChart';
-import Html from '../../../components/RenderHtml';
-import GuideTips from '../../../components/GuideTips';
+import Html from '~/components/RenderHtml';
+import GuideTips from '~/components/GuideTips';
+import ListHeader from '../components/ListHeader';
+import {Chart} from '~/components/Chart';
+import {pieChart} from './ChartOption';
 
 export default function DetailAccount({route, navigation}) {
     const [data, setData] = useState({});
@@ -29,6 +31,7 @@ export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const tabClick = useRef(true);
+    const imgArr = useRef([]);
     const changeTab = (p, t) => {
         if (!tabClick.current) {
             return false;
@@ -125,7 +128,7 @@ export default function DetailAccount({route, navigation}) {
     ) : (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView bounces={false} style={{flex: 1}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={{color: '#4E556C', fontSize: text(13), paddingTop: text(6), textAlign: 'center'}}>
@@ -193,60 +196,55 @@ export default function DetailAccount({route, navigation}) {
                             />
                         </View>
                     ) : null}
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        <View>
-                            {data?.asset_intros?.map((_i, _d) => {
-                                return (
-                                    <FitImage
-                                        key={_d}
-                                        source={{uri: _i}}
-                                        resizeMode="contain"
-                                        style={{marginTop: text(16)}}
-                                    />
-                                );
-                            })}
-                        </View>
+                    {data?.asset_deploy ? (
                         <View style={styles.assets_wrap_sty}>
-                            <View style={[Style.flexRow, {padding: text(15)}]}>
-                                <Text style={styles.title_sty}>
-                                    {data.asset_deploy.header.title}
-                                    <Text style={{color: '#4E556C', fontSize: text(13)}}>
-                                        {data.asset_deploy.header.tip}
-                                    </Text>
+                            <ListHeader
+                                data={data.asset_deploy.header || {}}
+                                color={Colors.brandColor}
+                                ctrl={'global'}
+                                oid={1}
+                            />
+                            <View style={{height: Platform.select({android: text(150), ios: text(140)})}}>
+                                <Chart
+                                    initScript={pieChart(
+                                        data?.asset_deploy?.items,
+                                        data?.asset_deploy?.chart,
+                                        '优选A股配置',
+                                        Platform.select({android: text(150), ios: text(140)}),
+                                        data?.asset_deploy?.items?.map?.((item) => item.color)
+                                    )}
+                                />
+                            </View>
+                            {data.asset_deploy.item_tip ? (
+                                <Text
+                                    style={{
+                                        fontSize: Font.textH3,
+                                        lineHeight: px(20),
+                                        color: Colors.lightGrayColor,
+                                        marginTop: Space.marginVertical,
+                                    }}>
+                                    {data.asset_deploy.item_tip}
                                 </Text>
-                            </View>
-                            <View style={{paddingHorizontal: text(6)}}>
-                                <View style={[Style.flexBetween, styles.head_sty]}>
-                                    <Text style={styles.head_title_sty}>{data.asset_deploy.th.name}</Text>
-                                    <Text style={styles.head_title_sty}>{data.asset_deploy.th.ratio}</Text>
-                                </View>
-                                {data.asset_deploy.items.map((_a, _index) => {
-                                    const borderBottom = _index < data.asset_deploy.items.length - 1 ? 0.5 : 0;
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[
-                                                Style.flexBetween,
-                                                styles.content_warp_sty,
-                                                {borderBottomWidth: borderBottom},
-                                            ]}
-                                            onPress={() => navigation.navigate('FundDetail', {code: _a.code})}
-                                            key={_index + '_a'}>
-                                            <View>
-                                                <Text style={styles.content_title_sty}>{_a.name}</Text>
-                                                <Text
-                                                    style={{color: '#9397A3', fontSize: text(11), marginTop: text(5)}}>
-                                                    ({_a.code})
-                                                </Text>
-                                            </View>
-                                            <Text style={[styles.content_title_sty, {fontFamily: Font.numFontFamily}]}>
-                                                {_a.percent}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </View>
+                            ) : null}
                         </View>
+                    ) : null}
+                    {data?.asset_intros?.map((_i, _d) => {
+                        return (
+                            <Image
+                                key={_i + _d}
+                                onLoad={(e) => {
+                                    const {width, height} = e.nativeEvent;
+                                    imgArr.current[_d]?.setNativeProps?.({
+                                        style: {height: (deviceWidth * height) / width},
+                                    });
+                                }}
+                                ref={(ref) => (imgArr.current[_d] = ref)}
+                                source={{uri: _i}}
+                                style={{marginTop: text(12), width: '100%'}}
+                            />
+                        );
+                    })}
+                    <View style={{paddingHorizontal: Space.padding}}>
                         <View style={[styles.card_sty, {paddingVertical: 0}]}>
                             {data?.gather_info?.map((_g, _index) => {
                                 return (
@@ -367,7 +365,9 @@ const styles = StyleSheet.create({
     assets_wrap_sty: {
         borderRadius: text(10),
         backgroundColor: '#fff',
-        marginTop: text(16),
+        marginTop: text(12),
+        marginHorizontal: Space.marginAlign,
+        padding: Space.padding,
     },
     title_sty: {
         color: '#1F2432',
