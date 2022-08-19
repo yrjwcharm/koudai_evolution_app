@@ -20,14 +20,14 @@ export default function pkProducts(_state = {1: [], 2: []}, action) {
                     // 是否优选基金
                     if (isHigh) params.source = 1;
                     newState[isHigh ? 'unshift' : 'push'](code);
-                    addPkProducts(params).then((_) => action.payload?.afterFn?.());
+                    global.pkEntry != 1 && addPkProducts(params).then((_) => action.payload?.afterFn?.());
                     return newState;
                 } else {
                     Toast.show('您PK的基金过多，最多选择6只');
                     return state;
                 }
             case actionTypes.delProduct:
-                deletePkProducts({fund_code: action.payload});
+                global.pkEntry != 1 && deletePkProducts({fund_code: action.payload});
                 return state.filter((item) => item != action.payload);
             case actionTypes.cleanProduct:
                 return [];
