@@ -40,7 +40,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
         type,
     } = data;
     const {options = [], title: modalTitle} = close_pop || {};
-    const {increase, ratio_dst, ratio_src, text} = ratio_info || {};
+    const {direction, increase, ratio_dst, ratio_src, text} = ratio_info || {};
     const increaseBox = useRef();
     const bottomModal = useRef();
     const passwordModal = useRef();
@@ -332,7 +332,13 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                                 }}
                                 ref={increaseBox}
                                 style={styles.increaseBox}>
-                                <Image source={arrowUp} style={styles.arrowUp} />
+                                <Image
+                                    source={arrowUp}
+                                    style={[
+                                        styles.arrowUp,
+                                        direction === 'up' ? {} : {transform: [{rotateX: '180deg'}]},
+                                    ]}
+                                />
                                 <Text style={styles.increaseText}>{increase}</Text>
                             </View>
                         </View>
