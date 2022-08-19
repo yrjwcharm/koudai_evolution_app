@@ -224,7 +224,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         {/* pkCard */}
                         {data?.pk_list && (
                             <CopilotStep order={1} name="pkCard">
-                                <PKCard data={data?.pk_list} />
+                                <PKCard data={data?.pk_list} key={data?.pk_list} />
                             </CopilotStep>
                         )}
                         <View style={{paddingHorizontal: Space.padding}}>
