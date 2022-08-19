@@ -65,7 +65,13 @@ export default ({navigation, route}) => {
                     </ScrollView>
                     {btn?.title ? (
                         <View style={styles.bottomBtn}>
-                            <Button onPress={() => jump(btn.url)} title={btn.title} />
+                            <Button
+                                onPress={() => {
+                                    global.LogTool('PlanDetailsClick', route.params?.project_id);
+                                    jump(btn.url);
+                                }}
+                                title={btn.title}
+                            />
                         </View>
                     ) : null}
                 </>

@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, StatusBar} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useJump} from '~/components/hooks';
@@ -12,6 +12,7 @@ import ProductCards from '~/components/Portfolios/ProductCards';
 import {Style} from '~/common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Toast from '~/components/Toast';
+import {useFocusEffect} from '@react-navigation/native';
 
 const ToolWebView = ({route}) => {
     const jump = useJump();
@@ -87,12 +88,24 @@ const ToolWebView = ({route}) => {
     }, [res, topButton]);
 
     const getRelation = () => {
-        http.get('/tool/signal/relation/20220711', {tool_id: res.tool_id}).then((result) => {
-            if (result.code === '000000') {
-                setListData(result.result);
-            }
-        });
+        http.get('/tool/signal/relation/20220711', {tool_id: res.tool_id})
+            .then((result) => {
+                if (result.code === '000000') {
+                    setListData(result.result);
+                }
+            })
+            .finally(() => {
+                StatusBar.setBarStyle('light-content');
+            });
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
