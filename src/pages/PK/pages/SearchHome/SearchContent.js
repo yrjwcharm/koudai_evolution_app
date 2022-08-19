@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-19 10:46:38
+ * @LastEditTime: 2022-08-19 18:54:29
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -40,7 +40,9 @@ const SearchContent = ({data}) => {
                     <RenderHtml html={data?.name} style={styles.title} numberOfLines={1} />
                     <Text style={styles.code}>{data?.code}</Text>
                 </View>
-                <Text style={[styles.rate, {color: getColor(data?.yield_info?.yield)}]}>{data?.yield_info?.ratio}</Text>
+                <Text style={[styles.rate, {color: getColor(parseFloat(data?.yield_info?.ratio))}]}>
+                    {data?.yield_info?.ratio}
+                </Text>
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
