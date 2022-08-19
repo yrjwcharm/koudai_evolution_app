@@ -146,9 +146,7 @@ const ToolWebView = ({route}) => {
                 ) : null}
                 {listData && (
                     <View style={styles.listDataWrap}>
-                        <Text style={styles.title}>
-                            使用了{['牛人信号', '越跌越买', '估值信号', '概率信号'][res.tool_id - 1]}的计划
-                        </Text>
+                        <Text style={styles.title}>使用了{res.title}的计划</Text>
                         {listData.map((item, idx) => (
                             <View style={styles.listDataItem} key={idx}>
                                 <ProductCards type="project_sm_card" data={item} />
