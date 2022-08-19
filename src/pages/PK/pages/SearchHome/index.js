@@ -105,7 +105,7 @@ const Index = () => {
                     searchLoading ? (
                         <LoadingTips size={px(18)} />
                     ) : searchList?.length > 0 ? (
-                        <View style={{marginBottom: px(40)}}>
+                        <View style={{marginBottom: px(110)}}>
                             {searchList?.map((item, key) => (
                                 <View key={key}>
                                     {item.title ? (
