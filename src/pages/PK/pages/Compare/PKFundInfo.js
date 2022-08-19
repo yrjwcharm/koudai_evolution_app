@@ -96,15 +96,19 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={1}
                     onMomentumScrollBegin={(_) => {
+                        onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = true;
                     }}
                     onMomentumScrollEnd={(_) => {
+                        onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = false;
                     }}
                     onScrollBeginDrag={(_) => {
+                        onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = true;
                     }}
                     onScrollEndDrag={(_) => {
+                        onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = false;
                     }}
                     onScroll={(e) => {

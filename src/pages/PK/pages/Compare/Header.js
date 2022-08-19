@@ -150,15 +150,19 @@ const Header = (props) => {
                     scrollEventThrottle={1}
                     ref={groupScrollViewRef}
                     onMomentumScrollBegin={(_) => {
+                        props.onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = true;
                     }}
                     onMomentumScrollEnd={(_) => {
+                        props.onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = false;
                     }}
                     onScrollBeginDrag={(_) => {
+                        props.onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = true;
                     }}
                     onScrollEndDrag={(_) => {
+                        props.onScroll?.(_.nativeEvent.contentOffset.x);
                         scrolling.current = false;
                     }}
                     onScroll={(e) => {
