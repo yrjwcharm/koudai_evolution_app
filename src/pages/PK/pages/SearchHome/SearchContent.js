@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 17:32:13
+ * @LastEditTime: 2022-08-19 10:46:38
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -44,13 +44,16 @@ const SearchContent = ({data}) => {
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity onPress={onFavor} activeOpacity={0.8}>
-                    <Image source={favor ? collectActive : collect} style={{width: px(26), height: px(26)}} />
-                </TouchableOpacity>
-                {data?.item_type == 1 ? (
-                    <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk} activeOpacity={0.8}>
-                        <Text style={{color: '#fff'}}>{pkProducts.includes(data.code) ? 'PK中' : 'PK'} </Text>
-                    </TouchableOpacity>
+                {data?.item_type === 1 ? (
+                    <>
+                        <TouchableOpacity onPress={onFavor} activeOpacity={0.8}>
+                            <Image source={favor ? collectActive : collect} style={{width: px(26), height: px(26)}} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk} activeOpacity={0.8}>
+                            <Text style={{color: '#fff'}}>{pkProducts.includes(data.code) ? 'PK中' : 'PK'}</Text>
+                        </TouchableOpacity>
+                    </>
                 ) : null}
             </View>
         </TouchableOpacity>
