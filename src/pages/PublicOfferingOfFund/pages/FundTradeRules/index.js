@@ -15,7 +15,7 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {getPageData} from './services';
 
 const Index = ({navigation, route}) => {
-    const {fund_code} = route.params || {};
+    const {fund_code, type} = route.params || {};
     const [data, setData] = useState({});
     const {type_list = []} = data;
     const scrollTab = useRef();
@@ -30,6 +30,12 @@ const Index = ({navigation, route}) => {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fund_code]);
+
+    useEffect(() => {
+        if (Object.keys(data).length > 0) {
+            type !== 0 && scrollTab.current?.goToPage?.(type);
+        }
+    }, [data, type]);
 
     return (
         <View style={styles.container}>
