@@ -190,11 +190,11 @@ const SelectProduct = (props) => {
                                                 </View>
                                                 <View style={styles.selectItemFooter}>
                                                     <View style={styles.selectItemTagWrap}>
-                                                        {item?.tags?.map((itm, i) => (
-                                                            <View key={i} style={[styles.selectItemTag]}>
-                                                                <Text style={[styles.selectItemTagText]}>{itm}</Text>
-                                                            </View>
-                                                        ))}
+                                                        <View style={[styles.selectItemTag]}>
+                                                            <Text style={[styles.selectItemTagText]}>
+                                                                {item?.tags[0]}
+                                                            </Text>
+                                                        </View>
                                                     </View>
                                                     <FastImage
                                                         source={{
@@ -270,13 +270,11 @@ const SelectProduct = (props) => {
                                                     </View>
                                                     <View style={styles.selectItemFooter}>
                                                         <View style={styles.selectItemTagWrap}>
-                                                            {item.tags?.map?.((itm, i) => (
-                                                                <View key={i} style={[styles.selectItemTag]}>
-                                                                    <Text key={i} style={[styles.selectItemTagText]}>
-                                                                        {itm}
-                                                                    </Text>
-                                                                </View>
-                                                            ))}
+                                                            <View style={[styles.selectItemTag]}>
+                                                                <Text style={[styles.selectItemTagText]}>
+                                                                    {item?.tags[0]}
+                                                                </Text>
+                                                            </View>
                                                         </View>
                                                         <FastImage
                                                             source={{
