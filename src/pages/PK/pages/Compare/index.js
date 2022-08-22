@@ -144,7 +144,9 @@ const Compare = () => {
                     />
                 )}
                 {/* 业绩表现 */}
-                {list && <PKAchivementChart fund_code_list={pkProducts} originPeriod={data?.default_period} />}
+                {list && pkProducts[0] && (
+                    <PKAchivementChart fund_code_list={pkProducts} originPeriod={data?.default_period} />
+                )}
                 {/* 涨跌幅 */}
                 {list && (
                     <PKPriceRange
