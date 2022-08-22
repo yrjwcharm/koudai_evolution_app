@@ -79,7 +79,12 @@ const Introduce = ({route}) => {
                             {/* pk info */}
                             <ImageBackground source={pkIntroduceCardPkBg} resizeMode="stretch" style={styles.pkInfo}>
                                 <View style={styles.pkInfoLeft}>
-                                    <Text style={styles.pkInfoName}>{leftObj.name}</Text>
+                                    <Text numberOfLines={1} style={styles.pkInfoName}>
+                                        {leftObj.name}
+                                    </Text>
+                                    <Text numberOfLines={1} style={styles.pkInfoCode}>
+                                        {leftObj.code}
+                                    </Text>
                                     <View style={styles.tagsWrap}>
                                         {leftObj?.tags?.map((item, idx) => (
                                             <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
@@ -89,7 +94,12 @@ const Introduce = ({route}) => {
                                     </View>
                                 </View>
                                 <View style={styles.pkInfoRight}>
-                                    <Text style={[styles.pkInfoName, {textAlign: 'right'}]}>{rightObj.name}</Text>
+                                    <Text numberOfLines={1} style={[styles.pkInfoName, {textAlign: 'right'}]}>
+                                        {rightObj.name}
+                                    </Text>
+                                    <Text numberOfLines={1} style={[styles.pkInfoCode, {textAlign: 'right'}]}>
+                                        {rightObj.code}
+                                    </Text>
                                     <View style={[styles.tagsWrap, {alignSelf: 'flex-end'}]}>
                                         {rightObj?.tags?.map((item, idx) => (
                                             <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
@@ -242,7 +252,6 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
         width: px(309),
         height: px(116),
-        position: 'relative',
         zIndex: 3,
     },
     pkInfoLeft: {
@@ -262,6 +271,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         lineHeight: px(18),
         width: '100%',
+    },
+    pkInfoCode: {
+        color: '#fff',
+        marginTop: 1,
+        fontSize: px(12),
+        lineHeight: px(17),
     },
     priceRate: {
         marginTop: px(6),

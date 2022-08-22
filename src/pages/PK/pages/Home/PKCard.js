@@ -4,7 +4,7 @@ import pkCardBg from '../../../../assets/img/pk/pkCardBg.png';
 import pkIcon2 from '../../../../assets/img/pk/pkIcon2.png';
 import PKParamRate from '../../components/PKParamRate';
 import {px} from '../../../../utils/appUtil';
-import {Font} from '../../../../common/commonStyle';
+import {Font, Style} from '../../../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 import {useDispatch} from 'react-redux';
@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     },
     pkInfoCode: {
         color: '#fff',
-        marginTop: 1,
         fontSize: px(12),
         lineHeight: px(17),
     },
@@ -258,13 +257,10 @@ const styles = StyleSheet.create({
     titleWrap: {},
     followWrap: {
         borderRadius: px(2),
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '#fff',
         paddingHorizontal: px(4),
         paddingVertical: px(2),
-        position: 'absolute',
-        top: 0,
-        left: 0,
     },
     followText: {
         fontSize: px(10),
@@ -297,14 +293,16 @@ const CardItem = ({leftObj = {}, rightObj = {}, height}) => {
                 <Text numberOfLines={1} style={styles.pkInfoName}>
                     {leftObj.name}
                 </Text>
-                <Text numberOfLines={1} style={styles.pkInfoCode}>
-                    {leftObj.code}
-                </Text>
-                {/* {leftObj.favor ? (
-                        <View style={styles.followWrap}>
+                <View style={[Style.flexRow, {marginTop: 2}]}>
+                    <Text numberOfLines={1} style={styles.pkInfoCode}>
+                        {leftObj.code}
+                    </Text>
+                    {leftObj.favor ? (
+                        <View style={[styles.followWrap, {marginLeft: px(8)}]}>
                             <Text style={styles.followText}>已关注</Text>
                         </View>
-                    ) : null} */}
+                    ) : null}
+                </View>
                 <View style={styles.tagsWrap}>
                     {leftObj?.tags?.map((item, idx) => (
                         <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
@@ -324,7 +322,14 @@ const CardItem = ({leftObj = {}, rightObj = {}, height}) => {
                 <Text numberOfLines={1} style={[styles.pkInfoName, {textAlign: 'right'}]}>
                     {rightObj.name}
                 </Text>
-                <Text style={[styles.pkInfoCode, {textAlign: 'right'}]}>{rightObj.code}</Text>
+                <View style={[Style.flexRow, {marginTop: 2, justifyContent: 'flex-end'}]}>
+                    {rightObj.favor ? (
+                        <View style={[styles.followWrap, {marginRight: px(8)}]}>
+                            <Text style={styles.followText}>已关注</Text>
+                        </View>
+                    ) : null}
+                    <Text style={[styles.pkInfoCode, {textAlign: 'right'}]}>{rightObj.code}</Text>
+                </View>
                 <View style={[styles.tagsWrap, {alignSelf: 'flex-end'}]}>
                     {rightObj?.tags?.map((item, idx) => (
                         <View style={[styles.tag, {marginLeft: px(idx > 0 ? 8 : 0)}]} key={idx}>
