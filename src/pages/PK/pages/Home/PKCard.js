@@ -151,13 +151,14 @@ const styles = StyleSheet.create({
     pkInfoName: {
         fontSize: px(14),
         color: '#fff',
-        lineHeight: px(20),
+        // lineHeight: px(20),
         fontWeight: '500',
     },
     pkInfoCode: {
         color: '#fff',
         fontSize: px(12),
         lineHeight: px(17),
+        fontWeight: '400',
     },
     priceRate: {
         marginTop: px(11),
@@ -170,8 +171,9 @@ const styles = StyleSheet.create({
     priceDesc: {
         fontSize: px(11),
         color: 'rgba(255, 255, 255, 0.69)',
-        lineHeight: px(15),
+        // lineHeight: px(15),
         marginTop: 2,
+        fontWeight: '400',
     },
     pkIconStyle: {
         width: px(122),
@@ -286,9 +288,9 @@ const styles = StyleSheet.create({
 });
 export default PKCard;
 
-const CardItem = ({leftObj = {}, rightObj = {}, height}) => {
+const CardItem = ({leftObj = {}, rightObj = {}}) => {
     return (
-        <ImageBackground source={pkCardBg} resizeMode="stretch" style={[styles.pkInfo, height ? {height} : {}]}>
+        <ImageBackground source={pkCardBg} resizeMode="stretch" style={[styles.pkInfo]}>
             <View style={styles.pkInfoLeft}>
                 <Text numberOfLines={1} style={styles.pkInfoName}>
                     {leftObj.name}
