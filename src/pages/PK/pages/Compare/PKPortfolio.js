@@ -58,7 +58,7 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
     const genValues = (item, key) => {
         if (!item) return null;
         let map = {};
-        item.asset_deploy.map((obj) => {
+        item.asset_deploy?.map?.((obj) => {
             map[obj.name] = obj.ratio + '%';
         });
         const initScript = `

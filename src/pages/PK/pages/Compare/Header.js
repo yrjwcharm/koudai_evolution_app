@@ -97,7 +97,7 @@ const Header = (props) => {
                         <>
                             {item.tags?.[0] ? (
                                 <View style={[styles.groupItemTag]}>
-                                    <Text style={styles.groupItemTagText}>{item.tags[0]}</Text>
+                                    <Text style={styles.groupItemTagText}>{item?.tags?.[0]}</Text>
                                 </View>
                             ) : null}
                         </>

@@ -137,7 +137,7 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
                             lineHeight: px(25),
                             textAlign: 'center',
                         }}>
-                        {totalScoreMap[item.code]}
+                        {totalScoreMap[item.code] || '--'}
                     </Text>
                     {!!(item.tip && reason) && (
                         <View style={[styles.tag]}>
