@@ -116,7 +116,7 @@ const PKCard = ({data = {}, copilot}) => {
                     </View>
                     {data.tip ? (
                         <View style={{marginTop: px(16), paddingHorizontal: px(19)}}>
-                            <RenderHtml html={data.tip} style={styles.pkParamsTip} />
+                            <Text style={styles.pkParamsTip}>{data?.tip}</Text>
                         </View>
                     ) : null}
                 </TouchableOpacity>
@@ -208,7 +208,8 @@ const styles = StyleSheet.create({
     pkParamsTip: {
         fontSize: px(12),
         lineHeight: px(17),
-        color: '#9AA0B1',
+        fontWeight: '400',
+        color: '#545968',
     },
     pkBtn: {
         backgroundColor: '#FFCC00',
