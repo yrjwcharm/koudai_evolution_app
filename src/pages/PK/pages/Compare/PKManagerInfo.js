@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     dialog: {
-        width: px(120),
+        width: px(124),
         position: 'absolute',
         top: px(35),
         zIndex: 2,

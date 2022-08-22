@@ -864,7 +864,7 @@ const styles = StyleSheet.create({
     },
     card_left_con: {
         width: px(100),
-        paddingRight: px(6),
+        // paddingRight: px(6),
         height: '100%',
         justifyContent: 'space-between',
         flexDirection: 'column',

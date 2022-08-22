@@ -55,7 +55,9 @@ const PKFundInfo = ({data, pkPinning, onScroll, _ref}) => {
                     {item.holding_rate ? <PositionRate rate={item.holding_rate} /> : <Text>--</Text>}
                 </View>
                 <View style={styles.valueWrap}>
-                    <Text style={styles.valueText}>{item?.company_info?.name || '--'}</Text>
+                    <Text style={[styles.valueText, {fontSize: px(12), color: '#545968'}]}>
+                        {item?.company_info?.name || '--'}
+                    </Text>
                 </View>
             </View>
         );

@@ -187,7 +187,7 @@ const Header = (props) => {
                     color: '#ddd',
                     opacity: 0.1,
                     width: layout.width,
-                    height: 2,
+                    height: 1,
                 }}
             />
         </View>
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         lineHeight: px(17),
         color: '#121d3a',
+        fontWeight: '500',
     },
     groupItemFooter: {
         flexDirection: 'row',

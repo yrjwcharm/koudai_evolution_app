@@ -178,7 +178,7 @@ const Compare = () => {
                     <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerHorizontalScroll(pkFundInfoRef)} />
                 )}
                 {!!data?.risk_info && <Text style={styles.riskInfo}>{data?.risk_info}</Text>}
-                <View style={{marginTop: px(12), height: 100, backgroundColor: '#fff'}} />
+                <View style={{height: px(100)}} />
             </ScrollView>
             {loading ? (
                 <View style={styles.loadingMask}>
@@ -245,7 +245,6 @@ const styles = StyleSheet.create({
     riskInfo: {
         paddingHorizontal: px(16),
         marginTop: px(10),
-        marginBottom: px(30),
         fontSize: px(11),
         lineHeight: px(15),
         color: '#9AA0B1',

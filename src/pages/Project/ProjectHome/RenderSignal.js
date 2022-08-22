@@ -22,7 +22,7 @@ const RenderSignal = ({list, more, desc, style, copilot}) => {
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}>
                             <View>
-                                <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(4)}}>
+                                <Text style={{color: Colors.defaultColor, fontSize: px(12), marginBottom: px(2)}}>
                                     {item.text}
                                 </Text>
                                 <Text
@@ -40,7 +40,7 @@ const RenderSignal = ({list, more, desc, style, copilot}) => {
                 ))}
                 <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)} activeOpacity={0.8}>
                     <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{more?.text}</Text>
-                    <Icon name={'rightcircleo'} color={Colors.lightBlackColor} />
+                    <Icon name={'rightcircleo'} color={Colors.lightBlackColor} size={px(12)} />
                 </TouchableOpacity>
             </View>
             <Text style={{color: '#BDC2CC', fontSize: px(11), marginTop: px(8)}}>{desc}</Text>

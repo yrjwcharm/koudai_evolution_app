@@ -175,7 +175,9 @@ const Title = ({title, sub_title, tip}) => {
             <Text style={{fontSize: px(18), fontWeight: '700', color: Colors.defaultColor, marginRight: px(8)}}>
                 {title}
             </Text>
-            {sub_title ? <Text style={{fontSize: px(13), color: Colors.lightGrayColor}}>{sub_title}</Text> : null}
+            {sub_title ? (
+                <Text style={{fontSize: px(13), color: Colors.lightGrayColor, fontWeight: '400'}}>{sub_title}</Text>
+            ) : null}
             {tip ? (
                 <TouchableOpacity
                     style={{width: px(20), alignItems: 'center'}}
