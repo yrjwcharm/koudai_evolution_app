@@ -42,7 +42,7 @@ const Vision = ({navigation}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const [data, setData] = useState();
-    const [allMsg, setAll] = useState(0);
+    const [, setAll] = useState(0);
     const jump = useJump();
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
@@ -114,14 +114,16 @@ const Vision = ({navigation}) => {
                                 } else {
                                     jump({path: 'Login'});
                                 }
-                            }}>
+                            }}
+                            style={Style.flexRow}>
                             <Image
                                 source={require('../../assets/img/vision/collect_icon.png')}
                                 style={styles.header_icon}
                             />
+                            <Text style={styles.headerIconDesc}>{'我的收藏'}</Text>
                         </TouchableOpacity>
                         {/* 消息 */}
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             activeOpacity={0.8}
                             style={{position: 'relative'}}
                             onPress={() => {
@@ -141,7 +143,7 @@ const Vision = ({navigation}) => {
                                 style={{width: px(32), height: px(32)}}
                                 source={require('../../assets/img/index/message.png')}
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </>
@@ -394,8 +396,15 @@ const styles = StyleSheet.create({
     avatar: {width: px(32), height: px(32), borderRadius: px(16), marginRight: px(10)},
     name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
     header_icon: {
-        width: px(32),
-        height: px(32),
+        width: px(20),
+        height: px(20),
+    },
+    headerIconDesc: {
+        marginLeft: px(2),
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
     },
 
     point_sty: {

@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 15:19:45
+ * @LastEditTime: 2022-08-22 18:34:31
  * @Description: 公募基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -200,11 +200,10 @@ const Index = ({navigation, route}) => {
                 {suggest_list?.items?.length > 0 && <SwiperCom data={suggest_list} />}
                 <View style={styles.bottomContainer}>
                     {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
-                    {sub_list?.length > 0 ? (
-                        sub_list.map((item, index) => <RenderPart data={item} key={index} />)
-                    ) : (
-                        <Image source={{uri: un_buy_img}} style={styles.blocked} />
-                    )}
+                    {un_buy_img ? <Image source={{uri: un_buy_img}} style={styles.blocked} /> : null}
+                    {sub_list?.map?.((item, index) => (
+                        <RenderPart data={item} key={index} />
+                    ))}
                 </View>
                 <BottomDesc />
             </ScrollView>

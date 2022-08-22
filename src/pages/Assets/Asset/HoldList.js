@@ -2,8 +2,9 @@
  * @Date: 2022-07-12 14:25:26
  * @Description:持仓卡片
  */
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useRef, useState} from 'react';
+import Image from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -135,6 +136,7 @@ const HoldList = ({products, summary, stickyHeaderY, scrollY, reload, showEye}) 
                                                   borderWidth: px(1.5),
                                                   borderColor: yellow,
                                                   borderRadius: px(6),
+                                                  overflow: 'hidden',
                                               }}>
                                               {upgrade?.items?.map((product = {}, index, arr) => {
                                                   // 卡片是否只有一个或者是最后一个
@@ -285,11 +287,19 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
 // 信号
 export const RenderAlert = ({alert}) => {
     const jump = useJump();
+    const alertIcon = useRef();
     const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
     return (
         <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
             <View style={[Style.flexRow, {flex: 1}]}>
-                <Image source={{uri: alert?.alert_icon}} style={{width: px(32), height: px(16), marginRight: px(8)}} />
+                <Image
+                    onLoad={({nativeEvent: {width, height}}) =>
+                        alertIcon.current.setNativeProps({style: {width: (width * px(16)) / height}})
+                    }
+                    ref={alertIcon}
+                    source={{uri: alert?.alert_icon}}
+                    style={{height: px(16), marginRight: px(8)}}
+                />
                 <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
                     {alert?.alert_content}
                 </Text>
@@ -336,7 +346,7 @@ const RenderUpgradeBtn = ({upgrade}) => {
                     </Text>
                 )}
             </View>
-            <Image source={require('~/assets/img/index/upgradeBg.png')} style={{width: px(40), height: px(40)}} />
+            <Image source={require('~/assets/img/index/upgradeBg.png')} style={styles.upgradeBg} />
             <SmButton
                 title={upgrade?.button?.text}
                 style={{backgroundColor: '#fff', borderWidth: 0}}
@@ -422,8 +432,8 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     amount_text: {
-        fontSize: px(14),
-        lineHeight: px(19),
+        fontSize: px(15),
+        lineHeight: px(21),
         fontFamily: Font.numFontFamily,
     },
     line: {
@@ -464,4 +474,11 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     upgrade_btn_con: {height: px(52), backgroundColor: '#FF7D41', paddingHorizontal: px(12)},
+    upgradeBg: {
+        width: px(40),
+        height: px(36),
+        position: 'absolute',
+        top: px(8),
+        right: px(56),
+    },
 });

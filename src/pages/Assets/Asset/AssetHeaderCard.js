@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 
@@ -142,9 +142,9 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     noticeBox: {
-        marginTop: -px(6),
+        marginTop: Platform.select({android: -px(6.6), ios: -px(6)}),
         paddingVertical: px(4),
-        paddingHorizontal: Space.marginAlign,
+        paddingHorizontal: px(12),
         backgroundColor: 'rgba(157, 187, 255, 0.68)',
         borderRadius: px(12),
     },

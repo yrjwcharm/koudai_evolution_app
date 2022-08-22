@@ -248,7 +248,11 @@ const NetValueTrend = ({fund_code = '', poid = ''}) => {
                                             </Text>
                                         </View>
                                         <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                            <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>
+                                            <Text
+                                                style={[
+                                                    styles.buyTableItem,
+                                                    {color: item[2] === '--' ? Colors.defaultColor : getColor(item[2])},
+                                                ]}>
                                                 {item[2]}
                                             </Text>
                                         </View>
