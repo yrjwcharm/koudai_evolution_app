@@ -2,8 +2,9 @@
  * @Date: 2022-07-12 14:25:26
  * @Description:持仓卡片
  */
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useRef, useState} from 'react';
+import Image from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
@@ -285,11 +286,19 @@ const CardItem = ({data = {}, flag, upgrade, showEye}) => {
 // 信号
 export const RenderAlert = ({alert}) => {
     const jump = useJump();
+    const alertIcon = useRef();
     const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
     return (
         <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
             <View style={[Style.flexRow, {flex: 1}]}>
-                <Image source={{uri: alert?.alert_icon}} style={{width: px(32), height: px(16), marginRight: px(8)}} />
+                <Image
+                    onLoad={({nativeEvent: {width, height}}) =>
+                        alertIcon.current.setNativeProps({style: {width: (width * px(16)) / height}})
+                    }
+                    ref={alertIcon}
+                    source={{uri: alert?.alert_icon}}
+                    style={{height: px(16), marginRight: px(8)}}
+                />
                 <Text style={{flex: 1, fontSize: px(12), color: Colors.defaultColor}} numberOfLines={1}>
                     {alert?.alert_content}
                 </Text>
