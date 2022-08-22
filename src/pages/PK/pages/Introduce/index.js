@@ -175,11 +175,11 @@ const Introduce = ({route}) => {
                                             color: '#aaa',
                                             border: 8,
                                             radius: px(6),
-                                            opacity: 0.1,
-                                            x: tableSize.x - 4,
-                                            y: tableSize.y - 4,
-                                            width: tableSize.width + 8,
-                                            height: tableSize.height + 8,
+                                            opacity: 0.06,
+                                            x: tableSize.x - 3,
+                                            y: tableSize.y - 3,
+                                            width: tableSize.width + 6,
+                                            height: tableSize.height + 6,
                                         }}
                                     />
                                 </View>
@@ -291,6 +291,8 @@ const styles = StyleSheet.create({
         zIndex: 2,
         top: px(-15),
         backgroundColor: '#fff',
+        borderWidth: 0.5,
+        borderColor: '#E9EAEF',
     },
     paramsRow: {
         flexDirection: 'row',
@@ -298,7 +300,7 @@ const styles = StyleSheet.create({
     },
     rowBorderT: {
         borderTopColor: '#E9EAEF',
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
     },
     paramsLabelOfSum: {
         fontSize: px(13),
@@ -370,7 +372,7 @@ const styles = StyleSheet.create({
     },
     cellBorderR: {
         borderRightColor: '#E9EAEF',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
     },
     btnWrap: {
         paddingVertical: px(8),
