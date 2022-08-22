@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {isIphoneX, px} from '~/utils/appUtil';
 import Header from './Header';
@@ -177,6 +177,7 @@ const Compare = () => {
                 {list && (
                     <PKFundInfo data={list} ref={pkFundInfoRef} onScroll={handlerHorizontalScroll(pkFundInfoRef)} />
                 )}
+                {!!data?.risk_info && <Text style={styles.riskInfo}>{data?.risk_info}</Text>}
                 <View style={{marginTop: px(12), height: 100, backgroundColor: '#fff'}} />
             </ScrollView>
             {loading ? (
@@ -240,6 +241,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'transparent',
         zIndex: 1,
+    },
+    riskInfo: {
+        paddingHorizontal: px(16),
+        marginTop: px(10),
+        marginBottom: px(30),
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#9AA0B1',
     },
 });
 
