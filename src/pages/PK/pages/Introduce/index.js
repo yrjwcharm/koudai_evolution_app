@@ -322,7 +322,6 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         color: '#e74949',
         textAlign: 'center',
-        marginTop: px(10),
     },
     tagsWrap: {
         flexDirection: 'row',
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
     paramsCellOfSum: {
         padding: px(8),
         flex: 1,
-        height: '100%',
+        justifyContent: 'center',
     },
     paramsCell: {
         paddingHorizontal: px(8),
@@ -399,17 +398,21 @@ export default Introduce;
 const ParamsCellWrapOfSum = ({children, style, data}) => {
     return (
         <View style={[styles.paramsCellOfSum, style]}>
-            <View style={[styles.highStamp, {opacity: data?.tip ? 1 : 0}]}>
-                <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png'}}
-                    style={{width: px(10), height: px(10), marginRight: px(2)}}
-                />
-                <Text style={styles.highStampText}>{data?.tip}</Text>
-            </View>
+            {data?.tip ? (
+                <View style={[styles.highStamp]}>
+                    <FastImage
+                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png'}}
+                        style={{width: px(10), height: px(10), marginRight: px(2)}}
+                    />
+                    <Text style={styles.highStampText}>{data?.tip}</Text>
+                </View>
+            ) : null}
             {children}
-            <View style={[styles.recommendDesc, {opacity: data?.tip ? 1 : 0}]}>
-                <Text style={styles.recommendDescText}>{data?.reason}</Text>
-            </View>
+            {data?.reason ? (
+                <View style={[styles.recommendDesc]}>
+                    <Text style={styles.recommendDescText}>{data?.reason}</Text>
+                </View>
+            ) : null}
         </View>
     );
 };
