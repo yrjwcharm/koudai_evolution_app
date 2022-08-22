@@ -125,7 +125,7 @@ const ToolWebView = ({route}) => {
                                 jump(url, url.path === 'ToolWebView' ? 'push' : 'navigate');
                             }
                             if (data * 1) {
-                                setHeight((prev) => (data * 1 < prev ? prev : data * 1));
+                                setHeight((prev) => (data * 1 < deviceHeight / 2 ? prev : data * 1));
                             }
                         }}
                         originWhitelist={['*']}
@@ -157,31 +157,33 @@ const ToolWebView = ({route}) => {
                         textZoom={100}
                     />
                 ) : null}
-                <View style={{backgroundColor: Colors.bgColor}}>
-                    {listData && (
-                        <View style={styles.listDataWrap}>
-                            <Text style={styles.title}>使用了{res.title}的计划</Text>
-                            {listData.map((item, idx) => (
-                                <View style={styles.listDataItem} key={idx}>
-                                    <ProductCards type="project_sm_card" data={item} />
-                                </View>
-                            ))}
-                        </View>
-                    )}
-                    {res.card ? (
-                        <View style={styles.listDataWrap}>
-                            <Text style={styles.title}>{res.card.title}</Text>
-                            {res.card.list?.map((item, idx) => (
-                                <View style={styles.listDataItem} key={idx}>
-                                    <ProductCards type="project_sm_card" data={item} />
-                                </View>
-                            ))}
-                        </View>
-                    ) : null}
+                {listData ? (
+                    <View style={{backgroundColor: Colors.bgColor}}>
+                        {listData && (
+                            <View style={styles.listDataWrap}>
+                                <Text style={styles.title}>使用了{res.title}的计划</Text>
+                                {listData.map((item, idx) => (
+                                    <View style={styles.listDataItem} key={idx}>
+                                        <ProductCards type="project_sm_card" data={item} />
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+                        {res.card ? (
+                            <View style={styles.listDataWrap}>
+                                <Text style={styles.title}>{res.card.title}</Text>
+                                {res.card.list?.map((item, idx) => (
+                                    <View style={styles.listDataItem} key={idx}>
+                                        <ProductCards type="project_sm_card" data={item} />
+                                    </View>
+                                ))}
+                            </View>
+                        ) : null}
 
-                    {res.risk_tip ? <Text style={styles.riskTip}>{res.risk_tip}</Text> : null}
-                    <View style={{height: px(50)}} />
-                </View>
+                        {res.risk_tip ? <Text style={styles.riskTip}>{res.risk_tip}</Text> : null}
+                        <View style={{height: px(50)}} />
+                    </View>
+                ) : null}
             </ScrollView>
         </View>
     );
