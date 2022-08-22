@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-11 15:08:03
+ * @LastEditTime: 2022-08-22 16:51:07
  * @Description: 私募风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -151,7 +151,7 @@ const PEQuestionnaire = () => {
         useCallback(() => {
             const fun = () => true;
             if (route.params.fr === 'private_index_risk') {
-                navigation.setOptions({gestureEnabled: false, headerBackImage: () => null});
+                navigation.setOptions({gestureEnabled: false, headerLeft: () => null});
                 BackHandler.addEventListener('hardwareBackPress', fun);
             }
             return () => {
