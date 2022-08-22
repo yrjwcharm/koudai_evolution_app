@@ -9,7 +9,7 @@ import URI from 'urijs';
 import {deviceHeight, px} from '~/utils/appUtil';
 import http from '~/services';
 import ProductCards from '~/components/Portfolios/ProductCards';
-import {Style} from '~/common/commonStyle';
+import {Colors, Style} from '~/common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Toast from '~/components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
@@ -125,7 +125,7 @@ const ToolWebView = ({route}) => {
                                 jump(url, url.path === 'ToolWebView' ? 'push' : 'navigate');
                             }
                             if (data * 1) {
-                                setHeight(data * 1 || deviceHeight);
+                                setHeight((prev) => (data * 1 < prev ? prev : data * 1));
                             }
                         }}
                         originWhitelist={['*']}
@@ -157,29 +157,31 @@ const ToolWebView = ({route}) => {
                         textZoom={100}
                     />
                 ) : null}
-                {listData && (
-                    <View style={styles.listDataWrap}>
-                        <Text style={styles.title}>使用了{res.title}的计划</Text>
-                        {listData.map((item, idx) => (
-                            <View style={styles.listDataItem} key={idx}>
-                                <ProductCards type="project_sm_card" data={item} />
-                            </View>
-                        ))}
-                    </View>
-                )}
-                {res.card ? (
-                    <View style={styles.listDataWrap}>
-                        <Text style={styles.title}>{res.card.title}</Text>
-                        {res.card.list?.map((item, idx) => (
-                            <View style={styles.listDataItem} key={idx}>
-                                <ProductCards type="project_sm_card" data={item} />
-                            </View>
-                        ))}
-                    </View>
-                ) : null}
+                <View style={{backgroundColor: Colors.bgColor}}>
+                    {listData && (
+                        <View style={styles.listDataWrap}>
+                            <Text style={styles.title}>使用了{res.title}的计划</Text>
+                            {listData.map((item, idx) => (
+                                <View style={styles.listDataItem} key={idx}>
+                                    <ProductCards type="project_sm_card" data={item} />
+                                </View>
+                            ))}
+                        </View>
+                    )}
+                    {res.card ? (
+                        <View style={styles.listDataWrap}>
+                            <Text style={styles.title}>{res.card.title}</Text>
+                            {res.card.list?.map((item, idx) => (
+                                <View style={styles.listDataItem} key={idx}>
+                                    <ProductCards type="project_sm_card" data={item} />
+                                </View>
+                            ))}
+                        </View>
+                    ) : null}
 
-                {res.risk_tip ? <Text style={styles.riskTip}>{res.risk_tip}</Text> : null}
-                <View style={{height: px(50)}} />
+                    {res.risk_tip ? <Text style={styles.riskTip}>{res.risk_tip}</Text> : null}
+                    <View style={{height: px(50)}} />
+                </View>
             </ScrollView>
         </View>
     );
@@ -190,7 +192,7 @@ export default ToolWebView;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F6F8',
+        backgroundColor: Colors.bgColor,
     },
     listDataWrap: {
         margin: px(16),
