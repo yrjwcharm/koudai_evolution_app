@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 15:22:30
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -48,7 +48,7 @@ const Header = ({newMes}) => {
                             style={{width: px(20), height: px(20)}}
                             source={require('~/assets/img/index/message.png')}
                         />
-                        <Text style={{fontSize: px(13)}}>消息中心</Text>
+                        <Text style={{fontSize: px(13), fontWeight: Font.weightMedium}}>消息中心</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
         left: px(70),
         bottom: px(12),
         backgroundColor: Colors.red,
-        borderRadius: px(40),
-        paddingVertical: px(2),
-        paddingHorizontal: px(3),
-        minWidth: px(16),
+        borderRadius: px(20),
+        paddingVertical: Platform.select({android: px(1), ios: px(2)}),
+        paddingHorizontal: Platform.select({android: px(6), ios: px(5)}),
     },
     point_text: {
         color: '#fff',
         fontSize: Font.textSm,
+        lineHeight: px(15),
         fontFamily: Font.numFontFamily,
     },
 });

@@ -136,6 +136,7 @@ const HoldList = ({products, summary, stickyHeaderY, scrollY, reload, showEye}) 
                                                   borderWidth: px(1.5),
                                                   borderColor: yellow,
                                                   borderRadius: px(6),
+                                                  overflow: 'hidden',
                                               }}>
                                               {upgrade?.items?.map((product = {}, index, arr) => {
                                                   // 卡片是否只有一个或者是最后一个
@@ -345,7 +346,7 @@ const RenderUpgradeBtn = ({upgrade}) => {
                     </Text>
                 )}
             </View>
-            <Image source={require('~/assets/img/index/upgradeBg.png')} style={{width: px(40), height: px(40)}} />
+            <Image source={require('~/assets/img/index/upgradeBg.png')} style={styles.upgradeBg} />
             <SmButton
                 title={upgrade?.button?.text}
                 style={{backgroundColor: '#fff', borderWidth: 0}}
@@ -431,8 +432,8 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     amount_text: {
-        fontSize: px(14),
-        lineHeight: px(19),
+        fontSize: px(15),
+        lineHeight: px(21),
         fontFamily: Font.numFontFamily,
     },
     line: {
@@ -473,4 +474,11 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     upgrade_btn_con: {height: px(52), backgroundColor: '#FF7D41', paddingHorizontal: px(12)},
+    upgradeBg: {
+        width: px(40),
+        height: px(36),
+        position: 'absolute',
+        top: px(8),
+        right: px(56),
+    },
 });

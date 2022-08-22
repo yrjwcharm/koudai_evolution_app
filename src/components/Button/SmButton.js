@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         borderRadius: px(103),
         borderColor: Colors.btnColor,
         borderWidth: 0.5,
-        paddingHorizontal: px(14),
+        paddingHorizontal: px(10),
         paddingVertical: px(4),
     },
 });
