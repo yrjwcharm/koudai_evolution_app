@@ -33,7 +33,7 @@ const Index = ({navigation}) => {
             setData((preData) => {
                 let tmp = {...preData};
                 let tmp_list = [...tmp.list];
-                tmp.list = tmp_list.concat(res.result?.list);
+                tmp.list = tmp_list.concat(res.result?.list || []);
                 return tmp;
             });
         }
@@ -82,7 +82,7 @@ const Index = ({navigation}) => {
                         cardLayout(index, e);
                     }}>
                     <View style={{...Style.flexRow, marginBottom: px(6)}}>
-                        <Text style={styles.light_text}>{item.time_str}</Text>
+                        <Text style={styles.light_text}>{item?.time_str}</Text>
                         <View style={[styles.tag, {backgroundColor: item.type_color || Colors.red}]}>
                             <Text style={styles.tag_text}>{item.type_text}</Text>
                         </View>
