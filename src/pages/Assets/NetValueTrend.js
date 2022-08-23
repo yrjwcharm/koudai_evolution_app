@@ -7,14 +7,14 @@ import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacit
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {useRoute} from '@react-navigation/native';
-import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
-import {Chart} from '../../components/Chart';
+import {px as text, deviceWidth, isIphoneX} from '~/utils/appUtil';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import http from '~/services/index.js';
+import {Chart} from '~/components/Chart';
 import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
-import EmptyTip from '../../components/EmptyTip';
-import {BottomModal} from '../../components/Modal';
+import EmptyTip from '~/components/EmptyTip';
+import {BottomModal} from '~/components/Modal';
 import {throttle} from 'lodash';
 
 const NetValueTrend = ({fund_code = '', poid = ''}) => {
@@ -61,12 +61,12 @@ const NetValueTrend = ({fund_code = '', poid = ''}) => {
     const onChartChange = useCallback(
         ({items}) => {
             // console.log(items);
-            textTime.current.setNativeProps({text: items[0]?.title});
-            textThisFund.current.setNativeProps({
+            textTime.current?.setNativeProps({text: items[0]?.title});
+            textThisFund.current?.setNativeProps({
                 text: `${items[0]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
             });
-            textBenchmark.current.setNativeProps({
+            textBenchmark.current?.setNativeProps({
                 text: `${items[1]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
             });
@@ -76,14 +76,14 @@ const NetValueTrend = ({fund_code = '', poid = ''}) => {
 
     // 图表滑动结束
     const onHide = useCallback(() => {
-        chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
+        chartData.label[0] && textTime.current?.setNativeProps({text: chartData.label[0]?.val});
         chartData.label[1] &&
-            textThisFund.current.setNativeProps({
+            textThisFund.current?.setNativeProps({
                 text: `${chartData.label[1]?.val}`,
                 style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
             });
         chartData.label[2] &&
-            textBenchmark.current.setNativeProps({
+            textBenchmark.current?.setNativeProps({
                 text: `${chartData.label[2]?.val}`,
                 style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
             });
@@ -152,7 +152,7 @@ const NetValueTrend = ({fund_code = '', poid = ''}) => {
                                                         onPress={() => showTips(chartData.tips)}>
                                                         <FastImage
                                                             style={{width: text(12), height: text(12)}}
-                                                            source={require('../../assets/img/tip.png')}
+                                                            source={require('~/assets/img/tip.png')}
                                                         />
                                                     </TouchableOpacity>
                                                 )}

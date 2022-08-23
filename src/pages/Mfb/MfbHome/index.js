@@ -60,7 +60,13 @@ const renderBtns = ({buttons, jump, style = {}}) => {
 
 const HoldingInfo = ({data = {}}) => {
     const {
-        holding: {amount: holdingAmount, date: holdingDate, profit: holdingProfit, profit_acc: holdingProfitAcc} = {},
+        holding: {
+            amount: holdingAmount,
+            date: holdingDate,
+            profit: holdingProfit,
+            profit_acc: holdingProfitAcc,
+            profit_label: holdingProfitLable = '日收益',
+        } = {},
         intro = [],
     } = data;
     const [activeSections, setActiveSections] = useState([]);
@@ -79,7 +85,7 @@ const HoldingInfo = ({data = {}}) => {
                         <Text style={styles.desc}>{`总金额(元) ${holdingDate}`}</Text>
                         {holdingProfit ? (
                             <View style={Style.flexRow}>
-                                <Text style={[styles.desc, {marginRight: px(8)}]}>{'日收益'}</Text>
+                                <Text style={[styles.desc, {marginRight: px(8)}]}>{holdingProfitLable}</Text>
                                 <NumText style={styles.smNumber} text={holdingProfit} />
                             </View>
                         ) : null}

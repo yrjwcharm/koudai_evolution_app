@@ -39,7 +39,7 @@ import {getChartData, getPageData, setDividend} from './services';
 import CenterControl from './CenterControl';
 
 /** @name 顶部基金信息 */
-const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
+const TopPart = ({noConsole, trade_notice = {}, top_info = {}, top_menus = []}) => {
     const jump = useJump();
     const {amount, desc, name, profit, profit_acc, profit_date, tags = [], top_button} = top_info;
     const [showEye, setShowEye] = useState('true');
@@ -140,7 +140,7 @@ const TopPart = ({trade_notice = {}, top_info = {}, top_menus = []}) => {
                     </View>
                 ) : null}
             </View>
-            <View style={[Style.flexRow, {marginTop: px(20)}]}>
+            <View style={[Style.flexRow, {marginTop: px(20), paddingBottom: noConsole ? px(20) : 0}]}>
                 {top_menus?.map((item, index) => {
                     const {icon, text, url} = item;
                     return (
@@ -704,7 +704,12 @@ export default ({navigation, route}) => {
                         scrollIndicatorInsets={{right: 1}}
                         style={{flex: 1}}>
                         {system_notice?.length > 0 && <Notice content={system_notice} />}
-                        <TopPart trade_notice={trade_notice} top_info={top_info} top_menus={top_menus} />
+                        <TopPart
+                            noConsole={!consoleData}
+                            trade_notice={trade_notice}
+                            top_info={top_info}
+                            top_menus={top_menus}
+                        />
                         {consoleData ? (
                             <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                                 <CenterControl data={consoleData} ref={centerControl} refresh={init} />
