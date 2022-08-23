@@ -41,11 +41,19 @@ function useJump() {
                 Linking.canOpenURL(url.path)
                     .then((supported) => {
                         if (!supported) {
-                            return Toast.show(
-                                url.path?.indexOf?.('tel:') > -1
-                                    ? `您的设备不支持该功能，请手动拨打 ${url.path?.split?.('tel:')[1]}`
-                                    : '您的设备不支持打开该功能'
-                            );
+                            let msg = '';
+                            switch (true) {
+                                case url.path?.includes('tel:'):
+                                    msg = `您的设备不支持该功能，请手动拨打 ${url.path?.split?.('tel:')[1]}`;
+                                    break;
+                                case url.path?.includes('weixin:'):
+                                    msg = `请安装微信`;
+                                    break;
+                                default:
+                                    msg = '您的设备不支持打开该功能';
+                                    break;
+                            }
+                            return Toast.show(msg);
                         }
                         return Linking.openURL(url.path);
                     })

@@ -133,31 +133,33 @@ const Index = ({start}) => {
                                 title={data?.project_list?.title}
                                 sub_title={data?.project_list?.sub_title}
                             />
-                            <ScrollableTabView
-                                initialPage={0}
-                                prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
-                                onChangeTab={(obj) => {
-                                    setCurrentTab(obj.i);
-                                    global.LogTool({
-                                        event: 'ProjectHome',
-                                        plateid: data?.project_list?.tab_list[obj.i]?.plateid,
-                                        ctrl: data?.project_list?.tab_list[obj.i]?.title,
-                                        oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
-                                    });
-                                }}
-                                renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
-                                style={{flex: 1}}>
-                                {data?.project_list?.tab_list?.map((tab, index) => {
-                                    return (
-                                        <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
-                                            <ProjectProduct
-                                                data={data?.project_list?.tab_list[currentTab]}
-                                                tabLabel={tab.title}
-                                            />
-                                        </View>
-                                    );
-                                })}
-                            </ScrollableTabView>
+                            {!!data?.project_list?.tab_list?.length && (
+                                <ScrollableTabView
+                                    initialPage={0}
+                                    prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
+                                    onChangeTab={(obj) => {
+                                        setCurrentTab(obj.i);
+                                        global.LogTool({
+                                            event: 'ProjectHome',
+                                            plateid: data?.project_list?.tab_list[obj.i]?.plateid,
+                                            ctrl: data?.project_list?.tab_list[obj.i]?.title,
+                                            oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
+                                        });
+                                    }}
+                                    renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
+                                    style={{flex: 1}}>
+                                    {data?.project_list?.tab_list?.map((tab, index) => {
+                                        return (
+                                            <View key={index} tabLabel={tab.title} style={{paddingTop: px(8)}}>
+                                                <ProjectProduct
+                                                    data={data?.project_list?.tab_list[currentTab]}
+                                                    tabLabel={tab.title}
+                                                />
+                                            </View>
+                                        );
+                                    })}
+                                </ScrollableTabView>
+                            )}
                             <BottomDesc style={{paddingHorizontal: 0}} />
                         </>
                     ) : null}
