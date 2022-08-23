@@ -147,9 +147,7 @@ const RationalCard = ({rational_info, im_info}) => {
                     onPress={handleRation}>
                     {!rational_info?.button && (
                         <View style={styles.rational_circle}>
-                            <Text style={{fontSize: px(25), fontFamily: Font.numFontFamily}}>
-                                {rational_info?.grade}
-                            </Text>
+                            <Text style={styles.rationalGrade}>{rational_info?.grade}</Text>
                             <Animatable.Image
                                 animation={'fadeInUp'}
                                 iterationDelay={1000}
@@ -162,13 +160,20 @@ const RationalCard = ({rational_info, im_info}) => {
                     <View style={{flex: 1}}>
                         <View style={[Style.flexRow, {marginBottom: px(2)}]}>
                             <Text style={[styles.secure_title, {marginRight: px(6)}]}>{rational_info?.name}</Text>
-                            {!rational_info?.button && rational_info?.percent == 100 ? (
+                            {rational_info?.grade < 10 && rational_info?.percent === 100 ? (
                                 <View style={styles.upgrade_sm_btn}>
                                     <Text style={styles.upgrade_sm_btn_text}>升级</Text>
                                     <AntDesign color={'#fff'} name="right" size={px(8)} />
                                 </View>
                             ) : (
-                                <AntDesign name="right" size={px(10)} />
+                                <AntDesign
+                                    name="right"
+                                    size={px(12)}
+                                    style={{
+                                        marginTop: Platform.select({android: -px(1), ios: -px(2)}),
+                                        marginLeft: -px(2),
+                                    }}
+                                />
                             )}
                         </View>
                         {!!rational_info?.desc && (
@@ -272,10 +277,16 @@ const styles = StyleSheet.create({
         ...Style.flexRow,
         borderRadius: px(16),
         paddingVertical: px(1),
-        paddingHorizontal: px(5),
+        paddingRight: px(3),
+        paddingLeft: px(5),
         marginTop: px(-2),
     },
-    upgrade_sm_btn_text: {marginRight: px(1), fontSize: px(10), lineHeight: px(14), color: '#fff'},
+    upgrade_sm_btn_text: {
+        marginRight: px(1),
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#fff',
+    },
     levelIcon: {
         marginRight: px(5),
         width: px(16),
@@ -401,5 +412,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         zIndex: -10,
+    },
+    rationalGrade: {
+        marginLeft: Platform.OS === 'android' ? -px(2) : 0,
+        fontSize: px(24),
+        lineHeight: px(28),
+        fontFamily: Font.numFontFamily,
     },
 });

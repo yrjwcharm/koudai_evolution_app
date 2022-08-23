@@ -2,7 +2,7 @@
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-15 14:36:13
+ * @LastEditTime: 2022-08-23 10:16:55
  * @Description: 投资分析
  */
 import React, {useEffect, useRef} from 'react';
@@ -17,6 +17,7 @@ import {Colors} from '../../common/commonStyle';
 const comObj = {
     累计收益: AccProfit,
     净值走势: NetValueTrend,
+    七日年化走势: NetValueTrend,
     月度收益率: MonthRatio,
 };
 
