@@ -33,7 +33,7 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
             const len = cur?.stock_deploy?.length || 0;
             return len > memo ? len : memo;
         }, 0);
-        return max * 23 + 20;
+        return max ? max * 23 + 20 : 40;
     }, [data]);
 
     useImperativeHandle(_ref, () => ({
@@ -106,44 +106,59 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
                         },
                         {height: px(row1Height)},
                     ]}>
-                    <WebView
-                        allowFileAccess
-                        allowFileAccessFromFileURLs
-                        allowUniversalAccessFromFileURLs
-                        javaScriptEnabled
-                        scrollEnabled={false}
-                        style={{opacity: 0.99, width: px(90)}}
-                        renderLoading={() => <LoadingWebview />}
-                        source={source}
-                        injectedJavaScript={initScript}
-                        startInLoadingState={true}
-                        originWhitelist={['*']}
-                        textZoom={100}
-                        onMessage={(e) => {
-                            console.log(e.nativeEvent.data);
-                        }}
-                    />
-                    <View style={{width: '100%', paddingHorizontal: px(8), paddingBottom: px(8)}}>
-                        {item.asset_deploy?.map((itm, idx) => (
-                            <View style={styles.asset} key={idx}>
-                                <View style={styles.assetLeft}>
-                                    <View
-                                        style={{
-                                            width: px(6),
-                                            height: px(6),
-                                            borderRadius: px(6),
-                                            backgroundColor: colors[idx],
-                                            marginRight: px(3),
-                                        }}
-                                    />
-                                    <Text style={styles.valueText}>{itm.name}</Text>
-                                </View>
-                                <View style={styles.assetRight}>
-                                    <Text style={styles.valueText}>{itm.ratio || 0}%</Text>
-                                </View>
+                    {item?.asset_deploy ? (
+                        <>
+                            <WebView
+                                allowFileAccess
+                                allowFileAccessFromFileURLs
+                                allowUniversalAccessFromFileURLs
+                                javaScriptEnabled
+                                scrollEnabled={false}
+                                style={{opacity: 0.99, width: px(90)}}
+                                renderLoading={() => <LoadingWebview />}
+                                source={source}
+                                injectedJavaScript={initScript}
+                                startInLoadingState={true}
+                                originWhitelist={['*']}
+                                textZoom={100}
+                                onMessage={(e) => {
+                                    console.log(e.nativeEvent.data);
+                                }}
+                            />
+                            <View style={{width: '100%', paddingHorizontal: px(8), paddingBottom: px(8)}}>
+                                {item.asset_deploy?.map((itm, idx) => (
+                                    <View style={styles.asset} key={idx}>
+                                        <View style={styles.assetLeft}>
+                                            <View
+                                                style={{
+                                                    width: px(6),
+                                                    height: px(6),
+                                                    borderRadius: px(6),
+                                                    backgroundColor: colors[idx],
+                                                    marginRight: px(3),
+                                                }}
+                                            />
+                                            <Text style={styles.valueText}>{itm.name}</Text>
+                                        </View>
+                                        <View style={styles.assetRight}>
+                                            <Text style={styles.valueText}>{itm.ratio || 0}%</Text>
+                                        </View>
+                                    </View>
+                                ))}
                             </View>
-                        ))}
-                    </View>
+                        </>
+                    ) : (
+                        <View style={{justifyContent: 'center', height: '100%'}}>
+                            <Text
+                                style={{
+                                    color: '#545968',
+                                    textAlign: 'center',
+                                    fontSize: px(12),
+                                }}>
+                                --
+                            </Text>
+                        </View>
+                    )}
                 </View>
                 <View
                     style={[
@@ -161,7 +176,16 @@ const PKPortfolio = ({data, pkPinning, asset_explain, showModal, onScroll, _ref}
                             );
                         })
                     ) : (
-                        <Text style={{color: '#545968'}}>--</Text>
+                        <View style={{justifyContent: 'center', height: '100%'}}>
+                            <Text
+                                style={{
+                                    color: '#545968',
+                                    textAlign: 'center',
+                                    fontSize: px(12),
+                                }}>
+                                --
+                            </Text>
+                        </View>
                     )}
                 </View>
             </View>
