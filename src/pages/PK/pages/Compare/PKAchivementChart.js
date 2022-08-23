@@ -28,19 +28,14 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
 
     const changeTab = (p, name) => {
         global.LogTool('PKContrast_Performance', name);
-        setPeriod((prev) => {
-            if (p !== prev) {
-                getData(p);
-            }
-            return p;
-        });
+        setPeriod(p);
     };
 
     useFocusEffect(
         useCallback(() => {
-            getData(originPeriod);
+            getData(period);
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [fund_code_list])
+        }, [fund_code_list, period])
     );
 
     const onChartChange = ({items: arr}) => {
