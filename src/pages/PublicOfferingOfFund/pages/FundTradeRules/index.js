@@ -281,9 +281,9 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
     originText: {
-        flex: 2,
+        flex: 1.8,
         color: Colors.descColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         textAlign: 'right',
         textDecorationColor: Colors.defaultColor,
         textDecorationLine: 'line-through',
