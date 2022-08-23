@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: px(11),
+        minHeight: px(18),
     },
     tag: {
         borderRadius: px(2),

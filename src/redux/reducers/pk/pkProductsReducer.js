@@ -20,7 +20,11 @@ export default function pkProducts(_state = {1: [], 2: []}, action) {
                     // 是否优选基金
                     if (isHigh) params.source = 1;
                     newState[isHigh ? 'unshift' : 'push'](code);
-                    global.pkEntry != 1 && addPkProducts(params).then((_) => action.payload?.afterFn?.());
+                    global.pkEntry != 1
+                        ? addPkProducts(params).then((_) => action.payload?.afterFn?.())
+                        : setTimeout(() => {
+                              action.payload?.afterFn?.();
+                          }, 0);
                     return newState;
                 } else {
                     Toast.show('您PK的基金过多，最多选择6只');

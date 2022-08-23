@@ -6,7 +6,6 @@ import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {isIphoneX, px} from '~/utils/appUtil';
-import gesture from '~/assets/animation/gesture.gif';
 
 const TooltipComponent = ({handleNext, handleStop, currentStep, handlerTooltipStyle}) => {
     useEffect(() => {
@@ -22,7 +21,6 @@ const TooltipComponent = ({handleNext, handleStop, currentStep, handlerTooltipSt
         <View style={styles.container}>
             {currentStep?.order === 1 ? (
                 <View style={{alignItems: 'center'}}>
-                    <FastImage source={gesture} style={{width: px(240), height: px(53)}} resizeMode="contain" />
                     <Text style={styles.text}>点击查看工具叠加各大盘指数的买卖信号</Text>
                     <Button title="我知道了" style={{marginTop: px(12)}} onPress={handleNext} />
                 </View>
