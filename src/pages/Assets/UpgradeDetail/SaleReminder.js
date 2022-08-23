@@ -12,18 +12,17 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
     const [activeTab, setTabActive] = useState();
     const [{chart = {}, upgrade_items = [], bottom_desc, now_value, after_value}, setData] = useState({});
 
-    const httpFlag = useRef();
+    const [httpFlag, setHttpFlag] = useState();
 
     const initScript = useMemo(() => {
         return baseAreaChart(chart?.chart || [], chart.tag_legends || [], true, 2, null, [10, 8, 10, 0]);
     }, [chart]);
 
     const getData = (period) => {
-        httpFlag.current = true;
+        setHttpFlag(true);
         getUpgradeToPlanCard({upgrade_id: upgrade_id, type: data.type, period})
             .then((res) => {
                 if (res.code === '000000') {
-                    setData({});
                     setData(res.result);
                     onCardRate?.(componentIdx, {
                         now_value: res.result?.now_value,
@@ -36,7 +35,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                 }
             })
             .finally((_) => {
-                httpFlag.current = false;
+                setHttpFlag(false);
             });
     };
 
@@ -62,7 +61,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                 <RenderHtml style={{...styles.rateText, color: '#E74949'}} html={after_value} />
             </View>
             <View style={{height: px(210)}}>
-                {chart?.chart && <Chart initScript={initScript} style={{width: '100%'}} />}
+                {httpFlag ? null : chart?.chart ? <Chart initScript={initScript} style={{width: '100%'}} /> : null}
             </View>
             <View style={styles.legendWrap}>
                 <View style={styles.legendRow}>
@@ -83,7 +82,7 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                         key={idx}
                         style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#F5F6F8'}]}
                         onPress={() => {
-                            if (httpFlag.current) return;
+                            if (httpFlag) return;
                             setTabActive(item.val);
                             getData(item.val);
                         }}>
