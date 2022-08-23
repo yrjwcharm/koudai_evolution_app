@@ -51,6 +51,11 @@ const PKHome = ({navigation, start, copilotEvents}) => {
     const scrollViewRef = useRef();
     const isFocusedRef = useRef(isFocused);
     const showCopilot = useRef(false);
+    const recommendIndexRef = useRef(0);
+
+    useEffect(() => {
+        recommendIndexRef.current = recommendIndex;
+    }, [recommendIndex]);
 
     const getData = (type) => {
         type === 0 && setRefreshing(true);
@@ -60,7 +65,11 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                 if (res.code === '000000') {
                     listLayout.current.status = true;
                     setData(res.result);
-                    setRecommendIndex(0);
+                    setRecommendIndex(
+                        res.result.sub_list?.[0]?.items?.length > recommendIndexRef.current + 1
+                            ? recommendIndexRef.current
+                            : 0
+                    );
                     res.result.sub_list.forEach((item) => {
                         handlerListLog(item, res.result);
                     });
