@@ -7,7 +7,7 @@ import {Chart} from '~/components/Chart';
 import {Colors, Font} from '~/common/commonStyle';
 import {getPKChartDetail} from '../../services';
 
-const PKAchivementChart = ({fund_code_list, originPeriod}) => {
+const PKAchievementChart = ({fund_code_list, originPeriod}) => {
     const [period, setPeriod] = useState(originPeriod);
     const [data, setData] = useState({});
     const [subTabs, setSubTabs] = useState([]);
@@ -104,7 +104,7 @@ const PKAchivementChart = ({fund_code_list, originPeriod}) => {
     );
 };
 
-export default PKAchivementChart;
+export default PKAchievementChart;
 
 const colors = ['#E74949', '#0051CC', '#DEA92E', '#6AAD5B', '#9955D4', '#545968'];
 const areaColors = [

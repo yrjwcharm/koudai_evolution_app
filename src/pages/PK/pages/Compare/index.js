@@ -4,7 +4,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {isIphoneX, px} from '~/utils/appUtil';
 import Header from './Header';
 import PKParams from './PKParams';
-import PKAchivementChart from './PKAchivementChart';
+import PKAchivementChart from './PKAchievementChart';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import PKPriceRange from './PKPriceRange';
