@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         bottom: px(12),
         backgroundColor: Colors.red,
         borderRadius: px(20),
-        paddingVertical: Platform.select({android: 1, ios: 1.5}),
+        paddingVertical: Platform.select({android: 1.6, ios: 1.5}),
         paddingHorizontal: px(6),
     },
     point_text: {
