@@ -682,6 +682,7 @@ const Index = ({navigation, route}) => {
                         heightChange={(height) => setDeltaHeight(height)}
                         onPress={buyClick}
                         otherAgreement={agreement}
+                        otherParam={{fund_codes: code, type}}
                         suffix={agreement_bottom.agree_text}
                         title={button.text}
                     />

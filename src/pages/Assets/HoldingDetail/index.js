@@ -399,6 +399,11 @@ const RenderChart = ({data = {}}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, params, period]);
 
+    useEffect(() => {
+        label && onHide();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [label]);
+
     return (
         <>
             {/* 根据key区分不同图表 */}

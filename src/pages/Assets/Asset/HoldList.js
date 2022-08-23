@@ -372,8 +372,8 @@ const styles = StyleSheet.create({
         marginRight: px(13),
     },
     table_header: {
-        borderTopLeftRadius: px(6),
-        borderTopRightRadius: px(6),
+        // borderTopLeftRadius: px(6),
+        // borderTopRightRadius: px(6),
         backgroundColor: '#fff',
         height: px(40),
         paddingHorizontal: px(16),
@@ -403,9 +403,10 @@ const styles = StyleSheet.create({
     card_con: {
         marginHorizontal: px(16),
         backgroundColor: '#fff',
-        borderBottomEndRadius: px(6),
-        borderBottomLeftRadius: px(6),
+        // borderBottomEndRadius: px(6),
+        // borderBottomLeftRadius: px(6),
         borderRadius: px(6),
+        overflow: 'hidden',
     },
     card: {
         paddingHorizontal: px(16),
