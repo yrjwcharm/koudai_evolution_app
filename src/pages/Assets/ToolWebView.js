@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, StatusBar} from 'react-native';
-import NavBar from '~/components/NavBar';
+import Feather from 'react-native-vector-icons/Feather';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useJump} from '~/components/hooks';
 import Storage from '~/utils/storage';
@@ -9,12 +9,12 @@ import URI from 'urijs';
 import {deviceHeight, px} from '~/utils/appUtil';
 import http from '~/services';
 import ProductCards from '~/components/Portfolios/ProductCards';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors, Space, Style} from '~/common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Toast from '~/components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
 
-const ToolWebView = ({route}) => {
+const ToolWebView = ({navigation, route}) => {
     const jump = useJump();
     const [token, setToken] = useState('');
     const [res, setRes] = useState({});
@@ -64,7 +64,10 @@ const ToolWebView = ({route}) => {
                 });
         };
         return (
-            <TouchableOpacity style={Style.flexRowCenter} activeOpacity={0.8} onPress={onPress}>
+            <TouchableOpacity
+                style={[Style.flexRowCenter, {marginRight: Space.marginAlign}]}
+                activeOpacity={0.8}
+                onPress={onPress}>
                 <FastImage
                     source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/08/subscribe.png'}}
                     style={{width: px(16), height: px(16), marginRight: px(2)}}
@@ -73,19 +76,6 @@ const ToolWebView = ({route}) => {
             </TouchableOpacity>
         );
     };
-
-    const navBarOption = useMemo(() => {
-        return res.title
-            ? {
-                  title: res.title,
-                  titleIcon: res.title_icon,
-                  fontStyle: {color: res.type === 'index' ? '#121D3A' : '#fff'},
-                  renderRight: topButton ? renderRight() : null,
-                  style: {backgroundColor: res.type === 'index' ? '#fff' : '#1E5AE7'},
-              }
-            : {};
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [res, topButton]);
 
     const getRelation = () => {
         http.get('/tool/signal/relation/20220711', {tool_id: res.tool_id})
@@ -99,6 +89,43 @@ const ToolWebView = ({route}) => {
             });
     };
 
+    useEffect(() => {
+        const {title, title_icon, type} = res;
+        const titleColor = type === 'index' ? '#121D3A' : '#fff';
+        if (title) {
+            navigation.setOptions({
+                headerBackImage: () => {
+                    return (
+                        <Feather
+                            name="chevron-left"
+                            color={titleColor}
+                            size={px(26)}
+                            style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                        />
+                    );
+                },
+                headerRight: topButton ? renderRight : undefined,
+                headerStyle: {
+                    backgroundColor: type === 'index' ? '#fff' : '#1E5AE7',
+                    shadowOpacity: 0,
+                    shadowOffset: {
+                        height: 0,
+                    },
+                    elevation: 0,
+                },
+                headerTitle: ({allowFontScaling}) => (
+                    <View style={Style.flexRow}>
+                        {title_icon ? <FastImage source={{uri: title_icon}} style={styles.titleIcon} /> : null}
+                        <Text allowFontScaling={allowFontScaling} style={{fontSize: px(18), color: titleColor}}>
+                            {title}
+                        </Text>
+                    </View>
+                ),
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [res, topButton]);
+
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -109,7 +136,7 @@ const ToolWebView = ({route}) => {
 
     return (
         <View style={styles.container}>
-            <NavBar leftIcon="chevron-left" {...navBarOption} />
+            {/* <NavBar leftIcon="chevron-left" {...navBarOption} /> */}
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} scrollEventThrottle={16} bounces={false}>
                 {token ? (
                     <RNWebView
@@ -195,6 +222,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    titleIcon: {
+        marginRight: px(4),
+        width: px(22),
+        height: px(22),
     },
     listDataWrap: {
         margin: px(16),
