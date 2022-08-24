@@ -568,7 +568,7 @@ const BuyMode = ({data = {}, refresh}) => {
                                     style={[
                                         Style.flexCenter,
                                         {height: '100%'},
-                                        index === 0 ? {width: px(98)} : {flex: 1},
+                                        index === 0 ? {width: px(94)} : {flex: 1},
                                     ]}>
                                     <Text numberOfLines={1} style={[styles.desc, {color: Colors.descColor}]}>
                                         {item}
@@ -588,7 +588,7 @@ const BuyMode = ({data = {}, refresh}) => {
                                         style={[
                                             Style.flexCenter,
                                             {height: '100%'},
-                                            index === 0 ? {width: px(98)} : {flex: 1},
+                                            index === 0 ? {width: px(94)} : {flex: 1},
                                         ]}>
                                         {renderTabelCell(item)}
                                     </View>
