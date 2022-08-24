@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     secure_card: {
         width: px(166),
         padding: px(12),
+        paddingRight: Platform.select({android: px(10), ios: px(12)}),
         height: px(63),
         borderRadius: px(6),
         backgroundColor: '#fff',
