@@ -99,7 +99,7 @@ const Index = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
     },
 });
 

@@ -165,7 +165,7 @@ const RationalCard = ({rational_info, im_info}) => {
                                     <Text style={styles.upgrade_sm_btn_text}>升级</Text>
                                     <AntDesign color={'#fff'} name="right" size={px(8)} />
                                 </View>
-                            ) : (
+                            ) : rational_info?.url ? (
                                 <AntDesign
                                     name="right"
                                     size={px(12)}
@@ -174,7 +174,7 @@ const RationalCard = ({rational_info, im_info}) => {
                                         marginLeft: -px(2),
                                     }}
                                 />
-                            )}
+                            ) : null}
                         </View>
                         {!!rational_info?.desc && (
                             <RenderHtml

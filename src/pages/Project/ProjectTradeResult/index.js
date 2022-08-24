@@ -52,12 +52,12 @@ const Index = ({route, navigation}) => {
                     {/* 买入模式 */}
                     {data?.buy_model?.map((_item, _index) => (
                         <React.Fragment key={_index}>
-                            <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                            <View style={Style.flexBetween}>
                                 <Text style={styles.key}>{_item.label}</Text>
                                 <Text style={styles.value}>{_item.title}</Text>
                             </View>
                             <View style={styles.list_con}>
-                                <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                                <View style={Style.flexBetween}>
                                     {_item?.table_header?.map((item, index, arr) => (
                                         <Text
                                             key={index}
@@ -72,7 +72,7 @@ const Index = ({route, navigation}) => {
                                     ))}
                                 </View>
                                 {_item?.list?.map((item, index) => (
-                                    <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
+                                    <View style={[Style.flexBetween, {marginTop: px(12)}]} key={index}>
                                         <Text style={{...styles.value, flex: 1}}>{item?.name}</Text>
                                         <View style={{flex: 1, alignItems: 'center'}}>
                                             <RenderHtml html={item?.amount} style={{fontSize: px(13)}} />
@@ -80,7 +80,7 @@ const Index = ({route, navigation}) => {
                                         <View style={{alignItems: 'flex-end', flex: 1}}>
                                             <RenderHtml
                                                 html={item?.date}
-                                                style={{fontSize: px(13), textAlign: 'right'}}
+                                                style={{fontSize: Font.textH3, textAlign: 'right'}}
                                             />
                                         </View>
                                     </View>
@@ -93,12 +93,12 @@ const Index = ({route, navigation}) => {
                     {/* 卖出模式 */}
                     {data?.sale_model?.table_header ? (
                         <>
-                            <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                            <View style={Style.flexBetween}>
                                 <Text style={styles.key}>卖出模式</Text>
                                 <Text style={styles.value}>{data?.sale_model?.sale_model_title}</Text>
                             </View>
                             <View style={styles.list_con}>
-                                <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                                <View style={Style.flexBetween}>
                                     {data?.sale_model?.table_header?.map((item, index, arr) => (
                                         <Text
                                             key={index}
@@ -113,7 +113,7 @@ const Index = ({route, navigation}) => {
                                     ))}
                                 </View>
                                 {data?.sale_model?.list?.map((item, index) => (
-                                    <View style={[Style.flexBetween, {marginBottom: px(12)}]} key={index}>
+                                    <View style={[Style.flexBetween, {marginTop: px(12)}]} key={index}>
                                         <Text style={{flex: 1, ...styles.value}}>{item?.name}</Text>
                                         <View style={{flex: 1, alignItems: 'center'}}>
                                             {!!item?.target_yield && (
@@ -207,9 +207,9 @@ const styles = StyleSheet.create({
     list_con: {
         backgroundColor: Colors.bgColor,
         borderRadius: px(4),
+        marginTop: px(12),
         paddingHorizontal: px(12),
-        paddingTop: px(11),
-        paddingBottom: px(4),
+        paddingVertical: px(12),
         marginBottom: px(20),
     },
     tip: {
