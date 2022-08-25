@@ -5,21 +5,22 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
 
-import http from '../../services/index.js';
+import http from '~/services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, deviceWidth} from '../../utils/appUtil';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {px, deviceWidth} from '~/utils/appUtil';
 import RenderTitle from './components/RenderTitle.js';
 import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateVision} from '../../redux/actions/visionData';
+import {updateVision} from '~/redux/actions/visionData';
+import {updateUserInfo} from '~/redux/actions/userInfo';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useJump} from '../../components/hooks';
-import BottomDesc from '../../components/BottomDesc';
-import LoadingTips from '../../components/LoadingTips.js';
-import LiveCard from '../../components/Article/LiveCard.js';
+import {useJump} from '~/components/hooks';
+import BottomDesc from '~/components/BottomDesc';
+import LoadingTips from '~/components/LoadingTips.js';
+import LiveCard from '~/components/Article/LiveCard.js';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 import {BoxShadow} from 'react-native-shadow';
@@ -58,6 +59,19 @@ const Vision = ({navigation}) => {
             setAll(res.result.all);
         });
     }, []);
+    useEffect(() => {
+        if (userInfo?.pushRoute) {
+            http.get('/common/push/jump/redirect/20210810', {
+                url: encodeURI(userInfo?.pushRoute),
+            }).then((res) => {
+                dispatch(updateUserInfo({pushRoute: ''}));
+                if (res.code == '000000') {
+                    jump(res.result?.url);
+                }
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userInfo]);
     useFocusEffect(
         useCallback(() => {
             init();
