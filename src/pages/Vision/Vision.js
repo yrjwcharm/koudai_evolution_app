@@ -34,6 +34,7 @@ const shadow = {
     y: 2,
     width: deviceWidth - px(32),
 };
+let bannerList = [];
 const Vision = ({navigation}) => {
     const isFocused = useIsFocused();
 
@@ -44,11 +45,19 @@ const Vision = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const [data, setData] = useState();
     const [, setAll] = useState(0);
+    const [banner, setBanner] = useState([]);
     const jump = useJump();
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
         http.get('/vision/index/20220215').then((res) => {
             jump(res?.result?.app_tag_url);
+            if (bannerList.length == res.result?.part2?.banner_list.length) {
+                setBanner(res?.result?.part2?.banner_list);
+            } else {
+                setBanner([]);
+                setBanner(res?.result?.part2?.banner_list);
+            }
+            bannerList = res?.result?.part2?.banner_list;
             setData(res.result);
             setRefreshing(false);
         });
@@ -136,28 +145,6 @@ const Vision = ({navigation}) => {
                             />
                             <Text style={styles.headerIconDesc}>{'我的收藏'}</Text>
                         </TouchableOpacity>
-                        {/* 消息 */}
-                        {/* <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={{position: 'relative'}}
-                            onPress={() => {
-                                global.LogTool('indexNotificationCenter');
-                                if (userInfo.is_login) {
-                                    jump({path: 'RemindMessage'});
-                                } else {
-                                    jump({path: 'Login'});
-                                }
-                            }}>
-                            {allMsg ? (
-                                <View style={[styles.point_sty, Style.flexCenter]}>
-                                    <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
-                                </View>
-                            ) : null}
-                            <Image
-                                style={{width: px(32), height: px(32)}}
-                                source={require('../../assets/img/index/message.png')}
-                            />
-                        </TouchableOpacity> */}
                     </View>
                 </View>
             </>
@@ -212,7 +199,7 @@ const Vision = ({navigation}) => {
                             style={styles.con_bg}>
                             <View style={{paddingHorizontal: px(16)}}>
                                 <View style={styles.swiper}>
-                                    {data?.part2?.banner_list?.length > 0 && (
+                                    {banner?.length > 0 && (
                                         <Swiper
                                             height={px(190)}
                                             autoplay
@@ -231,18 +218,18 @@ const Vision = ({navigation}) => {
                                                 width: px(12),
                                                 ...styles.dotStyle,
                                             }}>
-                                            {data?.part2?.banner_list?.map((banner, index) => (
+                                            {banner?.map((_banner, index) => (
                                                 <TouchableOpacity
                                                     key={index}
                                                     activeOpacity={0.9}
                                                     onPress={() => {
-                                                        global.LogTool('swiper', banner.id);
-                                                        jump(banner.url);
+                                                        global.LogTool('swiper', _banner.id);
+                                                        jump(_banner.url);
                                                     }}>
                                                     <FastImage
                                                         style={styles.slide}
                                                         source={{
-                                                            uri: banner.cover,
+                                                            uri: _banner.cover,
                                                         }}
                                                     />
                                                 </TouchableOpacity>
@@ -421,25 +408,6 @@ const styles = StyleSheet.create({
         fontWeight: Font.weightMedium,
     },
 
-    point_sty: {
-        position: 'absolute',
-        left: px(15),
-        top: px(-5),
-        backgroundColor: Colors.red,
-        borderRadius: px(50),
-        zIndex: 10,
-        minWidth: px(20),
-        height: px(20),
-        borderWidth: 2,
-        borderColor: '#fff',
-    },
-    point_text: {
-        textAlign: 'center',
-        color: '#fff',
-        fontSize: Font.textSm,
-        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
-        fontFamily: Font.numFontFamily,
-    },
     horiView: {
         width: deviceWidth,
         position: 'relative',

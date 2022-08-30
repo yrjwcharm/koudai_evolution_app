@@ -34,7 +34,7 @@ const RenderSignal = ({list, more, desc, style, copilot}) => {
                                     {item?.index_num}
                                 </Text>
                             </View>
-                            <Image source={{uri: item?.strength_icon}} style={styles.icon} />
+                            {!!item?.strength_icon && <Image source={{uri: item?.strength_icon}} style={styles.icon} />}
                         </LinearGradient>
                     </TouchableOpacity>
                 ))}
