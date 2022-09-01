@@ -205,6 +205,10 @@ import BlancedPortfolio from '../pages/Portfolio/Detail/BlancedPortfolio'; // �
 import TradeAgreementList from '../pages/Common/TradeAgreementList'; //权益须知
 import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基金赎回
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
+import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一键转换介绍页
+import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
+import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
+import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 
 const Stack = createStackNavigator();
 
@@ -771,6 +775,10 @@ export default function AppStack() {
             <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
             <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
             <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
+            <Stack.Screen name="TransferIntro" component={TransferIntro} options={{title: ''}} />
+            <Stack.Screen name="ChooseTransferPortfolio" component={ChooseTransferPortfolio} options={{title: ''}} />
+            <Stack.Screen name="TradeTransfer" component={TradeTransfer} options={{title: ''}} />
+            <Stack.Screen name="TransferDetail" component={TransferDetail} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

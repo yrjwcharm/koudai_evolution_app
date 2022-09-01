@@ -1,9 +1,6 @@
 /*
  * @Date: 2021-06-07 11:14:13
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-13 17:19:17
- * @Description:
+ * @Description: 产品卡片
  */
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -22,7 +19,7 @@ const PortfolioCard = ({data, style, onPress}) => {
             onPress={() => {
                 global.LogTool('findProduct', data?.plan_id);
                 jump(data?.url);
-                onPress?.()
+                onPress?.();
             }}
             style={[styles.card, {borderRadius: 8}, Style.flexRow, style]}>
             <View style={{padding: Space.cardPadding, flex: 1}}>
@@ -73,7 +70,6 @@ const PortfolioCard = ({data, style, onPress}) => {
                     <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
                 </View>
             )}
-
         </TouchableOpacity>
     );
 };

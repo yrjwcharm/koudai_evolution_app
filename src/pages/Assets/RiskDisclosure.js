@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-04-21 10:34:25
- * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-20 18:00:23
  * @Description: 风险揭示书
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -17,11 +14,12 @@ import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import http from '../../services';
 import {isIphoneX, px} from '../../utils/appUtil';
+import {transferConfirm} from '../Trade/QuickTransfer/services';
 
 export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {processing_info = {}, risk_disclosure = []} = data;
+    const {footer_html, processing_info = {}, risk_disclosure = []} = data;
     const {content = '', url = ''} = processing_info;
     const [button, setButton] = useState({disabled: true, text: ''});
     const {disabled, text} = button;
@@ -29,19 +27,31 @@ export default ({navigation, route}) => {
     const countdownRef = useRef(10);
     const timeRef = useRef();
     const passwordRef = useRef();
-    const {poids, auto_poids, from_poids, manual_poids, need_sign = true, to_poids = []} = route.params;
+    const {
+        poids,
+        auto_poids,
+        fr = '',
+        from_poids,
+        manual_poids,
+        need_sign = true,
+        percent,
+        to_poids = [],
+        transfer_params,
+    } = route.params;
 
     useEffect(() => {
-        http.get('/advisor/need_sign/info/20220422', {poids: to_poids.length > 0 ? to_poids : poids}).then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({title: res.result.title || '风险揭示书'});
-                countdownRef.current = res.result.countdown;
-                setButton({disabled: true, text: `${countdownRef.current}s后确认`});
-                const {risk_disclosure: arr = []} = res.result;
-                arr.forEach((item) => (item.status = 0));
-                setData(res.result);
+        http.get('/advisor/need_sign/info/20220422', {fr, poids: to_poids.length > 0 ? to_poids : poids}).then(
+            (res) => {
+                if (res.code === '000000') {
+                    navigation.setOptions({title: res.result.title || '风险揭示书'});
+                    countdownRef.current = res.result.countdown;
+                    setButton({disabled: true, text: `${countdownRef.current}s后确认`});
+                    const {risk_disclosure: arr = []} = res.result;
+                    arr.forEach((item) => (item.status = 0));
+                    setData(res.result);
+                }
             }
-        });
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -94,56 +104,75 @@ export default ({navigation, route}) => {
         setData(_data);
     };
 
+    /** @name 确认转换 */
+    const transferPortfolio = (password) => {
+        const transfering = Toast.showLoading('正在进行转换...');
+        transferConfirm({password, percent, ...(transfer_params || {})})
+            .then((res) => {
+                Toast.hide(transfering);
+                res.message && Toast.show(res.message);
+                if (res.code === '000000') {
+                    const {url: jumpUrl} = res.result;
+                    jumpUrl && jump(jumpUrl);
+                }
+            })
+            .finally(() => {
+                Toast.hide(transfering);
+            });
+    };
+
+    /** @name 进行串行转投 */
+    const doTransfer = (password) => {
+        const transfering = Toast.showLoading('正在进行转投下单...');
+        const arr = from_poids
+            .join(',')
+            .split(',')
+            .map((poid) => () =>
+                new Promise((resolve, reject) => {
+                    http.post('/advisor/need_sign/trans3_do/20220613', {password, poid, to_poids})
+                        .then((res) => {
+                            if (res.code === '000000') {
+                                resolve(res);
+                            } else {
+                                reject(res);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            reject({message: '网络异常，请退出APP重试'});
+                        });
+                })
+            );
+        arr.reduce(
+            (prev, curr) =>
+                prev.then(curr).catch((error) => {
+                    console.log(error);
+                    return error;
+                }),
+            Promise.resolve()
+        )
+            .then((res) => {
+                Toast.hide(transfering);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    setTimeout(() => {
+                        // if (need_sign) {
+                        //     navigation.pop(3);
+                        // } else {
+                        //     navigation.pop(2);
+                        // }
+                        navigation.navigate('Home');
+                    }, 2000);
+                }
+            })
+            .catch((res) => {
+                Toast.hide(transfering);
+                res.message && Toast.show(res.message);
+            });
+    };
+
     /** @name 点击确认签约，完成输入交易密码 */
     const onSubmit = (password) => {
-        const doTransfer = () => {
-            const transfering = Toast.showLoading('正在进行转投下单...');
-            const arr = from_poids
-                .join(',')
-                .split(',')
-                .map((poid) => () =>
-                    new Promise((resolve, reject) => {
-                        http.post('/advisor/need_sign/trans3_do/20220613', {password, poid, to_poids})
-                            .then((res) => {
-                                if (res.code === '000000') {
-                                    resolve(res);
-                                } else {
-                                    reject(res);
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                                reject({message: '网络异常，请退出APP重试'});
-                            });
-                    })
-                );
-            arr.reduce(
-                (prev, curr) =>
-                    prev.then(curr).catch((error) => {
-                        console.log(error);
-                        return error;
-                    }),
-                Promise.resolve()
-            )
-                .then((res) => {
-                    Toast.hide(transfering);
-                    Toast.show(res.message);
-                    if (res.code === '000000') {
-                        setTimeout(() => {
-                            // if (need_sign) {
-                            //     navigation.pop(3);
-                            // } else {
-                            //     navigation.pop(2);
-                            // }
-                            navigation.navigate('Home');
-                        }, 2000);
-                    }
-                })
-                .catch((res) => {
-                    Toast.hide(transfering);
-                    res.message && Toast.show(res.message);
-                });
-        };
         if (need_sign) {
             const loading = Toast.showLoading('签约中...');
             http.post('/adviser/sign/20210923', {
@@ -158,7 +187,9 @@ export default ({navigation, route}) => {
                     global.LogTool('Completiontime_yes');
                     setTimeout(() => {
                         if (from_poids?.length > 0) {
-                            doTransfer();
+                            doTransfer(password);
+                        } else if (fr === 'transfer_portfolio') {
+                            transferPortfolio(password);
                         } else {
                             // navigation.pop(2);
                             navigation.navigate('Home');
@@ -167,7 +198,7 @@ export default ({navigation, route}) => {
                 }
             });
         } else {
-            doTransfer();
+            doTransfer(password);
         }
     };
 
@@ -229,7 +260,12 @@ export default ({navigation, route}) => {
                     </ViewComponent>
                 );
             })()}
-            <View style={{backgroundColor: '#fff'}}>
+            <View style={styles.btnContainer}>
+                {footer_html ? (
+                    <View style={{paddingHorizontal: Space.padding, paddingBottom: px(8)}}>
+                        <HTML html={footer_html} style={styles.agreement} />
+                    </View>
+                ) : null}
                 <Button
                     disabled={disabled}
                     onPress={() => {
@@ -237,7 +273,6 @@ export default ({navigation, route}) => {
                         http.post('/advisor/action/report/20220422', {action: 'confirm', poids});
                         passwordRef.current?.show?.();
                     }}
-                    style={styles.button}
                     title={text}
                 />
             </View>
@@ -304,9 +339,15 @@ const styles = StyleSheet.create({
         lineHeight: px(20),
         color: Colors.defaultColor,
     },
-    button: {
-        marginTop: px(20),
-        marginHorizontal: Space.marginAlign,
-        marginBottom: isIphoneX() ? 34 : px(20),
+    agreement: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.lightBlackColor,
+    },
+    btnContainer: {
+        paddingTop: px(8),
+        paddingHorizontal: Space.padding,
+        paddingBottom: isIphoneX() ? 34 : px(8),
+        backgroundColor: '#fff',
     },
 });

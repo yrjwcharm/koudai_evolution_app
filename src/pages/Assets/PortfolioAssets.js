@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
- * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 11:39:34
  */
 import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
@@ -146,6 +143,22 @@ export default function PortfolioAssets(props) {
             .catch(() => {
                 setLoading(false);
             });
+        http.get('/transfer/force/guide/pop/202208', {poid: props.route.params?.poid || ''}).then((res) => {
+            if (res.code === '000000') {
+                const {back_close, cancel, confirm, content, title, touch_close} = res.result;
+                content &&
+                    Modal.show({
+                        backButtonClose: back_close,
+                        cancelText: cancel.text,
+                        confirm: true,
+                        confirmCallBack: () => jump(confirm.url),
+                        confirmText: confirm.text,
+                        content,
+                        isTouchMaskToClose: touch_close,
+                        title,
+                    });
+            }
+        });
     }, [props.route.params]);
     //获取签约数据
     const getSignData = () => {

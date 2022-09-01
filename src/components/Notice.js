@@ -1,9 +1,6 @@
 /*
- * @Author: xjh
  * @Date: 2021-01-25 11:42:26
- * @Description:小黄条
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-23 09:59:07
+ * @Description: 小黄条
  */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
@@ -112,6 +109,6 @@ Notice.defaultProps = {
     isClose: false,
 };
 Notice.propTypes = {
-    content: PropTypes.isRequired,
+    content: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     isClose: PropTypes.bool,
 };
