@@ -112,7 +112,7 @@ const RecordItem = ({data = {}}) => {
                                 <Text style={styles.smText}>{k}</Text>
                                 <View style={{marginTop: px(4)}}>
                                     <HTML
-                                        html={index === 0 ? formaNum(v) : v}
+                                        html={index === 0 ? formaNum(v) : `${v}`}
                                         style={isNaN(parseFloat(v)) ? styles.desc : styles.numText}
                                     />
                                 </View>
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     },
     flagPoleLine: {
         width: 1,
-        height: px(7),
+        height: px(8),
         backgroundColor: Colors.brandColor,
         top: px(2),
         left: px(3),

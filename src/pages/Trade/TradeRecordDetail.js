@@ -1,11 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
- * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-28 15:07:37
  * @Description:交易记录详情
  */
-import React, {useCallback, useState, useEffect, useRef} from 'react';
+import React, {Fragment, useCallback, useState, useEffect, useRef} from 'react';
 import {Text, View, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {px, isIphoneX, tagColor, getTradeColor} from '../../utils/appUtil';
 import {Style, Space, Colors, Font} from '../../common/commonStyle';
@@ -59,7 +56,7 @@ const TradeRecordDetail = (props) => {
                 },
                 title: res.result.title || '交易订单详情',
             });
-            let expand = res.result.part2.map((item) => {
+            const expand = res.result.part2.map((item) => {
                 return item.expanded;
             });
             setShowMore(expand);
@@ -135,6 +132,45 @@ const TradeRecordDetail = (props) => {
         setHideMsg(true);
     };
     const {notice} = data || {};
+    const renderChildren = (children) => {
+        return (
+            <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
+                {children?.head && (
+                    <View style={[Style.flexBetween, {height: px(30)}]}>
+                        {children?.head.map((text, key) => (
+                            <Text key={text + key} style={styles.light_text}>
+                                {text}
+                            </Text>
+                        ))}
+                    </View>
+                )}
+                {children?.body?.map((child, key) => (
+                    <View style={styles.fund_item} key={`${child.k}${key}`}>
+                        <TouchableOpacity
+                            onPress={() => jump(child.url)}
+                            activeOpacity={1}
+                            style={[Style.flexBetween, {marginBottom: px(4)}]}>
+                            <Text style={styles.fund_name}>{child?.k}</Text>
+                            <Text style={styles.fund_amount}>{child?.v}</Text>
+                        </TouchableOpacity>
+                        {child?.ds ? (
+                            child?.ds?.map?.((_ds, _key) =>
+                                _ds?.k ? (
+                                    <HTML
+                                        html={_ds?.k}
+                                        key={_ds.k + _key}
+                                        style={{fontSize: px(12), lineHeight: px(17)}}
+                                    />
+                                ) : null
+                            )
+                        ) : child?.d ? (
+                            <HTML html={child?.d} style={{fontSize: px(12), lineHeight: px(17)}} />
+                        ) : null}
+                    </View>
+                ))}
+            </View>
+        );
+    };
     return (
         <ScrollView bounces={false} style={styles.container}>
             {/* 小黄条 */}
@@ -194,7 +230,7 @@ const TradeRecordDetail = (props) => {
                     <View style={[Style.flexRow, {width: '100%', paddingHorizontal: px(20)}]}>
                         {data.part1.table.map?.((item, index) => {
                             return (
-                                <View key={item + index} style={[Style.flexCenter, {flex: 1}]}>
+                                <View key={`${item.k || item.v}${index}`} style={[Style.flexCenter, {flex: 1}]}>
                                     {item.k ? <Text style={styles.header_text}>{item.k}</Text> : null}
                                     {item.v ? <Text style={styles.bold_text}>{item.v}</Text> : null}
                                 </View>
@@ -220,7 +256,7 @@ const TradeRecordDetail = (props) => {
                     </>
                 )}
                 {data?.part1?.items?.map((_item, key) => (
-                    <View style={Style.flexRow} key={key}>
+                    <View style={Style.flexRow} key={_item.k + key}>
                         <Text style={styles.header_text}>{_item.k}</Text>
                         <View>
                             {Array.isArray(_item?.v) ? (
@@ -305,149 +341,118 @@ const TradeRecordDetail = (props) => {
                     {data?.desc ? (
                         <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>{data?.desc}</Text>
                     ) : null}
-                    {data?.part2?.map((item, index) => (
-                        <View
-                            key={index}
-                            style={{flexDirection: 'row', alignItems: 'flex-start'}}
-                            onLayout={(e) => {
-                                cardLayout(index, e);
-                            }}>
-                            <View>
-                                <View style={styles.circle} />
-                                <View
-                                    style={[
-                                        styles.line,
-                                        {height: index == data?.part2?.length - 1 ? 0 : heightArr[index]},
-                                    ]}
-                                />
-                            </View>
-                            <View style={[styles.card]}>
-                                <View style={[Style.flexBetween, {height: px(42)}]}>
-                                    <View style={styles.trangle} />
-                                    <HTML style={styles.name} html={item?.k} />
+                    {data?.part2?.map((item, index) => {
+                        const {children, extra_step, k, type: recordType, v} = item;
+                        return (
+                            <View
+                                key={`${v}${index}`}
+                                style={{flexDirection: 'row', alignItems: 'flex-start'}}
+                                onLayout={(e) => {
+                                    cardLayout(index, e);
+                                }}>
+                                <View>
+                                    <View style={styles.circle} />
+                                    <View
+                                        style={[
+                                            styles.line,
+                                            {height: index == data?.part2?.length - 1 ? 0 : heightArr[index]},
+                                        ]}
+                                    />
+                                </View>
+                                <View style={[styles.card]}>
                                     <TouchableOpacity
                                         activeOpacity={1}
-                                        style={[Style.flexRow, {height: '100%'}]}
                                         onPress={() => {
                                             handleMore(index);
-                                        }}>
-                                        <Text style={styles.date}>{item?.v}</Text>
-                                        {item.children ? (
-                                            <FontAwesome
-                                                name={!showMore[index] ? 'angle-down' : 'angle-up'}
-                                                size={18}
-                                                style={{paddingLeft: px(11)}}
-                                                color={Colors.lightGrayColor}
-                                            />
-                                        ) : null}
+                                        }}
+                                        style={[Style.flexBetween, {height: px(42)}]}>
+                                        <View style={styles.trangle} />
+                                        <HTML style={styles.name} html={k} />
+                                        <View style={[Style.flexRow, {height: '100%'}]}>
+                                            <Text style={styles.date}>{v}</Text>
+                                            {children || extra_step ? (
+                                                <FontAwesome
+                                                    name={!showMore[index] ? 'angle-down' : 'angle-up'}
+                                                    size={18}
+                                                    style={{paddingLeft: px(11)}}
+                                                    color={Colors.lightGrayColor}
+                                                />
+                                            ) : null}
+                                        </View>
                                     </TouchableOpacity>
-                                </View>
 
-                                {item?.type == 'adjust_compare' && item?.children && showMore[index] ? (
-                                    // 调仓
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
-                                        {item?.children?.head ? (
-                                            <View style={[Style.flexBetween, {height: px(30)}]}>
-                                                {item?.children?.head.map((text, key) => (
-                                                    <Text
-                                                        key={key}
-                                                        style={[
-                                                            styles.light_text,
-                                                            {width: key == 0 ? px(163) : 'auto'},
-                                                        ]}>
-                                                        {text}
+                                    {recordType == 'adjust_compare' && children && showMore[index] ? (
+                                        // 调仓
+                                        <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
+                                            {children?.head ? (
+                                                <View style={[Style.flexBetween, {height: px(30)}]}>
+                                                    {children?.head.map((text, key) => (
+                                                        <Text
+                                                            key={text + key}
+                                                            style={[
+                                                                styles.light_text,
+                                                                {width: key == 0 ? px(163) : 'auto'},
+                                                            ]}>
+                                                            {text}
+                                                        </Text>
+                                                    ))}
+                                                </View>
+                                            ) : null}
+
+                                            {children?.body?.map?.((child, key) => (
+                                                <View
+                                                    key={`${child.name}${key}`}
+                                                    style={[Style.flexBetween, styles.fund_item]}>
+                                                    <Text numberOfLines={1} style={styles.fund_name}>
+                                                        {child?.name}
                                                     </Text>
-                                                ))}
-                                            </View>
-                                        ) : null}
-
-                                        {item?.children
-                                            ? item?.children?.body.map((child, key) => (
-                                                  <View key={key} style={[Style.flexBetween, styles.fund_item]}>
-                                                      <Text numberOfLines={1} style={styles.fund_name}>
-                                                          {child?.name}
-                                                      </Text>
-                                                      <Text style={styles.fund_amount}>{child?.src}</Text>
-                                                      <View style={Style.flexRow}>
-                                                          <Text
-                                                              style={[
-                                                                  styles.fund_amount,
-                                                                  {
-                                                                      color: child?.type
-                                                                          ? child?.type == 'down'
-                                                                              ? Colors.green
-                                                                              : Colors.red
-                                                                          : Colors.lightBlackColor,
-                                                                  },
-                                                              ]}>
-                                                              {child?.dst}
-                                                          </Text>
-                                                          {child.type ? (
-                                                              <Icon
-                                                                  name={`arrow-long-${child?.type}`}
-                                                                  color={
-                                                                      child?.type == 'down' ? Colors.green : Colors.red
-                                                                  }
-                                                              />
-                                                          ) : null}
+                                                    <Text style={styles.fund_amount}>{child?.src}</Text>
+                                                    <View style={Style.flexRow}>
+                                                        <Text
+                                                            style={[
+                                                                styles.fund_amount,
+                                                                {
+                                                                    color: child?.type
+                                                                        ? child?.type == 'down'
+                                                                            ? Colors.green
+                                                                            : Colors.red
+                                                                        : Colors.lightBlackColor,
+                                                                },
+                                                            ]}>
+                                                            {child?.dst}
+                                                        </Text>
+                                                        {child.type ? (
+                                                            <Icon
+                                                                name={`arrow-long-${child?.type}`}
+                                                                color={
+                                                                    child?.type == 'down' ? Colors.green : Colors.red
+                                                                }
+                                                            />
+                                                        ) : null}
+                                                    </View>
+                                                </View>
+                                            ))}
+                                        </View>
+                                    ) : null}
+                                    {children && showMore[index] ? renderChildren(children) : null}
+                                    {showMore[index]
+                                        ? extra_step?.map?.((step, i) => {
+                                              const {children: extraChildren, k: key, v: value} = step;
+                                              return (
+                                                  <Fragment key={key + i}>
+                                                      <View style={[Style.flexBetween, {height: px(42)}]}>
+                                                          <HTML html={key} style={styles.name} />
+                                                          <Text style={styles.date}>{value}</Text>
                                                       </View>
-                                                  </View>
-                                              ))
-                                            : null}
-                                    </View>
-                                ) : item?.children && showMore[index] ? (
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
-                                        {item?.children?.head && (
-                                            <View style={[Style.flexBetween, {height: px(30)}]}>
-                                                {item?.children?.head.map((text, key) => (
-                                                    <Text key={key} style={styles.light_text}>
-                                                        {text}
-                                                    </Text>
-                                                ))}
-                                            </View>
-                                        )}
-                                        {item?.children?.body?.map((child, key) => (
-                                            <View style={styles.fund_item} key={key}>
-                                                <TouchableOpacity
-                                                    onPress={() => jump(child.url)}
-                                                    activeOpacity={1}
-                                                    style={[Style.flexBetween, {marginBottom: px(4)}]}>
-                                                    <Text style={styles.fund_name}>{child?.k}</Text>
-                                                    <Text style={styles.fund_amount}>{child?.v}</Text>
-                                                </TouchableOpacity>
-                                                {child?.ds ? (
-                                                    child?.ds?.map(
-                                                        (_ds, _key) =>
-                                                            _ds?.k ? (
-                                                                <HTML
-                                                                    html={_ds?.k}
-                                                                    style={{fontSize: px(12), lineHeight: px(17)}}
-                                                                />
-                                                            ) : null
-                                                        // <Text
-                                                        //     key={_key}
-                                                        //     style={[styles.light_text, {color: Colors.green}]}>
-                                                        //     {_ds?.k}
-                                                        // </Text>
-                                                    )
-                                                ) : child?.d ? (
-                                                    child?.d ? (
-                                                        <HTML
-                                                            html={child?.d}
-                                                            style={{fontSize: px(12), lineHeight: px(17)}}
-                                                        />
-                                                    ) : null
-                                                ) : // <Text style={[styles.light_text, {color: Colors.green}]}>
-                                                //     {child?.d}
-                                                // </Text>
-                                                null}
-                                            </View>
-                                        ))}
-                                    </View>
-                                ) : null}
+                                                      {extraChildren?.length > 0 && renderChildren(extraChildren)}
+                                                  </Fragment>
+                                              );
+                                          })
+                                        : null}
+                                </View>
                             </View>
-                        </View>
-                    ))}
+                        );
+                    })}
                 </View>
             ) : null}
         </ScrollView>

@@ -16,6 +16,7 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import {BoxShadow} from 'react-native-shadow';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import transfer from '../../../assets/img/trade/transfer.png';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -31,6 +32,17 @@ import {getTransferPreData, transfetCalc, transferConfirm} from './services';
 
 const weightMedium = Platform.select({android: '700', ios: '500'});
 
+const settting = {
+    width: px(140),
+    height: px(82),
+    color: '#3E5AA4',
+    border: px(8),
+    radius: px(4),
+    opacity: 0.1,
+    x: 0,
+    y: px(2),
+};
+
 export const PortfolioTransfering = ({data = {}}) => {
     const {from, to} = data;
     return (
@@ -39,35 +51,39 @@ export const PortfolioTransfering = ({data = {}}) => {
             start={{x: 0, y: 0.53}}
             end={{x: 0, y: 0.97}}
             style={[Style.flexBetween, {padding: Space.padding}]}>
-            <LinearGradient
-                colors={[Colors.bgColor, '#fff']}
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                style={styles.portfolioBox}>
-                <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: '#9AA0B1'}]}>
-                    <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{from?.poid_name}</Text>
-                    <Text style={[styles.desc, {marginVertical: px(4)}]}>{from?.gateway_name}</Text>
-                    <Text style={styles.numText}>
-                        <Text style={styles.unit}>￥</Text>
-                        {formaNum(from?.amount || 0)}
-                    </Text>
-                </View>
-            </LinearGradient>
+            <BoxShadow setting={settting}>
+                <LinearGradient
+                    colors={[Colors.bgColor, '#fff']}
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 1}}
+                    style={styles.portfolioBox}>
+                    <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: '#9AA0B1'}]}>
+                        <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{from?.poid_name}</Text>
+                        <Text style={[styles.desc, {marginVertical: px(4)}]}>{from?.gateway_name}</Text>
+                        <Text style={styles.numText}>
+                            <Text style={styles.unit}>￥</Text>
+                            {formaNum(from?.amount || 0)}
+                        </Text>
+                    </View>
+                </LinearGradient>
+            </BoxShadow>
             <Image source={transfer} style={styles.transfer} />
-            <LinearGradient
-                colors={['#EEF5FF', '#fff']}
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                style={styles.portfolioBox}>
-                <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: Colors.brandColor}]}>
-                    <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{to?.poid_name}</Text>
-                    <Text style={[styles.desc, {marginVertical: px(4)}]}>{to?.gateway_name}</Text>
-                    <Text style={styles.numText}>
-                        <Text style={styles.unit}>￥</Text>
-                        {formaNum(to?.amount || 0)}
-                    </Text>
-                </View>
-            </LinearGradient>
+            <BoxShadow setting={settting}>
+                <LinearGradient
+                    colors={['#EEF5FF', '#fff']}
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 1}}
+                    style={styles.portfolioBox}>
+                    <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: Colors.brandColor}]}>
+                        <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{to?.poid_name}</Text>
+                        <Text style={[styles.desc, {marginVertical: px(4)}]}>{to?.gateway_name}</Text>
+                        <Text style={styles.numText}>
+                            <Text style={styles.unit}>￥</Text>
+                            {formaNum(to?.amount || 0)}
+                        </Text>
+                    </View>
+                </LinearGradient>
+            </BoxShadow>
         </LinearGradient>
     );
 };
@@ -323,6 +339,7 @@ const styles = StyleSheet.create({
     portfolioBox: {
         borderRadius: px(4),
         overflow: 'hidden',
+        width: px(140),
     },
     borderBox: {
         padding: px(10),
