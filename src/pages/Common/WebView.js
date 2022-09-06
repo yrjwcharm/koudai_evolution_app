@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-25 20:30:22
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-06 13:59:09
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,6 +32,10 @@ export default function WebView({route, navigation}) {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 setToken(result?.access_token ? result?.access_token : 'null');
+                // webview.current &&
+                //     webview.current.injectedJavaScript(
+                //         `window.sessionStorage.setItem('token','${result.access_token}');`
+                //     );
             });
         };
         getToken();
@@ -164,7 +168,6 @@ export default function WebView({route, navigation}) {
                     }}
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
-                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async (e) => {
                         // console.log(e.nativeEvent.title);
                         if (route.params.title) {
@@ -191,7 +194,9 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
+                        // uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
+                        uri: 'http://localhost:8100/#/tab/more/myInsurance',
+                        // uri: 'http://localhost:8100/?showtab=0#/tab/more/myInsurance',
                     }}
                     textZoom={100}
                 />
