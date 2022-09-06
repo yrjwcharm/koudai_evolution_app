@@ -109,13 +109,17 @@ const RecordItem = ({data = {}}) => {
                                     alignItems:
                                         index === 0 ? 'flex-start' : index === arr.length - 1 ? 'flex-end' : 'center',
                                 }}>
-                                <Text style={styles.smText}>{k}</Text>
-                                <View style={{marginTop: px(4)}}>
-                                    <HTML
-                                        html={index === 0 ? formaNum(v) : `${v}`}
-                                        style={isNaN(parseFloat(v)) ? styles.desc : styles.numText}
-                                    />
-                                </View>
+                                {v ? (
+                                    <>
+                                        <Text style={styles.smText}>{k}</Text>
+                                        <View style={{marginTop: px(4)}}>
+                                            <HTML
+                                                html={index === 0 ? formaNum(v) : `${v}`}
+                                                style={isNaN(parseFloat(v)) ? styles.desc : styles.numText}
+                                            />
+                                        </View>
+                                    </>
+                                ) : null}
                             </View>
                         );
                     })}
