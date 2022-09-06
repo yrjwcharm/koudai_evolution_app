@@ -6,6 +6,7 @@ import React, {Fragment, useCallback, useState, useEffect, useRef} from 'react';
 import {Text, View, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {px, isIphoneX, tagColor, getTradeColor} from '../../utils/appUtil';
 import {Style, Space, Colors, Font} from '../../common/commonStyle';
+import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {Modal, BankCardModal} from '../../components/Modal';
@@ -17,6 +18,7 @@ import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import withPageLoading from '../../components/withPageLoading';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
@@ -40,27 +42,31 @@ const TradeRecordDetail = (props) => {
             type,
             sub_type,
             poid,
-        }).then((res) => {
-            setErrorInfo(res.result?.part1?.err_info);
-            setData(res.result);
-            props.navigation.setOptions({
-                headerRight: () => {
-                    return res.result?.button?.text ? (
-                        <TouchableOpacity
-                            onPress={() => {
-                                handleCancel(res.result?.button?.popup?.content);
-                            }}>
-                            <Text style={styles.header_right}>{res.result?.button?.text}</Text>
-                        </TouchableOpacity>
-                    ) : null;
-                },
-                title: res.result.title || '交易订单详情',
+        })
+            .then((res) => {
+                setErrorInfo(res.result?.part1?.err_info);
+                setData(res.result);
+                props.navigation.setOptions({
+                    headerRight: () => {
+                        return res.result?.button?.text ? (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    handleCancel(res.result?.button?.popup?.content);
+                                }}>
+                                <Text style={styles.header_right}>{res.result?.button?.text}</Text>
+                            </TouchableOpacity>
+                        ) : null;
+                    },
+                    title: res.result.title || '交易订单详情',
+                });
+                const expand = res.result.part2.map((item) => {
+                    return item.expanded;
+                });
+                setShowMore(expand);
+            })
+            .finally(() => {
+                props.setLoading(false);
             });
-            const expand = res.result.part2.map((item) => {
-                return item.expanded;
-            });
-            setShowMore(expand);
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [txn_id, type, sub_type, poid]);
     useEffect(() => {
@@ -218,13 +224,27 @@ const TradeRecordDetail = (props) => {
                     <View
                         style={[
                             Style.tag,
-                            {backgroundColor: tagColor(data?.part1?.type?.val).bg_color, marginRight: px(9)},
+                            {backgroundColor: tagColor(data?.part1?.type?.val).bg_color, marginRight: px(8)},
                         ]}>
                         <Text style={{fontSize: px(11), color: tagColor(data?.part1?.type?.val).text_color}}>
                             {data?.part1?.type?.text}
                         </Text>
                     </View>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
+                    {data?.part1?.transfer_name ? (
+                        <View style={{flexDirection: 'row'}}>
+                            <View>
+                                <Text style={styles.transferName}>{data.part1.transfer_name.from_name}</Text>
+                                <Text style={styles.transferGateway}>{data.part1.transfer_name.from_gateway}</Text>
+                            </View>
+                            <Image source={{uri: data.part1.transfer_name.icon}} style={styles.transferIcon} />
+                            <View>
+                                <Text style={styles.transferName}>{data.part1.transfer_name.to_name}</Text>
+                                <Text style={styles.transferGateway}>{data.part1.transfer_name.to_gateway}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
+                    )}
                 </View>
                 {data?.part1?.table ? (
                     <View style={[Style.flexRow, {width: '100%', paddingHorizontal: px(20)}]}>
@@ -610,5 +630,22 @@ const styles = StyleSheet.create({
         marginBottom: 0,
         borderRadius: px(6),
     },
+    transferName: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+    },
+    transferGateway: {
+        marginTop: px(2),
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.lightGrayColor,
+    },
+    transferIcon: {
+        marginTop: px(7),
+        marginHorizontal: px(6),
+        width: px(13),
+        height: px(9),
+    },
 });
-export default TradeRecordDetail;
+export default withPageLoading(TradeRecordDetail);
