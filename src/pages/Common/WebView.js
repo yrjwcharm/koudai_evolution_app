@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-06 13:59:09
+ * @LastEditTime: 2022-09-06 16:40:34
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -194,9 +194,7 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        // uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
-                        uri: 'http://localhost:8100/#/tab/more/myInsurance',
-                        // uri: 'http://localhost:8100/?showtab=0#/tab/more/myInsurance',
+                        uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
                     }}
                     textZoom={100}
                 />
