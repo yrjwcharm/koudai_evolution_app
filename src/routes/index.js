@@ -10,7 +10,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
 import LineChart from '../pages/Chart/lineChart.js';
 import StickyScreen from '../pages/sticky';
-import {Colors} from '../common/commonStyle';
+import {Colors} from '~/common/commonStyle';
+import GlobalShare, {currentNavigation} from '~/components/GlobalShare';
 import IM from '../pages/IM/im'; //IM
 import AppGuide from '../pages/Auth/AppGuide'; //引导页
 import Register from '../pages/Auth/Register'; //注册
@@ -270,692 +271,742 @@ export default function AppStack() {
         };
     }, [keyboardDidShow, keyboardDidHide]);
     return (
-        <Stack.Navigator
-            initialRouteName="Launch"
-            headerMode="screen"
-            screenOptions={{
-                headerBackImage: () => {
-                    return (
-                        <Feather
-                            name="chevron-left"
-                            size={px(26)}
-                            style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                        />
-                    );
-                },
+        <>
+            <GlobalShare />
+            <Stack.Navigator
+                initialRouteName="Launch"
+                headerMode="screen"
+                screenOptions={({navigation}) => {
+                    if (navigation.isFocused()) currentNavigation.current = navigation;
+                    return {
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
 
-                headerBackTitleVisible: false,
-                headerTitleAlign: 'center',
-                headerTitleStyle: {
-                    color: Colors.navTitleColor,
-                    fontSize: px(18),
-                    maxWidth: px(280),
-                },
-                headerTitleAllowFontScaling: false,
-                gestureEnabled: gestureEnabled,
-                // cardOverlayEnabled: true,
-                ...TransitionPresets.SlideFromRightIOS,
-                headerStyle: {
-                    backgroundColor: Colors.navBgColor,
-                    shadowOpacity: 0,
-                    shadowOffset: {
-                        height: 0,
-                    },
-                    elevation: 0,
-                },
-            }}>
-            <Stack.Screen
-                name="Tab"
-                component={TabScreen}
-                options={{
-                    cardStyleInterpolator: ({current: {progress}}) => ({
-                        cardStyle: {
-                            opacity: progress.interpolate({
-                                inputRange: [0, 0.5, 0.9, 1],
-                                outputRange: [0, 0.25, 0.7, 1],
-                            }),
+                        headerBackTitleVisible: false,
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            color: Colors.navTitleColor,
+                            fontSize: px(18),
+                            maxWidth: px(280),
                         },
-                    }),
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="TradeBuy"
-                component={TradeBuy}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="CreateAccount"
-                component={CreateAccount}
-                options={{
-                    title: '基金交易安全开户',
-                }}
-            />
-            <Stack.Screen
-                name="UploadID"
-                component={UploadID}
-                options={{
-                    title: '证件照片',
-                }}
-            />
-            <Stack.Screen
-                name="BankInfo"
-                component={BankInfo}
-                options={{
-                    title: '基金交易安全开户',
-                }}
-            />
-            <Stack.Screen
-                name="SetTradePassword"
-                component={SetTradePassword}
-                options={{
-                    title: '基金交易安全开户',
-                }}
-            />
-            <Stack.Screen
-                name="Camera"
-                component={Camera}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="AppGuide"
-                component={AppGuide}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="Register"
-                component={Register}
-                options={{
-                    title: '',
-                    gestureEnabled: false,
-                }}
-            />
-            <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="WechatLogin"
-                component={WechatLogin}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="SetLoginPassword"
-                component={SetLoginPassword}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="TradeRedeem"
-                component={TradeRedeem}
-                options={{
-                    title: '赎回',
-                }}
-            />
-            <Stack.Screen name="StickyScreen" component={StickyScreen} />
-            <Stack.Screen name="IM" component={IM} options={{title: '在线客服'}} />
-            <Stack.Screen
-                name="LineChart"
-                component={LineChart}
-                options={{
-                    ...TransitionPresets.ModalSlideFromBottomIOS,
-                }}
-            />
-            <Stack.Screen
-                name="TradeFixedConfirm"
-                component={TradeFixedConfirm}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="PrivateOrder"
-                component={PrivateOrder}
-                options={{
-                    title: '预约',
-                }}
-            />
-            <Stack.Screen
-                name="PrivateProduct"
-                component={PrivateProduct}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="PrivateCert"
-                component={PrivateCert}
-                options={{
-                    title: '私募合格投资者认证',
-                }}
-            />
-            <Stack.Screen
-                name="TradeAdjust"
-                component={TradeAdjust}
-                options={{
-                    title: '调仓',
-                }}
-            />
-            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: ''}} />
-            <Stack.Screen name="Agreement" component={Agreement} options={{title: ''}} />
-            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: ''}} />
-            <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
-            <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
-            <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
-            <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
-            <Stack.Screen
-                name="TradeProcessing"
-                component={TradeProcessing}
-                options={{gestureEnabled: false, headerShown: false}}
-            />
-            <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
-            <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额极速购说明'}} />
-            <Stack.Screen name="MfbIndex" component={MfbHome} options={{title: ''}} />
-            <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
-            <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
-            <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
-            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
-            <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
-            <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝', gestureEnabled: false}} />
-            <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
-            <Stack.Screen name="DetailAccount" component={DetailAccount} options={{title: ''}} />
-            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: ''}} />
-            <Stack.Screen name="DetailEducation" component={DetailEducation} options={{title: ''}} />
-            <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
-            <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
-            <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
-            <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
-            <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
-            <Stack.Screen name="HistoryInvestPlan" component={HistoryInvestPlan} options={{title: '历史投资计划'}} />
-            <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
-            <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
-            <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
-            <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: ''}} />
-            <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
-            <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
-            <Stack.Screen
-                name="Evaluation"
-                component={Evaluation}
-                options={{
-                    headerShown: false,
-                    ...TransitionPresets.ModalSlideFromBottomIOS,
-                }}
-            />
-            <Stack.Screen
-                name="EvaluationHistory"
-                component={EvaluationHistory}
-                options={{
-                    headerShown: false,
-                    ...TransitionPresets.ModalSlideFromBottomIOS,
-                }}
-            />
-            <Stack.Screen
-                name="EvaluationResult"
-                component={EvaluationResult}
-                options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
-            />
-            <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
-            <Stack.Screen
-                name="AssetHealthScore"
-                component={AssetHealthScore}
-                options={{
-                    title: '',
-                    headerTransparent: true,
-                    headerTitleStyle: {color: '#fff'},
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
-            <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
-            <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
-            <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
-            <Stack.Screen
-                name="FindDetail"
-                component={FindDetail}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: ''}} />
-            <Stack.Screen name="FundRanking" component={FundRanking} options={{title: '基金排名'}} />
-            <Stack.Screen name="FundTradeTime" component={FundTradeTime} options={{title: '交易时间说明'}} />
-            <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
-            <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
-            <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
-            <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
-            <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
-            <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
-            <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
-            <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: ''}} />
-            <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
-            <Stack.Screen
-                name="RemindMessage"
-                component={RemindMessage}
-                options={{
-                    title: '消息提醒',
-                }}
-            />
-            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
-            <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
-            <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
-            <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
-            <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
-            <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />
-            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: ''}} />
-            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: ''}} />
-            <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
-            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />
-            <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
-            <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
-            <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />
-            <Stack.Screen name="PasswordManagement" component={PasswordManagement} options={{title: '密码管理'}} />
-            <Stack.Screen name="ResetLoginPwd" component={ResetLoginPwd} options={{title: '重设登录密码'}} />
-            <Stack.Screen name="TradePwdManagement" component={TradePwdManagement} options={{title: '交易密码管理'}} />
-            <Stack.Screen name="ModifyTradePwd" component={ModifyTradePwd} options={{title: '修改交易密码'}} />
-            <Stack.Screen name="ForgotTradePwd" component={ForgotTradePwd} options={{title: '找回交易密码'}} />
-            <Stack.Screen name="ForgotTradePwdNext" component={ForgotTradePwdNext} options={{title: '找回交易密码'}} />
-            <Stack.Screen name="AccountRemove" component={AccountRemove} options={{title: '账号注销'}} />
-            <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
-            <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
-            <Stack.Screen name="AddBankCard" component={AddBankCard} options={{title: '添加新银行卡'}} />
-            <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
-            <Stack.Screen
-                name="ExperienceGoldDetail"
-                component={ExperienceGoldDetail}
-                options={{
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                size={px(26)}
-                                color="#fff"
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                    headerStyle: {
-                        backgroundColor: '#D4AC6F',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                        headerTitleAllowFontScaling: false,
+                        gestureEnabled: gestureEnabled,
+                        // cardOverlayEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        headerStyle: {
+                            backgroundColor: Colors.navBgColor,
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="ExperienceGoldResult"
-                component={ExperienceGoldResult}
-                options={{title: '体验金提现'}}
-            />
-            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{headerShown: false}} />
-            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
-            <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
-            <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
-            <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
-            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投全天候组合'}} />
-            <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
-            <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
-            <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
-            <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
-            <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{headerShown: false}} />
-            <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
-            <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: ''}} />
-            <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: ''}} />
-            <Stack.Screen name="ForgetLoginPwd" component={ForgetLoginPwd} options={{title: ''}} />
-            <Stack.Screen
-                name="InviteExperienceGold"
-                component={InviteExperienceGold}
-                options={{title: '理财魔方体验金'}}
-            />
-            <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
-            <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
-            {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
-            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '', headerShown: false}} />
-            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: ''}} />
-            <Stack.Screen
-                name="MyScore"
-                component={MyScore}
-                options={{
-                    title: '我的魔分',
-                    headerStyle: {
-                        backgroundColor: Colors.brandColor,
-                        shadowOffset: {
-                            height: 0,
+                    };
+                }}>
+                <Stack.Screen
+                    name="Tab"
+                    component={TabScreen}
+                    options={{
+                        cardStyleInterpolator: ({current: {progress}}) => ({
+                            cardStyle: {
+                                opacity: progress.interpolate({
+                                    inputRange: [0, 0.5, 0.9, 1],
+                                    outputRange: [0, 0.25, 0.7, 1],
+                                }),
+                            },
+                        }),
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="TradeBuy"
+                    component={TradeBuy}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="CreateAccount"
+                    component={CreateAccount}
+                    options={{
+                        title: '基金交易安全开户',
+                    }}
+                />
+                <Stack.Screen
+                    name="UploadID"
+                    component={UploadID}
+                    options={{
+                        title: '证件照片',
+                    }}
+                />
+                <Stack.Screen
+                    name="BankInfo"
+                    component={BankInfo}
+                    options={{
+                        title: '基金交易安全开户',
+                    }}
+                />
+                <Stack.Screen
+                    name="SetTradePassword"
+                    component={SetTradePassword}
+                    options={{
+                        title: '基金交易安全开户',
+                    }}
+                />
+                <Stack.Screen
+                    name="Camera"
+                    component={Camera}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="AppGuide"
+                    component={AppGuide}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="Register"
+                    component={Register}
+                    options={{
+                        title: '',
+                        gestureEnabled: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="Login"
+                    component={Login}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="WechatLogin"
+                    component={WechatLogin}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="SetLoginPassword"
+                    component={SetLoginPassword}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="TradeRedeem"
+                    component={TradeRedeem}
+                    options={{
+                        title: '赎回',
+                    }}
+                />
+                <Stack.Screen name="StickyScreen" component={StickyScreen} />
+                <Stack.Screen name="IM" component={IM} options={{title: '在线客服'}} />
+                <Stack.Screen
+                    name="LineChart"
+                    component={LineChart}
+                    options={{
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
+                />
+                <Stack.Screen
+                    name="TradeFixedConfirm"
+                    component={TradeFixedConfirm}
+                    options={{
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="PrivateOrder"
+                    component={PrivateOrder}
+                    options={{
+                        title: '预约',
+                    }}
+                />
+                <Stack.Screen
+                    name="PrivateProduct"
+                    component={PrivateProduct}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="PrivateCert"
+                    component={PrivateCert}
+                    options={{
+                        title: '私募合格投资者认证',
+                    }}
+                />
+                <Stack.Screen
+                    name="TradeAdjust"
+                    component={TradeAdjust}
+                    options={{
+                        title: '调仓',
+                    }}
+                />
+                <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: ''}} />
+                <Stack.Screen name="Agreement" component={Agreement} options={{title: ''}} />
+                <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: ''}} />
+                <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
+                <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
+                <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
+                <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
+                <Stack.Screen
+                    name="TradeProcessing"
+                    component={TradeProcessing}
+                    options={{gestureEnabled: false, headerShown: false}}
+                />
+                <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
+                <Stack.Screen
+                    name="LargeAmountIntro"
+                    component={LargeAmountIntro}
+                    options={{title: '大额极速购说明'}}
+                />
+                <Stack.Screen name="MfbIndex" component={MfbHome} options={{title: ''}} />
+                <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
+                <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
+                <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
+                <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
+                <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
+                <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝', gestureEnabled: false}} />
+                <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
+                <Stack.Screen name="DetailAccount" component={DetailAccount} options={{title: ''}} />
+                <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: ''}} />
+                <Stack.Screen name="DetailEducation" component={DetailEducation} options={{title: ''}} />
+                <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
+                <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
+                <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
+                <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
+                <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
+                <Stack.Screen
+                    name="HistoryInvestPlan"
+                    component={HistoryInvestPlan}
+                    options={{title: '历史投资计划'}}
+                />
+                <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
+                <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
+                <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
+                <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: ''}} />
+                <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
+                <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
+                <Stack.Screen
+                    name="Evaluation"
+                    component={Evaluation}
+                    options={{
+                        headerShown: false,
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
+                />
+                <Stack.Screen
+                    name="EvaluationHistory"
+                    component={EvaluationHistory}
+                    options={{
+                        headerShown: false,
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
+                />
+                <Stack.Screen
+                    name="EvaluationResult"
+                    component={EvaluationResult}
+                    options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
+                />
+                <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
+                <Stack.Screen
+                    name="AssetHealthScore"
+                    component={AssetHealthScore}
+                    options={{
+                        title: '',
+                        headerTransparent: true,
+                        headerTitleStyle: {color: '#fff'},
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                }}
-            />
-            <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
-            <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
-            <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
-            <Stack.Screen name="DetailInsurance" component={DetailInsurance} options={{title: '魔方保障计划'}} />
-            <Stack.Screen name="PerformanceAnalysis" component={PerformanceAnalysis} options={{title: '业绩解析'}} />
-            <Stack.Screen name="VisionCollect" component={VisionCollect} options={{headerShown: false}} />
-            <Stack.Screen name="AlbumList" component={AlbumList} options={{title: ''}} />
-            <Stack.Screen name="Launch" component={Launch} options={{headerShown: false}} />
-            <Stack.Screen name="Questionnaire" component={Questionnaire} options={{title: '风险测评'}} />
-            <Stack.Screen name="PortfolioMask" component={PortfolioMask} options={{title: ''}} />
-            <Stack.Screen name="QuestionnaireResult" component={QuestionnaireResult} options={{title: '评测结果'}} />
-            <Stack.Screen name="TopInvestors" component={TopInvestors} options={{title: '牛人信号'}} />
-            <Stack.Screen
-                name="IntelligentIncomeDetail"
-                component={IntelligentIncomeDetail}
-                options={{title: '组合收益明细'}}
-            />
-            <Stack.Screen
-                name="IntelligentInvestAnalysis"
-                component={IntelligentInvestAnalysis}
-                options={{title: '投资分析'}}
-            />
-            <Stack.Screen
-                name="InsuranceList"
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#F1BE66',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                    }}
+                />
+                <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
+                <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
+                <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
+                <Stack.Screen
+                    name="FindDetail"
+                    component={FindDetail}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: ''}} />
+                <Stack.Screen name="FundRanking" component={FundRanking} options={{title: '基金排名'}} />
+                <Stack.Screen name="FundTradeTime" component={FundTradeTime} options={{title: '交易时间说明'}} />
+                <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
+                <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
+                <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
+                <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
+                <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
+                <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
+                <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
+                <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: ''}} />
+                <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
+                <Stack.Screen
+                    name="RemindMessage"
+                    component={RemindMessage}
+                    options={{
+                        title: '消息提醒',
+                    }}
+                />
+                <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
+                <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
+                <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
+                <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
+                <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
+                <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />
+                <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: ''}} />
+                <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: ''}} />
+                <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
+                <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />
+                <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
+                <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
+                <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />
+                <Stack.Screen name="PasswordManagement" component={PasswordManagement} options={{title: '密码管理'}} />
+                <Stack.Screen name="ResetLoginPwd" component={ResetLoginPwd} options={{title: '重设登录密码'}} />
+                <Stack.Screen
+                    name="TradePwdManagement"
+                    component={TradePwdManagement}
+                    options={{title: '交易密码管理'}}
+                />
+                <Stack.Screen name="ModifyTradePwd" component={ModifyTradePwd} options={{title: '修改交易密码'}} />
+                <Stack.Screen name="ForgotTradePwd" component={ForgotTradePwd} options={{title: '找回交易密码'}} />
+                <Stack.Screen
+                    name="ForgotTradePwdNext"
+                    component={ForgotTradePwdNext}
+                    options={{title: '找回交易密码'}}
+                />
+                <Stack.Screen name="AccountRemove" component={AccountRemove} options={{title: '账号注销'}} />
+                <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
+                <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
+                <Stack.Screen name="AddBankCard" component={AddBankCard} options={{title: '添加新银行卡'}} />
+                <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
+                <Stack.Screen
+                    name="ExperienceGoldDetail"
+                    component={ExperienceGoldDetail}
+                    options={{
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    size={px(26)}
+                                    color="#fff"
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                    title: '',
-                }}
-                component={InsuranceList}
-            />
-            <Stack.Screen name="PrivacySetting" component={PrivacySetting} options={{title: '隐私设置'}} />
-            <Stack.Screen
-                name="PersonalizedRecommend"
-                component={PersonalizedRecommend}
-                options={{title: '个性化推荐设置'}}
-            />
-            <Stack.Screen name="AuthorityManage" component={AuthorityManage} options={{title: '权限管理'}} />
-            <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
-            <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
-            <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
-            <Stack.Screen name="VerifyLogin" component={VerifyLogin} options={{title: ''}} />
-            <Stack.Screen
-                name="AdvisorPortfolio"
-                component={AdvisorPortfolio}
-                options={{
-                    title: '投顾组合超市',
-                    headerStyle: {
-                        backgroundColor: '#FFF5E5',
-                        shadowOffset: {
-                            height: 0,
+                        headerStyle: {
+                            backgroundColor: '#D4AC6F',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
                         },
-                        elevation: 0,
-                    },
-                }}
-            />
-            <Stack.Screen name="InvestStrategy" component={InvestStrategy} options={{title: '投资策略'}} />
-            <Stack.Screen name="FundAlternative" component={FundAlternative} options={{title: '基金备选库'}} />
-            <Stack.Screen
-                name="AdvisorAssets"
-                component={AdvisorAssets}
-                options={{
-                    title: '投顾组合',
-                    headerStyle: {
-                        backgroundColor: Colors.brandColor,
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
-            <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
-            <Stack.Screen name="WalletAutoRechargeDetail" component={WalletAutoRechargeDetail} options={{title: ''}} />
-            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
-            <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
-            <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
-            <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
-            <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
-            <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
-            <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
-            <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
-            <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
-            <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
-            <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
-            <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
-            <Stack.Screen name="RiskAdjustTool" component={RiskAdjustTool} options={{title: ''}} />
-            <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
-            <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
-            <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
-            <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
-            <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
-            <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
-            <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
-            <Stack.Screen name="RiskDisclosure" component={RiskDisclosure} options={{title: ''}} />
-            <Stack.Screen
-                name="ArticleCommentList"
-                component={ArticleCommentList}
-                options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
-            />
-            <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
-            <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
-            <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
-            <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
-            <Stack.Screen
-                name="OldPortfolioAssets"
-                component={PortfolioAssets}
-                options={{
-                    title: '',
-                    headerStyle: {
-                        backgroundColor: '#0052CD',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="ExperienceGoldResult"
+                    component={ExperienceGoldResult}
+                    options={{title: '体验金提现'}}
+                />
+                <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{headerShown: false}} />
+                <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
+                <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
+                <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
+                <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
+                <Stack.Screen
+                    name="TransferAccount"
+                    component={TransferAccount}
+                    options={{title: '一键转投全天候组合'}}
+                />
+                <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
+                <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
+                <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
+                <Stack.Screen
+                    name="GetRationalValue"
+                    component={GetRationalValue}
+                    options={{title: '信任值获取方法'}}
+                />
+                <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{headerShown: false}} />
+                <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
+                <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: ''}} />
+                <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: ''}} />
+                <Stack.Screen name="ForgetLoginPwd" component={ForgetLoginPwd} options={{title: ''}} />
+                <Stack.Screen
+                    name="InviteExperienceGold"
+                    component={InviteExperienceGold}
+                    options={{title: '理财魔方体验金'}}
+                />
+                <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
+                <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
+                {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
+                <Stack.Screen
+                    name="ArticleDetail"
+                    component={ArticleDetail}
+                    options={{title: '', headerShown: false}}
+                />
+                <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: ''}} />
+                <Stack.Screen
+                    name="MyScore"
+                    component={MyScore}
+                    options={{
+                        title: '我的魔分',
+                        headerStyle: {
+                            backgroundColor: Colors.brandColor,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
-            {/* v7新页面 Start */}
-            <Stack.Screen
-                name="SearchHome"
-                component={SearchHome}
-                options={{
-                    title: '',
-                    headerShown: false,
-                    cardStyleInterpolator: ({current: {progress}}) => ({
-                        cardStyle: {
-                            opacity: progress.interpolate({
-                                inputRange: [0, 0.5, 0.9, 1],
-                                outputRange: [0, 0.25, 0.7, 1],
-                            }),
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
                         },
-                    }),
-                }}
-            />
-            <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
-            <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
-            <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
-            <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
-            <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
-            <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
-            <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
-            <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: '导入关注'}} />
-            <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
-            <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
-            <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
-            <Stack.Screen name="FundNoticeCenter" component={FundNoticeCenter} options={{title: '提醒中心'}} />
-            <Stack.Screen name="FundNoticeManage" component={FundNoticeManage} options={{title: '管理提醒'}} />
-            <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
-            <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
-            <Stack.Screen name="AppTag" component={AppTag} options={{headerShown: false, gestureEnabled: false}} />
-            <Stack.Screen name="UpgradeToPlan" component={UpgradeToPlan} options={{title: ''}} />
-            <Stack.Screen name="UpgradeToPortfolio" component={UpgradeToPortfolio} options={{title: ''}} />
-            <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
-            <Stack.Screen
-                name="ProjectSetTradeModel"
-                component={ProjectSetTradeModel}
-                options={{title: '设置买卖模式'}}
-            />
-            <Stack.Screen name="PortfolioAssets" component={HoldingDetail} options={{title: ''}} />
-            <Stack.Screen name="ProjectSetTradeAmount" component={ProjectSetTradeAmount} options={{title: ''}} />
-            <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
-            <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
-            <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
-            <Stack.Screen name="ToolWebView" component={ToolWebView} options={{title: ''}} />
-            <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: ''}} />
-            <Stack.Screen name="SignalList" component={SignalList} options={{title: '', headerShown: false}} />
-            <Stack.Screen
-                name="ProjectDetail"
-                component={ProjectDetail}
-                options={{
-                    title: '',
-                    headerStyle: {
-                        backgroundColor: '#FF5151',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                    }}
+                />
+                <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
+                <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
+                <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
+                <Stack.Screen name="DetailInsurance" component={DetailInsurance} options={{title: '魔方保障计划'}} />
+                <Stack.Screen
+                    name="PerformanceAnalysis"
+                    component={PerformanceAnalysis}
+                    options={{title: '业绩解析'}}
+                />
+                <Stack.Screen name="VisionCollect" component={VisionCollect} options={{headerShown: false}} />
+                <Stack.Screen name="AlbumList" component={AlbumList} options={{title: ''}} />
+                <Stack.Screen name="Launch" component={Launch} options={{headerShown: false}} />
+                <Stack.Screen name="Questionnaire" component={Questionnaire} options={{title: '风险测评'}} />
+                <Stack.Screen name="PortfolioMask" component={PortfolioMask} options={{title: ''}} />
+                <Stack.Screen
+                    name="QuestionnaireResult"
+                    component={QuestionnaireResult}
+                    options={{title: '评测结果'}}
+                />
+                <Stack.Screen name="TopInvestors" component={TopInvestors} options={{title: '牛人信号'}} />
+                <Stack.Screen
+                    name="IntelligentIncomeDetail"
+                    component={IntelligentIncomeDetail}
+                    options={{title: '组合收益明细'}}
+                />
+                <Stack.Screen
+                    name="IntelligentInvestAnalysis"
+                    component={IntelligentInvestAnalysis}
+                    options={{title: '投资分析'}}
+                />
+                <Stack.Screen
+                    name="InsuranceList"
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#F1BE66',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
-            <Stack.Screen
-                name="ProjectIntro"
-                component={ProjectIntro}
-                options={{
-                    title: '',
-                    headerStyle: {
-                        backgroundColor: '#FA4F4F',
-                        shadowOpacity: 0,
-                        shadowOffset: {
-                            height: 0,
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
                         },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        color: '#fff',
-                        fontSize: px(18),
-                    },
-                    headerBackImage: () => {
-                        return (
-                            <Feather
-                                name="chevron-left"
-                                color="#fff"
-                                size={px(26)}
-                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                            />
-                        );
-                    },
-                }}
-            />
-            <Stack.Screen name="FundTradeRules" component={FundTradeRules} options={{title: ''}} />
-            <Stack.Screen name="FundHolding" component={FundHolding} options={{title: ''}} />
-            <Stack.Screen name="Activity" component={Activity} options={{headerShown: false}} />
-            <Stack.Screen name="WhatIsPlan" component={WhatIsPlan} options={{headerShown: false}} />
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                        title: '',
+                    }}
+                    component={InsuranceList}
+                />
+                <Stack.Screen name="PrivacySetting" component={PrivacySetting} options={{title: '隐私设置'}} />
+                <Stack.Screen
+                    name="PersonalizedRecommend"
+                    component={PersonalizedRecommend}
+                    options={{title: '个性化推荐设置'}}
+                />
+                <Stack.Screen name="AuthorityManage" component={AuthorityManage} options={{title: '权限管理'}} />
+                <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
+                <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
+                <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
+                <Stack.Screen name="VerifyLogin" component={VerifyLogin} options={{title: ''}} />
+                <Stack.Screen
+                    name="AdvisorPortfolio"
+                    component={AdvisorPortfolio}
+                    options={{
+                        title: '投顾组合超市',
+                        headerStyle: {
+                            backgroundColor: '#FFF5E5',
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                    }}
+                />
+                <Stack.Screen name="InvestStrategy" component={InvestStrategy} options={{title: '投资策略'}} />
+                <Stack.Screen name="FundAlternative" component={FundAlternative} options={{title: '基金备选库'}} />
+                <Stack.Screen
+                    name="AdvisorAssets"
+                    component={AdvisorAssets}
+                    options={{
+                        title: '投顾组合',
+                        headerStyle: {
+                            backgroundColor: Colors.brandColor,
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
+                <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+                <Stack.Screen
+                    name="WalletAutoRechargeDetail"
+                    component={WalletAutoRechargeDetail}
+                    options={{title: ''}}
+                />
+                <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
+                <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
+                <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
+                <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
+                <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
+                <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
+                <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
+                <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
+                <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
+                <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
+                <Stack.Screen
+                    name="SelectIdentity"
+                    component={SelectIdentity}
+                    options={{title: '请选择视野中的身份'}}
+                />
+                <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
+                <Stack.Screen name="RiskAdjustTool" component={RiskAdjustTool} options={{title: ''}} />
+                <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
+                <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
+                <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
+                <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
+                <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
+                <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+                <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
+                <Stack.Screen name="RiskDisclosure" component={RiskDisclosure} options={{title: ''}} />
+                <Stack.Screen
+                    name="ArticleCommentList"
+                    component={ArticleCommentList}
+                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                />
+                <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
+                <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
+                <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
+                <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
+                <Stack.Screen
+                    name="OldPortfolioAssets"
+                    component={PortfolioAssets}
+                    options={{
+                        title: '',
+                        headerStyle: {
+                            backgroundColor: '#0052CD',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
+                {/* v7新页面 Start */}
+                <Stack.Screen
+                    name="SearchHome"
+                    component={SearchHome}
+                    options={{
+                        title: '',
+                        headerShown: false,
+                        cardStyleInterpolator: ({current: {progress}}) => ({
+                            cardStyle: {
+                                opacity: progress.interpolate({
+                                    inputRange: [0, 0.5, 0.9, 1],
+                                    outputRange: [0, 0.25, 0.7, 1],
+                                }),
+                            },
+                        }),
+                    }}
+                />
+                <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
+                <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
+                <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
+                <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
+                <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
+                <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
+                <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
+                <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: '导入关注'}} />
+                <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
+                <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
+                <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
+                <Stack.Screen name="FundNoticeCenter" component={FundNoticeCenter} options={{title: '提醒中心'}} />
+                <Stack.Screen name="FundNoticeManage" component={FundNoticeManage} options={{title: '管理提醒'}} />
+                <Stack.Screen name="PKCompare" component={PKCompare} options={{title: 'PK对比'}} />
+                <Stack.Screen name="PrivatePlacement" component={PrivatePlacement} options={{headerShown: false}} />
+                <Stack.Screen name="AppTag" component={AppTag} options={{headerShown: false, gestureEnabled: false}} />
+                <Stack.Screen name="UpgradeToPlan" component={UpgradeToPlan} options={{title: ''}} />
+                <Stack.Screen name="UpgradeToPortfolio" component={UpgradeToPortfolio} options={{title: ''}} />
+                <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
+                <Stack.Screen
+                    name="ProjectSetTradeModel"
+                    component={ProjectSetTradeModel}
+                    options={{title: '设置买卖模式'}}
+                />
+                <Stack.Screen name="PortfolioAssets" component={HoldingDetail} options={{title: ''}} />
+                <Stack.Screen name="ProjectSetTradeAmount" component={ProjectSetTradeAmount} options={{title: ''}} />
+                <Stack.Screen name="SubscribeManage" component={SubscribeManage} options={{title: '订阅管理'}} />
+                <Stack.Screen name="MfbHoldingInfo" component={MfbHoldingInfo} options={{title: ''}} />
+                <Stack.Screen name="AutoCharge" component={AutoCharge} options={{title: ''}} />
+                <Stack.Screen name="ToolWebView" component={ToolWebView} options={{title: ''}} />
+                <Stack.Screen name="ProjectTradeResult" component={ProjectTradeResult} options={{title: ''}} />
+                <Stack.Screen name="SignalList" component={SignalList} options={{title: '', headerShown: false}} />
+                <Stack.Screen
+                    name="ProjectDetail"
+                    component={ProjectDetail}
+                    options={{
+                        title: '',
+                        headerStyle: {
+                            backgroundColor: '#FF5151',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="ProjectIntro"
+                    component={ProjectIntro}
+                    options={{
+                        title: '',
+                        headerStyle: {
+                            backgroundColor: '#FA4F4F',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
+                <Stack.Screen name="FundTradeRules" component={FundTradeRules} options={{title: ''}} />
+                <Stack.Screen name="FundHolding" component={FundHolding} options={{title: ''}} />
+                <Stack.Screen name="Activity" component={Activity} options={{headerShown: false}} />
+                <Stack.Screen name="WhatIsPlan" component={WhatIsPlan} options={{headerShown: false}} />
 
-            {/* v7新页面 End */}
-            <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
-            <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
-            <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
-            <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
-            <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
-            <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
-            <Stack.Screen name="PEQuestionnaire" component={PEQuestionnaire} options={{title: ''}} />
-            <Stack.Screen name="PEQuestionnaireResult" component={PEQuestionnaireResult} options={{title: ''}} />
-            <Stack.Screen name="InvestorCert" component={InvestorCert} options={{title: ''}} />
-            <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
-            <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
-            <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
-            <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
-            <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
-            <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
-            <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
-            <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
-            <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
-            <Stack.Screen name="Find" component={Find} options={{title: ''}} />
-        </Stack.Navigator>
+                {/* v7新页面 End */}
+                <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
+                <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
+                <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
+                <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
+                <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
+                <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
+                <Stack.Screen name="PEQuestionnaire" component={PEQuestionnaire} options={{title: ''}} />
+                <Stack.Screen name="PEQuestionnaireResult" component={PEQuestionnaireResult} options={{title: ''}} />
+                <Stack.Screen name="InvestorCert" component={InvestorCert} options={{title: ''}} />
+                <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
+                <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
+                <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
+                <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
+                <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
+                <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
+                <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
+                <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
+                <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
+                <Stack.Screen name="Find" component={Find} options={{title: ''}} />
+            </Stack.Navigator>
+        </>
     );
 }
