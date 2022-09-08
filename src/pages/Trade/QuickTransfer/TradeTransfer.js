@@ -34,11 +34,11 @@ const weightMedium = Platform.select({android: '700', ios: '500'});
 
 const settting = {
     width: px(140),
-    height: px(82),
+    height: px(62),
     color: '#3E5AA4',
     border: px(8),
     radius: px(4),
-    opacity: 0.1,
+    opacity: 0.05,
     x: 0,
     y: px(2),
 };
@@ -59,11 +59,7 @@ export const PortfolioTransfering = ({data = {}}) => {
                     style={styles.portfolioBox}>
                     <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: '#9AA0B1'}]}>
                         <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{from?.poid_name}</Text>
-                        <Text style={[styles.desc, {marginVertical: px(4)}]}>{from?.gateway_name}</Text>
-                        <Text style={styles.numText}>
-                            <Text style={styles.unit}>￥</Text>
-                            {formaNum(from?.amount || 0)}
-                        </Text>
+                        <Text style={[styles.desc, {marginTop: px(4)}]}>{from?.gateway_name}</Text>
                     </View>
                 </LinearGradient>
             </BoxShadow>
@@ -76,11 +72,7 @@ export const PortfolioTransfering = ({data = {}}) => {
                     style={styles.portfolioBox}>
                     <View style={[Style.flexCenter, styles.borderBox, {borderTopColor: Colors.brandColor}]}>
                         <Text style={[styles.subTitle, {fontWeight: weightMedium}]}>{to?.poid_name}</Text>
-                        <Text style={[styles.desc, {marginVertical: px(4)}]}>{to?.gateway_name}</Text>
-                        <Text style={styles.numText}>
-                            <Text style={styles.unit}>￥</Text>
-                            {formaNum(to?.amount || 0)}
-                        </Text>
+                        <Text style={[styles.desc, {marginTop: px(4)}]}>{to?.gateway_name}</Text>
                     </View>
                 </LinearGradient>
             </BoxShadow>
