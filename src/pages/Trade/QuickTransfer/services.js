@@ -15,3 +15,5 @@ export const transfetCalc = (params) => http.get('/transfer/portfolio/trial/2022
 export const transferConfirm = (params) => http.post('/transfer/portfolio/doconfirm/202208', params);
 
 export const getTransferDetail = (params) => http.get('/transfer/portfolio/detail/202208', params);
+
+export const stopTransfer = (params) => http.post('/portfolio/dostop/202208', params);

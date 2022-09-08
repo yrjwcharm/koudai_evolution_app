@@ -6,13 +6,14 @@ import React, {useCallback, useRef, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {BottomModal} from '../../../components/Modal';
+import {useJump} from '../../../components/hooks';
+import {PasswordModal} from '../../../components/Password';
 import HTML from '../../../components/RenderHtml';
 import Toast from '../../../components/Toast';
 import withPageLoading from '../../../components/withPageLoading';
 import {formaNum, px} from '../../../utils/appUtil';
-import {CalcResult, PortfolioTransfering} from './TradeTransfer';
-import {getTransferDetail, transfetCalc} from './services';
+import {PortfolioTransfering} from './TradeTransfer';
+import {getTransferDetail, stopTransfer} from './services';
 
 const weightMedium = Platform.select({android: '700', ios: '500'});
 
@@ -130,28 +131,25 @@ const RecordItem = ({data = {}}) => {
 };
 
 const Index = ({navigation, route, setLoading}) => {
+    const jump = useJump();
     const [data, setData] = useState({});
     const {from, processing, record_list, record_title, to} = data;
-    const [calcData, setCalcData] = useState();
-    const bottomModal = useRef();
+    const passwordModal = useRef();
 
-    /** @name 转换试算结果 */
-    const onCalcResult = (params) => {
-        if (calcData) {
-            bottomModal.current?.show();
-        } else {
-            const calculating = Toast.showLoading('计算中...');
-            transfetCalc(params)
-                .then((res) => {
-                    if (res.code === '000000') {
-                        setCalcData(res.result);
-                        bottomModal.current?.show();
-                    }
-                })
-                .finally(() => {
-                    Toast.hide(calculating);
-                });
-        }
+    /** @name 终止转换确认 */
+    const submitStopTransfer = (password) => {
+        const toast = Toast.showLoading();
+        stopTransfer({...(route.params || {}, password)})
+            .then((res) => {
+                Toast.hide(toast);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    jump(res.result.url);
+                }
+            })
+            .finally(() => {
+                Toast.hide(toast);
+            });
     };
 
     useFocusEffect(
@@ -171,11 +169,11 @@ const Index = ({navigation, route, setLoading}) => {
 
     useFocusEffect(
         useCallback(() => {
-            const {right_top_btn: {params, text: btnText} = {}, title = '转换详情'} = data;
+            const {right_top_btn: {text: btnText} = {}, title = '转换详情'} = data;
             navigation.setOptions({
                 headerRight: () =>
                     btnText ? (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => onCalcResult(params)}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => passwordModal.current.show()}>
                             <Text style={styles.subTitle}>{btnText}</Text>
                         </TouchableOpacity>
                     ) : null,
@@ -185,18 +183,12 @@ const Index = ({navigation, route, setLoading}) => {
                 title,
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [calcData, data])
+        }, [data])
     );
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
-            <BottomModal ref={bottomModal} title="试算结果">
-                {calcData ? (
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        <CalcResult data={calcData} />
-                    </View>
-                ) : null}
-            </BottomModal>
+            <PasswordModal onDone={submitStopTransfer} ref={passwordModal} />
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                 {from && to ? <PortfolioTransfering data={{from, to}} /> : null}
                 <View style={{paddingHorizontal: Space.padding}}>
