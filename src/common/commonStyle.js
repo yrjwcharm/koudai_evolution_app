@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-11 11:33:46
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-08 16:22:16
  * @Description:主题及公共样式表
  */
 
@@ -157,10 +157,10 @@ export const Style = StyleSheet.create({
         fontSize: text(13),
     },
     tag: {
-        paddingHorizontal: text(7),
+        paddingHorizontal: text(5),
         justifyContent: 'center',
-        borderRadius: 2,
-        height: 20,
+        borderRadius: px(2),
+        height: px(20),
     },
     more: {
         fontSize: text(12),

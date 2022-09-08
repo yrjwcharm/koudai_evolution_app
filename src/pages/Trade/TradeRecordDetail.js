@@ -515,7 +515,6 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
     },
     header: {
-        marginTop: 1,
         backgroundColor: '#fff',
         paddingVertical: px(20),
         marginBottom: px(16),
