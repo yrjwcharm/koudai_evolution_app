@@ -1044,42 +1044,45 @@ export default function PortfolioAssets(props) {
                     {bottomBtns?.[0] ? (
                         <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
                             {bottomBtns.map((_item, _index, arr) => {
-                                return _index % 4 == 0 && _index === arr.length - 1 ? null : (
+                                const {avail, icon, id, red_point, text: menuText, url} = _item;
+                                return (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
+                                        disabled={avail === 0}
                                         style={{
                                             alignItems: 'center',
                                             width: (deviceWidth - px(16) * 2) / 4,
                                             marginBottom: px(26),
                                         }}
-                                        key={_index + '_item0'}
+                                        key={menuText + _index}
                                         onPress={() => {
-                                            global.LogTool(
-                                                'assetsDetailIconsStart',
-                                                props.route?.params?.poid,
-                                                _item.id
-                                            );
-                                            if (_item.red_point) {
+                                            global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, id);
+                                            if (red_point) {
                                                 http.get('/wechat/report/red_point/20210906');
                                             }
-                                            jump(_item.url);
+                                            jump(url);
                                         }}>
                                         <View style={{position: 'relative'}}>
                                             <FastImage
                                                 source={{
-                                                    uri: _item.icon,
+                                                    uri: icon,
                                                 }}
                                                 resizeMode="contain"
                                                 style={{width: text(24), height: text(24), marginBottom: text(5)}}
                                             />
-                                            {_item.red_point ? <View style={styles.redDot} /> : null}
+                                            {red_point ? <View style={styles.redDot} /> : null}
                                         </View>
                                         <Text
                                             style={[
                                                 styles.list_text_sty,
-                                                {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                                {
+                                                    color:
+                                                        _index === arr.length - 1 || avail === 0
+                                                            ? '#BDC2CC'
+                                                            : '#4E556C',
+                                                },
                                             ]}>
-                                            {_item.text}
+                                            {menuText}
                                         </Text>
                                     </TouchableOpacity>
                                 );
