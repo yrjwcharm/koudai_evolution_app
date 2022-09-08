@@ -82,19 +82,31 @@ export const PortfolioTransfering = ({data = {}}) => {
 
 export const CalcResult = ({data = {}}) => {
     const jump = useJump();
-    const {card_body, card_header, from, to} = data;
+    const {advisor_fee, card_body, card_header, from, to} = data;
 
     return (
         <>
             <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
-                <View style={Style.flexCenter}>
-                    <Text style={styles.bigNumText}>{formaNum(from?.amount || 0)}</Text>
-                    <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{from?.text}</Text>
-                </View>
-                <View style={[Style.flexCenter, {marginLeft: px(80)}]}>
-                    <Text style={styles.bigNumText}>{formaNum(to?.amount || 0)}</Text>
-                    <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{to?.text}</Text>
-                </View>
+                {from?.amount ? (
+                    <View style={Style.flexCenter}>
+                        <Text style={styles.bigNumText}>{formaNum(from.amount)}</Text>
+                        <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{from.text}</Text>
+                    </View>
+                ) : null}
+                {to?.amount ? (
+                    <View style={[Style.flexCenter, {marginLeft: from?.amount ? px(80) : 0}]}>
+                        <Text style={styles.bigNumText}>{formaNum(to.amount)}</Text>
+                        <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{to.text}</Text>
+                    </View>
+                ) : null}
+                {advisor_fee?.amount ? (
+                    <View style={[Style.flexCenter, {marginLeft: px(80)}]}>
+                        <Text style={styles.bigNumText}>{formaNum(advisor_fee.amount)}</Text>
+                        <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>
+                            {advisor_fee.text}
+                        </Text>
+                    </View>
+                ) : null}
             </View>
             {card_header?.length > 0 && (
                 <View style={[Style.flexRow, styles.tableHeader]}>
