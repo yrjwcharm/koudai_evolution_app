@@ -23,7 +23,7 @@ import withPageLoading from '../../components/withPageLoading';
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
     const jump = useJump();
-    const {txn_id, type, sub_type, poid} = props.route?.params;
+    const {txn_id, type, sub_type, poid, transfer_id} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [errorInfo, setErrorInfo] = useState(null);
@@ -42,6 +42,7 @@ const TradeRecordDetail = (props) => {
             type,
             sub_type,
             poid,
+            transfer_id,
         })
             .then((res) => {
                 setErrorInfo(res.result?.part1?.err_info);
