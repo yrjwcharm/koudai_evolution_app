@@ -189,6 +189,7 @@ const Index = ({navigation, route, setLoading}) => {
 
     /** @name 点击确认转换 */
     const onSubmit = () => {
+        global.LogTool('PortfolioTransition_PercentSet_go', JSON.stringify(route.params || {}));
         if (btn.action === 'password') {
             passwordModal.current?.show();
         } else if (btn.url) {
@@ -280,6 +281,9 @@ const Index = ({navigation, route, setLoading}) => {
                                 clearButtonMode="never"
                                 keyboardType="number-pad"
                                 maxLength={3}
+                                onBlur={() =>
+                                    global.LogTool('PortfolioTransition_PercentSet', JSON.stringify(route.params || {}))
+                                }
                                 onChangeText={(val) => setValue(parseFloat(val) > 100 ? '100' : val.replace(/\D/g, ''))}
                                 ref={inputRef}
                                 style={styles.input}

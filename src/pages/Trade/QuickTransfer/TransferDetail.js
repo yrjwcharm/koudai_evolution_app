@@ -173,7 +173,12 @@ const Index = ({navigation, route, setLoading}) => {
             navigation.setOptions({
                 headerRight: () =>
                     btnText ? (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => passwordModal.current.show()}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                global.LogTool('PortfolioTransition_Details_Stop', route.params.transfer_id);
+                                passwordModal.current.show();
+                            }}>
                             <Text style={styles.subTitle}>{btnText}</Text>
                         </TouchableOpacity>
                     ) : null,

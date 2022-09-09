@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-05-27 11:28:25
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-09 16:23:10
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -144,11 +144,11 @@ const TradeRecord = ({route, navigation}) => {
     };
 
     const handlerName = (val = '') => {
-        if(val.length > 9) {
-            val = val.slice(0,5) + '...' + val.slice(-4)
+        if (val.length > 9) {
+            val = val.slice(0, 5) + '...' + val.slice(-4);
         }
-        return val
-    }
+        return val;
+    };
 
     const ListFooterComponent = () => {
         return (
@@ -173,6 +173,7 @@ const TradeRecord = ({route, navigation}) => {
                     key={item?.time}
                     onPress={() => {
                         setRefresh(false);
+                        global.LogTool('CheckTradeRecordDetail', item.url?.params?.txn_id, item.url?.params?.type);
                         jump(item.url);
                     }}>
                     <View style={{paddingHorizontal: Space.padding}}>

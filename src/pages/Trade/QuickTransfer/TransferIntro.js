@@ -96,7 +96,14 @@ const Index = ({navigation, route, setLoading}) => {
             {btn?.text ? (
                 <>
                     <View style={styles.borderTop} />
-                    <FixedButton disabled={btn.avail === 0} onPress={() => jump(btn.url)} title={btn.text} />
+                    <FixedButton
+                        disabled={btn.avail === 0}
+                        onPress={() => {
+                            global.LogTool('PortfolioTransition_Windows_No', route.params.poid);
+                            jump(btn.url);
+                        }}
+                        title={btn.text}
+                    />
                 </>
             ) : null}
         </View>

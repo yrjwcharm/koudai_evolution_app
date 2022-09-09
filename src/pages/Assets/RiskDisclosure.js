@@ -112,6 +112,7 @@ export default ({navigation, route}) => {
                 Toast.hide(transfering);
                 res.message && Toast.show(res.message);
                 if (res.code === '000000') {
+                    global.LogTool('PortfolioTransition_Password', JSON.stringify(transfer_params || {}));
                     const {url: jumpUrl} = res.result;
                     jumpUrl && jump(jumpUrl);
                 }
@@ -262,14 +263,14 @@ export default ({navigation, route}) => {
             })()}
             <View style={styles.btnContainer}>
                 {footer_html ? (
-                    <View style={{paddingHorizontal: Space.padding, paddingBottom: px(8)}}>
+                    <View style={{paddingBottom: px(8)}}>
                         <HTML html={footer_html} style={styles.agreement} />
                     </View>
                 ) : null}
                 <Button
                     disabled={disabled}
                     onPress={() => {
-                        global.LogTool('Riskpage_butto');
+                        global.LogTool('Riskpage_butto', poids);
                         http.post('/advisor/action/report/20220422', {action: 'confirm', poids});
                         passwordRef.current?.show?.();
                     }}

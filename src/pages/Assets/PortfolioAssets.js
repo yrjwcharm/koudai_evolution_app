@@ -149,9 +149,14 @@ export default function PortfolioAssets(props) {
                 content &&
                     Modal.show({
                         backButtonClose: back_close,
+                        cancelCallBack: () =>
+                            global.LogTool('PortfolioTransition_Windows_No', props.route.params?.poid),
                         cancelText: cancel.text,
                         confirm: true,
-                        confirmCallBack: () => jump(confirm.url),
+                        confirmCallBack: () => {
+                            global.LogTool('PortfolioTransition_Windows_yes', props.route.params?.poid);
+                            jump(confirm.url);
+                        },
                         confirmText: confirm.text,
                         content,
                         isTouchMaskToClose: touch_close,
