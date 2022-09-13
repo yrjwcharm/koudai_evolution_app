@@ -87,19 +87,19 @@ export const CalcResult = ({data = {}}) => {
     return (
         <>
             <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
-                {from?.amount ? (
+                {typeof from?.amount === 'number' ? (
                     <View style={Style.flexCenter}>
                         <Text style={styles.bigNumText}>{formaNum(from.amount)}</Text>
                         <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{from.text}</Text>
                     </View>
                 ) : null}
-                {to?.amount ? (
+                {typeof to?.amount === 'number' ? (
                     <View style={[Style.flexCenter, {marginLeft: from?.amount ? px(80) : 0}]}>
                         <Text style={styles.bigNumText}>{formaNum(to.amount)}</Text>
                         <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>{to.text}</Text>
                     </View>
                 ) : null}
-                {advisor_fee?.amount ? (
+                {typeof advisor_fee?.amount === 'number' ? (
                     <View style={[Style.flexCenter, {marginLeft: px(80)}]}>
                         <Text style={styles.bigNumText}>{formaNum(advisor_fee.amount)}</Text>
                         <Text style={[styles.desc, {marginTop: px(2), color: Colors.descColor}]}>
@@ -316,18 +316,23 @@ const Index = ({navigation, route, setLoading}) => {
                         <Text style={styles.title}>{percent.tip_title}</Text>
                         <Text style={[styles.desc, {marginLeft: px(8)}]}>{percent.tip_text}</Text>
                     </View>
-                    {calcData ? <CalcResult data={calcData} /> : null}
-                    {calculating && (
+                    {calculating ? (
                         <View style={[Style.flexCenter, {height: px(200)}]}>
                             <ActivityIndicator color={Colors.lightGrayColor} />
                         </View>
-                    )}
+                    ) : calcData ? (
+                        <CalcResult data={calcData} />
+                    ) : null}
                 </View>
             </ScrollView>
             {btn?.text ? (
                 <>
                     <View style={styles.borderTop} />
-                    <FixedButton disabled={btn.avail === 0 || !value} onPress={onSubmit} title={btn.text} />
+                    <FixedButton
+                        disabled={btn.avail === 0 || calcData?.btn_avail === 0 || !value}
+                        onPress={onSubmit}
+                        title={btn.text}
+                    />
                 </>
             ) : null}
         </View>
