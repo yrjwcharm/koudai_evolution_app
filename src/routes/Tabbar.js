@@ -6,7 +6,8 @@ import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {px, isIphoneX} from '../utils/appUtil';
-// import Index from '../pages/MofangIndex'; //魔方首页
+import Index from '../pages/MofangIndex'; //魔方首页
+import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/Asset'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
@@ -38,7 +39,7 @@ export default function Tabbar() {
     return (
         // //如需要在此插入元素,如tabbar底部弹窗 可添加 <RootSiblingParent inactive={true}>
         <Tab.Navigator
-            initialRouteName="Vision"
+            initialRouteName="Product"
             screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
                     global.navigation = navigation;
@@ -106,7 +107,7 @@ export default function Tabbar() {
                                 />
                             );
                         }
-                    } else if (route.name === 'PKHome') {
+                    } else if (route.name === 'PKHome' || route.name === 'Product') {
                         if (focused) {
                             return (
                                 <FastImage
@@ -152,6 +153,7 @@ export default function Tabbar() {
                 },
                 style: {height: isIphoneX() ? px(90) : px(56), paddinsgTop: isIphoneX() ? 0 : px(4)},
             }}>
+            <Tab.Screen name="Product" options={{tabBarLabel: '产品'}} component={Product} />
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
                     name="Vision"
@@ -170,7 +172,7 @@ export default function Tabbar() {
                     component={Vision}
                 />
             ) : null}
-            {/* <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} /> */}
+            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
             <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />

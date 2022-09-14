@@ -3,7 +3,7 @@
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import FollowTableHeader from './FollowTableHeader';
@@ -14,7 +14,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {useJump} from '~/components/hooks';
 import StickyHeader from '~/components/Sticky';
 import LoadingTips from '~/components/LoadingTips';
-const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY, scrollY}) => {
+const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHeader, stickyHeaderY, scrollY}) => {
     const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
     const jump = useJump();
@@ -29,6 +29,9 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
             });
         }
     };
+    const Header = useMemo(() => {
+        return notStickyHeader ? View : StickyHeader;
+    }, [notStickyHeader]);
 
     return (
         <>
@@ -44,7 +47,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                 borderRightColor: '#E9EAEF',
                                 borderRightWidth: isScroll ? 0.5 : 0,
                             }}>
-                            <StickyHeader
+                            <Header
                                 stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
                             >
@@ -61,7 +64,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                         </Text>
                                     </View>
                                 </View>
-                            </StickyHeader>
+                            </Header>
                             {body?.tr?.map((tr, index) => (
                                 <TouchableOpacity
                                     style={styles.tr}
@@ -111,7 +114,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                             onMomentumScrollEnd={() => setIsScroll(false)}
                             onScrollBeginDrag={(e) => setIsScroll(true)}>
                             <View style={{minWidth: deviceWidth}}>
-                                <StickyHeader
+                                <Header
                                     stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                     stickyScrollY={scrollY} // 把滑动距离传入
                                 >
@@ -172,7 +175,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, stickyHeaderY
                                                 )}
                                         </View>
                                     </View>
-                                </StickyHeader>
+                                </Header>
                                 {/* tr */}
                                 {body?.tr?.map((tr, index) => (
                                     <TouchableOpacity
