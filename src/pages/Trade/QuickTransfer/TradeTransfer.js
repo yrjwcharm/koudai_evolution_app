@@ -284,7 +284,10 @@ const Index = ({navigation, route, setLoading}) => {
                                 onBlur={() =>
                                     global.LogTool('PortfolioTransition_PercentSet', JSON.stringify(route.params || {}))
                                 }
-                                onChangeText={(val) => setValue(parseFloat(val) > 100 ? '100' : val.replace(/\D/g, ''))}
+                                onChangeText={(val) => {
+                                    val = parseFloat(val);
+                                    setValue(isNaN(val) ? '' : val > 100 ? '100' : val < 1 ? '1' : `${val}`);
+                                }}
                                 ref={inputRef}
                                 style={styles.input}
                                 value={value}

@@ -388,7 +388,14 @@ const TradeRecordDetail = (props) => {
                                         }}
                                         style={[Style.flexBetween, {height: px(42)}]}>
                                         <View style={styles.trangle} />
-                                        <HTML style={styles.name} html={k} />
+                                        <View style={{marginRight: px(12), flexShrink: 1}}>
+                                            <HTML
+                                                ellipsizeMode="middle"
+                                                numberOfLines={1}
+                                                style={styles.name}
+                                                html={k}
+                                            />
+                                        </View>
                                         <View style={[Style.flexRow, {height: '100%'}]}>
                                             <Text style={styles.date}>{v}</Text>
                                             {children || extra_step ? (

@@ -19,7 +19,7 @@ import {transferConfirm} from '../Trade/QuickTransfer/services';
 export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {footer_html, processing_info = {}, risk_disclosure = []} = data;
+    const {btn_text, footer_html, processing_info = {}, risk_disclosure = []} = data;
     const {content = '', url = ''} = processing_info;
     const [button, setButton] = useState({disabled: true, text: ''});
     const {disabled, text} = button;
@@ -74,7 +74,7 @@ export default ({navigation, route}) => {
         const {risk_disclosure: arr = []} = data;
         if (!ticking) {
             const finishRead = arr.every((item) => item.status === 2);
-            setButton({disabled: !finishRead, text: finishRead ? '确认' : '请阅读完成后确认'});
+            setButton({disabled: !finishRead, text: finishRead ? btn_text || '确认' : '请阅读完成后确认'});
             if (finishRead) {
                 http.post('/advisor/action/report/20220422', {action: 'read', poids});
                 global.LogTool('Riskpage_read');

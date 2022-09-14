@@ -40,12 +40,16 @@ const Index = ({navigation, route, setLoading}) => {
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                 <View style={{padding: Space.padding, paddingBottom: isIphoneX() ? 34 : Space.padding}}>
                     {list?.map?.((item, index) => {
-                        const {btn, labels, name, plan_id, url, yield: yieldInfo} = item;
+                        const {btn, labels, name, plan_id, yield: yieldInfo} = item;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
+                                disabled={!btn || btn.avail === 0}
                                 key={name + index}
-                                onPress={() => jump(url)}
+                                onPress={() => {
+                                    global.LogTool('PortfolioTransition_ObjectChoice', plan_id);
+                                    jump(btn?.url);
+                                }}
                                 style={[styles.portfolioBox, {marginTop: index === 0 ? 0 : px(12)}]}>
                                 <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
                                     <Text style={styles.name}>{name}</Text>
