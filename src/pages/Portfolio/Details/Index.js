@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: wxp
- * @LastEditTime: 2022-09-15 16:24:43
+ * @LastEditTime: 2022-09-15 17:00:07
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -14,7 +14,7 @@ import {WebView as RNWebView} from 'react-native-webview';
 import Loading from '../../Portfolio/components/PageLoading';
 import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
-import shareFund from '~/assets/img/icon/shareFund.png';
+import Html from '~/components/RenderHtml';
 import {BottomModal} from '~/components/Modal';
 import {useFocusEffect} from '@react-navigation/native';
 import http from '~/services';
@@ -27,11 +27,13 @@ const PortFolioDetail = ({navigation, route}) => {
     const jump = useJump();
     const [token, setToken] = useState('');
     const [data, setData] = useState({});
+    const [tip, setTip] = useState({});
     const {bottom_btns: {icon_btns = [], simple_btns = []} = {}} = data;
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
 
     const webview = useRef(null);
     const bottomModal = useRef();
+    const bottomModal2 = useRef();
     const timeStamp = useRef(Date.now());
 
     useEffect(() => {
@@ -49,6 +51,10 @@ const PortFolioDetail = ({navigation, route}) => {
                     height: 0,
                 },
                 elevation: 0,
+            },
+            headerTitleStyle: {
+                color: '#fff',
+                fontSize: px(18),
             },
             headerBackImage: () => {
                 return (
@@ -148,6 +154,10 @@ const PortFolioDetail = ({navigation, route}) => {
                             if (data?.indexOf('url=') > -1) {
                                 const url = JSON.parse(data.split('url=')[1]);
                                 jump(url);
+                            } else if (data?.indexOf('tip=') > -1) {
+                                const _tip = JSON.parse(data.split('tip=')[1]);
+                                setTip(_tip);
+                                bottomModal2.current.show();
                             }
                             if (data * 1) {
                                 setHeight((prev) => (data * 1 < deviceHeight / 2 ? prev : data * 1));
@@ -235,6 +245,18 @@ const PortFolioDetail = ({navigation, route}) => {
                     })}
                 </View>
             </View>
+            <BottomModal ref={bottomModal2} title={tip?.title}>
+                <View style={[{padding: px(16)}]}>
+                    {tip?.content?.map?.((item, index) => {
+                        return (
+                            <View key={item + index} style={{marginTop: index === 0 ? 0 : px(16)}}>
+                                {item.key ? <Text style={styles.tipTitle}>{item.key}:</Text> : null}
+                                <Html style={{lineHeight: px(18), fontSize: px(13)}} html={item.val} />
+                            </View>
+                        );
+                    })}
+                </View>
+            </BottomModal>
         </View>
     );
 };
@@ -276,5 +298,11 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         lineHeight: px(22),
         color: '#fff',
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: px(20),
+        fontSize: px(14),
+        marginBottom: px(4),
     },
 });

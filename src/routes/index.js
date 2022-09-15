@@ -462,6 +462,7 @@ export default function AppStack() {
                 <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
                 <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
                 <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
+                <Stack.Screen name="PortfolioDetails" component={PortfolioDetails} options={{title: ''}} />
                 <Stack.Screen
                     name="TradeProcessing"
                     component={TradeProcessing}
