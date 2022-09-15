@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: wxp
- * @LastEditTime: 2022-09-14 15:57:16
+ * @LastEditTime: 2022-09-15 11:56:51
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -206,7 +206,16 @@ const Product = () => {
                     <View style={styles.menuWrap}>
                         {[1, 2, 3].map((item, idx) => {
                             return (
-                                <View style={styles.menuItem} key={idx}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump({
+                                            path: 'PortfolioDetails',
+                                            params: {link: 'http://192.168.88.171:3000/portfolioDetails/111'},
+                                        });
+                                    }}
+                                    style={styles.menuItem}
+                                    key={idx}>
                                     <FastImage
                                         source={{
                                             uri: bgType
@@ -218,7 +227,7 @@ const Product = () => {
                                     <Text style={[styles.menuItemText, {color: bgType ? '#121d3a' : '#fff'}]}>
                                         基金
                                     </Text>
-                                </View>
+                                </TouchableOpacity>
                             );
                         })}
                     </View>

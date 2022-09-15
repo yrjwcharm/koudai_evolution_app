@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-08 11:43:44
- * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-14 16:28:43
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -10,18 +7,18 @@ import {ActionSheetIOS, Platform, View, Text, Modal, TouchableOpacity, StyleShee
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {constants} from './util';
-import {isIphoneX, px, deviceHeight, deviceWidth} from '../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {deviceHeight, deviceWidth, isIphoneX, px} from '~/utils/appUtil';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Button} from '../Button';
+import {navigationRef} from '../hooks/RootNavigation';
 import Mask from '../Mask';
 import Toast from '../Toast';
 import Clipboard from '@react-native-community/clipboard';
 import * as WeChat from 'react-native-wechat-lib';
-import {useNavigation} from '@react-navigation/native';
 import LazyImage from '../LazyImage';
 
 const ShareModal = React.forwardRef((props, ref) => {
-    const navigation = useNavigation();
+    const navigation = navigationRef.current;
     const {
         backdrop = true, // 是否有蒙层
         header = '', // 自定义头部
