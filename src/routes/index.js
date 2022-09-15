@@ -38,6 +38,7 @@ import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
+import PortfolioDetails from '../pages/Portfolio/Details/Index'; // 组合详情
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
@@ -455,6 +456,7 @@ export default function AppStack() {
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
+            <Stack.Screen name="PortfolioDetails" component={PortfolioDetails} options={{title: ''}} />
             <Stack.Screen
                 name="TradeProcessing"
                 component={TradeProcessing}
