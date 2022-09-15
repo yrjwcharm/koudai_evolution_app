@@ -270,8 +270,13 @@ const TradeRecordDetail = (props) => {
                         {/* 金额展示 */}
                         {data?.part1?.amount ? (
                             <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={[styles.header_text, {marginRight: px(4), marginBottom: px(4)}]}>
+                                    {data?.part1?.extra_text}
+                                </Text>
                                 <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
-                                <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
+                                <Text style={[styles.header_text, {marginBottom: px(4), marginLeft: px(4)}]}>
+                                    {data?.part1?.unit}
+                                </Text>
                             </View>
                         ) : null}
                     </>
