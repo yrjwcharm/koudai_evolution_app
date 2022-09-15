@@ -183,6 +183,7 @@ const Index = ({navigation, route, setLoading}) => {
     const [value, setValue] = useState('');
     const [calcData, setCalcData] = useState();
     const [calculating, setCalculating] = useState(false);
+    const [errMsg, setErrMsg] = useState('');
     const inputRef = useRef();
     const timer = useRef();
     const passwordModal = useRef();
@@ -233,6 +234,7 @@ const Index = ({navigation, route, setLoading}) => {
 
     useFocusEffect(
         useCallback(() => {
+            setErrMsg('');
             if (!value) {
                 setCalcData();
             } else {
@@ -243,6 +245,8 @@ const Index = ({navigation, route, setLoading}) => {
                         .then((res) => {
                             if (res.code === '000000') {
                                 setCalcData(res.result);
+                            } else {
+                                setErrMsg(res.message);
                             }
                         })
                         .finally(() => {
@@ -315,7 +319,12 @@ const Index = ({navigation, route, setLoading}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={Style.flexRow}>
+                    {errMsg ? (
+                        <View style={{paddingTop: px(8)}}>
+                            <Text style={[styles.desc, {color: Colors.red}]}>{errMsg}</Text>
+                        </View>
+                    ) : null}
+                    <View style={[Style.flexRow, {marginTop: px(24)}]}>
                         <Text style={styles.title}>{percent.tip_title}</Text>
                         <Text style={[styles.desc, {marginLeft: px(8)}]}>{percent.tip_text}</Text>
                     </View>
@@ -332,7 +341,7 @@ const Index = ({navigation, route, setLoading}) => {
                 <>
                     <View style={styles.borderTop} />
                     <FixedButton
-                        disabled={btn.avail === 0 || calcData?.btn_avail === 0 || !value}
+                        disabled={btn.avail === 0 || calcData?.btn_avail === 0 || !value || !!errMsg}
                         onPress={onSubmit}
                         title={btn.text}
                     />
@@ -404,7 +413,7 @@ const styles = StyleSheet.create({
         fontWeight: weightMedium,
     },
     inputWrapper: {
-        marginVertical: px(24),
+        marginTop: px(24),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
     },

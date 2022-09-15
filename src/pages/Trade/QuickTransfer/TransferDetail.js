@@ -48,7 +48,7 @@ const Processing = ({data = {}}) => {
                             styles.flagBox,
                             {
                                 left: Math.min(
-                                    Math.max((percent / 100) * barWidth - flagWidth / 2, 0),
+                                    Math.max((percent / 100) * barWidth - flagWidth / 2, -px(4)),
                                     barWidth - flagWidth
                                 ),
                             },
@@ -59,7 +59,7 @@ const Processing = ({data = {}}) => {
                             {formaNum(percent_amount)}
                         </Text>
                     </View>
-                    <View style={[styles.flagPole, {left: `${percent}%`}]}>
+                    <View style={[styles.flagPole, {left: `${parseFloat(percent) + 0.5}%`}]}>
                         <View style={styles.triangle} />
                         <View style={styles.triangleInner} />
                         <View style={styles.flagPoleLine} />
@@ -71,10 +71,13 @@ const Processing = ({data = {}}) => {
                         <Text style={styles.numText}>
                             <Text style={styles.unit}>￥</Text>0
                         </Text>
-                        <Text style={styles.numText}>
-                            <Text style={styles.unit}>￥</Text>
-                            {total_amount}
-                        </Text>
+                        <View style={Style.flexRow}>
+                            <Text style={[styles.desc, {color: Colors.defaultColor}]}>预估</Text>
+                            <Text style={styles.numText}>
+                                <Text style={styles.unit}>￥</Text>
+                                {total_amount}
+                            </Text>
+                        </View>
                     </View>
                 </View>
                 {tip_text ? (
