@@ -84,9 +84,15 @@ const Vision = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
             userInfo?.is_login && readInterface();
             dispatch(updateVision({visionUpdate: ''}));
-        }, [init, dispatch, readInterface, userInfo.is_login])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo.is_login])
     );
 
     useEffect(() => {
