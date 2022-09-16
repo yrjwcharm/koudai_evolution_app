@@ -55,7 +55,7 @@ const Index = ({navigation, route, setLoading}) => {
                                     <Text style={styles.name}>{name}</Text>
                                     {labels?.map?.((label, i) => {
                                         return (
-                                            <View key={label + i} style={{marginLeft: px(8)}}>
+                                            <View key={label + i} style={{marginLeft: px(8), flexShrink: 1}}>
                                                 <HTML html={label} style={styles.label} />
                                             </View>
                                         );
