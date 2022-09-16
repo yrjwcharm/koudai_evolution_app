@@ -40,18 +40,20 @@ export default ({navigation, route}) => {
     } = route.params;
 
     useEffect(() => {
-        http.get('/advisor/need_sign/info/20220422', {fr, poids: to_poids.length > 0 ? to_poids : poids}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    navigation.setOptions({title: res.result.title || '风险揭示书'});
-                    countdownRef.current = res.result.countdown;
-                    setButton({disabled: true, text: `${countdownRef.current}s后确认`});
-                    const {risk_disclosure: arr = []} = res.result;
-                    arr.forEach((item) => (item.status = 0));
-                    setData(res.result);
-                }
+        http.get('/advisor/need_sign/info/20220422', {
+            fr,
+            poids: to_poids.length > 0 ? to_poids : poids,
+            transfer_params: transfer_params ? JSON.stringify(transfer_params) : '',
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '风险揭示书'});
+                countdownRef.current = res.result.countdown;
+                setButton({disabled: true, text: `${countdownRef.current}s后确认`});
+                const {risk_disclosure: arr = []} = res.result;
+                arr.forEach((item) => (item.status = 0));
+                setData(res.result);
             }
-        );
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -177,10 +179,11 @@ export default ({navigation, route}) => {
         if (need_sign) {
             const loading = Toast.showLoading('签约中...');
             http.post('/adviser/sign/20210923', {
-                password,
-                poids: to_poids.length > 0 ? to_poids : poids,
                 auto_poids,
                 manual_poids,
+                password,
+                poids: to_poids.length > 0 ? to_poids : poids,
+                transfer_params: transfer_params ? JSON.stringify(transfer_params) : '',
             }).then((res) => {
                 Toast.hide(loading);
                 Toast.show(res.message);
