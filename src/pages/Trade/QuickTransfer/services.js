@@ -16,4 +16,4 @@ export const transferConfirm = (params) => http.post('/transfer/portfolio/doconf
 
 export const getTransferDetail = (params) => http.get('/transfer/portfolio/detail/202208', params);
 
-export const stopTransfer = (params) => http.post('/portfolio/dostop/202208', params);
+export const stopTransfer = (params) => http.post('/transfer/portfolio/dostop/202208', params);

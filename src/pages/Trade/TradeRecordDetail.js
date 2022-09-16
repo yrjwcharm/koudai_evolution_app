@@ -368,7 +368,7 @@ const TradeRecordDetail = (props) => {
                         <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>{data?.desc}</Text>
                     ) : null}
                     {data?.part2?.map((item, index) => {
-                        const {children, extra_step, k, type: recordType, v} = item;
+                        const {children, extra_step, k, k1, type: recordType, v} = item;
                         return (
                             <View
                                 key={`${v}${index}`}
@@ -413,6 +413,12 @@ const TradeRecordDetail = (props) => {
                                             ) : null}
                                         </View>
                                     </TouchableOpacity>
+
+                                    {k1 ? (
+                                        <View style={{marginTop: px(12)}}>
+                                            <HTML html={k1} style={styles.name} />
+                                        </View>
+                                    ) : null}
 
                                     {recordType == 'adjust_compare' && children && showMore[index] ? (
                                         // 调仓
