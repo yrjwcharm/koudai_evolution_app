@@ -142,7 +142,7 @@ const Index = ({navigation, route, setLoading}) => {
     /** @name 终止转换确认 */
     const submitStopTransfer = (password) => {
         const toast = Toast.showLoading();
-        stopTransfer({...(route.params || {}, password)})
+        stopTransfer({...(route.params || {}), password})
             .then((res) => {
                 Toast.hide(toast);
                 Toast.show(res.message);
