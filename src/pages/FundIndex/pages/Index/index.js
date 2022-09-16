@@ -1,9 +1,7 @@
 /*
  * @Date: 2022-06-21 14:36:43
  * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-22 18:34:31
- * @Description: 公募基金首页
+ * @Description: 基金首页
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
@@ -16,38 +14,34 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
+import {AlbumCard} from '~/components/Product';
 import HTML from '~/components/RenderHtml';
-import PKBall from '~/pages/PK/components/PKBall';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, px} from '~/utils/appUtil';
-import RenderPart from './RenderPart';
 import {getPageData} from './services';
 
 /** @name 顶部菜单 */
 const TopMenu = ({data = []}) => {
     const jump = useJump();
     return (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.topMenuCon}>
-            {data.map((item, index, arr) => {
-                const {icon, text, url} = item;
+        <View style={styles.topMenuCon}>
+            {data.map((item, index) => {
+                const {icon, name, url} = item;
                 return (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        key={index}
+                        key={name + index}
                         onPress={() => {
                             global.LogTool({ctrl: index + 1, event: 'fund_clicktab'});
                             jump(url);
                         }}
-                        style={[
-                            styles.menuItemBox,
-                            index === arr.length - 1 ? {marginRight: 2 * Space.marginAlign} : {},
-                        ]}>
+                        style={styles.menuItemBox}>
                         <Image source={{uri: icon}} style={styles.menuIcon} />
-                        <Text style={styles.menuItemText}>{text}</Text>
+                        <Text style={styles.menuItemText}>{name}</Text>
                     </TouchableOpacity>
                 );
             })}
-        </ScrollView>
+        </View>
     );
 };
 
@@ -153,7 +147,7 @@ const SwiperCom = ({data = {}}) => {
 const Index = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
-    const {live, sub_list = [], suggest_list = [], tabs = [], un_buy_img} = data;
+    const {nav, subjects = []} = data;
 
     const getData = () => {
         getPageData()
@@ -169,7 +163,7 @@ const Index = ({navigation, route}) => {
                                 <Feather color={Colors.defaultColor} name={'search'} size={px(20)} />
                             </TouchableOpacity>
                         ),
-                        title: res.result.title || '公募基金',
+                        title: res.result.title || '基金',
                     });
                     setData(res.result);
                 }
@@ -196,18 +190,22 @@ const Index = ({navigation, route}) => {
                 refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
-                <TopMenu data={tabs} />
-                {suggest_list?.items?.length > 0 && <SwiperCom data={suggest_list} />}
+                <TopMenu data={nav} />
+                {/* {suggest_list?.items?.length > 0 && <SwiperCom data={suggest_list} />} */}
                 <View style={styles.bottomContainer}>
-                    {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
+                    {/* {live?.items?.length > 0 && <RenderPart data={live} scene="live" />}
                     {un_buy_img ? <Image source={{uri: un_buy_img}} style={styles.blocked} /> : null}
                     {sub_list?.map?.((item, index) => (
                         <RenderPart data={item} key={index} />
+                    ))} */}
+                    {subjects?.map?.((subject, index) => (
+                        <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
+                            <AlbumCard {...subject} />
+                        </View>
                     ))}
                 </View>
                 <BottomDesc />
             </ScrollView>
-            <PKBall />
         </LinearGradient>
     ) : (
         <Loading />
@@ -219,26 +217,27 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     topMenuCon: {
-        paddingTop: Space.padding,
-        paddingHorizontal: Space.padding,
-        paddingBottom: px(20),
+        paddingBottom: Space.padding,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         width: deviceWidth,
         backgroundColor: '#fff',
+        overflow: 'hidden',
     },
     menuItemBox: {
-        marginRight: px(18),
+        marginTop: Space.marginVertical,
         alignItems: 'center',
-        minWidth: px(48),
+        width: '20%',
     },
     menuIcon: {
-        width: px(32),
-        height: px(32),
+        width: px(26),
+        height: px(26),
     },
     menuItemText: {
         marginTop: px(8),
-        fontSize: Font.textH3,
-        lineHeight: px(18),
-        color: '#3D3D3D',
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.defaultColor,
     },
     swiperContainer: {
         paddingHorizontal: Space.marginAlign,
