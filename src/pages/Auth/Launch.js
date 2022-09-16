@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 16:05:01
+ * @LastEditTime: 2022-09-16 16:06:26
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -97,7 +97,7 @@ export default function Launch({navigation}) {
                                     </Text>
                                     <Text />
                                     <Text style={{fontSize: px(12), lineHeight: px(18), textAlign: 'justify'}}>
-                                        如果您已经阅读、理解、认可上述政策，请点击“同意”按钮；若您拒绝，则无法使用我们提供的任何产品和/或服务。
+                                        如果您已经阅读、理解、认可上述政策，请点击“同意”按钮；若您拒绝，则无法使用我们提供的任何产品/服务。
                                     </Text>
                                 </>
                             )}
