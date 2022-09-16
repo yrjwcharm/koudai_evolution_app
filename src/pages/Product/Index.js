@@ -2,8 +2,8 @@
  * @Description: 产品首页
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
- * @LastEditors: wxp
- * @LastEditTime: 2022-09-15 11:56:51
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-16 16:32:22
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -21,7 +21,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LiveCard from '~/components/Article/LiveCard';
 import BottomDesc from '~/components/BottomDesc';
 import FollowTable from '../Attention/Index/FollowTable';
-import Animated from 'react-native-reanimated';
+import http from '~/services';
 
 const Product = () => {
     const insets = useSafeAreaInsets();
@@ -40,8 +40,16 @@ const Product = () => {
     }, [tabActive]);
 
     useEffect(() => {
+        // getProData();
         getFollowData();
+        tabRef.current?.goToPage?.(1);
     }, []);
+
+    const getProData = () => {
+        http.get('/products/index/20220901').then((res) => {
+            console.log(res);
+        });
+    };
 
     const getFollowData = useCallback(async (params) => {
         // let res = await getFollowList(params);
@@ -171,8 +179,13 @@ const Product = () => {
                 style={{flex: 1, marginTop: px(-83)}}
                 initialPage={1}
                 renderTabBar={false}
+                locked={true}
                 onChangeTab={onChangeTab}>
-                <ScrollView tabLabel="自选">
+                <ScrollView
+                    tabLabel="自选"
+                    showsHorizontalScrollIndicator={false}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {}} />}
+                    style={{flex: 1}}>
                     <View style={{paddingHorizontal: px(16)}}>
                         <ScrollableTabView
                             prerenderingSiblingsNumber={_tabs?.length}
@@ -211,7 +224,7 @@ const Product = () => {
                                     onPress={() => {
                                         jump({
                                             path: 'PortfolioDetails',
-                                            params: {link: 'http://192.168.88.171:3000/portfolioDetails/111'},
+                                            params: {link: 'http://192.168.88.170:3000/portfolioDetails/111'},
                                         });
                                     }}
                                     style={styles.menuItem}

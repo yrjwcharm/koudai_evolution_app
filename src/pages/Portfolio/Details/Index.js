@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
- * @LastEditors: wxp
- * @LastEditTime: 2022-09-15 17:00:07
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-16 16:33:41
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -70,7 +70,7 @@ const PortFolioDetail = ({navigation, route}) => {
     }, []);
 
     const init = () => {
-        http.get('/portfolio/detail/20220914', {}).then((res) => {
+        http.get('/portfolio/buttons/20220914', route?.params?.params).then((res) => {
             if (res.code === '000000') {
                 const {title} = res.result;
                 navigation.setOptions({
@@ -144,7 +144,12 @@ const PortFolioDetail = ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} scrollEventThrottle={16} bounces={false}>
+            <ScrollView
+                style={{flex: 1}}
+                showsHorizontalScrollIndicator={false}
+                scrollIndicatorInsets={{right: 1}}
+                scrollEventThrottle={16}
+                bounces={false}>
                 {token ? (
                     <RNWebView
                         bounces={false}
@@ -195,7 +200,12 @@ const PortFolioDetail = ({navigation, route}) => {
                         startInLoadingState={true}
                         style={{height: webviewHeight, opacity: 0.99}}
                         source={{
-                            uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
+                            uri: URI(route.params.link)
+                                .addQuery({
+                                    timeStamp: timeStamp.current,
+                                    ...route.params.params,
+                                })
+                                .valueOf(),
                         }}
                         textZoom={100}
                     />
