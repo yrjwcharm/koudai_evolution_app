@@ -415,7 +415,7 @@ const TradeRecordDetail = (props) => {
                                     </TouchableOpacity>
 
                                     {k1 ? (
-                                        <View style={{marginTop: px(12)}}>
+                                        <View style={{marginTop: -px(4), paddingBottom: px(8)}}>
                                             <HTML html={k1} style={styles.name} />
                                         </View>
                                     ) : null}
