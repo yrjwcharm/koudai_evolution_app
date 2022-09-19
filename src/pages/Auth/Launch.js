@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 16:06:26
+ * @LastEditTime: 2022-09-19 14:45:32
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -189,6 +189,7 @@ export default function Launch({navigation}) {
                     http.get('/mapi/app/privacy/info/20220916')
                         .then((pra) => {
                             if (pra?.result?.show_privacy == 1) {
+                                SplashScreen.hide();
                                 showPrivacyPop(pra?.result?.privacy_pop);
                             } else {
                                 init();
