@@ -83,16 +83,21 @@ const Index = ({data = [], type = 'default'}) => {
         const containerSty = out_box
             ? {
                   marginTop: index === 0 ? 0 : px(8),
-                  paddingHorizontal: px(12),
+                  padding: px(12),
                   borderRadius: Space.borderRadius,
                   borderWidth: Space.borderWidth,
                   borderColor: '#E8E8E8',
                   borderTopColor: 'transparent',
                   overflow: 'hidden',
               }
-            : {borderColor: Colors.borderColor, borderTopWidth: index === 0 ? 0 : Space.borderWidth};
+            : {
+                  marginTop: index === 0 ? 0 : px(12),
+                  paddingTop: index === 0 ? 0 : px(12),
+                  borderColor: Colors.borderColor,
+                  borderTopWidth: index === 0 ? 0 : Space.borderWidth,
+              };
         return (
-            <View key={name + id + index} style={[containerSty, {paddingVertical: px(12)}]}>
+            <View key={name + id + index} style={containerSty}>
                 {out_box ? (
                     <LinearGradient
                         colors={['#F1F6FF', '#fff']}
@@ -188,7 +193,7 @@ const Index = ({data = [], type = 'default'}) => {
                     </View>
                 ) : null}
                 {chart?.length > 0 ? (
-                    <View style={{marginTop: px(12), height: px(36)}}>
+                    <View style={{marginTop: px(12), width: '100%', height: px(36)}}>
                         <Chart
                             data={chart}
                             initScript={chartOptions.smChart(chart)}
@@ -212,7 +217,7 @@ const Index = ({data = [], type = 'default'}) => {
     };
     /** @name 轮播卡片 */
     const renderSwiperItem = (item, index) => {
-        const {bg_img, button, desc, name, tags} = item;
+        const {bg_img, button, desc, name, tags, url} = item;
         return (
             <LinearGradient
                 colors={['#FFFCF7', '#FFF2E0']}
@@ -220,25 +225,33 @@ const Index = ({data = [], type = 'default'}) => {
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.swiperItem}>
-                {bg_img ? <Image source={{uri: bg_img}} style={styles.bgImage} /> : null}
-                <HTML html={desc} style={styles.cardDesc} />
-                <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text>
-                <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
-                    {tags?.map?.((tag, i) => {
-                        return (
-                            <View key={tag + i} style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
-                                <Text style={styles.goldenTagText}>{tag}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    disabled={button?.avail === 0}
-                    onPress={() => jump(button?.url)}
-                    style={[Style.flexCenter, styles.cardBtn]}>
-                    <Text style={styles.cardBtnText}>{button?.text}</Text>
-                </TouchableOpacity>
+                {bg_img ? (
+                    <TouchableOpacity activeOpacity={url ? 0.8 : 1} onPress={() => jump(url)} style={styles.bgImage}>
+                        <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
+                    </TouchableOpacity>
+                ) : null}
+                {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
+                {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
+                {tags?.length > 0 && (
+                    <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
+                        {tags.map?.((tag, i) => {
+                            return (
+                                <View key={tag + i} style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
+                                    <Text style={styles.goldenTagText}>{tag}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+                {button?.text ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={button?.avail === 0}
+                        onPress={() => jump(button?.url)}
+                        style={[Style.flexCenter, styles.cardBtn]}>
+                        <Text style={styles.cardBtnText}>{button?.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </LinearGradient>
         );
     };
@@ -254,7 +267,7 @@ const Index = ({data = [], type = 'default'}) => {
 
     switch (type) {
         case 'horizontal':
-            return <View style={Style.flexRow}>{data.map(renderHorizontalItem)}</View>;
+            return <View style={[Style.flexRow, {paddingBottom: px(12)}]}>{data.map(renderHorizontalItem)}</View>;
         case 'swiper':
             return (
                 <Swiper
@@ -321,11 +334,12 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     linearBox: {
+        borderRadius: Space.borderRadius,
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
     },
     name: {
         fontSize: Font.textH3,
@@ -379,9 +393,9 @@ const styles = StyleSheet.create({
     bgImage: {
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
     },
     ratioLabelBox: {
         marginTop: px(12),
