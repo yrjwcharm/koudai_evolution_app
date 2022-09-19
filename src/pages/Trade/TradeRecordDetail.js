@@ -420,7 +420,7 @@ const TradeRecordDetail = (props) => {
                                         </View>
                                     ) : null}
 
-                                    {recordType == 'adjust_compare' && children && showMore[index] ? (
+                                    {recordType === 'adjust_compare' && children && showMore[index] ? (
                                         // 调仓
                                         <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
                                             {children?.head ? (
@@ -473,7 +473,9 @@ const TradeRecordDetail = (props) => {
                                             ))}
                                         </View>
                                     ) : null}
-                                    {children && showMore[index] ? renderChildren(children) : null}
+                                    {recordType !== 'adjust_compare' && children && showMore[index]
+                                        ? renderChildren(children)
+                                        : null}
                                     {showMore[index]
                                         ? extra_step?.map?.((step, i) => {
                                               const {children: extraChildren, k: key, v: value} = step;
