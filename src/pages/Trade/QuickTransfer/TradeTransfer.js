@@ -326,7 +326,9 @@ const Index = ({navigation, route, setLoading}) => {
                     ) : null}
                     <View style={[Style.flexRow, {marginTop: px(24)}]}>
                         <Text style={styles.title}>{percent.tip_title}</Text>
-                        <Text style={[styles.desc, {marginLeft: px(8)}]}>{percent.tip_text}</Text>
+                        <Text style={[styles.desc, {marginLeft: px(8)}]}>
+                            {calcData?.trial_tips || percent.tip_text}
+                        </Text>
                     </View>
                     {calculating ? (
                         <View style={[Style.flexCenter, {height: px(200)}]}>
