@@ -12,6 +12,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Chart, chartOptions} from '~/components/Chart';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
+import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
 
 const Index = ({data = [], type = 'default'}) => {
@@ -83,19 +84,9 @@ const Index = ({data = [], type = 'default'}) => {
         const containerSty = out_box
             ? {
                   marginTop: index === 0 ? 0 : px(8),
-                  padding: px(12),
-                  borderRadius: Space.borderRadius,
-                  borderWidth: Space.borderWidth,
-                  borderColor: '#E8E8E8',
-                  borderTopColor: 'transparent',
-                  overflow: 'hidden',
+                  ...styles.outBox,
               }
-            : {
-                  marginTop: index === 0 ? 0 : px(12),
-                  paddingTop: index === 0 ? 0 : px(12),
-                  borderColor: Colors.borderColor,
-                  borderTopWidth: index === 0 ? 0 : Space.borderWidth,
-              };
+            : {};
         return (
             <View key={name + id + index} style={containerSty}>
                 {out_box ? (
@@ -105,6 +96,8 @@ const Index = ({data = [], type = 'default'}) => {
                         end={{x: 0, y: 0.68}}
                         style={styles.linearBox}
                     />
+                ) : index !== 0 ? (
+                    <View style={styles.divider} />
                 ) : null}
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={Style.flexRow}>
                     {renderLeftPart(item)}
@@ -259,7 +252,7 @@ const Index = ({data = [], type = 'default'}) => {
     const renderTabItem = (item, index) => {
         const {tab_name} = item;
         return (
-            <View key={tab_name + index} style={{margin: px(12), height: px(146)}} tabLabel={tab_name}>
+            <View key={tab_name + index} style={{margin: px(12), marginTop: 0, height: px(146)}} tabLabel={tab_name}>
                 {renderSwiperItem(item, index)}
             </View>
         );
@@ -284,7 +277,22 @@ const Index = ({data = [], type = 'default'}) => {
                 </Swiper>
             );
         case 'tab':
-            return <ScrollableTabView initialPage={0}>{data.map(renderTabItem)}</ScrollableTabView>;
+            return (
+                <ScrollableTabView
+                    initialPage={0}
+                    renderTabBar={() => (
+                        <Tabbar
+                            activeFontSize={px(13)}
+                            btnColor={Colors.defaultColor}
+                            inActiveFontSize={px(12)}
+                            style={{borderBottomWidth: 0}}
+                            underlineWidth={px(12)}
+                            underlineStyle={{bottom: px(8)}}
+                        />
+                    )}>
+                    {data.map(renderTabItem)}
+                </ScrollableTabView>
+            );
         default:
             return <>{data.map(renderDefaultItem)}</>;
     }
@@ -490,6 +498,19 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(4),
         borderBottomRightRadius: px(4),
         backgroundColor: Colors.red,
+    },
+    outBox: {
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        borderWidth: Space.borderWidth,
+        borderColor: '#E8E8E8',
+        borderTopColor: 'transparent',
+        overflow: 'hidden',
+    },
+    divider: {
+        marginVertical: px(12),
+        borderTopWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
     },
 });
 

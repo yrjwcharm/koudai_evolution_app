@@ -26,7 +26,7 @@ const AlbumHeader = ({data: {bg_img, desc, desc_icon, icon, bg_linear = false, t
                 },
             }) => setContainerHeight(height)}
             onPress={() => jump(url)}
-            style={styles.headerContainer}>
+            style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB'} : {}]}>
             {bg_img ? (
                 <View style={styles.bgContainer}>
                     <Image
@@ -81,46 +81,57 @@ const Index = ({groups = [], header, img, img_url, items, style_type = 'default'
             {header ? <AlbumHeader data={header} /> : null}
             <View style={{paddingHorizontal: px(12)}}>
                 {img ? (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(img_url)} style={styles.albumImg}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => jump(img_url)}
+                        style={[styles.albumImg, {marginTop: header.bg_img ? px(12) : 0}]}>
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
                 {groups?.length > 0 && (
-                    <View style={[Style.flexRow, {paddingVertical: header.bg_img ? px(12) : 0}]}>
-                        {groups.map?.((group, index) => {
-                            const {name} = group;
-                            const isCurrent = active === index;
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    disabled={isCurrent}
-                                    key={name + index}
-                                    onPress={() => setActive(index)}
-                                    style={[
-                                        styles.groupTab,
-                                        {
-                                            marginLeft: index === 0 ? 0 : px(8),
-                                            backgroundColor: isCurrent ? '#DEE8FF' : Colors.bgColor,
-                                        },
-                                    ]}>
-                                    <Text
+                    <View style={{paddingTop: header.bg_img ? px(12) : 0}}>
+                        <View style={Style.flexRow}>
+                            {groups.map?.((group, index) => {
+                                const {name} = group;
+                                const isCurrent = active === index;
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        disabled={isCurrent}
+                                        key={name + index}
+                                        onPress={() => setActive(index)}
                                         style={[
-                                            styles.desc,
+                                            styles.groupTab,
                                             {
-                                                color: isCurrent ? Colors.brandColor : Colors.defaultColor,
-                                                fontWeight: isCurrent ? Font.weightMedium : '400',
+                                                marginLeft: index === 0 ? 0 : px(8),
+                                                backgroundColor: isCurrent ? '#DEE8FF' : Colors.bgColor,
                                             },
                                         ]}>
-                                        {name}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                                        <Text
+                                            style={[
+                                                styles.desc,
+                                                {
+                                                    color: isCurrent ? Colors.brandColor : Colors.defaultColor,
+                                                    fontWeight: isCurrent ? Font.weightMedium : '400',
+                                                },
+                                            ]}>
+                                            {name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        {groupDesc ? (
+                            <Text style={[styles.desc, {marginTop: px(12), color: Colors.red}]}>{groupDesc}</Text>
+                        ) : null}
                     </View>
                 )}
-                {groupDesc ? <Text style={[styles.desc, {color: Colors.red}]}>{groupDesc}</Text> : null}
                 {list?.length > 0 && (
-                    <View style={{paddingTop: header.bg_img ? px(12) : 0, paddingBottom: px(12)}}>
+                    <View
+                        style={{
+                            paddingTop: !header.bg_img && !(groups?.length > 0) ? 0 : px(12),
+                            paddingBottom: px(12),
+                        }}>
                         <ProductList data={list} type={style_type} />
                     </View>
                 )}
