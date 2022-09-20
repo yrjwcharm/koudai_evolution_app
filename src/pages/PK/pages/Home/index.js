@@ -14,7 +14,7 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import BottomDesc from '../../../../components/BottomDesc';
 import PKBall from '../../components/PKBall';
 import {useJump} from '~/components/hooks';
-import RenderPart from '~/pages/PublicOfferingOfFund/pages/Index/RenderPart';
+import RenderPart from '~/pages/FundIndex/pages/Index/RenderPart';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import LoginMask from '~/components/LoginMask';
 import {useSelector} from 'react-redux';

@@ -191,8 +191,8 @@ import AdvisorServiceSign from '../pages/Assets/AdvisorServiceSign'; // 投顾�
 import SearchHome from '../pages/PK/pages/SearchHome'; //搜索
 import PKIntroduce from '../pages/PK/pages/Introduce'; // pk介绍
 import PKSelectProduct from '../pages/PK/pages/SelectProduct'; // 产品选择
-import PublicOfferingOfFund from '~/pages/PublicOfferingOfFund/pages/Index'; // 公募基金首页
-import FundClassification from '~/pages/PublicOfferingOfFund/pages/FundClassification'; // 基金分类
+import FundIndex from '~/pages/FundIndex/pages/Index'; // 公募基金首页
+import FundClassification from '~/pages/FundIndex/pages/FundClassification'; // 基金分类
 import OCRHome from '~/pages/Attention/OCRHome'; //基金识别导入
 import FundTradeBuy from '~/pages/Trade/FundTradeBuy'; // 基金购买
 import ImportOwnerFund from '~/pages/Attention/ImportOwnerFund'; //导入持仓
@@ -201,8 +201,8 @@ import EditSortFund from '~/pages/Attention/EditSortFund'; //基金编辑
 import EditOwnerFund from '~/pages/Attention/EditOwnerFund'; //编辑持仓基金
 import PKCompare from '../pages/PK/pages/Compare'; // pk对比
 import PrivatePlacement from '../pages/PE/PrivatePlacement'; // 私募
-import FundDetail from '~/pages/PublicOfferingOfFund/pages/FundDetail'; // 基金详情
-import FundRankList from '~/pages/PublicOfferingOfFund/pages/FundRankList'; // 基金榜单
+import FundDetail from '~/pages/FundIndex/pages/FundDetail'; // 基金详情
+import FundRankList from '~/pages/FundIndex/pages/FundRankList'; // 基金榜单
 import FundNoticeManage from '~/pages/Attention/FundNoticeManage'; //基金消息管理
 import FundNoticeCenter from '~/pages/Attention/FundNoticeCenter'; //基金消息中心
 import AppTag from '~/pages/Auth/AppTag'; //用户标签选择
@@ -221,10 +221,11 @@ import ProjectTradeResult from '~/pages/Project/ProjectTradeResult'; //计划确
 import SignalList from '~/pages/Project/SignalList'; //指数买卖信号列表
 import ProjectDetail from '~/pages/Project/ProjectDetail'; // 计划详情页
 import ProjectIntro from '~/pages/Project/ProjectIntro'; // 计划介绍页
-import FundTradeRules from '~/pages/PublicOfferingOfFund/pages/FundTradeRules'; // 基金交易规则
-import FundHolding from '~/pages/PublicOfferingOfFund/pages/FundHolding'; // 基金持仓
+import FundTradeRules from '~/pages/FundIndex/pages/FundTradeRules'; // 基金交易规则
+import FundHolding from '~/pages/FundIndex/pages/FundHolding'; // 基金持仓
 import Activity from '~/pages/Common/Activity'; // 通用全图活动页
 import WhatIsPlan from '~/pages/Project/WhatIsPlan'; // 什么是计划
+import TradeGuide from '~/pages/Trade/TradeGuide'; // 交易引导
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -897,7 +898,7 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="PKIntroduce" component={PKIntroduce} options={{headerShown: false}} />
                 <Stack.Screen name="PKSelectProduct" component={PKSelectProduct} options={{title: '产品选择'}} />
-                <Stack.Screen name="PublicOfferingOfFund" component={PublicOfferingOfFund} options={{title: ''}} />
+                <Stack.Screen name="FundIndex" component={FundIndex} options={{title: ''}} />
                 <Stack.Screen name="FundClassification" component={FundClassification} options={{title: ''}} />
                 <Stack.Screen name="FundRankList" component={FundRankList} options={{headerShown: false}} />
                 <Stack.Screen name="OCRHome" component={OCRHome} options={{title: ''}} />
@@ -989,6 +990,7 @@ export default function AppStack() {
                 <Stack.Screen name="FundHolding" component={FundHolding} options={{title: ''}} />
                 <Stack.Screen name="Activity" component={Activity} options={{headerShown: false}} />
                 <Stack.Screen name="WhatIsPlan" component={WhatIsPlan} options={{headerShown: false}} />
+                <Stack.Screen name="TradeGuide" component={TradeGuide} options={{title: ''}} />
 
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />

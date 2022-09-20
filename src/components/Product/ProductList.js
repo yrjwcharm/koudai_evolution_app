@@ -2,20 +2,17 @@
  * @Date: 2022-09-13 13:05:21
  * @Description: v7产品列表
  */
-import React, {Fragment, useEffect, useState} from 'react';
-import {DeviceEventEmitter, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React from 'react';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Swiper from 'react-native-swiper';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Chart, chartOptions} from '~/components/Chart';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
-import ScrollTabbar from '~/components/ScrollTabbar';
-import Toast from '~/components/Toast';
+import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
 
 const Index = ({data = [], type = 'default'}) => {
@@ -72,6 +69,7 @@ const Index = ({data = [], type = 'default'}) => {
         const {
             flex_between = false, // 是否两端对齐
             desc,
+            id,
             labels,
             name,
             out_box = false, // 外部是否有边框和阴影
@@ -86,16 +84,11 @@ const Index = ({data = [], type = 'default'}) => {
         const containerSty = out_box
             ? {
                   marginTop: index === 0 ? 0 : px(8),
-                  paddingHorizontal: px(12),
-                  borderRadius: Space.borderRadius,
-                  borderWidth: Space.borderWidth,
-                  borderColor: '#E8E8E8',
-                  borderTopColor: 'transparent',
-                  overflow: 'hidden',
+                  ...styles.outBox,
               }
-            : {borderColor: Colors.borderColor, borderTopWidth: index === 0 ? 0 : Space.borderWidth};
+            : {};
         return (
-            <View key={name + index} style={[containerSty, {paddingVertical: px(12)}]}>
+            <View key={name + id + index} style={containerSty}>
                 {out_box ? (
                     <LinearGradient
                         colors={['#F1F6FF', '#fff']}
@@ -103,10 +96,12 @@ const Index = ({data = [], type = 'default'}) => {
                         end={{x: 0, y: 0.68}}
                         style={styles.linearBox}
                     />
+                ) : index !== 0 ? (
+                    <View style={styles.divider} />
                 ) : null}
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={Style.flexRow}>
                     {renderLeftPart(item)}
-                    <View style={flex_between ? Style.flexBetween : {flex: 1}}>
+                    <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
                         <View>
                             <View style={Style.flexRow}>
                                 <Text style={styles.name}>{name}</Text>
@@ -155,7 +150,9 @@ const Index = ({data = [], type = 'default'}) => {
                                 <HTML html={profit} style={styles.bigProfit} />
                                 <Text
                                     style={
-                                        flex_between ? {marginTop: px(4)} : [styles.profitLabel, {marginLeft: px(8)}]
+                                        flex_between
+                                            ? [styles.profitLabel, {marginTop: px(4)}]
+                                            : [styles.profitLabel, {marginLeft: px(8)}]
                                     }>
                                     {profit_desc}
                                 </Text>
@@ -189,7 +186,7 @@ const Index = ({data = [], type = 'default'}) => {
                     </View>
                 ) : null}
                 {chart?.length > 0 ? (
-                    <View style={{marginTop: px(12), height: px(36)}}>
+                    <View style={{marginTop: px(12), width: '100%', height: px(36)}}>
                         <Chart
                             data={chart}
                             initScript={chartOptions.smChart(chart)}
@@ -213,7 +210,7 @@ const Index = ({data = [], type = 'default'}) => {
     };
     /** @name 轮播卡片 */
     const renderSwiperItem = (item, index) => {
-        const {bg_img, button, desc, name, tags} = item;
+        const {bg_img, button, desc, name, tags, url} = item;
         return (
             <LinearGradient
                 colors={['#FFFCF7', '#FFF2E0']}
@@ -221,25 +218,33 @@ const Index = ({data = [], type = 'default'}) => {
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.swiperItem}>
-                {bg_img ? <Image source={{uri: bg_img}} style={styles.bgImage} /> : null}
-                <HTML html={desc} style={styles.cardDesc} />
-                <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text>
-                <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
-                    {tags?.map?.((tag, i) => {
-                        return (
-                            <View key={tag + i} style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
-                                <Text style={styles.goldenTagText}>{tag}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    disabled={button?.avail === 0}
-                    onPress={() => jump(button?.url)}
-                    style={[Style.flexCenter, styles.cardBtn]}>
-                    <Text style={styles.cardBtnText}>{button?.text}</Text>
-                </TouchableOpacity>
+                {bg_img ? (
+                    <TouchableOpacity activeOpacity={url ? 0.8 : 1} onPress={() => jump(url)} style={styles.bgImage}>
+                        <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
+                    </TouchableOpacity>
+                ) : null}
+                {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
+                {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
+                {tags?.length > 0 && (
+                    <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
+                        {tags.map?.((tag, i) => {
+                            return (
+                                <View key={tag + i} style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
+                                    <Text style={styles.goldenTagText}>{tag}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+                {button?.text ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={button?.avail === 0}
+                        onPress={() => jump(button?.url)}
+                        style={[Style.flexCenter, styles.cardBtn]}>
+                        <Text style={styles.cardBtnText}>{button?.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </LinearGradient>
         );
     };
@@ -247,7 +252,7 @@ const Index = ({data = [], type = 'default'}) => {
     const renderTabItem = (item, index) => {
         const {tab_name} = item;
         return (
-            <View key={tab_name + index} style={{margin: px(12), height: px(146)}} tabLabel={tab_name}>
+            <View key={tab_name + index} style={{margin: px(12), marginTop: 0, height: px(146)}} tabLabel={tab_name}>
                 {renderSwiperItem(item, index)}
             </View>
         );
@@ -255,7 +260,7 @@ const Index = ({data = [], type = 'default'}) => {
 
     switch (type) {
         case 'horizontal':
-            return <View style={Style.flexRow}>{data.map(renderHorizontalItem)}</View>;
+            return <View style={[Style.flexRow, {paddingBottom: px(12)}]}>{data.map(renderHorizontalItem)}</View>;
         case 'swiper':
             return (
                 <Swiper
@@ -272,7 +277,22 @@ const Index = ({data = [], type = 'default'}) => {
                 </Swiper>
             );
         case 'tab':
-            return <ScrollableTabView initialPage={0}>{data.map(renderTabItem)}</ScrollableTabView>;
+            return (
+                <ScrollableTabView
+                    initialPage={0}
+                    renderTabBar={() => (
+                        <Tabbar
+                            activeFontSize={px(13)}
+                            btnColor={Colors.defaultColor}
+                            inActiveFontSize={px(12)}
+                            style={{borderBottomWidth: 0}}
+                            underlineWidth={px(12)}
+                            underlineStyle={{bottom: px(8)}}
+                        />
+                    )}>
+                    {data.map(renderTabItem)}
+                </ScrollableTabView>
+            );
         default:
             return <>{data.map(renderDefaultItem)}</>;
     }
@@ -303,6 +323,18 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
     },
+    bigProfit: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    smProfit: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
     profitLabel: {
         marginTop: px(1),
         fontSize: px(10),
@@ -310,11 +342,12 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     linearBox: {
+        borderRadius: Space.borderRadius,
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
     },
     name: {
         fontSize: Font.textH3,
@@ -368,9 +401,9 @@ const styles = StyleSheet.create({
     bgImage: {
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
     },
     ratioLabelBox: {
         marginTop: px(12),
@@ -465,6 +498,19 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(4),
         borderBottomRightRadius: px(4),
         backgroundColor: Colors.red,
+    },
+    outBox: {
+        padding: px(12),
+        borderRadius: Space.borderRadius,
+        borderWidth: Space.borderWidth,
+        borderColor: '#E8E8E8',
+        borderTopColor: 'transparent',
+        overflow: 'hidden',
+    },
+    divider: {
+        marginVertical: px(12),
+        borderTopWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
     },
 });
 

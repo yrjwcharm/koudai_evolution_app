@@ -4,7 +4,7 @@
  */
 
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
 import {Colors, Space} from '../common/commonStyle';
 import {px} from '../utils/appUtil';
 const Button = (props) => {
@@ -26,7 +26,11 @@ export default class TabBar extends Component {
                 ? this.props.btnColor
                 : Colors.btnColor
             : Colors.darkGrayColor;
-        const fontSize = isTabActive ? (this.props.activeFontSize ? this.props.activeFontSize : px(15)) : px(14);
+        const fontSize = isTabActive
+            ? this.props.activeFontSize
+                ? this.props.activeFontSize
+                : px(15)
+            : this.props.inActiveFontSize || px(14);
         return (
             <Button
                 style={{flex: 1, height}}
@@ -46,7 +50,7 @@ export default class TabBar extends Component {
     _renderUnderline() {
         const containerWidth = this.props.containerWidth;
         const numberOfTabs = this.props.tabs.length;
-        const underlineWidth = px(20);
+        const underlineWidth = this.props.underlineWidth || px(20);
         const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 4;
         const deLen = (containerWidth / numberOfTabs - underlineWidth) / 2;
         const tabUnderlineStyle = {
