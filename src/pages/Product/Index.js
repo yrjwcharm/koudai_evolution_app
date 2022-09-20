@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 16:32:22
+ * @LastEditTime: 2022-09-19 14:05:38
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -222,9 +222,17 @@ const Product = () => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        // jump({
+                                        //     path: 'PortfolioDetails',
+                                        //     params: {
+                                        //         link: 'http://192.168.88.170:3000/portfolioDetails',
+                                        //         params: {
+                                        //             plan_id: '123',
+                                        //         },
+                                        //     },
+                                        // });
                                         jump({
-                                            path: 'PortfolioDetails',
-                                            params: {link: 'http://192.168.88.170:3000/portfolioDetails/111'},
+                                            path: 'SpecialDetail',
                                         });
                                     }}
                                     style={styles.menuItem}

@@ -246,6 +246,8 @@ import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基�
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
 import Find from '~/pages/Find'; // 投顾组合
 import PortfolioAssets from '~/pages/Assets/PortfolioAssets'; // 老版本持仓详情页
+import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
+import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 
 const Stack = createStackNavigator();
 
@@ -1008,6 +1010,12 @@ export default function AppStack() {
                 <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
                 <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
                 <Stack.Screen name="Find" component={Find} options={{title: ''}} />
+                <Stack.Screen name="PortfolioIndex" component={PortfolioIndex} options={{title: ''}} />
+                <Stack.Screen
+                    name="SpecialDetail"
+                    component={SpecialDetail}
+                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                />
             </Stack.Navigator>
         </>
     );

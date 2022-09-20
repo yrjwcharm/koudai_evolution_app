@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 16:33:41
+ * @LastEditTime: 2022-09-16 18:48:48
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -235,12 +235,12 @@ const PortFolioDetail = ({navigation, route}) => {
                 })}
                 <View style={[Style.flexRow, styles.rightBtns]}>
                     {simple_btns?.map((btn, i, arr) => {
-                        const {avail, text, url} = btn;
+                        const {avail, title, url} = btn;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={avail === 0}
-                                key={text + i}
+                                key={title + i}
                                 onPress={() => {
                                     jump(url);
                                 }}
@@ -249,7 +249,7 @@ const PortFolioDetail = ({navigation, route}) => {
                                     styles.rightBtn,
                                     {backgroundColor: avail === 0 ? '#ddd' : Colors.brandColor},
                                 ]}>
-                                <Text style={[styles.rightBtnText]}>{text}</Text>
+                                <Text style={[styles.rightBtnText]}>{title}</Text>
                             </TouchableOpacity>
                         );
                     })}
@@ -293,12 +293,20 @@ const styles = StyleSheet.create({
     },
     leftBtn: {
         justifyContent: 'center',
+        marginRight: px(24),
     },
     leftBtnText: {
         fontSize: px(11),
         lineHeight: px(15),
         color: '#3D3D3D',
         marginTop: px(4),
+        textAlign: 'center',
+    },
+    rightBtns: {
+        borderRadius: Space.borderRadius,
+        flex: 1,
+        height: px(44),
+        overflow: 'hidden',
     },
     rightBtn: {
         flex: 1,
