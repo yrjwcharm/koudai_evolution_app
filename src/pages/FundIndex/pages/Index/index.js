@@ -8,7 +8,6 @@ import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} fr
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import Feather from 'react-native-vector-icons/Feather';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
@@ -58,7 +57,13 @@ const Index = ({navigation}) => {
                                 activeOpacity={0.8}
                                 onPress={() => navigation.navigate('SearchHome')}
                                 style={{marginRight: Space.marginAlign}}>
-                                <Feather color={Colors.defaultColor} name={'search'} size={px(20)} />
+                                <Image
+                                    source={{
+                                        uri:
+                                            'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
+                                    }}
+                                    style={{width: px(24), height: px(24)}}
+                                />
                             </TouchableOpacity>
                         ),
                         title: res.result.title || '基金',

@@ -226,6 +226,8 @@ import FundHolding from '~/pages/FundIndex/pages/FundHolding'; // 基金持仓
 import Activity from '~/pages/Common/Activity'; // 通用全图活动页
 import WhatIsPlan from '~/pages/Project/WhatIsPlan'; // 什么是计划
 import TradeGuide from '~/pages/Trade/TradeGuide'; // 交易引导
+import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
+import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -247,8 +249,6 @@ import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基�
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
 import Find from '~/pages/Find'; // 投顾组合
 import PortfolioAssets from '~/pages/Assets/PortfolioAssets'; // 老版本持仓详情页
-import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
-import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 
 const Stack = createStackNavigator();
 
@@ -991,6 +991,12 @@ export default function AppStack() {
                 <Stack.Screen name="Activity" component={Activity} options={{headerShown: false}} />
                 <Stack.Screen name="WhatIsPlan" component={WhatIsPlan} options={{headerShown: false}} />
                 <Stack.Screen name="TradeGuide" component={TradeGuide} options={{title: ''}} />
+                <Stack.Screen name="PortfolioIndex" component={PortfolioIndex} options={{title: ''}} />
+                <Stack.Screen
+                    name="SpecialDetail"
+                    component={SpecialDetail}
+                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                />
 
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
@@ -1012,12 +1018,6 @@ export default function AppStack() {
                 <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
                 <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
                 <Stack.Screen name="Find" component={Find} options={{title: ''}} />
-                <Stack.Screen name="PortfolioIndex" component={PortfolioIndex} options={{title: ''}} />
-                <Stack.Screen
-                    name="SpecialDetail"
-                    component={SpecialDetail}
-                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
-                />
             </Stack.Navigator>
         </>
     );
