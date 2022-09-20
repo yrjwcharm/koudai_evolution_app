@@ -393,7 +393,7 @@ const TradeRecordDetail = (props) => {
                                         }}
                                         style={[Style.flexBetween, {height: px(42)}]}>
                                         <View style={styles.trangle} />
-                                        <View style={{marginRight: px(12), flexShrink: 1}}>
+                                        <View style={{marginRight: px(8), flexShrink: 1}}>
                                             <HTML
                                                 ellipsizeMode="middle"
                                                 numberOfLines={1}
