@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 14:13:42
+ * @LastEditTime: 2022-09-21 14:16:45
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -331,7 +331,10 @@ const Product = ({navigation}) => {
                                         // jump({
                                         //     path: 'SpecialDetail',
                                         // });
-                                        jump(item.url);
+                                        jump({
+                                            path: 'PortfolioIndex',
+                                        });
+                                        // jump(item.url);
                                     }}
                                     style={styles.menuItem}
                                     key={idx}>

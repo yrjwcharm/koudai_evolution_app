@@ -22,22 +22,26 @@ const PortfolioIndex = ({navigation, route}) => {
     const init = () => {
         http.get('/products/portfolio/index/20220901', route?.params?.params).then((res) => {
             if (res.code === '000000') {
-                const {title} = res.result;
+                const {title, search_btn} = res.result;
                 navigation.setOptions({
                     title: title || '组合',
-                    headerRight: () => (
-                        <TouchableOpacity
-                            style={[Style.flexRowCenter, {marginRight: Space.marginAlign}]}
-                            activeOpacity={0.8}
-                            onPress={onHeaderRightPress}>
-                            <FastImage
-                                source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
-                                }}
-                                style={{width: px(24), height: px(24)}}
-                            />
-                        </TouchableOpacity>
-                    ),
+                    headerRight: search_btn
+                        ? () => (
+                              <TouchableOpacity
+                                  style={[Style.flexRowCenter, {marginRight: Space.marginAlign}]}
+                                  activeOpacity={0.8}
+                                  onPress={() => {
+                                      jump(search_btn.url);
+                                  }}>
+                                  <FastImage
+                                      source={{
+                                          uri: search_btn.icon,
+                                      }}
+                                      style={{width: px(24), height: px(24)}}
+                                  />
+                              </TouchableOpacity>
+                          )
+                        : null,
                 });
                 setData(res.result);
             }
@@ -51,23 +55,27 @@ const PortfolioIndex = ({navigation, route}) => {
         }, [])
     );
 
-    const onHeaderRightPress = () => jump({path: 'SearchHome'});
-
     const genTopMenu = () => {
         return (
             <View style={styles.topMenu}>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((item, idx) => (
-                    <View style={[styles.topMenuItem]}>
+                {data?.nav.map((item, idx) => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.topMenuItem]}
+                        key={idx}
+                        onPress={() => {
+                            jump(item.url);
+                        }}>
                         <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             <FastImage
                                 source={{
-                                    uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/jyyd@3x.png',
+                                    uri: item.icon,
                                 }}
                                 style={styles.topMenuItemIcon}
                             />
                         </View>
-                        <Text style={styles.topMenuItemText}>分类名称</Text>
-                    </View>
+                        <Text style={styles.topMenuItemText}>{item.name}</Text>
+                    </TouchableOpacity>
                 ))}
             </View>
         );
