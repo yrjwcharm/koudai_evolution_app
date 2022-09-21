@@ -251,6 +251,10 @@ import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基�
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
 import Find from '~/pages/Find'; // 投顾组合
 import PortfolioAssets from '~/pages/Assets/PortfolioAssets'; // 老版本持仓详情页
+import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一键转换介绍页
+import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
+import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
+import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 
 const Stack = createStackNavigator();
 
@@ -1025,6 +1029,73 @@ export default function AppStack() {
                 <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
                 <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
                 <Stack.Screen name="Find" component={Find} options={{title: ''}} />
+
+                <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+                <Stack.Screen
+                    name="WalletAutoRechargeDetail"
+                    component={WalletAutoRechargeDetail}
+                    options={{title: ''}}
+                />
+                <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
+                <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
+                <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
+                <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
+                <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
+                <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
+                <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
+                <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
+                <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
+                <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
+                <Stack.Screen
+                    name="SelectIdentity"
+                    component={SelectIdentity}
+                    options={{title: '请选择视野中的身份'}}
+                />
+                <Stack.Screen name="ProductCover" component={ProductCover} options={{title: ''}} />
+                <Stack.Screen name="RiskAdjustTool" component={RiskAdjustTool} options={{title: ''}} />
+                <Stack.Screen name="LiveLand" component={LiveLand} options={{headerShown: false}} />
+                <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
+                <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
+                <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: ''}} />
+                <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
+                <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
+                <Stack.Screen name="Sign" component={Sign} options={{title: '投顾服务签约'}} />
+                <Stack.Screen name="RiskDisclosure" component={RiskDisclosure} options={{title: ''}} />
+                <Stack.Screen
+                    name="ArticleCommentList"
+                    component={ArticleCommentList}
+                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                />
+                <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
+                <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
+                <Stack.Screen name="AdjustSetting" component={AdjustSetting} options={{title: ''}} />
+                <Stack.Screen name="AdvisorServiceSign" component={AdvisorServiceSign} options={{title: ''}} />
+                <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
+                <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
+                <Stack.Screen name="ObjectChoose" component={ObjectChoose} options={{title: ''}} />
+                <Stack.Screen name="QuestionAnswer" component={QuestionAnswer} options={{title: ''}} />
+                <Stack.Screen name="UploadMaterial" component={UploadMaterial} options={{title: ''}} />
+                <Stack.Screen name="PrivateReview" component={PrivateReview} options={{title: ''}} />
+                <Stack.Screen name="PEQuestionnaire" component={PEQuestionnaire} options={{title: ''}} />
+                <Stack.Screen name="PEQuestionnaireResult" component={PEQuestionnaireResult} options={{title: ''}} />
+                <Stack.Screen name="InvestorCert" component={InvestorCert} options={{title: ''}} />
+                <Stack.Screen name="ProductReserve" component={ProductReserve} options={{title: ''}} />
+                <Stack.Screen name="MatchNotification" component={MatchNotification} options={{title: ''}} />
+                <Stack.Screen name="SignRiskDisclosure" component={SignRiskDisclosure} options={{title: ''}} />
+                <Stack.Screen name="SignPassword" component={SignPassword} options={{title: ''}} />
+                <Stack.Screen name="PortfolioTransfer" component={PortfolioTransfer} options={{title: ''}} />
+                <Stack.Screen name="BlancedPortfolio" component={BlancedPortfolio} options={{title: ''}} />
+                <Stack.Screen name="TradeAgreementList" component={TradeAgreementList} options={{title: ''}} />
+                <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
+                <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
+                <Stack.Screen name="TransferIntro" component={TransferIntro} options={{title: ''}} />
+                <Stack.Screen
+                    name="ChooseTransferPortfolio"
+                    component={ChooseTransferPortfolio}
+                    options={{title: ''}}
+                />
+                <Stack.Screen name="TradeTransfer" component={TradeTransfer} options={{title: ''}} />
+                <Stack.Screen name="TransferDetail" component={TransferDetail} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );

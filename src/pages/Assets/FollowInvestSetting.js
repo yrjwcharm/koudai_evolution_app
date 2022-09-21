@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-11-26 10:59:14
- * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 21:23:08
  * @Description: 跟投设置
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -39,7 +36,7 @@ const FollowInvestSetting = ({navigation, route}) => {
         let rate = +(data.wallet_amount / +amount).toFixed(2);
         if (rate < 0) rate = 0;
         if (rate > 1) rate = 1;
-        return rate;
+        return rate || 0;
     }, [amount, data.wallet_amount]);
 
     const selectConflict = useMemo(() => selectedBank.pay_method === 'wallet' && autoChargeStatus, [

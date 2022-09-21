@@ -17,7 +17,7 @@ const tagsStyles = {
     alink: {color: Colors.btnColor},
 };
 const RenderHtml = (props) => {
-    const {numberOfLines = 10000, style, nativeProps} = props;
+    const {ellipsizeMode = 'tail', numberOfLines = 10000, style, nativeProps} = props;
     const renderers = {
         alink: {
             wrapper: 'Text',
@@ -44,6 +44,7 @@ const RenderHtml = (props) => {
             debug={false}
             defaultTextProps={{
                 allowFontScaling: false,
+                ellipsizeMode,
                 numberOfLines,
             }}
             baseFontStyle={style}

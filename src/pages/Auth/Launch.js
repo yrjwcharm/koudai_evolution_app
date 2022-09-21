@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-23 18:06:56
+ * @LastEditTime: 2022-09-21 21:09:07
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -29,14 +29,10 @@ import {getAppMetaData} from 'react-native-get-channel';
 import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
 import DeviceInfo from 'react-native-device-info';
-// import CodePush from 'react-native-code-push';
+import NetInfo from '@react-native-community/netinfo';
+import {debounce} from 'lodash';
+import RenderHtml from '../../components/RenderHtml';
 const {PTRIDFA, OAIDModule} = NativeModules;
-const key = Platform.select({
-    // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
-    // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
-    ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
-    android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
-});
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online', 'online1', 'online2'];
@@ -50,7 +46,8 @@ export default function Launch({navigation}) {
     global.getUserInfo = () => {
         dispatch(getUserInfo());
     };
-    const showPrivacyPop = () => {
+    // updatePriData更新后的隐私
+    const showPrivacyPop = (updatePriData) => {
         Modal.show({
             confirm: true,
             backButtonClose: false,
@@ -61,44 +58,54 @@ export default function Launch({navigation}) {
             confirmCallBack: () => {
                 init();
                 Storage.save('privacy', 'privacy');
+                //上报隐私同意点击
+                setTimeout(() => {
+                    http.post('/mapi/app/privacy/report/20220916', {
+                        is_first: updatePriData ? 0 : 1,
+                    });
+                }, 1000);
             },
             children: () => {
                 return (
                     <View style={{height: px(300)}}>
                         <ScrollView style={{paddingHorizontal: px(20), marginVertical: px(20)}}>
-                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                欢迎使用理财魔方！为给您提供优质的服务、控制业务风险、保障信息和资金安全，本应用使用过程中，需要联网，需要在必要范围内收集、使用或共享您的个人信息。我们提供理财、保险、支付等服务。请您在使用前仔细阅读
-                                <Text
-                                    style={{color: Colors.btnColor}}
-                                    onPress={() => {
-                                        navigation.navigate('WebView', {
-                                            link: `${baseURL.H5}/privacy`,
-                                            title: '理财魔方隐私权协议',
-                                        });
-                                        Modal.close();
-                                    }}>
-                                    《隐私政策》
-                                </Text>
-                                条款，同意后开始接受我们的服务。
-                            </Text>
-                            <Text />
-                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                本应用使用期间，我们需要申请获取您的系统权限，我们将在首次调用时逐项询问您是否允许使用该权限。您可以在我们询问时开启相关权限，也可以在设备系统“设置”里管理相关权限：
-                            </Text>
-                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                1.消息通知权限：向您及时推送交易、阅读推荐等消息，方便您更及时了解您的理财相关数据。
-                            </Text>
-                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                2.读取电话状态权限：正常识别您的本机识别码，以便完成安全风控、进行统计和服务推送。
-                            </Text>
-                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                3.读写外部存储权限：向您提供头像设置、客服、评论或分享、图像识别、下载打开文件时，您可以通过开启存储权限使用或保存图片、视频或文件。
-                            </Text>
+                            {updatePriData?.content ? (
+                                <RenderHtml
+                                    html={updatePriData?.content}
+                                    style={{fontSize: px(12), lineHeight: px(18), textAlign: 'justify'}}
+                                />
+                            ) : (
+                                <>
+                                    <Text style={{fontSize: px(12), lineHeight: px(18), textAlign: 'justify'}}>
+                                        欢迎使用理财魔方！理财魔方深知隐私及个人信息对您的重要性，因此我们非常重视保护您的隐私和个人信息安全。您在使用我们提供的产品/服务时，我们需要收集、使用您的个人信息。
+                                    </Text>
+                                    <Text />
+                                    <Text style={{fontSize: px(12), lineHeight: px(18), textAlign: 'justify'}}>
+                                        在您使用理财魔方App前，请您务必仔细阅读、充分理解
+                                        <Text
+                                            style={{color: Colors.btnColor}}
+                                            onPress={() => {
+                                                navigation.navigate('WebView', {
+                                                    link: `${baseURL.H5}/privacy`,
+                                                    title: '  ',
+                                                });
+                                                Modal.close();
+                                            }}>
+                                            《理财魔方隐私权政策》
+                                        </Text>
+                                        中的相关条款。《理财魔方隐私权政策》清晰列示了我们如何收集、使用、对外提供、存储、保护您的个人信息。您还可以通过阅读具体条款，了解如何实现您的个人信息权利。
+                                    </Text>
+                                    <Text />
+                                    <Text style={{fontSize: px(12), lineHeight: px(18), textAlign: 'justify'}}>
+                                        如果您已经阅读、理解、认可上述政策，请点击“同意”按钮；若您拒绝，则无法使用我们提供的任何产品/服务。
+                                    </Text>
+                                </>
+                            )}
                         </ScrollView>
                     </View>
                 );
             },
-            title: '隐私保护说明',
+            title: updatePriData?.title || '理财魔方隐私声明',
             confirmText: '同意',
             cancelText: '拒绝',
         });
@@ -135,14 +142,6 @@ export default function Launch({navigation}) {
                 dispatch(updateUserInfo({pushRoute: result.extras.route}));
             }
         });
-        // //本地通知回调
-        // JPush.addLocalNotificationListener((result) => {
-        //     console.log('localNotificationListener:' + JSON.stringify(result));
-        // });
-        // //自定义消息回调
-        // JPush.addCustomMessagegListener((result) => {
-        //     console.log('customMessageListener:' + JSON.stringify(result));
-        // });
     };
     const postHeartData = (registerID, channel) => {
         http.post('/common/device/heart_beat/20210101', {
@@ -184,9 +183,21 @@ export default function Launch({navigation}) {
     useFocusEffect(
         useCallback(() => {
             global.env = env;
-            Storage.get('privacy').then((res) => {
+            Storage.get('privacy').then(async (res) => {
                 if (res) {
-                    init();
+                    global.did = await DeviceInfo.syncUniqueId();
+                    http.get('/mapi/app/privacy/info/20220916')
+                        .then((pra) => {
+                            if (pra?.result?.show_privacy == 1) {
+                                SplashScreen.hide();
+                                showPrivacyPop(pra?.result?.privacy_pop);
+                            } else {
+                                init();
+                            }
+                        })
+                        .catch(() => {
+                            init();
+                        });
                 } else {
                     SplashScreen.hide();
                     showPrivacyPop();
@@ -214,20 +225,6 @@ export default function Launch({navigation}) {
         }
         http.post('mapi/upload/apple_ad/20220530', data);
     };
-    //获取热更新信息
-    // const getRemoteCodePush = () => {
-    //     CodePush.checkForUpdate(key)
-    //         .then((update) => {
-    //             if (!update) {
-    //                 dispatch(updateUserInfo({hotRefreshData: ''}));
-    //             } else {
-    //                 dispatch(updateUserInfo({hotRefreshData: update}));
-    //             }
-    //         })
-    //         .catch((res) => {
-    //             dispatch(updateUserInfo({hotRefreshData: ''}));
-    //         });
-    // };
     const init = () => {
         getSystemMes();
         Platform.OS == 'ios' ? getIdfa() : getOaid();
@@ -254,6 +251,16 @@ export default function Launch({navigation}) {
             }
         });
         fetchImg();
+        NetInfo.addEventListener(
+            debounce((state) => {
+                if (!state.isConnected) {
+                    Toast.show('网络已断开,请检查您的网络');
+                } else {
+                    dispatch(getUserInfo());
+                    dispatch(getAppConfig());
+                }
+            }, 500)
+        );
     };
     // 获取开机广告数据
     const fetchImg = () => {

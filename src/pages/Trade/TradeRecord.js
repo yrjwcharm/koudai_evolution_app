@@ -150,14 +150,6 @@ const TradeRecord = ({route, navigation}) => {
             return Colors.defaultColor;
         }
     };
-
-    const handlerName = (val = '') => {
-        if (val.length > 12) {
-            val = val.slice(0, 10) + '...' + val.slice(-2);
-        }
-        return val;
-    };
-
     const ListFooterComponent = () => {
         return (
             <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>
@@ -181,6 +173,7 @@ const TradeRecord = ({route, navigation}) => {
                     key={item?.time}
                     onPress={() => {
                         setRefresh(false);
+                        global.LogTool('CheckTradeRecordDetail', item.url?.params?.txn_id, item.url?.params?.type);
                         jump(item.url);
                     }}>
                     <View style={{paddingHorizontal: Space.padding}}>
@@ -195,7 +188,12 @@ const TradeRecord = ({route, navigation}) => {
                                         {item?.type?.text}
                                     </Text>
                                 </View>
-                                <Text style={styles.title}>{handlerName(item.name)}</Text>
+                                <Text
+                                    numberOfLines={1}
+                                    ellipsizeMode="middle"
+                                    style={[styles.title, {maxWidth: px(140)}]}>
+                                    {item.name}
+                                </Text>
                             </View>
                             <Text style={styles.date}>{item.time}</Text>
                         </View>

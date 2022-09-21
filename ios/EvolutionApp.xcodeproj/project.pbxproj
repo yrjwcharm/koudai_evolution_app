@@ -411,8 +411,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EvolutionAppTests" */;
 			buildPhases = (
-				0E6657F8FD3F074D832B5B52 /* [CP] Check Pods Manifest.lock */,
-				B2AA2B725A15649A8A31DE8F /* [CP] Prepare Artifacts */,
+				559A68F748AF832AEE55D1C2 /* [CP] Check Pods Manifest.lock */,
+				61D2112B66FDF18C5445D037 /* [CP] Prepare Artifacts */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -435,7 +435,7 @@
 			buildPhases = (
 				B18AB3A5B999A316E4C20E7B /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
-				CB81A6B6C9E2C5F1F9A1DD53 /* [CP] Prepare Artifacts */,
+				36FFE825F4C32362A034C7AD /* [CP] Prepare Artifacts */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -612,7 +612,38 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		0E6657F8FD3F074D832B5B52 /* [CP] Check Pods Manifest.lock */ = {
+		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native Code And Images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		36FFE825F4C32362A034C7AD /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		40EB020E290ABC7FFF25DBF3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -651,7 +682,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		33C6B7C52E6CBDC09DF30BA9 /* [CP] Copy Pods Resources */ = {
+		61D2112B66FDF18C5445D037 /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		69B37DA659245CAD18391AFB /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -702,29 +750,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A7416053FE807883EA4C3D64 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-EvolutionApp-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B18AB3A5B999A316E4C20E7B /* [CP] Check Pods Manifest.lock */ = {
+		CB923CEF5CFD5FD689967F7B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -763,24 +789,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp-EvolutionAppTests/Pods-EvolutionApp-EvolutionAppTests-artifacts.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CB81A6B6C9E2C5F1F9A1DD53 /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EvolutionApp/Pods-EvolutionApp-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F3E0EEB7DF1107BE2702070A /* [CP] Check Pods Manifest.lock */ = {
+		D50155C0382CB47544B82B60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -977,7 +986,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70000;
+				CURRENT_PROJECT_VERSION = 68400;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1040,7 +1049,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 7.0.0;
+				MARKETING_VERSION = 6.8.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1209,7 +1218,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70000;
+				CURRENT_PROJECT_VERSION = 68400;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1274,7 +1283,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 7.0.0;
+				MARKETING_VERSION = 6.8.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1301,7 +1310,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70000;
+				CURRENT_PROJECT_VERSION = 68400;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1365,7 +1374,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 7.0.0;
+				MARKETING_VERSION = 6.8.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
-  "version": "6.8.0",
-  "versionCode": 68000,
+  "version": "6.8.3",
+  "versionCode": 68300,
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
@@ -18,7 +18,7 @@
     "@react-native-community/cameraroll": "^4.1.2",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/masked-view": "^0.1.10",
-    "@react-native-community/netinfo": "^5.9.7",
+    "@react-native-community/netinfo": "^9.3.0",
     "@react-native-community/progress-bar-android": "^1.0.4",
     "@react-native-community/progress-view": "^1.2.3",
     "@react-native-community/slider": "^3.0.3",

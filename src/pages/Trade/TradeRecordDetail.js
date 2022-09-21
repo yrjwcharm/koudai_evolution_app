@@ -1,14 +1,12 @@
 /*
  * @Date: 2021-02-02 12:27:26
- * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-04-28 15:07:37
  * @Description:交易记录详情
  */
-import React, {useCallback, useState, useEffect, useRef} from 'react';
+import React, {Fragment, useCallback, useState, useEffect, useRef} from 'react';
 import {Text, View, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {px, isIphoneX, tagColor, getTradeColor} from '../../utils/appUtil';
 import {Style, Space, Colors, Font} from '../../common/commonStyle';
+import Image from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {Modal, BankCardModal} from '../../components/Modal';
@@ -21,11 +19,12 @@ import Toast from '../../components/Toast';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import FastImage from 'react-native-fast-image';
+import withPageLoading from '../../components/withPageLoading';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
     const jump = useJump();
-    const {txn_id, type, sub_type, poid} = props.route?.params;
+    const {txn_id, type, sub_type, poid, transfer_id} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [errorInfo, setErrorInfo] = useState(null);
@@ -44,27 +43,32 @@ const TradeRecordDetail = (props) => {
             type,
             sub_type,
             poid,
-        }).then((res) => {
-            setErrorInfo(res.result?.part1?.err_info);
-            setData(res.result);
-            props.navigation.setOptions({
-                headerRight: () => {
-                    return res.result?.button?.text ? (
-                        <TouchableOpacity
-                            onPress={() => {
-                                handleCancel(res.result?.button?.popup?.content);
-                            }}>
-                            <Text style={styles.header_right}>{res.result?.button?.text}</Text>
-                        </TouchableOpacity>
-                    ) : null;
-                },
-                title: res.result.title || '交易订单详情',
+            transfer_id,
+        })
+            .then((res) => {
+                setErrorInfo(res.result?.part1?.err_info);
+                setData(res.result);
+                props.navigation.setOptions({
+                    headerRight: () => {
+                        return res.result?.button?.text ? (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    handleCancel(res.result?.button?.popup?.content);
+                                }}>
+                                <Text style={styles.header_right}>{res.result?.button?.text}</Text>
+                            </TouchableOpacity>
+                        ) : null;
+                    },
+                    title: res.result.title || '交易订单详情',
+                });
+                const expand = res.result.part2.map((item) => {
+                    return item.expanded;
+                });
+                setShowMore(expand);
+            })
+            .finally(() => {
+                props.setLoading(false);
             });
-            let expand = res.result.part2.map((item) => {
-                return item.expanded;
-            });
-            setShowMore(expand);
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [txn_id, type, sub_type, poid]);
     useEffect(() => {
@@ -300,6 +304,45 @@ const TradeRecordDetail = (props) => {
     };
 
     const {notice} = data || {};
+    const renderChildren = (children) => {
+        return (
+            <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
+                {children?.head && (
+                    <View style={[Style.flexBetween, {height: px(30)}]}>
+                        {children?.head.map((text, key) => (
+                            <Text key={text + key} style={styles.light_text}>
+                                {text}
+                            </Text>
+                        ))}
+                    </View>
+                )}
+                {children?.body?.map((child, key) => (
+                    <View style={styles.fund_item} key={`${child.k}${key}`}>
+                        <TouchableOpacity
+                            onPress={() => jump(child.url)}
+                            activeOpacity={1}
+                            style={[Style.flexBetween, {marginBottom: px(4)}]}>
+                            <Text style={styles.fund_name}>{child?.k}</Text>
+                            <Text style={styles.fund_amount}>{child?.v}</Text>
+                        </TouchableOpacity>
+                        {child?.ds ? (
+                            child?.ds?.map?.((_ds, _key) =>
+                                _ds?.k ? (
+                                    <HTML
+                                        html={_ds?.k}
+                                        key={_ds.k + _key}
+                                        style={{fontSize: px(12), lineHeight: px(17)}}
+                                    />
+                                ) : null
+                            )
+                        ) : child?.d ? (
+                            <HTML html={child?.d} style={{fontSize: px(12), lineHeight: px(17)}} />
+                        ) : null}
+                    </View>
+                ))}
+            </View>
+        );
+    };
     return (
         <ScrollView bounces={false} style={styles.container}>
             {/* 小黄条 */}
@@ -347,7 +390,7 @@ const TradeRecordDetail = (props) => {
                     <View
                         style={[
                             Style.tag,
-                            {backgroundColor: tagColor(data?.part1?.type?.val).bg_color, marginRight: px(9)},
+                            {backgroundColor: tagColor(data?.part1?.type?.val).bg_color, marginRight: px(8)},
                         ]}>
                         <Text style={{fontSize: px(11), color: tagColor(data?.part1?.type?.val).text_color}}>
                             {data?.part1?.type?.text}
@@ -356,12 +399,27 @@ const TradeRecordDetail = (props) => {
                     <Text style={{color: Colors.defaultColor, fontSize: px(16), maxWidth: px(300)}}>
                         {data?.part1?.name}
                     </Text>
+                    {data?.part1?.transfer_name ? (
+                        <View style={{flexDirection: 'row'}}>
+                            <View>
+                                <Text style={styles.transferName}>{data.part1.transfer_name.from_name}</Text>
+                                <Text style={styles.transferGateway}>{data.part1.transfer_name.from_gateway}</Text>
+                            </View>
+                            <Image source={{uri: data.part1.transfer_name.icon}} style={styles.transferIcon} />
+                            <View>
+                                <Text style={styles.transferName}>{data.part1.transfer_name.to_name}</Text>
+                                <Text style={styles.transferGateway}>{data.part1.transfer_name.to_gateway}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
+                    )}
                 </View>
                 {data?.part1?.table ? (
                     <View style={[Style.flexRow, {width: '100%', paddingHorizontal: px(20)}]}>
                         {data.part1.table.map?.((item, index) => {
                             return (
-                                <View key={item + index} style={[Style.flexCenter, {flex: 1}]}>
+                                <View key={`${item.k || item.v}${index}`} style={[Style.flexCenter, {flex: 1}]}>
                                     {item.k ? <Text style={styles.header_text}>{item.k}</Text> : null}
                                     {item.v ? <Text style={styles.bold_text}>{item.v}</Text> : null}
                                 </View>
@@ -380,14 +438,19 @@ const TradeRecordDetail = (props) => {
                         {/* 金额展示 */}
                         {data?.part1?.amount ? (
                             <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={[styles.header_text, {marginRight: px(4), marginBottom: px(4)}]}>
+                                    {data?.part1?.extra_text}
+                                </Text>
                                 <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
-                                <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
+                                <Text style={[styles.header_text, {marginBottom: px(4), marginLeft: px(4)}]}>
+                                    {data?.part1?.unit}
+                                </Text>
                             </View>
                         ) : null}
                     </>
                 )}
                 {data?.part1?.items?.map((_item, key) => (
-                    <View style={Style.flexRow} key={key}>
+                    <View style={Style.flexRow} key={_item.k + key}>
                         <Text style={styles.header_text}>{_item.k}</Text>
                         <View>
                             {Array.isArray(_item?.v) ? (
@@ -472,48 +535,134 @@ const TradeRecordDetail = (props) => {
                     {data?.desc ? (
                         <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>{data?.desc}</Text>
                     ) : null}
-                    {data?.part2?.map((item, index) => (
-                        <View
-                            key={index}
-                            style={{flexDirection: 'row', alignItems: 'flex-start'}}
-                            onLayout={(e) => {
-                                cardLayout(index, e);
-                            }}>
-                            <View>
-                                <View style={styles.circle} />
-                                <View
-                                    style={[
-                                        styles.line,
-                                        {height: index == data?.part2?.length - 1 ? 0 : heightArr[index]},
-                                    ]}
-                                />
-                            </View>
-                            <View style={[styles.card]}>
-                                <View style={[Style.flexBetween, {height: px(42)}]}>
-                                    <View style={styles.trangle} />
-                                    <HTML style={styles.name} html={item?.k} />
+                    {data?.part2?.map((item, index) => {
+                        const {children, extra_step, k, k1, type: recordType, v} = item;
+                        return (
+                            <View
+                                key={`${v}${index}`}
+                                style={{flexDirection: 'row', alignItems: 'flex-start'}}
+                                onLayout={(e) => {
+                                    cardLayout(index, e);
+                                }}>
+                                <View>
+                                    <View style={styles.circle} />
+                                    <View
+                                        style={[
+                                            styles.line,
+                                            {height: index == data?.part2?.length - 1 ? 0 : heightArr[index]},
+                                        ]}
+                                    />
+                                </View>
+                                <View style={[styles.card]}>
                                     <TouchableOpacity
                                         activeOpacity={1}
-                                        style={[Style.flexRow, {height: '100%'}]}
                                         onPress={() => {
                                             handleMore(index);
-                                        }}>
-                                        <Text style={styles.date}>{item?.v}</Text>
-                                        {item.children ? (
-                                            <FontAwesome
-                                                name={!showMore[index] ? 'angle-down' : 'angle-up'}
-                                                size={18}
-                                                style={{paddingLeft: px(11)}}
-                                                color={Colors.lightGrayColor}
+                                        }}
+                                        style={[Style.flexBetween, {height: px(42)}]}>
+                                        <View style={styles.trangle} />
+                                        <View style={{marginRight: px(8), flexShrink: 1}}>
+                                            <HTML
+                                                ellipsizeMode="middle"
+                                                numberOfLines={1}
+                                                style={styles.name}
+                                                html={k}
                                             />
-                                        ) : null}
+                                        </View>
+                                        <View style={[Style.flexRow, {height: '100%'}]}>
+                                            <Text style={styles.date}>{v}</Text>
+                                            {children || extra_step ? (
+                                                <FontAwesome
+                                                    name={!showMore[index] ? 'angle-down' : 'angle-up'}
+                                                    size={18}
+                                                    style={{paddingLeft: px(11)}}
+                                                    color={Colors.lightGrayColor}
+                                                />
+                                            ) : null}
+                                        </View>
                                     </TouchableOpacity>
-                                </View>
 
-                                {handlerCardContent(item, index)}
+                                    {handlerCardContent(item, index)}
+                                    {k1 ? (
+                                        <View style={{marginTop: -px(4), paddingBottom: px(8)}}>
+                                            <HTML html={k1} style={styles.name} />
+                                        </View>
+                                    ) : null}
+
+                                    {recordType === 'adjust_compare' && children && showMore[index] ? (
+                                        // 调仓
+                                        <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
+                                            {children?.head ? (
+                                                <View style={[Style.flexBetween, {height: px(30)}]}>
+                                                    {children?.head.map((text, key) => (
+                                                        <Text
+                                                            key={text + key}
+                                                            style={[
+                                                                styles.light_text,
+                                                                {width: key == 0 ? px(163) : 'auto'},
+                                                            ]}>
+                                                            {text}
+                                                        </Text>
+                                                    ))}
+                                                </View>
+                                            ) : null}
+
+                                            {children?.body?.map?.((child, key) => (
+                                                <View
+                                                    key={`${child.name}${key}`}
+                                                    style={[Style.flexBetween, styles.fund_item]}>
+                                                    <Text numberOfLines={1} style={styles.fund_name}>
+                                                        {child?.name}
+                                                    </Text>
+                                                    <Text style={styles.fund_amount}>{child?.src}</Text>
+                                                    <View style={Style.flexRow}>
+                                                        <Text
+                                                            style={[
+                                                                styles.fund_amount,
+                                                                {
+                                                                    color: child?.type
+                                                                        ? child?.type == 'down'
+                                                                            ? Colors.green
+                                                                            : Colors.red
+                                                                        : Colors.lightBlackColor,
+                                                                },
+                                                            ]}>
+                                                            {child?.dst}
+                                                        </Text>
+                                                        {child.type ? (
+                                                            <Icon
+                                                                name={`arrow-long-${child?.type}`}
+                                                                color={
+                                                                    child?.type == 'down' ? Colors.green : Colors.red
+                                                                }
+                                                            />
+                                                        ) : null}
+                                                    </View>
+                                                </View>
+                                            ))}
+                                        </View>
+                                    ) : null}
+                                    {recordType !== 'adjust_compare' && children && showMore[index]
+                                        ? renderChildren(children)
+                                        : null}
+                                    {showMore[index]
+                                        ? extra_step?.map?.((step, i) => {
+                                              const {children: extraChildren, k: key, v: value} = step;
+                                              return (
+                                                  <Fragment key={key + i}>
+                                                      <View style={[Style.flexBetween, {height: px(42)}]}>
+                                                          <HTML html={key} style={styles.name} />
+                                                          <Text style={styles.date}>{value}</Text>
+                                                      </View>
+                                                      {extraChildren?.length > 0 && renderChildren(extraChildren)}
+                                                  </Fragment>
+                                              );
+                                          })
+                                        : null}
+                                </View>
                             </View>
-                        </View>
-                    ))}
+                        );
+                    })}
                 </View>
             ) : null}
         </ScrollView>
@@ -556,7 +705,6 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
     },
     header: {
-        marginTop: 1,
         backgroundColor: '#fff',
         paddingVertical: px(20),
         marginBottom: px(16),
@@ -677,5 +825,22 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         width: px(113),
     },
+    transferName: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+    },
+    transferGateway: {
+        marginTop: px(2),
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.lightGrayColor,
+    },
+    transferIcon: {
+        marginTop: px(7),
+        marginHorizontal: px(6),
+        width: px(13),
+        height: px(9),
+    },
 });
-export default TradeRecordDetail;
+export default withPageLoading(TradeRecordDetail);
