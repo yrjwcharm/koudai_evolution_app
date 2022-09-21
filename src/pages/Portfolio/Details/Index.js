@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-16 18:48:48
+ * @LastEditTime: 2022-09-21 14:57:40
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -20,8 +20,9 @@ import {useFocusEffect} from '@react-navigation/native';
 import http from '~/services';
 import URI from 'urijs';
 import BottomDesc from '~/components/BottomDesc';
-import {Colors, Space, Style} from '~/common/commonStyle';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Toast from '~/components/Toast';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 
 const PortFolioDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -35,6 +36,7 @@ const PortFolioDetail = ({navigation, route}) => {
     const bottomModal = useRef();
     const bottomModal2 = useRef();
     const timeStamp = useRef(Date.now());
+    const clickRef = useRef(true);
 
     useEffect(() => {
         const getToken = () => {
@@ -142,6 +144,30 @@ const PortFolioDetail = ({navigation, route}) => {
         );
     };
 
+    const onPressLeftBtns = (btn) => {
+        if (!clickRef.current) {
+            return false;
+        }
+        const {event_id, is_follow, url, plan_id, item_type} = btn;
+
+        if (event_id === 'consult_click') {
+            bottomModal.current.show();
+        } else if (event_id === 'follow_click') {
+            clickRef.current = false;
+            (is_follow ? followCancel : followAdd)({item_id: plan_id, item_type: item_type}).then((res) => {
+                if (res.code === '000000') {
+                    res.message && Toast.show(res.message);
+                    setTimeout(() => {
+                        clickRef.current = true;
+                    }, 100);
+                    init();
+                }
+            });
+        } else {
+            jump(url);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <ScrollView
@@ -219,7 +245,7 @@ const PortFolioDetail = ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             key={title + i}
-                            onPress={() => {}}
+                            onPress={() => onPressLeftBtns(btn)}
                             style={[styles.leftBtn]}>
                             <FastImage source={{uri: icon}} style={styles.leftBtnIcon} />
                             <Text style={styles.leftBtnText}>{title}</Text>
@@ -322,5 +348,45 @@ const styles = StyleSheet.create({
         lineHeight: px(20),
         fontSize: px(14),
         marginBottom: px(4),
+    },
+    contactContainer: {
+        paddingTop: px(28),
+        paddingHorizontal: px(20),
+    },
+    methodItem: {
+        marginBottom: px(34),
+        justifyContent: 'space-between',
+    },
+    iconBox: {
+        marginRight: px(12),
+    },
+    icon: {
+        width: px(40),
+        height: px(40),
+    },
+    methodTitle: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+        fontWeight: '600',
+        marginBottom: px(6),
+    },
+    methodDesc: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.lightGrayColor,
+    },
+    methodBtn: {
+        borderRadius: px(6),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.descColor,
+        borderStyle: 'solid',
+        paddingVertical: px(8),
+        paddingHorizontal: px(12),
+    },
+    methodBtnText: {
+        fontSize: Font.textH3,
+        lineHeight: px(16),
+        color: Colors.descColor,
     },
 });

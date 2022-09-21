@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 14:16:45
+ * @LastEditTime: 2022-09-21 15:27:41
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -308,7 +308,7 @@ const Product = ({navigation}) => {
                     showsHorizontalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
-                            {...(bgType ? {} : {tintColor: '#fff', colors: ['#fff']})}
+                            {...(bgType ? {} : {tintColor: '#fff'})}
                             refreshing={refreshing}
                             onRefresh={() => getProData(0)}
                         />
@@ -322,18 +322,18 @@ const Product = ({navigation}) => {
                                         // jump({
                                         //     path: 'PortfolioDetails',
                                         //     params: {
-                                        //         link: 'http://192.168.88.170:3000/portfolioDetails',
+                                        //         link: 'http://192.168.190.43:3000/portfolioDetails',
                                         //         params: {
-                                        //             plan_id: '123',
+                                        //             plan_id: '29',
                                         //         },
                                         //     },
                                         // });
-                                        // jump({
-                                        //     path: 'SpecialDetail',
-                                        // });
                                         jump({
-                                            path: 'PortfolioIndex',
+                                            path: 'SpecialDetail',
                                         });
+                                        // jump({
+                                        //     path: 'PortfolioIndex',
+                                        // });
                                         // jump(item.url);
                                     }}
                                     style={styles.menuItem}
