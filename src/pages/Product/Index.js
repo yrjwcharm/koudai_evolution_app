@@ -3,13 +3,13 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-19 14:05:38
+ * @LastEditTime: 2022-09-21 14:13:42
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {px} from '~/utils/appUtil';
@@ -22,43 +22,117 @@ import LiveCard from '~/components/Article/LiveCard';
 import BottomDesc from '~/components/BottomDesc';
 import FollowTable from '../Attention/Index/FollowTable';
 import http from '~/services';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import withNetState from '~/components/withNetState';
+import {AlbumCard, ProductList} from '~/components/Product';
+import {useSelector} from 'react-redux';
+import LoadingTips from '~/components/LoadingTips';
+import Feather from 'react-native-vector-icons/Feather';
 
-const Product = () => {
-    const insets = useSafeAreaInsets();
+const Product = ({navigation}) => {
     const jump = useJump();
+    const insets = useSafeAreaInsets();
+    const isFocused = useIsFocused();
+    const userInfo = useSelector((store) => store.userInfo);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const [tabActive, setTabActive] = useState(1);
-    const [optionalTabActive, setOptionalTabActive] = useState(1);
+    const [proData, setProData] = useState(null);
+    const [followTabs, setFollowTabs] = useState();
     const [followData, setFollowData] = useState();
+    const [tabActive, setTabActive] = useState(1);
+    const [optionalTabActive, setOptionalTabActive] = useState(0);
+    const [allMsg, setAll] = useState(0);
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
+    const isFirst = useRef(1);
+    const scrollViewRef = useRef();
 
     const bgType = useMemo(() => {
-        return true;
-    }, [tabActive]);
+        return tabActive === 1 && proData?.popular_banner_list ? false : true;
+    }, [tabActive, proData]);
+
+    useFocusEffect(
+        useCallback(() => {
+            [getFollowTabs, getProData][tabRef.current?.state?.currentPage || 1]?.(isFirst.current++);
+            isFirst.current === 1 && tabRef.current?.goToPage?.(1);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            if (userInfo.toJS().is_login) readInterface();
+        }, [readInterface, userInfo])
+    );
 
     useEffect(() => {
-        // getProData();
-        getFollowData();
-        tabRef.current?.goToPage?.(1);
-    }, []);
-
-    const getProData = () => {
-        http.get('/products/index/20220901').then((res) => {
-            console.log(res);
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if (isFocused) {
+                getProData(0);
+                scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                global.LogTool('tabDoubleClick', 'ProductIndex');
+            }
         });
+        return () => unsubscribe();
+    }, [isFocused, navigation]);
+
+    useEffect(() => {
+        const tabs = followTabs?.follow?.tabs;
+        if (tabs) {
+            let item_type = tabs[optionalTabActive]?.item_type || tabs[0]?.item_type;
+            getFollowData({
+                item_type,
+            }).then(() => {
+                optionalTabRef.current?.goToPage?.(tabs?.[optionalTabActive]?.item_type ? optionalTabActive : 0);
+            });
+        }
+    }, [optionalTabActive, followTabs]);
+
+    const getProData = (type) => {
+        type === 0 && setRefreshing(true);
+        type === 1 && setLoading(true);
+        http.get('/products/index/20220901')
+            .then((res) => {
+                if (res.code === '000000') {
+                    setProData(res.result);
+                }
+            })
+            .finally((_) => {
+                setRefreshing(false);
+                setLoading(false);
+            });
     };
 
-    const getFollowData = useCallback(async (params) => {
-        // let res = await getFollowList(params);
-        let res = _followData;
-        setFollowData(res);
+    const getFollowTabs = (type) => {
+        type === 0 && setRefreshing(true);
+        type === 1 && setLoading(true);
+        http.get('/follow/index/202206')
+            .then((res) => {
+                if (res.code === '000000') {
+                    setFollowTabs(res.result);
+                }
+            })
+            .finally((_) => {
+                setRefreshing(false);
+                setLoading(false);
+            });
+    };
+
+    const getFollowData = async (params) => {
+        let res = await http.get('/follow/list/202206', params);
+        setFollowData(res.result);
+    };
+
+    const readInterface = useCallback(() => {
+        http.get('/message/unread/20210101').then((res) => {
+            setAll(res.result.all);
+        });
     }, []);
 
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
+        [getFollowTabs, getProData][cur.i]();
     }, []);
 
     const onChangeOptionalTab = useCallback((cur) => {
@@ -95,7 +169,7 @@ const Product = () => {
                                         style={{width: px(24), height: px(24)}}
                                         source={{uri: item.icon}}
                                     />
-                                    <Text style={[styles.secure_title, {marginLeft: px(4)}]}>{item.title}</Text>
+                                    <Text style={[styles.secure_title, {marginLeft: px(4)}]}>{item?.title}</Text>
                                 </View>
                                 <Text style={styles.light_text}>{item.desc}</Text>
                             </View>
@@ -115,7 +189,9 @@ const Product = () => {
                 style={{paddingTop: insets.top + px(7), height: px(178)}}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
-                colors={bgType ? ['#EBF5FF', '#F4F5F7'] : ['#1F58C8', '#1B45B7']}>
+                colors={
+                    (bgType ? proData?.bg_colors : proData?.popular_banner_list?.bg_colors) || ['#EBF5FF', '#F4F5F7']
+                }>
                 <View style={[styles.searchWrap]}>
                     <View style={styles.tabTextWrap}>
                         <Text
@@ -147,18 +223,23 @@ const Product = () => {
                         activeOpacity={0.9}
                         style={[styles.searchInput]}
                         onPress={() => {
-                            // jump();
+                            jump(proData?.search?.url);
                         }}>
                         <FastImage
                             source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/pk-search.png'}}
                             style={{width: px(18), height: px(18), marginRight: px(4)}}
                         />
-                        <Text style={styles.searchPlaceHolder}>{'搜索基金/组合/计划'}</Text>
+                        <Text style={styles.searchPlaceHolder}>{proData?.search?.placeholder}</Text>
                     </TouchableOpacity>
-                    <View>
-                        {true ? (
-                            <View style={[styles.point_sty, Style.flexCenter, {left: 100 > 99 ? px(11) : px(15)}]}>
-                                <Text style={styles.point_text}>{100 > 99 ? '99+' : 55}</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool('indexNotificationCenter');
+                            jump({path: 'RemindMessage'});
+                        }}>
+                        {allMsg ? (
+                            <View style={[styles.point_sty, Style.flexCenter, {left: allMsg > 99 ? px(11) : px(15)}]}>
+                                <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
                             </View>
                         ) : null}
                         <FastImage
@@ -169,7 +250,7 @@ const Product = () => {
                                     : 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
                             }}
                         />
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </LinearGradient>
             <ScrollableTabView
@@ -183,41 +264,57 @@ const Product = () => {
                 onChangeTab={onChangeTab}>
                 <ScrollView
                     tabLabel="自选"
+                    ref={scrollViewRef}
                     showsHorizontalScrollIndicator={false}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {}} />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getFollowTabs(0)} />}
                     style={{flex: 1}}>
                     <View style={{paddingHorizontal: px(16)}}>
-                        <ScrollableTabView
-                            prerenderingSiblingsNumber={_tabs?.length}
-                            locked={true}
-                            renderTabBar={() => <RenderOptionalTabBar />}
-                            onChangeTab={onChangeOptionalTab}
-                            ref={optionalTabRef}>
-                            {_tabs?.map((tab, index) => (
-                                <View key={index} tabLabel={tab?.type_text} style={{marginTop: px(12)}}>
-                                    {tab.item_type === 666 ? (
-                                        <SpecialList />
-                                    ) : (
-                                        <FollowTable
-                                            data={followData}
-                                            activeTab={_tabs?.[optionalTabActive]?.item_type || 0}
-                                            handleSort={getFollowData}
-                                            tabButton={_tabs[optionalTabActive]?.button_list}
-                                            notStickyHeader={true}
-                                        />
-                                    )}
-                                </View>
-                            ))}
-                        </ScrollableTabView>
+                        {followTabs?.follow?.tabs ? (
+                            <ScrollableTabView
+                                prerenderingSiblingsNumber={followTabs?.follow?.tabs?.length}
+                                locked={true}
+                                renderTabBar={() => <RenderOptionalTabBar />}
+                                onChangeTab={onChangeOptionalTab}
+                                ref={optionalTabRef}>
+                                {followTabs?.follow?.tabs?.map?.((tab, index) => {
+                                    const curTabs = followTabs?.follow?.tabs?.[optionalTabActive];
+                                    return (
+                                        <View
+                                            key={index + tab?.type_text}
+                                            tabLabel={tab?.type_text}
+                                            style={{marginTop: px(12)}}>
+                                            {tab.item_type === 6 ? (
+                                                <SpecialList data={followData} tabButton={curTabs?.button_list} />
+                                            ) : (
+                                                <FollowTable
+                                                    data={followData}
+                                                    activeTab={curTabs?.item_type || 0}
+                                                    handleSort={getFollowData}
+                                                    tabButton={curTabs?.button_list}
+                                                    notStickyHeader={true}
+                                                />
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                            </ScrollableTabView>
+                        ) : null}
                     </View>
                 </ScrollView>
                 <ScrollView
                     tabLabel="产品"
+                    ref={scrollViewRef}
                     style={{flex: 1}}
                     showsHorizontalScrollIndicator={false}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {}} />}>
+                    refreshControl={
+                        <RefreshControl
+                            {...(bgType ? {} : {tintColor: '#fff', colors: ['#fff']})}
+                            refreshing={refreshing}
+                            onRefresh={() => getProData(0)}
+                        />
+                    }>
                     <View style={styles.menuWrap}>
-                        {[1, 2, 3].map((item, idx) => {
+                        {proData?.nav?.map?.((item, idx) => {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -231,22 +328,21 @@ const Product = () => {
                                         //         },
                                         //     },
                                         // });
-                                        jump({
-                                            path: 'SpecialDetail',
-                                        });
+                                        // jump({
+                                        //     path: 'SpecialDetail',
+                                        // });
+                                        jump(item.url);
                                     }}
                                     style={styles.menuItem}
                                     key={idx}>
                                     <FastImage
                                         source={{
-                                            uri: bgType
-                                                ? 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'
-                                                : 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
+                                            uri: item.icon,
                                         }}
                                         style={styles.menuItemIcon}
                                     />
                                     <Text style={[styles.menuItemText, {color: bgType ? '#121d3a' : '#fff'}]}>
-                                        基金
+                                        {item.name}
                                     </Text>
                                 </TouchableOpacity>
                             );
@@ -255,78 +351,118 @@ const Product = () => {
                     <View style={styles.bannerWrap}>
                         {bgType ? (
                             <View style={styles.swiperWrap}>
-                                <Swiper
-                                    height={px(100)}
-                                    autoplay
-                                    loadMinimal={Platform.OS == 'ios' ? true : false}
-                                    removeClippedSubviews={false}
-                                    autoplayTimeout={4}
-                                    paginationStyle={{
-                                        bottom: px(5),
-                                    }}
-                                    dotStyle={{
-                                        opacity: 0.5,
-                                        width: px(4),
-                                        ...styles.dotStyle,
-                                    }}
-                                    activeDotStyle={{
-                                        width: px(12),
-                                        ...styles.dotStyle,
-                                    }}>
-                                    {baner.map((banner, index) => (
-                                        <TouchableOpacity
-                                            key={index}
-                                            activeOpacity={0.9}
-                                            onPress={() => {
-                                                global.LogTool('swiper', banner.id);
-                                                jump(banner.url);
-                                            }}>
-                                            <FastImage
-                                                style={styles.slide}
-                                                source={{
-                                                    uri: banner.cover,
-                                                }}
-                                            />
-                                        </TouchableOpacity>
-                                    ))}
-                                </Swiper>
+                                {proData?.banner_list?.[0] ? (
+                                    <Swiper
+                                        height={px(100)}
+                                        autoplay
+                                        loadMinimal={Platform.OS == 'ios' ? true : false}
+                                        removeClippedSubviews={false}
+                                        autoplayTimeout={4}
+                                        paginationStyle={{
+                                            bottom: px(5),
+                                        }}
+                                        dotStyle={{
+                                            opacity: 0.5,
+                                            width: px(4),
+                                            ...styles.dotStyle,
+                                        }}
+                                        activeDotStyle={{
+                                            width: px(12),
+                                            ...styles.dotStyle,
+                                        }}>
+                                        {proData?.banner_list?.map?.((banner, index) => (
+                                            <TouchableOpacity
+                                                key={index}
+                                                activeOpacity={0.9}
+                                                onPress={() => {
+                                                    global.LogTool('swiper', banner.id);
+                                                    jump(banner.url);
+                                                }}>
+                                                <FastImage
+                                                    style={styles.slide}
+                                                    source={{
+                                                        uri: banner.cover,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        ))}
+                                    </Swiper>
+                                ) : null}
                             </View>
                         ) : (
-                            <FastImage
-                                style={{width: '100%', height: px(120), marginTop: px(8)}}
-                                resizeMode="cover"
-                                source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/08/PR966-818.png'}}
-                            />
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    jump(proData?.popular_banner_list?.url);
+                                }}>
+                                <FastImage
+                                    style={{width: '100%', height: px(120), marginTop: px(8)}}
+                                    resizeMode="cover"
+                                    source={{uri: proData?.popular_banner_list?.cover}}
+                                />
+                            </TouchableOpacity>
                         )}
                     </View>
                     <View style={styles.othersWrap}>
-                        {true ? renderSecurity(menuList) : null}
-                        <View style={styles.liveCardsWrap}>
-                            <View style={styles.liveCardsHeader}>
-                                <Text style={styles.liveCardsTitleText}>{liveOption.title}</Text>
-                                {liveOption.has_more ? (
-                                    <FontAwesome name={'angle-right'} size={18} color={'#545968'} />
-                                ) : null}
+                        {proData?.menu_list ? renderSecurity(proData?.menu_list) : null}
+                        {proData?.live_list && (
+                            <View style={styles.liveCardsWrap}>
+                                <View style={styles.liveCardsHeader}>
+                                    <Text style={styles.liveCardsTitleText}>{proData?.live_list?.title}</Text>
+                                    {proData?.live_list.has_more ? (
+                                        <FontAwesome
+                                            name={'angle-right'}
+                                            size={18}
+                                            color={'#545968'}
+                                            onPress={() => {
+                                                jump(proData?.live_list?.more?.url);
+                                            }}
+                                        />
+                                    ) : null}
+                                </View>
+                                <ScrollView
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{marginTop: px(8)}}>
+                                    {proData?.live_list.items.map?.((item, idx) => (
+                                        <LiveCard
+                                            data={item}
+                                            key={idx}
+                                            style={{
+                                                marginLeft: px(idx > 0 ? 6 : 0),
+                                                width: px(213),
+                                                borderWidth: 0.5,
+                                                borderColor: '#E9EAEF',
+                                            }}
+                                            coverStyle={{width: px(213), height: px(94)}}
+                                        />
+                                    ))}
+                                </ScrollView>
                             </View>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                style={{marginTop: px(8)}}>
-                                {liveOption.options.map((item, idx) => (
-                                    <LiveCard
-                                        data={item}
-                                        key={idx}
-                                        style={{
-                                            marginLeft: px(idx > 0 ? 6 : 0),
-                                            width: px(213),
-                                            borderWidth: 0.5,
-                                            borderColor: '#E9EAEF',
-                                        }}
-                                        coverStyle={{width: px(213), height: px(94)}}
+                        )}
+                        {proData?.popular_subject ? (
+                            <LinearGradient
+                                colors={['#FFFFFF', '#F4F5F7']}
+                                start={{x: 0, y: 0}}
+                                end={{x: 0, y: 1}}
+                                style={{marginTop: px(12), borderRadius: px(6)}}>
+                                <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                                    <ProductList
+                                        data={proData?.popular_subject?.items}
+                                        type={proData?.popular_subject.type}
                                     />
+                                </View>
+                            </LinearGradient>
+                        ) : null}
+                        {proData?.subjects ? (
+                            <View style={{backgroundColor: Colors.bgColor}}>
+                                {proData?.subjects?.map?.((subject, index) => (
+                                    <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
+                                        <AlbumCard {...subject} />
+                                    </View>
                                 ))}
-                            </ScrollView>
-                        </View>
+                            </View>
+                        ) : null}
                     </View>
                     <View style={{backgroundColor: '#f5f6f8'}}>
                         <BottomDesc />
@@ -337,7 +473,7 @@ const Product = () => {
     );
 };
 
-export default Product;
+export default withNetState(Product);
 
 const styles = StyleSheet.create({
     container: {
@@ -535,26 +671,56 @@ const RenderOptionalTabBar = (props) => {
     );
 };
 
-const SpecialList = () => {
-    return (
+const SpecialList = ({data, tabButton}) => {
+    const jump = useJump();
+    return data?.items ? (
         <View>
-            {[1, 2, 3].map((item, idx) => (
-                <View key={idx} style={styles.specialItem}>
+            {data?.items?.map((item, idx) => (
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        jump(item.url);
+                    }}
+                    key={idx}
+                    style={styles.specialItem}>
                     <View style={styles.specialItemHeader}>
-                        <Text style={styles.specialItemText}>追求高收益基金</Text>
+                        <Text style={styles.specialItemText}>{item.name}</Text>
                         <FontAwesome name={'angle-right'} size={18} color={'#545968'} />
                     </View>
                     <View style={styles.specialContent}>
                         <FastImage
-                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/quotation.png'}}
+                            source={{uri: item.desc_icon}}
                             style={{width: px(8), height: px(8), marginTop: px(3), marginRight: px(4)}}
                         />
                         <Text style={styles.specialContentText} numberOfLines={1}>
-                            专题描述详细内容展示内容，包括内容是两行的情展示专题描述详细内容展示内容，包括内容是两行的情展示专题描述详细内容展示内容，包括内容是两行的情展示
+                            {item.desc}
                         </Text>
                     </View>
-                </View>
+                </TouchableOpacity>
             ))}
+            {tabButton ? (
+                <View style={[Style.flexRow, {backgroundColor: '#fff'}]}>
+                    {tabButton?.map((btn, dex) => (
+                        <TouchableOpacity
+                            key={dex}
+                            activeOpacity={0.9}
+                            onPress={() => jump(btn.url)}
+                            style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
+                            <Feather
+                                size={px(16)}
+                                name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
+                                color={Colors.btnColor}
+                            />
+                            <View style={{width: px(6)}} />
+                            <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            ) : null}
+        </View>
+    ) : (
+        <View style={{...Style.flexCenter, height: px(200)}}>
+            <LoadingTips color="#ddd" />
         </View>
     );
 };
@@ -678,74 +844,6 @@ const liveOption = {
         },
     ],
 };
-
-const baner = [
-    {
-        id: 207,
-        cover: 'https://public.licaimofang.com/cms/upload/2022-09-13/46917ece2bf2984374b280af1ecbe34b.png',
-        url: {
-            path: 'WebView',
-            type: 4,
-            params: {
-                link: 'https://edu.licaimofang.cn/active818?title=818%E7%90%86%E8%B4%A2%E8%8A%82&uid=1000000002',
-                title: '818理财节',
-                timestamp: 1,
-            },
-        },
-    },
-    {
-        id: 211,
-        cover: 'https://public.licaimofang.com/cms/upload/2022-08-26/b1e9a3986323fab1eaa258d88fde1beb.png',
-        url: {
-            path: 'ArticleDetail',
-            type: 1,
-            params: {
-                article_id: '2710',
-                type: 5,
-            },
-            id: 1,
-        },
-    },
-    {
-        id: 180,
-        cover: 'https://public.licaimofang.com/cms/upload/2022-09-05/9a1243ed554add764d4aa5f16dece18b.jpg',
-        url: {
-            path: 'ArticleDetail',
-            type: 1,
-            params: {
-                article_id: '2788',
-                type: 1,
-            },
-            id: 1,
-        },
-    },
-    {
-        id: 161,
-        cover: 'https://public.licaimofang.com/cms/upload/2022-09-13/0134a87507f87aa28ffc351f95c19049.png',
-        url: {
-            path: 'ArticleDetail',
-            type: 1,
-            params: {
-                article_id: '2851',
-                type: 1,
-            },
-            id: 1,
-        },
-    },
-    {
-        id: 166,
-        cover: 'https://public.licaimofang.com/cms/upload/2022-09-05/58b1089355cae985cfc69239ce6b9395.png',
-        url: {
-            path: 'ArticleDetail',
-            type: 1,
-            params: {
-                article_id: '2781',
-                type: 5,
-            },
-            id: 1,
-        },
-    },
-];
 
 const _followData = {
     params: {
