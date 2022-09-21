@@ -17,10 +17,11 @@ import BottomDesc from '~/components/BottomDesc';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import {Modal} from '~/components/Modal';
+import {ProductList} from '~/components/Product';
 import HTML from '~/components/RenderHtml';
 import UnderlineText from '~/components/UnderlineText';
 import {deviceWidth, px} from '~/utils/appUtil';
-import {getPageData, getReward} from './services';
+import {getPageData, getReward, reportPop} from './services';
 
 const Steps = ({steps}) => {
     const jump = useJump();
@@ -53,7 +54,7 @@ const Steps = ({steps}) => {
                             })
                         }
                         style={{flexDirection: 'row', marginTop: i === 0 ? 0 : Space.marginVertical}}>
-                        <View style={{marginTop: px(2), width: px(42)}}>
+                        <View style={{marginTop: px(1), width: px(42)}}>
                             {status === 1 ? (
                                 <View>
                                     <UnderlineText
@@ -105,22 +106,31 @@ const Steps = ({steps}) => {
 };
 
 const Index = ({navigation, route}) => {
-    const jump = useJump();
     const [data, setData] = useState({});
-    const {bg, notice, pop, show_pop, tip, steps} = data;
+    const {bg, notice, pop, show_pop, tip, steps, user_bag} = data;
+
+    const init = () => {
+        getPageData({}).then((res) => {
+            if (res.code === '000000') {
+                const {title = '交易引导'} = res.result;
+                navigation.setOptions({title});
+                setData(res.result);
+            }
+        });
+    };
 
     const handleGetReward = () => {
         getReward().then((res) => {
             if (res.code === '000000') {
-                const {back_close, device_width, image, touch_close, url} = res.result.pop;
+                const {back_close, device_width, image, touch_close} = res.result.pop;
                 Image.getSize(image, (w, h) => {
                     const height = (h * (device_width ? deviceWidth : px(280))) / w;
                     Modal.show({
                         backButtonClose: back_close,
-                        confirmCallBack: () => jump(url),
-                        imageHeight: height,
+                        confirmCallBack: init,
                         imageUrl: image,
-                        imageWidth: device_width ? deviceWidth : px(280),
+                        imgHeight: height,
+                        imgWidth: device_width ? deviceWidth : px(280),
                         isTouchMaskToClose: touch_close,
                         type: 'image',
                     });
@@ -131,13 +141,7 @@ const Index = ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            getPageData({}).then((res) => {
-                if (res.code === '000000') {
-                    const {title = '交易引导'} = res.result;
-                    navigation.setOptions({title});
-                    setData(res.result);
-                }
-            });
+            init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -152,14 +156,18 @@ const Index = ({navigation, route}) => {
                     const {back_close, device_width, image, touch_close} = pop;
                     Image.getSize(image, (w, h) => {
                         const height = (h * (device_width ? deviceWidth : px(280))) / w;
-                        Modal.show({
-                            backButtonClose: back_close,
-                            confirmCallBack: handleGetReward,
-                            imageHeight: height,
-                            imageUrl: image,
-                            imageWidth: device_width ? deviceWidth : px(280),
-                            isTouchMaskToClose: touch_close,
-                            type: 'image',
+                        reportPop().then((res) => {
+                            if (res.code === '000000') {
+                                Modal.show({
+                                    backButtonClose: back_close,
+                                    confirmCallBack: handleGetReward,
+                                    imageUrl: image,
+                                    imgHeight: height,
+                                    imgWidth: device_width ? deviceWidth : px(280),
+                                    isTouchMaskToClose: touch_close,
+                                    type: 'image',
+                                });
+                            }
                         });
                     });
                 }
@@ -181,15 +189,30 @@ const Index = ({navigation, route}) => {
                         <Text style={styles.noticeText}>{notice}</Text>
                     </View>
                 ) : null}
-                <View style={styles.recommandBox}>
-                    <Text style={styles.title}>新人礼包</Text>
-                    <View style={[Style.flexRow, styles.rewardBox]}>
-                        <FastImage source={reward} style={styles.reward} />
-                        <View style={{flexShrink: 1}}>
-                            <HTML html={notice} style={{...styles.tip, color: Colors.descColor}} />
-                        </View>
+                {user_bag ? (
+                    <View style={styles.recommandBox}>
+                        <Text style={styles.title}>{user_bag.title}</Text>
+                        {user_bag.notice ? (
+                            <View style={[Style.flexRow, styles.rewardBox]}>
+                                <FastImage
+                                    source={user_bag.notice.icon ? {uri: user_bag.notice.icon} : reward}
+                                    style={styles.reward}
+                                />
+                                <View style={{flexShrink: 1}}>
+                                    <HTML
+                                        html={user_bag.notice.content}
+                                        style={{...styles.tip, color: Colors.descColor}}
+                                    />
+                                </View>
+                            </View>
+                        ) : null}
+                        {user_bag.product ? (
+                            <View style={{marginTop: px(8)}}>
+                                <ProductList data={user_bag.product.items} type={user_bag.product.style_type} />
+                            </View>
+                        ) : null}
                     </View>
-                </View>
+                ) : null}
                 {steps?.length > 0 && <Steps steps={steps} />}
                 {tip ? <Text style={styles.tip}>{tip}</Text> : null}
             </View>

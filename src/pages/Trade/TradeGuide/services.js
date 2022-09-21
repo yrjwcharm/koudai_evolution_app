@@ -7,3 +7,5 @@ import http from '~/services';
 export const getPageData = (params) => http.get('/trade_guide/info/20220914', params);
 
 export const getReward = (params) => http.post('/trade_guide/reward/20220914', params);
+
+export const reportPop = (params) => http.post('/trade_guide/report/20220914', params);
