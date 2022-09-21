@@ -17,10 +17,9 @@ const BottomMenus = ({data}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={item.tool_id}
-                        style={[Style.flexAround, {width: '20%', marginBottom: px(18)}]}
+                        style={[Style.flexRow, {width: '20%', marginBottom: px(18)}]}
                         onPress={() => {
                             global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
-
                             jump(item.url);
                         }}>
                         <Image source={{uri: item.icon}} style={styles.topMenuIcon} />

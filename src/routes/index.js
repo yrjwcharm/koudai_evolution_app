@@ -229,6 +229,7 @@ import TradeGuide from '~/pages/Trade/TradeGuide'; // 交易引导
 import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
 import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列表
+import ToolListManage from '~/pages/Assets/ToolListManage/ToolList';
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -1003,7 +1004,7 @@ export default function AppStack() {
                     component={CommonCommentList}
                     options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
                 />
-
+                <Stack.Screen name="ToolListManage" component={ToolListManage} options={{title: '全部工具'}} />
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
                 <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />

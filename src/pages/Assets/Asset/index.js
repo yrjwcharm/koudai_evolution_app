@@ -24,6 +24,7 @@ import Storage from '~/utils/storage';
 import ToolMenus from './ToolMenus';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
+import {Button} from '~/components/Button';
 const Index = ({navigation, _ref}) => {
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
@@ -107,7 +108,7 @@ const Index = ({navigation, _ref}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
-
+                <Button onPress={() => navigation.navigate('ToolListManage')} />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}
                 {/* 持仓列表 */}
