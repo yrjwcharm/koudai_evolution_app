@@ -2,35 +2,33 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, Animated, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {View, RefreshControl, Animated, ScrollView, ActivityIndicator, TouchableOpacity} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
-import RationalCard from './RationalCard';
-import HoldList from './HoldList';
+import HoldCard from './HoldCard';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {getHolding, getInfo, getNotice, getReadMes} from './service';
-import BottomMenus from './BottomMenus';
 import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
 import Header from './Header';
 import {useShowGesture} from '~/components/hooks';
 import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
-import YellowNotice from './YellowNotice';
+import YellowNotice from '~/components/YellowNotice';
 import AdInfo from './AdInfo';
 import withNetState from '~/components/withNetState';
 import Feather from 'react-native-vector-icons/Feather';
 import Storage from '~/utils/storage';
+import ToolMenus from './ToolMenus';
+import GuideTips from '~/components/GuideTips';
+import LinearGradient from 'react-native-linear-gradient';
 const Index = ({navigation, _ref}) => {
-    const scrollY = useRef(new Animated.Value(0)).current;
     const [data, setData] = useState(null);
-    const [notice, setNotice] = useState(null);
     const [holding, setHolding] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
-    const [headHeight, setHeaderHeight] = useState(0);
     const [newMes, setNewmessage] = useState(0);
     const [showEye, setShowEye] = useState('true');
     const scrollRef = useRef();
@@ -45,11 +43,7 @@ const Index = ({navigation, _ref}) => {
         let res = await getHolding();
         setHolding(res.result);
     };
-    // 小黄条
-    const getNoticeData = async () => {
-        let res = await getNotice();
-        setNotice(res.result);
-    };
+
     const readInterface = async () => {
         let res = await getReadMes();
         setNewmessage(res.result.all);
@@ -66,7 +60,6 @@ const Index = ({navigation, _ref}) => {
         refresh && setRefreshing(true);
         getData();
         getHoldingData();
-        is_login && getNoticeData();
         is_login && readInterface();
     };
     useFocusEffect(
@@ -94,32 +87,15 @@ const Index = ({navigation, _ref}) => {
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
-            <Animated.ScrollView
-                ref={scrollRef}
+            <ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
-                scrollEventThrottle={1}
-                onScroll={
-                    Animated.event(
-                        [
-                            {
-                                nativeEvent: {contentOffset: {y: scrollY}}, // 记录滑动距离
-                            },
-                        ],
-                        {
-                            useNativeDriver: true,
-                        }
-                    ) // 使用原生动画驱动
-                }
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init(true)} />}>
-                <View
-                    onLayout={(e) => {
-                        let {height} = e.nativeEvent.layout;
-                        setHeaderHeight(height); // 给头部高度赋值
-                    }}>
+                <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={['#ECF5FF', Colors.bgColor]}>
                     {/* 系统通知 */}
-                    {notice?.system_list?.length > 0 ? <YellowNotice data={notice?.system_list} /> : null}
+                    {data?.system_notices?.length > 0 && <YellowNotice data={data?.system_notices} />}
                     {/* 资产卡片 */}
-                    <AssetHeaderCard summary={holding?.summary} tradeMes={notice?.trade} showEye={showEye}>
+                    {/* tradeMes={data?.trade} */}
+                    <AssetHeaderCard summary={holding?.summary} showEye={showEye}>
                         <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                             <Feather
                                 name={showEye === 'true' ? 'eye' : 'eye-off'}
@@ -128,24 +104,16 @@ const Index = ({navigation, _ref}) => {
                             />
                         </TouchableOpacity>
                     </AssetHeaderCard>
-                    {/* 理性等级和投顾 */}
-                    <RationalCard im_info={data?.im_info} rational_info={data?.rational_info} />
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
-                </View>
+                </LinearGradient>
+
+                {/* 工具菜单 */}
+                {<ToolMenus data={data?.tool_list} />}
                 {/* 持仓列表 */}
-                {holding?.products ? (
+                {holding ? (
                     <>
-                        <HoldList
-                            products={holding?.products}
-                            summary={holding?.summary}
-                            scrollY={scrollY}
-                            showEye={showEye}
-                            stickyHeaderY={headHeight}
-                            reload={getHoldingData}
-                        />
-                        {/* 底部列表 */}
-                        <BottomMenus data={data?.bottom_menus} />
+                        <HoldCard data={holding} showEye={showEye} reload={getHoldingData} />
                         <BottomDesc />
                     </>
                 ) : (
@@ -153,8 +121,9 @@ const Index = ({navigation, _ref}) => {
                         <ActivityIndicator style={{marginTop: px(30)}} color={Colors.btnColor} />
                     </View>
                 )}
-            </Animated.ScrollView>
+            </ScrollView>
             {!is_login && <LoginMask />}
+            <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
         </>
     ) : (
         // 手势密码

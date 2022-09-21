@@ -10,7 +10,7 @@ import {Colors, Font, Space, Style} from '~/common//commonStyle';
 import {px as text, px, isIphoneX} from '~/utils/appUtil';
 import Http from '~/services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {RenderAlert} from '../Assets/Asset/HoldList';
+import {RenderAlert} from '../Assets/Asset/HoldCard';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
