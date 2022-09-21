@@ -228,6 +228,7 @@ import WhatIsPlan from '~/pages/Project/WhatIsPlan'; // 什么是计划
 import TradeGuide from '~/pages/Trade/TradeGuide'; // 交易引导
 import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
 import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
+import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列表
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -995,6 +996,11 @@ export default function AppStack() {
                 <Stack.Screen
                     name="SpecialDetail"
                     component={SpecialDetail}
+                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                />
+                <Stack.Screen
+                    name="CommonCommentList"
+                    component={CommonCommentList}
                     options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
                 />
 
