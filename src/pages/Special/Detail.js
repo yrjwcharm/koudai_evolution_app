@@ -14,6 +14,8 @@ import FastImage from 'react-native-fast-image';
 import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
+import {followAdd, followCancel} from '../Attention/Index/service';
+import {publishNewComment} from '../Common/CommentList/services';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -27,6 +29,8 @@ const SpecialDetail = ({navigation, route}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const navBarRef = useRef();
+    const clickRef = useRef(true);
+
     useEffect(() => {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
@@ -37,9 +41,8 @@ const SpecialDetail = ({navigation, route}) => {
     }, []);
 
     const init = () => {
-        http.get('/portfolio/buttons/20220914', route?.params?.params).then((res) => {
+        http.get('/products/subject/detail_btn/20220901', route?.params?.params).then((res) => {
             if (res.code === '000000') {
-                const {title} = res.result;
                 setData(res.result);
             }
         });
@@ -52,9 +55,35 @@ const SpecialDetail = ({navigation, route}) => {
         }, [])
     );
 
+    const handlerIconBtnClick = (item) => {
+        switch (item.event_id) {
+            case 'follow':
+                if (!clickRef.current) return;
+                clickRef.current = false;
+                (item?.is_follow ? followCancel : followAdd)({item_id: item.subject_id, item_type: 6}).then((res) => {
+                    if (res.code === '000000') {
+                        res.message && Toast.show(res.message);
+                        setTimeout(() => {
+                            clickRef.current = true;
+                        }, 100);
+                        init();
+                    }
+                });
+                break;
+            case 'share':
+                DeviceEventEmitter.emit('globalShareShow');
+                break;
+            default:
+                item?.url && jump(item?.url);
+        }
+    };
+
     //发布评论
     const publish = () => {
-        http.post('/community/article/comment/add/20210101', {article_id: 666, content}).then((res) => {
+        publishNewComment({
+            ...data?.comment_params,
+            content,
+        }).then((res) => {
             if (res.code == '000000') {
                 inputModal.current.cancel();
                 setContent('');
@@ -79,7 +108,7 @@ const SpecialDetail = ({navigation, route}) => {
                             marginLeft: px(13),
                             color: scrolling ? '#121D3A' : '#fff',
                         }}>
-                        专题名称
+                        {data?.title}
                     </Text>
                 }
                 renderRight={
@@ -91,7 +120,12 @@ const SpecialDetail = ({navigation, route}) => {
                                 borderColor: scrolling ? '#E9EAEF' : 'rgba(255,255,255,0.4)',
                             },
                         ]}>
-                        <View style={styles.rightIconItemWrap}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                DeviceEventEmitter.emit('globalShareShow');
+                            }}
+                            style={styles.rightIconItemWrap}>
                             <FastImage
                                 style={styles.rightIcon}
                                 source={{
@@ -101,7 +135,7 @@ const SpecialDetail = ({navigation, route}) => {
                                         '.png',
                                 }}
                             />
-                        </View>
+                        </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
@@ -179,7 +213,7 @@ const SpecialDetail = ({navigation, route}) => {
                     startInLoadingState={true}
                     style={{opacity: 0.99, flex: 1}}
                     source={{
-                        uri: URI('http://192.168.88.171:3000/SpecialDetail')
+                        uri: URI(route.params.link)
                             .addQuery({
                                 timeStamp: timeStamp.current,
                                 ...route.params.params,
@@ -195,32 +229,27 @@ const SpecialDetail = ({navigation, route}) => {
                     style={styles.footer_content}
                     activeOpacity={0.9}
                     onPress={() => {
+                        if (!data?.commentable) return;
                         inputModal.current.show();
                         setTimeout(() => {
                             inputRef?.current?.focus();
                         }, 100);
                     }}>
-                    <Text style={{fontSize: px(12), color: '#9AA0B1'}}>我来聊两句...</Text>
+                    <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{marginLeft: px(24)}} activeOpacity={0.8} onPress={() => {}}>
-                    <FastImage
-                        source={require('../../assets/img/article/share.png')}
-                        style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
-                    />
-                    <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d'}}>自选</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{marginLeft: px(24)}}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        DeviceEventEmitter.emit('globalShareShow');
-                    }}>
-                    <FastImage
-                        source={require('../../assets/img/article/share.png')}
-                        style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
-                    />
-                    <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d'}}>自选</Text>
-                </TouchableOpacity>
+                {data?.icon_btns?.map?.((item, idx) => (
+                    <TouchableOpacity
+                        style={{marginLeft: px(24)}}
+                        activeOpacity={0.8}
+                        key={idx}
+                        onPress={() => handlerIconBtnClick(item)}>
+                        <FastImage
+                            source={{uri: item.icon}}
+                            style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                        />
+                        <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d'}}>{item.text}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
             <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                 <TextInput
