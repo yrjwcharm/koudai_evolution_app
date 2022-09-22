@@ -82,18 +82,16 @@ const PortfolioIndex = ({navigation, route}) => {
     };
 
     return Object.keys(data).length > 0 ? (
-        <View style={styles.container}>
+        <LinearGradient
+            colors={['#FFFFFF', '#F4F5F7']}
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 0.4}}
+            style={styles.container}>
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} scrollEventThrottle={16}>
-                <View style={{backgroundColor: '#fff'}}>{genTopMenu()}</View>
-                <LinearGradient
-                    colors={['#FFFFFF', '#F4F5F7']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 1}}
-                    style={{paddingTop: px(12), paddingHorizontal: Space.padding}}>
-                    <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
-                        <ProductList data={popular_subjects.items} type={popular_subjects.type} />
-                    </View>
-                </LinearGradient>
+                {genTopMenu()}
+                <View style={{borderRadius: Space.borderRadius, paddingTop: px(10), paddingHorizontal: Space.padding}}>
+                    <ProductList data={popular_subjects.items} type={popular_subjects.type} />
+                </View>
                 <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
                     {subjects?.map?.((subject, index) => (
                         <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
@@ -103,7 +101,7 @@ const PortfolioIndex = ({navigation, route}) => {
                 </View>
                 <BottomDesc />
             </ScrollView>
-        </View>
+        </LinearGradient>
     ) : null;
 };
 
@@ -112,7 +110,6 @@ export default PortfolioIndex;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.bgColor,
     },
     topMenu: {
         paddingHorizontal: px(16),
