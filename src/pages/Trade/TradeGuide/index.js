@@ -20,6 +20,7 @@ import {Modal} from '~/components/Modal';
 import {ProductList} from '~/components/Product';
 import HTML from '~/components/RenderHtml';
 import UnderlineText from '~/components/UnderlineText';
+import withPageLoading from '~/components/withPageLoading';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {getPageData, getReward, reportPop} from './services';
 
@@ -71,13 +72,16 @@ const Steps = ({steps}) => {
                         <View>
                             <FastImage
                                 source={status === 0 ? todo : status === 1 ? ongoing : finished}
-                                style={styles.status}
+                                style={status === 0 ? styles.todo : styles.status}
                             />
                             {i < arr.length - 1 && (
                                 <View
                                     style={[
                                         styles.line,
-                                        {height: heightArr[i], backgroundColor: status === 1 ? '#E1EDFF' : '#E8ECF4'},
+                                        {
+                                            height: heightArr[i] + 2 || 0,
+                                            backgroundColor: status === 1 ? '#E1EDFF' : '#E8ECF4',
+                                        },
                                     ]}
                                 />
                             )}
@@ -105,18 +109,22 @@ const Steps = ({steps}) => {
     );
 };
 
-const Index = ({navigation, route}) => {
+const Index = ({navigation, route, setLoading}) => {
     const [data, setData] = useState({});
     const {bg, notice, pop, show_pop, tip, steps, user_bag} = data;
 
     const init = () => {
-        getPageData({}).then((res) => {
-            if (res.code === '000000') {
-                const {title = '交易引导'} = res.result;
-                navigation.setOptions({title});
-                setData(res.result);
-            }
-        });
+        getPageData({})
+            .then((res) => {
+                if (res.code === '000000') {
+                    const {title = '交易引导'} = res.result;
+                    navigation.setOptions({title});
+                    setData(res.result);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     const handleGetReward = () => {
@@ -267,6 +275,13 @@ const styles = StyleSheet.create({
         width: px(16),
         height: px(16),
     },
+    todo: {
+        marginTop: px(4),
+        marginRight: px(10),
+        marginLeft: px(2),
+        width: px(12),
+        height: px(12),
+    },
     line: {
         position: 'absolute',
         top: px(18),
@@ -311,4 +326,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Index;
+export default withPageLoading(Index);

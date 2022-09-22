@@ -3,7 +3,7 @@
  * @Description: v7产品列表
  */
 import React from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -19,7 +19,7 @@ const Index = ({data = [], type = 'default'}) => {
     const jump = useJump();
 
     /** @name 卡片左边部分 */
-    const renderLeftPart = ({chart, image, rank_icon, ratio_labels, yesterday_profit}) => {
+    const renderLeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_profit}) => {
         switch (true) {
             case chart?.length > 0:
                 return (
@@ -39,7 +39,11 @@ const Index = ({data = [], type = 'default'}) => {
                     />
                 );
             case !!rank_icon:
-                return <Image source={{uri: rank_icon}} style={styles.rankIcon} />;
+                return (
+                    <ImageBackground source={{uri: rank_icon}} style={[Style.flexCenter, styles.rankIcon]}>
+                        {rank_num ? <Text style={styles.rankText}>{rank_num}</Text> : null}
+                    </ImageBackground>
+                );
             case ratio_labels?.length > 0:
                 return (
                     <View style={styles.leftPart}>
@@ -309,6 +313,14 @@ const styles = StyleSheet.create({
         width: px(24),
         height: px(24),
     },
+    rankText: {
+        marginTop: px(2),
+        marginRight: Platform.select({android: px(2), ios: px(1)}),
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.placeholderColor,
+        fontFamily: Font.numFontFamily,
+    },
     profitBox: {
         marginRight: px(12),
         borderRadius: px(64),
@@ -336,7 +348,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     profitLabel: {
-        marginTop: px(1),
+        marginTop: px(2),
         fontSize: px(10),
         lineHeight: px(14),
         color: Colors.lightGrayColor,

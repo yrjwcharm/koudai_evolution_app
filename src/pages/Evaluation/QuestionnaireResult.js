@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 11:46:48
+ * @LastEditTime: 2022-09-22 15:05:06
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -84,18 +84,20 @@ const QuestionnaireResult = () => {
                             <HTML html={data?.tips} style={{fontSize: text(11), lineHeight: text(17)}} />
                         </View>
                     ) : null}
-                    <Button
-                        title={data.button.text}
-                        onPress={() => {
-                            //调整风险工具
-                            if (fr?.includes('riskch')) {
-                                navigation.goBack();
-                            } else {
-                                jump(data?.button?.url, fr === 'single_buy' ? 'navigate' : 'replace');
-                            }
-                        }}
-                        style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
-                    />
+                    {data.button?.text ? (
+                        <Button
+                            title={data.button.text}
+                            onPress={() => {
+                                //调整风险工具
+                                if (fr?.includes('riskch')) {
+                                    navigation.goBack();
+                                } else {
+                                    jump(data?.button?.url, fr === 'single_buy' ? 'navigate' : 'replace');
+                                }
+                            }}
+                            style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
+                        />
+                    ) : null}
                 </ImageBackground>
             )}
         </ScrollView>
