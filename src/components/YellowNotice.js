@@ -7,40 +7,33 @@ import React from 'react';
 import {useJump} from '~/components/hooks';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
-
+import AntdD from 'react-native-vector-icons/AntDesign';
 const YellowNotice = ({data}) => {
     const jump = useJump();
     return data?.map((system, index, arr) => (
         <TouchableOpacity
             key={index}
             activeOpacity={0.9}
-            style={styles.systemMsgContainer}
+            style={[styles.systemMsgContainer, arr.length > 1 && {marginBottom: px(12)}]}
             onPress={() => {
                 system?.log_id && global.LogTool(system?.log_id);
-                jump(system?.button?.url);
+                jump(system?.url);
             }}>
             <View
                 style={[
                     Style.flexBetween,
                     {
-                        paddingTop: px(8),
-                        paddingBottom: px(12),
+                        paddingVertical: px(8),
                     },
-                    arr.length > 1 && index != arr.length - 1
-                        ? {
-                              borderBottomColor: '#F7CFB2',
-                              borderBottomWidth: 0.5,
-                          }
-                        : {},
                 ]}>
                 <Text style={styles.systemMsgText} numberOfLines={arr.length > 1 ? 2 : 100}>
                     {system?.desc}
                 </Text>
-                {system?.button ? (
-                    <View style={styles.btn}>
-                        <Text style={styles.btn_text}>{system?.button?.text}</Text>
-                    </View>
-                ) : null}
+                {system?.can_close && (
+                    <TouchableOpacity style={{alignSelf: 'flex-start', right: -px(8)}}>
+                        <AntdD name="close" size={px(16)} color={Colors.yellow} />
+                    </TouchableOpacity>
+                )}
             </View>
         </TouchableOpacity>
     ));
@@ -52,25 +45,13 @@ const styles = StyleSheet.create({
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.marginAlign,
+        marginHorizontal: px(16),
     },
     systemMsgText: {
-        fontSize: px(13),
-        lineHeight: px(18),
+        fontSize: px(12),
+        lineHeight: px(17),
         color: Colors.yellow,
         textAlign: 'justify',
         flex: 1,
-    },
-    btn: {
-        borderRadius: px(14),
-        paddingVertical: px(5),
-        paddingHorizontal: px(10),
-        backgroundColor: '#FF7D41',
-        marginLeft: px(12),
-    },
-    btn_text: {
-        fontWeight: '600',
-        color: '#fff',
-        fontSize: px(12),
-        lineHeight: px(17),
     },
 });

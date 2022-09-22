@@ -9,7 +9,7 @@ import {Colors} from '../../common/commonStyle';
 const SmButton = ({title, style, titleStyle, onPress}) => {
     return (
         <TouchableOpacity style={[styles.pkBtn, style]} onPress={onPress} activeOpacity={0.8}>
-            <Text style={{fontSize: px(13), lineHeight: px(18), color: Colors.btnColor, ...titleStyle}}>{title}</Text>
+            <Text style={{fontSize: px(11), lineHeight: px(18), color: Colors.btnColor, ...titleStyle}}>{title}</Text>
         </TouchableOpacity>
     );
 };
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
         borderColor: Colors.btnColor,
         borderWidth: 0.5,
         paddingHorizontal: px(10),
-        paddingVertical: px(4),
-        paddingTop: px(3),
+        paddingVertical: px(2),
     },
 });

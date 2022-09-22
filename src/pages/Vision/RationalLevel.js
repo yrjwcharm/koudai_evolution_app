@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-03-11 14:51:29
- * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-03-29 19:14:03
  * @Description: 理性等级
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -171,6 +168,12 @@ export default ({navigation}) => {
                                 return (
                                     <View
                                         key={task + idx}
+                                        onLayout={() => {
+                                            if (task.anchor_log) {
+                                                const {ctrl, event} = task.anchor_log;
+                                                global.LogTool(event, ctrl);
+                                            }
+                                        }}
                                         style={[
                                             Style.flexBetween,
                                             styles.taskItem,

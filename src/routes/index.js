@@ -229,6 +229,7 @@ import TradeGuide from '~/pages/Trade/TradeGuide'; // 交易引导
 import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
 import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列表
+import ToolListManage from '~/pages/Assets/ToolListManage/ToolList';
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -250,6 +251,10 @@ import SingleFundRedeem from '../pages/Assets/SingleFundRedeem.js'; //单只基�
 import SingleFundRule from '../pages/Trade/SingleFundRule.js'; //单只基金规则
 import Find from '~/pages/Find'; // 投顾组合
 import PortfolioAssets from '~/pages/Assets/PortfolioAssets'; // 老版本持仓详情页
+import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一键转换介绍页
+import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
+import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
+import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 
 const Stack = createStackNavigator();
 
@@ -1003,7 +1008,7 @@ export default function AppStack() {
                     component={CommonCommentList}
                     options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
                 />
-
+                <Stack.Screen name="ToolListManage" component={ToolListManage} options={{title: '全部工具'}} />
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
                 <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
@@ -1024,6 +1029,14 @@ export default function AppStack() {
                 <Stack.Screen name="SingleFundRedeem" component={SingleFundRedeem} options={{title: ''}} />
                 <Stack.Screen name="SingleFundRule" component={SingleFundRule} options={{title: '交易规则'}} />
                 <Stack.Screen name="Find" component={Find} options={{title: ''}} />
+                <Stack.Screen name="TransferIntro" component={TransferIntro} options={{title: ''}} />
+                <Stack.Screen
+                    name="ChooseTransferPortfolio"
+                    component={ChooseTransferPortfolio}
+                    options={{title: ''}}
+                />
+                <Stack.Screen name="TradeTransfer" component={TradeTransfer} options={{title: ''}} />
+                <Stack.Screen name="TransferDetail" component={TransferDetail} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );

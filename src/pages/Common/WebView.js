@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 20:12:58
+ * @LastEditTime: 2022-09-21 21:09:27
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,6 +32,10 @@ export default function WebView({route, navigation}) {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 setToken(result?.access_token ? result?.access_token : 'null');
+                // webview.current &&
+                //     webview.current.injectedJavaScript(
+                //         `window.sessionStorage.setItem('token','${result.access_token}');`
+                //     );
             });
         };
         getToken();
@@ -163,7 +167,6 @@ export default function WebView({route, navigation}) {
                     }}
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
-                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async (e) => {
                         // console.log(e.nativeEvent.title);
                         if (route.params.title) {

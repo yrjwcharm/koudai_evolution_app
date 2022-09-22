@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-15 17:55:13
+ * @LastEditTime: 2022-09-21 21:09:35
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -159,6 +159,7 @@ class TradeBuy extends Component {
      * @returns void
      */
     showRiskDisclosure = (data) => {
+        if (!data.risk_disclosure) return false;
         this.show_risk_disclosure = false;
         Modal.show({
             children: () => {
@@ -218,6 +219,7 @@ class TradeBuy extends Component {
      * @returns void
      */
     showRishPop = (data) => {
+        if (!data.risk_pop) return false;
         Modal.show({
             cancelCallBack: () => {
                 global.LogTool('RiskWarningWindows_No');

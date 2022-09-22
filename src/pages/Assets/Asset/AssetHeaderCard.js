@@ -19,57 +19,53 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
             colors={['#F1F9FF', Colors.bgColor]}
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
-            style={{marginBottom: px(12), paddingTop: px(12)}}>
+            style={{marginBottom: px(12), paddingTop: px(8)}}>
             <LinearGradient
                 colors={['#1C58E7', '#528AED']}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.assetsContainer}>
-                <Image source={require('~/assets/personal/mofang.png')} style={styles.mofang} />
                 {/* 资产信息 */}
                 <View style={[styles.summaryTitle, Style.flexCenter]}>
                     <Text style={styles.summaryKey}>总资产(元)</Text>
-                    <Text style={styles.date}>{summary?.profit_date}</Text>
+                    <Text style={styles.date}>{summary?.asset_info?.date}</Text>
                     {children}
                 </View>
                 <Text style={{textAlign: 'center'}}>
                     {showEye === 'true' ? (
-                        <Text style={styles.amount}>{summary?.amount}</Text>
+                        <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
                     ) : (
                         <Text style={styles.amount}>****</Text>
                     )}
                 </Text>
+
+                <View style={[Style.flexRow, styles.profitContainer]}>
+                    <View style={[{flex: 1}]}>
+                        <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
+                        <Text style={styles.profitVal}>
+                            {showEye === 'true' ? summary?.profit_info?.value : '****'}
+                        </Text>
+                    </View>
+                    <View style={[{flex: 1}]}>
+                        <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
+                        <Text style={styles.profitVal}>
+                            {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                        </Text>
+                    </View>
+                </View>
                 {/* 交易通知 */}
                 {tradeMes ? (
                     <TouchableOpacity
                         activeOpacity={0.8}
+                        style={[styles.noticeBox, Style.flexRow]}
                         onPress={() => {
                             global.LogTool('click', 'tradeMsg');
                             jump(tradeMes.url);
                         }}>
-                        <Octicons
-                            name={'triangle-up'}
-                            size={px(16)}
-                            color={'rgba(157, 187, 255, 0.68)'}
-                            style={{left: px(18)}}
-                        />
-                        <View style={[styles.noticeBox, Style.flexRow]}>
-                            <Text style={styles.noticeText}>{tradeMes?.desc}</Text>
-                            <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                        </View>
+                        <Text style={styles.noticeText}>{tradeMes?.desc}</Text>
+                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                     </TouchableOpacity>
                 ) : null}
-
-                <View style={[Style.flexRow, styles.profitContainer]}>
-                    <View style={[{flex: 1}]}>
-                        <Text style={styles.profitKey}>{summary?.profit_label || '日收益'}</Text>
-                        <Text style={styles.profitVal}>{showEye === 'true' ? summary?.profit : '****'}</Text>
-                    </View>
-                    <View style={[{flex: 1}]}>
-                        <Text style={styles.profitKey}>累计收益</Text>
-                        <Text style={styles.profitVal}>{showEye === 'true' ? summary?.profit_acc : '****'}</Text>
-                    </View>
-                </View>
             </LinearGradient>
         </LinearGradient>
     );
@@ -119,13 +115,13 @@ const styles = StyleSheet.create({
         marginHorizontal: px(10),
     },
     amount: {
-        fontSize: px(34),
-        lineHeight: px(40),
+        fontSize: px(24),
+        lineHeight: px(30),
         color: '#fff',
         fontFamily: Font.numFontFamily,
     },
     profitContainer: {
-        marginTop: Space.marginVertical,
+        marginTop: px(12),
         alignItems: 'flex-start',
     },
     profitKey: {
@@ -142,11 +138,11 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     noticeBox: {
-        marginTop: Platform.select({android: -px(6.6), ios: -px(6)}),
-        paddingVertical: px(4),
+        marginTop: px(12),
+        paddingVertical: px(7),
         paddingHorizontal: px(12),
         backgroundColor: 'rgba(157, 187, 255, 0.68)',
-        borderRadius: px(12),
+        borderRadius: px(4),
     },
     noticeText: {
         fontSize: Font.textH3,

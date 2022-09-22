@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
- * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-05 11:39:34
  */
 import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
@@ -146,6 +143,27 @@ export default function PortfolioAssets(props) {
             .catch(() => {
                 setLoading(false);
             });
+        http.get('/transfer/force/guide/pop/202208', {poid: props.route.params?.poid || ''}).then((res) => {
+            if (res.code === '000000') {
+                const {back_close, cancel, confirm, content, title, touch_close} = res.result;
+                content &&
+                    Modal.show({
+                        backButtonClose: back_close,
+                        cancelCallBack: () =>
+                            global.LogTool('PortfolioTransition_Windows_No', props.route.params?.poid),
+                        cancelText: cancel.text,
+                        confirm: true,
+                        confirmCallBack: () => {
+                            global.LogTool('PortfolioTransition_Windows_yes', props.route.params?.poid);
+                            jump(confirm.url);
+                        },
+                        confirmText: confirm.text,
+                        content,
+                        isTouchMaskToClose: touch_close,
+                        title,
+                    });
+            }
+        });
     }, [props.route.params]);
     //获取签约数据
     const getSignData = () => {
@@ -1031,42 +1049,45 @@ export default function PortfolioAssets(props) {
                     {bottomBtns?.[0] ? (
                         <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
                             {bottomBtns.map((_item, _index, arr) => {
-                                return _index % 4 == 0 && _index === arr.length - 1 ? null : (
+                                const {avail, icon, id, red_point, text: menuText, url} = _item;
+                                return (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
+                                        disabled={avail === 0}
                                         style={{
                                             alignItems: 'center',
                                             width: (deviceWidth - px(16) * 2) / 4,
                                             marginBottom: px(26),
                                         }}
-                                        key={_index + '_item0'}
+                                        key={menuText + _index}
                                         onPress={() => {
-                                            global.LogTool(
-                                                'assetsDetailIconsStart',
-                                                props.route?.params?.poid,
-                                                _item.id
-                                            );
-                                            if (_item.red_point) {
+                                            global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, id);
+                                            if (red_point) {
                                                 http.get('/wechat/report/red_point/20210906');
                                             }
-                                            jump(_item.url);
+                                            jump(url);
                                         }}>
                                         <View style={{position: 'relative'}}>
                                             <FastImage
                                                 source={{
-                                                    uri: _item.icon,
+                                                    uri: icon,
                                                 }}
                                                 resizeMode="contain"
                                                 style={{width: text(24), height: text(24), marginBottom: text(5)}}
                                             />
-                                            {_item.red_point ? <View style={styles.redDot} /> : null}
+                                            {red_point ? <View style={styles.redDot} /> : null}
                                         </View>
                                         <Text
                                             style={[
                                                 styles.list_text_sty,
-                                                {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                                {
+                                                    color:
+                                                        _index === arr.length - 1 || avail === 0
+                                                            ? '#BDC2CC'
+                                                            : '#4E556C',
+                                                },
                                             ]}>
-                                            {_item.text}
+                                            {menuText}
                                         </Text>
                                     </TouchableOpacity>
                                 );

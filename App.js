@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-10 18:08:42
+ * @LastEditTime: 2022-09-21 21:08:07
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -21,10 +21,8 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-import NetInfo from '@react-native-community/netinfo';
-import {updateVerifyGesture, getUserInfo, updateUserInfo, getAppConfig} from './src/redux/actions/userInfo';
+import {updateVerifyGesture, updateUserInfo} from './src/redux/actions/userInfo';
 import BackgroundTimer from 'react-native-background-timer';
-import {debounce} from 'lodash';
 import {setGlobalErrorHandler} from 'react-native-error-helper';
 import {useStateChange} from './src/components/hooks';
 import {navigationRef} from './src/components/hooks/RootNavigation';
@@ -78,18 +76,6 @@ function App(props) {
         });
     }, []);
 
-    React.useEffect(() => {
-        NetInfo.addEventListener(
-            debounce((state) => {
-                if (!state.isConnected) {
-                    Toast.show('网络已断开,请检查您的网络');
-                } else {
-                    store.dispatch(getUserInfo());
-                    store.dispatch(getAppConfig());
-                }
-            }, 500)
-        );
-    }, []);
     React.useEffect(() => {
         //刷新token
         Storage.get('loginStatus').then((res) => {

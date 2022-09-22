@@ -12,21 +12,18 @@ const BottomMenus = ({data}) => {
     const jump = useJump();
     return (
         <View style={[styles.topMenu, Style.flexRow]}>
-            {data?.map((item, index) => {
+            {data?.map((item) => {
                 return (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        key={`bottommenu${item.id}`}
-                        style={[Style.flexCenter, {width: '25%', marginBottom: px(20)}]}
+                        key={item.tool_id}
+                        style={[Style.flexRow, {width: '20%', marginBottom: px(18)}]}
                         onPress={() => {
                             global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
-
                             jump(item.url);
                         }}>
                         <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                        <Text style={[styles.topMenuTitle, item?.id == 8 && {color: Colors.lightGrayColor}]}>
-                            {item.title}
-                        </Text>
+                        <Text style={[styles.topMenuTitle]}>{item.text}</Text>
                     </TouchableOpacity>
                 );
             })}
@@ -40,7 +37,7 @@ const styles = StyleSheet.create({
     topMenu: {
         paddingVertical: px(12),
         flexWrap: 'wrap',
-        marginBottom: px(12),
+        marginBottom: px(20),
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
@@ -52,7 +49,7 @@ const styles = StyleSheet.create({
     },
     topMenuTitle: {
         fontSize: Font.textH3,
-        lineHeight: px(17),
+        lineHeight: px(15),
         color: Colors.defaultColor,
     },
 });

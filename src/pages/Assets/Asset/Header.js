@@ -61,7 +61,7 @@ export default Header;
 const styles = StyleSheet.create({
     header: {
         paddingHorizontal: px(16),
-        backgroundColor: '#F1F9FF',
+        backgroundColor: '#ECF5FF',
     },
     avatar: {width: px(32), height: px(32), borderRadius: px(16), marginRight: px(10)},
     name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
