@@ -15,7 +15,7 @@ const ToolList = () => {
     const [scrollEnable, setScrollEnable] = useState(true);
     const {my_tools = {}, tool_modules} = data;
     const getData = async () => {
-        let res = await getList({type: 40});
+        let res = await getList({type: 200});
         setData(res);
     };
     useEffect(() => {

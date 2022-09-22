@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, Animated, ScrollView, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {View, RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
@@ -95,8 +95,7 @@ const Index = ({navigation, _ref}) => {
                     {/* 系统通知 */}
                     {data?.system_notices?.length > 0 && <YellowNotice data={data?.system_notices} />}
                     {/* 资产卡片 */}
-                    {/* tradeMes={data?.trade} */}
-                    <AssetHeaderCard summary={holding?.summary} showEye={showEye}>
+                    <AssetHeaderCard summary={holding?.summary} showEye={showEye} tradeMes={holding?.trade_notice}>
                         <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                             <Feather
                                 name={showEye === 'true' ? 'eye' : 'eye-off'}
@@ -109,6 +108,7 @@ const Index = ({navigation, _ref}) => {
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
                 <Button onPress={() => navigation.navigate('ToolListManage')} />
+                <Button onPress={() => DeviceEventEmitter.emit('globalShareShow')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}
                 {/* 持仓列表 */}

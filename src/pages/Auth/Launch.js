@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-06-29 15:50:29
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 21:09:07
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
