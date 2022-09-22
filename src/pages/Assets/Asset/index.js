@@ -108,7 +108,7 @@ const Index = ({navigation, _ref}) => {
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
                 <Button onPress={() => navigation.navigate('ToolListManage')} />
-                <Button onPress={() => DeviceEventEmitter.emit('globalShareShow')} title="个人设置" />
+                <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}
                 {/* 持仓列表 */}

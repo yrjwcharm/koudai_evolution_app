@@ -68,32 +68,34 @@ const ListTitle = ({title, pop_info, reload}) => {
             </Text>
             <AntDesign name="caretdown" />
             <BottomModal ref={bottomModal} title={pop_info.title} style={{height: px(460)}} onClose={onClose}>
-                {list.toJS().map(({name, icon, number, desc, select, type}, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        activeOpacity={0.8}
-                        style={[Style.flexBetween, styles.popCard]}
-                        onPress={() => onChange(index)}>
-                        <View>
-                            <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                {!!icon && (
-                                    <Image
-                                        source={{uri: icon}}
-                                        style={{width: px(18), height: px(18), marginRight: px(3)}}
-                                    />
-                                )}
-                                <Text style={{fontSize: px(14), fontWeight: '700'}}>
-                                    {name}
-                                    {number}
+                <>
+                    {list.toJS().map(({name, icon, number, desc, select, type}, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            activeOpacity={0.8}
+                            style={[Style.flexBetween, styles.popCard]}
+                            onPress={() => onChange(index)}>
+                            <View>
+                                <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                                    {!!icon && (
+                                        <Image
+                                            source={{uri: icon}}
+                                            style={{width: px(18), height: px(18), marginRight: px(3)}}
+                                        />
+                                    )}
+                                    <Text style={{fontSize: px(14), fontWeight: '700'}}>
+                                        {name}
+                                        {number}
+                                    </Text>
+                                </View>
+                                <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(21)}}>
+                                    {desc}
                                 </Text>
                             </View>
-                            <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(21)}}>
-                                {desc}
-                            </Text>
-                        </View>
-                        {select == 1 && <Entypo name="check" color="#0051CC" size={px(14)} />}
-                    </TouchableOpacity>
-                ))}
+                            {select == 1 && <Entypo name="check" color="#0051CC" size={px(14)} />}
+                        </TouchableOpacity>
+                    ))}
+                </>
             </BottomModal>
         </TouchableOpacity>
     );
