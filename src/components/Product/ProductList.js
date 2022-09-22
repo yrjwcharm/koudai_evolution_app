@@ -181,8 +181,12 @@ const Index = ({data = [], type = 'default'}) => {
                 activeOpacity={0.8}
                 key={name + index}
                 onPress={() => jump(url)}
-                style={[Style.flexCenter, {flex: 1}]}>
-                <Text style={styles.name}>{name}</Text>
+                style={[Style.flexCenter, {flex: 1, marginLeft: index === 0 ? 0 : px(18)}]}>
+                {name ? (
+                    <Text numberOfLines={1} style={styles.name}>
+                        {name}
+                    </Text>
+                ) : null}
                 {profit ? (
                     <View style={[Style.flexCenter, {marginTop: px(8)}]}>
                         <HTML html={profit} style={styles.smProfit} />
@@ -264,7 +268,7 @@ const Index = ({data = [], type = 'default'}) => {
 
     switch (type) {
         case 'horizontal':
-            return <View style={[Style.flexRow, {paddingBottom: px(12)}]}>{data.map(renderHorizontalItem)}</View>;
+            return <View style={Style.flexRow}>{data.map(renderHorizontalItem)}</View>;
         case 'swiper':
             return (
                 <Swiper
