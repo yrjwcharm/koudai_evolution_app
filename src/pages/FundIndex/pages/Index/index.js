@@ -93,17 +93,17 @@ const Index = ({navigation}) => {
                 refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
-                <TopMenu data={nav} />
+                {nav ? (
+                    <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                        <TopMenu data={nav} />
+                    </LinearGradient>
+                ) : null}
                 {popular_subjects ? (
-                    <LinearGradient
-                        colors={['#fff', Colors.bgColor]}
-                        start={{x: 0, y: 0}}
-                        end={{x: 0, y: 1}}
-                        style={styles.swiperContainer}>
+                    <View style={styles.swiperContainer}>
                         <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
                             <ProductList data={popular_subjects.items} type={popular_subjects.type} />
                         </View>
-                    </LinearGradient>
+                    </View>
                 ) : null}
                 <View style={styles.bottomContainer}>
                     {subjects?.map?.((subject, index) => (
