@@ -43,6 +43,7 @@ const TopMenu = ({data = []}) => {
 
 const Index = ({navigation}) => {
     const dimensions = useWindowDimensions();
+    const jump = useJump();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const {nav, popular_subjects, subjects = []} = data;
@@ -53,22 +54,23 @@ const Index = ({navigation}) => {
             .then((res) => {
                 setRefreshing(false);
                 if (res.code === '000000') {
+                    const {search_btn, title = '基金'} = res.result;
                     navigation.setOptions({
-                        headerRight: () => (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => navigation.navigate('SearchHome')}
-                                style={{marginRight: Space.marginAlign}}>
-                                <Image
-                                    source={{
-                                        uri:
-                                            'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
-                                    }}
-                                    style={{width: px(24), height: px(24)}}
-                                />
-                            </TouchableOpacity>
-                        ),
-                        title: res.result.title || '基金',
+                        headerRight: () =>
+                            search_btn ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(search_btn.url)}
+                                    style={{marginRight: Space.marginAlign}}>
+                                    <Image
+                                        source={{
+                                            uri: search_btn.icon,
+                                        }}
+                                        style={{width: px(24), height: px(24)}}
+                                    />
+                                </TouchableOpacity>
+                            ) : null,
+                        title,
                     });
                     setData(res.result);
                 }
