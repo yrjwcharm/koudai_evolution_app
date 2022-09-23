@@ -7,14 +7,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import Image from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
-import {SmButton} from '~/components/Button';
-import {getAlertColor} from './util';
 import {useJump} from '~/components/hooks';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {BottomModal} from '~/components/Modal';
 import {postAssetClass} from './service';
 import {fromJS} from 'immutable';
+import {RenderAlert} from '../components/RenderAlert';
 const HoldCard = ({data, reload, showEye}) => {
     const {class_list, pop_info} = data;
     return (
@@ -141,46 +140,15 @@ const CardItem = ({data = {}, showEye}) => {
     );
 };
 
-// 信号
-export const RenderAlert = ({alert}) => {
-    const jump = useJump();
-    const alertIcon = useRef();
-    const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
-    return (
-        <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
-            <View style={[Style.flexRow, {flex: 1}]}>
-                {/* <Image
-                    onLoad={({nativeEvent: {width, height}}) =>
-                        alertIcon.current.setNativeProps({style: {width: (width * px(16)) / height}})
-                    }
-                    ref={alertIcon}
-                    source={{uri: alert?.alert_icon}}
-                    style={{height: px(16), marginRight: px(8)}}
-                /> */}
-                <Text style={{flex: 1, fontSize: px(11), color: Colors.defaultColor}} numberOfLines={1}>
-                    {alert?.desc}
-                </Text>
-            </View>
-            {!!alert?.button && (
-                <SmButton
-                    title={alert?.button?.text}
-                    style={{borderColor: buttonColor}}
-                    titleStyle={{color: buttonColor}}
-                    onPress={() => jump(alert?.alert_button?.url)}
-                />
-            )}
-        </View>
-    );
-};
 export default HoldCard;
 
 const styles = StyleSheet.create({
-    bold_text: {fontSize: px(14), lineHeight: px(20), color: Colors.defaultColor, fontWeight: '700'},
     light_text: {
         fontSize: px(12),
         lineHeight: px(17),
         color: Colors.lightBlackColor,
     },
+    bold_text: {fontSize: px(14), lineHeight: px(20), fontWeight: '700'},
     title_tag: {
         width: px(3),
         height: px(12),

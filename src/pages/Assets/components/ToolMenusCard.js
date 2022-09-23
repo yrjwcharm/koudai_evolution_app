@@ -8,10 +8,10 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 
-const BottomMenus = ({data}) => {
+const ToolMenusCard = ({data, style}) => {
     const jump = useJump();
     return (
-        <View style={[styles.topMenu, Style.flexRow]}>
+        <View style={[styles.topMenu, Style.flexRow, style]}>
             {data?.map((item) => {
                 return (
                     <TouchableOpacity
@@ -31,7 +31,7 @@ const BottomMenus = ({data}) => {
     );
 };
 
-export default BottomMenus;
+export default ToolMenusCard;
 
 const styles = StyleSheet.create({
     topMenu: {

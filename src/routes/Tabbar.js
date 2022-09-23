@@ -9,7 +9,8 @@ import {px, isIphoneX} from '../utils/appUtil';
 import Index from '../pages/MofangIndex'; //魔方首页
 import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
-import Home from '../pages/Assets/Asset'; //资产页
+import Home from '../pages/Assets/'; //资产页
+import NewHome from '../pages/Assets/Asset'; //资产页
 import PKHome from '../pages/PK/pages/Home'; // PK首页
 import Attention from '~/pages/Attention/Index'; //关注
 import ProjectHome from '../pages/Project/ProjectHome'; //计划
@@ -176,6 +177,7 @@ export default function Tabbar() {
             <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
             <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />
+            <Tab.Screen name="NewHome" options={{tabBarLabel: '财富'}} component={NewHome} />
 
             <Tab.Screen
                 name="Home"

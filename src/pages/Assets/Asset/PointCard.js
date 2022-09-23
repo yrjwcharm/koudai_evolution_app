@@ -8,11 +8,11 @@ import {px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useJump} from '~/components/hooks';
-const PointCard = ({data}) => {
+const PointCard = ({data, style}) => {
     const {icon, list, number, url} = data;
     const jump = useJump();
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, style]}>
             <TouchableOpacity
                 style={[Style.flexBetween, {height: px(40), borderBottomColor: '#E9EAEF', borderBottomWidth: px(0.5)}]}
                 onPress={() => jump(url)}
