@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-22 15:43:42
+ * @LastEditTime: 2022-09-23 10:43:24
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -184,7 +184,11 @@ const Product = ({navigation}) => {
     return loading ? (
         <Loading color={Colors.btnColor} />
     ) : (
-        <View style={[styles.container, {backgroundColor: bgType ? '#F4F5F7' : '#1B45B7'}]}>
+        <View
+            style={[
+                styles.container,
+                {backgroundColor: bgType ? proData?.bg_colors?.[1] : proData?.popular_banner_list?.bg_colors?.[1]},
+            ]}>
             <LinearGradient
                 style={{paddingTop: insets.top + px(7), height: px(178)}}
                 start={{x: 0, y: 0}}
@@ -337,10 +341,21 @@ const Product = ({navigation}) => {
                                         //         },
                                         //     },
                                         // });
-                                        // jump({
-                                        //     path: 'PortfolioIndex',
-                                        // });
-                                        jump(item.url);
+                                        jump({
+                                            path: 'PortfolioDetails',
+                                            type: 4,
+                                            params: {
+                                                link: 'http://192.168.190.33:3000/PortfolioDetails',
+                                                title: '组合详情',
+                                                timestamp: 1,
+                                                params: {
+                                                    plan_id: '2',
+                                                    risk_level: '',
+                                                    fr: '',
+                                                },
+                                            },
+                                        });
+                                        // jump(item.url);
                                     }}
                                     style={styles.menuItem}
                                     key={idx}>
@@ -417,8 +432,8 @@ const Product = ({navigation}) => {
                         {proData?.live_list && (
                             <View style={styles.liveCardsWrap}>
                                 <View style={styles.liveCardsHeader}>
-                                    <Text style={styles.liveCardsTitleText}>{proData?.live_list?.title}</Text>
-                                    {proData?.live_list.has_more ? (
+                                    <Text style={styles.liveCardsTitleText}>{proData?.live_list.title}</Text>
+                                    {proData?.live_list.more ? (
                                         <FontAwesome
                                             name={'angle-right'}
                                             size={18}
