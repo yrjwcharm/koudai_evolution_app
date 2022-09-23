@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 12:09:07
+ * @LastEditTime: 2022-09-23 16:17:37
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -337,21 +337,21 @@ const Product = ({navigation}) => {
                                         //         },
                                         //     },
                                         // });
-                                        jump({
-                                            path: 'PortfolioDetails',
-                                            type: 4,
-                                            params: {
-                                                link: 'http://192.168.190.33:3000/PortfolioDetails',
-                                                title: '组合详情',
-                                                timestamp: 1,
-                                                params: {
-                                                    plan_id: '2',
-                                                    risk_level: '',
-                                                    fr: '',
-                                                },
-                                            },
-                                        });
-                                        // jump(item.url);
+                                        // jump({
+                                        //     path: 'PortfolioDetails',
+                                        //     type: 4,
+                                        //     params: {
+                                        //         link: 'http://192.168.190.33:3000/PortfolioDetails',
+                                        //         title: '组合详情',
+                                        //         timestamp: 1,
+                                        //         params: {
+                                        //             plan_id: '2',
+                                        //             risk_level: '',
+                                        //             fr: '',
+                                        //         },
+                                        //     },
+                                        // });
+                                        jump(item.url);
                                     }}
                                     style={styles.menuItem}
                                     key={idx}>
@@ -516,6 +516,7 @@ const styles = StyleSheet.create({
     tabActive: {
         fontSize: px(18),
         lineHeight: px(25),
+        fontWeight: '500',
     },
     searchInput: {
         marginLeft: px(20),
