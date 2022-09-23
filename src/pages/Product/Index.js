@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 10:43:24
+ * @LastEditTime: 2022-09-23 12:09:07
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -28,6 +28,7 @@ import {AlbumCard, ProductList} from '~/components/Product';
 import {useSelector} from 'react-redux';
 import LoadingTips from '~/components/LoadingTips';
 import Feather from 'react-native-vector-icons/Feather';
+import EmptyTip from '~/components/EmptyTip';
 
 const Product = ({navigation}) => {
     const jump = useJump();
@@ -54,7 +55,7 @@ const Product = ({navigation}) => {
 
     useFocusEffect(
         useCallback(() => {
-            [getFollowTabs, getProData][tabRef.current?.state?.currentPage || 1]?.(isFirst.current++);
+            [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(isFirst.current++);
             isFirst.current === 1 && tabRef.current?.goToPage?.(1);
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -76,18 +77,6 @@ const Product = ({navigation}) => {
         });
         return () => unsubscribe();
     }, [isFocused, navigation]);
-
-    useEffect(() => {
-        const tabs = followTabs?.follow?.tabs;
-        if (tabs) {
-            let item_type = tabs[optionalTabActive]?.item_type || tabs[0]?.item_type;
-            getFollowData({
-                item_type,
-            }).then(() => {
-                optionalTabRef.current?.goToPage?.(tabs?.[optionalTabActive]?.item_type ? optionalTabActive : 0);
-            });
-        }
-    }, [optionalTabActive, followTabs]);
 
     const getProData = (type) => {
         type === 0 && setRefreshing(true);
@@ -135,9 +124,14 @@ const Product = ({navigation}) => {
         [getFollowTabs, getProData][cur.i]();
     }, []);
 
-    const onChangeOptionalTab = useCallback((cur) => {
+    const onChangeOptionalTab = (cur) => {
         setOptionalTabActive(cur.i);
-    }, []);
+        const tabs = followTabs?.follow?.tabs;
+        let item_type = tabs[cur.i]?.item_type;
+        getFollowData({
+            item_type,
+        });
+    };
 
     const renderSecurity = (menu_list) => {
         return menu_list ? (
@@ -302,7 +296,9 @@ const Product = ({navigation}) => {
                                     );
                                 })}
                             </ScrollableTabView>
-                        ) : null}
+                        ) : (
+                            <EmptyTip />
+                        )}
                     </View>
                 </ScrollView>
                 <ScrollView
@@ -666,6 +662,12 @@ const styles = StyleSheet.create({
         fontSize: px(11),
         lineHeight: px(15),
         color: '#545968',
+    },
+    emptyWrap: {
+        justifyContent: 'center',
+    },
+    emptyText: {
+        textAlign: 'center',
     },
 });
 
