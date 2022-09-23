@@ -29,6 +29,7 @@
     "axios": "^0.21.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "dayjs": "^1.10.7",
+    "immer": "^9.0.15",
     "immutable": "^4.0.0-rc.12",
     "jcore-react-native": "^1.9.4",
     "jpush-react-native": "^2.8.7",
