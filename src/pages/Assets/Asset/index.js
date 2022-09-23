@@ -25,6 +25,7 @@ import ToolMenus from './ToolMenus';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from '~/components/Button';
+import PointCard from './PointCard';
 const Index = ({navigation, _ref}) => {
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
@@ -111,6 +112,7 @@ const Index = ({navigation, _ref}) => {
                 <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}
+                {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                 {/* 持仓列表 */}
                 {holding ? (
                     <>

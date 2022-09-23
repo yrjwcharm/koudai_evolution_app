@@ -17,7 +17,7 @@ const BottomMenus = ({data}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={item.tool_id}
-                        style={[Style.flexRow, {width: '20%', marginBottom: px(18)}]}
+                        style={[{width: '20%', marginBottom: px(18), alignItems: 'center'}]}
                         onPress={() => {
                             global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
                             jump(item.url);
@@ -41,15 +41,15 @@ const styles = StyleSheet.create({
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+        paddingHorizontal: px(10),
     },
     topMenuIcon: {
         width: px(24),
         height: px(24),
-        marginBottom: px(4),
+        marginBottom: px(8),
     },
     topMenuTitle: {
         fontSize: Font.textH3,
         lineHeight: px(15),
-        color: Colors.defaultColor,
     },
 });

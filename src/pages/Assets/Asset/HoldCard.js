@@ -7,21 +7,15 @@ import React, {useEffect, useRef, useState} from 'react';
 import Image from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
-import NoAccountRender from './NoAccountRender';
-import StickyHeader from '~/components/Sticky';
 import {SmButton} from '~/components/Button';
 import {getAlertColor} from './util';
 import {useJump} from '~/components/hooks';
-import ProductCards from '~/components/Portfolios/ProductCards';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {BottomModal, Modal} from '~/components/Modal';
-import HTML from '~/components/RenderHtml';
-import {closeRecommend, postAssetClass} from './service';
+import {BottomModal} from '~/components/Modal';
+import {postAssetClass} from './service';
 import {fromJS} from 'immutable';
-import {i} from 'mathjs';
-const yellow = '#FF7D41';
-const HoldCard = ({data, summary, stickyHeaderY, scrollY, reload, showEye}) => {
+const HoldCard = ({data, reload, showEye}) => {
     const {class_list, pop_info} = data;
     return (
         <>
@@ -122,9 +116,13 @@ const CardItem = ({data = {}, showEye}) => {
                         )}
                     </View>
                 )}
-                <View style={[Style.flexBetween]}>
+                <View style={[Style.flexRow]}>
                     {indicators?.map(({text, value, symbol, color}, index) => (
-                        <View key={index}>
+                        <View
+                            key={index}
+                            style={{
+                                flex: index == 0 ? 2 : 1,
+                            }}>
                             <Text style={[styles.label_text]}>{text}</Text>
                             <Text
                                 style={[
