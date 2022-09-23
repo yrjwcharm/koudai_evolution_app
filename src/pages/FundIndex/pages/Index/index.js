@@ -3,8 +3,8 @@
  * @Author: dx
  * @Description: 基金首页
  */
-import React, {useCallback, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -42,9 +42,11 @@ const TopMenu = ({data = []}) => {
 };
 
 const Index = ({navigation}) => {
+    const dimensions = useWindowDimensions();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const {nav, popular_subjects, subjects = []} = data;
+    const listLayout = useRef([]);
 
     const getData = () => {
         getPageData()
@@ -76,6 +78,16 @@ const Index = ({navigation}) => {
             });
     };
 
+    const handlerShowLog = (y) => {
+        listLayout.current.forEach((item, index) => {
+            const {id, start, status} = item;
+            if (status && y >= start) {
+                item.status = false;
+                global.LogTool({event: 'rec_show', oid: id});
+            }
+        });
+    };
+
     useFocusEffect(
         useCallback(() => {
             getData();
@@ -90,7 +102,13 @@ const Index = ({navigation}) => {
             end={{x: 0, y: 0.6}}
             style={styles.container}>
             <ScrollView
+                onScroll={({
+                    nativeEvent: {
+                        contentOffset: {y},
+                    },
+                }) => handlerShowLog(y + dimensions.height)}
                 refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
+                scrollEventThrottle={16}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
                 {nav ? (
@@ -105,13 +123,25 @@ const Index = ({navigation}) => {
                         </View>
                     </View>
                 ) : null}
-                <View style={styles.bottomContainer}>
-                    {subjects?.map?.((subject, index) => (
-                        <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
-                            <AlbumCard {...subject} />
-                        </View>
-                    ))}
-                </View>
+                {subjects?.map?.((subject, index) => (
+                    <View
+                        onLayout={({
+                            nativeEvent: {
+                                layout: {x, y, width, height},
+                            },
+                        }) => {
+                            listLayout.current[index] = {
+                                id: subject.subject_id,
+                                start: y + height / 2,
+                                status: true,
+                            };
+                            handlerShowLog(dimensions.height);
+                        }}
+                        key={subject.subject_id}
+                        style={styles.bottomContainer}>
+                        <AlbumCard {...subject} />
+                    </View>
+                ))}
                 <BottomDesc />
             </ScrollView>
         </LinearGradient>
@@ -151,6 +181,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.marginAlign,
     },
     bottomContainer: {
+        paddingTop: px(12),
         paddingHorizontal: Space.padding,
         backgroundColor: Colors.bgColor,
     },

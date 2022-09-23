@@ -167,7 +167,9 @@ const Index = ({data = [], type = 'default'}) => {
                 {reason ? (
                     <View style={styles.reasonBox}>
                         {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
-                        <HTML html={reason} style={{...styles.label, color: Colors.descColor}} />
+                        <View style={{flexShrink: 1}}>
+                            <HTML numberOfLines={2} html={reason} style={{...styles.label, color: Colors.descColor}} />
+                        </View>
                     </View>
                 ) : null}
             </View>
