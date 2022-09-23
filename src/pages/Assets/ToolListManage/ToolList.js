@@ -4,7 +4,7 @@
  * @Description:工具管理
  */
 import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {getList, toolSave} from './service';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
@@ -12,28 +12,54 @@ import {DragSortableView} from 'react-native-drag-sort';
 import Icon from 'react-native-vector-icons/AntDesign';
 import produce from 'immer';
 import NavBar from '~/components/NavBar';
+import Toast from '~/components/Toast';
+import {Modal} from '~/components/Modal';
 const sortWidth = deviceWidth - px(48);
 const childrenWidth = sortWidth / 5;
-const ToolList = ({navigation, route}) => {
+const ToolList = ({route}) => {
     const [data, setData] = useState({});
     const [scrollEnable, setScrollEnable] = useState(true);
     const [isEditState, setIsEditState] = useState(false);
+    const initialToolIds = useRef();
     const {type = 50} = route.params || {};
     const getData = async () => {
         let res = await getList({type});
+        initialToolIds.current = res.result?.my_tools?.tool_list?.map((item) => item.tool_id).join(',');
         setData(res.result);
     };
     useEffect(() => {
         getData();
     }, []);
-
     //点击右上角的按钮
-    const handelEditable = () => {
-        if (isEditState) {
+    const handelEditable = (action) => {
+        let saveToolIds = data?.my_tools?.tool_list?.map((item) => item.tool_id)?.join(',');
+        if (isEditState && action != 'cancel') {
             //保存
-            toolSave({type, tool_ids: data?.my_tools?.tool_list?.map((item) => item.tool_id)?.join(',')});
+            toolSave({type, tool_ids: saveToolIds});
         }
-        setIsEditState(!isEditState);
+        if (action == 'cancel') {
+            //我的工具是否有更新
+            if (saveToolIds != initialToolIds.current) {
+                Modal.show({
+                    confirm: true,
+                    content: '编辑的内容还未保存，是否要保存',
+                    confirmText: '保存',
+                    cancelText: '取消',
+                    confirmCallBack: () => {
+                        //保存
+                        toolSave({type, tool_ids: saveToolIds});
+                        setIsEditState(!isEditState);
+                    },
+                    cancelCallBack: () => {
+                        setIsEditState(!isEditState);
+                    },
+                });
+            } else {
+                setIsEditState(!isEditState);
+            }
+        } else {
+            setIsEditState(!isEditState);
+        }
     };
     const onSelectedDragStart = () => {
         setScrollEnable(false);
@@ -43,6 +69,10 @@ const ToolList = ({navigation, route}) => {
     };
     const onSelectedClickItem = (_data, item, index) => {
         if (!isEditState) return;
+        if (_data?.length < 2) {
+            Toast.show('我的工具最少支持1个');
+            return;
+        }
         setData(
             produce((draft) => {
                 // 找到所属模块->再找到item该该模块的位置
@@ -55,6 +85,10 @@ const ToolList = ({navigation, route}) => {
     };
     const onUnSelectedClickItem = (_data, item, index) => {
         if (item.is_add || !isEditState) return;
+        if (data?.my_tools?.tool_list?.length >= 9) {
+            Toast.show('我的工具最多支持9个，超出部分请先移除后再添加');
+            return;
+        }
         setData(
             produce((draft) => {
                 draft.tool_modules.find((tool) => tool.module_id == item.module_id).tool_list[index].is_add = true;
@@ -98,7 +132,9 @@ const ToolList = ({navigation, route}) => {
                 renderLeft={
                     isEditState ? (
                         <View style={{width: px(40), marginLeft: px(16)}}>
-                            <Text style={{fontSize: px(14), lineHeight: px(20)}} onPress={handelEditable}>
+                            <Text
+                                style={{fontSize: px(14), lineHeight: px(20)}}
+                                onPress={() => handelEditable('cancel')}>
                                 取消
                             </Text>
                         </View>

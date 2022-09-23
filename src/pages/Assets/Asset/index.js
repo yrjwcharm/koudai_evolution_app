@@ -9,7 +9,7 @@ import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import HoldCard from './HoldCard';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {getHolding, getInfo, getNotice, getReadMes} from './service';
+import {getHolding, getInfo, getReadMes} from './service';
 import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
 import Header from './Header';
@@ -19,13 +19,12 @@ import LoginMask from '~/components/LoginMask';
 import YellowNotice from '~/components/YellowNotice';
 import AdInfo from './AdInfo';
 import withNetState from '~/components/withNetState';
-import Feather from 'react-native-vector-icons/Feather';
-import Storage from '~/utils/storage';
-import ToolMenus from './ToolMenus';
+import ToolMenus from '../components/ToolMenusCard';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from '~/components/Button';
 import PointCard from './PointCard';
+import Eye from '../../../components/Eye';
 const Index = ({navigation, _ref}) => {
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
@@ -50,14 +49,6 @@ const Index = ({navigation, _ref}) => {
         let res = await getReadMes();
         setNewmessage(res.result.all);
     };
-    // 显示|隐藏金额信息
-    const toggleEye = () => {
-        setShowEye((show) => {
-            global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
-            Storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
-            return show === 'true' ? 'false' : 'true';
-        });
-    };
     const init = (refresh) => {
         refresh && setRefreshing(true);
         getData();
@@ -81,11 +72,7 @@ const Index = ({navigation, _ref}) => {
         return () => listener();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]);
-    useEffect(() => {
-        Storage.get('myAssetsEye').then((res) => {
-            setShowEye(res ? res : 'true');
-        });
-    }, []);
+
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
@@ -97,18 +84,13 @@ const Index = ({navigation, _ref}) => {
                     {data?.system_notices?.length > 0 && <YellowNotice data={data?.system_notices} />}
                     {/* 资产卡片 */}
                     <AssetHeaderCard summary={holding?.summary} showEye={showEye} tradeMes={holding?.trade_notice}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
-                            <Feather
-                                name={showEye === 'true' ? 'eye' : 'eye-off'}
-                                size={px(16)}
-                                color={'rgba(255, 255, 255, 0.8)'}
-                            />
-                        </TouchableOpacity>
+                        <Eye onChange={(_data) => setShowEye(_data)} />
                     </AssetHeaderCard>
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
-                <Button onPress={() => navigation.navigate('ToolListManage')} />
+                <Button title="资产品类" onPress={() => navigation.navigate('PortfolioAssetList')} />
+                <Button title="工具" onPress={() => navigation.navigate('ToolListManage')} />
                 <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}

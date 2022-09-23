@@ -82,14 +82,14 @@ const PortfolioIndex = ({navigation, route}) => {
     };
 
     return Object.keys(data).length > 0 ? (
-        <LinearGradient
-            colors={['#FFFFFF', '#F4F5F7']}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 0.4}}
-            style={styles.container}>
+        <View style={styles.container}>
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} scrollEventThrottle={16}>
-                {genTopMenu()}
-                <View style={{borderRadius: Space.borderRadius, paddingTop: px(10), paddingHorizontal: Space.padding}}>
+                {data?.nav ? (
+                    <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                        {genTopMenu()}
+                    </LinearGradient>
+                ) : null}
+                <View style={styles.recommendCon}>
                     <ProductList data={popular_subjects.items} type={popular_subjects.type} />
                 </View>
                 <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
@@ -101,7 +101,7 @@ const PortfolioIndex = ({navigation, route}) => {
                 </View>
                 <BottomDesc />
             </ScrollView>
-        </LinearGradient>
+        </View>
     ) : null;
 };
 
@@ -110,6 +110,7 @@ export default PortfolioIndex;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.bgColor,
     },
     topMenu: {
         paddingHorizontal: px(16),
@@ -131,5 +132,12 @@ const styles = StyleSheet.create({
         lineHeight: px(15),
         marginTop: px(8),
         textAlign: 'center',
+    },
+    recommendCon: {
+        marginTop: px(12),
+        marginHorizontal: Space.padding,
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
     },
 });

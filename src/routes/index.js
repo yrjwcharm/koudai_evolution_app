@@ -230,6 +230,7 @@ import PortfolioIndex from '../pages/Portfolio/Index'; // 组合详情
 import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列表
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
+import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
@@ -1010,6 +1011,8 @@ export default function AppStack() {
                     options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
                 />
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
+                <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
+
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
                 <Stack.Screen name="IdentityAssertion" component={IdentityAssertion} options={{title: ''}} />
