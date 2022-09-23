@@ -61,7 +61,7 @@ const ListTitle = ({title, pop_info, reload}) => {
                 {title} {''}
             </Text>
             <AntDesign name="caretdown" />
-            <BottomModal ref={bottomModal} title={pop_info.title} style={{height: px(460)}} onClose={onClose}>
+            <BottomModal ref={bottomModal} title={pop_info?.title} style={{height: px(460)}} onClose={onClose}>
                 <>
                     {list.toJS().map(({name, icon, number, desc, select, type}, index) => (
                         <TouchableOpacity
