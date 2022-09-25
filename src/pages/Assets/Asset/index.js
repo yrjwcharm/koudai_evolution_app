@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, DeviceEventEmitter} from 'react-native';
+import {View, RefreshControl, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
@@ -17,13 +17,13 @@ import {useShowGesture} from '~/components/hooks';
 import GesturePassword from '~/pages/Settings/GesturePassword';
 import LoginMask from '~/components/LoginMask';
 import YellowNotice from '~/components/YellowNotice';
-import AdInfo from './AdInfo';
+import AdInfo from '../components/AdInfo';
 import withNetState from '~/components/withNetState';
 import ToolMenus from '../components/ToolMenusCard';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from '~/components/Button';
-import PointCard from './PointCard';
+import PointCard from '../components/PointCard';
 import Eye from '../../../components/Eye';
 const Index = ({navigation, _ref}) => {
     const [data, setData] = useState(null);
@@ -89,11 +89,11 @@ const Index = ({navigation, _ref}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
-                <Button title="资产品类" onPress={() => navigation.navigate('PortfolioAssetList')} />
                 <Button title="工具" onPress={() => navigation.navigate('ToolListManage')} />
                 <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}
+                {/* 投顾观点 */}
                 {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                 {/* 持仓列表 */}
                 {holding ? (

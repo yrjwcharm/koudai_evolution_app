@@ -7,3 +7,6 @@ import http from '~/services';
 export const getData = (parmas) => {
     return http.get('/asset/class/common/20220915', parmas);
 };
+export const getHold = (params) => {
+    return http.get('/asset/class/holding/20220915', params);
+};

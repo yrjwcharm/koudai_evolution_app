@@ -1,6 +1,6 @@
 /*
  * @Date: 2022-07-21 18:26:32
- * @Description:
+ * @Description:运营位图
  */
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';

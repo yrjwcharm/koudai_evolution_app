@@ -176,11 +176,6 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
 
-    singal_card: {
-        height: px(32),
-        borderRadius: px(4),
-        paddingHorizontal: px(8),
-    },
     popCard: {
         marginHorizontal: px(20),
         height: px(62),

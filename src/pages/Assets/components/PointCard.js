@@ -1,6 +1,6 @@
 /*
  * @Date: 2022-09-22 21:30:06
- * @Description:
+ * @Description:投顾观点 重要观点
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';

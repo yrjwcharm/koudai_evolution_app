@@ -12,6 +12,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import {useJump} from '~/components/hooks';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+import TradeNotice from '../components/TradeNotice';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const jump = useJump();
     return (
@@ -54,18 +55,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                     </View>
                 </View>
                 {/* 交易通知 */}
-                {tradeMes ? (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={[styles.noticeBox, Style.flexRow]}
-                        onPress={() => {
-                            global.LogTool('click', 'tradeMsg');
-                            jump(tradeMes.url);
-                        }}>
-                        <Text style={styles.noticeText}>{tradeMes?.desc}</Text>
-                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                    </TouchableOpacity>
-                ) : null}
+                {tradeMes ? <TradeNotice data={tradeMes} /> : null}
             </LinearGradient>
         </LinearGradient>
     );
@@ -136,18 +126,5 @@ const styles = StyleSheet.create({
         lineHeight: px(20),
         color: '#fff',
         fontFamily: Font.numFontFamily,
-    },
-    noticeBox: {
-        marginTop: px(12),
-        paddingVertical: px(7),
-        paddingHorizontal: px(12),
-        backgroundColor: 'rgba(157, 187, 255, 0.68)',
-        borderRadius: px(4),
-    },
-    noticeText: {
-        fontSize: Font.textH3,
-        lineHeight: px(17),
-        color: '#fff',
-        marginRight: px(4),
     },
 });

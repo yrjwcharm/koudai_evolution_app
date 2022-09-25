@@ -42,4 +42,10 @@ const RenderAlert = ({alert}) => {
     );
 };
 export default RenderAlert;
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    singal_card: {
+        height: px(32),
+        borderRadius: px(4),
+        paddingHorizontal: px(8),
+    },
+});
