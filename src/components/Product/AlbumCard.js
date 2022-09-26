@@ -12,7 +12,10 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {px} from '~/utils/appUtil';
 
-const AlbumHeader = ({data: {bg_img, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {}}) => {
+const AlbumHeader = ({
+    data: {bg_img, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
+    logParams,
+}) => {
     const jump = useJump();
     const [containerHeight, setContainerHeight] = useState(0);
     const [bgWidth, setBgWidth] = useState(0);
@@ -25,7 +28,10 @@ const AlbumHeader = ({data: {bg_img, desc, desc_icon, icon, bg_linear = false, t
                     layout: {height},
                 },
             }) => setContainerHeight(height)}
-            onPress={() => jump(url)}
+            onPress={() => {
+                logParams && global.LogTool(logParams);
+                jump(url);
+            }}
             style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB'} : {}]}>
             {bg_img ? (
                 <View style={styles.bgContainer}>
@@ -64,7 +70,7 @@ const AlbumHeader = ({data: {bg_img, desc, desc_icon, icon, bg_linear = false, t
     );
 };
 
-const Index = ({groups = [], header, img, img_url, items, style_type = 'default'}) => {
+const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, style_type = 'default', subject_id}) => {
     const jump = useJump();
     const [active, setActive] = useState(0);
 
@@ -76,9 +82,13 @@ const Index = ({groups = [], header, img, img_url, items, style_type = 'default'
         return groups?.[active]?.desc;
     }, [active, groups]);
 
+    const logParams = useMemo(() => {
+        return plateid && rec_json ? {ctrl: subject_id, event: 'rec_click', plateid, rec_json} : '';
+    }, [plateid, rec_json, subject_id]);
+
     return (
         <View style={styles.container}>
-            {header ? <AlbumHeader data={header} /> : null}
+            {header ? <AlbumHeader data={header} logParams={logParams} /> : null}
             <View style={{paddingHorizontal: px(12)}}>
                 {img ? (
                     <TouchableOpacity
@@ -132,7 +142,7 @@ const Index = ({groups = [], header, img, img_url, items, style_type = 'default'
                             paddingTop: !header.bg_img && !(groups?.length > 0) ? 0 : px(12),
                             paddingBottom: px(12),
                         }}>
-                        <ProductList data={list} type={style_type} />
+                        <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
             </View>

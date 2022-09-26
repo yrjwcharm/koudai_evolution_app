@@ -60,7 +60,10 @@ const Index = ({navigation}) => {
                             search_btn ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={() => jump(search_btn.url)}
+                                    onPress={() => {
+                                        global.LogTool('search_click');
+                                        jump(search_btn.url);
+                                    }}
                                     style={{marginRight: Space.marginAlign}}>
                                     <Image
                                         source={{
@@ -82,10 +85,10 @@ const Index = ({navigation}) => {
 
     const handlerShowLog = (y) => {
         listLayout.current.forEach((item, index) => {
-            const {id, start, status} = item;
+            const {id, plateid, rec_json, start, status} = item;
             if (status && y >= start) {
                 item.status = false;
-                global.LogTool({event: 'rec_show', oid: id});
+                global.LogTool({ctrl: id, event: 'rec_show', plateid, rec_json});
             }
         });
     };
@@ -120,7 +123,16 @@ const Index = ({navigation}) => {
                 ) : null}
                 {popular_subjects ? (
                     <View style={styles.swiperContainer}>
-                        <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                        <View
+                            onLayout={() =>
+                                global.LogTool({
+                                    event: 'rec_show',
+                                    oid: popular_subjects.items?.[0]?.product_id,
+                                    plateid: popular_subjects.plateid,
+                                    rec_json: popular_subjects.rec_json,
+                                })
+                            }
+                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
                             <ProductList data={popular_subjects.items} type={popular_subjects.type} />
                         </View>
                     </View>
@@ -134,6 +146,8 @@ const Index = ({navigation}) => {
                         }) => {
                             listLayout.current[index] = {
                                 id: subject.subject_id,
+                                plateid: subject.plateid,
+                                rec_json: subject.rec_json,
                                 start: y + height / 2,
                                 status: true,
                             };

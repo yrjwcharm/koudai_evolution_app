@@ -23,6 +23,7 @@ const Index = () => {
 
     useEffect(() => {
         const subscription = DeviceEventEmitter.addListener('globalShareShow', () => {
+            global.LogTool('share');
             shareModal.current.show();
         });
         return () => {
@@ -67,7 +68,10 @@ const Index = () => {
                     headerRight: () => (
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => shareModal.current.show()}
+                            onPress={() => {
+                                global.LogTool('share');
+                                shareModal.current.show();
+                            }}
                             style={{paddingHorizontal: px(16)}}>
                             <Image source={icon ? {uri: icon} : share} style={{width: px(20), height: px(20)}} />
                         </TouchableOpacity>
