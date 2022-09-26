@@ -95,7 +95,10 @@ const Steps = ({steps}) => {
                             {button?.text ? (
                                 <Button
                                     disabled={button.avail === 0}
-                                    onPress={() => jump(button.url)}
+                                    onPress={() => {
+                                        button.event_id && global.LogTool(button.event_id);
+                                        jump(button.url);
+                                    }}
                                     style={styles.button}
                                     textStyle={styles.btnText}
                                     title={button.text}
@@ -130,12 +133,15 @@ const Index = ({navigation, route, setLoading}) => {
     const handleGetReward = () => {
         getReward().then((res) => {
             if (res.code === '000000') {
-                const {back_close, device_width, image, touch_close} = res.result.pop;
+                const {back_close, device_width, event_id, image, touch_close} = res.result.pop;
                 Image.getSize(image, (w, h) => {
                     const height = (h * (device_width ? deviceWidth : px(280))) / w;
                     Modal.show({
                         backButtonClose: back_close,
-                        confirmCallBack: init,
+                        confirmCallBack: () => {
+                            event_id && global.LogTool(event_id);
+                            init();
+                        },
                         imageUrl: image,
                         imgHeight: height,
                         imgWidth: device_width ? deviceWidth : px(280),
@@ -161,14 +167,17 @@ const Index = ({navigation, route, setLoading}) => {
                 if (['GO_BACK', 'POP'].includes(action.type) && show_pop) {
                     e.preventDefault();
                     listener();
-                    const {back_close, device_width, image, touch_close} = pop;
+                    const {back_close, device_width, event_id, image, touch_close} = pop;
                     Image.getSize(image, (w, h) => {
                         const height = (h * (device_width ? deviceWidth : px(280))) / w;
                         reportPop().then((res) => {
                             if (res.code === '000000') {
                                 Modal.show({
                                     backButtonClose: back_close,
-                                    confirmCallBack: handleGetReward,
+                                    confirmCallBack: () => {
+                                        event_id && global.LogTool(event_id);
+                                        handleGetReward();
+                                    },
                                     imageUrl: image,
                                     imgHeight: height,
                                     imgWidth: device_width ? deviceWidth : px(280),

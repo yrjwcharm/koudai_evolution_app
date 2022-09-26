@@ -15,7 +15,7 @@ import HTML from '~/components/RenderHtml';
 import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
 
-const Index = ({data = [], type = 'default'}) => {
+const Index = ({data = [], logParams, type = 'default'}) => {
     const jump = useJump();
 
     /** @name 卡片左边部分 */
@@ -77,6 +77,7 @@ const Index = ({data = [], type = 'default'}) => {
             labels,
             name,
             out_box = false, // 外部是否有边框和阴影
+            product_id = '',
             profit,
             profit_desc,
             reason,
@@ -103,7 +104,13 @@ const Index = ({data = [], type = 'default'}) => {
                 ) : index !== 0 ? (
                     <View style={styles.divider} />
                 ) : null}
-                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={Style.flexRow}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        logParams && global.LogTool({...logParams, oid: product_id});
+                        jump(url);
+                    }}
+                    style={Style.flexRow}>
                     {renderLeftPart(item)}
                     <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
                         <View>
@@ -177,12 +184,15 @@ const Index = ({data = [], type = 'default'}) => {
     };
     /** @name 横向卡片 */
     const renderHorizontalItem = (item, index) => {
-        const {chart, name, ratio_labels, profit, profit_desc, url} = item;
+        const {chart, name, ratio_labels, product_id = '', profit, profit_desc, url} = item;
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
                 key={name + index}
-                onPress={() => jump(url)}
+                onPress={() => {
+                    logParams && global.LogTool({...logParams, oid: product_id});
+                    jump(url);
+                }}
                 style={[Style.flexCenter, {flex: 1, marginLeft: index === 0 ? 0 : px(18)}]}>
                 {name ? (
                     <Text numberOfLines={1} style={styles.name}>
@@ -220,7 +230,7 @@ const Index = ({data = [], type = 'default'}) => {
     };
     /** @name 轮播卡片 */
     const renderSwiperItem = (item, index) => {
-        const {bg_img, button, desc, name, tags, url} = item;
+        const {bg_img, button, desc, name, product_id = '', tags, url} = item;
         return (
             <LinearGradient
                 colors={['#FFFCF7', '#FFF2E0']}
@@ -229,7 +239,13 @@ const Index = ({data = [], type = 'default'}) => {
                 end={{x: 0, y: 1}}
                 style={styles.swiperItem}>
                 {bg_img ? (
-                    <TouchableOpacity activeOpacity={url ? 0.8 : 1} onPress={() => jump(url)} style={styles.bgImage}>
+                    <TouchableOpacity
+                        activeOpacity={url ? 0.8 : 1}
+                        onPress={() => {
+                            logParams && global.LogTool({...logParams, oid: product_id});
+                            jump(url);
+                        }}
+                        style={styles.bgImage}>
                         <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
@@ -250,7 +266,10 @@ const Index = ({data = [], type = 'default'}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         disabled={button?.avail === 0}
-                        onPress={() => jump(button?.url)}
+                        onPress={() => {
+                            logParams && global.LogTool({...logParams, oid: product_id});
+                            jump(button?.url);
+                        }}
                         style={[Style.flexCenter, styles.cardBtn]}>
                         <Text style={styles.cardBtnText}>{button?.text}</Text>
                     </TouchableOpacity>
