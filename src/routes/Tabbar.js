@@ -10,7 +10,7 @@ import Index from '../pages/MofangIndex'; //魔方首页
 import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/'; //资产页
-import NewHome from '../pages/Assets/Asset'; //资产页
+import NewHome from '../pages/Assets/Asset/Asset'; //资产页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
