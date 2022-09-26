@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-06-25 15:17:07
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-26 16:37:06
  * @Description:
  */
 /**
@@ -86,15 +86,12 @@ export default class Modal extends React.Component {
             } else {
                 global.rootSibling = new RootSibling(
                     (
-                        <>
-                            <Mask />
-                            <BottomModal
-                                backdrop={false}
-                                destroy={() => destroy()}
-                                {...options}
-                                ref={(ref) => (this.bottomModal = ref)}
-                            />
-                        </>
+                        <BottomModal
+                            backdrop={false}
+                            destroy={() => destroy()}
+                            {...options}
+                            ref={(ref) => (this.bottomModal = ref)}
+                        />
                     )
                 );
             }

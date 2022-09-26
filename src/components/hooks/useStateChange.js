@@ -3,7 +3,7 @@
  * @Date: 2022-04-25 10:40:32
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 18:09:21
+ * @LastEditTime: 2022-09-26 16:36:15
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -51,7 +51,7 @@ export const generateOptions = (modal) => {
                 </View>
                 <Text style={styles.codeTips}>{'打开微信扫一扫二维码直接添加'}</Text>
                 <Button
-                    onPress={() => saveImg(modal.business_card, () => Modal.close({}, 'slide'))}
+                    onPress={() => saveImg(modal.business_card, () => Modal.close())}
                     style={styles.saveBtn}
                     title="保存投顾二维码"
                 />
@@ -65,7 +65,7 @@ export const generateOptions = (modal) => {
                 style={styles.modalBg}>
                 <TouchableOpacity
                     activeOpacity={1}
-                    onPress={() => Modal.close({}, 'slide')}
+                    onPress={() => Modal.close()}
                     style={[Style.flexCenter, styles.close]}>
                     <AntDesign color={'#fff'} name="close" size={24} />
                 </TouchableOpacity>
