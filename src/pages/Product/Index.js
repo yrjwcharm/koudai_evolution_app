@@ -3,16 +3,16 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 19:51:52
+ * @LastEditTime: 2022-09-26 15:26:16
  */
-import React, {forwardRef, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import {deviceHeight, px} from '~/utils/appUtil';
+import {px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
@@ -48,7 +48,6 @@ const Product = ({navigation}) => {
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
-    const viewRef = useRef();
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
@@ -306,14 +305,6 @@ const Product = ({navigation}) => {
                     tabLabel="产品"
                     ref={scrollViewRef}
                     style={{flex: 1}}
-                    logElements={[
-                        {
-                            elRef: viewRef,
-                            handler: () => {
-                                console.log(666);
-                            },
-                        },
-                    ]}
                     showsHorizontalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
@@ -322,11 +313,6 @@ const Product = ({navigation}) => {
                             onRefresh={() => getProData(0)}
                         />
                     }>
-                    {/* <View
-                        ref={viewRef}
-                        style={{height: 100, backgroundColor: 'red'}}
-                        contentOffset={scrollViewRef?.current?.contentOffset}
-                    /> */}
                     <View style={styles.menuWrap}>
                         {proData?.nav?.map?.((item, idx) => {
                             return (
@@ -761,54 +747,3 @@ const SpecialList = ({data, tabButton}) => {
         </View>
     );
 };
-
-const MyScrollView = forwardRef(({logElements = [], onScroll, children, ...restProps}, ref) => {
-    const touchHeights = useRef([]);
-
-    useEffect(() => {
-        function search(arr, x) {
-            for (let i = arr.length - 1; i >= 0; i--) {
-                if (x >= arr[i].touchHeight) return i + 1;
-            }
-            return 0;
-        }
-
-        logElements?.forEach?.(({handler, elRef}) => {
-            let exist = touchHeights.current.find((obj) => obj?.elRef === elRef);
-            !exist &&
-                elRef?.current?.measure?.((x, y, width, height) => {
-                    const touchHeight = y + height / 2;
-                    let i = search(touchHeights.current, touchHeight);
-                    const obj = {
-                        handler,
-                        touchHeight,
-                        status: true,
-                        elRef,
-                    };
-                    touchHeights.current.splice(i, 0, obj);
-                    handlerLog(deviceHeight, obj);
-                });
-        });
-    }, [logElements]);
-
-    const handlerLog = (touchHeight, obj) => {
-        if (obj.status && touchHeight >= obj.touchHeight) {
-            obj.status = false;
-            obj?.handler?.();
-        }
-    };
-    return (
-        <ScrollView
-            onScroll={(e) => {
-                const y = e.nativeEvent.contentOffset.y;
-                touchHeights.current.forEach((obj) => {
-                    handlerLog(y + deviceHeight, obj);
-                });
-                onScroll?.(e);
-            }}
-            {...restProps}
-            ref={ref}>
-            {children}
-        </ScrollView>
-    );
-});
