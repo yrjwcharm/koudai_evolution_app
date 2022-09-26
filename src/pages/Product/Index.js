@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 15:26:16
+ * @LastEditTime: 2022-09-26 19:33:35
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -55,8 +55,8 @@ const Product = ({navigation}) => {
 
     useFocusEffect(
         useCallback(() => {
-            [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(isFirst.current++);
-            isFirst.current === 1 && tabRef.current?.goToPage?.(1);
+            [(getFollowTabs, getProData)][tabRef.current?.state?.currentPage]?.(isFirst.current++);
+            tabRef.current?.goToPage?.(tabRef.current?.state?.currentPage);
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -221,6 +221,7 @@ const Product = ({navigation}) => {
                         activeOpacity={0.9}
                         style={[styles.searchInput]}
                         onPress={() => {
+                            global.LogTool('Product');
                             jump(proData?.search?.url);
                         }}>
                         <FastImage
@@ -252,9 +253,7 @@ const Product = ({navigation}) => {
                 </View>
             </LinearGradient>
             <ScrollableTabView
-                ref={(e) => {
-                    tabRef.current = e;
-                }}
+                ref={tabRef}
                 style={{flex: 1, marginTop: px(-83)}}
                 initialPage={1}
                 renderTabBar={false}
@@ -313,176 +312,184 @@ const Product = ({navigation}) => {
                             onRefresh={() => getProData(0)}
                         />
                     }>
-                    <View style={styles.menuWrap}>
-                        {proData?.nav?.map?.((item, idx) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        // jump({
-                                        //     path: 'PortfolioDetails',
-                                        //     params: {
-                                        //         link: 'http://192.168.190.43:3000/portfolioDetails',
-                                        //         params: {
-                                        //             plan_id: '29',
-                                        //         },
-                                        //     },
-                                        // });
-                                        // jump({
-                                        //     path: 'SpecialDetail',
-                                        //     params: {
-                                        //         link: 'http://192.168.190.33:3000/specialDetail',
-                                        //         params: {
-                                        //             subject_id: '1',
-                                        //         },
-                                        //     },
-                                        // });
-                                        // jump({
-                                        //     path: 'PortfolioDetails',
-                                        //     type: 1,
-                                        //     params: {
-                                        //         link: 'http://192.168.190.57:3000/portfolioDetails',
-                                        //         params: {
-                                        //             plan_id: 30,
-                                        //         },
-                                        //     },
-                                        // });
-                                        jump(item.url);
-                                    }}
-                                    style={styles.menuItem}
-                                    key={idx}>
-                                    <FastImage
-                                        source={{
-                                            uri: item.icon,
-                                        }}
-                                        style={styles.menuItemIcon}
-                                    />
-                                    <Text style={[styles.menuItemText, {color: bgType ? '#121d3a' : '#fff'}]}>
-                                        {item.name}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                    <View style={styles.bannerWrap}>
-                        {bgType ? (
-                            <View style={styles.swiperWrap}>
-                                {proData?.banner_list?.[0] ? (
-                                    <Swiper
-                                        height={px(100)}
-                                        autoplay
-                                        loadMinimal={Platform.OS == 'ios' ? true : false}
-                                        removeClippedSubviews={false}
-                                        autoplayTimeout={4}
-                                        paginationStyle={{
-                                            bottom: px(5),
-                                        }}
-                                        dotStyle={{
-                                            opacity: 0.5,
-                                            width: px(4),
-                                            ...styles.dotStyle,
-                                        }}
-                                        activeDotStyle={{
-                                            width: px(12),
-                                            ...styles.dotStyle,
-                                        }}>
-                                        {proData?.banner_list?.map?.((banner, index) => (
-                                            <TouchableOpacity
-                                                key={index}
-                                                activeOpacity={0.9}
-                                                onPress={() => {
-                                                    global.LogTool('swiper', banner.id);
-                                                    jump(banner.url);
+                    {Object.keys(proData || {}).length ? (
+                        <>
+                            <View style={styles.menuWrap}>
+                                {proData?.nav?.map?.((item, idx) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                // jump({
+                                                //     path: 'PortfolioDetails',
+                                                //     params: {
+                                                //         link: 'http://192.168.190.43:3000/portfolioDetails',
+                                                //         params: {
+                                                //             plan_id: '29',
+                                                //         },
+                                                //     },
+                                                // });
+                                                // jump({
+                                                //     path: 'SpecialDetail',
+                                                //     params: {
+                                                //         link: 'http://192.168.190.33:3000/specialDetail',
+                                                //         params: {
+                                                //             subject_id: '1',
+                                                //         },
+                                                //     },
+                                                // });
+                                                // jump({
+                                                //     path: 'PortfolioDetails',
+                                                //     type: 1,
+                                                //     params: {
+                                                //         link: 'http://192.168.190.57:3000/portfolioDetails',
+                                                //         params: {
+                                                //             plan_id: 30,
+                                                //         },
+                                                //     },
+                                                // });
+                                                jump(item.url);
+                                            }}
+                                            style={styles.menuItem}
+                                            key={idx}>
+                                            <FastImage
+                                                source={{
+                                                    uri: item.icon,
+                                                }}
+                                                style={styles.menuItemIcon}
+                                            />
+                                            <Text style={[styles.menuItemText, {color: bgType ? '#121d3a' : '#fff'}]}>
+                                                {item.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
+                            <View style={styles.bannerWrap}>
+                                {bgType ? (
+                                    <View style={styles.swiperWrap}>
+                                        {proData?.banner_list?.[0] ? (
+                                            <Swiper
+                                                height={px(100)}
+                                                autoplay
+                                                loadMinimal={Platform.OS == 'ios' ? true : false}
+                                                removeClippedSubviews={false}
+                                                autoplayTimeout={4}
+                                                paginationStyle={{
+                                                    bottom: px(5),
+                                                }}
+                                                dotStyle={{
+                                                    opacity: 0.5,
+                                                    width: px(4),
+                                                    ...styles.dotStyle,
+                                                }}
+                                                activeDotStyle={{
+                                                    width: px(12),
+                                                    ...styles.dotStyle,
                                                 }}>
-                                                <FastImage
-                                                    style={styles.slide}
-                                                    source={{
-                                                        uri: banner.cover,
+                                                {proData?.banner_list?.map?.((banner, index) => (
+                                                    <TouchableOpacity
+                                                        key={index}
+                                                        activeOpacity={0.9}
+                                                        onPress={() => {
+                                                            global.LogTool('swiper', banner.id);
+                                                            jump(banner.url);
+                                                        }}>
+                                                        <FastImage
+                                                            style={styles.slide}
+                                                            source={{
+                                                                uri: banner.cover,
+                                                            }}
+                                                        />
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </Swiper>
+                                        ) : null}
+                                    </View>
+                                ) : (
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        onPress={() => {
+                                            jump(proData?.popular_banner_list?.url);
+                                        }}>
+                                        <FastImage
+                                            style={{width: '100%', height: px(120), marginTop: px(8)}}
+                                            resizeMode="cover"
+                                            source={{uri: proData?.popular_banner_list?.cover}}
+                                        />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                            <View style={styles.othersWrap}>
+                                {proData?.menu_list ? renderSecurity(proData?.menu_list) : null}
+                                {proData?.live_list && (
+                                    <View style={styles.liveCardsWrap}>
+                                        <View style={styles.liveCardsHeader}>
+                                            <Text style={styles.liveCardsTitleText}>{proData?.live_list.title}</Text>
+                                            {proData?.live_list.more ? (
+                                                <FontAwesome
+                                                    name={'angle-right'}
+                                                    size={18}
+                                                    color={'#545968'}
+                                                    onPress={() => {
+                                                        jump(proData?.live_list?.more?.url);
                                                     }}
                                                 />
-                                            </TouchableOpacity>
+                                            ) : null}
+                                        </View>
+                                        <ScrollView
+                                            horizontal={true}
+                                            showsHorizontalScrollIndicator={false}
+                                            style={{marginTop: px(8)}}>
+                                            {proData?.live_list.items.map?.((item, idx) => (
+                                                <LiveCard
+                                                    data={item}
+                                                    key={idx}
+                                                    style={{
+                                                        marginLeft: px(idx > 0 ? 6 : 0),
+                                                        width: px(213),
+                                                        borderWidth: 0.5,
+                                                        borderColor: '#E9EAEF',
+                                                    }}
+                                                    coverStyle={{width: px(213), height: px(94)}}
+                                                />
+                                            ))}
+                                        </ScrollView>
+                                    </View>
+                                )}
+                                {proData?.popular_subject ? (
+                                    <LinearGradient
+                                        colors={['#FFFFFF', '#F4F5F7']}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 0, y: 1}}
+                                        style={{marginTop: px(12), borderRadius: px(6)}}>
+                                        <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                                            <ProductList
+                                                data={proData?.popular_subject?.items}
+                                                type={proData?.popular_subject.type}
+                                            />
+                                        </View>
+                                    </LinearGradient>
+                                ) : null}
+                                {proData?.subjects ? (
+                                    <View style={{backgroundColor: Colors.bgColor}}>
+                                        {proData?.subjects?.map?.((subject, index) => (
+                                            <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
+                                                <AlbumCard {...subject} />
+                                            </View>
                                         ))}
-                                    </Swiper>
+                                    </View>
                                 ) : null}
                             </View>
-                        ) : (
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={() => {
-                                    jump(proData?.popular_banner_list?.url);
-                                }}>
-                                <FastImage
-                                    style={{width: '100%', height: px(120), marginTop: px(8)}}
-                                    resizeMode="cover"
-                                    source={{uri: proData?.popular_banner_list?.cover}}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                    <View style={styles.othersWrap}>
-                        {proData?.menu_list ? renderSecurity(proData?.menu_list) : null}
-                        {proData?.live_list && (
-                            <View style={styles.liveCardsWrap}>
-                                <View style={styles.liveCardsHeader}>
-                                    <Text style={styles.liveCardsTitleText}>{proData?.live_list.title}</Text>
-                                    {proData?.live_list.more ? (
-                                        <FontAwesome
-                                            name={'angle-right'}
-                                            size={18}
-                                            color={'#545968'}
-                                            onPress={() => {
-                                                jump(proData?.live_list?.more?.url);
-                                            }}
-                                        />
-                                    ) : null}
-                                </View>
-                                <ScrollView
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    style={{marginTop: px(8)}}>
-                                    {proData?.live_list.items.map?.((item, idx) => (
-                                        <LiveCard
-                                            data={item}
-                                            key={idx}
-                                            style={{
-                                                marginLeft: px(idx > 0 ? 6 : 0),
-                                                width: px(213),
-                                                borderWidth: 0.5,
-                                                borderColor: '#E9EAEF',
-                                            }}
-                                            coverStyle={{width: px(213), height: px(94)}}
-                                        />
-                                    ))}
-                                </ScrollView>
+                            <View style={{backgroundColor: '#f5f6f8'}}>
+                                <BottomDesc />
                             </View>
-                        )}
-                        {proData?.popular_subject ? (
-                            <LinearGradient
-                                colors={['#FFFFFF', '#F4F5F7']}
-                                start={{x: 0, y: 0}}
-                                end={{x: 0, y: 1}}
-                                style={{marginTop: px(12), borderRadius: px(6)}}>
-                                <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
-                                    <ProductList
-                                        data={proData?.popular_subject?.items}
-                                        type={proData?.popular_subject.type}
-                                    />
-                                </View>
-                            </LinearGradient>
-                        ) : null}
-                        {proData?.subjects ? (
-                            <View style={{backgroundColor: Colors.bgColor}}>
-                                {proData?.subjects?.map?.((subject, index) => (
-                                    <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
-                                        <AlbumCard {...subject} />
-                                    </View>
-                                ))}
-                            </View>
-                        ) : null}
-                    </View>
-                    <View style={{backgroundColor: '#f5f6f8'}}>
-                        <BottomDesc />
-                    </View>
+                        </>
+                    ) : (
+                        <View style={{marginTop: px(20)}}>
+                            <LoadingTips color="#ddd" size={30} />
+                        </View>
+                    )}
                 </ScrollView>
             </ScrollableTabView>
         </View>
