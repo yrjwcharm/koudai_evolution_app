@@ -2,7 +2,7 @@
  * @Date: 2022-09-13 13:05:21
  * @Description: v7产品列表
  */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,59 +15,70 @@ import HTML from '~/components/RenderHtml';
 import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
 
-const Index = ({data = [], logParams, type = 'default'}) => {
-    const jump = useJump();
+/** @name 卡片左边部分 */
+const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_profit}) => {
+    const [showChart, setShowChart] = useState(false);
 
-    /** @name 卡片左边部分 */
-    const renderLeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_profit}) => {
-        switch (true) {
-            case chart?.length > 0:
-                return (
-                    <View style={styles.leftPart}>
+    useEffect(() => {
+        setTimeout(() => {
+            chart?.length > 0 && setShowChart(true);
+        }, 500);
+    }, [chart]);
+
+    switch (true) {
+        case chart?.length > 0:
+            return (
+                <View style={styles.leftPart}>
+                    {showChart && (
                         <Chart
                             data={chart}
                             initScript={chartOptions.smChart(chart)}
                             updateScript={chartOptions.smChart}
                         />
-                    </View>
-                );
-            case !!image:
-                return (
-                    <Image
-                        source={{uri: image}}
-                        style={[styles.leftPart, {marginRight: px(8), borderRadius: Space.borderRadius}]}
-                    />
-                );
-            case !!rank_icon:
-                return (
-                    <ImageBackground source={{uri: rank_icon}} style={[Style.flexCenter, styles.rankIcon]}>
-                        {rank_num ? <Text style={styles.rankText}>{rank_num}</Text> : null}
-                    </ImageBackground>
-                );
-            case ratio_labels?.length > 0:
-                return (
-                    <View style={styles.leftPart}>
-                        {ratio_labels.map((label, i) => {
-                            return (
-                                <View key={label + i} style={[Style.flexCenter, styles[`ratioLabel${i + 1}`]]}>
-                                    <Text style={styles[`ratioLabelText${i + 1}`]}>{label}</Text>
-                                </View>
-                            );
-                        })}
-                    </View>
-                );
-            case !!yesterday_profit:
-                const {bg_color, font_color, profit, profit_desc} = yesterday_profit;
-                return (
-                    <View style={[styles.profitBox, {backgroundColor: bg_color}]}>
-                        <Text style={[styles.profit, {color: font_color}]}>{profit}</Text>
-                        <Text style={[styles.profitLabel, {color: font_color}]}>{profit_desc}</Text>
-                    </View>
-                );
-            default:
-                return null;
-        }
-    };
+                    )}
+                </View>
+            );
+        case !!image:
+            return (
+                <Image
+                    source={{uri: image}}
+                    style={[styles.leftPart, {marginRight: px(8), borderRadius: Space.borderRadius}]}
+                />
+            );
+        case !!rank_icon:
+            return (
+                <ImageBackground source={{uri: rank_icon}} style={[Style.flexCenter, styles.rankIcon]}>
+                    {rank_num ? <Text style={styles.rankText}>{rank_num}</Text> : null}
+                </ImageBackground>
+            );
+        case ratio_labels?.length > 0:
+            return (
+                <View style={styles.leftPart}>
+                    {ratio_labels.map((label, i) => {
+                        return (
+                            <View key={label + i} style={[Style.flexCenter, styles[`ratioLabel${i + 1}`]]}>
+                                <Text style={styles[`ratioLabelText${i + 1}`]}>{label}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
+            );
+        case !!yesterday_profit:
+            const {bg_color, font_color, profit, profit_desc} = yesterday_profit;
+            return (
+                <View style={[styles.profitBox, {backgroundColor: bg_color}]}>
+                    <Text style={[styles.profit, {color: font_color}]}>{profit}</Text>
+                    <Text style={[styles.profitLabel, {color: font_color}]}>{profit_desc}</Text>
+                </View>
+            );
+        default:
+            return null;
+    }
+};
+
+const Index = ({data = [], logParams, type = 'default'}) => {
+    const jump = useJump();
+
     /** @name 默认卡片 */
     const renderDefaultItem = (item, index) => {
         const {
@@ -111,7 +122,7 @@ const Index = ({data = [], logParams, type = 'default'}) => {
                         jump(url);
                     }}
                     style={Style.flexRow}>
-                    {renderLeftPart(item)}
+                    <LeftPart {...item} />
                     <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
                         <View>
                             <View style={Style.flexRow}>

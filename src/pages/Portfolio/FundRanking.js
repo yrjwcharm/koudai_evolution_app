@@ -1,14 +1,11 @@
 /*
  * @Date: 2021-01-30 11:30:36
- * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:22:18
  * @Description: 基金排名
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 
@@ -21,9 +18,7 @@ const FundRanking = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             // setRefreshing(true);
-            http.get('/fund/nav/rank/20210101', {
-                fund_code: (route.params && route.params.code) || '',
-            }).then((res) => {
+            http.get('/fund/nav/rank/20210101', route.params || {}).then((res) => {
                 setShowEmpty(true);
                 setRefreshing(false);
                 first && navigation.setOptions({title: res.result.title || '基金排名'});
