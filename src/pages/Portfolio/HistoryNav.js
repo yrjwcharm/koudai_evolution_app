@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-29 17:10:11
- * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:22:44
  * @Description: 历史净值
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -23,10 +20,7 @@ const HistoryNav = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             // status === 'refresh' && setRefreshing(true);
-            http.get('/fund/nav/history/20210101', {
-                fund_code: (route.params && route.params.code) || '',
-                page,
-            }).then((res) => {
+            http.get('/fund/nav/history/20210101', route.params || {}).then((res) => {
                 setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
@@ -39,7 +33,8 @@ const HistoryNav = ({navigation, route}) => {
                 }
             });
         },
-        [navigation, route, page]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {

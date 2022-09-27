@@ -6,7 +6,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {DeviceEventEmitter, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import Image from 'react-native-fast-image';
-import share from '~/assets/img/article/share.png';
+import share from '~/assets/img/icon/shareFund.png';
 import {navigationRef} from './hooks/RootNavigation';
 import {ShareModal} from './Modal';
 import http from '~/services';
