@@ -109,6 +109,19 @@ const ToolList = ({route}) => {
                 )}
                 <Image source={{uri: icon}} style={styles.icon} />
                 <Text style={{fontSize: px(11)}}>{text}</Text>
+                {item?.tip && !isEditState ? (
+                    item?.tip?.is_number ? (
+                        <View style={styles.numberTip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    ) : !item?.tip?.desc ? (
+                        <View style={styles.circleTip} />
+                    ) : (
+                        <View style={styles.tip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    )
+                ) : null}
             </View>
         );
     };
@@ -121,6 +134,19 @@ const ToolList = ({route}) => {
                 )}
                 <Image source={{uri: icon}} style={styles.icon} />
                 <Text style={{fontSize: px(11)}}>{text}</Text>
+                {item?.tip && isEditState ? (
+                    item?.tip?.is_number ? (
+                        <View style={styles.numberTip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    ) : !item?.tip?.desc ? (
+                        <View style={styles.circleTip} />
+                    ) : (
+                        <View style={styles.tip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    )
+                ) : null}
             </View>
         );
     };
@@ -224,4 +250,31 @@ const styles = StyleSheet.create({
         lineHeight: px(15),
     },
     tag: {position: 'absolute', right: px(0), top: px(0)},
+    tip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(4),
+        paddingVertical: px(1),
+        paddingHorizontal: px(3),
+        borderBottomLeftRadius: 0,
+        right: px(-10),
+        top: px(-5),
+    },
+    circleTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        width: px(8),
+        height: px(8),
+        right: px(16),
+        top: px(-4),
+    },
+    numberTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        padding: px(2),
+        right: px(10),
+        top: px(-8),
+    },
 });

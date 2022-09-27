@@ -19,10 +19,10 @@ const Eye = ({storageKey, onChange, color}) => {
     }, []);
     // 显示|隐藏金额信息
     const toggleEye = () => {
+        onChange(showEye === 'true' ? 'false' : 'true');
         setShowEye((show) => {
             global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
             Storage.save(storageKey || 'myAssetsEye', show === 'true' ? 'false' : 'true');
-            onChange(show === 'true' ? 'false' : 'true');
             return show === 'true' ? 'false' : 'true';
         });
     };

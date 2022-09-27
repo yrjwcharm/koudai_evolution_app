@@ -25,7 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Button} from '~/components/Button';
 import PointCard from '../components/PointCard';
 import Eye from '../../../components/Eye';
-const Index = ({navigation, _ref}) => {
+const Index = ({navigation}) => {
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
