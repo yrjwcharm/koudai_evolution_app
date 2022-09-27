@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 19:33:35
+ * @LastEditTime: 2022-09-27 11:31:18
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -29,6 +29,7 @@ import {useSelector} from 'react-redux';
 import LoadingTips from '~/components/LoadingTips';
 import Feather from 'react-native-vector-icons/Feather';
 import EmptyTip from '~/components/EmptyTip';
+import LogScrollView from '~/components/LogScrollView';
 
 const Product = ({navigation}) => {
     const jump = useJump();
@@ -48,6 +49,7 @@ const Product = ({navigation}) => {
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
+    const conventionRef = useRef();
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
@@ -153,7 +155,7 @@ const Product = ({navigation}) => {
                             activeOpacity={0.9}
                             style={[Style.flexBetween, styles.secure_card, styles.common_card]}
                             onPress={() => {
-                                index == 0 ? global.LogTool('indexSecurity') : global.LogTool('indexInvestPhilosophy');
+                                global.LogTool(item.click_code);
                                 jump(item?.url);
                             }}>
                             <View>
@@ -221,7 +223,6 @@ const Product = ({navigation}) => {
                         activeOpacity={0.9}
                         style={[styles.searchInput]}
                         onPress={() => {
-                            global.LogTool('Product');
                             jump(proData?.search?.url);
                         }}>
                         <FastImage
@@ -300,7 +301,7 @@ const Product = ({navigation}) => {
                         )}
                     </View>
                 </ScrollView>
-                <ScrollView
+                <LogScrollView
                     tabLabel="产品"
                     ref={scrollViewRef}
                     style={{flex: 1}}
@@ -463,10 +464,18 @@ const Product = ({navigation}) => {
                                         start={{x: 0, y: 0}}
                                         end={{x: 0, y: 1}}
                                         style={{marginTop: px(12), borderRadius: px(6)}}>
-                                        <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                                        <View
+                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}
+                                            ref={conventionRef}>
                                             <ProductList
                                                 data={proData?.popular_subject?.items}
                                                 type={proData?.popular_subject.type}
+                                                logParams={{
+                                                    event: 'rec_click',
+                                                    ctrl: proData?.popular_subject.subject_id,
+                                                    plateid: proData?.popular_subject.plateid,
+                                                    rec_json: proData?.popular_subject.rec_json,
+                                                }}
                                             />
                                         </View>
                                     </LinearGradient>
@@ -490,7 +499,7 @@ const Product = ({navigation}) => {
                             <LoadingTips color="#ddd" size={30} />
                         </View>
                     )}
-                </ScrollView>
+                </LogScrollView>
             </ScrollableTabView>
         </View>
     );

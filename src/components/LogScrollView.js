@@ -9,6 +9,8 @@ import {ScrollView} from 'react-native';
 import {deviceHeight} from '~/utils/appUtil';
 
 /*
+1. LogScrollView 应放在最外层
+2. 需曝光的元素不应嵌套在其他ScrollView中，尽管是处在LogScrollView内部的ScrollView
 const logOptions = useMemo(
     () => [
         {
