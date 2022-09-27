@@ -15,27 +15,27 @@ import HTML from '~/components/RenderHtml';
 import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
 
-/** @name 卡片左边部分 */
-const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_profit}) => {
+const DelayChart = ({chart}) => {
     const [showChart, setShowChart] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
-            chart?.length > 0 && setShowChart(true);
+            setShowChart(true);
         }, 500);
-    }, [chart]);
+    }, []);
 
+    return showChart ? (
+        <Chart data={chart} initScript={chartOptions.smChart(chart)} updateScript={chartOptions.smChart} />
+    ) : null;
+};
+
+/** @name 卡片左边部分 */
+const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_profit}) => {
     switch (true) {
         case chart?.length > 0:
             return (
                 <View style={styles.leftPart}>
-                    {showChart && (
-                        <Chart
-                            data={chart}
-                            initScript={chartOptions.smChart(chart)}
-                            updateScript={chartOptions.smChart}
-                        />
-                    )}
+                    <DelayChart chart={chart} />
                 </View>
             );
         case !!image:
@@ -218,11 +218,7 @@ const Index = ({data = [], logParams, type = 'default'}) => {
                 ) : null}
                 {chart?.length > 0 ? (
                     <View style={{marginTop: px(12), width: '100%', height: px(36)}}>
-                        <Chart
-                            data={chart}
-                            initScript={chartOptions.smChart(chart)}
-                            updateScript={chartOptions.smChart}
-                        />
+                        <DelayChart chart={chart} />
                     </View>
                 ) : null}
                 {ratio_labels?.length > 0 && (
