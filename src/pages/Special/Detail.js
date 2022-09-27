@@ -180,7 +180,7 @@ const SpecialDetail = ({navigation, route}) => {
                             setScrolling(_scrolling == 1);
                         } else if (data?.indexOf('logParams=') > -1) {
                             const logParams = JSON.parse(data?.split('logParams=')[1] || []);
-                            global.LogTool(...logParams);
+                            global.LogTool(logParams);
                         }
                     }}
                     originWhitelist={['*']}
