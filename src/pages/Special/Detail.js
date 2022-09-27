@@ -178,6 +178,9 @@ const SpecialDetail = ({navigation, route}) => {
                         } else if (data?.indexOf('scrolling=') > -1) {
                             const _scrolling = JSON.parse(data.split('scrolling=')[1]);
                             setScrolling(_scrolling == 1);
+                        } else if (data?.indexOf('logParams=') > -1) {
+                            const logParams = JSON.parse(data?.split('logParams=')[1] || []);
+                            global.LogTool(...logParams);
                         }
                     }}
                     originWhitelist={['*']}
