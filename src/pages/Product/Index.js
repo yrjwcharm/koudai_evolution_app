@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 13:37:16
+ * @LastEditTime: 2022-09-28 16:39:35
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -477,6 +477,34 @@ const Product = ({navigation}) => {
                             </View>
                             <View style={styles.othersWrap}>
                                 {proData?.menu_list ? renderSecurity(proData?.menu_list) : null}
+
+                                {proData?.popular_subject ? (
+                                    <LinearGradient
+                                        colors={['#FFFFFF', '#F4F5F7']}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 0, y: 1}}
+                                        style={{marginTop: px(12), borderRadius: px(6)}}>
+                                        <View
+                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}
+                                            ref={(el) => {
+                                                conventionRef.current = el;
+                                            }}
+                                            onLayout={(_) => {
+                                                setConventionLoad(true);
+                                            }}>
+                                            <ProductList
+                                                data={proData?.popular_subject?.items}
+                                                type={proData?.popular_subject.type}
+                                                logParams={{
+                                                    event: 'rec_click',
+                                                    ctrl: proData?.popular_subject.subject_id,
+                                                    plateid: proData?.popular_subject.plateid,
+                                                    rec_json: proData?.popular_subject.rec_json,
+                                                }}
+                                            />
+                                        </View>
+                                    </LinearGradient>
+                                ) : null}
                                 {proData?.live_list && (
                                     <View style={styles.liveCardsWrap}>
                                         <View style={styles.liveCardsHeader}>
@@ -512,33 +540,6 @@ const Product = ({navigation}) => {
                                         </ScrollView>
                                     </View>
                                 )}
-                                {proData?.popular_subject ? (
-                                    <LinearGradient
-                                        colors={['#FFFFFF', '#F4F5F7']}
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 0, y: 1}}
-                                        style={{marginTop: px(12), borderRadius: px(6)}}>
-                                        <View
-                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}
-                                            ref={(el) => {
-                                                conventionRef.current = el;
-                                            }}
-                                            onLayout={(_) => {
-                                                setConventionLoad(true);
-                                            }}>
-                                            <ProductList
-                                                data={proData?.popular_subject?.items}
-                                                type={proData?.popular_subject.type}
-                                                logParams={{
-                                                    event: 'rec_click',
-                                                    ctrl: proData?.popular_subject.subject_id,
-                                                    plateid: proData?.popular_subject.plateid,
-                                                    rec_json: proData?.popular_subject.rec_json,
-                                                }}
-                                            />
-                                        </View>
-                                    </LinearGradient>
-                                ) : null}
                                 {proData?.subjects ? (
                                     <View style={{backgroundColor: Colors.bgColor}}>
                                         {proData?.subjects?.map?.((subject, index, ar) => (
