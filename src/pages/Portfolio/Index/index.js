@@ -4,21 +4,60 @@
  * @Date: 2022-09-16 16:55:33
  */
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
+import LogScrollView from '~/components/LogScrollView';
 import {AlbumCard, ProductList} from '~/components/Product';
 import http from '~/services';
 import {px} from '~/utils/appUtil';
 
 const PortfolioIndex = ({navigation, route}) => {
     const jump = useJump();
-    const [data, setData] = useState({});
-    const {popular_subjects, subjects} = data;
+    const [data, setData] = useState(null);
+    const [conventionLoad, setConventionLoad] = useState(false);
+    const [recommendLoad, setRecommendLoad] = useState(false);
+    const conventionRef = useRef();
+    const recommendRef = useRef([]);
+
+    const logOptions = useMemo(() => {
+        let obj = {};
+        if (conventionLoad) {
+            obj[0] = {
+                el: conventionRef.current,
+                handler: () => {
+                    global.LogTool({
+                        event: 'rec_show',
+                        ctrl: data?.popular_subjects.subject_id,
+                        plateid: data?.popular_subjects.plateid,
+                        rec_json: data?.popular_subjects.rec_json,
+                    });
+                },
+            };
+        }
+        if (recommendLoad) {
+            recommendRef.current.forEach((el, idx) => {
+                obj[idx + 1] = {
+                    el,
+                    handler: () => {
+                        let subject = data?.subjects?.[idx];
+                        global.LogTool({
+                            event: 'rec_show',
+                            ctrl: subject.subject_id,
+                            plateid: subject.plateid,
+                            rec_json: subject.rec_json,
+                        });
+                    },
+                };
+            });
+        }
+        return obj;
+    }, [conventionLoad, data, recommendLoad]);
+
     const init = () => {
         http.get('/products/portfolio/index/20220901', route?.params?.params).then((res) => {
             if (res.code === '000000') {
@@ -65,6 +104,7 @@ const PortfolioIndex = ({navigation, route}) => {
                         key={idx}
                         onPress={() => {
                             jump(item.url);
+                            global.LogTool({event: 'assort', ctrl: item.name});
                         }}>
                         <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             <FastImage
@@ -81,26 +121,56 @@ const PortfolioIndex = ({navigation, route}) => {
         );
     };
 
-    return Object.keys(data).length > 0 ? (
+    return data ? (
         <View style={styles.container}>
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} scrollEventThrottle={16}>
+            <LogScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} logOptions={logOptions}>
                 {data?.nav ? (
                     <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                         {genTopMenu()}
                     </LinearGradient>
                 ) : null}
-                <View style={styles.recommendCon}>
-                    <ProductList data={popular_subjects.items} type={popular_subjects.type} />
-                </View>
-                <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
-                    {subjects?.map?.((subject, index) => (
-                        <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
-                            <AlbumCard {...subject} />
-                        </View>
-                    ))}
-                </View>
+                {data?.popular_subjects ? (
+                    <View
+                        style={styles.recommendCon}
+                        ref={(el) => {
+                            conventionRef.current = el;
+                        }}
+                        onLayout={(_) => {
+                            setConventionLoad(true);
+                        }}>
+                        <ProductList
+                            data={data?.popular_subjects.items}
+                            type={data?.popular_subjects.type}
+                            logParams={{
+                                event: 'rec_click',
+                                ctrl: data?.popular_subjects.subject_id,
+                                plateid: data?.popular_subjects.plateid,
+                                rec_json: data?.popular_subjects.rec_json,
+                            }}
+                        />
+                    </View>
+                ) : null}
+                {data?.subjects ? (
+                    <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
+                        {data?.subjects?.map?.((subject, index, ar) => (
+                            <View
+                                key={subject.subject_id + index}
+                                style={{marginTop: px(12)}}
+                                ref={(el) => {
+                                    recommendRef.current[index] = el;
+                                }}
+                                onLayout={(_) => {
+                                    if (index === ar.length - 1) {
+                                        setRecommendLoad(true);
+                                    }
+                                }}>
+                                <AlbumCard {...subject} />
+                            </View>
+                        ))}
+                    </View>
+                ) : null}
                 <BottomDesc />
-            </ScrollView>
+            </LogScrollView>
         </View>
     ) : null;
 };

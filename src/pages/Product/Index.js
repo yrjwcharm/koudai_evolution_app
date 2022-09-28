@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 11:31:18
+ * @LastEditTime: 2022-09-28 13:37:16
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -44,16 +44,53 @@ const Product = ({navigation}) => {
     const [tabActive, setTabActive] = useState(1);
     const [optionalTabActive, setOptionalTabActive] = useState(0);
     const [allMsg, setAll] = useState(0);
+    const [conventionLoad, setConventionLoad] = useState(false);
+    const [recommendLoad, setRecommendLoad] = useState(false);
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
     const conventionRef = useRef();
+    const recommendRef = useRef([]);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
+
+    const logOptions = useMemo(() => {
+        let obj = {};
+        if (conventionLoad) {
+            obj[0] = {
+                el: conventionRef.current,
+                handler: () => {
+                    global.LogTool({
+                        event: 'rec_show',
+                        ctrl: proData?.popular_subject.subject_id,
+                        plateid: proData?.popular_subject.plateid,
+                        rec_json: proData?.popular_subject.rec_json,
+                    });
+                },
+            };
+        }
+        if (recommendLoad) {
+            recommendRef.current.forEach((el, idx) => {
+                obj[idx + 1] = {
+                    el,
+                    handler: () => {
+                        let subject = proData?.subjects?.[idx];
+                        global.LogTool({
+                            event: 'rec_show',
+                            ctrl: subject.subject_id,
+                            plateid: subject.plateid,
+                            rec_json: subject.rec_json,
+                        });
+                    },
+                };
+            });
+        }
+        return obj;
+    }, [conventionLoad, proData, recommendLoad]);
 
     useFocusEffect(
         useCallback(() => {
@@ -72,8 +109,10 @@ const Product = ({navigation}) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
             if (isFocused) {
-                getProData(0);
                 scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+                setTimeout(() => {
+                    getProData(0);
+                }, 0);
                 global.LogTool('tabDoubleClick', 'ProductIndex');
             }
         });
@@ -112,6 +151,17 @@ const Product = ({navigation}) => {
 
     const getFollowData = async (params) => {
         let res = await http.get('/follow/list/202206', params);
+
+        const obj = res.result.body?.tr?.[0]?.[0];
+        if (obj) {
+            obj.LogTool = () => {
+                global.LogTool({
+                    event: 'optionalDetail',
+                    oid: obj?.url?.params?.params?.plan_id || obj?.url?.params?.code,
+                    ctrl: followTabs?.follow?.tabs[optionalTabActive]?.type_text,
+                });
+            };
+        }
         setFollowData(res.result);
     };
 
@@ -271,7 +321,7 @@ const Product = ({navigation}) => {
                             <ScrollableTabView
                                 prerenderingSiblingsNumber={followTabs?.follow?.tabs?.length}
                                 locked={true}
-                                renderTabBar={() => <RenderOptionalTabBar />}
+                                renderTabBar={() => <RenderOptionalTabBar myTabs={followTabs?.follow?.tabs} />}
                                 onChangeTab={onChangeOptionalTab}
                                 ref={optionalTabRef}>
                                 {followTabs?.follow?.tabs?.map?.((tab, index) => {
@@ -304,6 +354,7 @@ const Product = ({navigation}) => {
                 <LogScrollView
                     tabLabel="产品"
                     ref={scrollViewRef}
+                    logOptions={logOptions}
                     style={{flex: 1}}
                     showsHorizontalScrollIndicator={false}
                     refreshControl={
@@ -350,6 +401,9 @@ const Product = ({navigation}) => {
                                                 //     },
                                                 // });
                                                 jump(item.url);
+                                                global.LogTool({
+                                                    event: item.event,
+                                                });
                                             }}
                                             style={styles.menuItem}
                                             key={idx}>
@@ -466,7 +520,12 @@ const Product = ({navigation}) => {
                                         style={{marginTop: px(12), borderRadius: px(6)}}>
                                         <View
                                             style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}
-                                            ref={conventionRef}>
+                                            ref={(el) => {
+                                                conventionRef.current = el;
+                                            }}
+                                            onLayout={(_) => {
+                                                setConventionLoad(true);
+                                            }}>
                                             <ProductList
                                                 data={proData?.popular_subject?.items}
                                                 type={proData?.popular_subject.type}
@@ -482,8 +541,18 @@ const Product = ({navigation}) => {
                                 ) : null}
                                 {proData?.subjects ? (
                                     <View style={{backgroundColor: Colors.bgColor}}>
-                                        {proData?.subjects?.map?.((subject, index) => (
-                                            <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
+                                        {proData?.subjects?.map?.((subject, index, ar) => (
+                                            <View
+                                                key={subject.subject_id + index}
+                                                style={{marginTop: px(12)}}
+                                                ref={(el) => {
+                                                    recommendRef.current[index] = el;
+                                                }}
+                                                onLayout={(_) => {
+                                                    if (index === ar.length - 1) {
+                                                        setRecommendLoad(true);
+                                                    }
+                                                }}>
                                                 <AlbumCard {...subject} />
                                             </View>
                                         ))}
@@ -699,6 +768,7 @@ const RenderOptionalTabBar = (props) => {
                         {marginLeft: idx > 0 ? px(8) : 0},
                     ]}
                     onPress={() => {
+                        global.LogTool({event: props.myTabs[props.activeTab].event});
                         props.goToPage(idx);
                     }}>
                     <Text style={[styles.optionalTabText, {color: props.activeTab === idx ? '#fff' : '#121D3A'}]}>
@@ -718,6 +788,11 @@ const SpecialList = ({data, tabButton}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
+                        global.LogTool({
+                            event: 'optionalDetail',
+                            oid: item?.url?.params?.params?.subject_id,
+                            ctrl: '专题',
+                        });
                         jump(item.url);
                     }}
                     key={idx}
@@ -743,7 +818,10 @@ const SpecialList = ({data, tabButton}) => {
                         <TouchableOpacity
                             key={dex}
                             activeOpacity={0.9}
-                            onPress={() => jump(btn.url)}
+                            onPress={() => {
+                                global.LogTool({event: btn.event});
+                                jump(btn.url);
+                            }}
                             style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
                             <Feather
                                 size={px(16)}

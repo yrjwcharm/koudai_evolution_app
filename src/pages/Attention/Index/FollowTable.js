@@ -36,7 +36,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
     return (
         <>
             {body ? (
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
                     {header && <FollowTableHeader header={header} />}
                     <View style={{flexDirection: 'row'}}>
                         {/* 处理第一列固定 */}
@@ -70,7 +70,10 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                     style={styles.tr}
                                     activeOpacity={0.9}
                                     key={index}
-                                    onPress={() => jump(tr[0].url)}>
+                                    onPress={() => {
+                                        tr[0]?.LogTool?.();
+                                        jump(tr[0].url);
+                                    }}>
                                     <View style={[{paddingLeft: px(16)}]}>
                                         {/* 每一个td */}
                                         <Text
@@ -182,7 +185,10 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                         style={[styles.tr]}
                                         key={index}
                                         activeOpacity={0.9}
-                                        onPress={() => jump(tr[0].url)}>
+                                        onPress={() => {
+                                            tr[0]?.LogTool?.();
+                                            jump(tr[0].url);
+                                        }}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                             {tr.map((item, _index) =>
                                                 _index == 0 ? null : (
@@ -258,7 +264,10 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                 <TouchableOpacity
                                     key={dex}
                                     activeOpacity={0.9}
-                                    onPress={() => jump(btn.url)}
+                                    onPress={() => {
+                                        global.LogTool({event: btn.event});
+                                        jump(btn.url);
+                                    }}
                                     style={[
                                         Style.flexRow,
                                         {flex: 1, paddingVertical: px(14), justifyContent: 'center'},

@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 14:57:40
+ * @LastEditTime: 2022-09-28 13:03:36
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -148,6 +148,8 @@ const PortFolioDetail = ({navigation, route}) => {
         if (!clickRef.current) {
             return false;
         }
+        global.LogTool({event: btn.event});
+
         const {event_id, is_follow, url, plan_id, item_type} = btn;
 
         if (event_id === 'consult_click') {
@@ -268,6 +270,7 @@ const PortFolioDetail = ({navigation, route}) => {
                                 disabled={avail === 0}
                                 key={title + i}
                                 onPress={() => {
+                                    global.LogTool({event: btn.event});
                                     jump(url);
                                 }}
                                 style={[

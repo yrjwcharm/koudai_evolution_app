@@ -56,6 +56,7 @@ const SpecialDetail = ({navigation, route}) => {
     );
 
     const handlerIconBtnClick = (item) => {
+        global.LogTool({event: item.event});
         switch (item.event_id) {
             case 'follow':
                 if (!clickRef.current) return;
