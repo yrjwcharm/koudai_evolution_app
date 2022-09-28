@@ -3,17 +3,16 @@
  * @Description:
  */
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useRef} from 'react';
+import React from 'react';
 import {useJump} from '~/components/hooks';
 import {getAlertColor} from './util';
-import {Colors, Style} from '~/common/commonStyle';
+import {Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import SmButton from '~/components/Button/SmButton';
 
 // 信号
 const RenderAlert = ({alert}) => {
     const jump = useJump();
-    const alertIcon = useRef();
     const {bgColor, buttonColor} = getAlertColor(alert.alert_style);
     return (
         <View style={[Style.flexBetween, styles.singal_card, {backgroundColor: bgColor, marginTop: px(8), top: px(4)}]}>
@@ -26,7 +25,7 @@ const RenderAlert = ({alert}) => {
                     source={{uri: alert?.alert_icon}}
                     style={{height: px(16), marginRight: px(8)}}
                 /> */}
-                <Text style={{flex: 1, fontSize: px(11), color: Colors.defaultColor}} numberOfLines={1}>
+                <Text style={{flex: 1, fontSize: px(11), color: buttonColor}} numberOfLines={1}>
                     {alert?.desc}
                 </Text>
             </View>

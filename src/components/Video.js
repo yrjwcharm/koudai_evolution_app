@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-19 18:00:57
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-16 16:36:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-27 16:57:47
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
@@ -35,8 +35,8 @@ export default class App extends React.Component {
             currentTime: 0, //当前播放时间
             sliderValue: 0, //进度条的进度
             //用来控制进入全屏的属性
-            videoWidth: screenWidth,
-            videoHeight: 200,
+            videoWidth: '100%',
+            videoHeight: '100%',
             isFullScreen: false,
             volume: 1,
             isVisiblePausedSliderFullScreen: false,
@@ -74,7 +74,7 @@ export default class App extends React.Component {
     //格式化音乐播放的时间为0：00。借助onProgress的定时器调用，更新当前时间
     formatMediaTime(time) {
         let minute = Math.floor(time / 60);
-        let second = parseInt(time - minute * 60);
+        let second = parseInt(time - minute * 60, 10);
         minute = minute >= 10 ? minute : '0' + minute;
         second = second >= 10 ? second : '0' + second;
         return minute + ':' + second;
@@ -122,6 +122,11 @@ export default class App extends React.Component {
     }
     pauseVideo = () => {
         const isPaused = this.state.isPaused;
+        if (isPaused) {
+            this.player.dismissFullscreenPlayer();
+        } else {
+            this.player.presentFullscreenPlayer();
+        }
         this.setState({
             isPaused: !isPaused,
         });
@@ -147,14 +152,15 @@ export default class App extends React.Component {
                 <View style={styles.slide_box}>
                     <Text style={{color: '#fff'}}>{this.formatMediaTime(this.state.currentTime)}</Text>
                     <Slider
-                        style={{width: screenWidth - text(150), height: 2}}
+                        style={{flex: 1, height: 2, marginHorizontal: text(4)}}
                         value={this.state.sliderValue}
                         maximumValue={this.state.duration}
                         thumbTintColor="#fff" //开关夹点
                         minimumTrackTintColor="#eee"
                         maximumTrackTintColor="#666"
                         step={1}
-                        onValueChange={this.customerSliderValue}
+                        onSlidingComplete={this.customerSliderValue}
+                        // onValueChange={this.customerSliderValue}
                     />
                     <Text style={{color: '#fff'}}>{this.formatMediaTime(this.state.duration)}</Text>
                 </View>
@@ -166,7 +172,7 @@ export default class App extends React.Component {
         );
         let pausedSliderFull = pausedSliderFullComponent;
         return (
-            <View style={{width: screenWidth - text(150), alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{width: '100%', alignItems: 'center', justifyContent: 'center'}}>
                 <TouchableWithoutFeedback
                     onPress={this._changePauseSliderFullState}
                     onResponderMove={this._onStartShouldSetResponder}>
@@ -179,20 +185,22 @@ export default class App extends React.Component {
                             width: this.state.videoWidth,
                             height: this.state.videoHeight,
                             backgroundColor: '#eee',
+                            borderRadius: text(6),
                         }}
                         volume={this.state.volume} //调节音量
                         allowsExternalPlayback={false} // 不允许导出 或 其他播放器播放
                         paused={this.state.isPaused} // 控制视频是否播放
                         resizeMode="cover"
+                        controls
                         onLoad={(e) => this.customerOnload(e)}
                         onProgress={(e) => this.customerOnprogress(e)}
-                        fullscreen={this.state.isFullScreen}
+                        // fullscreen={this.state.isFullScreen}
                     />
                 </TouchableWithoutFeedback>
                 {/* 播放的按钮：点击之后需要消失 */}
-                {pausedBtn}
+                {/* {pausedBtn} */}
                 {/* 暂停按钮，进度条，全屏按钮 */}
-                {pausedSliderFull}
+                {/* {pausedSliderFull} */}
             </View>
         );
     }
@@ -229,12 +237,13 @@ var styles = StyleSheet.create({
     slider_wrap: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: screenWidth,
+        width: '100%',
         position: 'absolute',
         bottom: 0,
         backgroundColor: '#333',
         opacity: 0.6,
         paddingVertical: text(7),
+        paddingHorizontal: text(2),
         marginHorizontal: text(10),
     },
 });
