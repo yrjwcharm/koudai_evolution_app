@@ -139,7 +139,7 @@ const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, sty
                 {list?.length > 0 && (
                     <View
                         style={{
-                            paddingTop: !header.bg_img && !(groups?.length > 0) ? 0 : px(12),
+                            paddingTop: !header.bg_img && !img && !(groups?.length > 0) ? 0 : px(12),
                             paddingBottom: px(12),
                         }}>
                         <ProductList data={list} logParams={logParams} type={style_type} />
