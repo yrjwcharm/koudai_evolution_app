@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-20 14:13:23
+ * @LastEditTime: 2022-09-28 13:14:53
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -185,7 +185,9 @@ export default function Launch({navigation}) {
             global.env = env;
             Storage.get('privacy').then(async (res) => {
                 if (res) {
-                    global.did = await DeviceInfo.syncUniqueId();
+                    if (Platform.OS != 'android' && !__DEV__) {
+                        global.did = await DeviceInfo.syncUniqueId();
+                    }
                     http.get('/mapi/app/privacy/info/20220916')
                         .then((pra) => {
                             if (pra?.result?.show_privacy == 1) {
