@@ -2,10 +2,10 @@
  * @Date: 2022-09-28 14:39:51
  * @Description:
  */
-import {StyleSheet, FlatList, View, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, FlatList, View, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import Video from './components/Video';
-import {deviceHeight as HEIGHT, deviceWidth as WIDTH, px} from '~/utils/appUtil';
+import {deviceWidth as WIDTH, px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Style} from '~/common/commonStyle';
@@ -14,9 +14,11 @@ const viewabilityConfig = {
     waitForInteraction: true,
     viewAreaCoveragePercentThreshold: 95,
 };
+const HEIGHT = Dimensions.get('screen').height;
 const CommunityVideo = ({navigation}) => {
     const inset = useSafeAreaInsets();
     const [currentItem, setCurrentItem] = useState(0);
+
     const data = [
         {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/02/1582871555786417_1582872294679554.mp4'},
         {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
@@ -48,11 +50,11 @@ const CommunityVideo = ({navigation}) => {
     }, []);
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{height: HEIGHT, backgroundColor: '#000'}}>
             <View style={[styles.header, Style.flexBetween, {top: inset.top}]}>
-                <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{width: px(40), height: px(40)}}>
                     <Icon name="left" color="#fff" size={px(18)} />
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </View>
             <FlatList
                 data={data}
@@ -65,8 +67,11 @@ const CommunityVideo = ({navigation}) => {
                 initialNumToRender={10}
                 onViewableItemsChanged={_onViewableItemsChanged}
                 // viewabilityConfig={viewabilityConfig}
-                updateCellsBatchingPeriod={50}
                 removeClippedSubviews={false}
+                // snapToInterval={HEIGHT}
+                // snapToAlignment={'center'}
+                // decelerationRate={'fast'}
+                // maxToRenderPerBatch={5}
                 onEndReached={() => {
                     console.log('first');
                 }}

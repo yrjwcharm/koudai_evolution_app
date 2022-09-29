@@ -3,15 +3,16 @@
  * @Date: 2022-09-28 14:44:03
  * @Description:
  */
-import {StyleSheet, TouchableWithoutFeedback, View, Text, Image} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Font, Style} from '~/common/commonStyle';
-import {deviceHeight as HEIGHT, deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
+import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import InViewport from './InViewPort';
 import Slider from 'react-native-slider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
+const HEIGHT = Dimensions.get('screen').height;
 const RenderVideo = ({data, index, pause, currentIndex}) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
@@ -75,7 +76,7 @@ const RenderVideo = ({data, index, pause, currentIndex}) => {
                         isMuted={false}
                         onLoad={customerOnload}
                         onProgress={customerOnprogress}
-                        // resizeMode="cover"
+                        resizeMode="contain"
                         style={{width: WIDTH, height: HEIGHT}}
                     />
                 </View>

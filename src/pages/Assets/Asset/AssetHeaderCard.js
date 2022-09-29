@@ -2,15 +2,14 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image, Platform, TouchableWithoutFeedback} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 
-import Octicons from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {useJump} from '~/components/hooks';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
@@ -26,56 +25,63 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
         getChartData();
     }, []);
     return (
-        <LinearGradient
-            colors={['#F1F9FF', Colors.bgColor]}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
-            style={{marginBottom: px(12), paddingTop: px(8)}}>
+        <TouchableWithoutFeedback onPress={() => jump(summary?.url)}>
             <LinearGradient
-                colors={['#1C58E7', '#528AED']}
+                colors={['#F1F9FF', Colors.bgColor]}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
-                style={styles.assetsContainer}>
-                {/* 资产信息 */}
-                <View style={Style.flexRowCenter}>
-                    <Text style={styles.summaryKey}>总资产(元)</Text>
-                    <Text style={styles.date}>{summary?.asset_info?.date}</Text>
-                    {children}
-                </View>
+                style={{marginBottom: px(12), paddingTop: px(8)}}>
+                <LinearGradient
+                    colors={['#1C58E7', '#528AED']}
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 1}}
+                    style={styles.assetsContainer}>
+                    <Icon name="right" color="#fff" size={px(14)} style={styles.rightIcon} />
+                    {/* 资产信息 */}
+                    <View style={Style.flexRowCenter}>
+                        <Text style={styles.summaryKey}>总资产(元)</Text>
+                        <Text style={styles.date}>{summary?.asset_info?.date}</Text>
+                        {children}
+                    </View>
 
-                <View style={[Style.flexRow, styles.profitContainer]}>
-                    <View style={{flex: 1}}>
-                        <Text>
-                            {showEye === 'true' ? (
-                                <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
-                            ) : (
-                                <Text style={styles.amount}>****</Text>
-                            )}
-                        </Text>
-                        <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                            <View style={[{flex: 1}]}>
-                                <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
-                                <Text style={styles.profitVal}>
-                                    {showEye === 'true' ? summary?.profit_info?.value : '****'}
-                                </Text>
-                            </View>
-                            <View style={[{flex: 1}]}>
-                                <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
-                                <Text style={styles.profitVal}>
-                                    {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
-                                </Text>
+                    <View style={[Style.flexRow, styles.profitContainer]}>
+                        <View style={{flex: 1}}>
+                            <Text>
+                                {showEye === 'true' ? (
+                                    <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
+                                ) : (
+                                    <Text style={styles.amount}>****</Text>
+                                )}
+                            </Text>
+                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                <View style={[{flex: 1}]}>
+                                    <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
+                                    <Text style={styles.profitVal}>
+                                        {showEye === 'true' ? summary?.profit_info?.value : '****'}
+                                    </Text>
+                                </View>
+                                <View style={[{flex: 1}]}>
+                                    <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
+                                    <Text style={styles.profitVal}>
+                                        {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
+                        {chart?.length > 0 && (
+                            <View style={{width: px(120), height: px(70)}}>
+                                <Chart
+                                    style={{backgroundColor: 'transparent'}}
+                                    initScript={chartOptions.smAssetChart(chart)}
+                                />
+                            </View>
+                        )}
                     </View>
-
-                    <View style={{width: px(120), height: px(70)}}>
-                        <Chart style={{backgroundColor: 'transparent'}} initScript={chartOptions.smAssetChart(chart)} />
-                    </View>
-                </View>
-                {/* 交易通知 */}
-                {tradeMes ? <TradeNotice data={tradeMes} /> : null}
+                    {/* 交易通知 */}
+                    {tradeMes ? <TradeNotice data={tradeMes} /> : null}
+                </LinearGradient>
             </LinearGradient>
-        </LinearGradient>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
         width: px(150),
         height: px(220),
     },
+    rightIcon: {position: 'absolute', right: px(16), top: px(16)},
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.marginAlign,
@@ -110,12 +117,12 @@ const styles = StyleSheet.create({
     summaryKey: {
         fontSize: px(13),
         lineHeight: px(18),
-        color: 'rgba(255, 255, 255, 0.6)',
+        color: '#fff',
     },
     date: {
         fontSize: px(12),
         lineHeight: px(17),
-        color: 'rgba(255, 255, 255, 0.6)',
+        color: '#fff',
         marginHorizontal: px(10),
     },
     amount: {

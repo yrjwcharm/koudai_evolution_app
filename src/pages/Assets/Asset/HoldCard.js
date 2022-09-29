@@ -77,8 +77,7 @@ const ListTitle = ({title, pop_info, reload}) => {
                                         />
                                     )}
                                     <Text style={{fontSize: px(14), fontWeight: '700'}}>
-                                        {name}
-                                        {number}
+                                        {name}({number})
                                     </Text>
                                 </View>
                                 <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(21)}}>
@@ -180,6 +179,6 @@ const styles = StyleSheet.create({
         marginHorizontal: px(20),
         height: px(62),
         borderBottomColor: '#E9EAEF',
-        borderBottomWidth: px(0.5),
+        borderBottomWidth: 0.5,
     },
 });
