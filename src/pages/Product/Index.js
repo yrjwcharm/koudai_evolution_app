@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 18:15:13
+ * @LastEditTime: 2022-09-29 19:33:09
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -703,6 +703,7 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         lineHeight: px(20),
         color: '#121d3a',
+        fontWeight: 'bold',
     },
     specialContent: {
         flexDirection: 'row',
