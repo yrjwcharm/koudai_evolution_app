@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 17:30:13
+ * @LastEditTime: 2022-09-29 18:15:13
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -29,7 +29,7 @@ import {useSelector} from 'react-redux';
 import LoadingTips from '~/components/LoadingTips';
 import Feather from 'react-native-vector-icons/Feather';
 import EmptyTip from '~/components/EmptyTip';
-import LogScrollView from '~/components/LogScrollView';
+import LogView from '~/components/LogView';
 
 const Product = ({navigation}) => {
     const jump = useJump();
@@ -44,53 +44,15 @@ const Product = ({navigation}) => {
     const [tabActive, setTabActive] = useState(1);
     const [optionalTabActive, setOptionalTabActive] = useState(0);
     const [allMsg, setAll] = useState(0);
-    const [conventionLoad, setConventionLoad] = useState(false);
-    const [recommendLoad, setRecommendLoad] = useState(false);
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
-    const conventionRef = useRef();
-    const recommendRef = useRef([]);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
-
-    const logOptions = useMemo(() => {
-        let obj = {};
-        if (conventionLoad) {
-            obj[0] = {
-                el: conventionRef.current,
-                handler: () => {
-                    global.LogTool({
-                        event: 'rec_show',
-                        ctrl: proData?.popular_subject.subject_id,
-                        plateid: proData?.popular_subject.plateid,
-                        rec_json: proData?.popular_subject.rec_json,
-                    });
-                },
-            };
-        }
-        if (recommendLoad) {
-            recommendRef.current.forEach((el, idx) => {
-                obj[idx + 1] = {
-                    el,
-                    handler: () => {
-                        let subject = proData?.subjects?.[idx];
-                        global.LogTool({
-                            event: 'rec_show',
-                            ctrl: subject.subject_id,
-                            plateid: subject.plateid,
-                            rec_json: subject.rec_json,
-                        });
-                    },
-                };
-            });
-        }
-        return obj;
-    }, [conventionLoad, proData, recommendLoad]);
 
     useFocusEffect(
         useCallback(() => {
@@ -352,10 +314,9 @@ const Product = ({navigation}) => {
                         )}
                     </View>
                 </ScrollView>
-                <LogScrollView
+                <LogView.Wrapper
                     tabLabel="产品"
                     ref={scrollViewRef}
-                    logOptions={logOptions}
                     style={{flex: 1}}
                     showsHorizontalScrollIndicator={false}
                     refreshControl={
@@ -485,14 +446,17 @@ const Product = ({navigation}) => {
                                         start={{x: 0, y: 0}}
                                         end={{x: 0, y: 1}}
                                         style={{marginTop: px(12), borderRadius: px(6)}}>
-                                        <View
-                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}
-                                            ref={(el) => {
-                                                conventionRef.current = el;
+                                        <LogView.Item
+                                            logKey={proData?.popular_subject.type}
+                                            handler={() => {
+                                                global.LogTool({
+                                                    event: 'rec_show',
+                                                    ctrl: proData?.popular_subject.subject_id,
+                                                    plateid: proData?.popular_subject.plateid,
+                                                    rec_json: proData?.popular_subject.rec_json,
+                                                });
                                             }}
-                                            onLayout={(_) => {
-                                                setConventionLoad(true);
-                                            }}>
+                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
                                             <ProductList
                                                 data={proData?.popular_subject?.items}
                                                 type={proData?.popular_subject.type}
@@ -503,7 +467,7 @@ const Product = ({navigation}) => {
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 }}
                                             />
-                                        </View>
+                                        </LogView.Item>
                                     </LinearGradient>
                                 ) : null}
                                 {proData?.live_list && (
@@ -544,19 +508,21 @@ const Product = ({navigation}) => {
                                 {proData?.subjects ? (
                                     <View style={{backgroundColor: Colors.bgColor}}>
                                         {proData?.subjects?.map?.((subject, index, ar) => (
-                                            <View
-                                                key={subject.subject_id + index}
-                                                style={{marginTop: px(12)}}
-                                                ref={(el) => {
-                                                    recommendRef.current[index] = el;
+                                            <LogView.Item
+                                                logKey={subject.subject_id}
+                                                handler={() => {
+                                                    let subject = proData?.subjects?.[index];
+                                                    global.LogTool({
+                                                        event: 'rec_show',
+                                                        ctrl: subject.subject_id,
+                                                        plateid: subject.plateid,
+                                                        rec_json: subject.rec_json,
+                                                    });
                                                 }}
-                                                onLayout={(_) => {
-                                                    if (index === ar.length - 1) {
-                                                        setRecommendLoad(true);
-                                                    }
-                                                }}>
+                                                key={subject.subject_id + index}
+                                                style={{marginTop: px(12)}}>
                                                 <AlbumCard {...subject} />
-                                            </View>
+                                            </LogView.Item>
                                         ))}
                                     </View>
                                 ) : null}
@@ -570,7 +536,7 @@ const Product = ({navigation}) => {
                             <LoadingTips color="#ddd" size={30} />
                         </View>
                     )}
-                </LogScrollView>
+                </LogView.Wrapper>
             </ScrollableTabView>
         </View>
     );
