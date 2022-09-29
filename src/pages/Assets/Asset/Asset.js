@@ -89,7 +89,7 @@ const Index = ({navigation}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
-                <Button title="工具" onPress={() => navigation.navigate('ToolListManage')} />
+                <Button title="视频" onPress={() => navigation.navigate('CommunityVideo')} />
                 <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
                 {<ToolMenus data={data?.tool_list} />}

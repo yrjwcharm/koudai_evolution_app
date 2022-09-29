@@ -3,7 +3,7 @@
  * @Description:资产页金额卡片
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -13,8 +13,18 @@ import {useJump} from '~/components/hooks';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import TradeNotice from '../components/TradeNotice';
+import {getChart} from './service';
+import {Chart, chartOptions} from '~/components/Chart';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const jump = useJump();
+    const [chart, setChart] = useState();
+    const getChartData = async () => {
+        let res = await getChart();
+        setChart(res.result);
+    };
+    useEffect(() => {
+        getChartData();
+    }, []);
     return (
         <LinearGradient
             colors={['#F1F9FF', Colors.bgColor]}
@@ -27,31 +37,39 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                 end={{x: 0, y: 1}}
                 style={styles.assetsContainer}>
                 {/* 资产信息 */}
-                <View style={[styles.summaryTitle, Style.flexCenter]}>
+                <View style={Style.flexRowCenter}>
                     <Text style={styles.summaryKey}>总资产(元)</Text>
                     <Text style={styles.date}>{summary?.asset_info?.date}</Text>
                     {children}
                 </View>
-                <Text style={{textAlign: 'center'}}>
-                    {showEye === 'true' ? (
-                        <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
-                    ) : (
-                        <Text style={styles.amount}>****</Text>
-                    )}
-                </Text>
 
                 <View style={[Style.flexRow, styles.profitContainer]}>
-                    <View style={[{flex: 1}]}>
-                        <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
-                        <Text style={styles.profitVal}>
-                            {showEye === 'true' ? summary?.profit_info?.value : '****'}
+                    <View style={{flex: 1}}>
+                        <Text>
+                            {showEye === 'true' ? (
+                                <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
+                            ) : (
+                                <Text style={styles.amount}>****</Text>
+                            )}
                         </Text>
+                        <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? summary?.profit_info?.value : '****'}
+                                </Text>
+                            </View>
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                                </Text>
+                            </View>
+                        </View>
                     </View>
-                    <View style={[{flex: 1}]}>
-                        <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
-                        <Text style={styles.profitVal}>
-                            {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
-                        </Text>
+
+                    <View style={{width: px(120), height: px(70)}}>
+                        <Chart style={{backgroundColor: 'transparent'}} initScript={chartOptions.smAssetChart(chart)} />
                     </View>
                 </View>
                 {/* 交易通知 */}
@@ -89,10 +107,6 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         flex: 1,
     },
-    summaryTitle: {
-        flexDirection: 'row',
-        marginBottom: px(8),
-    },
     summaryKey: {
         fontSize: px(13),
         lineHeight: px(18),
@@ -111,7 +125,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     profitContainer: {
-        marginTop: px(12),
+        marginTop: px(4),
         alignItems: 'flex-start',
     },
     profitKey: {

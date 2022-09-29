@@ -264,6 +264,34 @@ export const smChart = (data) => `(function(){
   chart.render();
 })()
 `;
+//我的财富小图
+export const smAssetChart = (data) => `(function(){
+  if (chart) {
+    chart.clear();
+  } else {
+    chart = new F2.Chart({
+      id: 'chart',
+      pixelRatio: window.devicePixelRatio,
+      padding: 0,
+    });
+  }
+  chart.source(${JSON.stringify(data)});
+  chart.axis(false);
+  chart.legend(false);
+  chart.tooltip(false);
+  chart.area({
+    startOnZero: false,
+  })
+    .position('date*value')
+    .color('l(90) 0:#FFFFFF 1:#3d79e4').shape('smooth');
+  chart.line()
+    .position('date*value')
+    .color( '#fff').style({
+      lineWidth: 1.5
+    });
+  chart.render();
+})()
+`;
 
 export const dynamicChart = (data) => `
 (function(){

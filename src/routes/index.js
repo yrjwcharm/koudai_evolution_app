@@ -258,7 +258,7 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
-
+import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1013,7 +1013,8 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
-                <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: true}} />
+                <Stack.Screen name="CommunityHome" component={CommunityHome} />
+                <Stack.Screen name="CommunityVideo" component={CommunityVideo} options={{headerShown: false}} />
 
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
