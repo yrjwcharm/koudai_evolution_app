@@ -23,7 +23,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     };
     useEffect(() => {
         getChartData();
-    }, []);
+    }, [summary]);
     return (
         <TouchableWithoutFeedback onPress={() => jump(summary?.url)}>
             <LinearGradient
@@ -43,7 +43,6 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                         <Text style={styles.date}>{summary?.asset_info?.date}</Text>
                         {children}
                     </View>
-
                     <View style={[Style.flexRow, styles.profitContainer]}>
                         <View style={{flex: 1}}>
                             <Text>
@@ -68,14 +67,14 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                                 </View>
                             </View>
                         </View>
-                        {chart?.length > 0 && (
+                        {chart?.length > 0 ? (
                             <View style={{width: px(120), height: px(70)}}>
                                 <Chart
                                     style={{backgroundColor: 'transparent'}}
                                     initScript={chartOptions.smAssetChart(chart)}
                                 />
                             </View>
-                        )}
+                        ) : null}
                     </View>
                     {/* 交易通知 */}
                     {tradeMes ? <TradeNotice data={tradeMes} /> : null}
