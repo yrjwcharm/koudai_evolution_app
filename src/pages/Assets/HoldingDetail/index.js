@@ -894,7 +894,7 @@ const Index = ({navigation, route, setLoading}) => {
     const passwordModal = useRef();
 
     const init = () => {
-        getPageData({...(route.params || {}), fund_code: 'SGX499'})
+        getPageData(route.params || {})
             .then((res) => {
                 if (res.code === '000000') {
                     const {need_ds, title = '资产详情'} = res.result;
