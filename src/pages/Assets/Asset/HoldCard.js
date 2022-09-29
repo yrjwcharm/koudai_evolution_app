@@ -14,6 +14,7 @@ import {BottomModal} from '~/components/Modal';
 import {postAssetClass} from './service';
 import {fromJS} from 'immutable';
 import {RenderAlert} from '../components/RenderAlert';
+import TagInfo from '../components/TagInfo';
 const HoldCard = ({data, reload, showEye}) => {
     const {class_list, pop_info} = data;
     return (
@@ -94,7 +95,7 @@ const ListTitle = ({title, pop_info, reload}) => {
 };
 const CardItem = ({data = {}, showEye}) => {
     const jump = useJump();
-    const {name, number, remind_info, symbol, indicators, icon, url} = data;
+    const {name, number, remind_info, tag_info, indicators, icon, url} = data;
     return (
         <>
             <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={() => jump(url)}>
@@ -104,18 +105,13 @@ const CardItem = ({data = {}, showEye}) => {
                             <Image source={{uri: icon}} style={{width: px(16), height: px(16), marginRight: px(3)}} />
                         )}
                         <Text style={{fontSize: px(12), fontWeight: '700'}}>
-                            {name}
-                            {number}
+                            {name}({number})
                         </Text>
-                        {!!symbol && (
-                            <View>
-                                <Text>{symbol}</Text>
-                            </View>
-                        )}
+                        {!!tag_info && <TagInfo data={tag_info} />}
                     </View>
                 )}
                 <View style={[Style.flexRow]}>
-                    {indicators?.map(({text, value, symbol, color}, index) => (
+                    {indicators?.map(({text, value, color}, index) => (
                         <View
                             key={index}
                             style={{
