@@ -22,7 +22,7 @@ const AlbumHeader = ({
 
     return (
         <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={1}
             onLayout={({
                 nativeEvent: {
                     layout: {height},
@@ -56,12 +56,12 @@ const AlbumHeader = ({
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
                 </View>
-                <Icon color={Colors.descColor} name="angle-right" size={px(12)} />
+                <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
             </View>
             {desc ? (
                 <View style={styles.detailDesc}>
                     {desc_icon ? <Image source={{uri: desc_icon}} style={styles.descIcon} /> : null}
-                    <Text numberOfLines={2} style={styles.desc}>
+                    <Text numberOfLines={2} style={[styles.desc, {flexShrink: 1}]}>
                         {desc}
                     </Text>
                 </View>
@@ -139,7 +139,7 @@ const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, sty
                 {list?.length > 0 && (
                     <View
                         style={{
-                            paddingTop: !header.bg_img && !(groups?.length > 0) ? 0 : px(12),
+                            paddingTop: !header.bg_img && !img && !(groups?.length > 0) ? 0 : px(12),
                             paddingBottom: px(12),
                         }}>
                         <ProductList data={list} logParams={logParams} type={style_type} />
@@ -170,7 +170,6 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         height: '100%',
-        zIndex: 1,
     },
     icon: {
         marginRight: px(4),
@@ -193,6 +192,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     descIcon: {
+        marginTop: px(2),
         marginRight: px(4),
         width: px(8),
         height: px(8),

@@ -101,11 +101,7 @@ const Index = ({navigation}) => {
     );
 
     return Object.keys(data).length > 0 ? (
-        <LinearGradient
-            colors={['#FFFFFF', Colors.bgColor]}
-            start={{x: 0, y: 0.4}}
-            end={{x: 0, y: 0.6}}
-            style={styles.container}>
+        <View style={styles.container}>
             <ScrollView
                 onScroll={({
                     nativeEvent: {
@@ -160,7 +156,7 @@ const Index = ({navigation}) => {
                 ))}
                 <BottomDesc />
             </ScrollView>
-        </LinearGradient>
+        </View>
     ) : (
         <Loading />
     );
@@ -169,13 +165,13 @@ const Index = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.bgColor,
     },
     topMenuCon: {
         paddingBottom: Space.padding,
         flexDirection: 'row',
         flexWrap: 'wrap',
         width: deviceWidth,
-        backgroundColor: '#fff',
         overflow: 'hidden',
     },
     menuItemBox: {
@@ -199,7 +195,6 @@ const styles = StyleSheet.create({
     bottomContainer: {
         paddingTop: px(12),
         paddingHorizontal: Space.padding,
-        backgroundColor: Colors.bgColor,
     },
     dotStyle: {
         borderRadius: px(5),

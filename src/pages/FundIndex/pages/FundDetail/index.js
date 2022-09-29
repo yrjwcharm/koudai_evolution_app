@@ -355,10 +355,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
     },
     leftBtnIcon: {
-        width: px(28),
-        height: px(28),
+        width: px(20),
+        height: px(20),
     },
     leftBtnText: {
+        marginTop: px(4),
         fontSize: Font.textSm,
         lineHeight: px(16),
         color: Colors.defaultColor,
