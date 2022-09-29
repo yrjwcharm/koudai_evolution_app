@@ -12,8 +12,8 @@ import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/'; //资产页
 // import NewHome from '../pages/Assets/Asset'; //资产页
 // import PKHome from '../pages/PK/pages/Home'; // PK首页
-import Attention from '~/pages/Attention/Index'; //关注
-import ProjectHome from '../pages/Project/ProjectHome'; //计划
+// import Attention from '~/pages/Attention/Index'; //关注
+// import ProjectHome from '../pages/Project/ProjectHome'; //计划
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
@@ -155,9 +155,9 @@ export default function Tabbar() {
                 style: {height: isIphoneX() ? px(90) : px(56), paddinsgTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Product" options={{tabBarLabel: '产品'}} component={Product} />
-            <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} />
+            {/* <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} /> */}
 
-            <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} />
+            {/* <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} /> */}
             {userInfo?.toJS()?.show_vision_tab ? (
                 <Tab.Screen
                     name="Vision"
