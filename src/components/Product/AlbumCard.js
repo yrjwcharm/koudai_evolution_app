@@ -56,7 +56,7 @@ const AlbumHeader = ({
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
                 </View>
-                <Icon color={Colors.descColor} name="angle-right" size={px(12)} />
+                <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
             </View>
             {desc ? (
                 <View style={styles.detailDesc}>
