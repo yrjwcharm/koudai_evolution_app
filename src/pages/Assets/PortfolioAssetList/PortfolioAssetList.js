@@ -288,7 +288,9 @@ const PortfolioAssetList = ({route, navigation}) => {
                 })}
                 <BottomDesc />
             </Animated.ScrollView>
-            <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(37)}} />
+            {data?.bottom_notice && (
+                <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            )}
         </>
     );
 };

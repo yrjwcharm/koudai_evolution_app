@@ -89,7 +89,7 @@ const Index = ({navigation}) => {
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
                 {/* 工具菜单 */}
-                {<ToolMenus data={data?.tool_list} />}
+                {data?.tool_list && <ToolMenus data={data?.tool_list} />}
                 {/* 投顾观点 */}
                 {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                 {/* 持仓列表 */}
@@ -105,7 +105,9 @@ const Index = ({navigation}) => {
                 )}
             </ScrollView>
             {!is_login && <LoginMask />}
-            <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            {data?.bottom_notice && (
+                <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            )}
         </>
     ) : (
         // 手势密码
