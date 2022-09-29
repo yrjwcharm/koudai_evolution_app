@@ -13,18 +13,55 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {BottomModal} from '~/components/Modal';
 import {postAssetClass} from './service';
 import {fromJS} from 'immutable';
-import {RenderAlert} from '../components/RenderAlert';
 import TagInfo from '../components/TagInfo';
+import RenderAlert from '../components/RenderAlert';
+const ClassCard = ({data = {}, showEye}) => {
+    const jump = useJump();
+    const {name, number, remind_info, tag_info, indicators, icon, url} = data;
+    return (
+        <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={() => jump(url)}>
+            {name && (
+                <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                    {!!icon && (
+                        <Image source={{uri: icon}} style={{width: px(16), height: px(16), marginRight: px(3)}} />
+                    )}
+                    <Text style={{fontSize: px(12), fontWeight: '700'}}>
+                        {name}({number})
+                    </Text>
+                    {!!tag_info && <TagInfo data={tag_info} />}
+                </View>
+            )}
+            <View style={[Style.flexRow]}>
+                {indicators?.map(({text, value, color}, index) => (
+                    <View
+                        key={index}
+                        style={{
+                            flex: index == 0 ? 2 : 1,
+                        }}>
+                        <Text style={[styles.label_text]}>{text}</Text>
+                        <Text
+                            style={[
+                                styles.amount_text,
+                                showEye == 'true' && color && {color: color},
+                                {fontSize: index == 0 ? px(14) : px(12)},
+                            ]}>
+                            {showEye == 'true' ? value : '****'}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+            {!!remind_info && <RenderAlert alert={remind_info} />}
+        </TouchableOpacity>
+    );
+};
 const HoldCard = ({data, reload, showEye}) => {
     const {class_list, pop_info} = data;
     return (
         <>
-            <View>
-                <ListTitle title="全部资产" pop_info={pop_info} reload={reload} />
-                {class_list?.map((account, key) => {
-                    return <CardItem data={account} showEye={showEye} key={key} />;
-                })}
-            </View>
+            <ListTitle title="全部资产" pop_info={pop_info} reload={reload} />
+            {class_list?.map((account, key) => {
+                return <ClassCard data={account} showEye={showEye} key={key} />;
+            })}
         </>
     );
 };
@@ -91,47 +128,6 @@ const ListTitle = ({title, pop_info, reload}) => {
                 </>
             </BottomModal>
         </TouchableOpacity>
-    );
-};
-const CardItem = ({data = {}, showEye}) => {
-    const jump = useJump();
-    const {name, number, remind_info, tag_info, indicators, icon, url} = data;
-    return (
-        <>
-            <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={() => jump(url)}>
-                {name && (
-                    <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                        {!!icon && (
-                            <Image source={{uri: icon}} style={{width: px(16), height: px(16), marginRight: px(3)}} />
-                        )}
-                        <Text style={{fontSize: px(12), fontWeight: '700'}}>
-                            {name}({number})
-                        </Text>
-                        {!!tag_info && <TagInfo data={tag_info} />}
-                    </View>
-                )}
-                <View style={[Style.flexRow]}>
-                    {indicators?.map(({text, value, color}, index) => (
-                        <View
-                            key={index}
-                            style={{
-                                flex: index == 0 ? 2 : 1,
-                            }}>
-                            <Text style={[styles.label_text]}>{text}</Text>
-                            <Text
-                                style={[
-                                    styles.amount_text,
-                                    showEye == 'true' && color && {color: color},
-                                    {fontSize: index == 0 ? px(14) : px(12)},
-                                ]}>
-                                {showEye == 'true' ? value : '****'}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-                {!!remind_info && <RenderAlert alert={remind_info} />}
-            </TouchableOpacity>
-        </>
     );
 };
 

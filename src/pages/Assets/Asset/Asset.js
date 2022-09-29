@@ -22,7 +22,6 @@ import withNetState from '~/components/withNetState';
 import ToolMenus from '../components/ToolMenusCard';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
-import {Button} from '~/components/Button';
 import PointCard from '../components/PointCard';
 import Eye from '../../../components/Eye';
 const Index = ({navigation}) => {

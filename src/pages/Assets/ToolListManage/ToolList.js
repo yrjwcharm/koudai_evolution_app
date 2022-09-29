@@ -14,9 +14,11 @@ import produce from 'immer';
 import NavBar from '~/components/NavBar';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
+import {useJump} from '~/components/hooks';
 const sortWidth = deviceWidth - px(48);
 const childrenWidth = sortWidth / 5;
 const ToolList = ({route}) => {
+    const jump = useJump();
     const [data, setData] = useState({});
     const [scrollEnable, setScrollEnable] = useState(true);
     const [isEditState, setIsEditState] = useState(false);
@@ -68,7 +70,10 @@ const ToolList = ({route}) => {
         setScrollEnable(true);
     };
     const onSelectedClickItem = (_data, item, index) => {
-        if (!isEditState) return;
+        if (!isEditState) {
+            jump(item.url);
+            return;
+        }
         if (_data?.length < 2) {
             Toast.show('我的工具最少支持1个');
             return;
@@ -84,7 +89,10 @@ const ToolList = ({route}) => {
         );
     };
     const onUnSelectedClickItem = (_data, item, index) => {
-        if (item.is_add || !isEditState) return;
+        if (item.is_add || !isEditState) {
+            jump(item.url);
+            return;
+        }
         if (data?.my_tools?.tool_list?.length >= 9) {
             Toast.show('我的工具最多支持9个，超出部分请先移除后再添加');
             return;
@@ -174,7 +182,9 @@ const ToolList = ({route}) => {
                 }
             />
 
-            <ScrollView style={{backgroundColor: Colors.bgColor}} scrollEnabled={scrollEnable}>
+            <ScrollView
+                style={{backgroundColor: Colors.bgColor, borderWidth: 0.5, borderColor: '#fff'}}
+                scrollEnabled={scrollEnable}>
                 <View style={[styles.card, {marginTop: px(16)}]}>
                     <Text style={styles.title}>{data?.my_tools?.title}</Text>
                     {data?.my_tools?.tool_list ? (
