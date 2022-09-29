@@ -192,7 +192,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                         ))}
                     </View>
                 </StickyHeader>
-                {hold?.holding_info?.product?.map((product) => {
+                {hold?.holding_info?.product?.map((product, index) => {
                     const {
                         log_id,
                         adviser,
