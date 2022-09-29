@@ -177,7 +177,8 @@ export default function Tabbar() {
                 />
             ) : null}
             {/* <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} /> */}
+             */}
+            {/* <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} /> */}
 
             {/* <Tab.Screen name="NewHome" options={{tabBarLabel: '财富'}} component={NewHome} /> */}
 

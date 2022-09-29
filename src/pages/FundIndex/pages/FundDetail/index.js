@@ -200,11 +200,11 @@ const Index = ({navigation, route}) => {
         }
         const {event_id, is_follow, url} = btn;
         const logParams = {event: event_id, oid: code};
-        event_id === 'follow_click' && (logParams.ctrl = is_follow ? 'cancel' : 'add');
+        event_id === 'optional' && (logParams.ctrl = is_follow ? 'cancel' : 'add');
         global.LogTool(logParams);
         if (event_id === 'consult_click') {
             bottomModal.current.show();
-        } else if (event_id === 'follow_click') {
+        } else if (event_id === 'optional') {
             clickRef.current = false;
             (is_follow ? followCancel : followAdd)({item_id: code, item_type: 1}).then((res) => {
                 if (res.code === '000000') {

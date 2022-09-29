@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
-import LogScrollView from '~/components/LogScrollView';
+import LogView from '~/components/LogView';
 import {AlbumCard, ProductList} from '~/components/Product';
 import http from '~/services';
 import {px} from '~/utils/appUtil';
@@ -19,44 +19,6 @@ import {px} from '~/utils/appUtil';
 const PortfolioIndex = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
-    const [conventionLoad, setConventionLoad] = useState(false);
-    const [recommendLoad, setRecommendLoad] = useState(false);
-    const conventionRef = useRef();
-    const recommendRef = useRef([]);
-
-    const logOptions = useMemo(() => {
-        let obj = {};
-        if (conventionLoad) {
-            obj[0] = {
-                el: conventionRef.current,
-                handler: () => {
-                    global.LogTool({
-                        event: 'rec_show',
-                        ctrl: data?.popular_subjects.subject_id,
-                        plateid: data?.popular_subjects.plateid,
-                        rec_json: data?.popular_subjects.rec_json,
-                    });
-                },
-            };
-        }
-        if (recommendLoad) {
-            recommendRef.current.forEach((el, idx) => {
-                obj[idx + 1] = {
-                    el,
-                    handler: () => {
-                        let subject = data?.subjects?.[idx];
-                        global.LogTool({
-                            event: 'rec_show',
-                            ctrl: subject.subject_id,
-                            plateid: subject.plateid,
-                            rec_json: subject.rec_json,
-                        });
-                    },
-                };
-            });
-        }
-        return obj;
-    }, [conventionLoad, data, recommendLoad]);
 
     const init = () => {
         http.get('/products/portfolio/index/20220901', route?.params?.params).then((res) => {
@@ -123,20 +85,23 @@ const PortfolioIndex = ({navigation, route}) => {
 
     return data ? (
         <View style={styles.container}>
-            <LogScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} logOptions={logOptions}>
+            <LogView.Wrapper style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
                 {data?.nav ? (
                     <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                         {genTopMenu()}
                     </LinearGradient>
                 ) : null}
                 {data?.popular_subjects ? (
-                    <View
+                    <LogView.Item
                         style={styles.recommendCon}
-                        ref={(el) => {
-                            conventionRef.current = el;
-                        }}
-                        onLayout={(_) => {
-                            setConventionLoad(true);
+                        logKey={data?.popular_subjects.type}
+                        handler={() => {
+                            global.LogTool({
+                                event: 'rec_show',
+                                ctrl: data?.popular_subjects.subject_id,
+                                plateid: data?.popular_subjects.plateid,
+                                rec_json: data?.popular_subjects.rec_json,
+                            });
                         }}>
                         <ProductList
                             data={data?.popular_subjects.items}
@@ -148,29 +113,31 @@ const PortfolioIndex = ({navigation, route}) => {
                                 rec_json: data?.popular_subjects.rec_json,
                             }}
                         />
-                    </View>
+                    </LogView.Item>
                 ) : null}
                 {data?.subjects ? (
                     <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
                         {data?.subjects?.map?.((subject, index, ar) => (
-                            <View
+                            <LogView.Item
+                                logKey={subject.subject_id}
                                 key={subject.subject_id + index}
                                 style={{marginTop: px(12)}}
-                                ref={(el) => {
-                                    recommendRef.current[index] = el;
-                                }}
-                                onLayout={(_) => {
-                                    if (index === ar.length - 1) {
-                                        setRecommendLoad(true);
-                                    }
+                                handler={() => {
+                                    let subject = data?.subjects?.[index];
+                                    global.LogTool({
+                                        event: 'rec_show',
+                                        ctrl: subject.subject_id,
+                                        plateid: subject.plateid,
+                                        rec_json: subject.rec_json,
+                                    });
                                 }}>
                                 <AlbumCard {...subject} />
-                            </View>
+                            </LogView.Item>
                         ))}
                     </View>
                 ) : null}
                 <BottomDesc />
-            </LogScrollView>
+            </LogView.Wrapper>
         </View>
     ) : null;
 };

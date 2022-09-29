@@ -913,7 +913,7 @@ export default function AppStack() {
                 <Stack.Screen name="FundTradeBuy" component={FundTradeBuy} options={{title: ''}} />
                 <Stack.Screen name="ImportOptionalFund" component={ImportOptionalFund} options={{title: '导入关注'}} />
                 <Stack.Screen name="ImportOwnerFund" component={ImportOwnerFund} options={{title: '导入持仓基金'}} />
-                <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: '编辑基金'}} />
+                <Stack.Screen name="EditSortFund" component={EditSortFund} options={{title: ''}} />
                 <Stack.Screen name="EditOwnerFund" component={EditOwnerFund} options={{title: '修改持仓'}} />
                 <Stack.Screen name="FundNoticeCenter" component={FundNoticeCenter} options={{title: '提醒中心'}} />
                 <Stack.Screen name="FundNoticeManage" component={FundNoticeManage} options={{title: '管理提醒'}} />

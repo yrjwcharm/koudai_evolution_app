@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-17 11:15:53
+ * @LastEditTime: 2022-09-29 17:27:08
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -15,12 +15,16 @@ import {changeSort, getList, handleCancle} from './services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
+import FastImage from 'react-native-fast-image';
 
 export default function EditSortFund({navigation, route}) {
+    const [result, setResult] = useState({});
     const [data, setData] = useState([]);
     const [check, setCheck] = useState(0); // 0没有选中 1部分选中 2全选
     const getData = async () => {
         let res = await getList(route?.params);
+        navigation.setOptions({title: res.result.title});
+        setResult(res.result);
         setData(res.result?.list);
     };
     useEffect(() => {
@@ -50,7 +54,19 @@ export default function EditSortFund({navigation, route}) {
                         <AntDesign name={'checkcircle'} size={px(16)} color={item.check ? Colors.btnColor : '#ddd'} />
                         <View style={{marginLeft: px(8)}}>
                             <Text style={styles.title}>{item.name}</Text>
-                            <Text style={styles.title_desc}>{item.code}</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                {item.code_icon ? (
+                                    <FastImage
+                                        source={{uri: item.code_icon}}
+                                        style={{width: px(8), height: px(8), marginTop: 1, marginRight: px(4)}}
+                                    />
+                                ) : null}
+                                <Text
+                                    style={[styles.title_desc, item.code_icon ? {color: '#545968'} : {}]}
+                                    numberOfLines={1}>
+                                    {item.code}
+                                </Text>
+                            </View>
                         </View>
                     </TouchableOpacity>
                     <Entypo name="menu" size={px(20)} color={Colors.lightBlackColor} />
@@ -61,7 +77,7 @@ export default function EditSortFund({navigation, route}) {
     const renderHeader = () => {
         return (
             <View style={[Style.flexBetween, styles.header]}>
-                <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>基金名称</Text>
+                <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>{result.tr_name}</Text>
                 <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>拖动排序</Text>
             </View>
         );
@@ -69,12 +85,12 @@ export default function EditSortFund({navigation, route}) {
     const itemSeparatorComponent = () => {
         return <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />;
     };
-    const onDragEnd = ({_data, from, to}) => {
-        setData(_data);
+    const onDragEnd = ({data, from, to}) => {
+        setData(data);
         const params = {
-            current_id: _data[to].id,
-            after_id: _data[to == 0 ? 0 : to - 1].id,
-            item_type: _data[to].item_type,
+            current_id: data[to].id,
+            after_id: data[to == 0 ? 0 : to - 1].id,
+            item_type: data[to].item_type,
         };
         changeSort(params);
     };
@@ -105,7 +121,7 @@ export default function EditSortFund({navigation, route}) {
     const handleAllDelete = () => {
         Modal.show({
             title: '温馨提示',
-            content: '将会从关注区删除已选中的基金',
+            content: '将会从关注区删除已选',
             confirm: true,
             confirmText: '确认删除',
             confirmCallBack: async () => {
@@ -139,9 +155,11 @@ export default function EditSortFund({navigation, route}) {
                     <AntDesign name={'checkcircle'} size={px(16)} color={check == 2 ? Colors.btnColor : '#ddd'} />
                     <Text style={{fontSize: px(13), marginLeft: px(8)}}>全选</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={handleAllDelete} disabled={check == 0}>
-                    <Text style={styles.btn_text}>删除基金</Text>
-                </TouchableOpacity>
+                {result?.button ? (
+                    <TouchableOpacity style={styles.btn} onPress={handleAllDelete} disabled={check == 0}>
+                        <Text style={styles.btn_text}>{result?.button.text}</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
         </View>
     ) : null;
@@ -167,6 +185,7 @@ const styles = StyleSheet.create({
     title_desc: {
         fontSize: px(11),
         color: Colors.lightGrayColor,
+        width: px(282),
     },
     footer: {
         backgroundColor: '#fff',
