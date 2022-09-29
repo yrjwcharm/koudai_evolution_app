@@ -91,7 +91,7 @@ const ListTitle = ({title, pop_info, reload}) => {
     return (
         <TouchableOpacity
             onPress={modal}
-            style={[Style.flexRow, {marginBottom: px(10), position: 'relative', zIndex: -10}]}
+            style={[Style.flexRow, {marginBottom: px(10), marginTop: px(8), position: 'relative', zIndex: -10}]}
             activeOpacity={0.8}>
             <View style={styles.title_tag} />
             <Text style={styles.bold_text}>

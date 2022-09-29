@@ -51,8 +51,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         marginHorizontal: px(16),
         borderRadius: px(6),
-        marginBottom: px(20),
-        marginTop: px(-8),
+        marginBottom: px(12),
     },
     circle: {
         backgroundColor: '#000',

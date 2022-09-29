@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, Platform, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 

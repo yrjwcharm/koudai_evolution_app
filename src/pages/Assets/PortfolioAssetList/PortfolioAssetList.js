@@ -148,11 +148,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                     {/* 工具菜单 */}
-                    {<ToolMenusCard data={data?.tool_list} />}
+                    {data?.tool_list && <ToolMenusCard data={data?.tool_list} />}
                     {/* 投顾观点 */}
                     {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                     {/* 持仓列表 */}
-                    <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                    <View style={[Style.flexRow, {marginVertical: px(8)}]}>
                         <View style={styles.title_tag} />
                         <Text style={styles.bold_text}>
                             {'持仓'}({hold?.holding_info?.number})

@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     topMenu: {
         paddingVertical: px(12),
         flexWrap: 'wrap',
-        marginBottom: px(20),
+        marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
