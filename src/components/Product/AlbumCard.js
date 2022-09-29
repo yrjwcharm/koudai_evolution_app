@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     descIcon: {
+        marginTop: px(2),
         marginRight: px(4),
         width: px(8),
         height: px(8),
