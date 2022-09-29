@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 19:33:09
+ * @LastEditTime: 2022-09-29 19:51:09
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -42,7 +42,6 @@ const Product = ({navigation}) => {
     const [followTabs, setFollowTabs] = useState();
     const [followData, setFollowData] = useState();
     const [tabActive, setTabActive] = useState(1);
-    const [optionalTabActive, setOptionalTabActive] = useState(0);
     const [allMsg, setAll] = useState(0);
 
     const tabRef = useRef(null);
@@ -102,7 +101,7 @@ const Product = ({navigation}) => {
         http.get('/follow/index/202206')
             .then((res) => {
                 if (res.code === '000000') {
-                    setOptionalTabActive(0);
+                    optionalTabRef.current?.goToPage(0);
                     setFollowTabs(res.result);
                 }
             })
@@ -121,7 +120,7 @@ const Product = ({navigation}) => {
                 global.LogTool({
                     event: 'optionalDetail',
                     oid: obj?.url?.params?.params?.plan_id || obj?.url?.params?.code,
-                    ctrl: followTabs?.follow?.tabs[optionalTabActive]?.type_text,
+                    ctrl: followTabs?.follow?.tabs[optionalTabRef.current?.state?.currentPage]?.type_text,
                 });
             };
         }
@@ -140,7 +139,6 @@ const Product = ({navigation}) => {
     }, []);
 
     const onChangeOptionalTab = (cur) => {
-        setOptionalTabActive(cur.i);
         const tabs = followTabs?.follow?.tabs;
         let item_type = tabs[cur.i]?.item_type;
         getFollowData({
@@ -288,7 +286,8 @@ const Product = ({navigation}) => {
                                 onChangeTab={onChangeOptionalTab}
                                 ref={optionalTabRef}>
                                 {followTabs?.follow?.tabs?.map?.((tab, index) => {
-                                    const curTabs = followTabs?.follow?.tabs?.[optionalTabActive];
+                                    const curTabs =
+                                        followTabs?.follow?.tabs?.[optionalTabRef.current?.state?.currentPage];
                                     return (
                                         <View
                                             key={index + tab?.type_text}
