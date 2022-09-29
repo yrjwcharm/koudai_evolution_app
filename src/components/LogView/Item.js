@@ -3,14 +3,20 @@
  * @Autor: wxp
  * @Date: 2022-09-28 17:16:10
  */
-import React, {forwardRef, useContext, useRef} from 'react';
+import React, {forwardRef, useContext, useEffect, useRef} from 'react';
 import {View} from 'react-native';
 import context from './context';
 
 const Item = ({logKey, handler, onLayout, children = null, ...resetProps}, ref) => {
-    const {register} = useContext(context);
+    const {register, unregister} = useContext(context);
 
     const viewRef = useRef();
+
+    useEffect(() => {
+        return () => {
+            unregister(logKey);
+        };
+    }, [logKey, unregister]);
 
     return logKey ? (
         <View

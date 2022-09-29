@@ -3,15 +3,11 @@
  * @Autor: wxp
  * @Date: 2022-09-28 17:16:02
  */
-import React, {forwardRef, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useMemo, useRef} from 'react';
 import {ScrollView} from 'react-native';
 import Context from './context';
 import _ from 'lodash';
 
-/*
- *  - 需要曝光的元素不应嵌套在其他ScrollView中
- *  - 目前只供竖向滚动埋点使用
- */
 const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProps}, ref) => {
     const containerHeight = useRef();
     const scrollRef = useRef();
@@ -26,7 +22,7 @@ const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProp
         logOptions.current[logKey] = obj;
 
         requestAnimationFrame(() => {
-            option.el.measureLayout?.(scrollRef.current, (x, y, width, height) => {
+            option.el?.measureLayout?.(scrollRef.current, (x, y, width, height) => {
                 const touchHeight = y + height / 2;
                 obj.touchHeight = touchHeight;
                 handlerLog(containerHeight.current, obj);
@@ -34,9 +30,13 @@ const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProp
         });
     }, []);
 
+    const unregister = useCallback((logKey) => {
+        return delete logOptions.current[logKey];
+    }, []);
+
     const providerValue = useMemo(() => {
-        return {register};
-    }, [register]);
+        return {register, unregister};
+    }, [register, unregister]);
 
     const handlerLog = (touchHeight, obj) => {
         if (obj.status && touchHeight >= obj.touchHeight) {
@@ -61,7 +61,7 @@ const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProp
                 let option = logOptions.current[k];
                 if (option.status) {
                     requestAnimationFrame(() => {
-                        option.el.measureLayout?.(scrollRef.current, (x, y, width, height) => {
+                        option.el?.measureLayout?.(scrollRef.current, (x, y, width, height) => {
                             const touchHeight = y + height / 2;
                             option.touchHeight = touchHeight;
                         });
