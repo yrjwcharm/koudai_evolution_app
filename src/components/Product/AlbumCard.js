@@ -61,7 +61,7 @@ const AlbumHeader = ({
             {desc ? (
                 <View style={styles.detailDesc}>
                     {desc_icon ? <Image source={{uri: desc_icon}} style={styles.descIcon} /> : null}
-                    <Text numberOfLines={2} style={styles.desc}>
+                    <Text numberOfLines={2} style={[styles.desc, {flexShrink: 1}]}>
                         {desc}
                     </Text>
                 </View>

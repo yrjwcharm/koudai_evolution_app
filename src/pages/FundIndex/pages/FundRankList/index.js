@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-18 15:37:05
+ * @LastEditTime: 2022-09-29 14:45:42
  * @Description: 基金榜单
  */
 import {useFocusEffect} from '@react-navigation/native';
@@ -16,7 +16,6 @@ import CapsuleTabbar from '~/components/CapsuleTabbar';
 import Empty from '~/components/EmptyTip';
 import NavBar from '~/components/NavBar';
 import ProductCards from '~/components/Portfolios/ProductCards';
-import PKBall from '~/pages/PK/components/PKBall';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {getFeatureList, getRankList} from './services';
@@ -99,7 +98,6 @@ const Index = ({route}) => {
                     scrollIndicatorInsets={{right: 1}}
                     style={styles.flatList}
                 />
-                <PKBall />
             </View>
         );
     };
@@ -271,7 +269,6 @@ const Index = ({route}) => {
                                         );
                                     })}
                                 </ScrollableTabView>
-                                <PKBall />
                             </LinearGradient>
                         </>
                     )}
