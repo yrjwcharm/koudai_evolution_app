@@ -22,7 +22,7 @@ const AlbumHeader = ({
 
     return (
         <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={1}
             onLayout={({
                 nativeEvent: {
                     layout: {height},
@@ -170,7 +170,6 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         height: '100%',
-        zIndex: 1,
     },
     icon: {
         marginRight: px(4),
