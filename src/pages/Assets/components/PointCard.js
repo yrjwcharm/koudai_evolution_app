@@ -15,7 +15,10 @@ const PointCard = ({data, style}) => {
         <View style={[styles.card, style]}>
             <TouchableOpacity
                 style={[Style.flexBetween, {height: px(40), borderBottomColor: '#E9EAEF', borderBottomWidth: px(0.5)}]}
-                onPress={() => jump(url)}
+                onPress={() => {
+                    global.LogTool('guide_click', '重要观点-标题', data?.log_id);
+                    jump(url);
+                }}
                 activeOpacity={0.8}>
                 <View style={Style.flexRow}>
                     <Image source={{uri: icon}} style={{width: px(56), height: px(20)}} />
@@ -31,7 +34,10 @@ const PointCard = ({data, style}) => {
                         key={index}
                         activeOpacity={0.8}
                         style={[Style.flexRow, {marginBottom: px(12)}]}
-                        onPress={() => jump(item.url)}>
+                        onPress={() => {
+                            global.LogTool('guide_click', `重要观点${index + 1}`, data?.log_id);
+                            jump(url);
+                        }}>
                         <View style={styles.circle} />
                         <Text numberOfLines={1} style={{flex: 1, lineHeight: px(17), fontSize: px(12)}}>
                             {item.title}
@@ -51,8 +57,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         marginHorizontal: px(16),
         borderRadius: px(6),
-        marginBottom: px(20),
-        marginTop: px(-8),
+        marginBottom: px(12),
     },
     circle: {
         backgroundColor: '#000',

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 17:10:01
+ * @LastEditTime: 2022-09-28 18:28:09
  * @Description:头部组件
  */
 
@@ -118,7 +118,7 @@ const NavBar = React.forwardRef((props, ref) => {
         }
     }
     return (
-        <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}]}>
+        <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}, props.style]}>
             {renderBtn('left')}
             {props.titleIcon ? (
                 <View style={styles.titleWrap}>

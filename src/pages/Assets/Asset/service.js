@@ -13,3 +13,6 @@ export const getHolding = () => {
 export const postAssetClass = (params) => {
     return http.post('/asset/class/report/20220915', params);
 };
+export const getChart = () => {
+    return http.get('/asset/overview/chart/20220915');
+};

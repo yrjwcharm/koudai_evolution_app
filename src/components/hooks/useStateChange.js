@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2022-04-25 10:40:32
+<<<<<<< HEAD
+=======
+ * @Author: dx
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-30 15:00:20
+>>>>>>> master
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';
@@ -49,11 +55,7 @@ export const generateOptions = (modal) => {
                 </View>
                 <Text style={styles.codeTips}>{'打开微信扫一扫二维码直接添加'}</Text>
                 <Button
-                    onPress={() => {
-                        const img = modal.business_card;
-                        Modal.close();
-                        saveImg(img);
-                    }}
+                    onPress={() => saveImg(modal.business_card, () => Modal.close())}
                     style={styles.saveBtn}
                     title="保存投顾二维码"
                 />
@@ -347,7 +349,7 @@ function useStateChange({homeShowModal, store}) {
                 }
                 if (popup.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: popup.log_id});
-                    global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, popup.log_id);
+                    global.LogTool('guide_show', 'app弹窗', popup.log_id);
                 }
             } else {
                 navigation[type]?.(url.path, url.params || {});
@@ -417,7 +419,7 @@ function useStateChange({homeShowModal, store}) {
                 const navigation = navigationRef.current;
                 if (modal.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-                    global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, modal.log_id);
+                    global.LogTool('guide_show', 'app弹窗', modal.log_id);
                 }
                 let options = {
                     backButtonClose: modal.back_close,

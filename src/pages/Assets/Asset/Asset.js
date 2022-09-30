@@ -22,7 +22,6 @@ import withNetState from '~/components/withNetState';
 import ToolMenus from '../components/ToolMenusCard';
 import GuideTips from '~/components/GuideTips';
 import LinearGradient from 'react-native-linear-gradient';
-import {Button} from '~/components/Button';
 import PointCard from '../components/PointCard';
 import Eye from '../../../components/Eye';
 const Index = ({navigation}) => {
@@ -89,10 +88,8 @@ const Index = ({navigation}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                 </LinearGradient>
-                <Button title="工具" onPress={() => navigation.navigate('ToolListManage')} />
-                <Button onPress={() => navigation.navigate('Settings')} title="个人设置" />
                 {/* 工具菜单 */}
-                {<ToolMenus data={data?.tool_list} />}
+                {data?.tool_list && <ToolMenus data={data?.tool_list} />}
                 {/* 投顾观点 */}
                 {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                 {/* 持仓列表 */}
@@ -108,7 +105,9 @@ const Index = ({navigation}) => {
                 )}
             </ScrollView>
             {!is_login && <LoginMask />}
-            <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            {data?.bottom_notice && (
+                <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            )}
         </>
     ) : (
         // 手势密码

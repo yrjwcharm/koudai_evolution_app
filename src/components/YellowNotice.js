@@ -26,7 +26,7 @@ const YellowNotice = ({data}) => {
                   activeOpacity={0.9}
                   style={[styles.systemMsgContainer, arr.length > 1 && {marginBottom: px(12)}]}
                   onPress={() => {
-                      system?.log_id && global.LogTool(system?.log_id);
+                      global.LogTool('guide_click', '顶部小黄条', system?.log_id);
                       jump(system?.url);
                   }}>
                   <View

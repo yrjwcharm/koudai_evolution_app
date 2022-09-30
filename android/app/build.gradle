@@ -153,8 +153,13 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+<<<<<<< HEAD
         versionCode 70000
         versionName '7.0.0'
+=======
+        versionCode 68500
+        versionName '6.8.5'
+>>>>>>> master
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23

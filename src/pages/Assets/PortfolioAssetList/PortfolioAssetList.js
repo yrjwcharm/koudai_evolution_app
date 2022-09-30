@@ -23,6 +23,7 @@ import ToolMenusCard from '../components/ToolMenusCard';
 import PointCard from '../components/PointCard';
 import AdInfo from '../components/AdInfo';
 import StickyHeader from '~/components/Sticky';
+import LoadingTips from '~/components/LoadingTips';
 // type = 公墓 10;私募 20;投顾组合 30;计划 40;
 const PortfolioAssetList = ({route, navigation}) => {
     const jump = useJump();
@@ -67,7 +68,7 @@ const PortfolioAssetList = ({route, navigation}) => {
         return text;
     };
     const {summary = {}} = hold;
-    return (
+    return Object.keys(data)?.length > 0 ? (
         <>
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor}}
@@ -148,11 +149,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                     {/* 工具菜单 */}
-                    {<ToolMenusCard data={data?.tool_list} />}
+                    {data?.tool_list && <ToolMenusCard data={data?.tool_list} />}
                     {/* 投顾观点 */}
                     {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                     {/* 持仓列表 */}
-                    <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                    <View style={[Style.flexRow, {marginVertical: px(8)}]}>
                         <View style={styles.title_tag} />
                         <Text style={styles.bold_text}>
                             {'持仓'}({hold?.holding_info?.number})
@@ -192,10 +193,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                         ))}
                     </View>
                 </StickyHeader>
-                {hold?.holding_info?.product?.map((product) => {
+                {hold?.holding_info?.product?.map((product, index) => {
                     const {
                         log_id,
                         adviser,
+                        company_name,
                         holding_days,
                         profit_acc,
                         remind_info,
@@ -215,7 +217,12 @@ const PortfolioAssetList = ({route, navigation}) => {
                         <TouchableOpacity
                             style={styles.portCard}
                             activeOpacity={0.8}
-                            onPress={() => jump(url)}
+                            onPress={() => {
+                                if (tag_info) {
+                                    global.LogTool('guide_click', '卡片标签 ', log_id);
+                                }
+                                jump(url);
+                            }}
                             key={log_id}>
                             {type != 10 && (
                                 <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
@@ -242,25 +249,26 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     <View style={{flex: 1}}>
                                         <Text style={styles.holdingDays}>{holding_days}</Text>
                                         {/* 计划工具icon */}
+
                                         {signal_icons ? (
                                             <View style={Style.flexRow}>
-                                                {signal_icons?.map((_icon, index) => (
+                                                {signal_icons?.map((_icon, _index) => (
                                                     <Image
                                                         source={{uri: _icon}}
-                                                        key={index}
+                                                        key={_index}
                                                         style={{width: px(14), height: px(14), marginRight: px(6)}}
                                                     />
                                                 ))}
                                             </View>
-                                        ) : (
+                                        ) : company_name || adviser ? (
                                             <Text
                                                 style={{
                                                     fontSize: px(10),
                                                     color: Colors.lightGrayColor,
                                                 }}>
-                                                {adviser}
+                                                {company_name || adviser}
                                             </Text>
-                                        )}
+                                        ) : null}
                                     </View>
                                 )}
                                 {/* 资产份额 */}
@@ -288,8 +296,12 @@ const PortfolioAssetList = ({route, navigation}) => {
                 })}
                 <BottomDesc />
             </Animated.ScrollView>
-            <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(37)}} />
+            {data?.bottom_notice && (
+                <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
+            )}
         </>
+    ) : (
+        <LoadingTips />
     );
 };
 
@@ -361,7 +373,7 @@ const styles = StyleSheet.create({
         marginLeft: px(1),
         marginBottom: px(-2),
     },
-    name: {fontWeight: '700', fontSize: px(12)},
+    name: {fontWeight: '700', fontSize: px(12), marginBottom: px(6)},
     holdingDays: {
         fontSize: px(11),
         color: Colors.lightBlackColor,

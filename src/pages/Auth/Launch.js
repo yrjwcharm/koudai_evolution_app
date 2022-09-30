@@ -182,7 +182,9 @@ export default function Launch({navigation}) {
             global.env = env;
             Storage.get('privacy').then(async (res) => {
                 if (res) {
-                    global.did = await DeviceInfo.syncUniqueId();
+                    if (!(Platform.OS == 'android' && __DEV__)) {
+                        global.did = await DeviceInfo.syncUniqueId();
+                    }
                     http.get('/mapi/app/privacy/info/20220916')
                         .then((pra) => {
                             if (pra?.result?.show_privacy == 1) {
@@ -337,7 +339,7 @@ export default function Launch({navigation}) {
         });
     };
     const imageLoadEnd = () => {
-        global.LogTool('splashShowStart', adMes.id);
+        global.LogTool('guide_show', '开屏大图', adMes.id);
         SplashScreen.hide();
         timer.current = setInterval(() => {
             setTime((prev) => {

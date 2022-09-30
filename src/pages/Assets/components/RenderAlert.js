@@ -34,7 +34,10 @@ const RenderAlert = ({alert}) => {
                     title={alert?.button?.text}
                     style={{borderColor: buttonColor}}
                     titleStyle={{color: buttonColor}}
-                    onPress={() => jump(alert?.alert_button?.url)}
+                    onPress={() => {
+                        global.LogTool('guide_click', '资产卡片长条', alert?.log_id);
+                        jump(alert?.alert_button?.url);
+                    }}
                 />
             )}
         </View>

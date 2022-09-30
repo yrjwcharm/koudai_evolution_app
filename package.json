@@ -9,8 +9,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "svg": "node src/assets/getSvg.js"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@monterosa/react-native-parallax-scroll": "^1.8.0",
@@ -89,7 +88,7 @@
     "react-native-svg": "^12.1.1",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-video": "^5.1.1",
+    "react-native-video": "^5.2.1",
     "react-native-webview": "11.4.3",
     "react-native-wechat-lib": "^1.1.25",
     "react-redux": "^7.2.2",
@@ -98,8 +97,7 @@
     "redux-persist-transform-immutable": "^5.0.0",
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.12.0",
-    "urijs": "^1.19.7",
-    "xmldom": "^0.1.22"
+    "urijs": "^1.19.7"
   },
   "resolutions": {
     "@react-native-community/viewpager": "^2.0.2",
