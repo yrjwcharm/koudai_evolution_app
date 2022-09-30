@@ -5,7 +5,7 @@
 =======
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 14:12:11
+ * @LastEditTime: 2022-09-30 15:00:20
 >>>>>>> master
  * @Description: 全局弹窗监听路由变化
  */
@@ -349,7 +349,7 @@ function useStateChange({homeShowModal, store}) {
                 }
                 if (popup.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: popup.log_id});
-                    global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, popup.log_id);
+                    global.LogTool('guide_show', 'app弹窗', popup.log_id);
                 }
             } else {
                 navigation[type]?.(url.path, url.params || {});
@@ -419,7 +419,7 @@ function useStateChange({homeShowModal, store}) {
                 const navigation = navigationRef.current;
                 if (modal.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-                    global.LogTool('campaignPopup', navigation?.getCurrentRoute?.()?.name, modal.log_id);
+                    global.LogTool('guide_show', 'app弹窗', modal.log_id);
                 }
                 let options = {
                     backButtonClose: modal.back_close,

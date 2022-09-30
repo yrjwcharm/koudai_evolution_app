@@ -71,6 +71,11 @@ const ToolList = ({route}) => {
     };
     const onSelectedClickItem = (_data, item, index) => {
         if (!isEditState) {
+            if (item?.tip) {
+                global.LogTool('guide_click', item?.text, item.tool_id);
+            } else {
+                global.LogTool('icon_click', item?.text, item.tool_id);
+            }
             jump(item.url);
             return;
         }
@@ -90,6 +95,11 @@ const ToolList = ({route}) => {
     };
     const onUnSelectedClickItem = (_data, item, index) => {
         if (item.is_add || !isEditState) {
+            if (item?.tip) {
+                global.LogTool('guide_click', item?.text, item.tool_id);
+            } else {
+                global.LogTool('icon_click', item?.text, item.tool_id);
+            }
             jump(item.url);
             return;
         }

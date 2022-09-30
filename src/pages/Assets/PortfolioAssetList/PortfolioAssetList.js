@@ -196,6 +196,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                     const {
                         log_id,
                         adviser,
+                        company_name,
                         holding_days,
                         profit_acc,
                         remind_info,
@@ -215,7 +216,12 @@ const PortfolioAssetList = ({route, navigation}) => {
                         <TouchableOpacity
                             style={styles.portCard}
                             activeOpacity={0.8}
-                            onPress={() => jump(url)}
+                            onPress={() => {
+                                if (tag_info) {
+                                    global.LogTool('guide_click', '卡片标签 ', log_id);
+                                }
+                                jump(url);
+                            }}
                             key={log_id}>
                             {type != 10 && (
                                 <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
@@ -242,25 +248,26 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     <View style={{flex: 1}}>
                                         <Text style={styles.holdingDays}>{holding_days}</Text>
                                         {/* 计划工具icon */}
+
                                         {signal_icons ? (
                                             <View style={Style.flexRow}>
-                                                {signal_icons?.map((_icon, index) => (
+                                                {signal_icons?.map((_icon, _index) => (
                                                     <Image
                                                         source={{uri: _icon}}
-                                                        key={index}
+                                                        key={_index}
                                                         style={{width: px(14), height: px(14), marginRight: px(6)}}
                                                     />
                                                 ))}
                                             </View>
-                                        ) : (
+                                        ) : company_name || adviser ? (
                                             <Text
                                                 style={{
                                                     fontSize: px(10),
                                                     color: Colors.lightGrayColor,
                                                 }}>
-                                                {adviser}
+                                                {company_name || adviser}
                                             </Text>
-                                        )}
+                                        ) : null}
                                     </View>
                                 )}
                                 {/* 资产份额 */}
@@ -363,7 +370,7 @@ const styles = StyleSheet.create({
         marginLeft: px(1),
         marginBottom: px(-2),
     },
-    name: {fontWeight: '700', fontSize: px(12)},
+    name: {fontWeight: '700', fontSize: px(12), marginBottom: px(6)},
     holdingDays: {
         fontSize: px(11),
         color: Colors.lightBlackColor,

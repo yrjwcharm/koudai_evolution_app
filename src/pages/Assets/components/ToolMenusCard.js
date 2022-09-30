@@ -19,7 +19,11 @@ const ToolMenusCard = ({data, style}) => {
                         key={item.tool_id}
                         style={[{width: '20%', marginBottom: px(18), alignItems: 'center'}]}
                         onPress={() => {
-                            global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
+                            if (item?.tip) {
+                                global.LogTool('guide_click', item?.text, item.tool_id);
+                            } else {
+                                global.LogTool('icon_click', item?.text, item.tool_id);
+                            }
                             jump(item.url);
                         }}>
                         <Image source={{uri: item.icon}} style={styles.topMenuIcon} />

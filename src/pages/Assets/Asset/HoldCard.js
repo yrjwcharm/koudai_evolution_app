@@ -19,7 +19,15 @@ const ClassCard = ({data = {}, showEye}) => {
     const jump = useJump();
     const {name, number, remind_info, tag_info, indicators, icon, url} = data;
     return (
-        <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={() => jump(url)}>
+        <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.9}
+            onPress={() => {
+                if (tag_info) {
+                    global.LogTool('guide_click', '卡片标签', data?.log_id);
+                }
+                jump(url);
+            }}>
             {name && (
                 <View style={[Style.flexRow, {marginBottom: px(10)}]}>
                     {!!icon && (

@@ -339,7 +339,7 @@ export default function Launch({navigation}) {
         });
     };
     const imageLoadEnd = () => {
-        global.LogTool('splashShowStart', adMes.id);
+        global.LogTool('guide_show', '开屏大图', adMes.id);
         SplashScreen.hide();
         timer.current = setInterval(() => {
             setTime((prev) => {
