@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 11:03:54
+ * @LastEditTime: 2022-09-30 17:31:47
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -30,6 +30,7 @@ import LoadingTips from '~/components/LoadingTips';
 import Feather from 'react-native-vector-icons/Feather';
 import EmptyTip from '~/components/EmptyTip';
 import LogView from '~/components/LogView';
+import ScrollableTabBar from '~/components/ScrollableTabBar';
 
 const Product = ({navigation}) => {
     const jump = useJump();
@@ -140,6 +141,7 @@ const Product = ({navigation}) => {
 
     const onChangeOptionalTab = (cur) => {
         const tabs = followTabs?.follow?.tabs;
+        global.LogTool({event: tabs[cur.i].event_id});
         let item_type = tabs[cur.i]?.item_type;
         getFollowData({
             item_type,
@@ -282,7 +284,7 @@ const Product = ({navigation}) => {
                             <ScrollableTabView
                                 prerenderingSiblingsNumber={followTabs?.follow?.tabs?.length}
                                 locked={true}
-                                renderTabBar={() => <RenderOptionalTabBar myTabs={followTabs?.follow?.tabs} />}
+                                renderTabBar={() => <ScrollableTabBar />}
                                 onChangeTab={onChangeOptionalTab}
                                 ref={optionalTabRef}>
                                 {followTabs?.follow?.tabs?.map?.((tab, index) => {
@@ -674,19 +676,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         marginTop: px(16),
     },
-    optionalTabsWrap: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    optionalTabWrap: {
-        borderRadius: px(20),
-        paddingHorizontal: px(12),
-        paddingVertical: px(6),
-    },
-    optionalTabText: {
-        fontSize: px(11),
-        lineHeight: px(15),
-    },
+
     specialItem: {
         backgroundColor: '#fff',
         marginBottom: px(12),
@@ -721,33 +711,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
-
-const RenderOptionalTabBar = (props) => {
-    return (
-        <View style={styles.optionalTabsWrap}>
-            {props.tabs.map((item, idx) => (
-                <TouchableOpacity
-                    key={idx}
-                    activeOpacity={0.8}
-                    style={[
-                        styles.optionalTabWrap,
-                        {
-                            backgroundColor: props.activeTab === idx ? '#0051CC' : '#fff',
-                        },
-                        {marginLeft: idx > 0 ? px(8) : 0},
-                    ]}
-                    onPress={() => {
-                        global.LogTool({event: props.myTabs[idx].event_id});
-                        props.goToPage(idx);
-                    }}>
-                    <Text style={[styles.optionalTabText, {color: props.activeTab === idx ? '#fff' : '#121D3A'}]}>
-                        {item}
-                    </Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-    );
-};
 
 const SpecialList = ({data, tabButton}) => {
     const jump = useJump();
