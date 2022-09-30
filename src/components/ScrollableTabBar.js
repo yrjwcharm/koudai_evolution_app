@@ -4,8 +4,8 @@
  * @Date: 2022-09-30 17:13:41
  */
 
-/** 适用于ScrollableTabView的TabBar
-  使用方式:
+/** 
+   使用方式
    <ScrollableTabView
       ...
       renderTabBar={() => (
