@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 18:04:42
+ * @LastEditTime: 2022-09-28 14:49:27
  * @Description:
  */
 
@@ -44,7 +44,7 @@ class ScrollTabbar extends Component {
     }
     scrollToIndex = (index) => {
         setTimeout(() => {
-            let {width, left} = this.tabsLayouts[index];
+            let {width, left} = this.tabsLayouts[index] || {};
             let newX = 0;
             //半屏宽度值
             let halfWidth = this.tabsViewportWidth / 2;
@@ -122,7 +122,7 @@ class ScrollTabbar extends Component {
     }
     renderTab = (name, page, isTabActive, onPressHandler) => {
         const textColor = isTabActive ? Colors.defaultColor : Colors.lightBlackColor;
-        const textFontSize = isTabActive ? px(16) : px(14);
+        const textFontSize = isTabActive ? this.props.activeFontSize || px(16) : this.props.inActiveFontSize || px(14);
         const textFontWeight = isTabActive ? '700' : '400';
         return (
             <Button
@@ -146,6 +146,7 @@ class ScrollTabbar extends Component {
         return (
             <View style={[styles.tabBarBox, this.props.boxStyle]}>
                 <ScrollView
+                    bounces={false}
                     ref={(ref) => (this._scrollTabBarView = ref)}
                     horizontal
                     style={{flexDirection: 'row'}}

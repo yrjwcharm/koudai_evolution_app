@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 21:08:07
+ * @LastEditTime: 2022-09-30 14:28:34
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -153,6 +153,8 @@ function App(props) {
                                 let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
                                 let cate_id = getRouteNameId(currentRoute, 'ArticleList', 'id');
                                 let code = getRouteNameId(currentRoute, 'FundDetail', 'code');
+                                let balancePoid = getRouteNameId(currentRoute, 'BlancedPortfolio', 'poid');
+                                let PortfolioAssetListId = getRouteNameId(currentRoute, 'PortfolioAssetList', 'type');
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
@@ -162,7 +164,9 @@ function App(props) {
                                     type +
                                     assetPoid +
                                     cate_id +
-                                    code;
+                                    code +
+                                    balancePoid +
+                                    PortfolioAssetListId;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {

@@ -24,7 +24,8 @@ import BottomDesc from '../../components/BottomDesc';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
 import _ from 'lodash';
-
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 import {updateUserInfo} from '../../redux/actions/userInfo';
 // import UpdateCom from '../../components/UpdateCom';
 import {useDispatch, useSelector} from 'react-redux';
@@ -123,7 +124,6 @@ const Index = (props) => {
 
     useFocusEffect(
         useCallback(() => {
-            // showPrivacyPop();
             getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])

@@ -4,9 +4,13 @@
  */
 import http from '~/services';
 
-export const getPageData = (params) => http.get('/portfolio/asset/detail/20220712', params);
+export const getPageData = (params) => http.get('/asset/product/holding/20220915', params);
 
-export const getChartData = (params) => http.get('/portfolio/asset/chart/20220712', params);
+export const getCommonData = (params) => http.get('/asset/product/common/20220915', params);
+
+export const getDsData = (params) => http.get('/portfolio/funds/user_holding/20210101', params);
+
+export const getChartData = (params) => http.get('/asset/product/chart/20220915', params);
 
 export const setDividend = (params) => http.post('/portfolio/fund/dividend/20220712', params);
 

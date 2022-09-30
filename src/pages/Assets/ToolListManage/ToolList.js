@@ -14,9 +14,11 @@ import produce from 'immer';
 import NavBar from '~/components/NavBar';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
+import {useJump} from '~/components/hooks';
 const sortWidth = deviceWidth - px(48);
 const childrenWidth = sortWidth / 5;
 const ToolList = ({route}) => {
+    const jump = useJump();
     const [data, setData] = useState({});
     const [scrollEnable, setScrollEnable] = useState(true);
     const [isEditState, setIsEditState] = useState(false);
@@ -68,7 +70,15 @@ const ToolList = ({route}) => {
         setScrollEnable(true);
     };
     const onSelectedClickItem = (_data, item, index) => {
-        if (!isEditState) return;
+        if (!isEditState) {
+            if (item?.tip) {
+                global.LogTool('guide_click', item?.text, item.tool_id);
+            } else {
+                global.LogTool('icon_click', item?.text, item.tool_id);
+            }
+            jump(item.url);
+            return;
+        }
         if (_data?.length < 2) {
             Toast.show('我的工具最少支持1个');
             return;
@@ -84,7 +94,15 @@ const ToolList = ({route}) => {
         );
     };
     const onUnSelectedClickItem = (_data, item, index) => {
-        if (item.is_add || !isEditState) return;
+        if (item.is_add || !isEditState) {
+            if (item?.tip) {
+                global.LogTool('guide_click', item?.text, item.tool_id);
+            } else {
+                global.LogTool('icon_click', item?.text, item.tool_id);
+            }
+            jump(item.url);
+            return;
+        }
         if (data?.my_tools?.tool_list?.length >= 9) {
             Toast.show('我的工具最多支持9个，超出部分请先移除后再添加');
             return;
@@ -109,6 +127,19 @@ const ToolList = ({route}) => {
                 )}
                 <Image source={{uri: icon}} style={styles.icon} />
                 <Text style={{fontSize: px(11)}}>{text}</Text>
+                {item?.tip && !isEditState ? (
+                    item?.tip?.is_number ? (
+                        <View style={styles.numberTip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    ) : !item?.tip?.desc ? (
+                        <View style={styles.circleTip} />
+                    ) : (
+                        <View style={styles.tip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    )
+                ) : null}
             </View>
         );
     };
@@ -121,6 +152,19 @@ const ToolList = ({route}) => {
                 )}
                 <Image source={{uri: icon}} style={styles.icon} />
                 <Text style={{fontSize: px(11)}}>{text}</Text>
+                {item?.tip && isEditState ? (
+                    item?.tip?.is_number ? (
+                        <View style={styles.numberTip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    ) : !item?.tip?.desc ? (
+                        <View style={styles.circleTip} />
+                    ) : (
+                        <View style={styles.tip}>
+                            <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>{item?.tip?.desc}</Text>
+                        </View>
+                    )
+                ) : null}
             </View>
         );
     };
@@ -148,7 +192,9 @@ const ToolList = ({route}) => {
                 }
             />
 
-            <ScrollView style={{backgroundColor: Colors.bgColor}} scrollEnabled={scrollEnable}>
+            <ScrollView
+                style={{backgroundColor: Colors.bgColor, borderWidth: 0.5, borderColor: '#fff'}}
+                scrollEnabled={scrollEnable}>
                 <View style={[styles.card, {marginTop: px(16)}]}>
                     <Text style={styles.title}>{data?.my_tools?.title}</Text>
                     {data?.my_tools?.tool_list ? (
@@ -224,4 +270,31 @@ const styles = StyleSheet.create({
         lineHeight: px(15),
     },
     tag: {position: 'absolute', right: px(0), top: px(0)},
+    tip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(4),
+        paddingVertical: px(1),
+        paddingHorizontal: px(3),
+        borderBottomLeftRadius: 0,
+        right: px(-10),
+        top: px(-5),
+    },
+    circleTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        width: px(8),
+        height: px(8),
+        right: px(16),
+        top: px(-4),
+    },
+    numberTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        padding: px(2),
+        right: px(10),
+        top: px(-8),
+    },
 });

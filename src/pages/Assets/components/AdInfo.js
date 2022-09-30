@@ -1,6 +1,6 @@
 /*
  * @Date: 2022-07-21 18:26:32
- * @Description:
+ * @Description:运营位图
  */
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
@@ -14,7 +14,7 @@ const AdInfo = ({ad_info}) => {
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
-                global.LogTool('capsuleStart', ad_info?.id);
+                global.LogTool('guide_click', 'banner', ad_info?.id);
                 jump(ad_info?.url);
             }}>
             <FastImage

@@ -6,13 +6,12 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import LinearGradient from 'react-native-linear-gradient';
 import Picker from 'react-native-picker';
+import RootSibling from 'react-native-root-siblings';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
 import leftQuota2 from '~/assets/personal/leftQuota2.png';
 import tip from '~/assets/img/tip.png';
 import upgradeBg from '~/assets/personal/upgradeBg.png';
@@ -22,27 +21,30 @@ import {Chart} from '~/components/Chart';
 import CircleLegend from '~/components/CircleLegend';
 import Empty from '~/components/EmptyTip';
 import FormItem from '~/components/FormItem';
+import GuideTips from '~/components/GuideTips';
 import {useJump} from '~/components/hooks';
 import Mask from '~/components/Mask';
 import {Modal} from '~/components/Modal';
 import Notice from '~/components/Notice';
-import NumText from '~/components/NumText';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import Toast from '~/components/Toast';
-import Loading from '~/pages/Portfolio/components/PageLoading';
+import Video from '~/components/Video';
+import withPageLoading from '~/components/withPageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
-import {getChartData, getPageData, setDividend} from './services';
+import {getChartData, getCommonData, getDsData, getPageData, setDividend} from './services';
 import CenterControl from './CenterControl';
+import RenderAlert from '../components/RenderAlert';
+import ToolMenusCard from '../components/ToolMenusCard';
 
 /** @name 顶部基金信息 */
-const TopPart = ({noConsole, trade_notice = {}, top_info = {}, top_menus = []}) => {
+const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info = {}}) => {
     const jump = useJump();
-    const {amount, desc, name, profit, profit_acc, profit_date, tags = [], top_button} = top_info;
-    const [showEye, setShowEye] = useState('true');
+    const {asset_info, code, indicators, name, profit_acc_info, profit_info, tags = []} = top_info;
+    const [expand, setExpand] = useState(false);
 
     /** @name 显示|隐藏金额信息 */
     const toggleEye = useCallback(() => {
@@ -51,6 +53,7 @@ const TopPart = ({noConsole, trade_notice = {}, top_info = {}, top_menus = []}) 
             Storage.save('portfolioAssets', show === 'true' ? 'false' : 'true');
             return show === 'true' ? 'false' : 'true';
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /** @name 处理隐藏金额信息 */
@@ -58,103 +61,97 @@ const TopPart = ({noConsole, trade_notice = {}, top_info = {}, top_menus = []}) 
         return showEye === 'true' ? value : '****';
     };
 
-    useEffect(() => {
-        Storage.get('portfolioAssets').then((res) => {
-            setShowEye(res ? res : 'true');
-        });
-    }, []);
-
     return (
         <View style={styles.topPart}>
-            <View style={{paddingHorizontal: Space.padding}}>
-                <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
-                    <View style={styles.rowEnd}>
-                        <Text style={styles.title}>{name}</Text>
-                        <Text style={[styles.desc, {marginLeft: px(8), color: Colors.lightGrayColor}]}>{desc}</Text>
-                    </View>
-                    {top_button?.text ? (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => jump(top_button.url)}>
-                            <Text style={styles.linkText}>{top_button.text}</Text>
-                        </TouchableOpacity>
-                    ) : null}
-                </View>
-                {tags?.length > 0 && (
-                    <View style={[Style.flexRow, {marginTop: px(10)}]}>
-                        {tags.map((tag, i) => {
-                            return (
-                                <View key={tag + i} style={[styles.labelBox, i === 0 ? {marginLeft: 0} : {}]}>
-                                    <Text style={styles.smallText}>{tag}</Text>
-                                </View>
-                            );
-                        })}
-                    </View>
-                )}
-                <View style={[Style.flexBetween, {marginTop: px(20)}]}>
-                    <View>
-                        <View style={Style.flexRow}>
-                            <Text style={[styles.desc, {opacity: 0.6}]}>
-                                {amount.label}
-                                &nbsp;{profit_date}
-                            </Text>
-                            <TouchableOpacity activeOpacity={0.8} onPress={toggleEye} style={{marginLeft: px(8)}}>
-                                <Ionicons
-                                    color={Colors.defaultColor}
-                                    name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
-                                    size={px(14)}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={[styles.bigNumText, {marginTop: px(6)}]}>{hideAmount(amount.value)}</Text>
-                    </View>
-                    <View>
-                        <View style={Style.flexRow}>
-                            <Text style={[styles.desc, {opacity: 0.6}]}>{profit.label}</Text>
-                            <NumText
-                                style={styles.profitText}
-                                text={hideAmount(profit.value)}
-                                type={showEye === 'true' ? 1 : 2}
-                            />
-                        </View>
-                        <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                            <Text style={[styles.desc, {opacity: 0.6}]}>{profit_acc.label}</Text>
-                            <NumText
-                                style={styles.profitText}
-                                text={hideAmount(profit_acc.value)}
-                                type={showEye === 'true' ? 1 : 2}
-                            />
-                        </View>
-                    </View>
-                </View>
-                {trade_notice?.desc ? (
-                    <View style={Style.flexRow}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => jump(trade_notice.url)}
-                            style={{marginTop: px(2)}}>
-                            <Octicons color={'#F1F6FF'} name={'triangle-up'} size={16} style={{marginLeft: px(18)}} />
-                            <View style={[Style.flexRow, styles.tradeMsgBox]}>
-                                <Text style={[styles.linkText]}>{trade_notice.desc}</Text>
-                                <Feather color={Colors.brandColor} name="chevron-right" size={18} />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+            <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
+                <Text style={styles.title}>{name}</Text>
+                {top_button?.text ? (
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(top_button.url)}>
+                        <Text style={styles.linkText}>{top_button.text}</Text>
+                    </TouchableOpacity>
                 ) : null}
             </View>
-            <View style={[Style.flexRow, {marginTop: px(20), paddingBottom: noConsole ? px(20) : 0}]}>
-                {top_menus?.map((item, index) => {
-                    const {icon, text, url} = item;
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            key={text + index}
-                            onPress={() => jump(url)}
-                            style={[Style.flexCenter, {flex: 1}]}>
-                            <Image source={{uri: icon}} style={styles.menuIcon} />
-                            <Text style={[styles.smallText, {color: Colors.defaultColor}]}>{text}</Text>
+            {tags?.length > 0 && (
+                <View style={[Style.flexRow, {marginTop: px(6)}]}>
+                    <Text style={styles.smallText}>{code}</Text>
+                    {tags.map((tag, i) => {
+                        return (
+                            <View key={tag + i} style={styles.labelBox}>
+                                <Text style={styles.tagText}>{tag}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
+            )}
+            <View style={[Style.flexBetween, styles.profitBox]}>
+                <View>
+                    <View style={Style.flexRow}>
+                        <Text style={[styles.desc, {color: Colors.descColor}]}>
+                            {asset_info.text}
+                            &nbsp;<Text style={styles.smallText}>{asset_info.date}</Text>
+                        </Text>
+                        <TouchableOpacity activeOpacity={0.8} onPress={toggleEye} style={{marginLeft: px(8)}}>
+                            <Ionicons
+                                color={Colors.defaultColor}
+                                name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                size={px(14)}
+                            />
                         </TouchableOpacity>
-                    );
-                })}
+                    </View>
+                    <Text style={[styles.bigNumText, {marginTop: px(2)}]}>{hideAmount(asset_info.value)}</Text>
+                </View>
+                <View>
+                    <View style={Style.flexRow}>
+                        <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_info.text}</Text>
+                        <HTML html={hideAmount(`${profit_info.value}`)} style={styles.profitText} />
+                    </View>
+                    <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                        <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_acc_info.text}</Text>
+                        <HTML html={hideAmount(`${profit_acc_info.value}`)} style={styles.profitText} />
+                    </View>
+                </View>
             </View>
+            {trade_notice?.desc ? (
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => jump(trade_notice.url)}
+                    style={[Style.flexRow, styles.tradeMsgBox]}>
+                    <Text style={styles.smallText}>{trade_notice.desc}</Text>
+                    <Feather color={Colors.descColor} name="chevron-right" size={px(10)} />
+                </TouchableOpacity>
+            ) : null}
+            {indicators ? (
+                <>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => setExpand((prev) => !prev)}
+                        style={[Style.flexCenter, {paddingTop: px(8), paddingBottom: expand ? 0 : px(8)}]}>
+                        <Feather
+                            color={Colors.lightGrayColor}
+                            name={expand ? 'chevron-up' : 'chevron-down'}
+                            size={px(16)}
+                        />
+                    </TouchableOpacity>
+                    {expand && (
+                        <View style={Style.flexCenter}>
+                            <View style={styles.angle} />
+                            <View style={[Style.flexRow, styles.expandBox]}>
+                                {indicators.map?.((item, index) => {
+                                    const {text, value} = item;
+                                    return (
+                                        <View key={text + index} style={[Style.flexCenter, {flex: 1}]}>
+                                            <Text style={styles.smallText}>{text}</Text>
+                                            <Text style={[styles.numText, {marginTop: px(4)}]}>
+                                                {showEye === 'true' ? value : '****'}
+                                            </Text>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        </View>
+                    )}
+                </>
+            ) : null}
         </View>
     );
 };
@@ -285,22 +282,64 @@ const GroupBulletIn = ({data = {}}) => {
 
 /** @name 图表tab */
 const ChartTabs = ({tabs = []}) => {
+    const jump = useJump();
+    const [current, setCurrent] = useState(0);
+
     return (
-        <View style={[styles.partBox, {paddingTop: px(6)}]}>
+        <View style={styles.partBox}>
             <ScrollableTabView
                 initialPage={0}
                 locked
+                onChangeTab={({i}) => setCurrent(i)}
+                prerenderingSiblingsNumber={Infinity}
                 renderTabBar={() => (
                     <ScrollTabbar
-                        boxStyle={{backgroundColor: '#fff', paddingLeft: px(8)}}
+                        activeFontSize={px(13)}
+                        boxStyle={styles.chartTabs}
                         btnColor={Colors.defaultColor}
+                        inActiveFontSize={px(12)}
                     />
                 )}>
                 {tabs.map((tab, i) => {
-                    const {key, title} = tab;
+                    const {title} = tab;
+                    const {data, key} = tabs[current];
                     return (
-                        <View key={key + i} tabLabel={title}>
-                            <RenderChart data={tab} />
+                        <View key={title + i} tabLabel={title}>
+                            {key === 'video' ? (
+                                <View style={[Style.flexCenter, styles.videoBox]}>
+                                    <Video url={data.video} />
+                                </View>
+                            ) : key === 'notice' ? (
+                                <View style={{paddingHorizontal: Space.padding}}>
+                                    {data?.map?.((item, index) => {
+                                        const {publish_at, title: noticeTitle, url} = item;
+                                        return (
+                                            <View
+                                                key={noticeTitle + index}
+                                                style={{
+                                                    borderColor: Colors.borderColor,
+                                                    borderTopWidth: index === 0 ? 0 : Space.borderWidth,
+                                                }}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => jump(url)}
+                                                    style={[Style.flexBetween, {paddingVertical: px(12)}]}>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        style={[styles.desc, {marginRight: px(30)}]}>
+                                                        {noticeTitle}
+                                                    </Text>
+                                                    <Text style={styles.publishAt}>{publish_at}</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            ) : (
+                                <View style={{paddingBottom: px(12)}}>
+                                    <RenderChart data={tab} />
+                                </View>
+                            )}
                         </View>
                     );
                 })}
@@ -319,6 +358,8 @@ const RenderChart = ({data = {}}) => {
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const legendTitleArr = useRef([]);
+    const rootRef = useRef();
+    const currentIndex = useRef('');
 
     const getColor = (t) => {
         if (!t) {
@@ -385,8 +426,66 @@ const RenderChart = ({data = {}}) => {
         );
     };
 
-    useEffect(() => {
-        getChartData({...params, ...(route.params || {}), period, type: key})
+    /** @name 渲染指数下拉选择框 */
+    const showChooseIndex = (e, index_list, indexKey) => {
+        // console.log(e.nativeEvent);
+        const {locationX, locationY, pageX, pageY} = e.nativeEvent;
+        rootRef.current = new RootSibling(
+            (
+                <>
+                    <View onTouchStart={() => rootRef.current.destroy()} style={styles.rootMask} />
+                    <View
+                        style={[
+                            styles.keyChooseCon,
+                            {
+                                top: pageY - locationY + px(16),
+                                left: pageX - locationX - px(8),
+                            },
+                        ]}>
+                        {index_list?.map?.((_index, i) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={_index.key + i}
+                                    onPress={() => {
+                                        rootRef.current.destroy();
+                                        setLoading(true);
+                                        currentIndex.current = _index.key;
+                                        init();
+                                    }}
+                                    style={[
+                                        styles.indexBox,
+                                        {
+                                            borderTopWidth: i === 0 ? 0 : Space.borderWidth,
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            styles.smallText,
+                                            _index.key === indexKey
+                                                ? {
+                                                      color: Colors.brandColor,
+                                                      fontWeight: Font.weightMedium,
+                                                  }
+                                                : {},
+                                        ]}>
+                                        {_index.text}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </>
+            )
+        );
+    };
+
+    const init = () => {
+        const apiParams = {...params, ...(route.params || {}), period, type: key};
+        if (currentIndex.current) {
+            apiParams.index = currentIndex.current;
+        }
+        getChartData(apiParams)
             .then((res) => {
                 if (res.code === '000000') {
                     setChartData(res.result);
@@ -396,6 +495,10 @@ const RenderChart = ({data = {}}) => {
                 setLoading(false);
                 setShowEmpty(true);
             });
+    };
+
+    useEffect(() => {
+        init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, params, period]);
 
@@ -410,7 +513,8 @@ const RenderChart = ({data = {}}) => {
             {label?.length > 0 ? (
                 <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
                     {label.map((item, index, arr) => {
-                        const {color, name, tips, type, val} = item;
+                        const {color, index_list, key: indexKey, name, tips, type, val} = item;
+                        const n = index_list?.find?.((i) => i.key === indexKey)?.text || name;
                         return (
                             <View
                                 key={name + index}
@@ -432,7 +536,21 @@ const RenderChart = ({data = {}}) => {
                                             <View style={[styles.lineLegend, {backgroundColor: color}]} />
                                         ) : null
                                     ) : null}
-                                    <Text style={styles.smallText}>{name}</Text>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        disabled={!(index_list?.length > 0)}
+                                        onPress={(e) => showChooseIndex(e, index_list, indexKey)}
+                                        style={Style.flexRow}>
+                                        <Text style={styles.smallText}>{n}</Text>
+                                        {index_list?.length > 0 && (
+                                            <AntDesign
+                                                color={Colors.lightBlackColor}
+                                                name="caretdown"
+                                                size={px(6)}
+                                                style={{marginLeft: px(2)}}
+                                            />
+                                        )}
+                                    </TouchableOpacity>
                                     {tips ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -491,10 +609,14 @@ const RenderChart = ({data = {}}) => {
                                     setLoading(true);
                                     setPeriod(val);
                                 }}
-                                style={[styles.subTabBox, period === val ? styles.activeTab : {}]}>
+                                style={[
+                                    styles.subTabBox,
+                                    {marginLeft: i === 0 ? px(6) : 0},
+                                    period === val ? styles.activeTab : {},
+                                ]}>
                                 <Text
                                     style={[
-                                        styles.desc,
+                                        styles.smallText,
                                         {
                                             color: period === val ? Colors.brandColor : Colors.descColor,
                                             fontWeight: period === val ? Font.weightMedium : '400',
@@ -512,135 +634,262 @@ const RenderChart = ({data = {}}) => {
 };
 
 /** @name 计划买卖模式 */
-const BuyMode = ({data = {}, refresh}) => {
+const BuyMode = ({data = {}}) => {
     const jump = useJump();
-    const {button, buy, redeem, title} = data;
+    const {button, list, name, tags} = data;
+    const [current, setCurrent] = useState(0);
 
-    /** @name 表格单元格内容渲染 */
-    const renderTabelCell = ({icon, params, text, type, url} = {}) => {
-        switch (type) {
-            case 'button':
-                return (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={styles.toolBtn}>
-                        <Text style={styles.linkText}>{text}</Text>
-                    </TouchableOpacity>
-                );
-            case 'icon':
-                return (
-                    <View style={[Style.flexRow, styles.toolNameBox]}>
-                        <Image source={{uri: icon}} style={styles.toolIcon} />
-                        <Text style={[styles.smallText, {color: Colors.defaultColor}]}>{text}</Text>
-                    </View>
-                );
-            case 'number':
-                return <HTML html={text} numberOfLines={1} style={styles.toolNum} />;
-            case 'text':
-                return (
-                    <Text numberOfLines={1} style={[styles.desc, {color: Colors.descColor}]}>
-                        {text}
-                    </Text>
-                );
-            default:
-                return null;
-        }
-    };
-
-    /** @name 渲染买卖模式 */
-    const renderMode = ({body: modeBody, header: modeHeader, tags: modeTags, title: modeTitle} = {}) => {
-        return (
-            <View style={{marginTop: Space.marginVertical}}>
+    return (
+        <View style={styles.partBox}>
+            <View style={[Style.flexBetween, styles.modeTitle]}>
                 <View style={Style.flexRow}>
-                    <Text style={[styles.tipsVal, {fontWeight: Font.weightMedium}]}>{modeTitle}</Text>
-                    {modeTags?.map?.((tag, i) => {
+                    <Text style={[styles.tipsVal, {fontWeight: Font.weightMedium}]}>{name}</Text>
+                    {tags?.map?.((tag, i) => {
                         return (
                             <View key={tag + i} style={styles.labelBox}>
-                                <Text style={styles.smallText}>{tag}</Text>
+                                <Text style={styles.tagText}>{tag}</Text>
                             </View>
                         );
                     })}
                 </View>
-                {modeHeader?.length > 0 && (
-                    <View style={[Style.flexRow, styles.tabelHeader]}>
-                        {modeHeader.map((item, index) => {
-                            return (
-                                <View
-                                    key={item + index}
-                                    style={[
-                                        Style.flexCenter,
-                                        {height: '100%'},
-                                        index === 0 ? {width: px(94)} : {flex: 1},
-                                    ]}>
-                                    <Text numberOfLines={1} style={[styles.desc, {color: Colors.descColor}]}>
-                                        {item}
-                                    </Text>
-                                </View>
-                            );
-                        })}
-                    </View>
-                )}
-                {modeBody?.map((row, i) => {
-                    return (
-                        <View key={i} style={[Style.flexRow, styles.tabelRow]}>
-                            {row?.map((item, index) => {
-                                return (
-                                    <View
-                                        key={item + index}
-                                        style={[
-                                            Style.flexCenter,
-                                            {height: '100%'},
-                                            index === 0 ? {width: px(94)} : {flex: 1},
-                                        ]}>
-                                        {renderTabelCell(item)}
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    );
-                })}
-            </View>
-        );
-    };
-
-    return (
-        <View style={[styles.partBox, {paddingHorizontal: Space.padding}]}>
-            <View style={Style.flexBetween}>
-                <Text style={styles.bigTitle}>{title}</Text>
                 {button?.text ? (
                     <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={Style.flexRow}>
-                        {button.icon ? (
-                            <Image source={{uri: button.icon}} style={{width: px(15), height: px(15)}} />
-                        ) : null}
-                        <Text style={[styles.desc, {marginLeft: px(4)}]}>{button.text}</Text>
+                        <Text style={[styles.desc, {color: Colors.descColor}]}>{button.text}</Text>
+                        <AntDesign color={Colors.descColor} name="right" size={px(12)} />
                     </TouchableOpacity>
                 ) : null}
             </View>
-            {buy ? renderMode(buy) : null}
-            {redeem ? renderMode(redeem) : null}
+            <ScrollableTabView
+                initialPage={0}
+                locked
+                onChangeTab={({i}) => setCurrent(i)}
+                prerenderingSiblingsNumber={Infinity}
+                renderTabBar={() => (
+                    <ScrollTabbar
+                        activeFontSize={px(13)}
+                        boxStyle={styles.chartTabs}
+                        btnColor={Colors.defaultColor}
+                        inActiveFontSize={px(12)}
+                    />
+                )}>
+                {list?.map?.((item, index) => {
+                    const {name: tabLabel} = item;
+                    const {icon, indicators, remind_info, signals} = list[current];
+                    return (
+                        <View key={tabLabel + index} style={{paddingBottom: Space.padding}} tabLabel={tabLabel}>
+                            {icon ? <Image source={{uri: icon}} style={styles.signalModeIcon} /> : null}
+                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                {signals?.length > 0 && (
+                                    <View style={[Style.flexBetween, styles.signalWrapper]}>
+                                        {signals.map?.((signal, i) => {
+                                            const {amount, icon: signalIcon, text, url} = signal;
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    key={text + i}
+                                                    onPress={() => jump(url)}
+                                                    style={Style.flexCenter}>
+                                                    {signalIcon ? (
+                                                        <Image
+                                                            source={{uri: signalIcon}}
+                                                            style={{width: px(30), height: px(30)}}
+                                                        />
+                                                    ) : null}
+                                                    {text ? (
+                                                        <View style={{marginTop: px(4)}}>
+                                                            <HTML
+                                                                html={text}
+                                                                style={{
+                                                                    ...styles.desc,
+                                                                    color: Colors.descColor,
+                                                                    fontWeight: Font.weightMedium,
+                                                                }}
+                                                            />
+                                                        </View>
+                                                    ) : null}
+                                                    {amount ? (
+                                                        <View style={{marginTop: px(2)}}>
+                                                            <HTML
+                                                                html={amount}
+                                                                style={{...styles.smallText, color: Colors.descColor}}
+                                                            />
+                                                        </View>
+                                                    ) : null}
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+                                )}
+                                {indicators?.length > 0 && (
+                                    <View style={[Style.flexRow, styles.indicatorWrapper]}>
+                                        {indicators.map?.((indicator, i) => {
+                                            const {text, value} = indicator;
+                                            return (
+                                                <View key={text + i} style={[Style.flexCenter, {marginLeft: px(32)}]}>
+                                                    <HTML html={value} style={styles.indicatorVal} />
+                                                    <Text style={[styles.smallText, {marginTop: px(4)}]}>{text}</Text>
+                                                </View>
+                                            );
+                                        })}
+                                    </View>
+                                )}
+                            </View>
+                            {remind_info ? (
+                                <View style={{paddingHorizontal: Space.padding}}>
+                                    <RenderAlert alert={remind_info} />
+                                </View>
+                            ) : null}
+                        </View>
+                    );
+                })}
+            </ScrollableTabView>
         </View>
     );
 };
 
-export default ({navigation, route}) => {
+const DsList = ({data = [], showEye}) => {
+    const jump = useJump();
+
+    const getColor = useCallback(
+        (val) => {
+            return showEye === 'true'
+                ? parseFloat(val) < 0
+                    ? Colors.green
+                    : parseFloat(val) === 0
+                    ? Colors.defaultColor
+                    : Colors.red
+                : Colors.defaultColor;
+        },
+        [showEye]
+    );
+
+    return (
+        <View style={{marginTop: px(12)}}>
+            {data.map?.((item, index) => {
+                const {color, funds, name} = item;
+                return (
+                    <React.Fragment key={name}>
+                        <View style={[Style.flexRow, {marginTop: Space.marginVertical}]}>
+                            <View style={[styles.circle, {backgroundColor: color || Colors.red}]} />
+                            <Text style={styles.desc}>{name}</Text>
+                        </View>
+                        {funds?.map?.((fund, i) => {
+                            const {
+                                amount,
+                                button,
+                                name: fundName,
+                                profit,
+                                profit_acc,
+                                profit_date_raw,
+                                share,
+                                url,
+                            } = fund;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={fundName + i}
+                                    onPress={() => jump(url)}
+                                    style={styles.dsFundBox}>
+                                    <View style={Style.flexBetween}>
+                                        <Text style={styles.desc}>{fundName}</Text>
+                                        {button?.text ? (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                disabled={button.avail === 0}
+                                                onPress={() => jump(button.url)}
+                                                style={[styles.redeemBtn, {opacity: button.avail === 0 ? 0.3 : 1}]}>
+                                                <Text style={[styles.smallText, {color: Colors.brandColor}]}>
+                                                    {button.text}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </View>
+                                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                                        <View style={[Style.flexRow, {width: '50%', marginTop: px(12)}]}>
+                                            <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
+                                                日收益(元)
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    styles.numText,
+                                                    {
+                                                        marginLeft: px(4),
+                                                        color: getColor(profit),
+                                                    },
+                                                ]}>
+                                                {showEye === 'true' ? profit : '****'}
+                                            </Text>
+                                            <Text style={[styles.numText, {marginLeft: px(4)}]}>
+                                                ({profit_date_raw})
+                                            </Text>
+                                        </View>
+                                        <View style={[Style.flexRow, {width: '50%', marginTop: px(12)}]}>
+                                            <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
+                                                累计收益(元)
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    styles.numText,
+                                                    {
+                                                        marginLeft: px(4),
+                                                        color: getColor(profit_acc),
+                                                    },
+                                                ]}>
+                                                {showEye == 'true' ? profit_acc : '****'}
+                                            </Text>
+                                        </View>
+                                        <View style={[Style.flexRow, {width: '50%', marginTop: px(12)}]}>
+                                            <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
+                                                份额(份)
+                                            </Text>
+                                            <Text style={[styles.numText, {marginLeft: px(4)}]}>
+                                                {showEye == 'true' ? share : '****'}
+                                            </Text>
+                                        </View>
+                                        <View style={[Style.flexRow, {width: '50%', marginTop: px(12)}]}>
+                                            <Text style={[styles.smallText, {color: Colors.lightGrayColor}]}>
+                                                金额(元)
+                                            </Text>
+                                            <Text style={[styles.numText, {marginLeft: px(4)}]}>
+                                                {showEye == 'true' ? amount : '****'}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </React.Fragment>
+                );
+            })}
+        </View>
+    );
+};
+
+const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
     const {
-        ad_info,
+        code,
         button_list,
-        buy_mode,
         chart_tabs,
-        console: consoleData,
+        console_info: consoleData,
         console_sub,
-        gather_info,
         group_bulletin,
-        notice_info,
+        mode_info,
+        name,
         service_info,
-        top_info,
-        top_menus,
+        summary,
+        tags,
+        top_button,
+        trade_notice,
     } = data;
     const {desc: serviceDesc, icon: serviceIcon, title: serviceTitle, url: serviceUrl} = service_info || {};
-    const {system_notice, trade_notice} = notice_info || {};
+    const [commonData, setCommonData] = useState({});
+    const [dsList, setDsList] = useState([]);
+    const {ad_info, bottom_notice, gather_list, system_notices, tool_list} = commonData;
     const [showMask, setShowMask] = useState(false);
+    const [showEye, setShowEye] = useState('true');
     const centerControl = useRef();
     const passwordModal = useRef();
 
@@ -648,13 +897,27 @@ export default ({navigation, route}) => {
         getPageData(route.params || {})
             .then((res) => {
                 if (res.code === '000000') {
-                    navigation.setOptions({title: res.result.title || '资产详情'});
+                    const {need_ds, title = '资产详情'} = res.result;
+                    navigation.setOptions({title});
+                    if (need_ds) {
+                        getDsData(route.params || {}).then((resp) => {
+                            if (resp.code === '000000') {
+                                setDsList(resp.result?.list || []);
+                            }
+                        });
+                    }
                     setData(res.result);
                 }
             })
             .finally(() => {
                 setRefreshing(false);
+                setLoading(false);
             });
+        getCommonData(route.params || {}).then((res) => {
+            if (res.code === '000000') {
+                setCommonData(res.result);
+            }
+        });
     };
 
     const hidePicker = () => {
@@ -687,6 +950,14 @@ export default ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
+            Storage.get('portfolioAssets').then((res) => {
+                setShowEye(res ? res : 'true');
+            });
+        }, [])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -703,33 +974,28 @@ export default ({navigation, route}) => {
                         refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}
                         scrollIndicatorInsets={{right: 1}}
                         style={{flex: 1}}>
-                        {system_notice?.length > 0 && <Notice content={system_notice} />}
+                        {system_notices?.length > 0 && <Notice content={system_notices} />}
                         <TopPart
-                            noConsole={!consoleData}
+                            setShowEye={setShowEye}
+                            showEye={showEye}
+                            top_button={top_button}
+                            top_info={{code, name, ...(summary || {}), tags}}
                             trade_notice={trade_notice}
-                            top_info={top_info}
-                            top_menus={top_menus}
                         />
-                        {consoleData ? (
-                            <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
-                                <CenterControl data={consoleData} ref={centerControl} refresh={init} />
-                            </LinearGradient>
+                        {ad_info ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(ad_info.url)}
+                                style={{marginTop: px(12), marginHorizontal: Space.marginAlign}}>
+                                <Image source={{uri: ad_info.cover}} style={{height: px(60), borderRadius: px(30)}} />
+                            </TouchableOpacity>
                         ) : null}
+                        {consoleData ? <CenterControl data={consoleData} ref={centerControl} refresh={init} /> : null}
                         <View style={{paddingHorizontal: Space.padding}}>
                             {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
-                            {ad_info ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => jump(ad_info.url)}
-                                    style={{marginTop: Space.marginVertical}}>
-                                    <Image
-                                        source={{uri: ad_info.cover}}
-                                        style={{height: px(60), borderRadius: px(30)}}
-                                    />
-                                </TouchableOpacity>
-                            ) : null}
+                            {dsList?.length > 0 && <DsList data={dsList} showEye={showEye} />}
                             {group_bulletin ? <GroupBulletIn data={group_bulletin} /> : null}
-                            {buy_mode ? <BuyMode data={buy_mode} refresh={init} /> : null}
+                            {mode_info ? <BuyMode data={mode_info} refresh={init} /> : null}
                             {chart_tabs ? <ChartTabs tabs={chart_tabs} /> : null}
                             {service_info ? (
                                 <TouchableOpacity
@@ -749,9 +1015,10 @@ export default ({navigation, route}) => {
                                     <Feather color={Colors.defaultFontColor} name="chevron-right" size={18} />
                                 </TouchableOpacity>
                             ) : null}
-                            {gather_info?.length > 0 && (
+                            {tool_list?.length > 0 && <ToolMenusCard data={tool_list} style={styles.menuBox} />}
+                            {gather_list?.length > 0 && (
                                 <View style={styles.bottomList}>
-                                    {gather_info.map((item, index) => {
+                                    {gather_list.map((item, index) => {
                                         const {label} = item;
                                         return (
                                             <View key={label + index}>
@@ -831,13 +1098,16 @@ export default ({navigation, route}) => {
                             })}
                         </View>
                     )}
+                    {bottom_notice ? (
+                        <GuideTips data={bottom_notice} style={{position: 'absolute', bottom: px(106)}} />
+                    ) : null}
                 </>
-            ) : (
-                <Loading />
-            )}
+            ) : null}
         </View>
     );
 };
+
+export default withPageLoading(Index);
 
 const styles = StyleSheet.create({
     container: {
@@ -849,7 +1119,11 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
     topPart: {
-        paddingTop: px(20),
+        marginTop: px(12),
+        marginHorizontal: Space.marginAlign,
+        padding: Space.padding,
+        paddingBottom: 0,
+        borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
     },
     rowEnd: {
@@ -886,10 +1160,15 @@ const styles = StyleSheet.create({
     labelBox: {
         marginLeft: px(8),
         paddingVertical: px(2),
-        paddingHorizontal: px(6),
+        paddingHorizontal: px(4),
         borderRadius: px(2),
-        borderWidth: px(1),
+        borderWidth: Space.borderWidth,
         borderColor: '#BDC2CC',
+    },
+    tagText: {
+        fontSize: px(9),
+        lineHeight: px(13),
+        color: Colors.descColor,
     },
     smallText: {
         fontSize: Font.textSm,
@@ -897,25 +1176,55 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     bigNumText: {
-        fontSize: px(24),
-        lineHeight: px(29),
+        fontSize: px(22),
+        lineHeight: px(27),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
     },
+    numText: {
+        fontSize: Font.textH3,
+        lineHeight: px(14),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    profitBox: {
+        marginTop: px(12),
+        paddingTop: px(12),
+        borderTopWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
     profitText: {
-        marginLeft: px(8),
-        fontSize: px(15),
-        lineHeight: px(21),
+        fontSize: px(13),
+        lineHeight: px(18),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
     },
     tradeMsgBox: {
-        marginTop: -6.5,
-        paddingVertical: px(4),
+        marginTop: px(12),
+        paddingVertical: px(8),
         paddingHorizontal: px(12),
-        borderRadius: px(40),
-        backgroundColor: '#F1F6FF',
-        alignItems: 'flex-end',
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.bgColor,
+    },
+    expandBox: {
+        marginBottom: Space.marginVertical,
+        paddingVertical: px(12),
+        borderRadius: px(4),
+        backgroundColor: Colors.bgColor,
+        width: '100%',
+    },
+    angle: {
+        position: 'relative',
+        top: px(3),
+        width: px(6),
+        height: px(6),
+        backgroundColor: Colors.bgColor,
+        transform: [{rotate: '45deg'}],
+    },
+    menuBox: {
+        marginTop: px(12),
+        marginBottom: 0,
+        marginHorizontal: 0,
     },
     menuIcon: {
         marginBottom: px(6),
@@ -967,7 +1276,7 @@ const styles = StyleSheet.create({
     },
     signalModeIcon: {
         position: 'absolute',
-        top: px(16),
+        top: -px(32),
         right: 0,
         width: px(34),
         height: px(24),
@@ -988,11 +1297,16 @@ const styles = StyleSheet.create({
         left: 0,
     },
     partBox: {
-        marginTop: Space.marginVertical,
-        paddingVertical: Space.padding,
+        marginTop: px(12),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
         overflow: 'hidden',
+    },
+    videoBox: {
+        paddingTop: px(8),
+        paddingHorizontal: Space.marginAlign,
+        paddingBottom: Space.padding,
+        height: px(200),
     },
     serviceInfo: {
         marginTop: Space.marginVertical,
@@ -1007,7 +1321,7 @@ const styles = StyleSheet.create({
         height: px(44),
     },
     bottomList: {
-        marginTop: Space.marginVertical,
+        marginTop: px(12),
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
@@ -1035,6 +1349,10 @@ const styles = StyleSheet.create({
         flex: 1,
         height: px(44),
     },
+    chartTabs: {
+        backgroundColor: '#fff',
+        marginLeft: px(8),
+    },
     legendTitle: {
         padding: 0,
         fontSize: px(13),
@@ -1050,11 +1368,9 @@ const styles = StyleSheet.create({
         height: px(2),
     },
     subTabBox: {
-        marginHorizontal: px(6),
         paddingVertical: px(6),
         paddingHorizontal: px(12),
         borderRadius: px(20),
-        backgroundColor: Colors.bgColor,
     },
     activeTab: {
         backgroundColor: '#DEE8FF',
@@ -1092,6 +1408,75 @@ const styles = StyleSheet.create({
     toolBtn: {
         paddingVertical: px(3),
         paddingHorizontal: px(10),
+        borderRadius: px(12),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.brandColor,
+    },
+    rootMask: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: 1,
+        backgroundColor: 'transparent',
+    },
+    keyChooseCon: {
+        paddingHorizontal: px(4),
+        borderRadius: px(4),
+        backgroundColor: Colors.bgColor,
+        position: 'absolute',
+        zIndex: 2,
+    },
+    indexBox: {
+        paddingVertical: px(8),
+        paddingHorizontal: px(4),
+        borderColor: Colors.borderColor,
+        alignItems: 'center',
+    },
+    publishAt: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.descColor,
+        fontFamily: Font.numRegular,
+    },
+    modeTitle: {
+        paddingVertical: px(12),
+        paddingHorizontal: Space.padding,
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    signalWrapper: {
+        flex: 1,
+        justifyContent: 'space-around',
+        paddingHorizontal: px(32),
+    },
+    indicatorWrapper: {
+        flex: 4,
+        borderLeftWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    indicatorVal: {
+        fontSize: px(15),
+        lineHeight: px(21),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    circle: {
+        marginRight: px(8),
+        borderRadius: px(10),
+        width: px(10),
+        height: px(10),
+    },
+    dsFundBox: {
+        marginTop: px(12),
+        padding: Space.padding,
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+    },
+    redeemBtn: {
+        paddingVertical: px(2),
+        paddingHorizontal: px(6),
         borderRadius: px(12),
         borderWidth: Space.borderWidth,
         borderColor: Colors.brandColor,

@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     centerControlBox: {
-        marginTop: px(20),
+        marginTop: px(12),
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         borderWidth: px(1),

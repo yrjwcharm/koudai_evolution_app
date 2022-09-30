@@ -19,11 +19,32 @@ const ToolMenusCard = ({data, style}) => {
                         key={item.tool_id}
                         style={[{width: '20%', marginBottom: px(18), alignItems: 'center'}]}
                         onPress={() => {
-                            global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
+                            if (item?.tip) {
+                                global.LogTool('guide_click', item?.text, item.tool_id);
+                            } else {
+                                global.LogTool('icon_click', item?.text, item.tool_id);
+                            }
                             jump(item.url);
                         }}>
                         <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                         <Text style={[styles.topMenuTitle]}>{item.text}</Text>
+                        {item?.tip ? (
+                            item?.tip?.is_number ? (
+                                <View style={styles.numberTip}>
+                                    <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>
+                                        {item?.tip?.desc}
+                                    </Text>
+                                </View>
+                            ) : !item?.tip?.desc ? (
+                                <View style={styles.circleTip} />
+                            ) : (
+                                <View style={styles.tip}>
+                                    <Text style={{fontSize: px(8), color: '#fff', lineHeight: px(11)}}>
+                                        {item?.tip?.desc}
+                                    </Text>
+                                </View>
+                            )
+                        ) : null}
                     </TouchableOpacity>
                 );
             })}
@@ -37,7 +58,7 @@ const styles = StyleSheet.create({
     topMenu: {
         paddingVertical: px(12),
         flexWrap: 'wrap',
-        marginBottom: px(20),
+        marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
@@ -51,5 +72,32 @@ const styles = StyleSheet.create({
     topMenuTitle: {
         fontSize: Font.textH3,
         lineHeight: px(15),
+    },
+    tip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(4),
+        paddingVertical: px(1),
+        paddingHorizontal: px(3),
+        borderBottomLeftRadius: 0,
+        right: px(-10),
+        top: px(-5),
+    },
+    circleTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        width: px(8),
+        height: px(8),
+        right: px(16),
+        top: px(0),
+    },
+    numberTip: {
+        position: 'absolute',
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        padding: px(2),
+        right: px(10),
+        top: px(-8),
     },
 });

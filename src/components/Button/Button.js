@@ -1,14 +1,14 @@
 /*
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-21 14:25:43
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-26 16:14:10
  * @Description:通用按钮
  */
 import React from 'react';
 import {Text, StyleSheet, TouchableHighlight, View, Platform} from 'react-native';
 import PropTypes from 'prop-types';
-import {px as text} from '../../utils/appUtil';
+import {px, px as text} from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
 
 class Button extends React.Component {
@@ -75,17 +75,17 @@ class Button extends React.Component {
                         onLayout && onLayout(e.nativeEvent.layout);
                     }}>
                     <View style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
-                        <View>
+                        <View style={[Style.flexRow, superscript && {marginLeft: superscriptWidth || 0}]}>
                             <Text style={[type == 'primary' ? styles.Text : styles.minorText, textStyle]}>{title}</Text>
-                            {desc ? <Text style={[descStyle || {}]}>{desc}</Text> : null}
                             {superscript ? (
                                 <View
                                     onLayout={(e) => this.setState({superscriptWidth: e.nativeEvent.layout.width})}
-                                    style={[styles.superscriptBox, {right: text(-4) - superscriptWidth}]}>
+                                    style={[styles.superscriptBox]}>
                                     <Text style={styles.superscript}>{superscript}</Text>
                                 </View>
                             ) : null}
                         </View>
+                        {desc ? <Text style={[descStyle || {}]}>{desc}</Text> : null}
                     </View>
                 </TouchableHighlight>
             </>
@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
         borderRadius: text(9),
         borderBottomLeftRadius: text(0.5),
         backgroundColor: Colors.red,
-        position: 'absolute',
-        bottom: text(11),
+        marginLeft: px(2),
+        // position: 'absolute',
+        // bottom: text(11),
     },
     superscript: {
         fontSize: Font.textSm,

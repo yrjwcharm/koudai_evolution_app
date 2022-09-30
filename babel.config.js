@@ -1,3 +1,7 @@
+/*
+ * @Date: 2022-09-28 14:02:48
+ * @Description:
+ */
 module.exports = {
     presets: ['module:metro-react-native-babel-preset'],
     env: {
@@ -13,6 +17,7 @@ module.exports = {
                 rootPathPrefix: '~/',
                 rootPathSuffix: 'src/',
             },
+            // 'react-native-reanimated/plugin',
         ],
     ],
     // plugins: ["transform-decorators-legacy"]

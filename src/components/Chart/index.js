@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 19:05:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-29 15:09:01
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -66,7 +66,7 @@ class Chart extends PureComponent {
     };
 
     render() {
-        const {webView: WebView, data, onChange, initScript, ...props} = this.props;
+        const {webView: WebView, data, onChange, initScript, style, ...props} = this.props;
         return (
             <WebView
                 androidLayerType="software"
@@ -76,7 +76,7 @@ class Chart extends PureComponent {
                 javaScriptEnabled
                 ref={this.chart}
                 scrollEnabled={false}
-                style={styles.webView}
+                style={[styles.webView, style]}
                 injectedJavaScript={initScript}
                 renderLoading={() => (
                     <View style={[Style.flexCenter, {position: 'absolute', left: 0, right: 0, bottom: 0, top: 0}]}>

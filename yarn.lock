@@ -1166,6 +1166,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@monterosa/react-native-parallax-scroll@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.npmmirror.com/@monterosa/react-native-parallax-scroll/-/react-native-parallax-scroll-1.8.0.tgz#04339a772c02818b229582a8b903aca4f9106005"
+  integrity sha512-fFzJvMNN77d78haErRrZ/X64H0Vjz+5CvXSHBqxjlRQmhUB/R7BnqHwO3WFKGv2/Hv30LpL+0MSfHZeukglvDA==
+
 "@react-native-community/art@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmmirror.com/@react-native-community/art/-/art-1.2.0.tgz#386d95393f6042d9006f9d4bc6063fb898794460"
@@ -1377,6 +1382,11 @@
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-2.0.2.tgz"
   integrity sha1-YisZApSxMQxIJcmNrq7hyEQ/cSQ=
+
+"@react-native/normalize-color@*":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@react-native/normalize-color/-/normalize-color-2.0.0.tgz#da955909432474a9a0fe1cbffc66576a0447f567"
+  integrity sha512-Wip/xsc5lw8vsBlmY2MO/gFLp3MvuZ2baBZjDeTjjndMgM0h5sxz7AZR62RDPGgstp8Np7JzjvVqVT7tpFZqsw==
 
 "@react-navigation/bottom-tabs@^5.10.6":
   version "5.11.3"
@@ -3187,13 +3197,6 @@ create-react-class@^15.6.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-cross-fetch@^3.0.4:
-  version "3.1.4"
-  resolved "https://registry.npm.taobao.org/cross-fetch/download/cross-fetch-3.1.4.tgz"
-  integrity sha1-lyPzo6JHv4uJA586OAqSROj6Lzk=
-  dependencies:
-    node-fetch "2.6.1"
-
 cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/cross-spawn/download/cross-spawn-5.1.0.tgz"
@@ -3445,6 +3448,15 @@ deprecated-prop-type@^1.0.0:
   integrity sha512-Hp4VxvZN6IlbKvleZfbdrojOmnPXuRPjC9cQ82j6bdI3DRCwGR+7CEf367X59MHz/y8Ao/mxdP7YyR3KTb+EhQ==
   dependencies:
     warning "4.0.1"
+
+deprecated-react-native-prop-types@^2.2.0:
+  version "2.3.0"
+  resolved "https://registry.npmmirror.com/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz#c10c6ee75ff2b6de94bb127f142b814e6e08d9ab"
+  integrity sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA==
+  dependencies:
+    "@react-native/normalize-color" "*"
+    invariant "*"
+    prop-types "*"
 
 destroy@~1.0.4:
   version "1.0.4"
@@ -4133,19 +4145,6 @@ fbjs@^1.0.0:
     core-js "^2.4.1"
     fbjs-css-vars "^1.0.0"
     isomorphic-fetch "^2.1.1"
-    loose-envify "^1.0.0"
-    object-assign "^4.1.0"
-    promise "^7.1.1"
-    setimmediate "^1.0.5"
-    ua-parser-js "^0.7.18"
-
-fbjs@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npm.taobao.org/fbjs/download/fbjs-3.0.0.tgz?cache=0&sync_timestamp=1602048313843&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffbjs%2Fdownload%2Ffbjs-3.0.0.tgz"
-  integrity sha1-CQcGf7P1enj0XZXx6s/8rNYjwWU=
-  dependencies:
-    cross-fetch "^3.0.4"
-    fbjs-css-vars "^1.0.0"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
     promise "^7.1.1"
@@ -4846,7 +4845,7 @@ internal-slot@^1.0.3:
     has "^1.0.3"
     side-channel "^1.0.4"
 
-invariant@2.2.4, invariant@^2.2.2, invariant@^2.2.4:
+invariant@*, invariant@2.2.4, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.npm.taobao.org/invariant/download/invariant-2.2.4.tgz"
   integrity sha1-YQ88ksk1nOHbYW5TgAjSP/NRWOY=
@@ -5915,6 +5914,11 @@ lodash@^4.17.10, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.20.tgz?cache=0&sync_timestamp=1613835817439&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.20.tgz"
   integrity sha1-tEqbYpe8tpjxxRo1RaKzs2jVnFI=
 
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
 log-symbols@^2.2.0:
   version "2.2.0"
   resolved "https://registry.nlark.com/log-symbols/download/log-symbols-2.2.0.tgz"
@@ -6564,11 +6568,6 @@ nocache@^2.1.0:
   resolved "https://registry.npm.taobao.org/nocache/download/nocache-2.1.0.tgz"
   integrity sha1-Egyf/sQ7Vymx1d6IzXGqdaC6SR8=
 
-node-fetch@2.6.1, node-fetch@^2.2.0, node-fetch@^2.6.0:
-  version "2.6.1"
-  resolved "https://registry.npm.taobao.org/node-fetch/download/node-fetch-2.6.1.tgz?cache=0&sync_timestamp=1599309667528&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnode-fetch%2Fdownload%2Fnode-fetch-2.6.1.tgz"
-  integrity sha1-BFvTI2Mfdu0uK1VXM5RBa2OaAFI=
-
 node-fetch@^1.0.1:
   version "1.7.3"
   resolved "https://registry.npm.taobao.org/node-fetch/download/node-fetch-1.7.3.tgz?cache=0&sync_timestamp=1599309667528&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnode-fetch%2Fdownload%2Fnode-fetch-1.7.3.tgz"
@@ -6576,6 +6575,11 @@ node-fetch@^1.0.1:
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
+
+node-fetch@^2.2.0, node-fetch@^2.6.0:
+  version "2.6.1"
+  resolved "https://registry.npm.taobao.org/node-fetch/download/node-fetch-2.6.1.tgz?cache=0&sync_timestamp=1599309667528&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnode-fetch%2Fdownload%2Fnode-fetch-2.6.1.tgz"
+  integrity sha1-BFvTI2Mfdu0uK1VXM5RBa2OaAFI=
 
 node-int64@^0.4.0:
   version "0.4.0"
@@ -7131,6 +7135,15 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
+prop-types@*, prop-types@^15.5.8:
+  version "15.8.1"
+  resolved "https://registry.npmmirror.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
+  integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
+  dependencies:
+    loose-envify "^1.4.0"
+    object-assign "^4.1.1"
+    react-is "^16.13.1"
+
 prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/prop-types/download/prop-types-15.7.2.tgz"
@@ -7139,15 +7152,6 @@ prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.6.0, prop-types@^15.6.1,
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
     react-is "^16.8.1"
-
-prop-types@^15.5.8:
-  version "15.8.1"
-  resolved "https://registry.npmmirror.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
-  integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
-  dependencies:
-    loose-envify "^1.4.0"
-    object-assign "^4.1.1"
-    react-is "^16.13.1"
 
 pseudomap@^1.0.2:
   version "1.0.2"
@@ -7323,15 +7327,15 @@ react-native-fs@^2.16.6:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^1.8.0:
-  version "1.9.0"
-  resolved "https://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.9.0.tgz"
-  integrity sha1-5EGxwCd8P9TKPlxY/daB4vDO3fA=
+react-native-gesture-handler@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.npmmirror.com/react-native-gesture-handler/-/react-native-gesture-handler-2.6.2.tgz#f3b68d374f5dda603ff29f7df2edb39472eb97ce"
+  integrity sha512-Ff/WKlR8KiM1wq7UJZvIyCB+OsweewaeZk+4RDIYNGM9tvNIAXEm/MtYnLHiBXiSJjZItF/8B83gE6pVq40vIw==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
-    fbjs "^3.0.0"
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
+    lodash "^4.17.21"
     prop-types "^15.7.2"
 
 react-native-get-channel@^1.0.1:
@@ -7343,6 +7347,11 @@ react-native-haptic-feedback@^1.11.0:
   version "1.11.0"
   resolved "https://registry.nlark.com/react-native-haptic-feedback/download/react-native-haptic-feedback-1.11.0.tgz"
   integrity sha1-rf2EHztnBGUy+RLG7IJ66gA32K0=
+
+react-native-head-tab-view@^4.0.0-rc.13:
+  version "4.0.0-rc.13"
+  resolved "https://registry.npmmirror.com/react-native-head-tab-view/-/react-native-head-tab-view-4.0.0-rc.13.tgz#bf33216b897d0ffd0b7422d752b186df35f94304"
+  integrity sha512-wal0cOy63BI/vjsxFRruqBm5B8QaDlOa4MX2CnuetMMbGR4522q0mtIya3EE0nO7GShwKk9TD1JvBvvpZa71AQ==
 
 react-native-image-crop-picker@^0.37.3:
   version "0.37.3"
@@ -7389,6 +7398,13 @@ react-native-orientation-locker@^1.1.8:
   resolved "https://registry.nlark.com/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz"
   integrity sha1-RdHJ4AJJa40obsiTLW4+fTQfnIU=
 
+react-native-parallax-scroll-view@^0.21.3:
+  version "0.21.3"
+  resolved "https://registry.npmmirror.com/react-native-parallax-scroll-view/-/react-native-parallax-scroll-view-0.21.3.tgz#d956ad224ce3b0a2725b80574bcbf688bbeda14e"
+  integrity sha512-oVbZPijNGYGcpU2z7k/ZOOnl0vYxch7qtVvaJpH4+wLVnEP49NC2diCzjFGz8PE0yEcgyeTdkpdUK8RTD3QEew==
+  dependencies:
+    prop-types "^15.6.0"
+
 react-native-pdf@^6.2.2:
   version "6.2.2"
   resolved "https://registry.nlark.com/react-native-pdf/download/react-native-pdf-6.2.2.tgz"
@@ -7422,9 +7438,9 @@ react-native-raw-bottom-sheet@^2.2.0:
   integrity sha1-0R2ruGqtsBQnN2fve1VJJLE2M8U=
 
 react-native-reanimated@^1.13.1:
-  version "1.13.2"
-  resolved "https://registry.nlark.com/react-native-reanimated/download/react-native-reanimated-1.13.2.tgz"
-  integrity sha1-GuVFeyS0kT0XOloGS7KOrneD0pM=
+  version "1.13.4"
+  resolved "https://registry.npmmirror.com/react-native-reanimated/-/react-native-reanimated-1.13.4.tgz#f57c65e80ab5d2f60bf7dd21716c0bad8108b84e"
+  integrity sha512-sFbZFh0WanKTa0Fz7GXCZUjWpk/u04ytprcIs4Kb+ijfQHChXva3m3yQZfvbrhRbABJNHrdeuyDgJxDM2mcBgw==
   dependencies:
     fbjs "^1.0.0"
 
@@ -7459,6 +7475,11 @@ react-native-screens@^2.12.0:
   version "2.16.1"
   resolved "https://registry.nlark.com/react-native-screens/download/react-native-screens-2.16.1.tgz"
   integrity sha1-sQWhJzeNkAGKRtrwwvZRj8pgwG8=
+
+react-native-scrollable-tab-view-collapsible-header@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/react-native-scrollable-tab-view-collapsible-header/-/react-native-scrollable-tab-view-collapsible-header-2.0.1.tgz#9354a0c4dd49de9d03adee3f9602b7fe29cce961"
+  integrity sha512-6oDv1iY67TFL1eyu4V4EEw4jIe2j6j9iAoej/JanjVaS0Rb1am6sSlNMOnN3drFpxOWsdbpgl4QY/1tvm1e8Jw==
 
 react-native-scrollable-tab-view@^1.0.0:
   version "1.0.0"
@@ -7532,11 +7553,12 @@ react-native-vector-icons@^9.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-video@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.npm.taobao.org/react-native-video/download/react-native-video-5.1.1.tgz"
-  integrity sha1-iaeYnv641ARhHAYVTR2iJ6dF19g=
+react-native-video@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.npmmirror.com/react-native-video/-/react-native-video-5.2.1.tgz#a17e856759d7e17eee9cbd9df0d05ba22e88d457"
+  integrity sha512-aJlr9MeTuQ0LpZ4n+EC9RvhoKeiPbLtI2Rxy8u7zo/wzGevbRpWHSBj9xZ5YDBXnAVXzuqyNIkGhdw7bfdIBZw==
   dependencies:
+    deprecated-react-native-prop-types "^2.2.0"
     keymirror "^0.1.1"
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
