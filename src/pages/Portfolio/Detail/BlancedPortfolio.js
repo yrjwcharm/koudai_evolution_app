@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-06-14 10:55:52
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 18:59:18
  * @Description:股债平衡组合
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, DeviceEventEmitter} from 'react-native';
@@ -248,30 +245,30 @@ const Header = ({
     return (
         <View style={{backgroundColor: '#fff', paddingHorizontal: px(16), paddingTop: px(12)}}>
             {/* tab切换 */}
-            <View style={[styles.tab_con, Style.flexBetween]}>
-                {tab_list
-                    ? tab_list?.map((item, index) => (
-                          <TouchableOpacity
-                              key={index}
-                              activeOpacity={0.9}
-                              style={[active == index + 1 && styles.activeButton, styles.button, Style.flexCenter]}
-                              onPress={() => {
-                                  setActive(item?.tab_type);
-                                  setChart([]);
-                                  tabClick && tabClick(item.tab_type);
-                              }}>
-                              <Text
-                                  style={[
-                                      active == index + 1
-                                          ? styles.activeText
-                                          : {fontSize: px(12), color: Colors.lightBlackColor},
-                                  ]}>
-                                  {item.tab_name}
-                              </Text>
-                          </TouchableOpacity>
-                      ))
-                    : null}
-            </View>
+            {tab_list ? (
+                <View style={[styles.tab_con, Style.flexBetween]}>
+                    {tab_list?.map((item, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            activeOpacity={0.9}
+                            style={[active == item?.tab_type && styles.activeButton, styles.button, Style.flexCenter]}
+                            onPress={() => {
+                                setActive(item?.tab_type);
+                                setChart([]);
+                                tabClick && tabClick(item.tab_type);
+                            }}>
+                            <Text
+                                style={[
+                                    active == item?.tab_type
+                                        ? styles.activeText
+                                        : {fontSize: px(12), color: Colors.lightBlackColor},
+                                ]}>
+                                {item.tab_name}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            ) : null}
             {/* 收益率 */}
             <View
                 style={[
@@ -395,10 +392,12 @@ const Header = ({
                             />
                         </View>
                     </LinearGradient>
-                    <Image
-                        source={{uri: advantage?.vs_img}}
-                        style={{height: px(100), width: px(343), marginTop: px(12)}}
-                    />
+                    {advantage?.vs_img && (
+                        <Image
+                            source={{uri: advantage?.vs_img}}
+                            style={{height: px(100), width: px(343), marginTop: px(12)}}
+                        />
+                    )}
                 </View>
             ) : null}
             {/* 图表 */}
