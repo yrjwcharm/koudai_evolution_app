@@ -23,6 +23,7 @@ import ToolMenusCard from '../components/ToolMenusCard';
 import PointCard from '../components/PointCard';
 import AdInfo from '../components/AdInfo';
 import StickyHeader from '~/components/Sticky';
+import LoadingTips from '~/components/LoadingTips';
 // type = 公墓 10;私募 20;投顾组合 30;计划 40;
 const PortfolioAssetList = ({route, navigation}) => {
     const jump = useJump();
@@ -67,7 +68,7 @@ const PortfolioAssetList = ({route, navigation}) => {
         return text;
     };
     const {summary = {}} = hold;
-    return (
+    return Object.keys(data)?.length > 0 ? (
         <>
             <Animated.ScrollView
                 style={{backgroundColor: Colors.bgColor}}
@@ -299,6 +300,8 @@ const PortfolioAssetList = ({route, navigation}) => {
                 <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
             )}
         </>
+    ) : (
+        <LoadingTips />
     );
 };
 
