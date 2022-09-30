@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-const defaultValue = {register: () => {}};
+const defaultValue = {register: () => {}, unregister: () => {}};
 
 const context = React.createContext(defaultValue);
 context.displayName = 'LogViewContext';
