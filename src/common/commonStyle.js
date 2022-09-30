@@ -43,6 +43,7 @@ export const Colors = {
     yellow: '#EB7121',
     //导航背景色
     navBgColor: '#FFF',
+    white: '#fff',
     // 导航title 颜色
     navTitleColor: '#121D3A',
     // 导航左item title color

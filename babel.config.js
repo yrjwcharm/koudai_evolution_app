@@ -14,6 +14,7 @@ module.exports = {
                 rootPathSuffix: 'src/',
             },
         ],
+        'react-native-reanimated/plugin',
     ],
     // plugins: ["transform-decorators-legacy"]
 };

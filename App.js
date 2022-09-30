@@ -32,7 +32,16 @@ if (process.env.NODE_ENV === 'development') {
     global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
     global.WebSocket = global.originalWebSocket || global.WebSocket;
 }
-
+//release环境下清除redux-logger日志及测试日志
+if (!__DEV__) {
+    global.console = {
+        info: () => {},
+        log: () => {},
+        warn: () => {},
+        debug: () => {},
+        error: () => {},
+    };
+}
 if (Platform.OS === 'android') {
     //启用安卓动画
     if (UIManager.setLayoutAnimationEnabledExperimental) {

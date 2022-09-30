@@ -60,6 +60,7 @@ import Evaluation from '../pages/Evaluation/Evaluation'; //定制
 import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
+import ProfitDetail from '../pages/Assets/ProfitDetail'; //收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
@@ -500,7 +501,7 @@ export default function AppStack() {
                 <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
                 <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
                 <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
-                <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
+                <Stack.Screen name="TotalIncomeDetail" component={ProfitDetail} options={{title: '收益明细'}} />
                 <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
                 <Stack.Screen
                     name="HistoryInvestPlan"

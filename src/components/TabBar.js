@@ -25,6 +25,8 @@ export default class TabBar extends Component {
             ? this.props.btnColor
                 ? this.props.btnColor
                 : Colors.btnColor
+            : this.props.inActiveColor
+            ? this.props.inActiveColor
             : Colors.darkGrayColor;
         const fontSize = isTabActive
             ? this.props.activeFontSize
@@ -40,7 +42,15 @@ export default class TabBar extends Component {
                 accessibilityTraits="button"
                 onPress={() => onPressHandler(page)}>
                 <View style={[styles.tab]}>
-                    <Text style={[{color: textColor, fontWeight: 'bold', fontSize, paddingVertical: px(6)}]}>
+                    <Text
+                        style={[
+                            {
+                                color: textColor,
+                                fontWeight: isTabActive ? 'bold' : 'normal',
+                                fontSize,
+                                paddingVertical: px(6),
+                            },
+                        ]}>
                         {name}
                     </Text>
                 </View>
