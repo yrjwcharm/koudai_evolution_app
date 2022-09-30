@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 19:51:09
+ * @LastEditTime: 2022-09-30 11:03:54
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -737,7 +737,7 @@ const RenderOptionalTabBar = (props) => {
                         {marginLeft: idx > 0 ? px(8) : 0},
                     ]}
                     onPress={() => {
-                        global.LogTool({event: props.myTabs[props.activeTab].event_id});
+                        global.LogTool({event: props.myTabs[idx].event_id});
                         props.goToPage(idx);
                     }}>
                     <Text style={[styles.optionalTabText, {color: props.activeTab === idx ? '#fff' : '#121D3A'}]}>

@@ -265,7 +265,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                     key={dex}
                                     activeOpacity={0.9}
                                     onPress={() => {
-                                        global.LogTool({event: btn.event});
+                                        global.LogTool({event: btn.event_id});
                                         jump(btn.url);
                                     }}
                                     style={[
