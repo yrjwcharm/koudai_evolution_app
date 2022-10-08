@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 17:27:08
+ * @LastEditTime: 2022-10-08 17:37:49
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -134,7 +134,7 @@ export default function EditSortFund({navigation, route}) {
                 };
                 let res = await handleCancle(params);
                 if (res.code === '000000') getData();
-                Toast.show(res.message, {onHidden: () => navigation.goBack()});
+                Toast.show(res.message);
             },
         });
     };
@@ -156,7 +156,10 @@ export default function EditSortFund({navigation, route}) {
                     <Text style={{fontSize: px(13), marginLeft: px(8)}}>全选</Text>
                 </TouchableOpacity>
                 {result?.button ? (
-                    <TouchableOpacity style={styles.btn} onPress={handleAllDelete} disabled={check == 0}>
+                    <TouchableOpacity
+                        style={[styles.btn, {opacity: check == 0 ? 0.3 : 1}]}
+                        onPress={handleAllDelete}
+                        disabled={check == 0}>
                         <Text style={styles.btn_text}>{result?.button.text}</Text>
                     </TouchableOpacity>
                 ) : null}
