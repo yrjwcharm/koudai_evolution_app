@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-20 15:03:03
+ * @LastEditTime: 2022-09-30 18:00:55
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -147,11 +147,11 @@ export const baseAreaChart = (
         limitInPlot:true,
         offsetY: -5,
         background: {
-          fill: '#E74949',
+          fill: '#4BA471',
           padding: 2,
         },
         pointStyle: {
-          fill: '#E74949'
+          fill: '#4BA471'
         },
         textStyle: {
           fontSize: 10, // 字体大小
@@ -164,11 +164,11 @@ export const baseAreaChart = (
         content: ${JSON.stringify(tag_position?.redeem?.name)},
         limitInPlot:true,
         background: {
-          fill: '#4BA471',
+          fill: '#E74949',
           padding: 2,
         },
         pointStyle: {
-          fill: '#4BA471'
+          fill: '#E74949'
         },
         textStyle: {
           fontSize: 10, // 字体大小

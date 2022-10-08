@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2022-04-25 10:40:32
-<<<<<<< HEAD
-=======
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 15:00:20
->>>>>>> master
  * @Description: 全局弹窗监听路由变化
  */
 import React, {forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState} from 'react';

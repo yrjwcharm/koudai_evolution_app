@@ -209,6 +209,7 @@ import AppTag from '~/pages/Auth/AppTag'; //用户标签选择
 import UpgradeToPortfolio from '~/pages/Assets/UpgradeDetail/UpgradeToPortfolio'; // 升级到组合详情
 import UpgradeToPlan from '~/pages/Assets/UpgradeDetail/UpgradeToPlan'; // 升级到计划详情
 import UpgradeConfirm from '~/pages/Assets/UpgradeDetail/UpgradeConfirm'; // 升级到计划详情
+import ProjectHome from '~/pages/Project/ProjectHome'; // 计划首页
 import ProjectSetTradeModel from '~/pages/Project/ProjectSetTradeModel'; //计划设置买卖模式
 import HoldingDetail from '~/pages/Assets/HoldingDetail'; // 持仓详情页
 import MfbHome from '~/pages/Mfb/MfbHome'; // 魔方宝首页
@@ -925,6 +926,7 @@ export default function AppStack() {
                 <Stack.Screen name="UpgradeToPlan" component={UpgradeToPlan} options={{title: ''}} />
                 <Stack.Screen name="UpgradeToPortfolio" component={UpgradeToPortfolio} options={{title: ''}} />
                 <Stack.Screen name="UpgradeConfirm" component={UpgradeConfirm} options={{title: '资产升级'}} />
+                <Stack.Screen name="ProjectHome" component={ProjectHome} options={{title: ''}} />
                 <Stack.Screen
                     name="ProjectSetTradeModel"
                     component={ProjectSetTradeModel}
