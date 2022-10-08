@@ -71,6 +71,7 @@ const PortfolioAssetList = ({route, navigation}) => {
     return Object.keys(data)?.length > 0 ? (
         <>
             <Animated.ScrollView
+                scrollIndicatorInsets={{right: 1}}
                 style={{backgroundColor: Colors.bgColor}}
                 onScroll={
                     Animated.event(
@@ -170,7 +171,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 key={index}
                                 onPress={() => handleSort(head)}
                                 style={{
-                                    flex: index == 2 ? 0.8 : 1,
+                                    flex: index == 0 ? 1.4 : 1,
                                     ...Style.flexRow,
                                     justifyContent: index == 0 ? 'flex-start' : 'flex-end',
                                 }}>
@@ -239,14 +240,14 @@ const PortfolioAssetList = ({route, navigation}) => {
                             <View style={Style.flexRow}>
                                 {/* 基金 */}
                                 {type == 10 ? (
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 1.4}}>
                                         <Text style={[styles.name]} numberOfLines={1}>
                                             {name}
                                         </Text>
                                         <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
                                     </View>
                                 ) : (
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 1.4}}>
                                         <Text style={styles.holdingDays}>{holding_days}</Text>
                                         {/* 计划工具icon */}
 
@@ -277,7 +278,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     <Text style={styles.amountLightText}>{share}</Text>
                                 </View>
                                 {/* 净值/成本 */}
-                                <View style={{alignItems: 'flex-end', flex: 0.8}}>
+                                <View style={{alignItems: 'flex-end', flex: 1}}>
                                     <Text style={styles.card_amount}>{nav}</Text>
                                     <Text style={styles.amountLightText}>{cost_nav}</Text>
                                 </View>

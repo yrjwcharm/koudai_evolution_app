@@ -22,7 +22,9 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
         setChart(res.result);
     };
     useEffect(() => {
-        getChartData();
+        if (Object.keys(summary).length > 0) {
+            getChartData();
+        }
     }, [summary]);
     return (
         <TouchableWithoutFeedback onPress={() => jump(summary?.url)}>
