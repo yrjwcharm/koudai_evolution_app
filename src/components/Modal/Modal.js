@@ -1,12 +1,5 @@
 /*
  * @Date: 2021-01-07 12:09:49
- * @Author: yhc
- * @LastEditors: Please set LastEditors
-<<<<<<< HEAD
- * @LastEditTime: 2022-09-30 14:12:18
-=======
- * @LastEditTime: 2022-09-26 16:37:06
->>>>>>> master
  * @Description:
  */
 /**
