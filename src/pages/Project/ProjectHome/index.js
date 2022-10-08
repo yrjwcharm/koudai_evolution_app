@@ -6,7 +6,6 @@ import {ScrollView, Text, View, Image, TouchableOpacity, RefreshControl, Activit
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {Colors, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
-import NavBar from '~/components/NavBar';
 import RenderSignal from './RenderSignal';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {getProjectData} from './service';
@@ -25,7 +24,7 @@ import TooltipComponent from './TooltipComponent';
 import withNetState from '~/components/withNetState';
 const CopilotView = walkthroughable(View);
 
-const Index = ({start}) => {
+const Index = ({navigation, start}) => {
     const [data, setData] = useState({});
     const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
     const [refreshing, setRefreshing] = useState(false);
@@ -39,6 +38,8 @@ const Index = ({start}) => {
         refresh && setRefreshing(true);
         let res = await getProjectData();
         setRefreshing(false);
+        const {title = '计划'} = res.result || {};
+        navigation.setOptions({title});
         setData(res.result);
 
         if (is_login && res.result?.is_guide_page === 1) {
@@ -64,7 +65,6 @@ const Index = ({start}) => {
 
     return (
         <>
-            <NavBar title="计划" />
             {data ? (
                 <ScrollView
                     style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}
