@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 15:22:30
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -76,13 +76,15 @@ const styles = StyleSheet.create({
         bottom: px(17),
         backgroundColor: Colors.red,
         borderRadius: px(20),
-        paddingVertical: Platform.select({android: 1.6, ios: 1.5}),
-        paddingHorizontal: px(6),
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
+        minWidth: px(14),
     },
     point_text: {
         color: '#fff',
-        fontSize: Font.textSm,
-        lineHeight: px(15),
+        fontSize: px(9),
+        lineHeight: px(10),
         fontFamily: Font.numFontFamily,
+        textAlign: 'center',
     },
 });
