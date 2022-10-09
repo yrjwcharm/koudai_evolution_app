@@ -11,6 +11,7 @@ import ProductList from './ProductList';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {px} from '~/utils/appUtil';
+import FastImage from 'react-native-fast-image';
 
 const AlbumHeader = ({
     data: {bg_img, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
@@ -145,7 +146,17 @@ const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, sty
                         <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
+                {true ? (
+                    <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtnWrap}>
+                        <FastImage
+                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit.png'}}
+                            style={styles.bottomBtnIcon}
+                        />
+                        <Text style={styles.bottomBtnText}>修改专题</Text>
+                    </TouchableOpacity>
+                ) : null}
             </View>
+            {false ? <View style={styles.mask} /> : null}
         </View>
     );
 };
@@ -206,6 +217,34 @@ const styles = StyleSheet.create({
         paddingVertical: px(6),
         paddingHorizontal: px(12),
         borderRadius: px(20),
+    },
+    bottomBtnWrap: {
+        borderTopColor: '#e9eaef',
+        borderTopWidth: 0.5,
+        paddingVertical: px(12),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    bottomBtnIcon: {
+        width: px(16),
+        height: px(16),
+    },
+    bottomBtnText: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#0051CC',
+        marginLeft: px(4),
+    },
+    mask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#fff',
+        zIndex: 2,
+        opacity: 0.8,
     },
 });
 

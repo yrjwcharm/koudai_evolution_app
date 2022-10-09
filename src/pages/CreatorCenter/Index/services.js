@@ -8,3 +8,7 @@ import http from '~/services';
 export const getData = (data) => {
     return http.get('/xxx', data);
 };
+
+export const getUnRead = (data) => {
+    return http.get('/message/unread/20210101', data);
+};

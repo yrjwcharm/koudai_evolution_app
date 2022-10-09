@@ -261,6 +261,7 @@ import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransfer
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
+import SubjectCollection from '~/pages/CreatorCenter/SubjectCollection'; // 专题合集
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1048,6 +1049,7 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="TradeTransfer" component={TradeTransfer} options={{title: ''}} />
                 <Stack.Screen name="TransferDetail" component={TransferDetail} options={{title: ''}} />
+                <Stack.Screen name="SubjectCollection" component={SubjectCollection} options={{title: '专题合集'}} />
             </Stack.Navigator>
         </>
     );
