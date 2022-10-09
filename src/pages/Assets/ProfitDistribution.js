@@ -1,14 +1,14 @@
 import React, {useRef} from 'react';
-import {View, StyleSheet, Text, Dimensions} from 'react-native';
+import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {deviceWidth, px as text, px} from '../../utils/appUtil';
 import {Colors, Space, Style} from '../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import Tab from '../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import DayProfit from './profits/DayProfit';
-import MonthProfit from './profits/MonthProfit';
-import YearProfit from './profits/YearProfit';
-import TotalProfit from './profits/TotalProfit';
+import DayProfit from './Profits/DayProfit';
+import MonthProfit from './Profits/MonthProfit';
+import YearProfit from './Profits/YearProfit';
+import TotalProfit from './Profits/TotalProfit';
 
 const ProfitDistribution = () => {
     const tabsRef = useRef(['日收益', '月收益', '年收益', '累计收益']);
@@ -29,7 +29,7 @@ const ProfitDistribution = () => {
         },
     };
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <BoxShadow setting={{...shadow}}>
                 <View style={styles.header}>
                     <View style={Style.flexEvenly}>
@@ -49,10 +49,10 @@ const ProfitDistribution = () => {
                 </View>
             </BoxShadow>
             <View style={{marginTop: px(26)}} />
-            {/*<BoxShadow setting={{...shadow, height: Dimensions.get('window').height}}>*/}
             <View style={styles.section}>
                 <ScrollableTabView
                     renderTabBar={() => (
+                        //解决key unique
                         <Tab
                             style={styles.borderStyle}
                             btnColor={Colors.defaultColor}
@@ -69,8 +69,7 @@ const ProfitDistribution = () => {
                     })}
                 </ScrollableTabView>
             </View>
-            {/*</BoxShadow>*/}
-        </View>
+        </ScrollView>
     );
 };
 
@@ -79,7 +78,6 @@ ProfitDistribution.propTypes = {};
 export default ProfitDistribution;
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: Colors.bgColor,
     },
     header: {
@@ -110,7 +108,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(5),
     },
     section: {
-        flex: 1,
         marginHorizontal: px(16),
     },
 });

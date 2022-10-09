@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     },
     listRow: {
         marginTop: px(12),
-
         ...Style.flexBetween,
     },
     typeView: {

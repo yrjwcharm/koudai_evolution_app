@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useLayoutEffect, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../components/TabBar';
 import {Colors, Space, Style} from '../../common/commonStyle';
@@ -30,7 +30,6 @@ const ProfitDetail = ({navigation}) => {
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             <ScrollableTabView
-                style={[styles.container]}
                 renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
                 initialPage={0}
                 onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
@@ -43,8 +42,7 @@ const ProfitDetail = ({navigation}) => {
 };
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: Colors.bgColor,
+        backgroundColor: Colors.red,
     },
     topRightBtn: {
         flex: 1,

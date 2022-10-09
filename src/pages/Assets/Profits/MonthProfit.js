@@ -194,10 +194,12 @@ const CalendarHeader = ({time, subtract, isAdd, add}) => {
 export default MonthProfit;
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         paddingTop: px(16),
+        paddingBottom: px(20),
         paddingHorizontal: px(12),
         backgroundColor: Colors.white,
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
     },
     chartHeader: {},
     selMonth: {

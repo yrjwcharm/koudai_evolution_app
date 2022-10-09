@@ -277,10 +277,12 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     container: {
-        flex: 1,
         paddingTop: px(16),
+        paddingBottom: px(20),
         paddingHorizontal: px(12),
         backgroundColor: Colors.white,
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
     },
     chartHeader: {},
     selMonth: {

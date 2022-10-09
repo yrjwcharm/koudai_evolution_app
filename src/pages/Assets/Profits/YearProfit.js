@@ -143,9 +143,11 @@ const styles = StyleSheet.create({
         color: '#9AA0B1',
     },
     container: {
-        flex: 1,
         paddingTop: px(16),
+        paddingBottom: px(20),
         paddingHorizontal: px(12),
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
         backgroundColor: Colors.white,
     },
     chartLeft: {

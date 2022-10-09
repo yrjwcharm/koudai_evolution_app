@@ -10,7 +10,7 @@ import {Text, View} from 'react-native';
 const TotalProfit = (props) => {
     return (
         <View>
-            <Text>222</Text>
+            <Text />
         </View>
     );
 };
