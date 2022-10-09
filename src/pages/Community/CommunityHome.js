@@ -24,10 +24,10 @@ const CommunityHome = () => {
                     width: deviceWidth,
                     // backgroundColor: '#fff',
                     zIndex: 10,
-                    // backgroundColor: scrollY.interpolate({
-                    //     inputRange: [0, px(130)],
-                    //     outputRange: ['#000', '#fff'],
-                    // }),
+                    backgroundColor: scrollY.interpolate({
+                        inputRange: [0, px(130)],
+                        outputRange: ['rgba(0,0,0,0)', '#fff'],
+                    }),
                 }}>
                 <Text>123</Text>
             </Animated.View>
@@ -45,10 +45,10 @@ const CommunityHome = () => {
                             },
                         ],
                         {
-                            useNativeDriver: true,
-                            listener: (event) => {
-                                // 在这里做一些额外的工作
-                                console.log(event);
+                            useNativeDriver: false,
+                            listener: (e) => {
+                                let y = e.nativeEvent.contentOffset.y;
+                                console.log(e);
                             },
                         }
                     ) // 使用原生动画驱动
