@@ -6,7 +6,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {DeviceEventEmitter, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import Image from 'react-native-fast-image';
-import share from '~/assets/img/article/share.png';
+import share from '~/assets/img/icon/shareFund.png';
 import {navigationRef} from './hooks/RootNavigation';
 import {ShareModal} from './Modal';
 import http from '~/services';
@@ -69,7 +69,7 @@ const Index = () => {
                             activeOpacity={0.8}
                             onPress={() => shareModal.current.show()}
                             style={{paddingHorizontal: px(16)}}>
-                            <Image source={icon ? {uri: icon} : share} style={{width: px(20), height: px(20)}} />
+                            <Image source={icon ? {uri: icon} : share} style={{width: px(24), height: px(24)}} />
                         </TouchableOpacity>
                     ),
                 });

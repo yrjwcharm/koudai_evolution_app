@@ -9,6 +9,7 @@ import {px, isIphoneX} from '../utils/appUtil';
 import Index from '../pages/MofangIndex'; //魔方首页
 import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
+import Community from '../pages/Community/Home'; // 社区首页
 import NewHome from '../pages/Assets/Asset/Asset'; //资产页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
@@ -56,7 +57,7 @@ export default function Tabbar() {
                                 />
                             );
                         }
-                    } else if (route.name === 'Vision') {
+                    } else if (route.name === 'Vision' || route.name === 'Community') {
                         if (focused) {
                             return (
                                 <FastImage
@@ -172,6 +173,7 @@ export default function Tabbar() {
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             {/* <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} /> */}
+            <Tab.Screen name="Community" component={Community} options={{tabBarLabel: '社区'}} />
 
             <Tab.Screen
                 name="Home"
