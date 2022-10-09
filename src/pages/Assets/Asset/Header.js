@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 15:22:30
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -34,21 +34,22 @@ const Header = ({newMes}) => {
                     {/* 消息 */}
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={{position: 'relative', ...Style.flexRow, marginRight: px(16)}}
+                        style={{position: 'relative', ...Style.flexRow}}
                         onPress={() => {
                             global.LogTool('indexNotificationCenter');
                             jump({path: 'RemindMessage'});
                         }}>
+                        <Image
+                            style={{width: px(24), height: px(24)}}
+                            source={{
+                                uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
+                            }}
+                        />
                         {newMes ? (
                             <View style={[styles.point_sty, Style.flexCenter]}>
                                 <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
                             </View>
                         ) : null}
-                        <Image
-                            style={{width: px(20), height: px(20)}}
-                            source={require('~/assets/img/index/message.png')}
-                        />
-                        <Text style={{fontSize: px(13), fontWeight: Font.weightMedium}}>消息中心</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -71,17 +72,19 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(70),
-        bottom: px(12),
+        left: px(15),
+        bottom: px(17),
         backgroundColor: Colors.red,
         borderRadius: px(20),
-        paddingVertical: Platform.select({android: 1.6, ios: 1.5}),
-        paddingHorizontal: px(6),
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
+        minWidth: px(14),
     },
     point_text: {
         color: '#fff',
-        fontSize: Font.textSm,
-        lineHeight: px(15),
+        fontSize: px(9),
+        lineHeight: px(10),
         fontFamily: Font.numFontFamily,
+        textAlign: 'center',
     },
 });

@@ -28,7 +28,7 @@ const Index = ({navigation}) => {
     const [data, setData] = useState(null);
     const [holding, setHolding] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
-    const is_login = useSelector((store) => store.userInfo)?.toJS().is_login;
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const [newMes, setNewmessage] = useState(0);
     const [showEye, setShowEye] = useState('true');
     const scrollRef = useRef();
@@ -52,13 +52,17 @@ const Index = ({navigation}) => {
         refresh && setRefreshing(true);
         getData();
         getHoldingData();
-        is_login && readInterface();
     };
     useFocusEffect(
         useCallback(() => {
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [is_login])
+        }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            userInfo.is_login && readInterface();
+        }, [userInfo.is_login])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
@@ -104,7 +108,7 @@ const Index = ({navigation}) => {
                     </View>
                 )}
             </ScrollView>
-            {!is_login && <LoginMask />}
+            {!userInfo.is_login && <LoginMask />}
             {data?.bottom_notice && (
                 <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
             )}

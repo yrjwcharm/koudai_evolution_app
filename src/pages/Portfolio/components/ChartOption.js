@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 18:00:55
+ * @LastEditTime: 2022-10-08 17:30:42
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -283,9 +283,9 @@ export const baseAreaChart = (
     }).style('tag', {
       fill: function fill(val) {
         if (val === 2) {
-          return '#4BA471';
-        } else if (val === 1) {
           return '#E74949';
+        } else if (val === 1) {
+          return '#4BA471';
         }else if (val === 3) {
             return '#0051CC';
          }else if(val===4){
