@@ -104,7 +104,6 @@ function App(props) {
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const _handleAppStateChange = (nextAppState) => {

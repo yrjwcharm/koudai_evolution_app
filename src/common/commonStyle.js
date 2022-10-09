@@ -21,7 +21,7 @@ export const Colors = {
     // 默认深灰色字体颜色
     darkGrayColor: '#9aA1B2',
     // 默认浅灰色字体颜色
-    lightGrayColor: '#9aA1B2',
+    lightGrayColor: '#9AA0B1',
     // 默认分割线颜色
     lineColor: '#E2E4EA',
     // 默认placeholder颜色
@@ -32,6 +32,7 @@ export const Colors = {
     linkColor: '#0051CC',
     // 输入框背景色
     inputBg: '#F5F6F8',
+    transparent: 'transparent',
     // 红色 涨、报错
     red: '#E74949',
     // 绿色 跌

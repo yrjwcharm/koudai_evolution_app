@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #calendar {
+            width: 210px;
+            margin: 100px auto;
+            overflow: hidden;
+            border: 1px solid #000;
+            padding: 20px;
+            position: relative
+        }
+
+        #calendar h4 {
+            text-align: center;
+            margin-bottom: 10px
+        }
+
+        #calendar .a1 {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        #calendar .a2 {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #calendar .week {
+            height: 30px;
+            line-height: 20px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 10px
+        }
+
+        #calendar .week li {
+            float: left;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            list-style: none;
+        }
+
+        #calendar .dateList {
+            overflow: hidden;
+            clear: both
+        }
+
+        #calendar .dateList li {
+            float: left;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            list-style: none;
+        }
+
+        #calendar .dateList .ccc {
+            color: #ccc;
+        }
+
+        #calendar .dateList .red {
+            background: #F90;
+            color: #fff;
+        }
+
+        #calendar .dateList .sun {
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+<div id="calendar">
+    <h4>2019年10月</h4>
+    <a href="javascript:;" class="a1" id="prev">上月</a>
+    <a href="javascript:;" class="a2" id="next">下月</a>
+    <ul class="week">
+        <li>日</li>
+        <li>一</li>
+        <li>二</li>
+        <li>三</li>
+        <li>四</li>
+        <li>五</li>
+        <li>六</li>
+    </ul>
+    <ul class="dateList" id="dateList"></ul>
+</div>
+<script type="text/javascript">
+    var dateList = document.getElementById("dateList")
+    var prev = document.getElementById("prev")
+    var next = document.getElementById("next")
+    var h4 = document.getElementsByTagName("h4")[0]
+    var iNow = 0
+    prev.onclick = function() {
+        iNow--
+        calender(iNow)
+    }
+    next.onclick = function() {
+        iNow++
+        calender(iNow)
+    }
+    calender(iNow)
+    function calender(n) {
+        var date = new Date
+        // 获取今天是几号
+        var nowDate = date.getDate()
+        // 把时间拨到n的偏移量所代表的月份的1号
+        date.setMonth(date.getMonth() + n, 1)
+        // 得到当前年份
+        var year = date.getFullYear()
+        // 得到当前月份
+        var month = date.getMonth() + 1
+        // 设置标题
+        h4.innerHTML = year + "年" + month + "月"
+        // 得到一号是星期几
+        var week = date.getDay()
+        var nowMonth = date.getMonth()
+        // 这个月总共有多少天
+        // 把日期拨到下个月的0号(这个月的最后一天)
+        date.setMonth(nowMonth + 1, 0)
+        var allDays = date.getDate()
+        var str = ""
+        // week个空的li
+        for (var i = 0; i < week; i++) {
+            str += "<li></li>"
+        }
+        // allDays个有日期的li
+        for (var j = 1; j <= allDays; j++) {
+            // 判断月份是当前的还是以后的？
+            if (n > 0) {
+                // 以后的月份,只需要判断周末
+                if ((week + j) % 7 === 0 || (week + j) % 7 === 1) {
+                    // 判断周末
+                    // 空白li的数量加上当前日期对7求余
+                    str += "<li class='sun'>" + j + "</li>"
+                } else {
+                    str += "<li>" + j + "</li>"
+                }
+            } else if (n < 0) {
+                // 以前的日期,直接全部置灰
+                str += "<li class='ccc'>" + j + "</li>"
+            } else {
+                // 当前月
+                if (j < nowDate) {
+                    // 以前的日期
+                    str += "<li class='ccc'>" + j + "</li>"
+                } else if (j === nowDate) {
+                    // 今天
+                    str += "<li class='red'>" + j + "</li>"
+                } else if ((week + j) % 7 === 0 || (week + j) % 7 === 1) {
+                    // 判断周末
+                    // 空白li的数量加上当前日期对7求余
+                    str += "<li class='sun'>" + j + "</li>"
+                } else {
+                    str += "<li>" + j + "</li>"
+                }
+            }
+        }
+        dateList.innerHTML = str
+    }
+</script>
+</body>
+</html>
