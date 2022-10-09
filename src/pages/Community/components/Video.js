@@ -3,7 +3,16 @@
  * @Date: 2022-09-28 14:44:03
  * @Description:
  */
-import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions, Animated} from 'react-native';
+import {
+    StyleSheet,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    View,
+    Text,
+    Image,
+    Dimensions,
+    Animated,
+} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -11,10 +20,10 @@ import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import Slider from 'react-native-slider';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import _ from 'lodash';
-import {Modalize} from 'react-native-modalize';
+
 import {useNavigation} from '@react-navigation/native';
 const HEIGHT = Dimensions.get('screen').height;
-const RenderVideo = ({data, index, pause, currentIndex}) => {
+const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
@@ -22,8 +31,7 @@ const RenderVideo = ({data, index, pause, currentIndex}) => {
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const navigation = useNavigation();
     const video = useRef();
-    const modalizeRef = useRef(null);
-    const animated = useRef(new Animated.Value(0)).current;
+
     useEffect(() => {
         setShowPause(false);
         setPaused(index != currentIndex);
@@ -63,7 +71,7 @@ const RenderVideo = ({data, index, pause, currentIndex}) => {
         []
     );
     const onOpen = () => {
-        modalizeRef.current?.open();
+        openModal();
     };
     return (
         <>
@@ -79,6 +87,7 @@ const RenderVideo = ({data, index, pause, currentIndex}) => {
                                     translateY: animated.interpolate({
                                         inputRange: [0, 0.25, 1],
                                         outputRange: [0, -100, -400],
+                                        extrapolate: 'clamp',
                                     }),
                                 },
                             ],
@@ -154,46 +163,6 @@ const RenderVideo = ({data, index, pause, currentIndex}) => {
                     <Text style={styles.timeText}>{formatMediaTime(duration)}</Text>
                 </View>
             </View>
-            <Modalize
-                ref={modalizeRef}
-                modalHeight={px(600)}
-                withHandle={false}
-                overlayStyle={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
-                panGestureAnimatedValue={animated}
-                HeaderComponent={() => {
-                    return (
-                        <View style={[{height: px(64), paddingHorizontal: px(16)}, Style.flexBetween]}>
-                            <Text style={{fontSize: px(16), fontWeight: '700'}}>评论22</Text>
-                            <TouchableWithoutFeedback activeOpacity={0.9} onPress={() => modalizeRef.current?.close()}>
-                                <AntDesign name="close" size={px(20)} />
-                            </TouchableWithoutFeedback>
-                        </View>
-                    );
-                }}
-                FooterComponent={() => {
-                    return (
-                        <TouchableWithoutFeedback style={styles.footer} activeOpacity={0.9}>
-                            <View style={styles.footer_content}>
-                                <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    );
-                }}>
-                <View style={{height: px(1000)}}>
-                    <Animated.View
-                        style={{
-                            opacity: animated.interpolate({inputRange: [0, 1], outputRange: [1, 0.75]}),
-                            transform: [
-                                {
-                                    scale: animated.interpolate({inputRange: [0, 1], outputRange: [1, 0]}),
-                                },
-                            ],
-                        }}>
-                        <Text>12312</Text>
-                    </Animated.View>
-                    <Text onPress={() => navigation.navigate('Login')}>...your content</Text>
-                </View>
-            </Modalize>
         </>
     );
 };

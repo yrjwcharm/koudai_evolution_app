@@ -330,6 +330,7 @@ const Index = (props) => {
                                 </>
                             ) : null}
                             <Button title="视频" onPress={() => props.navigation.navigate('CommunityVideo')} />
+                            <Button title="社区" onPress={() => props.navigation.navigate('CommunityHome')} />
                             {/* 推荐 */}
                             {data?.custom_info ? (
                                 !data.show_recommend ? (
