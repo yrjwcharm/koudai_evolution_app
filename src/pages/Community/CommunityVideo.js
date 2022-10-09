@@ -2,14 +2,15 @@
  * @Date: 2022-09-28 14:39:51
  * @Description:
  */
-import {StyleSheet, FlatList, View, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {StyleSheet, FlatList, View, Text, TouchableOpacity, Dimensions, Animated} from 'react-native';
+import React, {useCallback, useState, useRef} from 'react';
 import Video from './components/Video';
-import {deviceWidth as WIDTH, px} from '~/utils/appUtil';
+import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import NavBar from '~/components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Style} from '~/common/commonStyle';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
+
 const viewabilityConfig = {
     waitForInteraction: true,
     viewAreaCoveragePercentThreshold: 95,
@@ -43,7 +44,6 @@ const CommunityVideo = ({navigation}) => {
         );
     };
     const _onViewableItemsChanged = useCallback(({viewableItems}) => {
-        console.log(viewableItems);
         if (viewableItems.length === 1) {
             setCurrentItem(viewableItems[0].index);
         }
@@ -90,5 +90,20 @@ const styles = StyleSheet.create({
         left: px(16),
         zIndex: 10,
         // backgroundColor: 'red',
+    },
+    footer: {
+        paddingHorizontal: px(16),
+        borderColor: '#DDDDDD',
+        borderTopWidth: 0.5,
+        backgroundColor: '#fff',
+        paddingTop: px(8),
+        paddingBottom: px(8) + (isIphoneX() ? 34 : 0),
+    },
+    footer_content: {
+        height: px(36),
+        backgroundColor: '#F3F5F8',
+        borderRadius: px(16),
+        justifyContent: 'center',
+        paddingLeft: px(16),
     },
 });

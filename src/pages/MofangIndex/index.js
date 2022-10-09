@@ -329,6 +329,7 @@ const Index = (props) => {
                                     />
                                 </>
                             ) : null}
+                            <Button title="视频" onPress={() => props.navigation.navigate('CommunityVideo')} />
                             {/* 推荐 */}
                             {data?.custom_info ? (
                                 !data.show_recommend ? (
