@@ -1,7 +1,7 @@
 import http from '../../../services';
 
 /**
- * 获取累计收益chart
+ *
  * @param params
  * @returns {Promise<null|*|undefined>}
  */

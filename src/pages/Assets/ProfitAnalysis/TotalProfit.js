@@ -20,6 +20,7 @@ import RenderList from './components/RenderList';
 import dayjs from 'dayjs';
 
 const TotalProfit = (props) => {
+    const [data, setData] = useState([]);
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
     const [mockData] = useState([
         {
@@ -111,7 +112,6 @@ const TotalProfit = (props) => {
             },
         },
     ]);
-    const [data, setData] = useState([]);
     const sortRenderList = useCallback(() => {}, []);
     /** @name 渲染图表 */
     const RenderChart = ({data = {}}) => {
@@ -125,7 +125,6 @@ const TotalProfit = (props) => {
         const legendTitleArr = useRef([]);
         const rootRef = useRef();
         const currentIndex = useRef('');
-
         const getColor = (t) => {
             if (!t) {
                 return Colors.defaultColor;
@@ -217,30 +216,24 @@ const TotalProfit = (props) => {
         };
 
         const init = async () => {
-            const res = await getChartData({
-                poid: 'X00F000003',
-                period: 'y1',
-                type: 'acc_profit',
-                app: '4000',
-                ts: '1665375248360',
-                did: 'd7012f521452990f',
-                uid: '1000000002',
-                utid: 'e9faa52d3cefa609',
-            });
-            if (res.code == '000000') {
-                setChartData(res.result);
-                setLoading(false);
-                setShowEmpty(true);
-            }
+            try {
+                const res = await getChartData({
+                    poid: 'X00F000003',
+                    period: 'y1',
+                    type: 'acc_profit',
+                });
+                if (res.code == '000000') {
+                    setChartData(res.result);
+                    setLoading(false);
+                    setShowEmpty(true);
+                }
+            } catch (e) {}
         };
 
         useEffect(() => {
             init();
         }, [key, params, period]);
 
-        useEffect(() => {
-            label && onHide();
-        }, [label]);
         return (
             <>
                 {label?.length > 0 ? (

@@ -502,8 +502,21 @@ export default function AppStack() {
                 <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
                 <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
                 <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
-                <Stack.Screen name="TotalIncomeDetail" component={ProfitDetail} options={{title: '收益明细'}} />
-                <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
+                <Stack.Screen
+                    name="TotalIncomeDetail"
+                    component={ProfitDetail}
+                    options={{
+                        gestureEnabled: false,
+                        title: '收益明细',
+                    }}
+                />
+                <Stack.Screen
+                    name="IncomeDetail"
+                    component={IncomeDetail}
+                    options={{
+                        title: '组合收益明细',
+                    }}
+                />
                 <Stack.Screen
                     name="HistoryInvestPlan"
                     component={HistoryInvestPlan}
