@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-10 15:13:44
+ * @LastEditTime: 2022-10-10 15:51:21
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -166,21 +166,17 @@ const Product = ({navigation}) => {
                         }}>
                         <TouchableOpacity
                             activeOpacity={0.9}
-                            style={[Style.flexBetween, styles.secure_card, styles.common_card]}
+                            style={[styles.secure_card, styles.common_card]}
                             onPress={() => {
                                 global.LogTool(item.click_code);
                                 jump(item?.url);
                             }}>
-                            <View>
-                                <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                    <FastImage
-                                        resizeMode={FastImage.resizeMode.contain}
-                                        style={{width: px(24), height: px(24)}}
-                                        source={{uri: item.icon}}
-                                    />
-                                    <Text style={[styles.secure_title, {marginLeft: px(4)}]}>{item?.title}</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <FastImage style={{width: px(18), height: px(18)}} source={{uri: item.icon}} />
+                                <View style={{marginLeft: px(5)}}>
+                                    <Text style={[styles.secure_title]}>{item?.title}</Text>
+                                    <Text style={styles.light_text}>{item.desc}</Text>
                                 </View>
-                                <Text style={styles.light_text}>{item.desc}</Text>
                             </View>
                             <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
                         </TouchableOpacity>
@@ -199,7 +195,7 @@ const Product = ({navigation}) => {
                 {backgroundColor: bgType ? proData?.bg_colors?.[1] : proData?.popular_banner_list?.bg_colors?.[1]},
             ]}>
             <LinearGradient
-                style={{paddingTop: insets.top + px(7), height: px(178)}}
+                style={{paddingTop: insets.top + px(6), height: px(170)}}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 colors={
@@ -279,7 +275,7 @@ const Product = ({navigation}) => {
                     showsHorizontalScrollIndicator={false}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getFollowTabs(0)} />}
                     style={{flex: 1}}>
-                    <View style={{paddingHorizontal: px(16)}}>
+                    <View style={{paddingHorizontal: px(16), marginTop: px(8)}}>
                         {followTabs?.follow?.tabs ? (
                             <ScrollableTabView
                                 prerenderingSiblingsNumber={followTabs?.follow?.tabs?.length}
@@ -607,6 +603,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: px(28),
+        marginTop: px(10),
     },
     menuItem: {
         justifyContent: 'center',
@@ -624,24 +621,28 @@ const styles = StyleSheet.create({
     },
     secure_card: {
         width: px(165),
-        paddingVertical: px(12),
-        paddingHorizontal: px(14),
+        padding: px(14),
         height: px(61),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     common_card: {
         backgroundColor: '#fff',
-        borderRadius: px(6),
+        borderRadius: px(5),
         marginRight: px(12),
     },
     secure_title: {
-        fontSize: px(14),
-        lineHeight: px(20),
+        fontSize: px(13),
+        lineHeight: px(18),
         fontWeight: 'bold',
         color: Colors.defaultColor,
     },
     light_text: {
         fontSize: px(11),
+        lineHeight: px(15),
         color: Colors.lightGrayColor,
+        marginTop: px(4),
     },
     othersWrap: {
         backgroundColor: '#f5f6f8',
