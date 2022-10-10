@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-08 17:37:49
+ * @LastEditTime: 2022-10-10 18:04:46
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -51,7 +51,14 @@ export default function EditSortFund({navigation, route}) {
                     disabled={isActive}
                     style={[styles.rowItem, Style.flexBetween, {backgroundColor: isActive ? '#ddd' : '#fff'}]}>
                     <TouchableOpacity style={Style.flexRow} onPress={() => toggle(index)}>
-                        <AntDesign name={'checkcircle'} size={px(16)} color={item.check ? Colors.btnColor : '#ddd'} />
+                        <FastImage
+                            source={{
+                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                    item.check ? 'check' : 'uncheck'
+                                }.png`,
+                            }}
+                            style={{width: px(16), height: px(16)}}
+                        />
                         <View style={{marginLeft: px(8)}}>
                             <Text style={styles.title}>{item.name}</Text>
                             <View style={{flexDirection: 'row'}}>
@@ -69,7 +76,10 @@ export default function EditSortFund({navigation, route}) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <Entypo name="menu" size={px(20)} color={Colors.lightBlackColor} />
+                    <FastImage
+                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        style={{width: px(24), height: px(24)}}
+                    />
                 </TouchableOpacity>
             </ScaleDecorator>
         );

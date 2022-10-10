@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-10 15:51:21
+ * @LastEditTime: 2022-10-10 18:00:46
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -746,7 +746,7 @@ const SpecialList = ({data, tabButton}) => {
                 </TouchableOpacity>
             ))}
             {tabButton ? (
-                <View style={[Style.flexRow, {backgroundColor: '#fff'}]}>
+                <View style={[Style.flexRow, {backgroundColor: '#fff', borderRadius: px(6)}]}>
                     {tabButton?.map((btn, dex) => (
                         <TouchableOpacity
                             key={dex}
@@ -756,13 +756,20 @@ const SpecialList = ({data, tabButton}) => {
                                 jump(btn.url);
                             }}
                             style={[Style.flexRow, {flex: 1, paddingVertical: px(14), justifyContent: 'center'}]}>
-                            <Feather
-                                size={px(16)}
-                                name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
-                                color={Colors.btnColor}
-                            />
+                            {btn.icon == 'FollowAddFund' ? (
+                                <Feather size={px(16)} name={'plus-circle'} color={Colors.btnColor} />
+                            ) : (
+                                <FastImage
+                                    style={{width: px(16), height: px(16)}}
+                                    source={{
+                                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
+                                    }}
+                                />
+                            )}
                             <View style={{width: px(6)}} />
-                            <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                            <Text style={{color: Colors.btnColor, fontSize: px(12), lineHeight: px(17)}}>
+                                {btn.text}
+                            </Text>
                         </TouchableOpacity>
                     ))}
                 </View>

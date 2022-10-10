@@ -14,6 +14,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {useJump} from '~/components/hooks';
 import StickyHeader from '~/components/Sticky';
 import LoadingTips from '~/components/LoadingTips';
+import FastImage from 'react-native-fast-image';
 const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHeader, stickyHeaderY, scrollY}) => {
     const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
@@ -36,7 +37,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
     return (
         <>
             {body ? (
-                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <View style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6)}}>
                     {header && <FollowTableHeader header={header} />}
                     <View style={{flexDirection: 'row'}}>
                         {/* 处理第一列固定 */}
@@ -51,13 +52,13 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                 stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
                                 stickyScrollY={scrollY} // 把滑动距离传入
                             >
-                                <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
+                                {notStickyHeader ? null : <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />}
                                 <View style={[styles.tr, {height: px(47)}]}>
                                     <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                         <Text
                                             numberOfLines={1}
                                             style={{
-                                                fontSize: px(14),
+                                                fontSize: px(12),
                                                 color: Colors.lightBlackColor,
                                             }}>
                                             {body?.th[0]?.line?.title}
@@ -81,7 +82,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                             style={[
                                                 {
                                                     color: tr[0]?.line1?.color || Colors.lightBlackColor,
-                                                    fontSize: px(14),
+                                                    fontSize: px(13),
                                                 },
                                             ]}>
                                             {tr[0]?.line1?.value}
@@ -122,7 +123,9 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                     stickyScrollY={scrollY} // 把滑动距离传入
                                 >
                                     {/* 分割线 */}
-                                    <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
+                                    {notStickyHeader ? null : (
+                                        <View style={{height: 0.6, backgroundColor: '#E9EAEF'}} />
+                                    )}
                                     {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
@@ -272,13 +275,21 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                         Style.flexRow,
                                         {flex: 1, paddingVertical: px(14), justifyContent: 'center'},
                                     ]}>
-                                    <Feather
-                                        size={px(16)}
-                                        name={btn.icon == 'FollowAddFund' ? 'plus-circle' : 'list'}
-                                        color={Colors.btnColor}
-                                    />
+                                    {btn.icon == 'FollowAddFund' ? (
+                                        <Feather size={px(16)} name={'plus-circle'} color={Colors.btnColor} />
+                                    ) : (
+                                        <FastImage
+                                            style={{width: px(16), height: px(16)}}
+                                            source={{
+                                                uri:
+                                                    'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
+                                            }}
+                                        />
+                                    )}
                                     <View style={{width: px(6)}} />
-                                    <Text style={{color: Colors.btnColor}}>{btn.text}</Text>
+                                    <Text style={{color: Colors.btnColor, fontSize: px(12), lineHeight: px(17)}}>
+                                        {btn.text}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -299,9 +310,8 @@ const styles = StyleSheet.create({
     tr: {
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.6,
-        height: px(58),
+        height: px(60),
         justifyContent: 'center',
-        backgroundColor: '#fff',
     },
     th_line_desc: {
         color: Colors.lightGrayColor,
