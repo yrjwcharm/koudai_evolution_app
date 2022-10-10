@@ -83,7 +83,7 @@ const CreatorCenterIndex = () => {
         <View style={styles.container}>
             <View style={{width: '100%', height: px(265)}}>
                 <FastImage
-                    source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/51664352728_.pic_.png'}}
+                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/51664352728_.pic_.png'}}
                     style={styles.topBgImg}
                 />
                 <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>

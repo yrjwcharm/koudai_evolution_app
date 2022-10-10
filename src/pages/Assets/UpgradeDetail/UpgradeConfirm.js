@@ -204,7 +204,7 @@ const UpgradeConfirm = ({route, navigation}) => {
                         <FastImage
                             style={styles.icon}
                             source={{
-                                uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/151658114869_.pic_.png',
+                                uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/151658114869_.pic_.png',
                             }}
                         />
                         {/* bottom */}

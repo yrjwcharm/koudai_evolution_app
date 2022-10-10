@@ -20,17 +20,17 @@ const CommunityVideo = ({navigation}) => {
     const [currentItem, setCurrentItem] = useState(0);
 
     const data = [
-        {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/02/1582871555786417_1582872294679554.mp4'},
-        {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
-        {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
-        // {uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
+        {uri: 'http://static.licaimofang.com/wp-content/uploads/2020/02/1582871555786417_1582872294679554.mp4'},
+        {uri: 'http://static.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
+        {uri: 'http://static.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2020/06/a96f6886ce33a47326efc005b7e47efa.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/balace_video.mp4'},
+        // {uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/20220712adjust_long.mp4'},
     ];
     const getItemLayout = useCallback((data, index) => {
         return {length: HEIGHT, offset: HEIGHT * index, index};

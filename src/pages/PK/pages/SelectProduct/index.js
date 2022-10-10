@@ -333,7 +333,7 @@ const SelectProduct = (props) => {
                                 jump(data.search_button.url);
                             }}>
                             <FastImage
-                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/pk-search.png'}}
+                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
                                 style={{width: px(18), height: px(18), marginRight: px(4)}}
                             />
                             <Text style={styles.placeholderText}>{data.search_box_content}</Text>

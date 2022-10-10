@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 17:31:47
+ * @LastEditTime: 2022-10-10 15:13:44
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -239,8 +239,8 @@ const Product = ({navigation}) => {
                             jump(proData?.search?.url);
                         }}>
                         <FastImage
-                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/pk-search.png'}}
-                            style={{width: px(18), height: px(18), marginRight: px(4)}}
+                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                            style={{width: px(18), height: px(18), marginLeft: px(2), marginRight: px(4)}}
                         />
                         <Text style={styles.searchPlaceHolder}>{proData?.search?.placeholder}</Text>
                     </TouchableOpacity>
