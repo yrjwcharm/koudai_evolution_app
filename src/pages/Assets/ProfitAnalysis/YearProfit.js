@@ -4,7 +4,7 @@
  * @Description:年收益
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
@@ -64,6 +64,9 @@ const YearProfit = (props) => {
         },
     ];
     useEffect(() => {
+        initData(selCurYear);
+    }, []);
+    const initData = (curYear) => {
         let startYear = dayjs().year() - 5;
         let endYear = dayjs().year();
         let arr = [];
@@ -82,12 +85,15 @@ const YearProfit = (props) => {
             }
         }
         //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-        let index = arr.findIndex((el) => el.day == selCurYear);
+        let index = arr.findIndex((el) => el.day == curYear);
         arr[index] && (arr[index].checked = true);
         setDateArr([...arr]);
-    }, []);
+    };
     const sortRenderList = useCallback(() => {}, []);
-
+    const getProfitBySelDate = (item) => {
+        setSelCurYear(item.day);
+        initData(item.day);
+    };
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft]}>
@@ -102,12 +108,15 @@ const YearProfit = (props) => {
                 {dateArr.map((el, index) => {
                     const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
                     return (
-                        <View
+                        <TouchableOpacity
                             key={props.tabLabel + `${el?.id + '' + index}`}
-                            style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
-                            <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
-                            <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
-                        </View>
+                            onPress={() => getProfitBySelDate(el)}>
+                            <View
+                                style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
+                                <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
+                                <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
+                            </View>
+                        </TouchableOpacity>
                     );
                 })}
             </View>
