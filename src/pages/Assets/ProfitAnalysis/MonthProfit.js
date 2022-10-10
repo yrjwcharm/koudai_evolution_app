@@ -16,6 +16,8 @@ import RenderList from './components/RenderList';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const MonthProfit = (props) => {
+    const [isCalendar, setIsCalendar] = useState(true);
+    const [isBarChart, setIsBarChart] = useState(false);
     const [diff, setDiff] = useState(0);
     const [isAdd, setIsAdd] = useState(false);
     const [date, setDate] = useState(dayjs());
@@ -143,46 +145,99 @@ const MonthProfit = (props) => {
         initData(selCurDate);
     }, [diff]);
     const sortRenderList = useCallback(() => {});
+    const selCalendarType = useCallback(() => {
+        setIsCalendar(true);
+        setIsBarChart(false);
+    });
+    const selBarChartType = useCallback(() => {
+        setIsCalendar(false);
+        setIsBarChart(true);
+    });
     return (
         <View style={styles.container}>
-            <CalendarHeader time={date.year()} subtract={subtract} add={add} isAdd={isAdd} />
-            <View style={commonStyle.monthFlex}>
-                {dateArr?.map((el, index) => {
-                    const month = dayjs(el?.day).month() + 1;
-                    const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
-                    return (
-                        <TouchableOpacity
-                            onPress={() => getProfitBySelDate(el)}
-                            key={props.tabLabel + `${el?.id + '' + index}`}>
-                            <View style={[commonStyle.month, wrapStyle]}>
-                                <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
-                                {el?.profit && <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>}
-                            </View>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            <CalendarHeader
+                isCalendar={isCalendar}
+                isBarChart={isBarChart}
+                selCalendarType={selCalendarType}
+                selBarChartType={selBarChartType}
+                date={date.year()}
+                subtract={subtract}
+                add={add}
+                isAdd={isAdd}
+            />
+            {isCalendar && (
+                <View style={commonStyle.monthFlex}>
+                    {dateArr?.map((el, index) => {
+                        const month = dayjs(el?.day).month() + 1;
+                        const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
+                        return (
+                            <TouchableOpacity
+                                onPress={() => getProfitBySelDate(el)}
+                                key={props.tabLabel + `${el?.id + '' + index}`}>
+                                <View style={[commonStyle.month, wrapStyle]}>
+                                    <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
+                                    {el?.profit && (
+                                        <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            )}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
         </View>
     );
 };
-const CalendarHeader = ({time, subtract, isAdd, add}) => {
+const CalendarHeader = ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, isAdd, add}) => {
     return (
         <View style={Style.flexBetween}>
             <View style={[styles.chartLeft]}>
-                <View style={[Style.flexCenter, styles.selChartType, {backgroundColor: Colors.white, width: px(60)}]}>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(12)}}>日历图</Text>
-                </View>
-                <View style={[Style.flexCenter, styles.selChartType]}>
-                    <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>柱状图</Text>
-                </View>
+                <TouchableOpacity onPress={selCalendarType}>
+                    <View
+                        style={[
+                            Style.flexCenter,
+                            styles.selChartType,
+                            isCalendar && {
+                                backgroundColor: Colors.white,
+                                width: px(60),
+                            },
+                        ]}>
+                        <Text
+                            style={{
+                                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
+                                fontSize: px(12),
+                            }}>
+                            日历图
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={selBarChartType}>
+                    <View
+                        style={[
+                            Style.flexCenter,
+                            styles.selChartType,
+                            isBarChart && {
+                                backgroundColor: Colors.white,
+                                width: px(60),
+                            },
+                        ]}>
+                        <Text
+                            style={{
+                                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
+                                fontSize: px(12),
+                            }}>
+                            柱状图
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
             <View style={styles.selMonth}>
                 <TouchableOpacity onPress={subtract}>
                     <Image source={require('../../../assets/img/icon/prev.png')} />
                 </TouchableOpacity>
-                <Text style={styles.MMText}>{time}</Text>
+                <Text style={styles.MMText}>{date}</Text>
                 {isAdd && (
                     <TouchableOpacity onPress={add}>
                         <Image

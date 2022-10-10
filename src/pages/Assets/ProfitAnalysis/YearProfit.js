@@ -14,6 +14,8 @@ const width = Dimensions.get('window').width;
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const YearProfit = (props) => {
+    const [isCalendar, setIsCalendar] = useState(true);
+    const [isBarChart, setIsBarChart] = useState(false);
     const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
@@ -94,32 +96,78 @@ const YearProfit = (props) => {
         setSelCurYear(item.day);
         initData(item.day);
     };
+    const selCalendarType = () => {
+        setIsCalendar(true);
+        setIsBarChart(false);
+    };
+    const selBarChartType = () => {
+        setIsCalendar(false);
+        setIsBarChart(true);
+    };
     return (
         <View style={styles.container}>
-            <View style={[styles.chartLeft]}>
-                <View style={[Style.flexCenter, styles.selChartType, {backgroundColor: Colors.white, width: px(60)}]}>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(12)}}>日历图</Text>
-                </View>
-                <View style={[Style.flexCenter, styles.selChartType]}>
-                    <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>柱状图</Text>
-                </View>
+            <View style={[styles.chartLeft, {}]}>
+                <TouchableOpacity onPress={selCalendarType}>
+                    <View
+                        style={[
+                            Style.flexCenter,
+                            styles.selChartType,
+                            isCalendar && {
+                                backgroundColor: Colors.white,
+                                width: px(60),
+                            },
+                        ]}>
+                        <Text
+                            style={{
+                                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
+                                fontSize: px(12),
+                            }}>
+                            日历图
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={selBarChartType}>
+                    <View
+                        style={[
+                            Style.flexCenter,
+                            styles.selChartType,
+                            isBarChart && {
+                                backgroundColor: Colors.white,
+                                width: px(60),
+                            },
+                        ]}>
+                        <Text
+                            style={{
+                                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
+                                fontSize: px(12),
+                            }}>
+                            柱状图
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
-            <View style={styles.yearFlex}>
-                {dateArr.map((el, index) => {
-                    const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
-                    return (
-                        <TouchableOpacity
-                            key={props.tabLabel + `${el?.id + '' + index}`}
-                            onPress={() => getProfitBySelDate(el)}>
-                            <View
-                                style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
-                                <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
-                                <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            {isCalendar && (
+                <View style={styles.yearFlex}>
+                    {dateArr.map((el, index) => {
+                        const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
+                        return (
+                            <TouchableOpacity
+                                key={props.tabLabel + `${el?.id + '' + index}`}
+                                onPress={() => getProfitBySelDate(el)}>
+                                <View
+                                    style={[
+                                        styles.year,
+                                        wrapStyle,
+                                        {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0},
+                                    ]}>
+                                    <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
+                                    <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            )}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurYear} />
         </View>
     );
