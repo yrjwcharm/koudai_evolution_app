@@ -263,6 +263,7 @@ import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转
 import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
 import SubjectCollection from '~/pages/CreatorCenter/SubjectCollection'; // 专题合集
 import DataDetails from '~/pages/CreatorCenter/DataDetails'; // 数据明细
+import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 社区合集
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1052,6 +1053,11 @@ export default function AppStack() {
                 <Stack.Screen name="TransferDetail" component={TransferDetail} options={{title: ''}} />
                 <Stack.Screen name="SubjectCollection" component={SubjectCollection} options={{title: '专题合集'}} />
                 <Stack.Screen name="DataDetails" component={DataDetails} options={{title: '数据明细'}} />
+                <Stack.Screen
+                    name="CommunityCollection"
+                    component={CommunityCollection}
+                    options={{title: '社区合集'}}
+                />
             </Stack.Navigator>
         </>
     );
