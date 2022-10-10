@@ -342,7 +342,7 @@ chart.scale({
   value: {
     alias: '${alias.value || ''}',
     tickCount: 5,
-    range: [ 0, 1 ],
+    range: [ 0, 1],
     formatter: (value) => {
       return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value'};
     }

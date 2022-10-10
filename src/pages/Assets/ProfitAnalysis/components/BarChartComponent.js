@@ -7,7 +7,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../../common/commonStyle';
-import {px as text} from '../../../../utils/appUtil';
+import {px, px as text} from '../../../../utils/appUtil';
 import Dot from '../../../Portfolio/components/Dot';
 import FastImage from 'react-native-fast-image';
 import {Chart} from '../../../../components/Chart';
@@ -119,7 +119,7 @@ const BarChartComponent = ({chartData}) => {
                                 );
                             })}
                         </View>
-                        <View style={{height: 240}}>
+                        <View style={{height: 200}}>
                             {chartData.chart && (
                                 <Chart
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
         height: text(282),
     },
     netValueChart: {
+        position: 'relative',
+        right: px(14),
         backgroundColor: '#fff',
     },
     bigTitle: {

@@ -40,29 +40,17 @@ const DayProfit = (props) => {
             message: 'success',
             result: {
                 label: [
-                    {name: '时间', val: '2022-10-10'},
-                    // {name: '全天候组合等级10', val: '-6.45%'},
-                    // {name: '比较基准', val: '-7.34%'},
+                    {name: '时间', val: '2022-10'},
+                    {name: '我的组合', val: '0.00%'},
                 ],
                 chart: [
-                    {date: '2022-09-13', type: '全天候组合等级10', value: 0, tag: 0},
-                    {date: '2022-10-10', type: '上证指数', value: -0.0734, tag: 0},
+                    {date: '2022-05', value: 0.0362, type: '我的组合'},
+                    {date: '2022-06', value: 0.0707, type: '我的组合'},
+                    {date: '2022-07', value: -0.0188, type: '我的组合'},
+                    {date: '2022-08', value: -0.0247, type: '我的组合'},
+                    {date: '2022-09', value: -0.0585, type: '我的组合'},
+                    {date: '2022-10', value: 0.02, type: '我的组合'},
                 ],
-                sub_tabs: [
-                    {name: '近一月', val: 'm1'},
-                    {name: '近三月', val: 'm3'},
-                    {name: '近六月', val: 'm6'},
-                    {name: '近一年', val: 'y1'},
-                    {name: '投资以来', val: 'my'},
-                ],
-                table: {
-                    th: ['名称', '涨跌幅', '最大回撤'],
-                    tr_list: [
-                        ['全天候组合等级10', '-6.45%', '-6.45%'],
-                        ['上证指数', '-7.34%', '-7.34%'],
-                    ],
-                },
-                tag_position: {trans3: {name: '转入', position: ['2022-09-23', -0.0487]}},
                 tips: {
                     title: '比较基准',
                     content: [
@@ -74,10 +62,8 @@ const DayProfit = (props) => {
                         },
                     ],
                 },
-                max_ratio: 0.001,
-                po_name: '全天候组合',
             },
-            traceId: '171cb73b35d7e3c7171cb73b35d7814a',
+            traceId: '171cb96d48067057171cb96d480432d0',
         };
         setChart(res.result);
     }, []);
