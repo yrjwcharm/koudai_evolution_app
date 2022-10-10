@@ -4,8 +4,8 @@
  * @Description: 日收益
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, Dimensions, TextInput, Platform} from 'react-native';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {Text, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Platform} from 'react-native';
+import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {compareDate} from '../../../utils/common';
@@ -13,24 +13,14 @@ import RenderList from './components/RenderList';
 import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
-import Dot from '../../Portfolio/components/Dot';
-import FastImage from 'react-native-fast-image';
-import {Chart} from '../../../components/Chart';
-import {dodgeColumn} from '../../Portfolio/components/ChartOption';
-import EmptyTip from '../../../components/EmptyTip';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import http from '../../../services';
+import BarChartComponent from './components/BarChartComponent';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const DayProfit = (props) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
-    const insets = useSafeAreaInsets();
-    const textTime = useRef(null);
-    const textThisFund = useRef(null);
-    const textBenchmark = useRef(null);
-    const [showEmpty, setShowEmpty] = useState(false);
     const [chartData, setChart] = useState({});
+
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
@@ -45,52 +35,51 @@ const DayProfit = (props) => {
         //         setChart(res.result);
         //     }
         // });
-    }, []);
-    // 获取日收益背景颜色
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.darkGrayColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.darkGrayColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
-    // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            // console.log(items);
-            textTime.current?.setNativeProps({text: items[0]?.title});
-            textThisFund.current?.setNativeProps({
-                text: `${items[0]?.value}`,
-                style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
-            });
-            textBenchmark.current?.setNativeProps({
-                text: `${items[1]?.value}`,
-                style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
-            });
-        },
-        [getColor]
-    );
-    // 图表滑动结束
-    const onHide = useCallback(() => {
-        chartData.label[0] && textTime.current?.setNativeProps({text: chartData.label[0]?.val});
-        chartData.label[1] &&
-            textThisFund.current?.setNativeProps({
-                text: `${chartData.label[1]?.val}`,
-                style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
-            });
-        chartData.label[2] &&
-            textBenchmark.current?.setNativeProps({
-                text: `${chartData.label[2]?.val}`,
-                style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
-            });
-    }, [chartData, getColor]);
-    useEffect(() => {
-        init();
+        let res = {
+            code: '000000',
+            message: 'success',
+            result: {
+                label: [
+                    {name: '时间', val: '2022-10-10'},
+                    // {name: '全天候组合等级10', val: '-6.45%'},
+                    // {name: '比较基准', val: '-7.34%'},
+                ],
+                chart: [
+                    {date: '2022-09-13', type: '全天候组合等级10', value: 0, tag: 0},
+                    {date: '2022-10-10', type: '上证指数', value: -0.0734, tag: 0},
+                ],
+                sub_tabs: [
+                    {name: '近一月', val: 'm1'},
+                    {name: '近三月', val: 'm3'},
+                    {name: '近六月', val: 'm6'},
+                    {name: '近一年', val: 'y1'},
+                    {name: '投资以来', val: 'my'},
+                ],
+                table: {
+                    th: ['名称', '涨跌幅', '最大回撤'],
+                    tr_list: [
+                        ['全天候组合等级10', '-6.45%', '-6.45%'],
+                        ['上证指数', '-7.34%', '-7.34%'],
+                    ],
+                },
+                tag_position: {trans3: {name: '转入', position: ['2022-09-23', -0.0487]}},
+                tips: {
+                    title: '比较基准',
+                    content: [
+                        {key: '比较基准', val: '上证指数'},
+                        {
+                            key: '什么是比较基准',
+                            val:
+                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
+                        },
+                    ],
+                },
+                max_ratio: 0.001,
+                po_name: '全天候组合',
+            },
+            traceId: '171cb73b35d7e3c7171cb73b35d7814a',
+        };
+        setChart(res.result);
     }, []);
     const [mockData] = useState([
         {
@@ -303,6 +292,10 @@ const DayProfit = (props) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
+
+    useEffect(() => {
+        init();
+    }, [init]);
     return (
         <View style={styles.container}>
             {/*chart类型*/}
@@ -345,66 +338,7 @@ const DayProfit = (props) => {
                     </View>
                 </View>
             )}
-            {isBarChart && (
-                <>
-                    <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
-                        <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
-                            {chartData?.label?.map((item, index) => {
-                                return (
-                                    <View key={item.val + index} style={styles.legendItem}>
-                                        <TextInput
-                                            defaultValue={`${item.val}`}
-                                            editable={false}
-                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                            style={[
-                                                styles.legendTitle,
-                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
-                                            ]}
-                                        />
-                                        <View style={Style.flexRow}>
-                                            {index !== 0 && (
-                                                <Dot
-                                                    bgColor={
-                                                        index === 1
-                                                            ? 'rgba(231, 73, 73, 0.15)'
-                                                            : 'rgba(84, 89, 104, 0.15)'
-                                                    }
-                                                    color={index === 1 ? Colors.red : Colors.descColor}
-                                                />
-                                            )}
-                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                                {item.name}
-                                            </Text>
-                                            {/*{chartData?.tips && index === 2 && (*/}
-                                            {/*    <TouchableOpacity*/}
-                                            {/*        activeOpacity={0.8}*/}
-                                            {/*        style={{position: 'absolute', right: text(-16)}}*/}
-                                            {/*        onPress={() => showTips(chartData.tips)}>*/}
-                                            {/*        <FastImage*/}
-                                            {/*            style={{width: text(12), height: text(12)}}*/}
-                                            {/*            source={require('../../assets/img/tip.png')}*/}
-                                            {/*        />*/}
-                                            {/*    </TouchableOpacity>*/}
-                                            {/*)}*/}
-                                        </View>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                        <View style={{height: 240}}>
-                            {chartData.chart && (
-                                <Chart
-                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
-                                    data={chartData.chart}
-                                    onChange={onChartChange}
-                                    onHide={onHide}
-                                    style={{width: '100%'}}
-                                />
-                            )}
-                        </View>
-                    </View>
-                </>
-            )}
+            {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
         </View>
