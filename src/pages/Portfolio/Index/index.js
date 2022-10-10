@@ -86,35 +86,33 @@ const PortfolioIndex = ({navigation, route}) => {
     return data ? (
         <View style={styles.container}>
             <LogView.Wrapper style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
-                {data?.nav ? (
-                    <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
-                        {genTopMenu()}
-                    </LinearGradient>
-                ) : null}
-                {data?.popular_subjects ? (
-                    <LogView.Item
-                        style={styles.recommendCon}
-                        logKey={data?.popular_subjects.type}
-                        handler={() => {
-                            global.LogTool({
-                                event: 'rec_show',
-                                ctrl: data?.popular_subjects.subject_id,
-                                plateid: data?.popular_subjects.plateid,
-                                rec_json: data?.popular_subjects.rec_json,
-                            });
-                        }}>
-                        <ProductList
-                            data={data?.popular_subjects.items}
-                            type={data?.popular_subjects.type}
-                            logParams={{
-                                event: 'rec_click',
-                                ctrl: data?.popular_subjects.subject_id,
-                                plateid: data?.popular_subjects.plateid,
-                                rec_json: data?.popular_subjects.rec_json,
-                            }}
-                        />
-                    </LogView.Item>
-                ) : null}
+                <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                    {data?.nav ? genTopMenu() : null}
+                    {data?.popular_subjects ? (
+                        <LogView.Item
+                            style={styles.recommendCon}
+                            logKey={data?.popular_subjects.type}
+                            handler={() => {
+                                global.LogTool({
+                                    event: 'rec_show',
+                                    ctrl: data?.popular_subjects.subject_id,
+                                    plateid: data?.popular_subjects.plateid,
+                                    rec_json: data?.popular_subjects.rec_json,
+                                });
+                            }}>
+                            <ProductList
+                                data={data?.popular_subjects.items}
+                                type={data?.popular_subjects.type}
+                                logParams={{
+                                    event: 'rec_click',
+                                    ctrl: data?.popular_subjects.subject_id,
+                                    plateid: data?.popular_subjects.plateid,
+                                    rec_json: data?.popular_subjects.rec_json,
+                                }}
+                            />
+                        </LogView.Item>
+                    ) : null}
+                </LinearGradient>
                 {data?.subjects ? (
                     <View style={{paddingHorizontal: Space.padding, backgroundColor: Colors.bgColor}}>
                         {data?.subjects?.map?.((subject, index, ar) => (

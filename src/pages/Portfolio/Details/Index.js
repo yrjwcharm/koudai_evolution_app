@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 16:48:29
+ * @LastEditTime: 2022-10-10 17:13:56
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -152,9 +152,9 @@ const PortFolioDetail = ({navigation, route}) => {
 
         const {event_id, is_follow, url, plan_id, item_type} = btn;
 
-        if (event_id === 'consult_click') {
+        if (event_id === 'consult') {
             bottomModal.current.show();
-        } else if (event_id === 'follow_click') {
+        } else if (event_id === 'optional') {
             clickRef.current = false;
             (is_follow ? followCancel : followAdd)({item_id: plan_id, item_type: item_type}).then((res) => {
                 if (res.code === '000000') {
