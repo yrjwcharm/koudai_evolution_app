@@ -22,7 +22,7 @@ const ChartComponent = ({isActive}) => {
     const [tip, setTip] = useState({});
 
     const chartLabelDefaultRef = useRef({});
-    const bottomModal2 = useRef();
+    const bottomModal = useRef();
 
     useEffect(() => {
         isActive && getData();
@@ -81,7 +81,7 @@ const ChartComponent = ({isActive}) => {
                                     activeOpacity={0.8}
                                     onPress={() => {
                                         // setTip({});
-                                        // bottomModal2.current.show();
+                                        // bottomModal.current.show();
                                     }}>
                                     <FastImage
                                         source={{
@@ -102,7 +102,7 @@ const ChartComponent = ({isActive}) => {
                                     activeOpacity={0.8}
                                     onPress={() => {
                                         // setTip({});
-                                        // bottomModal2.current.show();
+                                        // bottomModal.current.show();
                                     }}>
                                     <FastImage
                                         source={{
@@ -156,7 +156,7 @@ const ChartComponent = ({isActive}) => {
                       ))
                     : null}
             </View>
-            <BottomModal ref={bottomModal2} title={tip?.title}>
+            <BottomModal ref={bottomModal} title={tip?.title}>
                 <View style={[{padding: px(16)}]}>
                     {tip?.content?.map?.((item, index) => {
                         return (
