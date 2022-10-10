@@ -235,7 +235,7 @@ const DayProfit = () => {
                         const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                         return (
                             <TouchableOpacity onPress={() => getProfitBySelDate(el)}>
-                                <View style={[styles.dateItem, wrapStyle, {...el?.style}]} key={el + '' + index}>
+                                <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
                                     <Text style={[styles.day, dayStyle]}>{date}</Text>
                                     {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
                                 </View>

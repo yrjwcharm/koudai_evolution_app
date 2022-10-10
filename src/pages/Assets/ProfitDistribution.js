@@ -5,10 +5,10 @@ import {Colors, Space, Style} from '../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import Tab from '../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import DayProfit from './Profits/DayProfit';
-import MonthProfit from './Profits/MonthProfit';
-import YearProfit from './Profits/YearProfit';
-import TotalProfit from './Profits/TotalProfit';
+import DayProfit from './ProfitAnalysis/DayProfit';
+import MonthProfit from './ProfitAnalysis/MonthProfit';
+import YearProfit from './ProfitAnalysis/YearProfit';
+import TotalProfit from './ProfitAnalysis/TotalProfit';
 
 const ProfitDistribution = () => {
     const tabsRef = useRef(['日收益', '月收益', '年收益', '累计收益']);
@@ -62,10 +62,10 @@ const ProfitDistribution = () => {
                     initialPage={0}
                     onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
                     {tabsRef.current.map((tab, index) => {
-                        if (index == 0) return <DayProfit tabLabel={tab} key={`tab${index}`} />;
-                        if (index == 1) return <MonthProfit tabLabel={tab} key={`tab${index}`} />;
-                        if (index == 2) return <YearProfit tabLabel={tab} key={`tab${index}`} />;
-                        if (index == 3) return <TotalProfit tabLabel={tab} key={`tab${index}`} />;
+                        if (index == 0) return <DayProfit tabLabel={tab} key={`${tab + '' + index}`} />;
+                        if (index == 1) return <MonthProfit tabLabel={tab} key={`${tab + '' + index}`} />;
+                        if (index == 2) return <YearProfit tabLabel={tab} key={`${tab + '' + index}`} />;
+                        if (index == 3) return <TotalProfit tabLabel={tab} key={`${tab + '' + index}`} />;
                     })}
                 </ScrollableTabView>
             </View>

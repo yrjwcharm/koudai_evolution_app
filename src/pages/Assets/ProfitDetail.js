@@ -12,6 +12,8 @@ import ProfitDistribution from './ProfitDistribution';
 import {px} from '../../utils/appUtil';
 
 const ProfitDetail = ({navigation}) => {
+    const tabsRef = useRef(['全部', '公募基金', '投顾组合', '理财计划', '私募基金']);
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -26,7 +28,6 @@ const ProfitDetail = ({navigation}) => {
             ),
         });
     }, []);
-    const tabsRef = useRef(['全部', '公募基金', '投顾组合', '理财计划', '私募基金']);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             <ScrollableTabView
@@ -34,7 +35,7 @@ const ProfitDetail = ({navigation}) => {
                 initialPage={0}
                 onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
                 {tabsRef.current.map((tab, index) => {
-                    return <ProfitDistribution tabLabel={tab} key={`tab${index}`} />;
+                    return <ProfitDistribution tabLabel={tab} key={`${tab + '' + index}`} />;
                 })}
             </ScrollableTabView>
         </View>
