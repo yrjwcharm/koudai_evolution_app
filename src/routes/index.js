@@ -259,7 +259,8 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
-import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
+import CommunityVideo from '~/pages/Community/CommunityVideo';
+import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; //短视频播放
 const Stack = createStackNavigator();
 
 export default function AppStack() {

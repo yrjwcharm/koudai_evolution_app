@@ -12,8 +12,11 @@ import {compareDate} from '../../../utils/common';
 import RenderList from './components/RenderList';
 import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
+import ChartHeader from './components/ChartHeader';
 
 const DayProfit = () => {
+    const [isCalendar, setIsCalendar] = useState(true);
+    const [isBarChart, setIsBarChart] = useState(false);
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
@@ -189,35 +192,26 @@ const DayProfit = () => {
         // let differ = dayjs(item.day).month() + 1 - (date.month() + 1);
     };
     const sortRenderList = useCallback(() => {}, []);
+    const selCalendarType = useCallback(() => {
+        setIsCalendar(true);
+        setIsBarChart(false);
+    });
+    const selBarChartType = useCallback(() => {
+        setIsCalendar(false);
+        setIsBarChart(true);
+    });
     return (
         <View style={styles.container}>
             {/*日历图｜柱状图*/}
-            <View style={Style.flexBetween}>
-                <View style={[styles.chartLeft]}>
-                    <View
-                        style={[Style.flexCenter, styles.selChartType, {backgroundColor: Colors.white, width: px(60)}]}>
-                        <Text style={{color: Colors.defaultColor, fontSize: px(12)}}>日历图</Text>
-                    </View>
-                    <View style={[Style.flexCenter, styles.selChartType]}>
-                        <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>柱状图</Text>
-                    </View>
-                </View>
-                <View style={styles.selMonth}>
-                    <TouchableOpacity onPress={subMonth}>
-                        <Image
-                            style={{width: px(13), height: px(13)}}
-                            source={require('../../../assets/img/icon/prev.png')}
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.MMText}>{date.month() + 1}月</Text>
-                    <TouchableOpacity onPress={addMonth}>
-                        <Image
-                            style={{width: px(13), height: px(13)}}
-                            source={require('../../../assets/img/icon/next.png')}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <ChartHeader
+                selCalendarType={selCalendarType}
+                selBarChartType={selBarChartType}
+                isCalendar={isCalendar}
+                isBarChart={isBarChart}
+                subMonth={subMonth}
+                addMonth={addMonth}
+                date={date.month() + 1 + '月'}
+            />
             {/*日历*/}
             <View style={{marginTop: px(12)}}>
                 <View style={styles.weekFlex}>
@@ -251,6 +245,14 @@ const DayProfit = () => {
 };
 export default DayProfit;
 const styles = StyleSheet.create({
+    container: {
+        paddingTop: px(16),
+        paddingBottom: px(20),
+        paddingHorizontal: px(12),
+        backgroundColor: Colors.white,
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
+    },
     dateWrap: {
         marginTop: px(8),
         ...Style.flexBetween,
@@ -276,47 +278,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: Colors.lightGrayColor,
     },
-    container: {
-        paddingTop: px(16),
-        paddingBottom: px(20),
-        paddingHorizontal: px(12),
-        backgroundColor: Colors.white,
-        borderBottomLeftRadius: px(5),
-        borderBottomRightRadius: px(5),
-    },
     chartHeader: {},
-    selMonth: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    MMText: {
-        fontSize: px(15),
-        fontFamily: Font.numFontFamily,
-        color: '#3D3D3D',
-        marginLeft: px(10),
-        marginRight: px(8),
-    },
-    prevIcon: {
-        resizeMode: 'cover',
-    },
-    nextIcon: {
-        resizeMode: 'cover',
-    },
-    chartLeft: {
-        width: px(126),
-        height: px(27),
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        backgroundColor: '#F4F4F4',
-        borderRadius: px(6),
-        opacity: 1,
-    },
-    selChartType: {
-        borderRadius: px(4),
-        height: px(21),
-        fontFamily: Font.numRegular,
-    },
     weekFlex: {
         paddingHorizontal: px(16),
         flexDirection: 'row',
