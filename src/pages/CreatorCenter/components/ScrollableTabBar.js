@@ -12,12 +12,13 @@ const ScrollableTabBar = (props) => {
         <View style={[styles.container, props.style || {}]}>
             {props.tabs.map((item, idx) => (
                 <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.tabItem}
+                    activeOpacity={props?.disabledTabs?.includes?.(idx) ? 0.5 : 0.8}
+                    style={[styles.tabItem, {opacity: props?.disabledTabs?.includes?.(idx) ? 0.5 : 1}]}
                     key={idx}
                     onPress={() => {
                         props.goToPage(idx);
-                    }}>
+                    }}
+                    disabled={props?.disabledTabs?.includes?.(idx)}>
                     <Text style={[props.activeTab === idx ? styles.tabTextActive : styles.tabTextDefault]}>{item}</Text>
                     <View style={[styles.underLine, {opacity: props.activeTab === idx ? 1 : 0}]} />
                 </TouchableOpacity>

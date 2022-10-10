@@ -87,6 +87,7 @@ const CreatorCenterIndex = () => {
                     style={styles.topBgImg}
                 />
                 <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>
+                    {criticalState && <Text style={styles.navTitle}>管理中心</Text>}
                     <TouchableOpacity activeOpacity={0.8} style={styles.bellWrap}>
                         <FastImage source={criticalState ? bellBlack : bellWhite} style={styles.bell} />
                         {system ? (
@@ -139,7 +140,7 @@ const CreatorCenterIndex = () => {
                                             activeOpacity={0.7}
                                             style={styles.cardItemHeader}
                                             onPress={() => {
-                                                jump({path: 'SubjectCollection'});
+                                                jump({path: 'DataDetails'});
                                             }}>
                                             <Text style={styles.cardItemHeaderTitle}>社区合集</Text>
                                             <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
@@ -191,6 +192,16 @@ const styles = StyleSheet.create({
         paddingLeft: px(12),
         paddingRight: px(16),
         width: '100%',
+    },
+    navTitle: {
+        position: 'absolute',
+        left: px(14),
+        bottom: px(10),
+        width: '100%',
+        textAlign: 'center',
+        color: Colors.navTitleColor,
+        fontWeight: 'bold',
+        fontSize: px(17),
     },
     bellWrap: {
         marginVertical: px(10),
