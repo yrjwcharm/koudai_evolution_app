@@ -13,11 +13,13 @@ import {subtract} from 'mathjs';
 import {compareDate, delMille} from '../../../utils/common';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
+import BarChartComponent from './components/BarChartComponent';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const MonthProfit = (props) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
+    const [chartData, setChart] = useState({});
     const [diff, setDiff] = useState(0);
     const [isAdd, setIsAdd] = useState(false);
     const [date, setDate] = useState(dayjs());
@@ -153,6 +155,48 @@ const MonthProfit = (props) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
+    useEffect(() => {
+        init();
+    }, []);
+    const init = useCallback(() => {
+        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
+        //     setShowEmpty(true);
+        //     if (res.code === '000000') {
+        //         setChart(res.result);
+        //     }
+        // });
+        let res = {
+            code: '000000',
+            message: 'success',
+            result: {
+                label: [
+                    {name: '时间', val: '2022-08'},
+                    {name: '我的组合', val: '-0.024%'},
+                ],
+                chart: [
+                    {date: '2022-05', value: 0.0362, type: '我的组合'},
+                    {date: '2022-06', value: 0.0707, type: '我的组合'},
+                    {date: '2022-07', value: -0.0188, type: '我的组合'},
+                    {date: '2022-08', value: -0.0247, type: '我的组合'},
+                    {date: '2022-09', value: -0.0585, type: '我的组合'},
+                    {date: '2022-10', value: 0.02, type: '我的组合'},
+                ],
+                tips: {
+                    title: '比较基准',
+                    content: [
+                        {key: '比较基准', val: '上证指数'},
+                        {
+                            key: '什么是比较基准',
+                            val:
+                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
+                        },
+                    ],
+                },
+            },
+            traceId: '171cb96d48067057171cb96d480432d0',
+        };
+        setChart(res.result);
+    }, []);
     return (
         <View style={styles.container}>
             <CalendarHeader
@@ -185,6 +229,7 @@ const MonthProfit = (props) => {
                     })}
                 </View>
             )}
+            {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
         </View>

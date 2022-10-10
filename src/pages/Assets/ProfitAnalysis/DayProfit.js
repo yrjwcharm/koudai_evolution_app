@@ -40,16 +40,16 @@ const DayProfit = (props) => {
             message: 'success',
             result: {
                 label: [
-                    {name: '时间', val: '2022-10'},
-                    {name: '我的组合', val: '0.00%'},
+                    {name: '时间', val: '2022-09-20'},
+                    {name: '我的组合', val: '0.02%'},
                 ],
                 chart: [
-                    {date: '2022-05', value: 0.0362, type: '我的组合'},
-                    {date: '2022-06', value: 0.0707, type: '我的组合'},
-                    {date: '2022-07', value: -0.0188, type: '我的组合'},
-                    {date: '2022-08', value: -0.0247, type: '我的组合'},
-                    {date: '2022-09', value: -0.0585, type: '我的组合'},
-                    {date: '2022-10', value: 0.02, type: '我的组合'},
+                    // {date: '2022-05', value: 0.0362, type: '我的组合'},
+                    // {date: '2022-06', value: 0.0707, type: '我的组合'},
+                    // {date: '2022-07', value: -0.0188, type: '我的组合'},
+                    // {date: '2022-08', value: -0.0247, type: '我的组合'},
+                    {date: '2022-09-01', value: -0.0585, type: '我的组合'},
+                    {date: '2022-10-01', value: 0.02, type: '我的组合'},
                 ],
                 tips: {
                     title: '比较基准',

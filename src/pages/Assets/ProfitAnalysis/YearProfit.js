@@ -10,12 +10,14 @@ import {px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
+import BarChartComponent from './components/BarChartComponent';
 const width = Dimensions.get('window').width;
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const YearProfit = (props) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
+    const [chartData, setChart] = useState({});
     const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
@@ -104,6 +106,47 @@ const YearProfit = (props) => {
         setIsCalendar(false);
         setIsBarChart(true);
     };
+    const init = useCallback(() => {
+        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
+        //     setShowEmpty(true);
+        //     if (res.code === '000000') {
+        //         setChart(res.result);
+        //     }
+        // });
+        let res = {
+            code: '000000',
+            message: 'success',
+            result: {
+                label: [
+                    {name: '时间', val: '2022'},
+                    {name: '我的组合', val: '-0.05%'},
+                ],
+                chart: [
+                    {date: '2018', value: 0.0362, type: '我的组合'},
+                    {date: '2019', value: 0.0707, type: '我的组合'},
+                    {date: '2020', value: -0.0188, type: '我的组合'},
+                    {date: '2021', value: -0.0247, type: '我的组合'},
+                    {date: '2022', value: -0.0585, type: '我的组合'},
+                ],
+                tips: {
+                    title: '比较基准',
+                    content: [
+                        {key: '比较基准', val: '上证指数'},
+                        {
+                            key: '什么是比较基准',
+                            val:
+                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
+                        },
+                    ],
+                },
+            },
+            traceId: '171cb96d48067057171cb96d480432d0',
+        };
+        setChart(res.result);
+    }, []);
+    useEffect(() => {
+        init();
+    }, []);
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft, {}]}>
@@ -168,6 +211,7 @@ const YearProfit = (props) => {
                     })}
                 </View>
             )}
+            {isBarChart && <BarChartComponent chartData={chartData} />}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurYear} />
         </View>
     );

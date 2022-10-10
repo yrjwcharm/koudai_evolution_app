@@ -123,6 +123,7 @@ const BarChartComponent = ({chartData}) => {
                             {chartData.chart && (
                                 <Chart
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.green], {
+                                        appendPadding: [15, 50, 20, 15],
                                         profitMode: true,
                                     })}
                                     data={chartData.chart}
