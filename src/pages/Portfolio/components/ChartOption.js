@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: Please set LastEditors
+ * @LastEditors: yanruifeng
  * @LastEditTime: 2022-07-20 15:03:03
  * @Description: 基金相关图表配置
  */
@@ -627,13 +627,16 @@ export const dodgeColumn = (
         '#8683C9',
         '#EBDD69',
     ],
-    width = deviceWidth,
-    appendPadding = [15, 15, 25],
-    size = 10,
-    marginRatio = 0,
-    showGuide = false,
-    showTooltip = true,
-    profitMode = false // 收益模式 根据正负显示红色和绿色
+    //修改成参数默认值形式，方便传某个参数，其他直接赋予默认值
+    {
+        width = deviceWidth,
+        appendPadding = [15, 15, 25],
+        size = 10,
+        marginRatio = 0,
+        showGuide = false,
+        showTooltip = true,
+        profitMode = false,
+    } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
 chart = new F2.Chart({

@@ -122,7 +122,9 @@ const BarChartComponent = ({chartData}) => {
                         <View style={{height: 200}}>
                             {chartData.chart && (
                                 <Chart
-                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
+                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.green], {
+                                        profitMode: true,
+                                    })}
                                     data={chartData.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
