@@ -112,21 +112,6 @@ const TotalProfit = (props) => {
         },
     ]);
     const [data, setData] = useState([]);
-    const init = useCallback(() => {
-        initData();
-    }, []);
-    /**
-     * @returns {Promise<void>}
-     */
-    const initData = async () => {
-        const res = await getChartData({
-            fund_code: '000135',
-        });
-        res.code == '000000' && setData(res.result);
-    };
-    useEffect(() => {
-        init();
-    }, []);
     const sortRenderList = useCallback(() => {}, []);
     /** @name 渲染图表 */
     const RenderChart = ({data = {}}) => {

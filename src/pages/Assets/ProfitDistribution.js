@@ -62,7 +62,7 @@ const ProfitDistribution = () => {
                     initialPage={0}
                     onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
                     {tabsRef.current.map((tab, index) => {
-                        if (index == 0) return <DayProfit tabLabel={tab} key={`${tab + '' + index}`} />;
+                        if (index == 0) return <DayProfit tabLabel={tab} u key={`${tab + '' + index}`} />;
                         if (index == 1) return <MonthProfit tabLabel={tab} key={`${tab + '' + index}`} />;
                         if (index == 2) return <YearProfit tabLabel={tab} key={`${tab + '' + index}`} />;
                         if (index == 3) return <TotalProfit tabLabel={tab} key={`${tab + '' + index}`} />;

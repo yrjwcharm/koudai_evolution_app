@@ -13,8 +13,9 @@ import {subtract} from 'mathjs';
 import {compareDate, delMille} from '../../../utils/common';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
-
-const MonthProfit = () => {
+let UUID = require('uuidjs');
+let uuid = UUID.generate();
+const MonthProfit = (props) => {
     const [diff, setDiff] = useState(0);
     const [isAdd, setIsAdd] = useState(false);
     const [date, setDate] = useState(dayjs());
@@ -110,6 +111,7 @@ const MonthProfit = () => {
             let day = dayjs_.add(i, 'month').format('YYYY-MM');
             let item = {
                 day,
+                id: uuid,
                 profit: '0.00',
                 checked: false,
             };
@@ -149,7 +151,9 @@ const MonthProfit = () => {
                     const month = dayjs(el?.day).month() + 1;
                     const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
                     return (
-                        <TouchableOpacity onPress={() => getProfitBySelDate(el)}>
+                        <TouchableOpacity
+                            onPress={() => getProfitBySelDate(el)}
+                            key={props.tabLabel + `${el?.id + '' + index}`}>
                             <View style={[commonStyle.month, wrapStyle]}>
                                 <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
                                 {el?.profit && <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>}

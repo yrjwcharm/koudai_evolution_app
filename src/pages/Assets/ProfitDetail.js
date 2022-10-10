@@ -11,7 +11,8 @@ import {Colors, Space, Style} from '../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {px} from '../../utils/appUtil';
 
-const ProfitDetail = ({navigation}) => {
+const ProfitDetail = ({navigation, route}) => {
+    const {fund_code, poid, tabs, type = 0} = route.params || {};
     const tabsRef = useRef(['全部', '公募基金', '投顾组合', '理财计划', '私募基金']);
 
     useLayoutEffect(() => {

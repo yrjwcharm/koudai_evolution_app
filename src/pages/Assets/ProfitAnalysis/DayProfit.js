@@ -3,26 +3,99 @@
  * @Author: yanruifeng
  * @Description: 日收益
  */
-import React, {useCallback, useRef, useState} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native';
-import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px} from '../../../utils/appUtil';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Text, View, StyleSheet, Image, TouchableOpacity, Dimensions, TextInput, Platform} from 'react-native';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {compareDate} from '../../../utils/common';
 import RenderList from './components/RenderList';
 import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
-
-const DayProfit = () => {
+import Dot from '../../Portfolio/components/Dot';
+import FastImage from 'react-native-fast-image';
+import {Chart} from '../../../components/Chart';
+import {dodgeColumn} from '../../Portfolio/components/ChartOption';
+import EmptyTip from '../../../components/EmptyTip';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import http from '../../../services';
+let UUID = require('uuidjs');
+let uuid = UUID.generate();
+const DayProfit = (props) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
+    const insets = useSafeAreaInsets();
+    const textTime = useRef(null);
+    const textThisFund = useRef(null);
+    const textBenchmark = useRef(null);
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [chartData, setChart] = useState({});
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
+
+    const init = useCallback(() => {
+        http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
+            setShowEmpty(true);
+            if (res.code === '000000') {
+                setChart(res.result);
+            }
+        });
+    }, []);
+    // 下拉刷新回调
+    const onRefresh = useCallback(() => {
+        init();
+    }, [init]);
+    // 获取日收益背景颜色
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.darkGrayColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            // console.log(items);
+            textTime.current?.setNativeProps({text: items[0]?.title});
+            textThisFund.current?.setNativeProps({
+                text: `${items[0]?.value}`,
+                style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
+            });
+            textBenchmark.current?.setNativeProps({
+                text: `${items[1]?.value}`,
+                style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = useCallback(() => {
+        chartData.label[0] && textTime.current?.setNativeProps({text: chartData.label[0]?.val});
+        chartData.label[1] &&
+            textThisFund.current?.setNativeProps({
+                text: `${chartData.label[1]?.val}`,
+                style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
+            });
+        chartData.label[2] &&
+            textBenchmark.current?.setNativeProps({
+                text: `${chartData.label[2]?.val}`,
+                style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
+            });
+    }, [chartData, getColor]);
+    useEffect(() => {
+        init();
+    }, []);
     const [mockData] = useState([
         {
             date: '2022-08-07',
@@ -117,6 +190,7 @@ const DayProfit = () => {
             let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
             let item = {
                 day,
+                id: uuid,
                 profit: '0.00',
                 checked: false,
             };
@@ -129,6 +203,7 @@ const DayProfit = () => {
         if (startTrim != 7) {
             for (let i = 0; i < startTrim; i++) {
                 arr.unshift({
+                    id: uuid,
                     checked: false,
                     profit: '0.00',
                     style: {
@@ -141,6 +216,7 @@ const DayProfit = () => {
         //当月日期结束
         for (let i = 0; i < endTrim; i++) {
             arr.push({
+                id: uuid,
                 day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
                 checked: false,
                 style: {
@@ -189,7 +265,6 @@ const DayProfit = () => {
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
         initData(item.day);
-        // let differ = dayjs(item.day).month() + 1 - (date.month() + 1);
     };
     const sortRenderList = useCallback(() => {}, []);
     const selCalendarType = useCallback(() => {
@@ -202,7 +277,7 @@ const DayProfit = () => {
     });
     return (
         <View style={styles.container}>
-            {/*日历图｜柱状图*/}
+            {/*chart类型*/}
             <ChartHeader
                 selCalendarType={selCalendarType}
                 selBarChartType={selBarChartType}
@@ -213,31 +288,95 @@ const DayProfit = () => {
                 date={date.month() + 1 + '月'}
             />
             {/*日历*/}
-            <View style={{marginTop: px(12)}}>
-                <View style={styles.weekFlex}>
-                    {week.current?.map((el, index) => {
-                        return (
-                            <Text style={styles.week} key={el + '' + index}>
-                                {el}
-                            </Text>
-                        );
-                    })}
+            {isCalendar && (
+                <View style={{marginTop: px(12)}}>
+                    <View style={styles.weekFlex}>
+                        {week.current?.map((el, index) => {
+                            return (
+                                <Text style={styles.week} key={el + '' + index}>
+                                    {el}
+                                </Text>
+                            );
+                        })}
+                    </View>
+                    <View style={styles.dateWrap}>
+                        {dateArr?.map((el, index) => {
+                            const date = dayjs(el?.day).date();
+                            const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => getProfitBySelDate(el)}
+                                    key={props.tabLabel + `${el?.id + '' + index}`}>
+                                    <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
+                                        <Text style={[styles.day, dayStyle]}>{date}</Text>
+                                        {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
                 </View>
-                <View style={styles.dateWrap}>
-                    {dateArr?.map((el, index) => {
-                        const date = dayjs(el?.day).date();
-                        const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
-                        return (
-                            <TouchableOpacity onPress={() => getProfitBySelDate(el)}>
-                                <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
-                                    <Text style={[styles.day, dayStyle]}>{date}</Text>
-                                    {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </View>
+            )}
+            {isBarChart && (
+                <>
+                    <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
+                        <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
+                            {chartData?.label?.map((item, index) => {
+                                return (
+                                    <View key={item.val + index} style={styles.legendItem}>
+                                        <TextInput
+                                            defaultValue={`${item.val}`}
+                                            editable={false}
+                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                            style={[
+                                                styles.legendTitle,
+                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                            ]}
+                                        />
+                                        <View style={Style.flexRow}>
+                                            {index !== 0 && (
+                                                <Dot
+                                                    bgColor={
+                                                        index === 1
+                                                            ? 'rgba(231, 73, 73, 0.15)'
+                                                            : 'rgba(84, 89, 104, 0.15)'
+                                                    }
+                                                    color={index === 1 ? Colors.red : Colors.descColor}
+                                                />
+                                            )}
+                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                                {item.name}
+                                            </Text>
+                                            {/*{chartData?.tips && index === 2 && (*/}
+                                            {/*    <TouchableOpacity*/}
+                                            {/*        activeOpacity={0.8}*/}
+                                            {/*        style={{position: 'absolute', right: text(-16)}}*/}
+                                            {/*        onPress={() => showTips(chartData.tips)}>*/}
+                                            {/*        <FastImage*/}
+                                            {/*            style={{width: text(12), height: text(12)}}*/}
+                                            {/*            source={require('../../assets/img/tip.png')}*/}
+                                            {/*        />*/}
+                                            {/*    </TouchableOpacity>*/}
+                                            {/*)}*/}
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <View style={{height: 240}}>
+                            {chartData.chart && (
+                                <Chart
+                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
+                                    data={chartData.chart}
+                                    onChange={onChartChange}
+                                    onHide={onHide}
+                                    style={{width: '100%'}}
+                                />
+                            )}
+                        </View>
+                    </View>
+                </>
+            )}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
         </View>

@@ -11,7 +11,9 @@ import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 const width = Dimensions.get('window').width;
-const YearProfit = () => {
+let UUID = require('uuidjs');
+let uuid = UUID.generate();
+const YearProfit = (props) => {
     const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
@@ -67,6 +69,7 @@ const YearProfit = () => {
         let arr = [];
         for (let i = startYear; i < endYear; i++) {
             arr.push({
+                id: uuid,
                 day: i + 1,
                 profit: '0.00',
             });
@@ -99,7 +102,9 @@ const YearProfit = () => {
                 {dateArr.map((el, index) => {
                     const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
                     return (
-                        <View style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
+                        <View
+                            key={props.tabLabel + `${el?.id + '' + index}`}
+                            style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
                             <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
                             <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
                         </View>
