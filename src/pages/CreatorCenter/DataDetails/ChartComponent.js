@@ -86,7 +86,7 @@ const ChartComponent = ({isActive}) => {
                                     <FastImage
                                         source={{
                                             uri:
-                                                'http://static.licaimofang.com/wp-content/uploads/2022/09/question.png',
+                                                'http://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
                                         }}
                                         style={styles.panelItemHintIcon}
                                     />
@@ -107,7 +107,7 @@ const ChartComponent = ({isActive}) => {
                                     <FastImage
                                         source={{
                                             uri:
-                                                'http://static.licaimofang.com/wp-content/uploads/2022/09/question.png',
+                                                'http://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
                                         }}
                                         style={styles.panelItemHintIcon}
                                     />
@@ -147,7 +147,7 @@ const ChartComponent = ({isActive}) => {
                               onPress={() => {
                                   setActiveTab(idx);
                               }}
-                              style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#F5F6F8'}]}
+                              style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#fff'}]}
                               key={idx}>
                               <Text style={[styles.tabItemText, {color: activeTab === idx ? '#0051CC' : '#545968'}]}>
                                   近1月
