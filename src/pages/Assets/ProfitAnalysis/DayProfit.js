@@ -39,17 +39,13 @@ const DayProfit = (props) => {
     const [dateArr, setDateArr] = useState([]);
 
     const init = useCallback(() => {
-        http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
-            setShowEmpty(true);
-            if (res.code === '000000') {
-                setChart(res.result);
-            }
-        });
+        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
+        //     setShowEmpty(true);
+        //     if (res.code === '000000') {
+        //         setChart(res.result);
+        //     }
+        // });
     }, []);
-    // 下拉刷新回调
-    const onRefresh = useCallback(() => {
-        init();
-    }, [init]);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
         if (!t) {
