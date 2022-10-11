@@ -164,6 +164,7 @@ const YearProfit = (props) => {
                             style={{
                                 color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             日历图
                         </Text>
@@ -183,6 +184,7 @@ const YearProfit = (props) => {
                             style={{
                                 color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             柱状图
                         </Text>

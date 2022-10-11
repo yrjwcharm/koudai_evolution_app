@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: px(10),
-        fontFamily: 'PingFang SC-中粗体, PingFang SC',
+        fontFamily: Font.pingFangMedium,
         fontWeight: 'normal',
         color: Colors.white,
     },
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: px(10),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
     },
     autoInvestIssure: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     },
     type: {
         fontSize: px(10),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },

@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
-import {Colors, Space, Style} from '../../../common/commonStyle';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import Tab from '../../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -93,13 +93,13 @@ const styles = StyleSheet.create({
     },
     profitLabel: {
         fontSize: px(15),
-        fontFamily: 'Helvetica',
+        fontFamily: Font.numMedium,
         fontWeight: '500',
     },
     profitValue: {
         marginTop: px(6),
         fontSize: px(11),
-        fontFamily: 'PingFangSC-Regular',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },

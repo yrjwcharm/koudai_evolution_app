@@ -7,7 +7,7 @@ import React, {useCallback, useLayoutEffect, useRef} from 'react';
 import {Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
-import {Colors, Space, Style} from '../../../common/commonStyle';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
@@ -27,7 +27,7 @@ const ProfitDetail = ({navigation, route}) => {
                         activeOpacity={0.8}
                         style={[styles.topRightBtn, Style.flexCenter]}
                         onPress={() => bottomModal.current.show()}>
-                        <Text style={styles.title}>更新说明</Text>
+                        <Text style={styles.rightTitle}>收益更新说明</Text>
                     </TouchableOpacity>
                 </>
             ),
@@ -56,6 +56,11 @@ const ProfitDetail = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.red,
+    },
+    rightTitle: {
+        fontSize: px(13),
+        fontFamily: Font.pingFangRegular,
+        color: Colors.defaultColor,
     },
     topRightBtn: {
         flex: 1,

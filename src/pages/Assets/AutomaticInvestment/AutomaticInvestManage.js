@@ -130,14 +130,14 @@ const styles = StyleSheet.create({
     },
     emptyInvestText: {
         fontSize: px(16),
-        fontFamily: 'PingFang SC-中黑体, PingFang SC',
+        fontFamily: Font.pingFangMedium,
         fontWeight: 'normal',
         color: Colors.white,
     },
     termintal: {
         fontSize: px(12),
         marginRight: px(5),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         color: '#545968',
     },
     defaultTab: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     },
     defaultTabText: {
         fontSize: px(11),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     investLabel: {
         marginTop: px(4),
         fontSize: px(11),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },
@@ -215,14 +215,14 @@ const styles = StyleSheet.create({
     prevText: {
         fontSize: px(16),
         marginRight: px(1),
-        fontFamily: 'PingFang SC-中黑体, PingFang SC',
+        fontFamily: Font.pingFangMedium,
         fontWeight: 'normal',
         color: Colors.white,
     },
     nextText: {
         marginLeft: px(4),
         fontSize: px(16),
-        fontFamily: 'PingFang SC-中黑体, PingFang SC',
+        fontFamily: Font.pingFangMedium,
         fontWeight: 'normal',
         color: Colors.white,
         marginRight: px(9),

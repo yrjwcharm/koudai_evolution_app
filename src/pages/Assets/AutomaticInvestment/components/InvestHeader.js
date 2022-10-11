@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import {deviceWidth, px} from '../../../../utils/appUtil';
 import {Image, Text, View, StyleSheet} from 'react-native';
 import {BoxShadow} from 'react-native-shadow';
-import {Colors} from '../../../../common/commonStyle';
+import {Colors, Font} from '../../../../common/commonStyle';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     sortText: {
         fontSize: px(11),
         marginRight: px(2),
-        fontFamily: 'PingFang SC-常规体, PingFang SC',
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.lightGrayColor,
     },

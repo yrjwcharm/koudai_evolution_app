@@ -5,7 +5,7 @@
 
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
-import {Colors, Space} from '../common/commonStyle';
+import {Colors, Font, Space} from '../common/commonStyle';
 import {px} from '../utils/appUtil';
 const Button = (props) => {
     return (
@@ -48,6 +48,7 @@ export default class TabBar extends Component {
                                 color: textColor,
                                 fontWeight: isTabActive ? 'bold' : 'normal',
                                 fontSize,
+                                fontFamily: isTabActive ? Font.pingFangMedium : Font.pingFangRegular,
                                 paddingVertical: px(6),
                             },
                         ]}>
