@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 14:47:25
+ * @LastEditTime: 2022-10-11 15:24:40
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -357,8 +357,8 @@ const styles = StyleSheet.create({
     },
     collectIcon: {
         marginRight: px(12),
-        width: px(18),
-        height: px(18),
+        width: px(16),
+        height: px(16),
     },
     baseText: {
         fontSize: px(13),
