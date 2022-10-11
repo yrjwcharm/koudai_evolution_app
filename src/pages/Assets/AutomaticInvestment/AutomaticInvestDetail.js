@@ -12,6 +12,7 @@ import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {enterToReadCardPage} from '../../CreateAccount/Account/TokenCloudBridge';
+import {useJump} from '../../../components/hooks';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -22,6 +23,7 @@ const shadow = {
 };
 
 const AutomaticInvestDetail = ({navigation}) => {
+    const jump = useJump();
     const [visible, setVisible] = useState(false);
     const [selectData] = useState(['修改', '暂停', '终止']);
     useLayoutEffect(() => {
@@ -130,6 +132,7 @@ const AutomaticInvestDetail = ({navigation}) => {
                 style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
                 callback={(index) => {
                     if (index === 0) {
+                        navigation.navigate('UpdateAutomaticInvest');
                     } else if (index === 1) {
                     } else if (index === 2) {
                         Modal.show({

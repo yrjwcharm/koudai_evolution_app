@@ -260,6 +260,7 @@ import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一�
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 import CommunityVideo from '~/pages/Community/CommunityVideo';
 import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage'; //定投管理
+import UpdateAutomaticInvest from '../pages/Assets/AutomaticInvestment/UpdateAutomaticInvest'; //修改定投
 import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //已终止定投
 import AutomaticInvestDetail from '../pages/Assets/AutomaticInvestment/AutomaticInvestDetail'; //定投详情
 const Stack = createStackNavigator();
@@ -528,6 +529,12 @@ export default function AppStack() {
                     component={AutomaticInvestManage}
                     options={{title: '定投管理'}}
                 />
+                <Stack.Screen
+                    name="UpdateAutomaticInvest"
+                    component={UpdateAutomaticInvest}
+                    options={{title: '修改定投'}}
+                />
+
                 <Stack.Screen
                     name="AutomaticInvestDetail"
                     component={AutomaticInvestDetail}
