@@ -11,7 +11,6 @@ import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
 import Community from '../pages/Community/Home'; // 社区首页
 import NewHome from '../pages/Assets/Asset/Asset'; //资产页
-import Home from '../pages/Assets/index'; //资产页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
@@ -200,7 +199,7 @@ export default function Tabbar() {
                         // e.preventDefault();
                     },
                 }}
-                component={Home}
+                component={NewHome}
             />
         </Tab.Navigator>
     );

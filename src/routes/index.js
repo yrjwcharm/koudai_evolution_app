@@ -260,7 +260,8 @@ import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransfer
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 import CommunityVideo from '~/pages/Community/CommunityVideo';
-import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; //短视频播放
+import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail';
+import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage'; //短视频播放
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -521,6 +522,11 @@ export default function AppStack() {
                     name="HistoryInvestPlan"
                     component={HistoryInvestPlan}
                     options={{title: '历史投资计划'}}
+                />
+                <Stack.Screen
+                    name="AutomaticInvestManage"
+                    component={AutomaticInvestManage}
+                    options={{title: '定投管理'}}
                 />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
