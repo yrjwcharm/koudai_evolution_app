@@ -243,7 +243,7 @@ const SpecialDetail = ({navigation, route}) => {
                 </TouchableOpacity>
                 {data?.icon_btns?.map?.((item, idx) => (
                     <TouchableOpacity
-                        style={{marginLeft: px(24)}}
+                        style={{marginLeft: px(24), alignItems: 'center'}}
                         activeOpacity={0.8}
                         key={idx}
                         onPress={() => handlerIconBtnClick(item)}>
