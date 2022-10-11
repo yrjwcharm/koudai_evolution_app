@@ -75,13 +75,6 @@ const Index = ({navigation}) => {
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
-            <TouchableOpacity onPress={() => navigation.navigate('AutomaticInvestManage')}>
-                <Text>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam, beatae dolores eligendi esse
-                    excepturi expedita iste nemo pariatur perferendis quisquam, rem tempore voluptate? Dolor eos fuga
-                    libero odio sit?
-                </Text>
-            </TouchableOpacity>
             <ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init(true)} />}>

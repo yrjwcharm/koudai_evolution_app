@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     choiceBankCard: {
+        marginTop: px(13),
         backgroundColor: Colors.white,
         paddingHorizontal: px(16),
         height: px(63),
