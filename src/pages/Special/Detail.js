@@ -16,6 +16,7 @@ import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
 import {publishNewComment} from '../Common/CommentList/services';
+import AuditModal from '~/components/AuditModal';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -27,6 +28,7 @@ const SpecialDetail = ({navigation, route}) => {
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
+    const auditModal = useRef();
     const inputRef = useRef();
     const navBarRef = useRef();
     const clickRef = useRef(true);
@@ -277,6 +279,7 @@ const SpecialDetail = ({navigation, route}) => {
                     </View>
                 </View>
             </PageModal>
+            <AuditModal ref={auditModal} />
         </View>
     );
 };
