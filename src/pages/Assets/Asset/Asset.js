@@ -2,14 +2,14 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, Text} from 'react-native';
+import {View, RefreshControl, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import HoldCard from './HoldCard';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {getHolding, getInfo} from './service';
+import {getHolding, getInfo, getReadMes} from './service';
 import BottomDesc from '~/components/BottomDesc';
 import {useSelector} from 'react-redux';
 import Header from './Header';
