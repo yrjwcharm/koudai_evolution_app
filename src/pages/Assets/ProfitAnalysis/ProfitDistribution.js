@@ -1,14 +1,14 @@
 import React, {useRef} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
-import {deviceWidth, px as text, px} from '../../utils/appUtil';
-import {Colors, Space, Style} from '../../common/commonStyle';
+import {deviceWidth, px as text, px} from '../../../utils/appUtil';
+import {Colors, Space, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
-import Tab from '../../components/TabBar';
+import Tab from '../../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import DayProfit from './ProfitAnalysis/DayProfit';
-import MonthProfit from './ProfitAnalysis/MonthProfit';
-import YearProfit from './ProfitAnalysis/YearProfit';
-import TotalProfit from './ProfitAnalysis/TotalProfit';
+import DayProfit from './DayProfit';
+import MonthProfit from './MonthProfit';
+import YearProfit from './YearProfit';
+import TotalProfit from './TotalProfit';
 
 const ProfitDistribution = () => {
     const tabsRef = useRef(['日收益', '月收益', '年收益', '累计收益']);

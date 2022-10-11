@@ -59,7 +59,7 @@ import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记
 import Evaluation from '../pages/Evaluation/Evaluation'; //定制
 import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
-import ProfitDetail from '../pages/Assets/ProfitDetail'; //收益明细
+import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
@@ -232,7 +232,7 @@ import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列�
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 import CommunityHome from '~/pages/Community/CommunityHome'; //社区主页
-
+import TotalIncomeDetail from '~/pages/Assets/TotalIncomeDetail';
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明

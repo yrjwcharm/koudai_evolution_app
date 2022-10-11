@@ -3,16 +3,20 @@
  * @Author: yanruifeng
  * @Description:收益明细
  */
-import React, {useLayoutEffect, useRef} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useLayoutEffect, useRef} from 'react';
+import {Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import Tab from '../../components/TabBar';
-import {Colors, Space, Style} from '../../common/commonStyle';
+import Tab from '../../../components/TabBar';
+import {Colors, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
-import {px} from '../../utils/appUtil';
+import {px as text, px} from '../../../utils/appUtil';
+import {BottomModal} from '../../../components/Modal';
+import Toast from '../../../components/Toast';
+import Image from 'react-native-fast-image';
+import RenderTable from './components/RenderTable';
 
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code, poid, tabs, type = 0} = route.params || {};
+    const bottomModal = useRef(null);
     const tabsRef = useRef(['全部', '公募基金', '投顾组合', '理财计划', '私募基金']);
 
     useLayoutEffect(() => {
@@ -22,13 +26,15 @@ const ProfitDetail = ({navigation, route}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.topRightBtn, Style.flexCenter]}
-                        onPress={() => {}}>
+                        onPress={() => bottomModal.current.show()}>
                         <Text style={styles.title}>更新说明</Text>
                     </TouchableOpacity>
                 </>
             ),
         });
     }, []);
+    // 渲染收益更新表格
+
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             <ScrollableTabView
@@ -39,6 +45,11 @@ const ProfitDetail = ({navigation, route}) => {
                     return <ProfitDistribution tabLabel={tab} key={`${tab + '' + index}`} />;
                 })}
             </ScrollableTabView>
+            <BottomModal title={'更新说明'} ref={bottomModal}>
+                <View style={{marginTop: px(30)}}>
+                    <RenderTable />
+                </View>
+            </BottomModal>
         </View>
     );
 };
