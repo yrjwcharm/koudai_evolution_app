@@ -264,6 +264,7 @@ import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
 import SubjectCollection from '~/pages/CreatorCenter/SubjectCollection'; // 专题合集
 import DataDetails from '~/pages/CreatorCenter/DataDetails'; // 数据明细
 import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 社区合集
+import MenuList from '~/pages/Common/MenuList'; // 菜单列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1058,6 +1059,7 @@ export default function AppStack() {
                     component={CommunityCollection}
                     options={{title: '社区合集'}}
                 />
+                <Stack.Screen name="MenuList" component={MenuList} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );
