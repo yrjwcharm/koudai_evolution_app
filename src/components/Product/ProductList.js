@@ -431,6 +431,7 @@ const styles = StyleSheet.create({
         height: px(8),
     },
     dotStyle: {
+        borderRadius: 0,
         backgroundColor: '#BDC2CC',
         width: px(4),
         height: px(2),
@@ -547,7 +548,7 @@ const styles = StyleSheet.create({
         padding: px(12),
         borderRadius: Space.borderRadius,
         borderWidth: Space.borderWidth,
-        borderColor: '#E8E8E8',
+        borderColor: '#F1F6FF',
         borderTopColor: 'transparent',
         overflow: 'hidden',
     },

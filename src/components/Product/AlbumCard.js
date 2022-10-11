@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     descIcon: {
-        marginTop: px(2),
+        marginTop: px(4),
         marginRight: px(4),
         width: px(8),
         height: px(8),

@@ -138,6 +138,7 @@ const Index = ({navigation, route, setLoading}) => {
                     const height = (h * (device_width ? deviceWidth : px(280))) / w;
                     Modal.show({
                         backButtonClose: back_close,
+                        cancelCallBack: init,
                         confirmCallBack: () => {
                             event_id && global.LogTool(event_id);
                             init();

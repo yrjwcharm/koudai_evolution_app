@@ -453,7 +453,11 @@ const Product = ({navigation}) => {
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 });
                                             }}
-                                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                                            style={{
+                                                backgroundColor: '#fff',
+                                                borderRadius: Space.borderRadius,
+                                                overflow: 'hidden',
+                                            }}>
                                             <ProductList
                                                 data={proData?.popular_subject?.items}
                                                 type={proData?.popular_subject.type}
