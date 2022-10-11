@@ -118,8 +118,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 <Text
                                     style={[
                                         styles.profitVal,
-                                        showEye === 'true' && {
-                                            color: summary?.profit_info?.color || Colors.defaultColor,
+                                        {
+                                            color:
+                                                showEye === 'true'
+                                                    ? summary?.profit_info?.color || Colors.defaultColor
+                                                    : Colors.defaultColor,
                                         },
                                     ]}>
                                     {showEye === 'true' ? summary?.profit_info?.value : '****'}
@@ -130,8 +133,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 <Text
                                     style={[
                                         styles.profitVal,
-                                        showEye === 'true' && {
-                                            color: summary?.profit_acc_info?.color || Colors.defaultColor,
+                                        {
+                                            color:
+                                                showEye === 'true'
+                                                    ? summary?.profit_acc_info?.color || Colors.defaultColor
+                                                    : Colors.defaultColor,
                                         },
                                     ]}>
                                     {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}

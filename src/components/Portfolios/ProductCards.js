@@ -685,17 +685,18 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     rankIcon: {
-        marginRight: px(10),
-        width: px(31),
-        height: px(31),
+        marginRight: px(8),
+        width: px(24),
+        height: px(24),
     },
     rankText: {
         marginTop: px(2),
-        marginRight: Platform.select({android: px(2), ios: px(1)}),
-        fontSize: px(15),
-        lineHeight: px(17),
+        // marginRight: Platform.select({android: px(2), ios: px(1)}),
+        fontSize: px(12),
+        lineHeight: px(13),
         color: Colors.placeholderColor,
         fontFamily: Font.numFontFamily,
+        textAlign: 'center',
     },
     leftPart: {
         marginRight: px(10),
@@ -757,8 +758,8 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     title: {
-        fontSize: Font.textH2,
-        lineHeight: px(20),
+        fontSize: Font.textH3,
+        lineHeight: px(17),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
     },
@@ -783,8 +784,8 @@ const styles = StyleSheet.create({
         borderColor: '#BDC2CC',
     },
     tagText: {
-        fontSize: px(10),
-        lineHeight: px(14),
+        fontSize: px(9),
+        lineHeight: px(13),
         color: Colors.descColor,
     },
     rowStart: {
@@ -802,14 +803,14 @@ const styles = StyleSheet.create({
         fontWeight: Font.weightMedium,
     },
     profit: {
-        fontSize: px(20),
-        lineHeight: px(24),
+        fontSize: Font.textH1,
+        lineHeight: px(19),
         color: Colors.red,
         fontFamily: Font.numFontFamily,
     },
     label: {
-        fontSize: Font.textSm,
-        lineHeight: px(16),
+        fontSize: px(10),
+        lineHeight: px(14),
         color: Colors.lightGrayColor,
     },
     fundBox: {

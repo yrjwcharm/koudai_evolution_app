@@ -5,7 +5,7 @@
 
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
-import {Colors, Space} from '../common/commonStyle';
+import {Colors, Font, Space} from '../common/commonStyle';
 import {px} from '../utils/appUtil';
 const Button = (props) => {
     return (
@@ -25,7 +25,7 @@ export default class TabBar extends Component {
             ? this.props.btnColor
                 ? this.props.btnColor
                 : Colors.btnColor
-            : Colors.darkGrayColor;
+            : Colors.descColor;
         const fontSize = isTabActive
             ? this.props.activeFontSize
                 ? this.props.activeFontSize
@@ -40,7 +40,15 @@ export default class TabBar extends Component {
                 accessibilityTraits="button"
                 onPress={() => onPressHandler(page)}>
                 <View style={[styles.tab]}>
-                    <Text style={[{color: textColor, fontWeight: 'bold', fontSize, paddingVertical: px(6)}]}>
+                    <Text
+                        style={[
+                            {
+                                color: textColor,
+                                fontWeight: isTabActive ? Font.weightMedium : '400',
+                                fontSize,
+                                paddingVertical: px(6),
+                            },
+                        ]}>
                         {name}
                     </Text>
                 </View>
