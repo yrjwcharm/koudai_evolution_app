@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 11:41:32
  * @Description:我的资产新版
  */
-import {View, RefreshControl, ScrollView, ActivityIndicator} from 'react-native';
+import {View, RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, Text} from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import AssetHeaderCard from './AssetHeaderCard';
 import {Colors} from '~/common/commonStyle';
@@ -75,6 +75,13 @@ const Index = ({navigation}) => {
     return !showGesture ? (
         <>
             <Header newMes={newMes} />
+            <TouchableOpacity onPress={() => navigation.navigate('AutomaticInvestManage')}>
+                <Text>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam, beatae dolores eligendi esse
+                    excepturi expedita iste nemo pariatur perferendis quisquam, rem tempore voluptate? Dolor eos fuga
+                    libero odio sit?
+                </Text>
+            </TouchableOpacity>
             <ScrollView
                 style={{backgroundColor: Colors.bgColor, flex: 1}}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init(true)} />}>

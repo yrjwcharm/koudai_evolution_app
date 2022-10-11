@@ -59,7 +59,6 @@ import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记
 import Evaluation from '../pages/Evaluation/Evaluation'; //定制
 import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
-// import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import ProfitDetail from '../pages/Assets/ProfitDetail'; //收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
@@ -260,9 +259,9 @@ import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransfer
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
 import CommunityVideo from '~/pages/Community/CommunityVideo';
-import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail';
-import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage';
-import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //短视频播放
+import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage'; //定投管理
+import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //已终止定投
+import AutomaticInvestDetail from '../pages/Assets/AutomaticInvestment/AutomaticInvestDetail'; //定投详情
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -528,6 +527,11 @@ export default function AppStack() {
                     name="AutomaticInvestManage"
                     component={AutomaticInvestManage}
                     options={{title: '定投管理'}}
+                />
+                <Stack.Screen
+                    name="AutomaticInvestDetail"
+                    component={AutomaticInvestDetail}
+                    options={{title: '定投详情'}}
                 />
                 <Stack.Screen
                     name="TerminatedInvest"

@@ -103,12 +103,14 @@ const AutomaticInvestManage = ({navigation}) => {
             </View>
             <InvestHeader />
             <RenderItem navigation={navigation} />
-            <View style={{marginTop: px(12), ...Style.flexCenter}}>
-                <View style={Style.flexRow}>
-                    <Text style={styles.termintal}>查看已终止的定投(3)</Text>
-                    <Image source={require('./assets/more.png')} />
+            <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
+                <View style={{marginTop: px(12), ...Style.flexCenter}}>
+                    <View style={Style.flexRow}>
+                        <Text style={styles.termintal}>查看已终止的定投(3)</Text>
+                        <Image source={require('./assets/more.png')} />
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
             <View style={{backgroundColor: '#f5f6f8'}}>
                 <BottomDesc />
             </View>

@@ -25,15 +25,15 @@ const shadow = {
 const RenderItem = ({navigation}) => {
     const jump = useJump();
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
+        <TouchableOpacity onPress={() => navigation.navigate('AutomaticInvestDetail')}>
             <View style={{marginTop: px(8)}}>
                 <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(111)}}>
                     <View style={[styles.listRowWrap]}>
+                        <View style={[styles.status, {backgroundColor: '#EDF7EC'}]}>
+                            <Text style={[styles.statusText, {color: Colors.green}]}>定投中</Text>
+                        </View>
                         <View style={styles.listRowTopView}>
                             <View style={styles.listRowTopWrap}>
-                                <View style={[styles.status, {backgroundColor: '#EDF7EC'}]}>
-                                    <Text style={[styles.statusText, {color: Colors.green}]}>定投中</Text>
-                                </View>
                                 <View style={styles.top}>
                                     <View style={styles.topView}>
                                         <Text style={styles.type}>基金</Text>
