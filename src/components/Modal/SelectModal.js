@@ -36,8 +36,12 @@ export default class SelectModal extends Component {
     }
 
     renderItem(item, i) {
+        // i==0?0:0.5 为了实现圆角效果，不让顶部出现0.5的白色横线
         return (
-            <TouchableOpacity key={i} onPress={this.choose.bind(this, i)} style={styles.item}>
+            <TouchableOpacity
+                key={i}
+                onPress={this.choose.bind(this, i)}
+                style={[styles.item, {borderTopWidth: i == 0 ? 0 : 0.5}]}>
                 <Text style={styles.itemText}>{item}</Text>
             </TouchableOpacity>
         );
@@ -52,7 +56,7 @@ export default class SelectModal extends Component {
 
     renderDialog() {
         return (
-            <View style={styles.modalStyle}>
+            <View style={[styles.modalStyle, {...this.props.style}]}>
                 <View style={styles.optArea}>
                     {this.entityList.map((item, i) => this.renderItem(item, i))}
                     <View style={{height: px(6), backgroundColor: '#f7f7f7'}} />

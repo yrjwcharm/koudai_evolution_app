@@ -4,12 +4,14 @@
  * @Description: 定投详情新页面
  */
 
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
+import {SelectModal} from '../../../components/Modal';
+import {enterToReadCardPage} from '../../CreateAccount/Account/TokenCloudBridge';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -20,6 +22,8 @@ const shadow = {
 };
 
 const AutomaticInvestDetail = ({navigation}) => {
+    const [visible, setVisible] = useState(false);
+    const [selectData] = useState(['修改', '暂停', '终止']);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -27,7 +31,9 @@ const AutomaticInvestDetail = ({navigation}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.topRightBtn, Style.flexCenter]}
-                        onPress={() => {}}>
+                        onPress={() => {
+                            setVisible(true);
+                        }}>
                         <Text style={styles.title}>管理</Text>
                     </TouchableOpacity>
                 </>
@@ -104,21 +110,34 @@ const AutomaticInvestDetail = ({navigation}) => {
                     <Text style={styles.rowTitle}>交易状态</Text>
                 </View>
                 <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                    <View style={{width: deviceWidth / 3}}>
+                    <View style={{width: '38.5%'}}>
                         <Text style={styles.date}>2022-02-10</Text>
                     </View>
-                    <View style={{width: deviceWidth / 3}}>
+                    <View style={{width: '38.5%'}}>
                         <Text style={styles.money}>5,000.00</Text>
                     </View>
-                    <View style={{width: deviceWidth / 3}}>
+                    <View style={{width: '23%', flexDirection: 'row', alignItems: 'center'}}>
                         {/*<Text style={styles.investStatus}>定投成功</Text>*/}
                         <View>
-                            <Text style={styles.investFail}>定投失败</Text>
+                            <Text style={[styles.investFail, {textAlign: 'right'}]}>定投失败</Text>
                             <Text style={styles.failReason}>银行卡余额不足</Text>
                         </View>
+                        <Image source={require('./assets/more.png')} />
                     </View>
                 </View>
             </View>
+            <SelectModal
+                style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
+                callback={(index) => {
+                    if (index === 0) {
+                    } else if (index === 1) {
+                    } else if (index === 2) {
+                    }
+                }}
+                closeModal={() => setVisible(false)}
+                entityList={selectData}
+                show={visible}
+            />
         </View>
     );
 };
