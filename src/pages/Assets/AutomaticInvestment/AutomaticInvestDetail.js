@@ -10,7 +10,7 @@ import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import {SelectModal} from '../../../components/Modal';
+import {Modal, SelectModal} from '../../../components/Modal';
 import {enterToReadCardPage} from '../../CreateAccount/Account/TokenCloudBridge';
 const shadow = {
     color: '#aaa',
@@ -132,6 +132,14 @@ const AutomaticInvestDetail = ({navigation}) => {
                     if (index === 0) {
                     } else if (index === 1) {
                     } else if (index === 2) {
+                        Modal.show({
+                            title: '终止确认',
+                            confirm: true,
+                            cancelText: '仍要终止',
+                            confirmCallBack: () => {},
+                            confirmText: '在坚持一下',
+                            content: `定投是以不同的持有成本买入，持续投入可起到摊平成本，分散风险的作用，贵在坚持！`,
+                        });
                     }
                 }}
                 closeModal={() => setVisible(false)}
