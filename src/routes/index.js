@@ -232,7 +232,7 @@ import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列�
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 import CommunityHome from '~/pages/Community/CommunityHome'; //社区主页
-import TotalIncomeDetail from '~/pages/Assets/TotalIncomeDetail';
+import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -258,11 +258,11 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
-import CommunityVideo from '~/pages/Community/CommunityVideo';
 import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage'; //定投管理
 import UpdateAutomaticInvest from '../pages/Assets/AutomaticInvestment/UpdateAutomaticInvest'; //修改定投
 import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //已终止定投
 import AutomaticInvestDetail from '../pages/Assets/AutomaticInvestment/AutomaticInvestDetail'; //定投详情
+import Audio from '~/pages/Community/components/Audio';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -289,6 +289,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <>
+            <Audio />
             <GlobalShare />
             <Stack.Navigator
                 initialRouteName="Launch"

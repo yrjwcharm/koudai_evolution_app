@@ -33,6 +33,11 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
+import TrackPlayer, {useProgress, State, usePlaybackState} from 'react-native-track-player';
+import {useOnTogglePlayback} from '../Community/components/audioService/useOnTogglePlayback.js';
+import {startAudio} from '../Community/components/audioService/StartAudioService.js';
+import {useCurrentTrack} from '../Community/components/audioService/useCurrentTrack.js';
+import {updateUserInfo} from '~/redux/actions/userInfo.js';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -73,6 +78,24 @@ const ArticleDetail = ({navigation, route}) => {
     const post_progress = useRef(false);
     const inputMaxLength = 500;
     const jump = useJump();
+    const {position} = useProgress();
+    const {isPlaying} = useOnTogglePlayback();
+    const track = useCurrentTrack();
+    const track1 = {
+        url: 'http://wp0.licaimofang.com/wp-content/uploads/2019/12/第四课《让人眼花缭乱的投资品》.mp3', // Load media from the network
+        title: '哈哈哈',
+        artist: 'deadmau5',
+        album: 'while(1<2)',
+        genre: 'Progressive House, Electro House',
+        date: '2014-05-20T07:00:00+00:00', // RFC 3339
+        artwork: 'http://example.com/cover.png', // Load artwork from the network
+        // duration: 10000, // Duration in seconds
+    };
+    useEffect(() => {
+        if (track?.title == track1.title) {
+            dispatch(updateUserInfo({showAudioModal: false}));
+        }
+    }, []);
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -104,9 +127,36 @@ const ArticleDetail = ({navigation, route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
-
+    // useEffect(() => {
+    //     if (position && webviewRef?.current) {
+    //         console.log(webviewRef?.current);
+    //         webviewRef?.current.injectJavaScript(`
+    //           window.interval1 = setInterval(() => {
+    //                     let audio = document.querySelector('audio');
+    //                     console.log('audio',audio)
+    //                     if(audio){
+    //                         clearInterval(window.interval1);
+    //                         if(${isPlaying}){
+    //                             audio.play();
+    //                         }else{
+    //                             audio.pause();
+    //                         }
+    //                    }
+    //                 },100)
+    //            `);
+    //     }
+    // }, [isPlaying]);
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
+        if (eventData == 'audioPlay') {
+            startAudio(track1);
+            dispatch(updateUserInfo({showAudioModal: false}));
+            // console.log(position);
+            // TrackPlayer.play();
+        } else if (eventData == 'audioPause') {
+            TrackPlayer.pause();
+        }
+
         if (eventData.indexOf('article_id') !== -1) {
             navigation.push('ArticleDetail', {article_id: eventData.split('article_id=')[1]});
         } else {
@@ -241,6 +291,7 @@ const ArticleDetail = ({navigation, route}) => {
         });
     }, []);
     const back = useCallback(() => {
+        dispatch(updateUserInfo({showAudioModal: true}));
         Picker.isPickerShow((res) => {
             if (res) {
                 Picker.hide();
@@ -434,6 +485,31 @@ const ArticleDetail = ({navigation, route}) => {
                                 allowsFullscreenVideo={false}
                                 allowsInlineMediaPlayback={true}
                                 ref={webviewRef}
+                                injectedJavaScript={`
+                                      let interval = setInterval(() => {
+                                      let audio = document.querySelector('audio');
+                                      if(audio){
+                                        clearInterval(interval);
+                                            if(${position}){
+                                                 setTimeout(()=>{
+                                                   audio.play();
+                                                   audio.currentTime = ${position};
+                                                   if(${!isPlaying}){
+                                                    audio.pause();
+                                                   }
+                                                 },500)
+                                            }
+                                        audio.addEventListener('play', function(){
+                                            audio.muted = true;
+                                            window.ReactNativeWebView?.postMessage('audioPlay')
+                                       })
+                                        audio.addEventListener('pause', function(){
+                                         window.ReactNativeWebView?.postMessage('audioPause')
+                                       })
+                                      }
+
+                                    }, 100);
+                                    `}
                                 onLoadEnd={async () => {
                                     webviewRef.current.postMessage(
                                         JSON.stringify({
