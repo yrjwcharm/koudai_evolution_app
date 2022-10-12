@@ -179,6 +179,9 @@ packagingOptions {
       ndk {
         abiFilters "armeabi-v7a","arm64-v8a", "x86_64","x86"
        }
+        configurations.all {
+            resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
+        }
     }
 
     packagingOptions {
