@@ -263,6 +263,7 @@ import UpdateAutomaticInvest from '../pages/Assets/AutomaticInvestment/UpdateAut
 import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //已终止定投
 import AutomaticInvestDetail from '../pages/Assets/AutomaticInvestment/AutomaticInvestDetail'; //定投详情
 import Audio from '~/pages/Community/components/Audio';
+import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail';
 const Stack = createStackNavigator();
 
 export default function AppStack() {

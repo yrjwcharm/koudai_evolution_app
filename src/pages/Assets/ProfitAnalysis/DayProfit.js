@@ -14,10 +14,10 @@ import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
-import {getChartData, getProfitDetail} from './service';
-let UUID = require('uuidjs');
-let uuid = UUID.generate();
+import {getChartData} from './service';
+import Loading from '~/pages/Portfolio/components/PageLoading';
 const DayProfit = ({type}) => {
+    const [loading, setLoading] = useState(true);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -34,8 +34,8 @@ const DayProfit = ({type}) => {
             message: 'success',
             result: {
                 label: [
-                    {name: '时间', val: '2022-09-20'},
-                    {name: '我的组合', val: '0.02%'},
+                    // {name: '时间', val: '2022-09-20'},
+                    // {name: '我的组合', val: '0.02%'},
                 ],
                 chart: [
                     // {date: '2022-05', value: 0.0362, type: '我的组合'},
@@ -45,19 +45,7 @@ const DayProfit = ({type}) => {
                     {date: '2022-09-01', value: -0.0585, type: '我的组合'},
                     {date: '2022-10-01', value: 0.02, type: '我的组合'},
                 ],
-                tips: {
-                    title: '比较基准',
-                    content: [
-                        {key: '比较基准', val: '上证指数'},
-                        {
-                            key: '什么是比较基准',
-                            val:
-                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
-                        },
-                    ],
-                },
             },
-            traceId: '171cb96d48067057171cb96d480432d0',
         };
         setChart(res.result);
     }, []);
@@ -75,7 +63,6 @@ const DayProfit = ({type}) => {
             let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
             let item = {
                 day,
-                id: uuid,
                 profit: '0.00',
                 checked: false,
             };
@@ -88,7 +75,6 @@ const DayProfit = ({type}) => {
         if (startTrim != 7) {
             for (let i = 0; i < startTrim; i++) {
                 arr.unshift({
-                    id: uuid,
                     checked: false,
                     profit: '0.00',
                     style: {
@@ -101,7 +87,6 @@ const DayProfit = ({type}) => {
         //当月日期结束
         for (let i = 0; i < endTrim; i++) {
             arr.push({
-                id: uuid,
                 day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
                 checked: false,
                 style: {
@@ -115,6 +100,9 @@ const DayProfit = ({type}) => {
         // let maxDateArr = [];
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
+            let barChartData = profit_data_list.map((el) => {
+                return {date: el.unit_key, value: el.value};
+            });
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
                     //小于当前日期的情况
@@ -133,6 +121,7 @@ const DayProfit = ({type}) => {
         arr[index] && (arr[index].checked = true);
         setDateArr([...arr]);
         setDate(dayjs_);
+        setLoading(false);
     };
     React.useEffect(() => {
         initData(selCurDate);
@@ -140,9 +129,6 @@ const DayProfit = ({type}) => {
     /**
      * 向上递增一个月
      */
-    // useEffect(() => {
-    //     getChartData({type, unit_type: 'day', unit_value: '2022-10'}).then((res) => {});
-    // }, []);
     const addMonth = () => {
         setDiff((diff) => diff + 1);
     };
@@ -171,7 +157,9 @@ const DayProfit = ({type}) => {
     useEffect(() => {
         init();
     }, []);
-    return (
+    return loading ? (
+        <Loading color={Colors.btnColor} />
+    ) : (
         <View style={styles.container}>
             {/*chart类型*/}
             <ChartHeader

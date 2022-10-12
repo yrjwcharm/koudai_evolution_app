@@ -3,43 +3,47 @@
  * @Author: yanruifeng
  * @Description:收益明细
  */
-import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Alert, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
-import {px as text, px} from '../../../utils/appUtil';
+import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import Toast from '../../../components/Toast';
-import Image from 'react-native-fast-image';
 import RenderTable from './components/RenderTable';
-import {getHeadData} from './service';
+import {getEarningsUpdateNote, getHeadData} from './service';
 
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
+    const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const [type, setType] = useState(200);
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={[styles.topRightBtn, Style.flexCenter]}
-                        onPress={() => bottomModal.current.show()}>
-                        <Text style={styles.rightTitle}>收益更新说明</Text>
-                    </TouchableOpacity>
-                </>
-            ),
-        });
-    }, []);
     const initData = async () => {
-        const res = await getHeadData({type});
-        if (res.code == '000000') {
-            setTabs(res.result?.tabs);
-            setHeadData(res.result?.header);
+        const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
+        if (res[0].code == '000000') {
+            setTabs(res[0].result?.tabs);
+            setHeadData(res[0].result?.header);
+        }
+        if (res[1].code == '000000') {
+            const {title = '更新说明', declare_pic = ''} = res[1].result || {};
+            setDeclarePic(declare_pic);
+            navigation.setOptions({
+                headerRight: () => (
+                    <>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.topRightBtn, Style.flexCenter]}
+                            onPress={() => {
+                                bottomModal.current.show();
+                            }}>
+                            <Text style={styles.title}>{title}</Text>
+                        </TouchableOpacity>
+                    </>
+                ),
+            });
         }
     };
     useEffect(() => {

@@ -9,20 +9,20 @@ import PropTypes from 'prop-types';
 import {delMille} from '../../../../utils/common';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {px} from '../../../../utils/appUtil';
+import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../service';
 
 const RenderList = ({type}) => {
     const [headerList, setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
-    const getProfitDetailData = async () => {
-        const res = await getProfitDetail({type});
-        if (res.code == '000000') {
-            setHeaderList(res.result?.head_list);
-            setProfitList(res.result?.data_list);
-        }
-    };
     useEffect(() => {
+        const getProfitDetailData = async () => {
+            const res = await getProfitDetail({type});
+            if (res.code == '000000') {
+                setHeaderList(res.result?.head_list);
+                setProfitList(res.result?.data_list);
+            }
+        };
         getProfitDetailData();
     }, [type]);
     const sortRenderList = useCallback(() => {}, []);
@@ -47,14 +47,20 @@ const RenderList = ({type}) => {
                         : delMille(item.profit) < 0
                         ? Colors.green
                         : Colors.lightGrayColor;
-                const type = item.type == 1 ? '私募' : item.type == 2 ? '组合' : item.type == 3 ? '计划' : '基金';
                 return (
                     <View style={styles.listRow} key={item + '' + index}>
                         <View style={styles.typeView}>
                             <View style={styles.typeWrap}>
-                                <Text style={styles.type}>{type}</Text>
+                                <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
+                                    {item.type}
+                                </Text>
                             </View>
                             <Text style={styles.title}>{item.text}</Text>
+                            {item.tag ? (
+                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(6)}}>
+                                    <Text style={styles.tag}>{item.tag}</Text>
+                                </View>
+                            ) : null}
                         </View>
                         <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
                     </View>
@@ -73,6 +79,14 @@ const styles = StyleSheet.create({
     profitHeader: {
         marginTop: px(24),
         ...Style.flexBetween,
+    },
+    tag: {
+        paddingHorizontal: text(6),
+        paddingVertical: text(2),
+        borderRadius: text(2),
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: Colors.brandColor,
     },
     profitHeaderLeft: {
         flexDirection: 'row',

@@ -54,7 +54,6 @@ const YearProfit = ({type}) => {
         let arr = [];
         for (let i = startYear; i < endYear; i++) {
             arr.push({
-                id: uuid,
                 day: i + 1,
                 profit: '0.00',
             });

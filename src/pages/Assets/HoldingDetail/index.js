@@ -959,7 +959,6 @@ const Index = ({navigation, route, setLoading}) => {
     useFocusEffect(
         useCallback(() => {
             init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 

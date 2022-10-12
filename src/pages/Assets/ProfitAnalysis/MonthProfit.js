@@ -45,7 +45,7 @@ const MonthProfit = ({type}) => {
             let day = dayjs_.add(i, 'month').format('YYYY-MM');
             let item = {
                 day,
-                id: uuid,
+
                 profit: '0.00',
                 checked: false,
             };
