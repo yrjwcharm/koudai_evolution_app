@@ -1,55 +1,63 @@
+/*
+ * @Date: 2022-10-10 20:44:41
+ * @Description:音频
+ */
 import React, {useEffect, useState} from 'react';
-import * as Progress from 'react-native-progress';
-import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
-import TrackPlayer, {State} from 'react-native-track-player';
 
+import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+import TrackPlayer from 'react-native-track-player';
+import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
+import {resetAudio, SetupService} from './audioService/SetUpService';
+import {useCurrentTrack} from './audioService/useCurrentTrack';
+import {ProgressCon} from './audioService/ProgressCom';
+import {Style} from '~/common/commonStyle';
+import {useOnTogglePlayback} from './audioService/useOnTogglePlayback';
+import Icon from 'react-native-vector-icons/AntDesign';
+import {useSelector} from 'react-redux';
 // The player is ready to be used
 const Audio = () => {
-    const [loadProgress, setLoadProgress] = useState(0);
-    const startAudio = async () => {
-      await TrackPlayer.setupPlayer();
-        var track1 = {
-            url: 'http://example.com/avaritia.mp3', // Load media from the network
-            title: 'Avaritia',
-            artist: 'deadmau5',
-            album: 'while(1<2)',
-            genre: 'Progressive House, Electro House',
-            date: '2014-05-20T07:00:00+00:00', // RFC 3339
-            artwork: 'http://example.com/cover.png', // Load artwork from the network
-            duration: 402, // Duration in seconds
-        };
-        await TrackPlayer.add([track1]);
-        await TrackPlayer.play();
-    };
-    const getAudioInfo = async () => {
-        const state = await TrackPlayer.getState();
-        if (state === State.Playing) {
-            console.log('The player is playing');
-        }
-
-        let trackIndex = await TrackPlayer.getCurrentTrack();
-        let trackObject = await TrackPlayer.getTrack(trackIndex);
-        console.log(`Title: ${trackObject.title}`);
-
-        const position = await TrackPlayer.getPosition();
-        const duration = await TrackPlayer.getDuration();
-        console.log(`${duration - position} seconds left.`);
-    };
+    const [showPlayer, setShowPlayer] = useState(true);
+    const userInfo = useSelector((store) => store.userInfo).toJS();
+    const {isPlaying, tooglePlay} = useOnTogglePlayback();
+    const track = useCurrentTrack();
+    console.log(track);
     useEffect(() => {
-        startAudio();
-        getAudioInfo();
+        // startAudio();
     }, []);
-    return (
-        <View>
-            <Progress.Bar
-                progress={loadProgress / 100}
-                color={'#EB7121'}
-                height={px(12)}
-                width={px(173)}
-                borderRadius={px(7.5)}>
-                <Text>111</Text>
-            </Progress.Bar>
+    console.log(userInfo.showAudioModal, 'showAudioModal');
+    // console.log(track);
+    return track && userInfo?.showAudioModal ? (
+        <View style={[Style.flexRow, styles.con]}>
+            {/* 进度 */}
+            <ProgressCon />
+            {/* title */}
+            <Text style={styles.audioTitle}>{track?.title}</Text>
+            <TouchableOpacity onPress={tooglePlay}>
+                <Text>{isPlaying ? '正在播放' : '暂停'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={{position: 'absolute', right: 0, top: -px(8)}}
+                onPress={() => {
+                    resetAudio();
+                }}>
+                <Icon name="closecircle" size={px(18)} color="#9ba1b0" />
+            </TouchableOpacity>
         </View>
-    );
+    ) : null;
 };
+const styles = StyleSheet.create({
+    con: {
+        backgroundColor: '#CEDDF5',
+        borderRadius: px(394),
+        height: px(43),
+        paddingLeft: px(8),
+        paddingRight: px(20),
+        position: 'absolute',
+        zIndex: 10,
+        width: deviceWidth - px(16),
+        left: px(8),
+        bottom: isIphoneX() ? px(96) : px(60),
+    },
+    audioTitle: {fontSize: px(13), marginHorizontal: px(8), flex: 1, fontWeight: '700'},
+});
 export default Audio;
