@@ -151,8 +151,6 @@ const ArticleDetail = ({navigation, route}) => {
         if (eventData == 'audioPlay') {
             startAudio(track1);
             dispatch(updateUserInfo({showAudioModal: false}));
-            // console.log(position);
-            // TrackPlayer.play();
         } else if (eventData == 'audioPause') {
             TrackPlayer.pause();
         }

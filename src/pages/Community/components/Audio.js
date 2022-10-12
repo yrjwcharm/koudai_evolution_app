@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
-import {resetAudio, SetupService} from './audioService/SetUpService';
+import {resetAudio} from './audioService/SetUpService';
 import {useCurrentTrack} from './audioService/useCurrentTrack';
 import {ProgressCon} from './audioService/ProgressCom';
 import {Style} from '~/common/commonStyle';

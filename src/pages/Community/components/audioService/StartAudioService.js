@@ -1,4 +1,4 @@
-import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
+import TrackPlayer, {setRepeatMode} from 'react-native-track-player';
 import {SetupService} from './SetUpService';
 /*
  * @Date: 2022-10-12 15:12:39
@@ -11,6 +11,7 @@ export const startAudio = async (track) => {
             await TrackPlayer.reset();
             await TrackPlayer.add(track);
             await TrackPlayer.play();
+            setRepeatMode('Track');
         }
     }
 
