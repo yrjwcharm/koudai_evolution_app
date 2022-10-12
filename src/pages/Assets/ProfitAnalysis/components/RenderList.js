@@ -4,29 +4,43 @@
  * @Description:列表渲染封装
  */
 
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille} from '../../../../utils/common';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px} from '../../../../utils/appUtil';
+import {getProfitDetail} from '../service';
 
-const RenderList = ({data, date, onPress}) => {
+const RenderList = ({type}) => {
+    const [headerList, setHeaderList] = useState([]);
+    const [profitList, setProfitList] = useState([]);
+    const getProfitDetailData = async () => {
+        const res = await getProfitDetail({type});
+        if (res.code == '000000') {
+            setHeaderList(res.result?.head_list);
+            setProfitList(res.result?.data_list);
+        }
+    };
+    useEffect(() => {
+        getProfitDetailData();
+    }, [type]);
+    const sortRenderList = useCallback(() => {}, []);
     return (
         <>
             <View style={styles.profitHeader}>
                 <View style={styles.profitHeaderLeft}>
-                    <Text style={styles.profitLabel}>收益明细</Text>
-                    <Text style={styles.profitDate}>({date})</Text>
+                    <Text style={styles.profitLabel}>{headerList[0]?.text.substring(0, 4)}</Text>
+                    <Text style={styles.profitDate}>{headerList[0]?.text.substring(4)}</Text>
                 </View>
-                <TouchableOpacity onPress={onPress}>
+                <TouchableOpacity onPress={sortRenderList}>
                     <View style={styles.profitHeaderRight}>
-                        <Text style={styles.moneyText}>金额(元)</Text>
+                        <Text style={styles.moneyText}>{headerList[1]?.text}</Text>
                         <Image source={require('../../../../assets/img/icon/sort.png')} />
                     </View>
                 </TouchableOpacity>
             </View>
-            {data?.map((item, index) => {
+            {profitList.map((item, index) => {
                 let color =
                     delMille(item.profit) > 0
                         ? Colors.red
@@ -40,7 +54,7 @@ const RenderList = ({data, date, onPress}) => {
                             <View style={styles.typeWrap}>
                                 <Text style={styles.type}>{type}</Text>
                             </View>
-                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.title}>{item.text}</Text>
                         </View>
                         <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
                     </View>

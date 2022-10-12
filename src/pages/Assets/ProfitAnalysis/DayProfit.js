@@ -14,13 +14,13 @@ import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
+import {getProfitDetail} from './service';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
-const DayProfit = (props) => {
+const DayProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
-
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
@@ -29,12 +29,6 @@ const DayProfit = (props) => {
     const [dateArr, setDateArr] = useState([]);
 
     const init = useCallback(() => {
-        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
-        //     setShowEmpty(true);
-        //     if (res.code === '000000') {
-        //         setChart(res.result);
-        //     }
-        // });
         let res = {
             code: '000000',
             message: 'success',
@@ -157,28 +151,6 @@ const DayProfit = (props) => {
         //     profit: '-25.23',
         // },
     ]);
-    const [profitData] = useState([
-        {
-            type: 1,
-            title: '黑天鹅FOF1号',
-            profit: '82,325.59',
-        },
-        {
-            type: 2,
-            title: '智能｜全天候组合等级6',
-            profit: '+7,632.04',
-        },
-        {
-            type: 3,
-            title: '低估值定投计划',
-            profit: '-1,552.27',
-        },
-        {
-            type: 4,
-            title: '平安策略先锋混合',
-            profit: '-62.54',
-        },
-    ]);
     /**
      * 初始化日历日期
      */
@@ -269,7 +241,6 @@ const DayProfit = (props) => {
         setSelCurDate(item.day);
         initData(item.day);
     };
-    const sortRenderList = useCallback(() => {}, []);
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);
@@ -311,9 +282,7 @@ const DayProfit = (props) => {
                             const date = dayjs(el?.day).date();
                             const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                             return (
-                                <TouchableOpacity
-                                    onPress={() => getProfitBySelDate(el)}
-                                    key={props.tabLabel + `${el?.id + '' + index}`}>
+                                <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
                                     <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
                                         <Text style={[styles.day, dayStyle]}>{date}</Text>
                                         {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
@@ -326,7 +295,7 @@ const DayProfit = (props) => {
             )}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
-            <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
+            <RenderList type={type} />
         </View>
     );
 };

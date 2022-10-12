@@ -16,7 +16,7 @@ import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
-const MonthProfit = (props) => {
+const MonthProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -26,28 +26,6 @@ const MonthProfit = (props) => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
-    const [profitData] = useState([
-        {
-            type: 1,
-            title: '黑天鹅FOF1号',
-            profit: '82,325.59',
-        },
-        {
-            type: 2,
-            title: '智能｜全天候组合等级6',
-            profit: '+7,632.04',
-        },
-        {
-            type: 3,
-            title: '低估值定投计划',
-            profit: '-1,552.27',
-        },
-        {
-            type: 4,
-            title: '平安策略先锋混合',
-            profit: '-62.54',
-        },
-    ]);
     const mockData = [
         {
             date: '2022-01',
@@ -215,9 +193,7 @@ const MonthProfit = (props) => {
                         const month = dayjs(el?.day).month() + 1;
                         const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
                         return (
-                            <TouchableOpacity
-                                onPress={() => getProfitBySelDate(el)}
-                                key={props.tabLabel + `${el?.id + '' + index}`}>
+                            <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
                                 <View style={[commonStyle.month, wrapStyle]}>
                                     <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
                                     {el?.profit && (
@@ -231,7 +207,7 @@ const MonthProfit = (props) => {
             )}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
-            <RenderList data={profitData} onPress={sortRenderList} date={selCurDate} />
+            <RenderList type={type} />
         </View>
     );
 };

@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -10,10 +10,12 @@ import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
 import {delMille} from '../../../utils/common';
+import {getChartData} from './service';
 
-const ProfitDistribution = ({headData}) => {
+const ProfitDistribution = ({headData, type}) => {
     const {profit_info, profit_acc_info, profit_all} = headData;
-    const tabsRef = useRef(['日收益', '月收益', '年收益', '累计收益']);
+    const [unitType, setUnitType] = useState('day');
+    const [tabs, setTabs] = useState([]);
     const shadow = {
         color: '#AAA',
         border: 4,
@@ -30,6 +32,16 @@ const ProfitDistribution = ({headData}) => {
             zIndex: 0,
         },
     };
+    const initData = async () => {
+        const res = await getChartData({type, unit_type: unitType});
+        if (res.code == '000000') {
+            const {profit_unit_tab, unit_list} = res.result ?? {};
+            setTabs(profit_unit_tab);
+        }
+    };
+    useEffect(() => {
+        initData();
+    }, [type, unitType]);
     return (
         <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <BoxShadow setting={{...shadow}}>
@@ -91,24 +103,32 @@ const ProfitDistribution = ({headData}) => {
             </BoxShadow>
             <View style={{marginTop: px(26)}} />
             <View style={styles.section}>
-                <ScrollableTabView
-                    renderTabBar={() => (
-                        //解决key unique
-                        <Tab
-                            style={styles.borderStyle}
-                            btnColor={Colors.defaultColor}
-                            inActiveColor={Colors.lightBlackColor}
-                        />
-                    )}
-                    initialPage={0}
-                    onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
-                    {tabsRef.current.map((tab, index) => {
-                        if (index == 0) return <DayProfit tabLabel={tab} u key={`${tab + '' + index}`} />;
-                        if (index == 1) return <MonthProfit tabLabel={tab} key={`${tab + '' + index}`} />;
-                        if (index == 2) return <YearProfit tabLabel={tab} key={`${tab + '' + index}`} />;
-                        if (index == 3) return <TotalProfit tabLabel={tab} key={`${tab + '' + index}`} />;
-                    })}
-                </ScrollableTabView>
+                {tabs.length > 1 && (
+                    <ScrollableTabView
+                        renderTabBar={() => (
+                            //解决key unique
+                            <Tab
+                                style={styles.borderStyle}
+                                btnColor={Colors.defaultColor}
+                                inActiveColor={Colors.lightBlackColor}
+                            />
+                        )}
+                        initialPage={0}
+                        onChangeTab={({i}) => {
+                            setUnitType(tabs[i]);
+                        }}>
+                        {tabs.map((tab, index) => {
+                            if (index == 0)
+                                return <DayProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                            if (index == 1)
+                                return <MonthProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                            if (index == 2)
+                                return <YearProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                            if (index == 3)
+                                return <TotalProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                        })}
+                    </ScrollableTabView>
+                )}
             </View>
         </ScrollView>
     );

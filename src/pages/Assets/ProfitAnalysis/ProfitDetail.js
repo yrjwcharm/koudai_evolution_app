@@ -20,6 +20,7 @@ const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [headData, setHeadData] = useState({});
+    const [type, setType] = useState(200);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -35,7 +36,7 @@ const ProfitDetail = ({navigation, route}) => {
         });
     }, []);
     const initData = async () => {
-        const res = await getHeadData({});
+        const res = await getHeadData({type});
         if (res.code == '000000') {
             setTabs(res.result?.tabs);
             setHeadData(res.result?.header);
@@ -43,16 +44,25 @@ const ProfitDetail = ({navigation, route}) => {
     };
     useEffect(() => {
         initData();
-    }, []);
+    }, [type]);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (
                 <ScrollableTabView
                     renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
                     initialPage={0}
-                    onChangeTab={({i}) => global.LogTool('changeTab', tabs[i])}>
+                    onChangeTab={({i}) => {
+                        setType(tabs[i].type);
+                    }}>
                     {tabs.map((el, index) => {
-                        return <ProfitDistribution headData={headData} tabLabel={el.text} key={`${el + '' + index}`} />;
+                        return (
+                            <ProfitDistribution
+                                type={type}
+                                headData={headData}
+                                tabLabel={el.text}
+                                key={`${el + '' + index}`}
+                            />
+                        );
                     })}
                 </ScrollableTabView>
             )}

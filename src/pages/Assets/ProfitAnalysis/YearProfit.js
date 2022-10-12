@@ -14,7 +14,7 @@ import BarChartComponent from './components/BarChartComponent';
 const width = Dimensions.get('window').width;
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
-const YearProfit = (props) => {
+const YearProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -22,29 +22,6 @@ const YearProfit = (props) => {
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
-    const [profitData] = useState([
-        {
-            type: 1,
-            title: '黑天鹅FOF1号',
-            profit: '82,325.59',
-        },
-        {
-            type: 2,
-            title: '智能｜全天候组合等级6',
-            profit: '+7,632.04',
-        },
-        {
-            type: 3,
-            title: '低估值定投计划',
-            profit: '-1,552.27',
-        },
-        {
-            type: 4,
-            title: '平安策略先锋混合',
-            profit: '-62.54',
-        },
-    ]);
-
     const mockData = [
         {
             year: '2018',
@@ -196,9 +173,7 @@ const YearProfit = (props) => {
                     {dateArr.map((el, index) => {
                         const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
                         return (
-                            <TouchableOpacity
-                                key={props.tabLabel + `${el?.id + '' + index}`}
-                                onPress={() => getProfitBySelDate(el)}>
+                            <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
                                 <View
                                     style={[
                                         styles.year,
@@ -214,7 +189,7 @@ const YearProfit = (props) => {
                 </View>
             )}
             {isBarChart && <BarChartComponent chartData={chartData} />}
-            <RenderList data={profitData} onPress={sortRenderList} date={selCurYear} />
+            <RenderList type={type} />
         </View>
     );
 };
