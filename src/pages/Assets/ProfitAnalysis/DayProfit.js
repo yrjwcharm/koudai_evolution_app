@@ -14,7 +14,7 @@ import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
-import {getProfitDetail} from './service';
+import {getChartData, getProfitDetail} from './service';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const DayProfit = ({type}) => {
@@ -61,100 +61,10 @@ const DayProfit = ({type}) => {
         };
         setChart(res.result);
     }, []);
-    const [mockData] = useState([
-        {
-            date: '2022-08-07',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-08-12',
-            profit: '-245.08',
-        },
-        {
-            date: '2022-08-23',
-            profit: '+3,420',
-        },
-        {
-            date: '2022-08-01',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-09-08',
-            profit: '-245.08',
-        },
-        {
-            date: '2022-09-11',
-            profit: '+3,420',
-        },
-        {
-            date: '2022-09-12',
-            profit: '+57,420',
-        },
-        {
-            date: '2022-09-14',
-            profit: '+420.94',
-        },
-        {
-            date: '2022-09-18',
-            profit: '+8.94',
-        },
-        {
-            date: '2022-09-19',
-            profit: '-2,245',
-        },
-        {
-            date: '2022-09-20',
-            profit: '-75.23',
-        },
-        {
-            date: '2022-10-01',
-            profit: '+75.23',
-        },
-        {
-            date: '2022-10-02',
-            profit: '-25.23',
-        },
-        {
-            date: '2022-10-03',
-            profit: '-25.23',
-        },
-        {
-            date: '2022-10-04',
-            profit: '-25.23',
-        },
-        {
-            date: '2022-10-05',
-            profit: '+25.23',
-        },
-        {
-            date: '2022-10-06',
-            profit: '+25.23',
-        },
-        {
-            date: '2022-10-07',
-            profit: '-25.23',
-        },
-        {
-            date: '2022-10-08',
-            profit: '-25.23',
-        },
-        {
-            date: '2022-10-09',
-            profit: '+25.23',
-        },
-        {
-            date: '2022-10-10',
-            profit: '-25.23',
-        },
-        // {
-        //     date: '2022-10-08',
-        //     profit: '-25.23',
-        // },
-    ]);
     /**
      * 初始化日历日期
      */
-    const initData = (selCurDate) => {
+    const initData = async (selCurDate) => {
         let dayjs_ = dayjs().add(diff, 'month').startOf('month');
         let dayNums = dayjs_.daysInMonth();
         let weekDay = dayjs_.startOf('month').day();
@@ -200,20 +110,25 @@ const DayProfit = ({type}) => {
                 profit: '0.00',
             });
         }
+        const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
         //双重for循环判断日历是否超过、小于或等于当前日期
-        for (let i = 0; i < arr.length; i++) {
-            for (let j = 0; j < mockData.length; j++) {
-                //小于当前日期的情况
-                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                    if (arr[i].day == mockData[j].date) {
-                        arr[i].profit = mockData[j].profit;
+        // let maxDateArr = [];
+        if (res.code == '000000') {
+            const {profit_data_list = []} = res.result ?? {};
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < profit_data_list.length; j++) {
+                    //小于当前日期的情况
+                    if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                        if (arr[i].day == profit_data_list[j].unit_key) {
+                            arr[i].profit = profit_data_list[j].value;
+                        }
+                    } else {
+                        delete arr[i].profit;
                     }
-                } else {
-                    delete arr[i].profit;
                 }
             }
         }
-        //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == selCurDate);
         arr[index] && (arr[index].checked = true);
         setDateArr([...arr]);
@@ -225,6 +140,9 @@ const DayProfit = ({type}) => {
     /**
      * 向上递增一个月
      */
+    // useEffect(() => {
+    //     getChartData({type, unit_type: 'day', unit_value: '2022-10'}).then((res) => {});
+    // }, []);
     const addMonth = () => {
         setDiff((diff) => diff + 1);
     };
@@ -252,7 +170,7 @@ const DayProfit = ({type}) => {
 
     useEffect(() => {
         init();
-    }, [init]);
+    }, []);
     return (
         <View style={styles.container}>
             {/*chart类型*/}

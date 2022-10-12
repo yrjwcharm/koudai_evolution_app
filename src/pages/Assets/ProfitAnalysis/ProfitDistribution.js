@@ -11,27 +11,26 @@ import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
 import {delMille} from '../../../utils/common';
 import {getChartData} from './service';
-
+const shadow = {
+    color: '#AAA',
+    border: 4,
+    radius: px(5),
+    opacity: 0.102,
+    x: 0,
+    y: 2,
+    width: deviceWidth - px(32),
+    height: text(71),
+    style: {
+        position: 'relative',
+        top: px(12),
+        left: Space.padding,
+        zIndex: 0,
+    },
+};
 const ProfitDistribution = ({headData, type}) => {
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
     const [tabs, setTabs] = useState([]);
-    const shadow = {
-        color: '#AAA',
-        border: 4,
-        radius: px(5),
-        opacity: 0.102,
-        x: 0,
-        y: 2,
-        width: deviceWidth - px(32),
-        height: text(71),
-        style: {
-            position: 'relative',
-            top: px(12),
-            left: Space.padding,
-            zIndex: 0,
-        },
-    };
     const initData = async () => {
         const res = await getChartData({type, unit_type: unitType});
         if (res.code == '000000') {

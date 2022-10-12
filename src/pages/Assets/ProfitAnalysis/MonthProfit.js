@@ -14,6 +14,7 @@ import {compareDate, delMille} from '../../../utils/common';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
+import {getChartData} from './service';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const MonthProfit = ({type}) => {
@@ -26,55 +27,6 @@ const MonthProfit = ({type}) => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
-    const mockData = [
-        {
-            date: '2022-01',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-02',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-03',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-04',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-05',
-            profit: '-245.08',
-        },
-        {
-            date: '2022-06',
-            profit: '+3,420',
-        },
-        {
-            date: '2022-07',
-            profit: '+20.94',
-        },
-        {
-            date: '2022-08',
-            profit: '-245.08',
-        },
-        {
-            date: '2022-09',
-            profit: '+3,420',
-        },
-        {
-            date: '2022-10',
-            profit: '+57,420',
-        },
-        {
-            date: '2022-11',
-        },
-        {
-            date: '2022-12',
-        },
-    ];
-
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -85,7 +37,7 @@ const MonthProfit = ({type}) => {
         setIsAdd(true);
         setDiff((diff) => diff - 1);
     }, []);
-    const initData = (selCurDate) => {
+    const initData = async (selCurDate) => {
         let dayjs_ = dayjs().add(diff, 'year').startOf('year');
         let arr = [];
         //for循环装载日历数据
@@ -99,15 +51,20 @@ const MonthProfit = ({type}) => {
             };
             arr.push(item);
         }
-        // //双重for循环判断日历是否超过、小于或等于当前日期
-        for (let i = 0; i < arr.length; i++) {
-            for (let j = 0; j < mockData.length; j++) {
-                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                    if (arr[i].day == mockData[j].date) {
-                        arr[i].profit = mockData[j].profit;
+        const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
+        if (res.code == '000000') {
+            const {profit_data_list = []} = res.result ?? {};
+            // //双重for循环判断日历是否超过、小于或等于当前日期
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < profit_data_list.length; j++) {
+                    if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                        let unit = profit_data_list[j].unit_key;
+                        if (arr[i].day == unit) {
+                            arr[i].profit = profit_data_list[j].value;
+                        }
+                    } else {
+                        delete arr[i].profit;
                     }
-                } else {
-                    delete arr[i].profit;
                 }
             }
         }
