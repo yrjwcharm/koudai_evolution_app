@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-10 18:00:46
+ * @LastEditTime: 2022-10-12 15:52:31
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -473,19 +473,17 @@ const Product = ({navigation}) => {
                                 ) : null}
                                 {proData?.live_list && (
                                     <View style={styles.liveCardsWrap}>
-                                        <View style={styles.liveCardsHeader}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.7}
+                                            style={styles.liveCardsHeader}
+                                            onPress={() => {
+                                                jump(proData?.live_list?.more?.url);
+                                            }}>
                                             <Text style={styles.liveCardsTitleText}>{proData?.live_list.title}</Text>
                                             {proData?.live_list.more ? (
-                                                <FontAwesome
-                                                    name={'angle-right'}
-                                                    size={px(14)}
-                                                    color={'#545968'}
-                                                    onPress={() => {
-                                                        jump(proData?.live_list?.more?.url);
-                                                    }}
-                                                />
+                                                <FontAwesome name={'angle-right'} size={px(14)} color={'#545968'} />
                                             ) : null}
-                                        </View>
+                                        </TouchableOpacity>
                                         <ScrollView
                                             horizontal={true}
                                             showsHorizontalScrollIndicator={false}
