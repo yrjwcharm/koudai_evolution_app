@@ -3,8 +3,8 @@
  * @Author: yanruifeng
  * @Description:收益明细
  */
-import React, {useCallback, useLayoutEffect, useRef} from 'react';
-import {Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {Alert, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -14,11 +14,12 @@ import {BottomModal} from '../../../components/Modal';
 import Toast from '../../../components/Toast';
 import Image from 'react-native-fast-image';
 import RenderTable from './components/RenderTable';
+import {getHeadData} from './service';
 
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
-    const tabsRef = useRef(['全部', '公募基金', '投顾组合', '理财计划', '私募基金']);
-
+    const [tabs, setTabs] = useState([]);
+    const [headData, setHeadData] = useState({});
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -33,18 +34,28 @@ const ProfitDetail = ({navigation, route}) => {
             ),
         });
     }, []);
-    // 渲染收益更新表格
-
+    const initData = async () => {
+        const res = await getHeadData({});
+        if (res.code == '000000') {
+            setTabs(res.result?.tabs);
+            setHeadData(res.result?.header);
+        }
+    };
+    useEffect(() => {
+        initData();
+    }, []);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-            <ScrollableTabView
-                renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
-                initialPage={0}
-                onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
-                {tabsRef.current.map((tab, index) => {
-                    return <ProfitDistribution tabLabel={tab} key={`${tab + '' + index}`} />;
-                })}
-            </ScrollableTabView>
+            {tabs.length > 1 && (
+                <ScrollableTabView
+                    renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
+                    initialPage={0}
+                    onChangeTab={({i}) => global.LogTool('changeTab', tabs[i])}>
+                    {tabs.map((el, index) => {
+                        return <ProfitDistribution headData={headData} tabLabel={el.text} key={`${el + '' + index}`} />;
+                    })}
+                </ScrollableTabView>
+            )}
             <BottomModal title={'更新说明'} ref={bottomModal}>
                 <View style={{marginTop: px(30)}}>
                     <RenderTable />

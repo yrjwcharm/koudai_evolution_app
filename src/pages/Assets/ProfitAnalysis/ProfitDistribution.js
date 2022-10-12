@@ -9,8 +9,10 @@ import DayProfit from './DayProfit';
 import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
+import {delMille} from '../../../utils/common';
 
-const ProfitDistribution = () => {
+const ProfitDistribution = ({headData}) => {
+    const {profit_info, profit_acc_info, profit_all} = headData;
     const tabsRef = useRef(['日收益', '月收益', '年收益', '累计收益']);
     const shadow = {
         color: '#AAA',
@@ -34,16 +36,55 @@ const ProfitDistribution = () => {
                 <View style={styles.header}>
                     <View style={Style.flexEvenly}>
                         <View style={styles.headerItem}>
-                            <Text style={[styles.profitLabel, {color: Colors.defaultColor}]}>0.00</Text>
-                            <Text style={styles.profitValue}>昨日收益(元)</Text>
+                            <Text
+                                style={[
+                                    styles.profitLabel,
+                                    {
+                                        color:
+                                            delMille(profit_info?.value) > 0
+                                                ? Colors.red
+                                                : delMille(profit_info?.value) < 0
+                                                ? Colors.green
+                                                : Colors.lightBlackColor,
+                                    },
+                                ]}>
+                                {profit_info?.value}
+                            </Text>
+                            <Text style={styles.profitValue}>{profit_info?.text}</Text>
                         </View>
                         <View style={styles.headerItem}>
-                            <Text style={[styles.profitLabel, {color: Colors.green}]}>-2,628.97</Text>
-                            <Text style={styles.profitValue}>持仓收益(元)</Text>
+                            <Text
+                                style={[
+                                    styles.profitLabel,
+                                    {
+                                        color:
+                                            delMille(profit_acc_info?.value) > 0
+                                                ? Colors.red
+                                                : delMille(profit_acc_info?.value) < 0
+                                                ? Colors.green
+                                                : Colors.lightBlackColor,
+                                    },
+                                ]}>
+                                {profit_acc_info?.value}
+                            </Text>
+                            <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
                         </View>
                         <View style={styles.headerItem}>
-                            <Text style={[styles.profitLabel, {color: Colors.red}]}>+532,628.97</Text>
-                            <Text style={styles.profitValue}>累计收益(元)</Text>
+                            <Text
+                                style={[
+                                    styles.profitLabel,
+                                    {
+                                        color:
+                                            delMille(profit_all?.value) > 0
+                                                ? Colors.red
+                                                : delMille(profit_all?.value) < 0
+                                                ? Colors.green
+                                                : Colors.lightBlackColor,
+                                    },
+                                ]}>
+                                {profit_all?.value}
+                            </Text>
+                            <Text style={styles.profitValue}>{profit_all?.text}</Text>
                         </View>
                     </View>
                 </View>
