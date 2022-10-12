@@ -15,7 +15,6 @@ import _ from 'lodash';
 import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
-import PKBall from '~/pages/PK/components/PKBall';
 import EmptyTip from '~/components/EmptyTip';
 const Index = () => {
     const [data, setData] = useState({});
@@ -190,7 +189,6 @@ const Index = () => {
                     </>
                 )}
             </ScrollView>
-            {(keyword || searchLoading) && <PKBall />}
         </View>
     ) : (
         <LoadingTips />

@@ -1166,11 +1166,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@monterosa/react-native-parallax-scroll@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.npmmirror.com/@monterosa/react-native-parallax-scroll/-/react-native-parallax-scroll-1.8.0.tgz#04339a772c02818b229582a8b903aca4f9106005"
-  integrity sha512-fFzJvMNN77d78haErRrZ/X64H0Vjz+5CvXSHBqxjlRQmhUB/R7BnqHwO3WFKGv2/Hv30LpL+0MSfHZeukglvDA==
-
 "@react-native-community/art@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmmirror.com/@react-native-community/art/-/art-1.2.0.tgz#386d95393f6042d9006f9d4bc6063fb898794460"
@@ -3197,6 +3192,13 @@ create-react-class@^15.6.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
+cross-fetch@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.npmmirror.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
+  dependencies:
+    node-fetch "2.6.7"
+
 cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/cross-spawn/download/cross-spawn-5.1.0.tgz"
@@ -4150,6 +4152,19 @@ fbjs@^1.0.0:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
+
+fbjs@^3.0.0:
+  version "3.0.4"
+  resolved "https://registry.npmmirror.com/fbjs/-/fbjs-3.0.4.tgz#e1871c6bd3083bac71ff2da868ad5067d37716c6"
+  integrity sha512-ucV0tDODnGV3JCnnkmoszb5lf4bNpzjv80K41wd4k798Etq+UYD0y0TIfalLjZoKgjive6/adkRnszwapiDgBQ==
+  dependencies:
+    cross-fetch "^3.1.5"
+    fbjs-css-vars "^1.0.0"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.30"
 
 figures@^2.0.0:
   version "2.0.0"
@@ -5914,11 +5929,6 @@ lodash@^4.17.10, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.20.tgz?cache=0&sync_timestamp=1613835817439&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.20.tgz"
   integrity sha1-tEqbYpe8tpjxxRo1RaKzs2jVnFI=
 
-lodash@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
 log-symbols@^2.2.0:
   version "2.2.0"
   resolved "https://registry.nlark.com/log-symbols/download/log-symbols-2.2.0.tgz"
@@ -6567,6 +6577,13 @@ nocache@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/nocache/download/nocache-2.1.0.tgz"
   integrity sha1-Egyf/sQ7Vymx1d6IzXGqdaC6SR8=
+
+node-fetch@2.6.7:
+  version "2.6.7"
+  resolved "https://registry.npmmirror.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
+  integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-fetch@^1.0.1:
   version "1.7.3"
@@ -7327,15 +7344,15 @@ react-native-fs@^2.16.6:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.npmmirror.com/react-native-gesture-handler/-/react-native-gesture-handler-2.6.2.tgz#f3b68d374f5dda603ff29f7df2edb39472eb97ce"
-  integrity sha512-Ff/WKlR8KiM1wq7UJZvIyCB+OsweewaeZk+4RDIYNGM9tvNIAXEm/MtYnLHiBXiSJjZItF/8B83gE6pVq40vIw==
+react-native-gesture-handler@^1.8.0:
+  version "1.10.3"
+  resolved "https://registry.npmmirror.com/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz#942bbf2963bbf49fa79593600ee9d7b5dab3cfc0"
+  integrity sha512-cBGMi1IEsIVMgoox4RvMx7V2r6bNKw0uR1Mu1o7NbuHS6BRSVLq0dP34l2ecnPlC+jpWd3le6Yg1nrdCjby2Mw==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
+    fbjs "^3.0.0"
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
-    lodash "^4.17.21"
     prop-types "^15.7.2"
 
 react-native-get-channel@^1.0.1:
@@ -7347,11 +7364,6 @@ react-native-haptic-feedback@^1.11.0:
   version "1.11.0"
   resolved "https://registry.nlark.com/react-native-haptic-feedback/download/react-native-haptic-feedback-1.11.0.tgz"
   integrity sha1-rf2EHztnBGUy+RLG7IJ66gA32K0=
-
-react-native-head-tab-view@^4.0.0-rc.13:
-  version "4.0.0-rc.13"
-  resolved "https://registry.npmmirror.com/react-native-head-tab-view/-/react-native-head-tab-view-4.0.0-rc.13.tgz#bf33216b897d0ffd0b7422d752b186df35f94304"
-  integrity sha512-wal0cOy63BI/vjsxFRruqBm5B8QaDlOa4MX2CnuetMMbGR4522q0mtIya3EE0nO7GShwKk9TD1JvBvvpZa71AQ==
 
 react-native-image-crop-picker@^0.37.3:
   version "0.37.3"
@@ -7397,13 +7409,6 @@ react-native-orientation-locker@^1.1.8:
   version "1.1.8"
   resolved "https://registry.nlark.com/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz"
   integrity sha1-RdHJ4AJJa40obsiTLW4+fTQfnIU=
-
-react-native-parallax-scroll-view@^0.21.3:
-  version "0.21.3"
-  resolved "https://registry.npmmirror.com/react-native-parallax-scroll-view/-/react-native-parallax-scroll-view-0.21.3.tgz#d956ad224ce3b0a2725b80574bcbf688bbeda14e"
-  integrity sha512-oVbZPijNGYGcpU2z7k/ZOOnl0vYxch7qtVvaJpH4+wLVnEP49NC2diCzjFGz8PE0yEcgyeTdkpdUK8RTD3QEew==
-  dependencies:
-    prop-types "^15.6.0"
 
 react-native-pdf@^6.2.2:
   version "6.2.2"
@@ -7475,11 +7480,6 @@ react-native-screens@^2.12.0:
   version "2.16.1"
   resolved "https://registry.nlark.com/react-native-screens/download/react-native-screens-2.16.1.tgz"
   integrity sha1-sQWhJzeNkAGKRtrwwvZRj8pgwG8=
-
-react-native-scrollable-tab-view-collapsible-header@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmmirror.com/react-native-scrollable-tab-view-collapsible-header/-/react-native-scrollable-tab-view-collapsible-header-2.0.1.tgz#9354a0c4dd49de9d03adee3f9602b7fe29cce961"
-  integrity sha512-6oDv1iY67TFL1eyu4V4EEw4jIe2j6j9iAoej/JanjVaS0Rb1am6sSlNMOnN3drFpxOWsdbpgl4QY/1tvm1e8Jw==
 
 react-native-scrollable-tab-view@^1.0.0:
   version "1.0.0"
@@ -7553,7 +7553,7 @@ react-native-vector-icons@^9.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-video@^5.2.1:
+react-native-video@^5.1.1:
   version "5.2.1"
   resolved "https://registry.npmmirror.com/react-native-video/-/react-native-video-5.2.1.tgz#a17e856759d7e17eee9cbd9df0d05ba22e88d457"
   integrity sha512-aJlr9MeTuQ0LpZ4n+EC9RvhoKeiPbLtI2Rxy8u7zo/wzGevbRpWHSBj9xZ5YDBXnAVXzuqyNIkGhdw7bfdIBZw==
@@ -8805,6 +8805,11 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.npmmirror.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+  integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
+
 tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-1.14.1.tgz?cache=0&sync_timestamp=1617647281845&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-1.14.1.tgz"
@@ -8882,6 +8887,11 @@ ua-parser-js@^0.7.18:
   version "0.7.23"
   resolved "https://registry.npm.taobao.org/ua-parser-js/download/ua-parser-js-0.7.23.tgz"
   integrity sha1-cE1n+VHhMZX7zT14gYV39bwdVHs=
+
+ua-parser-js@^0.7.30:
+  version "0.7.31"
+  resolved "https://registry.npmmirror.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
+  integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
 
 uglify-es@^3.1.9:
   version "3.3.9"
@@ -9084,6 +9094,11 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+  integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
+
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npm.taobao.org/webidl-conversions/download/webidl-conversions-4.0.2.tgz"
@@ -9105,6 +9120,14 @@ whatwg-mimetype@^2.2.0, whatwg-mimetype@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/whatwg-mimetype/download/whatwg-mimetype-2.3.0.tgz"
   integrity sha1-PUseAxLSB5h5+Cav8Y2+7KWWD78=
+
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  integrity sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
 
 whatwg-url@^7.0.0:
   version "7.1.0"

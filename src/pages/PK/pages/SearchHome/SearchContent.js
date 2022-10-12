@@ -2,37 +2,43 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-19 18:54:29
+ * @LastEditTime: 2022-10-11 18:33:18
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import {px} from '../../../../utils/appUtil';
-import {Colors, Font, Style} from '../../../../common/commonStyle';
-import collectActive from '~/assets/img/pk/pkcollectActive.png';
-import collect from '~/assets/img/pk/pkcollect.png';
+import {Colors, Font, Space, Style} from '../../../../common/commonStyle';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
-import {useDispatch, useSelector} from 'react-redux';
-import {addProduct} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
+import Toast from '~/components/Toast';
+import {debounce} from 'lodash';
 const SearchContent = ({data}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
-    const dispatch = useDispatch();
-    const pkProducts = useSelector((store) => store.pkProducts[global.pkEntry]);
-    const onFavor = () => {
-        setFavor((_favor) => !_favor);
-        if (favor) {
-            followCancel({item_id: data.code, item_type: data.item_type || 1});
-        } else {
-            followAdd({item_id: data.code, item_type: data.item_type || 1});
-        }
-    };
-    const onPk = () => {
-        dispatch(addProduct(data.code));
-    };
+    const onFavor = useCallback(
+        debounce(
+            () => {
+                setFavor((_favor) => {
+                    if (_favor) {
+                        followCancel({item_id: data.code, item_type: data.item_type || 1}).then((res) => {
+                            res.message && Toast.show(res.message);
+                        });
+                    } else {
+                        followAdd({item_id: data.code, item_type: data.item_type || 1}).then((res) => {
+                            res.message && Toast.show(res.message);
+                        });
+                    }
+                    return !_favor;
+                });
+            },
+            500,
+            {leading: true, trailing: false}
+        ),
+        []
+    );
     return (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
@@ -46,17 +52,18 @@ const SearchContent = ({data}) => {
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
-                {data?.item_type === 1 ? (
-                    <>
-                        <TouchableOpacity onPress={onFavor} activeOpacity={0.8}>
-                            <Image source={favor ? collectActive : collect} style={{width: px(26), height: px(26)}} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={[styles.pkBtn, Style.flexCenter]} onPress={onPk} activeOpacity={0.8}>
-                            <Text style={{color: '#fff'}}>{pkProducts.includes(data.code) ? 'PK中' : 'PK'}</Text>
-                        </TouchableOpacity>
-                    </>
-                ) : null}
+                <TouchableOpacity
+                    style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
+                    onPress={onFavor}
+                    activeOpacity={0.8}>
+                    <Text
+                        style={[
+                            {fontSize: Font.textH3, lineHeight: px(17)},
+                            {color: favor ? '#BDC2CC' : Colors.brandColor},
+                        ]}>
+                        {favor ? '已自选' : '+自选'}
+                    </Text>
+                </TouchableOpacity>
             </View>
         </TouchableOpacity>
     );
@@ -91,10 +98,9 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
     },
     pkBtn: {
-        backgroundColor: '#0051CC',
+        paddingVertical: px(3),
+        paddingHorizontal: px(14),
+        borderWidth: Space.borderWidth,
         borderRadius: px(103),
-        width: px(50),
-        height: px(26),
-        marginLeft: px(12),
     },
 });
