@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {px as text} from '../../../../utils/appUtil';
+import {px, px as text} from '../../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../../common/commonStyle';
 import {Modal} from '../../../../components/Modal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,8 +15,10 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useIsMounted} from '../../../../utils/useIsMounted';
 
 const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
+    const isMounted = useIsMounted();
     const insets = useSafeAreaInsets();
     const [list, setList] = useState([]);
     const [period, setPeriod] = useState('this_year');
@@ -24,35 +26,39 @@ const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
     const [onlyAll, setOnlyAll] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     const init = useCallback(() => {
-        if (!poid) {
-            http.get('/profit/user_portfolios/20210101').then((res) => {
-                if (res.code === '000000') {
-                    setList(res.result.list || []);
-                }
-            });
+        if (isMounted.current) {
+            if (!poid) {
+                http.get('/profit/user_portfolios/20210101').then((res) => {
+                    if (res.code === '000000') {
+                        setList(res.result.list || []);
+                    }
+                });
+            }
         }
     }, [poid]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
-        http.get(url, {
-            fund_code,
-            period,
-            poid,
-        }).then((res) => {
-            setShowEmpty(true);
-            if (res.code === '000000') {
-                if (res.result.subtabs?.length === 1) {
-                    setOnlyAll(true);
+        if (isMounted.current) {
+            const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
+            http.get(url, {
+                fund_code,
+                period,
+                poid,
+            }).then((res) => {
+                setShowEmpty(true);
+                if (res.code === '000000') {
+                    if (res.result.subtabs?.length === 1) {
+                        setOnlyAll(true);
+                    }
+                    setChartData(res.result);
                 }
-                setChartData(res.result);
-            }
-        });
+            });
+        }
     }, [period]);
     useEffect(() => {
         init();
         getChart();
-    }, []);
+    }, [getChart, init]);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
         if (!t) {
@@ -134,7 +140,7 @@ const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
                         )}
                     </View>
 
-                    <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(20)}]}>
+                    <View style={[Style.flexRowCenter, {paddingTop: text(8)}]}>
                         {chartData?.subtabs?.map((tab, index) => {
                             return (
                                 <TouchableOpacity
@@ -177,22 +183,12 @@ const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
                 </View>
             ) : showEmpty ? (
                 <EmptyTip
-                    img={require('../../assets/img/emptyTip/noProfit.png')}
+                    img={require('../../../../assets/img/emptyTip/noProfit.png')}
                     style={{paddingTop: text(28), paddingBottom: text(40)}}
                     text={'暂无累计收益数据'}
                     type={'part'}
                 />
             ) : null}
-
-            {list.length > 0 && chartData?.header?.length > 0 && (
-                <View style={[styles.poHeader, Style.flexBetween]}>
-                    {chartData?.header?.map((item, index) => (
-                        <Text key={index} style={[styles.subTitle, {color: Colors.darkGrayColor}]}>
-                            {item}
-                        </Text>
-                    ))}
-                </View>
-            )}
         </>
     );
 };
@@ -221,7 +217,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     chart: {
-        height: text(224),
+        height: text(224), // left: -px(12),
     },
     subtab: {
         marginHorizontal: text(7),

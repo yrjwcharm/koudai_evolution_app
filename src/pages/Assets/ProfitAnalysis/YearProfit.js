@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:年收益
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
@@ -16,6 +16,7 @@ const width = Dimensions.get('window').width;
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const YearProfit = ({type}) => {
+    const isUnmounted = useRef(false);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -71,8 +72,10 @@ const YearProfit = ({type}) => {
         }
         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == curYear);
-        arr[index] && (arr[index].checked = true);
-        setDateArr([...arr]);
+        if (!isUnmounted.current) {
+            arr[index] && (arr[index].checked = true);
+            setDateArr([...arr]);
+        }
     };
     const sortRenderList = useCallback(() => {}, []);
     const getProfitBySelDate = (item) => {
@@ -127,6 +130,7 @@ const YearProfit = ({type}) => {
     }, []);
     useEffect(() => {
         init();
+        return () => (isUnmounted.current = true);
     }, []);
     return (
         <View style={styles.container}>

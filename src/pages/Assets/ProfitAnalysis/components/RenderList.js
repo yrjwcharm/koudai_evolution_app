@@ -4,25 +4,30 @@
  * @Description:列表渲染封装
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille} from '../../../../utils/common';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../service';
+import {useIsMounted} from '../../../../utils/useIsMounted';
 
 const RenderList = ({type}) => {
+    const isMounted = useIsMounted();
     const [headerList, setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
-    useEffect(() => {
-        const getProfitDetailData = async () => {
-            const res = await getProfitDetail({type});
-            if (res.code == '000000') {
+    const getProfitDetailData = async () => {
+        const res = await getProfitDetail({type});
+        if (res.code == '000000') {
+            if (isMounted.current) {
+                // 判断当前组件有没有被卸载
                 setHeaderList(res.result?.head_list);
                 setProfitList(res.result?.data_list);
             }
-        };
+        }
+    };
+    useEffect(() => {
         getProfitDetailData();
     }, [type]);
     const sortRenderList = useCallback(() => {}, []);

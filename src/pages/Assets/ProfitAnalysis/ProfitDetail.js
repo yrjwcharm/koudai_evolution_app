@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:收益明细
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
@@ -14,6 +14,7 @@ import {BottomModal} from '../../../components/Modal';
 import Toast from '../../../components/Toast';
 import RenderTable from './components/RenderTable';
 import {getEarningsUpdateNote, getHeadData} from './service';
+import Loading from '../../Portfolio/components/PageLoading';
 
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
@@ -49,6 +50,9 @@ const ProfitDetail = ({navigation, route}) => {
     useEffect(() => {
         initData();
     }, [type]);
+    const setLoadingFn = useCallback((loading) => {
+        setLoadingFn(loading);
+    });
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (

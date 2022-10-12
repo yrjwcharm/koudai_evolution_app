@@ -6,7 +6,7 @@
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet} from 'react-native';
 import {deviceWidth, px, px as text} from '../utils/appUtil';
@@ -16,6 +16,7 @@ import {useJump} from './hooks';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
 import http from '../services';
 const BottomDesc = (props) => {
+    const isUnmounted = useRef(false);
     const route = useRoute();
     const [data, setData] = useState(null);
     const {style} = props;
@@ -28,11 +29,24 @@ const BottomDesc = (props) => {
                 params: JSON.stringify(route.params),
             }).then((res) => {
                 if (res.code === '000000') {
-                    setData(res.result);
+                    if (!isUnmounted.current) {
+                        setData(res.result);
+                    }
                 }
             });
         }, [route])
     );
+    /**
+     * 已封装hooks utils/useIsMounted.js
+     * 使用此方案解决控制台  Warning: Can't perform a React state update on an unmounted component.
+     * This is a no-op, butit indicates a memory leak in your application.
+     * To fix, cancel all subscriptions and asynchronous tasks
+     */
+    useEffect(() => {
+        return () => {
+            isUnmounted.current = true;
+        };
+    }, []);
     return (
         <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
             <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>

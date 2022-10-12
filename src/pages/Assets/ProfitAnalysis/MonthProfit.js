@@ -18,6 +18,7 @@ import {getChartData} from './service';
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
 const MonthProfit = ({type}) => {
+    const isUnmounted = useRef(false);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -71,8 +72,10 @@ const MonthProfit = ({type}) => {
         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == selCurDate);
         arr[index] && (arr[index].checked = true);
-        setDateArr([...arr]);
-        setDate(dayjs_);
+        if (!isUnmounted.current) {
+            setDateArr([...arr]);
+            setDate(dayjs_);
+        }
     };
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
@@ -92,6 +95,7 @@ const MonthProfit = ({type}) => {
     });
     useEffect(() => {
         init();
+        return () => (isUnmounted.current = true);
     }, []);
     const init = useCallback(() => {
         // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {

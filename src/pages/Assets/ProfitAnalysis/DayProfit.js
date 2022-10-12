@@ -15,9 +15,8 @@ import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './service';
-import Loading from '~/pages/Portfolio/components/PageLoading';
 const DayProfit = ({type}) => {
-    const [loading, setLoading] = useState(true);
+    const isUnmounted = useRef(false);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -100,9 +99,6 @@ const DayProfit = ({type}) => {
         // let maxDateArr = [];
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
-            let barChartData = profit_data_list.map((el) => {
-                return {date: el.unit_key, value: el.value};
-            });
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
                     //小于当前日期的情况
@@ -119,9 +115,10 @@ const DayProfit = ({type}) => {
         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == selCurDate);
         arr[index] && (arr[index].checked = true);
-        setDateArr([...arr]);
-        setDate(dayjs_);
-        setLoading(false);
+        if (!isUnmounted.current) {
+            setDateArr([...arr]);
+            setDate(dayjs_);
+        }
     };
     React.useEffect(() => {
         initData(selCurDate);
@@ -156,10 +153,9 @@ const DayProfit = ({type}) => {
 
     useEffect(() => {
         init();
+        return () => (isUnmounted.current = true);
     }, []);
-    return loading ? (
-        <Loading color={Colors.btnColor} />
-    ) : (
+    return (
         <View style={styles.container}>
             {/*chart类型*/}
             <ChartHeader
