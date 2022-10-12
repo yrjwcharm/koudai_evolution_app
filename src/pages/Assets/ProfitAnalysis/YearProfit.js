@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
+import {getChartData} from './service';
 const width = Dimensions.get('window').width;
 let UUID = require('uuidjs');
 let uuid = UUID.generate();
@@ -47,7 +48,7 @@ const YearProfit = ({type}) => {
     useEffect(() => {
         initData(selCurYear);
     }, []);
-    const initData = (curYear) => {
+    const initData = async (curYear) => {
         let startYear = dayjs().year() - 5;
         let endYear = dayjs().year();
         let arr = [];
@@ -58,14 +59,18 @@ const YearProfit = ({type}) => {
                 profit: '0.00',
             });
         }
-        for (let i = 0; i < arr.length; i++) {
-            for (let j = 0; j < mockData.length; j++) {
-                if (arr[i].day == mockData[j].year) {
-                    arr[i].profit = mockData[j].profit;
+        const res = await getChartData({type, unit_type: 'year'});
+        if (res.code == '000000') {
+            const {profit_data_list = []} = res.result ?? {};
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < profit_data_list.length; j++) {
+                    if (arr[i].day == profit_data_list[j].unit_key) {
+                        arr[i].profit = profit_data_list[j].value;
+                    }
                 }
             }
         }
-        //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == curYear);
         arr[index] && (arr[index].checked = true);
         setDateArr([...arr]);
