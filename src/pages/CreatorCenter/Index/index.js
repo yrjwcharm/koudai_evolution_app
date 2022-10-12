@@ -140,7 +140,7 @@ const CreatorCenterIndex = () => {
                                             activeOpacity={0.7}
                                             style={styles.cardItemHeader}
                                             onPress={() => {
-                                                jump({path: 'CommunityCollection'});
+                                                jump({path: 'AddProductStep1', params: {subject_id: 111}});
                                             }}>
                                             <Text style={styles.cardItemHeaderTitle}>社区合集</Text>
                                             <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
