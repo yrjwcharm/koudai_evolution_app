@@ -4,9 +4,9 @@
  * @Description:
  */
 import React from 'react';
-import {Text, TextInput, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {isIphoneX, px} from '../../../utils/appUtil';
-import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
 import AccEarningsCom from './components/AccEarningsCom';
 const TotalProfit = ({type}) => {

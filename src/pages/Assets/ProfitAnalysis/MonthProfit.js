@@ -91,7 +91,6 @@ const MonthProfit = ({type}) => {
     useEffect(() => {
         initData(selCurDate);
     }, [diff]);
-    const sortRenderList = useCallback(() => {});
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);

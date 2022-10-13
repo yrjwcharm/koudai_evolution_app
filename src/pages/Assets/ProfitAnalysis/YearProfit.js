@@ -3,8 +3,8 @@
  * @Author: yanruifeng
  * @Description:年收益
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
@@ -12,36 +12,14 @@ import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './service';
+import {delMille} from '../../../utils/common';
 const YearProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
-    const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
-    const mockData = [
-        {
-            year: '2018',
-            profit: '+420.82',
-        },
-        {
-            year: '2019',
-            profit: '-32,245.08',
-        },
-        {
-            year: '2020',
-            profit: '+420.82',
-        },
-        {
-            year: '2021',
-            profit: '-32,245.08',
-        },
-        {
-            year: '2022',
-            profit: '+326,420.82',
-        },
-    ];
     useEffect(() => {
         initData(selCurYear);
     }, []);
@@ -58,6 +36,19 @@ const YearProfit = ({type}) => {
         const res = await getChartData({type, unit_type: 'year'});
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
+            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+            let barCharData = profit_data_list
+                .map((el) => {
+                    return {date: el.unit_key + '年', value: parseFloat(el.value)};
+                })
+                .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+            setChart({
+                label: [
+                    {name: '时间', val: profit_data_list[index]?.unit_key},
+                    {name: '收益', val: profit_data_list[index]?.value},
+                ],
+                chart: barCharData,
+            });
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
                     if (arr[i].day == profit_data_list[j].unit_key) {
@@ -71,7 +62,6 @@ const YearProfit = ({type}) => {
         arr[index] && (arr[index].checked = true);
         setDateArr([...arr]);
     };
-    const sortRenderList = useCallback(() => {}, []);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
         initData(item.day);

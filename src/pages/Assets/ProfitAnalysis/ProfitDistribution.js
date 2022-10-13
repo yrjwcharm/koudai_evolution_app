@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
