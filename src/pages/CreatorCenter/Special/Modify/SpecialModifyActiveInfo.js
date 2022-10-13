@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-11 14:00:07
- * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialModifyBaseInfo.js
+ * @LastEditTime: 2022-10-13 14:40:32
+ * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description:
  */
 
@@ -32,98 +32,6 @@ import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {getStashSpeical, saveStashSpeical} from '../services';
 
-function Tag(props) {
-    let {text, onPress, onClose} = props;
-    return (
-        <View style={[styles.tagItem]}>
-            <Pressable onPress={onPress}>
-                <Text style={styles.tagItem_text}>{text}</Text>
-            </Pressable>
-            <Pressable onPress={onClose}>
-                <Text style={styles.tagItem_closeIcon}>X</Text>
-            </Pressable>
-            {/* <FastImage style={styles.tagItem_closeIcon}>X</FastImage> */}
-        </View>
-    );
-}
-function AddTag(props) {
-    const {onPress} = props;
-    return (
-        <TouchableOpacity style={[styles.tagItem, styles.tagItemAdd]} onPress={onPress}>
-            <Text style={styles.tagItemAdd_text}>+标签</Text>
-        </TouchableOpacity>
-    );
-}
-
-/** 标签 */
-function TagWrap(props) {
-    const {tags, setTags} = props;
-    const [text, setText] = useState('');
-    const [index, setIndex] = useState(-1);
-    const bottomModal = useRef(null);
-
-    const handleTagChange = (i) => {
-        console.log('handleTagChange:', i);
-        setIndex(i);
-        if (index === -1) {
-            setText('');
-        } else {
-            setText(tags[i]);
-        }
-        bottomModal.current?.show();
-    };
-    const handelTagDel = (i) => {
-        setTags(tags.filter((t, idx) => idx != i));
-    };
-    const handleTagEdit = () => {
-        if (index === -1 && text && text.length > 0) {
-            tags.push(text);
-            setTags([...tags]);
-            return;
-        }
-
-        if (index >= 0) {
-            if (text.length == 0) {
-                setTags(tags.filter((t, idx) => idx != index));
-            } else {
-                tags[index] = text;
-                setTags([...tags]);
-            }
-        }
-    };
-    return (
-        <>
-            <View style={[styles.space2, styles.tagsWrap]}>
-                {tags.length < 3 && <AddTag onPress={() => handleTagChange(-1)} />}
-                {(tags || []).map((tag, i) => (
-                    <Tag key={tag + i} text={tag} onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
-                ))}
-            </View>
-            <View style={[styles.space1, styles.tipWrap]}>
-                <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
-                <Text style={styles.tip}>专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字</Text>
-            </View>
-            <BottomModal
-                ref={bottomModal}
-                title="标签内容编辑"
-                showClose={true}
-                confirmText="确定"
-                onDone={handleTagEdit}>
-                <View style={styles.tagItem_inputWrap}>
-                    <TextInput
-                        style={styles.tagItem_input}
-                        multiline={false}
-                        placeholder="请填写标签内容，最多6个字符"
-                        maxLength={6}
-                        value={text}
-                        onChangeText={setText}
-                    />
-                </View>
-            </BottomModal>
-        </>
-    );
-}
-
 const typeArr = ['选择现有图片', '从相册选择'];
 const blockCal = () => {
     Modal.show({
@@ -137,55 +45,28 @@ const blockCal = () => {
     });
 };
 
-// const showModalWithInputTips = () => {
-
-// 	Modal.show({
-//         title: '权限申请',
-//         content: `${action === 'camera' ? '相机' : '录音'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
-//         confirm: true,
-//         confirmText: '前往',
-//         confirmCallBack: () => {
-//             openSettings().catch(() => console.warn('无法打开设置'));
-//         },
-//     });
-// }
-
 export default function SpecialModifyBaseInfo({navigation, route}) {
     const jump = useJump();
     const [bgSource, setBgSource] = useState();
 
     const [showPickerModal, setPickerModal] = useState(false);
-    const [title, setTitle] = useState('');
-    const [desc, setDesc] = useState('');
-    const [tags, setTags] = useState([]);
+    const [link, setLink] = useState('');
 
     const showSelectImg = () => {
         setPickerModal(true);
     };
-    const rightPress = () => {
-        // TODO: check input
+
+    const handleSaveActiveInfo = () => {
         if (!bgSource || bgSource.length === 0) {
             Toast.show('未选择背景图片');
             return;
         }
-        if (!title || title.length === 0) {
-            Toast.show('专题名称未填写');
-            return;
-        }
-        if (!desc || desc.length === 0) {
-            Toast.show('专题简介未填写');
-            return;
-        }
-        if (!tags || tags.length === 0) {
-            Toast.show('专题标签未填写');
-            return;
-        }
-        jump({
-            path: 'SpecialCreateEntry',
-        });
+
+        // TODO: save active info
+        navigation.goBack();
     };
     const handleBack = () => {
-        if (bgSource || title || desc || tags.length > 1) {
+        if (bgSource || link) {
             Modal.show({
                 title: '已编辑内容是否要保存草稿？下次可继续编辑。',
                 cancelText: '不保存草稿',
@@ -221,8 +102,8 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     const openPicker = () => {
         setTimeout(() => {
             ImagePicker.openPicker({
-                width: px(343),
-                height: px(182),
+                width: px(1029),
+                height: px(180),
                 cropping: true,
                 cropperChooseText: '选择',
                 cropperCancelText: '取消',
@@ -257,9 +138,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
 
     useEffect(() => {
         getStashSpeical().then((res) => {
-            setTitle('');
-            setDesc('');
-            setTags([]);
+            setLink('');
             setBgSource('');
         });
     }, []);
@@ -291,38 +170,29 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
-                title={'创建专题'}
+                title={'修改活动信息'}
                 leftIcon="chevron-left"
-                rightText={'下一步'}
-                rightPress={rightPress}
+                rightText={'保存'}
+                rightPress={handleSaveActiveInfo}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
             />
             <ScrollView style={styles.pageWrap}>
-                <Text style={styles.upload_label}>上传专题背景图片</Text>
+                <View style={Style.flexRow}>
+                    <Text style={styles.upload_label}>上传活动背景图片</Text>
+                    <Text style={styles.upload_label_desc}>（选填，尺寸要求：1029*180px）</Text>
+                </View>
                 <View style={[styles.space1, styles.upload_imageWrap]}>{uploadImgSection}</View>
                 <View style={[styles.space2, styles.inputWrap]}>
                     <TextInput
                         style={styles.title}
-                        onChangeText={setTitle}
-                        placeholder="请输入专题名称，最多13个字符"
-                        value={title}
+                        onChangeText={setLink}
+                        placeholder="请填写活动链接(选填）"
+                        value={link}
                         clearButtonMode="while-editing"
                     />
                     <View style={[styles.line, styles.space1]} />
                 </View>
-                <View style={[styles.space2, styles.inputWrap]}>
-                    <TextInput
-                        style={styles.desc}
-                        placeholder="请输入专题简介"
-                        onChangeText={setDesc}
-                        maxLength={13}
-                        value={desc}
-                        clearButtonMode="while-editing"
-                    />
-                    <View style={[styles.line, styles.space1]} />
-                </View>
-                <TagWrap tags={tags} setTags={setTags} />
             </ScrollView>
 
             <SelectModal
@@ -370,6 +240,10 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         color: '#121D3A',
     },
+    upload_label_desc: {
+        fontSize: px(12),
+        color: '#545968',
+    },
     upload_imageWrap: {
         width: '100%',
         display: 'flex',
@@ -408,73 +282,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontSize: px(16),
-        color: '#121D3A',
-    },
-    desc: {
         fontSize: px(13),
-        color: '#545968',
-    },
-    tipWrap: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-    tip_icon: {
-        height: 12,
-        width: 12,
-    },
-    tip: {
-        marginLeft: 4,
-        fontSize: px(11),
-        color: '#9AA0B1',
-    },
-
-    tagsWrap: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-
-    tagItem: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: px(40),
-        height: px(25),
-        backgroundColor: '#F1F6FF',
-        paddingLeft: px(12),
-        paddingRight: px(12),
-    },
-    tagItem_text: {
-        color: '#0051CC',
-        fontSize: px(12),
-    },
-    tagItem_closeIcon: {
-        marginLeft: 10,
-        height: px(10),
-        width: px(10),
-    },
-    tagItemAdd: {
-        backgroundColor: '#F5F6F8',
-    },
-    tagItemAdd_text: {
-        color: '#9AA0B1',
-        fontSize: px(12),
-    },
-    tagItem_inputWrap: {
-        width: '100%',
-        height: 300,
-        paddingTop: 20,
-        paddingLeft: 16,
-        paddingRight: 16,
-    },
-    tagItem_input: {
-        width: '100%',
-        height: px(24),
-        fontSize: px(14),
+        color: '#121D3A',
     },
 });
