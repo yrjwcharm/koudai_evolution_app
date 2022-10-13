@@ -75,8 +75,8 @@ const ProfitDetail = ({navigation, route}) => {
                 </ScrollableTabView>
             )}
             <BottomModal title={'更新说明'} ref={bottomModal}>
-                <View style={{marginTop: px(30)}}>
-                    <RenderTable />
+                <View style={{marginTop: px(30), alignItems: 'center'}}>
+                    <Image source={{uri: declarePic}} style={styles.declareImg} />
                 </View>
             </BottomModal>
         </View>
@@ -85,6 +85,11 @@ const ProfitDetail = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.red,
+    },
+    declareImg: {
+        height: px(160),
+        width: deviceWidth - px(32),
+        resizeMode: 'cover',
     },
     rightTitle: {
         fontSize: px(13),
