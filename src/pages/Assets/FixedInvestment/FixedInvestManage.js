@@ -6,14 +6,14 @@
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
-import {callFixedHeadDataApi} from './services';
+import {callFixedHeadDataApi, callHistoryDataApi} from './services';
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
     const [data, setData] = useState({});
@@ -22,25 +22,33 @@ const FixedInvestManage = ({navigation, route}) => {
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const {fund_code = '', poid = ''} = route?.params || {};
+    const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);
     useEffect(() => {
-        const getFixedHeadData = async () => {
-            const res = await callFixedHeadDataApi({});
-            if (res.code == '000000') {
-                const {title = '定投管理', detail = {}, head_list = [], tabs = []} = res.result || {};
+        const initData = async (unitType) => {
+            const res = await Promise.all([
+                callFixedHeadDataApi({}),
+                callHistoryDataApi({type: unitType, poid, code: fund_code}),
+            ]);
+            if (res[0].code == '000000') {
+                const {title = '定投管理', detail = {}, head_list = [], tabs = []} = res[0].result || {};
                 navigation.setOptions({title: '定投管理'});
                 let tabList = tabs.map((el, index) => {
-                    return {...el, checked: index == 0 ? true : false};
+                    return {...el, checked: el.type == unitType ? true : false};
                 });
                 setTabList(tabList);
                 setHeadList(head_list);
                 setDetail(detail);
             }
+            if (res[1].code == '000000') {
+                setData(res[1].result);
+            }
         };
-        getFixedHeadData();
-    }, []);
+        initData(unitType);
+    }, [unitType]);
 
     const selTab = (item) => {
+        setUnitType(item.type);
         tabList.map((_item) => {
             _item.checked = false;
             if (JSON.stringify(_item) == JSON.stringify(item)) {
@@ -51,11 +59,13 @@ const FixedInvestManage = ({navigation, route}) => {
     };
     return (
         <View style={styles.container}>
+            <Text style={{fontSize: px(45), color: Colors.red, fontFamily: Font.numFontFamily}}>明月几时有</Text>
+            <Text style={{fontSize: px(45), color: Colors.red, fontFamily: Font.numFontFamily}}>明月几时有</Text>
             <View style={styles.header}>
                 <ImageBackground style={{width, height: px(120)}} source={require('./assets/lineargradient.png')}>
-                    {Object.keys(detail).length > 0 ? (
-                        <View style={styles.automaticInvestDaysView}>
-                            <Text style={styles.prevText}>{detail?.left}</Text>
+                    <View style={styles.automaticInvestDaysView}>
+                        <Text style={styles.prevText}>{detail?.left}</Text>
+                        <>
                             {detail?.days
                                 ?.toString()
                                 .split('')
@@ -66,20 +76,14 @@ const FixedInvestManage = ({navigation, route}) => {
                                         </View>
                                     );
                                 })}
-                            <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
-                            <ImageBackground
-                                style={{width: px(51), height: px(17)}}
-                                source={require('./assets/label.png')}>
-                                <View style={styles.labelView}>
-                                    <Text style={styles.label}>{detail?.tip}</Text>
-                                </View>
-                            </ImageBackground>
-                        </View>
-                    ) : (
-                        <View style={styles.emptyInvest}>
-                            <Text style={styles.emptyInvestText}>暂未定投，现在开始定投，一点点变富</Text>
-                        </View>
-                    )}
+                        </>
+                        <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
+                        <ImageBackground style={{width: px(51), height: px(17)}} source={require('./assets/label.png')}>
+                            <View style={styles.labelView}>
+                                <Text style={styles.label}>{detail?.tip}</Text>
+                            </View>
+                        </ImageBackground>
+                    </View>
                 </ImageBackground>
                 <View style={styles.autoInvestWrap}>
                     <ImageBackground source={require('./assets/rect.png')} style={styles.autoInvest}>
@@ -108,7 +112,10 @@ const FixedInvestManage = ({navigation, route}) => {
                                 <Text
                                     style={[
                                         styles.defaultTabText,
-                                        {color: el.checked ? Colors.brandColor : Colors.defaultColor},
+                                        {
+                                            fontFamily: el.checked ? Font.numFontFamily : Font.numRegular,
+                                            color: el.checked ? Colors.brandColor : Colors.defaultColor,
+                                        },
                                     ]}>
                                     {el.text}
                                 </Text>
@@ -117,10 +124,10 @@ const FixedInvestManage = ({navigation, route}) => {
                     );
                 })}
             </View>
-            <InvestHeader />
-            <RenderItem navigation={navigation} />
+            <InvestHeader headList={data.head_list ?? []} />
+            <RenderItem navigation={navigation} dataList={data.data_list ?? []} />
             <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
-                <View style={{marginTop: px(12), ...Style.flexCenter}}>
+                <View style={{marginTop: px(20), ...Style.flexCenter}}>
                     <View style={Style.flexRow}>
                         <Text style={styles.termintal}>查看已终止的定投(3)</Text>
                         <Image source={require('./assets/more.png')} />
@@ -146,14 +153,14 @@ const styles = StyleSheet.create({
     },
     emptyInvestText: {
         fontSize: px(16),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.white,
     },
     termintal: {
         fontSize: px(12),
         marginRight: px(5),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: '#545968',
     },
     defaultTab: {
@@ -164,7 +171,6 @@ const styles = StyleSheet.create({
     },
     defaultTabText: {
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
     investLabel: {
         marginTop: px(4),
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },
@@ -231,14 +237,14 @@ const styles = StyleSheet.create({
     prevText: {
         fontSize: px(16),
         marginRight: px(1),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.white,
     },
     nextText: {
         marginLeft: px(4),
         fontSize: px(16),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.white,
         marginRight: px(9),

@@ -48,7 +48,7 @@ export default class TabBar extends Component {
                                 color: textColor,
                                 fontWeight: isTabActive ? 'bold' : 'normal',
                                 fontSize,
-                                fontFamily: isTabActive ? Font.pingFangMedium : Font.pingFangRegular,
+                                fontFamily: isTabActive ? Font.numFontFamily : Font.numRegular,
                                 paddingVertical: px(6),
                             },
                         ]}>

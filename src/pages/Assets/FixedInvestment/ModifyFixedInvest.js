@@ -74,19 +74,19 @@ const styles = StyleSheet.create({
     change: {
         marginRight: px(6),
         fontSize: px(12),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },
     cardType: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         color: Colors.defaultColor,
     },
     maxTransfer: {
         marginTop: px(2),
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightGrayColor,
     },
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightBlackColor,
     },
     textInputStyle: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         marginRight: px(6),
         fontSize: px(14),
         fontWeight: 'normal',
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         color: Colors.defaultColor,
     },
     interval: {
@@ -134,14 +134,14 @@ const styles = StyleSheet.create({
     },
     fundName: {
         fontSize: px(14),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
     fundCode: {
         fontSize: px(12),
         marginLeft: px(8),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.lightGrayColor,
     },

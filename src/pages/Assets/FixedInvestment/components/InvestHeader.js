@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import {deviceWidth, px} from '../../../../utils/appUtil';
 import {Image, Text, View, StyleSheet} from 'react-native';
 import {BoxShadow} from 'react-native-shadow';
+import sortImg from '~/assets/img/attention/sort.png';
+import sortUp from '~/assets/img/attention/sortUp.png';
 import {Colors, Font} from '../../../../common/commonStyle';
 const shadow = {
     color: '#aaa',
@@ -22,18 +24,19 @@ const shadow = {
         left: px(16),
     },
 };
-const InvestHeader = (props) => {
+const InvestHeader = ({headList}) => {
     return (
         <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(37)}}>
             <View style={styles.sortChoiceView}>
                 <View style={styles.sortChoiceWrap}>
-                    <Text style={styles.sortText}>名称/每期定投(元)</Text>
+                    <Text style={styles.sortText}>{headList[0]?.text}</Text>
                     <View style={styles.investIssure}>
-                        <Text style={styles.sortText}>已投期数(期)</Text>
+                        <Text style={styles.sortText}>{headList[1]?.text}</Text>
+
                         <Image source={require('../assets/asc.png')} />
                     </View>
                     <View style={styles.totalSort}>
-                        <Text style={styles.sortText}>累计定投(元)</Text>
+                        <Text style={styles.sortText}>{headList[2]?.text}</Text>
                         <Image source={require('../assets/asc.png')} />
                     </View>
                 </View>
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     sortText: {
         fontSize: px(11),
         marginRight: px(2),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightGrayColor,
     },

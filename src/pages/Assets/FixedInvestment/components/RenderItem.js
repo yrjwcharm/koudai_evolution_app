@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {deviceWidth, px} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {useJump} from '../../../../components/hooks';
 const shadow = {
@@ -22,72 +22,127 @@ const shadow = {
         left: px(16),
     },
 };
-const RenderItem = ({navigation}) => {
+const RenderItem = ({navigation, dataList}) => {
     const jump = useJump();
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('AutomaticInvestDetail')}>
-            <View style={{marginTop: px(8)}}>
-                <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(111)}}>
-                    <View style={[styles.listRowWrap]}>
-                        <View style={[styles.status, {backgroundColor: '#EDF7EC'}]}>
-                            <Text style={[styles.statusText, {color: Colors.green}]}>定投中</Text>
-                        </View>
-                        <View style={styles.listRowTopView}>
-                            <View style={styles.listRowTopWrap}>
-                                <View style={styles.top}>
-                                    <View style={styles.topView}>
-                                        <Text style={styles.type}>基金</Text>
-                                    </View>
-                                    <Text
-                                        style={[
-                                            styles.invest_num,
-                                            {
-                                                fontSize: px(12),
-                                                marginLeft: px(8),
-                                                fontWeight: 'normal',
-                                                fontFamily: 'PingFang SC-中黑体, PingFang SC',
-                                            },
-                                        ]}>
-                                        中欧价值发现混合A
-                                    </Text>
-                                </View>
-                                <View style={[styles.bottom, {marginTop: px(11)}]}>
-                                    <View style={styles.bottomWrap}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.autoInvestIssure}>月定投</Text>
-                                            <Text
+        <>
+            <View style={styles.listItem}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    {dataList.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                key={item + `` + index}
+                                onPress={() => navigation.navigate('AutomaticInvestDetail')}>
+                                <View style={{marginTop: px(8)}}>
+                                    <BoxShadow
+                                        setting={{
+                                            ...shadow,
+                                            width: deviceWidth - px(32),
+                                            height: item.detail ? px(111) : px(70),
+                                        }}>
+                                        <View style={[styles.listRowWrap]}>
+                                            <View
                                                 style={[
-                                                    styles.invest_num,
-                                                    {fontSize: px(14), fontWeight: '500', fontFamily: Font.numMedium},
+                                                    styles.status,
+                                                    {
+                                                        backgroundColor:
+                                                            item.status == '定投中'
+                                                                ? '#EDF7EC'
+                                                                : item.status == '已暂停'
+                                                                ? '#FDEFE4'
+                                                                : '#E9EAEF',
+                                                    },
                                                 ]}>
-                                                5,000.00
-                                            </Text>
+                                                <Text
+                                                    style={[
+                                                        styles.statusText,
+                                                        {
+                                                            color:
+                                                                item.status == '定投中'
+                                                                    ? Colors.green
+                                                                    : item.status == '已暂停'
+                                                                    ? '#FF7D41'
+                                                                    : Colors.lightGrayColor,
+                                                        },
+                                                    ]}>
+                                                    {item.status}
+                                                </Text>
+                                            </View>
+                                            <View style={styles.listRowTopView}>
+                                                <View style={styles.listRowTopWrap}>
+                                                    <View style={styles.top}>
+                                                        <View style={styles.topView}>
+                                                            <Text style={styles.type}>{item.type}</Text>
+                                                        </View>
+                                                        <Text
+                                                            style={[
+                                                                styles.invest_num,
+                                                                {
+                                                                    fontSize: px(12),
+                                                                    marginLeft: px(8),
+                                                                    fontWeight: 'normal',
+                                                                    fontFamily: Font.numFontFamily,
+                                                                },
+                                                            ]}>
+                                                            {item.name}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={[styles.bottom, {marginTop: px(11)}]}>
+                                                        <View style={styles.bottomWrap}>
+                                                            <View style={Style.flexRow}>
+                                                                <Text style={styles.autoInvestIssure}>{item.unit}</Text>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.invest_num,
+                                                                        {
+                                                                            fontSize: px(14),
+                                                                            fontWeight: '500',
+                                                                            fontFamily: Font.numMedium,
+                                                                        },
+                                                                    ]}>
+                                                                    {item.values}
+                                                                </Text>
+                                                            </View>
+                                                            <Text
+                                                                style={[
+                                                                    styles.invest_num,
+                                                                    {
+                                                                        fontSize: px(14),
+                                                                        fontWeight: '500',
+                                                                        fontFamily: Font.numMedium,
+                                                                    },
+                                                                ]}>
+                                                                {item.times}
+                                                            </Text>
+                                                            <Text
+                                                                style={[
+                                                                    styles.invest_num,
+                                                                    {
+                                                                        fontSize: px(14),
+                                                                        fontWeight: '500',
+                                                                        fontFamily: Font.numMedium,
+                                                                    },
+                                                                ]}>
+                                                                {item.sum}
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            {item.detail ? (
+                                                <View style={styles.listRowBottomView}>
+                                                    <Text style={styles.desc}>{item.detail}</Text>
+                                                </View>
+                                            ) : null}
                                         </View>
-                                        <Text
-                                            style={[
-                                                styles.invest_num,
-                                                {fontSize: px(14), fontWeight: '500', fontFamily: Font.numMedium},
-                                            ]}>
-                                            463
-                                        </Text>
-                                        <Text
-                                            style={[
-                                                styles.invest_num,
-                                                {fontSize: px(14), fontWeight: '500', fontFamily: Font.numMedium},
-                                            ]}>
-                                            315,000.00
-                                        </Text>
-                                    </View>
+                                    </BoxShadow>
                                 </View>
-                            </View>
-                        </View>
-                        <View style={styles.listRowBottomView}>
-                            <Text style={styles.desc}>2022-09-25(星期一)将从招商银行(尾号8888)扣款5,000元</Text>
-                        </View>
-                    </View>
-                </BoxShadow>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
             </View>
-        </TouchableOpacity>
+        </>
     );
 };
 
@@ -95,6 +150,9 @@ RenderItem.propTypes = {};
 
 export default RenderItem;
 const styles = StyleSheet.create({
+    listItem: {
+        height: px(238),
+    },
     status: {
         position: 'absolute',
         right: 0,
@@ -134,7 +192,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: px(10),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.white,
     },
@@ -157,7 +215,7 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
     },
     autoInvestIssure: {
@@ -177,7 +235,7 @@ const styles = StyleSheet.create({
     },
     type: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },
@@ -188,11 +246,11 @@ const styles = StyleSheet.create({
     listRowTopView: {
         height: px(70),
         justifyContent: 'center',
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#E9EAEF',
-        borderStyle: 'solid',
     },
     listRowBottomView: {
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: '#E9EAEF',
+        borderStyle: 'solid',
         height: px(40),
         justifyContent: 'center',
     },

@@ -111,18 +111,18 @@ const styles = StyleSheet.create({
     },
     profitLabel: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         color: Colors.defaultColor,
     },
     profitDate: {
         marginLeft: px(4),
         fontSize: Font.textH3,
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightGrayColor,
     },
     moneyText: {
         marginRight: px(4),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.defaultColor,
         fontSize: px(12),
     },
@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     },
     type: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightBlackColor,
     },
     title: {
         marginLeft: px(6),
         fontSize: Font.textH3,
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.defaultColor,
     },
     detail: {
