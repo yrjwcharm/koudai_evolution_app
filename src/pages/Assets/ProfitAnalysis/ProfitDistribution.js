@@ -29,7 +29,6 @@ const shadow = {
     },
 };
 const ProfitDistribution = ({headData, type}) => {
-    const isUnmounted = useRef(false);
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
     const [tabs, setTabs] = useState([]);
@@ -37,14 +36,11 @@ const ProfitDistribution = ({headData, type}) => {
         const res = await getChartData({type, unit_type: unitType});
         if (res.code == '000000') {
             const {profit_unit_tab = []} = res.result ?? {};
-            if (!isUnmounted.current) {
-                setTabs(profit_unit_tab);
-            }
+            setTabs(profit_unit_tab);
         }
     };
     useEffect(() => {
         initData();
-        return () => (isUnmounted.current = true);
     }, [type, unitType]);
     return (
         <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
@@ -119,7 +115,7 @@ const ProfitDistribution = ({headData, type}) => {
                         )}
                         initialPage={0}
                         onChangeTab={({i}) => {
-                            setUnitType(tabs[i]);
+                            setUnitType(tabs[i].type);
                         }}>
                         {tabs.map((tab, index) => {
                             if (index == 0)
