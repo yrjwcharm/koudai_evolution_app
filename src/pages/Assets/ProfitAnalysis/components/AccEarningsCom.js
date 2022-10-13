@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     chart: {
-        height: text(224), // left: -px(12),
+        height: text(224),
     },
     subtab: {
         marginHorizontal: text(7),

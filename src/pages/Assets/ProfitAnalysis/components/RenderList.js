@@ -22,8 +22,9 @@ const RenderList = ({type}) => {
         if (res.code == '000000') {
             if (isMounted.current) {
                 // 判断当前组件有没有被卸载
-                setHeaderList(res.result?.head_list);
-                setProfitList(res.result?.data_list);
+                const {head_list = [], data_list = []} = res.result || {};
+                setHeaderList(head_list);
+                setProfitList(data_list);
             }
         }
     };
