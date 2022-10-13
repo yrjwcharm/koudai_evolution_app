@@ -16,7 +16,6 @@ import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './service';
 const DayProfit = ({type}) => {
-    const isUnmounted = useRef(false);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -77,19 +76,6 @@ const DayProfit = ({type}) => {
         // let maxDateArr = [];
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
-            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-            let barCharData = profit_data_list
-                .map((el) => {
-                    return {date: el.unit_key, value: parseFloat(el.value)};
-                })
-                .sort((a, b) => (a.date > b.date ? 1 : -1));
-            setChart({
-                label: [
-                    {name: '时间', val: profit_data_list[index]?.unit_key},
-                    {name: '收益', val: profit_data_list[index]?.value},
-                ],
-                chart: barCharData,
-            });
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
                     //小于当前日期的情况
@@ -102,18 +88,28 @@ const DayProfit = ({type}) => {
                     }
                 }
             }
+            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+            let barCharData = profit_data_list
+                .map((el) => {
+                    return {date: el.unit_key, value: parseFloat(el.value)};
+                })
+                .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+            setChart({
+                label: [
+                    {name: '时间', val: profit_data_list[index]?.unit_key},
+                    {name: '收益', val: profit_data_list[index]?.value},
+                ],
+                chart: barCharData,
+            });
         }
         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == selCurDate);
         arr[index] && (arr[index].checked = true);
-        if (!isUnmounted.current) {
-            setDateArr([...arr]);
-            setDate(dayjs_);
-        }
+        setDateArr([...arr]);
+        setDate(dayjs_);
     };
     React.useEffect(() => {
         initData(selCurDate);
-        return () => (isUnmounted.current = true);
     }, [diff]);
     /**
      * 向上递增一个月

@@ -654,7 +654,7 @@ chart.source(${JSON.stringify(data)}, {
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
-      return ${percent ? '(val * 100).toFixed(2) + "%"' : 'val'};
+      return ${percent ? '(val * 100).toFixed(2) + "%"' : 'val.toFixed(2)'};
     },
   }
 });
@@ -670,7 +670,7 @@ chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
-    cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number'};
+    cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number.toFixed(2)'};
     cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
@@ -713,7 +713,7 @@ if (${showGuide}) {
       attrs: {
         x: point.x + (obj.type === '上证指数' ? 13 : -12),
         y: point.y + (obj.value > 0 ? -5 : 15),
-        text: ${percent ? '(obj.value * 100).toFixed(2) + "%"' : 'obj.value'},
+        text: ${percent ? '(obj.value * 100).toFixed(2) + "%"' : 'obj.value.toFixed(2)'},
         textAlign: 'center',
         textBaseline: 'bottom',
         fill: '#545968',

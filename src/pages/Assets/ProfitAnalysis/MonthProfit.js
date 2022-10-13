@@ -14,10 +14,7 @@ import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './service';
-let UUID = require('uuidjs');
-let uuid = UUID.generate();
 const MonthProfit = ({type}) => {
-    const isUnmounted = useRef(false);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -54,6 +51,19 @@ const MonthProfit = ({type}) => {
         const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
+            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+            let barCharData = profit_data_list
+                .map((el) => {
+                    return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
+                })
+                .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+            setChart({
+                label: [
+                    {name: '时间', val: profit_data_list[index]?.unit_key},
+                    {name: '收益', val: profit_data_list[index]?.value},
+                ],
+                chart: barCharData,
+            });
             // //双重for循环判断日历是否超过、小于或等于当前日期
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
@@ -71,10 +81,8 @@ const MonthProfit = ({type}) => {
         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
         let index = arr.findIndex((el) => el.day == selCurDate);
         arr[index] && (arr[index].checked = true);
-        if (!isUnmounted.current) {
-            setDateArr([...arr]);
-            setDate(dayjs_);
-        }
+        setDateArr([...arr]);
+        setDate(dayjs_);
     };
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
@@ -92,49 +100,6 @@ const MonthProfit = ({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
-    useEffect(() => {
-        init();
-        return () => (isUnmounted.current = true);
-    }, []);
-    const init = useCallback(() => {
-        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
-        //     setShowEmpty(true);
-        //     if (res.code === '000000') {
-        //         setChart(res.result);
-        //     }
-        // });
-        let res = {
-            code: '000000',
-            message: 'success',
-            result: {
-                label: [
-                    {name: '时间', val: '2022-08'},
-                    {name: '我的组合', val: '-0.024%'},
-                ],
-                chart: [
-                    {date: '2022-05', value: 0.0362, type: '我的组合'},
-                    {date: '2022-06', value: 0.0707, type: '我的组合'},
-                    {date: '2022-07', value: -0.0188, type: '我的组合'},
-                    {date: '2022-08', value: -0.0247, type: '我的组合'},
-                    {date: '2022-09', value: -0.0585, type: '我的组合'},
-                    {date: '2022-10', value: 0.02, type: '我的组合'},
-                ],
-                tips: {
-                    title: '比较基准',
-                    content: [
-                        {key: '比较基准', val: '上证指数'},
-                        {
-                            key: '什么是比较基准',
-                            val:
-                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
-                        },
-                    ],
-                },
-            },
-            traceId: '171cb96d48067057171cb96d480432d0',
-        };
-        setChart(res.result);
-    }, []);
     return (
         <View style={styles.container}>
             <CalendarHeader
