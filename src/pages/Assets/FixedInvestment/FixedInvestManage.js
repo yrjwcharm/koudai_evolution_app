@@ -13,23 +13,32 @@ import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
+import {callFixedHeadDataApi} from './services';
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
     const [data, setData] = useState({});
+    const [detail, setDetail] = useState({});
+    const [headList, setHeadList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const {fund_code = '', poid = ''} = route?.params || {};
-    useLayoutEffect(() => {
-        navigation.setOptions({title: '定投管理'});
+    const [tabList, setTabList] = useState([]);
+    useEffect(() => {
+        const getFixedHeadData = async () => {
+            const res = await callFixedHeadDataApi({});
+            if (res.code == '000000') {
+                const {title = '定投管理', detail = {}, head_list = [], tabs = []} = res.result || {};
+                navigation.setOptions({title: '定投管理'});
+                let tabList = tabs.map((el, index) => {
+                    return {...el, checked: index == 0 ? true : false};
+                });
+                setTabList(tabList);
+                setHeadList(head_list);
+                setDetail(detail);
+            }
+        };
+        getFixedHeadData();
     }, []);
-    const [tabList, setTabList] = useState([
-        {label: '全部', checked: true},
-        {label: '公募基金', checked: false},
-        {label: '投顾组合', checked: false},
-        {label: '理财计划', checked: false},
-        {label: '私募基金', checked: false},
-    ]);
-    useEffect(() => {}, []);
 
     const selTab = (item) => {
         tabList.map((_item) => {
@@ -44,24 +53,25 @@ const FixedInvestManage = ({navigation, route}) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <ImageBackground style={{width, height: px(120)}} source={require('./assets/lineargradient.png')}>
-                    {Object.keys(data).length > 0 ? (
+                    {Object.keys(detail).length > 0 ? (
                         <View style={styles.automaticInvestDaysView}>
-                            <Text style={styles.prevText}>您已坚持定投</Text>
-                            <View style={styles.dayView}>
-                                <Text style={styles.dayText}>8</Text>
-                            </View>
-                            <View style={styles.dayView}>
-                                <Text style={styles.dayText}>8</Text>
-                            </View>
-                            <View style={styles.dayView}>
-                                <Text style={styles.dayText}>8</Text>
-                            </View>
-                            <Text style={[styles.nextText, {marginRight: px(9)}]}>天</Text>
+                            <Text style={styles.prevText}>{detail?.left}</Text>
+                            {detail?.days
+                                ?.toString()
+                                .split('')
+                                .map((el, index) => {
+                                    return (
+                                        <View style={styles.dayView} key={el + '' + index}>
+                                            <Text style={styles.dayText}>{el}</Text>
+                                        </View>
+                                    );
+                                })}
+                            <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
                             <ImageBackground
                                 style={{width: px(51), height: px(17)}}
                                 source={require('./assets/label.png')}>
                                 <View style={styles.labelView}>
-                                    <Text style={styles.label}>定投达人</Text>
+                                    <Text style={styles.label}>{detail?.tip}</Text>
                                 </View>
                             </ImageBackground>
                         </View>
@@ -76,12 +86,12 @@ const FixedInvestManage = ({navigation, route}) => {
                         <View style={styles.investWrap}>
                             <View style={styles.investView}>
                                 <View style={styles.itemWrap}>
-                                    <Text style={styles.investValue}>15,000.00</Text>
-                                    <Text style={styles.investLabel}>月定投(元)</Text>
+                                    <Text style={styles.investValue}>{headList[0]?.value}</Text>
+                                    <Text style={styles.investLabel}>{headList[0]?.text}</Text>
                                 </View>
                                 <View style={styles.itemWrap}>
-                                    <Text style={styles.investValue}>2</Text>
-                                    <Text style={styles.investLabel}>定投数量(个)</Text>
+                                    <Text style={styles.investValue}>{headList[1]?.value}</Text>
+                                    <Text style={styles.investLabel}>{headList[1]?.text}</Text>
                                 </View>
                             </View>
                         </View>
@@ -100,7 +110,7 @@ const FixedInvestManage = ({navigation, route}) => {
                                         styles.defaultTabText,
                                         {color: el.checked ? Colors.brandColor : Colors.defaultColor},
                                     ]}>
-                                    {el.label}
+                                    {el.text}
                                 </Text>
                             </View>
                         </TouchableOpacity>
