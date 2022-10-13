@@ -198,7 +198,7 @@ const Index = ({navigation, route, setLoading}) => {
                     </View>
                 ) : null}
                 {user_bag ? (
-                    <View style={styles.recommandBox}>
+                    <View style={styles.recommendBox}>
                         <Text style={styles.title}>{user_bag.title}</Text>
                         {user_bag.notice ? (
                             <View style={[Style.flexRow, styles.rewardBox]}>
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
         lineHeight: px(16),
         color: Colors.lightGrayColor,
     },
-    recommandBox: {
+    recommendBox: {
         marginBottom: px(12),
         padding: px(12),
         borderRadius: Space.borderRadius,

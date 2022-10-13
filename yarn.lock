@@ -7573,6 +7573,11 @@ react-native-video@^5.2.1:
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
 
+react-native-waterfall-flow@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/react-native-waterfall-flow/-/react-native-waterfall-flow-1.1.1.tgz#e45e9f9a97683f926a272d43aa13c69fd3306a29"
+  integrity sha512-vEmDn7mViLzo9bKafrNh+pLh+StOWOxRgg19I/h4Ko4P35sS5f2Rk6qNp1MdhVUNua7PDmrV/hZY5u6AqdsjXQ==
+
 react-native-webview@11.4.3:
   version "11.4.3"
   resolved "https://registry.npmmirror.com/react-native-webview/-/react-native-webview-11.4.3.tgz#7651370b604c8cc27701095e14e05cfefa8f5632"
