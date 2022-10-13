@@ -90,9 +90,8 @@ export const Font = {
 
     // 默认文字字体
     numFontFamily: 'DINAlternate-Bold',
-    numRegular: 'DIN-Regular', //和PingFang SC-常规体有区别
-    numMedium: 'DIN-Medium', // 和PingFang SC-中黑体有区别，不能混为一谈使用
-    pingFangMedium: 'PingFang-SC-Medium', // PingFang SC-中黑体
+    numRegular: 'DIN-Regular',
+    numMedium: 'DIN-Medium',
     //特大字体
     largeFont: text(26),
     //金额输入框字体大小
