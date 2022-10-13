@@ -9,7 +9,7 @@ import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
-const TerminatedAutomaticInvest = ({navigation}) => {
+const TerminatedFixedInvest = ({navigation}) => {
     return (
         <>
             <View style={styles.container}>
@@ -21,9 +21,9 @@ const TerminatedAutomaticInvest = ({navigation}) => {
     );
 };
 
-TerminatedAutomaticInvest.propTypes = {};
+TerminatedFixedInvest.propTypes = {};
 
-export default TerminatedAutomaticInvest;
+export default TerminatedFixedInvest;
 const styles = StyleSheet.create({
     container: {
         flex: 1,

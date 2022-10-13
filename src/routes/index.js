@@ -258,12 +258,11 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
-import AutomaticInvestManage from '../pages/Assets/AutomaticInvestment/AutomaticInvestManage'; //定投管理
-import UpdateAutomaticInvest from '../pages/Assets/AutomaticInvestment/UpdateAutomaticInvest'; //修改定投
-import TerminatedAutomaticInvest from '../pages/Assets/AutomaticInvestment/TerminatedAutomaticInvest'; //已终止定投
-import AutomaticInvestDetail from '../pages/Assets/AutomaticInvestment/AutomaticInvestDetail'; //定投详情
+import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
+import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
+import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest.js'; //已终止定投
+import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
 import Audio from '~/pages/Community/components/Audio';
-import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -528,23 +527,23 @@ export default function AppStack() {
                 />
                 <Stack.Screen
                     name="AutomaticInvestManage"
-                    component={AutomaticInvestManage}
+                    component={FixedInvestManage}
                     options={{title: '定投管理'}}
                 />
                 <Stack.Screen
                     name="UpdateAutomaticInvest"
-                    component={UpdateAutomaticInvest}
+                    component={ModifyFixedInvest}
                     options={{title: '修改定投'}}
                 />
 
                 <Stack.Screen
                     name="AutomaticInvestDetail"
-                    component={AutomaticInvestDetail}
+                    component={FixedInvestDetail}
                     options={{title: '定投详情'}}
                 />
                 <Stack.Screen
                     name="TerminatedInvest"
-                    component={TerminatedAutomaticInvest}
+                    component={TerminatedFixedInvest}
                     options={{title: '已终止定投'}}
                 />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />

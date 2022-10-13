@@ -22,7 +22,7 @@ const shadow = {
     y: 2,
 };
 
-const AutomaticInvestDetail = ({navigation}) => {
+const FixedInvestDetail = ({navigation}) => {
     const jump = useJump();
     const [visible, setVisible] = useState(false);
     const [selectData] = useState(['修改', '暂停', '终止']);
@@ -153,7 +153,7 @@ const AutomaticInvestDetail = ({navigation}) => {
     );
 };
 
-export default AutomaticInvestDetail;
+export default FixedInvestDetail;
 const styles = StyleSheet.create({
     failReason: {
         fontSize: px(11),

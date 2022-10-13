@@ -11,7 +11,7 @@ import {px} from '../../../utils/appUtil';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 
-const UpdateAutomaticInvest = ({navigation}) => {
+const ModifyFixedInvest = ({navigation}) => {
     const [money] = useState('20,000');
     return (
         <View style={styles.container}>
@@ -67,9 +67,9 @@ const UpdateAutomaticInvest = ({navigation}) => {
     );
 };
 
-UpdateAutomaticInvest.propTypes = {};
+ModifyFixedInvest.propTypes = {};
 
-export default UpdateAutomaticInvest;
+export default ModifyFixedInvest;
 const styles = StyleSheet.create({
     change: {
         marginRight: px(6),

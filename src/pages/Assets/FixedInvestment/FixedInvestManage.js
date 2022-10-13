@@ -14,10 +14,11 @@ import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
 const {width} = Dimensions.get('window');
-const AutomaticInvestManage = ({navigation}) => {
-    const [data] = useState({
-        label: '',
-    });
+const FixedInvestManage = ({navigation, route}) => {
+    const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [showEmpty, setShowEmpty] = useState(false);
+    const {fund_code = '', poid = ''} = route?.params || {};
     const [tabList, setTabList] = useState([
         {label: '全部', checked: true},
         {label: '公募基金', checked: false},
@@ -118,7 +119,7 @@ const AutomaticInvestManage = ({navigation}) => {
         </View>
     );
 };
-export default AutomaticInvestManage;
+export default FixedInvestManage;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
