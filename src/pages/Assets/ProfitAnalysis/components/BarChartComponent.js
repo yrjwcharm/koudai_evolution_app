@@ -68,16 +68,6 @@ const BarChartComponent = ({chartData}) => {
                 <>
                     <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
                         <View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>
-                            {/*{chartData?.label && (*/}
-                            {/*    <View  style={{alignItems: 'center'}}>*/}
-                            {/*        <Text style={[styles.profitStyle, {color: getColor(`${chartData?.label[1].val}`)}]}>*/}
-                            {/*            {chartData?.label[1].val}*/}
-                            {/*        </Text>*/}
-                            {/*        <View style={styles.profitDateView}>*/}
-                            {/*            <Text style={styles.profitDateText}>{chartData?.label[0].val}</Text>*/}
-                            {/*        </View>*/}
-                            {/*    </View>*/}
-                            {/*)}*/}
                             {chartData?.label?.map((item, index) => {
                                 return (
                                     <View key={item.val + index} style={styles.legendItem}>
