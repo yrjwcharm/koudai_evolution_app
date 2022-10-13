@@ -15,10 +15,11 @@ import {useIsMounted} from '../../../../utils/useIsMounted';
 
 const RenderList = ({type}) => {
     const isMounted = useIsMounted();
+    const [sort, setSort] = useState('desc');
     const [headerList, setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const getProfitDetailData = async () => {
-        const res = await getProfitDetail({type});
+        const res = await getProfitDetail({type, sort});
         if (res.code == '000000') {
             if (isMounted.current) {
                 // 判断当前组件有没有被卸载
@@ -30,8 +31,14 @@ const RenderList = ({type}) => {
     };
     useEffect(() => {
         getProfitDetailData();
-    }, [type]);
-    const sortRenderList = useCallback(() => {}, []);
+    }, [type, sort]);
+    const sortRenderList = useCallback(() => {
+        if (sort == 'desc') {
+            setSort('asc');
+        } else {
+            setSort('desc');
+        }
+    }, [sort]);
     return (
         <>
             <View style={styles.profitHeader}>
