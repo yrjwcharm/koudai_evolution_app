@@ -11,7 +11,7 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
-import {getEarningsUpdateNote, getHeadData} from './service';
+import {getEarningsUpdateNote, getHeadData} from './services';
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);

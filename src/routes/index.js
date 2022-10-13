@@ -59,7 +59,6 @@ import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记
 import Evaluation from '../pages/Evaluation/Evaluation'; //定制
 import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
-import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
@@ -258,6 +257,7 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
+import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
 import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
 import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest.js'; //已终止定投
@@ -612,7 +612,7 @@ export default function AppStack() {
                 <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
                 <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
                 <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
-                <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
+                <Stack.Screen name="FixedPlanList" component={FixedInvestManage} options={{title: ''}} />
                 <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: ''}} />
                 <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
                 <Stack.Screen

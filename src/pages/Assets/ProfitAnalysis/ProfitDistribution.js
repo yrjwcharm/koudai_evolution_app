@@ -11,7 +11,7 @@ import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
 import PropTypes from 'prop-types';
 import {delMille} from '../../../utils/common';
-import {getChartData} from './service';
+import {getChartData} from './services';
 const shadow = {
     color: '#AAA',
     border: 4,

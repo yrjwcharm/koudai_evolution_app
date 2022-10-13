@@ -10,7 +10,7 @@ import {delMille} from '../../../../utils/common';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
-import {getProfitDetail} from '../service';
+import {getProfitDetail} from '../services';
 import {useIsMounted} from '../../../../utils/useIsMounted';
 
 const RenderList = ({type}) => {

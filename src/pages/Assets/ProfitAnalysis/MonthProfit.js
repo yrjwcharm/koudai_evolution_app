@@ -13,7 +13,7 @@ import {compareDate, delMille} from '../../../utils/common';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
-import {getChartData} from './service';
+import {getChartData} from './services';
 const MonthProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);

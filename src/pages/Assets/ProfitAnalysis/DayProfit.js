@@ -13,7 +13,7 @@ import RenderList from './components/RenderList';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
-import {getChartData} from './service';
+import {getChartData} from './services';
 const DayProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);

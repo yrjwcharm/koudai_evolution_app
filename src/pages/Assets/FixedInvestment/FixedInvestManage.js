@@ -4,7 +4,7 @@
  * @Description: 定投管理
  */
 
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px} from '../../../utils/appUtil';
@@ -19,6 +19,9 @@ const FixedInvestManage = ({navigation, route}) => {
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const {fund_code = '', poid = ''} = route?.params || {};
+    useLayoutEffect(() => {
+        navigation.setOptions({title: '定投管理'});
+    }, []);
     const [tabList, setTabList] = useState([
         {label: '全部', checked: true},
         {label: '公募基金', checked: false},

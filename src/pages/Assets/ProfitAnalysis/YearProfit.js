@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
-import {getChartData} from './service';
+import {getChartData} from './services';
 import {delMille} from '../../../utils/common';
 const YearProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
