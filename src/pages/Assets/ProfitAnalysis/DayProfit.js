@@ -8,7 +8,7 @@ import {Text, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Platfor
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
-import {compareDate} from '../../../utils/common';
+import {compareDate, delMille} from '../../../utils/common';
 import RenderList from './components/RenderList';
 import * as _ from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
@@ -26,28 +26,6 @@ const DayProfit = ({type}) => {
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
-
-    const init = useCallback(() => {
-        let res = {
-            code: '000000',
-            message: 'success',
-            result: {
-                label: [
-                    // {name: '时间', val: '2022-09-20'},
-                    // {name: '我的组合', val: '0.02%'},
-                ],
-                chart: [
-                    // {date: '2022-05', value: 0.0362, type: '我的组合'},
-                    // {date: '2022-06', value: 0.0707, type: '我的组合'},
-                    // {date: '2022-07', value: -0.0188, type: '我的组合'},
-                    // {date: '2022-08', value: -0.0247, type: '我的组合'},
-                    {date: '2022-09-01', value: -0.0585, type: '我的组合'},
-                    {date: '2022-10-01', value: 0.02, type: '我的组合'},
-                ],
-            },
-        };
-        setChart(res.result);
-    }, []);
     /**
      * 初始化日历日期
      */
@@ -99,6 +77,19 @@ const DayProfit = ({type}) => {
         // let maxDateArr = [];
         if (res.code == '000000') {
             const {profit_data_list = []} = res.result ?? {};
+            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+            let barCharData = profit_data_list
+                .map((el) => {
+                    return {date: el.unit_key, value: parseFloat(el.value)};
+                })
+                .sort((a, b) => (a.date > b.date ? 1 : -1));
+            setChart({
+                label: [
+                    {name: '时间', val: profit_data_list[index]?.unit_key},
+                    {name: '收益', val: profit_data_list[index]?.value},
+                ],
+                chart: barCharData,
+            });
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
                     //小于当前日期的情况
@@ -122,6 +113,7 @@ const DayProfit = ({type}) => {
     };
     React.useEffect(() => {
         initData(selCurDate);
+        return () => (isUnmounted.current = true);
     }, [diff]);
     /**
      * 向上递增一个月
@@ -150,11 +142,6 @@ const DayProfit = ({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
-
-    useEffect(() => {
-        init();
-        return () => (isUnmounted.current = true);
-    }, []);
     return (
         <View style={styles.container}>
             {/*chart类型*/}

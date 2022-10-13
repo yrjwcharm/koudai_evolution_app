@@ -46,10 +46,6 @@ const BarChartComponent = ({chartData}) => {
                 text: `${items[0]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
             });
-            textBenchmark.current?.setNativeProps({
-                text: `${items[1]?.value}`,
-                style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
-            });
         },
         [getColor]
     );
@@ -61,11 +57,6 @@ const BarChartComponent = ({chartData}) => {
                 text: `${chartData.label[1]?.val}`,
                 style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
             });
-        chartData.label[2] &&
-            textBenchmark.current?.setNativeProps({
-                text: `${chartData.label[2]?.val}`,
-                style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
-            });
     }, [chartData, getColor]);
     const showTips = (tips) => {
         setTip(tips);
@@ -76,7 +67,17 @@ const BarChartComponent = ({chartData}) => {
             {chartData.chart ? (
                 <>
                     <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
-                        <View style={[Style.flexRow, {paddingTop: Space.padding}]}>
+                        <View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>
+                            {/*{chartData?.label && (*/}
+                            {/*    <View  style={{alignItems: 'center'}}>*/}
+                            {/*        <Text style={[styles.profitStyle, {color: getColor(`${chartData?.label[1].val}`)}]}>*/}
+                            {/*            {chartData?.label[1].val}*/}
+                            {/*        </Text>*/}
+                            {/*        <View style={styles.profitDateView}>*/}
+                            {/*            <Text style={styles.profitDateText}>{chartData?.label[0].val}</Text>*/}
+                            {/*        </View>*/}
+                            {/*    </View>*/}
+                            {/*)}*/}
                             {chartData?.label?.map((item, index) => {
                                 return (
                                     <View key={item.val + index} style={styles.legendItem}>
@@ -125,6 +126,7 @@ const BarChartComponent = ({chartData}) => {
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.green], {
                                         appendPadding: [15, 50, 20, 15],
                                         profitMode: true,
+                                        percent: false,
                                     })}
                                     data={chartData.chart}
                                     onChange={onChartChange}
@@ -160,6 +162,26 @@ BarChartComponent.propTypes = {};
 
 export default BarChartComponent;
 const styles = StyleSheet.create({
+    profitStyle: {
+        fontSize: px(16),
+        fontFamily: Font.numFontFamily,
+        fontWeight: 'bold',
+    },
+    profitDateView: {
+        width: px(74),
+        height: px(18),
+        marginTop: px(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(20),
+    },
+    profitDateText: {
+        fontSize: px(10),
+        fontFamily: Font.numMedium,
+        fontWeight: '500',
+        color: Colors.lightGrayColor,
+    },
     title: {
         fontSize: Font.textH2,
         lineHeight: text(20),

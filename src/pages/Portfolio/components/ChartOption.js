@@ -639,6 +639,7 @@ export const dodgeColumn = (
         showGuide = false,
         showTooltip = true,
         profitMode = false,
+        percent = true,
     } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
@@ -653,7 +654,7 @@ chart.source(${JSON.stringify(data)}, {
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
-      return (val * 100).toFixed(2) + '%';
+      return ${percent ? '(val * 100).toFixed(2) + "%"' : 'val'};
     },
   }
 });
@@ -669,7 +670,7 @@ chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
-    cfg.text = number.toFixed(2) + "%";
+    cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number'};
     cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
@@ -712,7 +713,7 @@ if (${showGuide}) {
       attrs: {
         x: point.x + (obj.type === '上证指数' ? 13 : -12),
         y: point.y + (obj.value > 0 ? -5 : 15),
-        text: (obj.value * 100).toFixed(2) + '%',
+        text: ${percent ? '(obj.value * 100).toFixed(2) + "%"' : 'obj.value'},
         textAlign: 'center',
         textBaseline: 'bottom',
         fill: '#545968',

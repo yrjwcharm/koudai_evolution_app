@@ -11,11 +11,7 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
-import Toast from '../../../components/Toast';
-import RenderTable from './components/RenderTable';
 import {getEarningsUpdateNote, getHeadData} from './service';
-import Loading from '../../Portfolio/components/PageLoading';
-
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
