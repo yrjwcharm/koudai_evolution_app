@@ -105,7 +105,8 @@ const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
                                     text(224),
                                     {value: '累计收益(元)'},
                                     false,
-                                    0
+                                    0,
+                                    [0, 45, 12, 12]
                                 )}
                                 updateScript={(data) => `
                                     chart.clear();
