@@ -4,7 +4,7 @@
  * @Description: 定投管理
  */
 
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px} from '../../../utils/appUtil';
@@ -29,6 +29,8 @@ const FixedInvestManage = ({navigation, route}) => {
         {label: '理财计划', checked: false},
         {label: '私募基金', checked: false},
     ]);
+    useEffect(() => {}, []);
+
     const selTab = (item) => {
         tabList.map((_item) => {
             _item.checked = false;

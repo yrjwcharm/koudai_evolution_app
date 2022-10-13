@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -12,9 +12,11 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
+import FastImage from 'react-native-fast-image';
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
+    const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const [type, setType] = useState(200);
@@ -27,6 +29,7 @@ const ProfitDetail = ({navigation, route}) => {
         if (res[1].code == '000000') {
             const {title = '更新说明', declare_pic = ''} = res[1].result || {};
             setDeclarePic(declare_pic);
+            setTitle(title);
             navigation.setOptions({
                 headerRight: () => (
                     <>
@@ -36,7 +39,7 @@ const ProfitDetail = ({navigation, route}) => {
                             onPress={() => {
                                 bottomModal.current.show();
                             }}>
-                            <Text style={styles.title}>{title}</Text>
+                            <Text style={styles.title}>收益更新说明</Text>
                         </TouchableOpacity>
                     </>
                 ),
@@ -70,9 +73,15 @@ const ProfitDetail = ({navigation, route}) => {
                     })}
                 </ScrollableTabView>
             )}
-            <BottomModal title={'更新说明'} ref={bottomModal}>
+            <BottomModal title={title} ref={bottomModal}>
                 <View style={{marginTop: px(30), alignItems: 'center'}}>
-                    <Image source={{uri: declarePic}} style={styles.declareImg} />
+                    <Image
+                        resizeMode={'cover'}
+                        style={styles.declareImg}
+                        source={{
+                            uri: declarePic,
+                        }}
+                    />
                 </View>
             </BottomModal>
         </View>
@@ -81,6 +90,12 @@ const ProfitDetail = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.red,
+    },
+    title: {
+        fontSize: px(13),
+        fontFamily: Font.pingFangRegular,
+        fontWeight: 'normal',
+        color: Colors.defaultColor,
     },
     declareImg: {
         height: px(160),

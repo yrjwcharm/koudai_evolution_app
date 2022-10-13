@@ -260,7 +260,7 @@ import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转
 import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
 import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
-import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest.js'; //已终止定投
+import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
 import Audio from '~/pages/Community/components/Audio';
 const Stack = createStackNavigator();
