@@ -21,14 +21,14 @@ const ProfitDetail = ({navigation, route}) => {
     const [type, setType] = useState(200);
     const initData = async () => {
         const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
-        if (res[0].code == '000000') {
-            const {title = '收益明细', tabs = [], header = {}} = res[0].result || {};
+        if (res[0].code === '000000') {
+            const {title = '', tabs = [], header = {}} = res[0].result || {};
             setTabs(tabs);
             setHeadData(header);
             navigation.setOptions({title});
         }
-        if (res[1].code == '000000') {
-            const {title = '更新说明', declare_pic = ''} = res[1].result || {};
+        if (res[1].code === '000000') {
+            const {title = '', declare_pic = ''} = res[1].result || {};
             setDeclarePic(declare_pic);
             setTitle(title);
             navigation.setOptions({

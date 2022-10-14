@@ -4,7 +4,7 @@
  * @Description: 定投管理
  */
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px} from '../../../utils/appUtil';
@@ -17,6 +17,8 @@ import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from '
 import Loading from '../../Portfolio/components/PageLoading';
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
+    const [times, setTimes] = useState('');
+    const [sum, setSum] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
     const [data, setData] = useState({});
     const [detail, setDetail] = useState({});
@@ -30,28 +32,25 @@ const FixedInvestManage = ({navigation, route}) => {
         const initData = async (unitType) => {
             const res = await Promise.all([
                 callFixedHeadDataApi({}),
-                callHistoryDataApi({type: unitType, poid, code: fund_code}),
+                callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
                 callTerminatedFixedApi({}),
             ]);
-            if (res[0].code == '000000') {
-                const {title = '定投管理', detail = {}, head_list = [], tabs = []} = res[0].result || {};
-                navigation.setOptions({title: '定投管理'});
+            if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
+                const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
+                navigation.setOptions({title});
                 let tabList = tabs.map((el, index) => {
                     return {...el, checked: el.type == unitType ? true : false};
                 });
                 setTabList(tabList);
                 setHeadList(head_list);
                 setDetail(detail);
-            }
-            res[1].code == '000000' && setData(res[1].result);
-            res[2].code == '000000' && setTerminatedCount(res[1].result?.data_list?.length);
-            setLoading(false);
-            if (res[1].code == '000000') {
                 setData(res[1].result);
+                setTerminatedCount(res[1].result?.data_list?.length);
+                setLoading(false);
             }
         };
         initData(unitType);
-    }, [unitType]);
+    }, [unitType, times, sum]);
 
     const selTab = (item) => {
         setUnitType(item.type);
@@ -63,6 +62,14 @@ const FixedInvestManage = ({navigation, route}) => {
         });
         setTabList([...tabList]);
     };
+    const sumSort = useCallback(() => {
+        setTimes('');
+        sum == 'desc' ? setSum('asc') : setSum('desc');
+    }, [sum]);
+    const issueSort = useCallback(() => {
+        setSum('');
+        times == 'asc' ? setTimes('desc') : setTimes('asc');
+    }, [times]);
     return (
         <>
             {loading ? (
@@ -142,7 +149,13 @@ const FixedInvestManage = ({navigation, route}) => {
                             );
                         })}
                     </View>
-                    <InvestHeader headList={data.head_list ?? []} />
+                    <InvestHeader
+                        headList={data.head_list ?? []}
+                        times={times}
+                        sum={sum}
+                        sortByIssue={issueSort}
+                        sortBySum={sumSort}
+                    />
                     <>
                         <RenderItem navigation={navigation} dataList={data.data_list ?? []} />
                     </>

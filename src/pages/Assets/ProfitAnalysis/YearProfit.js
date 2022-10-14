@@ -34,7 +34,7 @@ const YearProfit = ({type}) => {
             });
         }
         const res = await getChartData({type, unit_type: 'year'});
-        if (res.code == '000000') {
+        if (res.code === '000000') {
             const {profit_data_list = []} = res.result ?? {};
             let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
             let barCharData = profit_data_list
@@ -56,11 +56,12 @@ const YearProfit = ({type}) => {
                     }
                 }
             }
+
+            // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+            let zIndex = arr.findIndex((el) => el.day == curYear);
+            arr[zIndex] && (arr[zIndex].checked = true);
+            setDateArr([...arr]);
         }
-        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-        let index = arr.findIndex((el) => el.day == curYear);
-        arr[index] && (arr[index].checked = true);
-        setDateArr([...arr]);
     };
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);

@@ -126,6 +126,7 @@ export const Style = StyleSheet.create({
         alignItems: 'center',
     },
     flexBetween: {
+        marginTop: px(12),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

@@ -36,7 +36,7 @@ const ProfitDistribution = ({headData, type, isLockScroll}) => {
     const [tabs, setTabs] = useState([]);
     const initData = async () => {
         const res = await getChartData({type, unit_type: unitType});
-        if (res.code == '000000') {
+        if (res.code === '000000') {
             const {profit_unit_tab = []} = res.result ?? {};
             setTabs(profit_unit_tab);
         }

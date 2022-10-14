@@ -14,7 +14,6 @@ import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
-import Loading from '../../Portfolio/components/PageLoading';
 const DayProfit = ({type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
@@ -74,7 +73,7 @@ const DayProfit = ({type}) => {
         const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
         //双重for循环判断日历是否超过、小于或等于当前日期
         // let maxDateArr = [];
-        if (res.code == '000000') {
+        if (res.code === '000000') {
             const {profit_data_list = []} = res.result ?? {};
             for (let i = 0; i < arr.length; i++) {
                 for (let j = 0; j < profit_data_list.length; j++) {
@@ -101,12 +100,13 @@ const DayProfit = ({type}) => {
                 ],
                 chart: barCharData,
             });
+
+            // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+            let zIndex = arr.findIndex((el) => el.day == selCurDate);
+            arr[zIndex] && (arr[zIndex].checked = true);
+            setDateArr([...arr]);
+            setDate(dayjs_);
         }
-        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-        let index = arr.findIndex((el) => el.day == selCurDate);
-        arr[index] && (arr[index].checked = true);
-        setDateArr([...arr]);
-        setDate(dayjs_);
     };
     React.useEffect(() => {
         initData(selCurDate);

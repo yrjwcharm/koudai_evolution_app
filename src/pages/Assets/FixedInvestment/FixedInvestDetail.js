@@ -103,8 +103,8 @@ const FixedInvestDetail = ({navigation}) => {
                 </BoxShadow>
             </View>
             <View style={styles.footer}>
-                <View style={styles.listRowTitle}>
-                    <Text>定投记录(5)</Text>
+                <View>
+                    <Text style={styles.listRowTitle}>定投记录(5)</Text>
                 </View>
                 <View style={Style.flexBetween}>
                     <Text style={styles.rowTitle}>日期</Text>

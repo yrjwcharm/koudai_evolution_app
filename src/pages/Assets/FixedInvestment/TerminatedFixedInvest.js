@@ -21,7 +21,7 @@ const TerminatedFixedInvest = ({navigation, route}) => {
     });
     const initData = async () => {
         const res = await callTerminatedFixedApi({times, sum});
-        const {title = '已终止的定投', head_list = [], data_list = []} = res.result || {};
+        const {title = '', head_list = [], data_list = []} = res.result || {};
         setState({
             headList: head_list,
             dataList: data_list,

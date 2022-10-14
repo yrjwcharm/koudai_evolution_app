@@ -20,7 +20,7 @@ const RenderList = ({type}) => {
     const [profitList, setProfitList] = useState([]);
     const getProfitDetailData = async () => {
         const res = await getProfitDetail({type, sort});
-        if (res.code == '000000') {
+        if (res.code === '000000') {
             if (isMounted.current) {
                 // 判断当前组件有没有被卸载
                 const {head_list = [], data_list = []} = res.result || {};
