@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     },
     rightTitle: {
         fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.defaultColor,
     },
     topRightBtn: {

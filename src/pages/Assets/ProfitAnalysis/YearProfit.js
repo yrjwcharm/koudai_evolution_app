@@ -132,7 +132,7 @@ const YearProfit = ({type}) => {
                             style={{
                                 color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
+                                fontFamily: Font.numRegular,
                             }}>
                             日历图
                         </Text>
@@ -152,7 +152,7 @@ const YearProfit = ({type}) => {
                             style={{
                                 color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
+                                fontFamily: Font.numRegular,
                             }}>
                             柱状图
                         </Text>

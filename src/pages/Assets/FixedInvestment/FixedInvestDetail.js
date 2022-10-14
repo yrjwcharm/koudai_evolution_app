@@ -157,13 +157,13 @@ export default FixedInvestDetail;
 const styles = StyleSheet.create({
     failReason: {
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightGrayColor,
     },
     investFail: {
         fontSize: px(12),
         marginTop: px(1),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.red,
     },
     money: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     },
     investStatus: {
         fontSize: px(12),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
     },
     date: {
         fontSize: px(12),
@@ -187,13 +187,13 @@ const styles = StyleSheet.create({
     },
     rowTitle: {
         fontSize: px(12),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: '#8F95A4',
     },
     listRowTitle: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         color: Colors.defaultColor,
     },
     listRowHeader: {},
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
     },
     status: {
@@ -240,19 +240,19 @@ const styles = StyleSheet.create({
     },
     schedule: {
         fontSize: px(12),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
     card: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
     transfer: {
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightGrayColor,
     },
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
@@ -285,19 +285,19 @@ const styles = StyleSheet.create({
     headerTopWrap: {},
     fundName: {
         fontSize: px(14),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
     fundCode: {
         fontSize: px(11),
         marginTop: px(4),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightBlackColor,
     },
     detail: {
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: '#0051CC',
         fontWeight: 'normal',
     },
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     itemLabel: {
         marginTop: px(4),
         fontSize: px(11),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         color: Colors.lightGrayColor,
     },
     topRightBtn: {

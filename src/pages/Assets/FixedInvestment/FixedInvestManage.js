@@ -6,7 +6,7 @@
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
@@ -46,6 +46,9 @@ const FixedInvestManage = ({navigation, route}) => {
             res[1].code == '000000' && setData(res[1].result);
             res[2].code == '000000' && setTerminatedCount(res[1].result?.data_list?.length);
             setLoading(false);
+            if (res[1].code == '000000') {
+                setData(res[1].result);
+            }
         };
         initData(unitType);
     }, [unitType]);
@@ -190,6 +193,7 @@ const styles = StyleSheet.create({
     },
     defaultTabText: {
         fontSize: px(11),
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },

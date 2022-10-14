@@ -150,6 +150,9 @@ RenderItem.propTypes = {};
 
 export default RenderItem;
 const styles = StyleSheet.create({
+    listItem: {
+        height: px(238),
+    },
     status: {
         position: 'absolute',
         right: 0,
@@ -189,7 +192,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: px(10),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.numFontFamily,
         fontWeight: 'normal',
         color: Colors.white,
     },
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
     },
     autoInvestIssure: {
@@ -232,7 +235,7 @@ const styles = StyleSheet.create({
     },
     type: {
         fontSize: px(10),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.numRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },
@@ -243,11 +246,11 @@ const styles = StyleSheet.create({
     listRowTopView: {
         height: px(70),
         justifyContent: 'center',
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#E9EAEF',
-        borderStyle: 'solid',
     },
     listRowBottomView: {
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: '#E9EAEF',
+        borderStyle: 'solid',
         height: px(40),
         justifyContent: 'center',
     },
