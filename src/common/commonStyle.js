@@ -90,13 +90,10 @@ export const Font = {
 
     // 默认文字字体
     numFontFamily: 'DINAlternate-Bold',
-    numRegular: 'DIN-Regular', //和PingFang SC-常规体有区别
-    numMedium: 'DIN-Medium', // 和PingFang SC-中黑体有区别，不能混为一谈使用
-    //蓝湖UI样式其他字体
-    // 诸如PingFang-中黑体，PingFang-Regular(IOS默认)-但是android若要实现同样效果，
-    // 还是得把字体文件引入原生目录,缺陷apk体积会增大好多)
-    pingFangMedium: 'PingFang-SC-Medium', // PingFang SC-中黑体
-    pingFangRegular: 'PingFang-SC-Regular', // PingFang SC-常规体
+    numRegular: 'DIN-Regular',
+    numMedium: 'DIN-Medium',
+    pingFangMedium: 'PingFang-SC-Medium',
+    pingFangRegular: 'PingFang-SC-Regular',
     //特大字体
     largeFont: text(26),
     //金额输入框字体大小

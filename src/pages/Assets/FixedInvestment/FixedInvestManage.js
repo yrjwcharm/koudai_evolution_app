@@ -131,7 +131,7 @@ const FixedInvestManage = ({navigation, route}) => {
                                             style={[
                                                 styles.defaultTabText,
                                                 {
-                                                    fontFamily: el.checked ? Font.pingFangMedium : Font.pingFangMedium,
+                                                    fontFamily: el.checked ? Font.pingFangMedium : Font.pingFangRegular,
                                                     color: el.checked ? Colors.brandColor : Colors.defaultColor,
                                                 },
                                             ]}>
@@ -142,7 +142,7 @@ const FixedInvestManage = ({navigation, route}) => {
                             );
                         })}
                     </View>
-                    <InvestHeader />
+                    <InvestHeader headList={data.head_list ?? []} />
                     <>
                         <RenderItem navigation={navigation} dataList={data.data_list ?? []} />
                     </>

@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description: 已终止定投页面
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
@@ -12,13 +12,15 @@ import RenderItem from './components/RenderItem';
 import {callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 const TerminatedFixedInvest = ({navigation, route}) => {
+    const [times, setTimes] = useState('');
+    const [sum, setSum] = useState('');
     const [state, setState] = useState({
         headList: [],
         dataList: [],
         loading: true,
     });
     const initData = async () => {
-        const res = await callTerminatedFixedApi({});
+        const res = await callTerminatedFixedApi({times, sum});
         const {title = '已终止的定投', head_list = [], data_list = []} = res.result || {};
         setState({
             headList: head_list,
@@ -29,7 +31,15 @@ const TerminatedFixedInvest = ({navigation, route}) => {
     };
     useEffect(() => {
         initData();
-    }, []);
+    }, [times, sum]);
+    const sumSort = useCallback(() => {
+        setTimes('');
+        sum == 'desc' ? setSum('asc') : setSum('desc');
+    }, [sum]);
+    const issueSort = useCallback(() => {
+        setSum('');
+        times == 'asc' ? setTimes('desc') : setTimes('asc');
+    }, [times]);
     return (
         <>
             {state.loading ? (
@@ -37,7 +47,13 @@ const TerminatedFixedInvest = ({navigation, route}) => {
             ) : (
                 <View style={styles.container}>
                     <View style={{marginTop: px(12)}} />
-                    <InvestHeader />
+                    <InvestHeader
+                        headList={state.headList}
+                        times={times}
+                        sum={sum}
+                        sortByIssue={issueSort}
+                        sortBySum={sumSort}
+                    />
                     <RenderItem dataList={state.dataList} />
                 </View>
             )}

@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     profitValue: {
         marginTop: px(6),
         fontSize: px(11),
-        fontFamily: Font.numRegular,
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.lightBlackColor,
     },

@@ -6,14 +6,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 
 const ChartHeader = ({selCalendarType, selBarChartType, isCalendar, isBarChart, subMonth, addMonth, date}) => {
     return (
         <View style={Style.flexBetween}>
-            <View style={[styles.chartLeft]}>
+            <View style={[styles.chartLeft, {}]}>
                 <TouchableOpacity onPress={selCalendarType}>
                     <View
                         style={[
@@ -28,7 +28,7 @@ const ChartHeader = ({selCalendarType, selBarChartType, isCalendar, isBarChart, 
                             style={{
                                 color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.numRegular,
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             日历图
                         </Text>
@@ -48,7 +48,7 @@ const ChartHeader = ({selCalendarType, selBarChartType, isCalendar, isBarChart, 
                             style={{
                                 color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.numRegular,
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             柱状图
                         </Text>
