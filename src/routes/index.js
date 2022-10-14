@@ -266,6 +266,7 @@ import DataDetails from '~/pages/CreatorCenter/DataDetails'; // 数据明细
 import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 社区合集
 import MenuList from '~/pages/Common/MenuList'; // 菜单列表
 import AddProductStep1 from '~/pages/CreatorCenter/AddProductStep1'; // 添加产品步骤1
+import AddProductStep2 from '~/pages/CreatorCenter/AddProductStep2'; // 添加产品步骤2
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1062,6 +1063,7 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="MenuList" component={MenuList} options={{title: ''}} />
                 <Stack.Screen name="AddProductStep1" component={AddProductStep1} options={{title: ''}} />
+                <Stack.Screen name="AddProductStep2" component={AddProductStep2} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );

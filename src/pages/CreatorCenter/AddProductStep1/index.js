@@ -6,7 +6,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Style} from '~/common/commonStyle';
 import {ProductList} from '~/components/Product';
 import {px} from '~/utils/appUtil';
 import CategoryProductList from './CategoryProductList';
@@ -14,6 +13,7 @@ import {getData, goSave} from './services';
 import RenderHtml from '~/components/RenderHtml';
 import {Modal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
+import Toast from '~/components/Toast';
 
 const AddProductStep1 = ({navigation, route}) => {
     const jump = useJump();
@@ -21,6 +21,7 @@ const AddProductStep1 = ({navigation, route}) => {
     const [styleCheck, setStyleCheck] = useState();
     const initStyleCheckRef = useRef();
     const styleCheckRef = useRef();
+    const [tabActive, setTabActive] = useState(0);
 
     useEffect(() => {
         styleCheckRef.current = styleCheck;
@@ -83,6 +84,9 @@ const AddProductStep1 = ({navigation, route}) => {
 
     const handlerTopButton = useCallback(
         (button) => {
+            if (!styleCheckRef.current) {
+                return Toast.show('请选择是否有分类');
+            }
             if (initStyleCheckRef.current && initStyleCheckRef.current !== styleCheckRef.current) {
                 Modal.show({
                     content: '更换样式后不保留已添加的产品，确定更换吗？',
@@ -112,6 +116,10 @@ const AddProductStep1 = ({navigation, route}) => {
         [route, jump]
     );
 
+    const onTabChange = (idx) => {
+        setTabActive(idx);
+    };
+
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <View style={{marginBottom: px(12)}}>
@@ -138,7 +146,11 @@ const AddProductStep1 = ({navigation, route}) => {
                     </TouchableOpacity>
                     <View style={styles.styleMain}>
                         {item?.value === 2 ? (
-                            <CategoryProductList data={item.style_data} />
+                            <CategoryProductList
+                                data={item.style_data}
+                                tabActive={tabActive}
+                                onTabChange={onTabChange}
+                            />
                         ) : (
                             <ProductList data={item.style_data?.items} type={item.style_data?.style_type} />
                         )}
@@ -177,7 +189,7 @@ const styles = StyleSheet.create({
         marginLeft: px(3),
     },
     styleMain: {
-        marginTop: px(12),
+        marginTop: px(16),
         backgroundColor: '#fff',
         borderRadius: px(6),
         padding: px(12),

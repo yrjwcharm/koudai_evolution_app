@@ -4,7 +4,7 @@
  * @Date: 2022-10-09 10:51:22
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {px} from '~/utils/appUtil';

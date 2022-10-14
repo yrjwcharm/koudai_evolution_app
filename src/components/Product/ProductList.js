@@ -96,6 +96,7 @@ const Index = ({data = [], logParams, type = 'default'}) => {
             red_tag,
             tags,
             url,
+            edit_button,
         } = item;
         const containerSty = out_box
             ? {
@@ -125,30 +126,42 @@ const Index = ({data = [], logParams, type = 'default'}) => {
                     <LeftPart {...item} />
                     <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
                         <View>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.name}>{name}</Text>
-                                {red_tag ? (
-                                    <View style={styles.redTagBox}>
-                                        <Text
-                                            style={[
-                                                styles.ratioLableText1,
-                                                {color: '#fff', fontWeight: Font.weightMedium},
-                                            ]}>
-                                            {red_tag}
-                                        </Text>
-                                    </View>
-                                ) : null}
-                                {labels?.length > 0 ? (
-                                    <View style={[Style.flexRow, {marginLeft: px(8), flexShrink: 1}]}>
-                                        {labels.map((label, i) => (
-                                            <HTML
-                                                html={i === 0 ? label : `| ${label}`}
-                                                key={label + i}
-                                                numberOfLines={1}
-                                                style={styles.label}
-                                            />
-                                        ))}
-                                    </View>
+                            <View style={Style.flexBetween}>
+                                <View style={Style.flexRow}>
+                                    <Text style={styles.name}>{name}</Text>
+                                    {red_tag ? (
+                                        <View style={styles.redTagBox}>
+                                            <Text
+                                                style={[
+                                                    styles.ratioLableText1,
+                                                    {color: '#fff', fontWeight: Font.weightMedium},
+                                                ]}>
+                                                {red_tag}
+                                            </Text>
+                                        </View>
+                                    ) : null}
+                                    {labels?.length > 0 ? (
+                                        <View style={[Style.flexRow, {marginLeft: px(8), flexShrink: 1}]}>
+                                            {labels.map((label, i) => (
+                                                <HTML
+                                                    html={i === 0 ? label : `| ${label}`}
+                                                    key={label + i}
+                                                    numberOfLines={1}
+                                                    style={styles.label}
+                                                />
+                                            ))}
+                                        </View>
+                                    ) : null}
+                                </View>
+                                {edit_button ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            jump(edit_button.url);
+                                        }}
+                                        style={styles.editBtn}>
+                                        <Text style={styles.editBtnText}>{edit_button.name}</Text>
+                                    </TouchableOpacity>
                                 ) : null}
                             </View>
                             {tags?.length > 0 && (
@@ -556,6 +569,18 @@ const styles = StyleSheet.create({
         marginVertical: px(12),
         borderTopWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
+    },
+    editBtn: {
+        borderWidth: 0.5,
+        borderColor: '#0051cc',
+        paddingHorizontal: px(7),
+        paddingVertical: px(5),
+        borderRadius: px(10),
+    },
+    editBtnText: {
+        fontSize: px(10),
+        lineHeight: px(10),
+        color: '#0051CC',
     },
 });
 

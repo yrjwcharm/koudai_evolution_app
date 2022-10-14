@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:09:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:57:30
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-14 15:05:12
  * @Description:蒙层
  */
 
@@ -17,7 +17,7 @@ export default class Mask extends Component {
             <RootSiblingPortal>
                 <View
                     style={{
-                        backgroundColor: 'rgba(0,0,0,0.6)',
+                        backgroundColor: this.props.bgColor || 'rgba(0,0,0,0.6)',
                         position: 'absolute',
                         top: 0,
                         left: 0,
