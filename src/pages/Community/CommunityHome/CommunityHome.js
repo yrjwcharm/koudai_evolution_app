@@ -1,6 +1,6 @@
 // // /*
 // //  * @Date: 2022-10-09 14:35:24
-// //  * @Description:
+// //  * @Description:社区主页
 // //  */
 import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';

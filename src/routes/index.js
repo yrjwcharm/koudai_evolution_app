@@ -12,6 +12,7 @@ import LineChart from '../pages/Chart/lineChart.js';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '~/common/commonStyle';
 import GlobalShare, {currentNavigation} from '~/components/GlobalShare';
+import Audio from '~/pages/Community/components/Audio';
 import IM from '../pages/IM/im'; //IM
 import AppGuide from '../pages/Auth/AppGuide'; //引导页
 import Register from '../pages/Auth/Register'; //注册
@@ -289,7 +290,6 @@ import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'
 import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
 import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
-import Audio from '~/pages/Community/components/Audio';
 
 const Stack = createStackNavigator();
 
