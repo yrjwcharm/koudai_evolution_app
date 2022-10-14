@@ -8,8 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
-import {getColor} from './utils';
-const HotFundCard = ({data, style, plateid}) => {
+const HotContent = ({data, style, plateid}) => {
     const jump = useJump();
     return (
         <View style={[styles.shadow, style]}>
@@ -28,15 +27,11 @@ const HotFundCard = ({data, style, plateid}) => {
                         style={{width: px(33), height: px(33)}}
                     />
                 </View>
-                <View
-                    style={{
-                        ...Style.flexBetween,
-                        flexWrap: 'wrap',
-                    }}>
+                <View style={{marginTop: px(11)}}>
                     {data?.list?.map((_list, _index) => (
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            style={{width: px(148), marginBottom: px(16)}}
+                            style={{marginBottom: px(11), ...Style.flexRow}}
                             key={_index}
                             onPress={() => {
                                 global.LogTool(
@@ -45,23 +40,14 @@ const HotFundCard = ({data, style, plateid}) => {
                                         rec_json: JSON.stringify(data?.rec_json),
                                         plateid: data?.plateid,
                                     },
-                                    'hot_fund',
-                                    _list.name
+                                    'hot_content',
+                                    _list.title
                                 );
                                 jump(_list.url);
                             }}>
+                            <View style={styles.circle} />
                             <Text numberOfLines={1} style={styles.hot_fund_list_title}>
-                                {_list.name}
-                            </Text>
-                            <Text
-                                style={{
-                                    color: getColor(_list?.yield_info?.yield),
-                                    fontSize: px(13),
-                                }}>
-                                <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>
-                                    {_list?.yield_info?.title}
-                                </Text>
-                                <Text style={{fontWeight: Font.weightMedium}}>&nbsp;{_list?.yield_info?.ratio}</Text>
+                                {_list.title}
                             </Text>
                         </TouchableOpacity>
                     ))}
@@ -71,13 +57,12 @@ const HotFundCard = ({data, style, plateid}) => {
     );
 };
 
-export default HotFundCard;
+export default HotContent;
 
 const styles = StyleSheet.create({
     hot_fund_list_title: {
         color: Colors.defaultColor,
         fontSize: px(13),
-        marginBottom: px(6),
     },
     hot_card: {
         padding: px(16),
@@ -89,5 +74,12 @@ const styles = StyleSheet.create({
         shadowOffset: {h: 10, w: 0},
         shadowRadius: px(6),
         shadowOpacity: 0.1,
+    },
+    circle: {
+        width: px(3),
+        height: px(3),
+        backgroundColor: Colors.defaultColor,
+        marginRight: px(7),
+        borderRadius: px(4),
     },
 });

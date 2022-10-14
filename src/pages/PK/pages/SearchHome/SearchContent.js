@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-19 18:54:29
+ * @LastEditTime: 2022-10-14 11:51:47
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
@@ -17,7 +17,7 @@ import {getColor} from './utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import RenderHtml from '~/components/RenderHtml';
-const SearchContent = ({data}) => {
+const SearchContent = ({data, type}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const SearchContent = ({data}) => {
     const onPk = () => {
         dispatch(addProduct(data.code));
     };
-    return (
+    return type != 'content' ? (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
@@ -57,6 +57,23 @@ const SearchContent = ({data}) => {
                         </TouchableOpacity>
                     </>
                 ) : null}
+            </View>
+        </TouchableOpacity>
+    ) : (
+        // 内容
+        <TouchableOpacity style={styles.con} onPress={() => jump(data.url)} activeOpacity={0.9}>
+            <RenderHtml html={data?.title} style={styles.title} />
+            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                <View style={Style.flexRow}>
+                    {data?.tag_list?.map((text, index) => {
+                        return (
+                            <View key={index} style={styles.tagBox}>
+                                <Text style={{fontSize: px(12), color: Colors.btnColor}}>{text}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
+                <Text style={styles.rateDesc}>{data?.published_at}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -96,5 +113,12 @@ const styles = StyleSheet.create({
         width: px(50),
         height: px(26),
         marginLeft: px(12),
+    },
+    tagBox: {
+        marginRight: px(2),
+        paddingVertical: px(4),
+        paddingHorizontal: px(10),
+        borderRadius: px(2),
+        backgroundColor: '#F1F6FF',
     },
 });

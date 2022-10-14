@@ -9,7 +9,7 @@ import TrackPlayer, {useProgress} from 'react-native-track-player';
 import {px} from '~/utils/appUtil';
 import * as Progress from 'react-native-progress';
 import {Colors} from '~/common/commonStyle';
-export const ProgressCon = () => {
+export const ProgressCon = ({cover}) => {
     const {duration, position} = useProgress();
     return (
         !!duration && (
@@ -21,10 +21,7 @@ export const ProgressCon = () => {
                         progress={position / duration}
                         color={Colors.brandColor}
                         borderWidth={0}>
-                        <Image
-                            source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png'}}
-                            style={styles.avatar}
-                        />
+                        <Image source={{uri: cover}} style={styles.avatar} />
                     </Progress.Circle>
                 </View>
                 {/* <Slider

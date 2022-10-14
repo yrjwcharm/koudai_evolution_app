@@ -230,7 +230,7 @@ import SpecialDetail from '~/pages/Special/Detail'; // 专题详情页
 import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列表
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
-import CommunityHome from '~/pages/Community/CommunityHome'; //社区主页
+import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
 import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
@@ -1048,7 +1048,11 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
-                <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: false}} />
+                <Stack.Screen
+                    name="CommunityPersonalHome"
+                    component={CommunityPersonalHome}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen name="CommunityVideo" component={CommunityVideo} options={{headerShown: false}} />
 
                 {/* v7新页面 End */}

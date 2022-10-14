@@ -4,7 +4,7 @@
  */
 import React, {useEffect, useState} from 'react';
 
-import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Image, TouchableWithoutFeedback} from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {resetAudio} from './audioService/SetUpService';
@@ -16,25 +16,26 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
 // The player is ready to be used
 const Audio = () => {
-    const [showPlayer, setShowPlayer] = useState(true);
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const {isPlaying, tooglePlay} = useOnTogglePlayback();
     const track = useCurrentTrack();
-    console.log(track);
-    useEffect(() => {
-        // startAudio();
-    }, []);
-    console.log(userInfo.showAudioModal, 'showAudioModal');
-    // console.log(track);
     return track && userInfo?.showAudioModal ? (
         <View style={[Style.flexRow, styles.con]}>
             {/* 进度 */}
-            <ProgressCon />
+            <ProgressCon cover={track?.artwork} />
             {/* title */}
             <Text style={styles.audioTitle}>{track?.title}</Text>
-            <TouchableOpacity onPress={tooglePlay}>
-                <Text>{isPlaying ? '正在播放' : '暂停'}</Text>
-            </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={tooglePlay}>
+                <Image
+                    style={{width: px(24), height: px(24)}}
+                    source={
+                        !isPlaying
+                            ? require('~/assets/img/community/audioPlay.png')
+                            : require('~/assets/img/community/audioPause.png')
+                    }
+                />
+                {/* <Text>{isPlaying ? '正在播放' : '暂停'}</Text> */}
+            </TouchableWithoutFeedback>
             <TouchableOpacity
                 style={{position: 'absolute', right: 0, top: -px(8)}}
                 onPress={() => {
