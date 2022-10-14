@@ -5,12 +5,11 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {deviceWidth, px} from '../../../../utils/appUtil';
+import {deviceWidth, px, isEmpty} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {useJump} from '../../../../components/hooks';
-import {isEmpty} from '../../../../utils/common';
 const shadow = {
     color: '#aaa',
     border: 6,

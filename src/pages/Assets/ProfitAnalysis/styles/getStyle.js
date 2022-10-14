@@ -1,4 +1,4 @@
-import {compareDate, delMille} from '../../../../utils/common';
+import {compareDate, delMille} from '../../../../utils/appUtil';
 import {Colors} from '../../../../common/commonStyle';
 
 export const getStyles = (el, currentDay) => {

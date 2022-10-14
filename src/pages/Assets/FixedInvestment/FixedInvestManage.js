@@ -4,10 +4,9 @@
  * @Description: 定投管理
  */
 
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import {Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {deviceWidth, px} from '../../../utils/appUtil';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
@@ -15,7 +14,6 @@ import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
 import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
-import {isEmpty} from '../../../utils/common';
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
     const [times, setTimes] = useState('');
@@ -25,7 +23,6 @@ const FixedInvestManage = ({navigation, route}) => {
     const [detail, setDetail] = useState({});
     const [headList, setHeadList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showEmpty, setShowEmpty] = useState(false);
     const {fund_code = '', poid = ''} = route?.params || {};
     const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);

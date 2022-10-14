@@ -4,14 +4,14 @@
  * @Description:列表渲染封装
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {delMille} from '../../../../utils/common';
+import {delMille} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
-import {useIsMounted} from '../../../../utils/useIsMounted';
+import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 
 const RenderList = ({type}) => {
     const isMounted = useIsMounted();

@@ -4,7 +4,7 @@
  * @Description: 已终止定投页面
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import InvestHeader from './components/InvestHeader';

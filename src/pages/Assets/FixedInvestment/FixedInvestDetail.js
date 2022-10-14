@@ -5,14 +5,11 @@
  */
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import PropTypes from 'prop-types';
 import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
-import {enterToReadCardPage} from '../../CreateAccount/Account/TokenCloudBridge';
-import {useJump} from '../../../components/hooks';
 import {callFixedInvestDetailApi} from './services';
 const shadow = {
     color: '#aaa',
@@ -24,7 +21,6 @@ const shadow = {
 };
 
 const FixedInvestDetail = ({navigation, r}) => {
-    const jump = useJump();
     const [visible, setVisible] = useState(false);
     const [selectData] = useState(['修改', '暂停', '终止']);
     useLayoutEffect(() => {

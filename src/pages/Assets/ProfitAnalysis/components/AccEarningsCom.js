@@ -15,7 +15,7 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useIsMounted} from '../../../../utils/useIsMounted';
+import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 
 const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
     const isMounted = useIsMounted();

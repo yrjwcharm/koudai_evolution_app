@@ -97,8 +97,7 @@
     "redux-thunk": "^2.3.0",
     "rn-alioss": "^0.2.5",
     "rn-fetch-blob": "^0.12.0",
-    "urijs": "^1.19.7",
-    "uuidjs": "^4.2.12"
+    "urijs": "^1.19.7"
   },
   "resolutions": {
     "@react-native-community/viewpager": "^2.0.2",

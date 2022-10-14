@@ -6,7 +6,6 @@
 import {Dimensions, Platform} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
 import {px as text} from '../../../utils/appUtil';
-import {transNumber} from '../../../utils/common';
 export const baseAreaChart = (
     data,
     colors = [

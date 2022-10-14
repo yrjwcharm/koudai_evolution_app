@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
-import {deviceWidth, px as text, px} from '../../../utils/appUtil';
+import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import Tab from '../../../components/TabBar';
@@ -10,7 +10,6 @@ import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
 import PropTypes from 'prop-types';
-import {delMille} from '../../../utils/common';
 import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData} from './services';
 const shadow = {

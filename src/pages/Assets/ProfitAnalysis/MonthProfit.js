@@ -3,13 +3,13 @@
  * @Author: yanruifeng
  * @Description:月收益
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import commonStyle from './styles/style';
 import dayjs from 'dayjs';
-import {compareDate, delMille} from '../../../utils/common';
+import {compareDate, delMille} from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
