@@ -63,6 +63,7 @@
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-modalize": "^2.1.1",
     "react-native-orientation-locker": "^1.1.8",
     "react-native-pdf": "^6.2.2",
     "react-native-permissions": "^3.0.0",
@@ -83,8 +84,10 @@
     "react-native-ssl-request": "^1.0.8",
     "react-native-svg": "^12.1.1",
     "react-native-swiper": "^1.6.0",
+    "react-native-track-player": "^3.1.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-video": "^5.1.1",
+    "react-native-video": "^5.2.1",
+    "react-native-waterfall-flow": "^1.1.1",
     "react-native-webview": "11.4.3",
     "react-native-wechat-lib": "^1.1.25",
     "react-redux": "^7.2.2",
@@ -92,8 +95,10 @@
     "redux-persist": "^5.6.12",
     "redux-persist-transform-immutable": "^5.0.0",
     "redux-thunk": "^2.3.0",
+    "rn-alioss": "^0.2.5",
     "rn-fetch-blob": "^0.12.0",
-    "urijs": "^1.19.7"
+    "urijs": "^1.19.7",
+    "uuidjs": "^4.2.12"
   },
   "resolutions": {
     "@react-native-community/viewpager": "^2.0.2",

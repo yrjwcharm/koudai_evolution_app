@@ -59,7 +59,6 @@ import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记
 import Evaluation from '../pages/Evaluation/Evaluation'; //定制
 import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
-import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
@@ -82,7 +81,6 @@ import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
-import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
@@ -233,8 +231,11 @@ import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列�
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 import ProductMoreMenu from '~/pages/FundIndex/pages/ProductMoreMenu'; // 更多分类
-import CommunityHome from '~/pages/Community/CommunityHome'; //社区主页
 
+import CommunityHome from '~/pages/Community/CommunityHome/CommunityHome';
+import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
+import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
+import CommunityVodCreate from '~/pages/Community/CommunityVodCreate'; // 发布视频
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -260,7 +261,6 @@ import TransferIntro from '../pages/Trade/QuickTransfer/TransferIntro'; // 一�
 import ChooseTransferPortfolio from '../pages/Trade/QuickTransfer/ChooseTransferPortfolio'; // 选择转换组合
 import TradeTransfer from '../pages/Trade/QuickTransfer/TradeTransfer'; // 一键转换
 import TransferDetail from '../pages/Trade/QuickTransfer/TransferDetail'; // 转换详情
-import CommunityVideo from '~/pages/Community/CommunityVideo'; //短视频播放
 import SubjectCollection from '~/pages/CreatorCenter/SubjectCollection'; // 专题合集
 import DataDetails from '~/pages/CreatorCenter/DataDetails'; // 数据明细
 import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 社区合集
@@ -283,6 +283,13 @@ import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/Specia
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
+
+import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
+import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
+import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
+import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
+import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
+import Audio from '~/pages/Community/components/Audio';
 
 const Stack = createStackNavigator();
 
@@ -310,6 +317,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <>
+            <Audio />
             <GlobalShare />
             <Stack.Navigator
                 initialRouteName="Launch"
@@ -525,13 +533,43 @@ export default function AppStack() {
                 <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
                 <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
                 <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
-                <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
-                <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
+                <Stack.Screen
+                    name="TotalIncomeDetail"
+                    component={ProfitDetail}
+                    options={{
+                        gestureEnabled: false,
+                        title: '',
+                    }}
+                />
+                <Stack.Screen
+                    name="IncomeDetail"
+                    component={IncomeDetail}
+                    options={{
+                        title: '组合收益明细',
+                    }}
+                />
                 <Stack.Screen
                     name="HistoryInvestPlan"
                     component={HistoryInvestPlan}
                     options={{title: '历史投资计划'}}
                 />
+                <Stack.Screen
+                    name="AutomaticInvestManage"
+                    component={FixedInvestManage}
+                    options={{title: '定投管理'}}
+                />
+                <Stack.Screen
+                    name="UpdateAutomaticInvest"
+                    component={ModifyFixedInvest}
+                    options={{title: '修改定投'}}
+                />
+
+                <Stack.Screen
+                    name="AutomaticInvestDetail"
+                    component={FixedInvestDetail}
+                    options={{title: '定投详情'}}
+                />
+                <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
                 <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
@@ -598,7 +636,7 @@ export default function AppStack() {
                 <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
                 <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
                 <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
-                <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: ''}} />
+                <Stack.Screen name="FixedPlanList" component={FixedInvestManage} options={{title: ''}} />
                 <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: ''}} />
                 <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
                 <Stack.Screen
@@ -1041,7 +1079,13 @@ export default function AppStack() {
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
                 <Stack.Screen name="ProductMoreMenu" component={ProductMoreMenu} options={{title: ''}} />
                 <Stack.Screen name="CommunityHome" component={CommunityHome} />
+                <Stack.Screen
+                    name="CommunityPersonalHome"
+                    component={CommunityPersonalHome}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen name="CommunityVideo" component={CommunityVideo} options={{headerShown: false}} />
+                <Stack.Screen name="CommunityVodCreate" component={CommunityVodCreate} options={{headerShown: false}} />
 
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />

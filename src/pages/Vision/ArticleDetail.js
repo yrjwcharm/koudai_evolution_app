@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /*
  * @Date: 2021-03-18 10:57:45
  * @Description: 文章详情
@@ -33,6 +34,11 @@ import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
 import useJump from '../../components/hooks/useJump.js';
+import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
+import {useOnTogglePlayback} from '../Community/components/audioService/useOnTogglePlayback.js';
+import {startAudio} from '../Community/components/audioService/StartAudioService.js';
+import {updateUserInfo} from '~/redux/actions/userInfo.js';
+import {audioOptions} from '../Community/components/audioService/AudioConfig.js';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -73,6 +79,32 @@ const ArticleDetail = ({navigation, route}) => {
     const post_progress = useRef(false);
     const inputMaxLength = 500;
     const jump = useJump();
+    const {position} = useProgress();
+    const {isPlaying} = useOnTogglePlayback();
+    const isSameAudio = useRef(false);
+    const audioMedia = useRef(null);
+
+    const setAudio = async (audio) => {
+        let track_tmp = await TrackPlayer.getTrack(0);
+        if (track_tmp?.title == audio.title) {
+            isSameAudio.current = true;
+            dispatch(updateUserInfo({showAudioModal: false}));
+        } else {
+            isSameAudio.current = false;
+        }
+    };
+    useEffect(() => {
+        TrackPlayer.addEventListener(Event.RemotePause, () => {
+            webviewRef?.current?.injectJavaScript(`window.audioPause() `);
+        });
+        TrackPlayer.addEventListener(Event.RemotePlay, () => {
+            webviewRef?.current?.injectJavaScript(`window.audioPlay()`);
+        });
+        TrackPlayer.addEventListener(Event.RemoteSeek, ({position: value}) => {
+            webviewRef?.current?.injectJavaScript(`window.changeAudioTime(${value},'rn')`);
+        });
+    }, []);
+
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -87,8 +119,23 @@ const ArticleDetail = ({navigation, route}) => {
                     setFavorNum(res.result.favor_num);
                     setFavorStatus(res.result.favor_status);
                     setData(res.result);
-
                     setFinishRead(!!res.result.read_info?.done_status);
+                }
+            });
+            http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/community/article/20210101', {
+                article_id: route.params?.article_id,
+                fr,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    const {media_url, media_cover, desc, cate_name} = res?.result;
+                    audioMedia.current = {
+                        url: media_url, // Load media from the network
+                        title: desc,
+                        artist: cate_name,
+                        artwork:
+                            media_cover || 'https://static.licaimofang.com/wp-content/uploads/2022/09/broadcast.jpeg',
+                    };
+                    setAudio(audioMedia.current);
                 }
             });
             http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
@@ -104,9 +151,20 @@ const ArticleDetail = ({navigation, route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
-
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
+        if (eventData == 'audioPlay' && audioMedia.current) {
+            startAudio(audioMedia.current);
+            dispatch(updateUserInfo({showAudioModal: false}));
+        } else if (eventData == 'audioPause') {
+            TrackPlayer.pause();
+        } else if (eventData.indexOf('changeAudioTime') > -1) {
+            let _posi = eventData.split(':')[1];
+            if (_posi) {
+                TrackPlayer.seekTo(parseInt(_posi));
+            }
+        }
+
         if (eventData.indexOf('article_id') !== -1) {
             navigation.push('ArticleDetail', {article_id: eventData.split('article_id=')[1]});
         } else {
@@ -233,7 +291,7 @@ const ArticleDetail = ({navigation, route}) => {
         },
         [data, collect_status]
     );
-    const postProgress = useCallback((params) => {
+    const postProgress = useCallback(async (params) => {
         http.post('/community/article/progress/20210101', params || {}).then((res) => {
             if (res.code == '000000' && res.result?.add_rational_num > 0) {
                 Toast.show('理性值+' + res.result.add_rational_num);
@@ -241,6 +299,10 @@ const ArticleDetail = ({navigation, route}) => {
         });
     }, []);
     const back = useCallback(() => {
+        if (audioMedia.current) {
+            dispatch(updateUserInfo({showAudioModal: true}));
+        }
+
         Picker.isPickerShow((res) => {
             if (res) {
                 Picker.hide();
@@ -435,6 +497,19 @@ const ArticleDetail = ({navigation, route}) => {
                                 allowsInlineMediaPlayback={true}
                                 ref={webviewRef}
                                 onLoadEnd={async () => {
+                                    setTimeout(() => {
+                                        if (isSameAudio.current && position) {
+                                            if (isPlaying) {
+                                                webviewRef.current?.injectJavaScript(
+                                                    `window.changeAudioTime(${position},'rn');window.audioPlay();true;`
+                                                );
+                                            } else {
+                                                webviewRef.current?.injectJavaScript(
+                                                    `window.changeAudioTime(${position},'rn');true;`
+                                                );
+                                            }
+                                        }
+                                    }, 500);
                                     webviewRef.current.postMessage(
                                         JSON.stringify({
                                             did: global.did,

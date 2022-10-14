@@ -3,7 +3,7 @@
  * @Description:资产页金额卡片
  */
 import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -14,6 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
 import {Chart, chartOptions} from '~/components/Chart';
+import {useFocusEffect} from '@react-navigation/native';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const jump = useJump();
     const [chart, setChart] = useState();
@@ -21,11 +22,11 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
         let res = await getChart();
         setChart(res.result);
     };
-    useEffect(() => {
-        if (Object.keys(summary).length > 0) {
+    useFocusEffect(
+        useCallback(() => {
             getChartData();
-        }
-    }, [summary]);
+        }, [])
+    );
     return (
         <TouchableWithoutFeedback onPress={() => jump(summary?.url)}>
             <LinearGradient

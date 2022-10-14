@@ -16,4 +16,6 @@ export const postAssetClass = (params) => {
 export const getChart = () => {
     return http.get('/asset/overview/chart/20220915');
 };
-export const getReadMes = () => http.get('/message/unread/20210101');
+export const getReadMes = () => {
+    return http.get('/message/unread/20210101');
+};

@@ -1,7 +1,5 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 21:08:35
  * @Description:主题及公共样式表
  */
 
@@ -21,7 +19,7 @@ export const Colors = {
     // 默认深灰色字体颜色
     darkGrayColor: '#9aA1B2',
     // 默认浅灰色字体颜色
-    lightGrayColor: '#9aA1B2',
+    lightGrayColor: '#9AA0B1',
     // 默认分割线颜色
     lineColor: '#E2E4EA',
     // 默认placeholder颜色
@@ -32,6 +30,7 @@ export const Colors = {
     linkColor: '#0051CC',
     // 输入框背景色
     inputBg: '#F5F6F8',
+    transparent: 'transparent',
     // 红色 涨、报错
     red: '#E74949',
     // 绿色 跌
@@ -43,6 +42,7 @@ export const Colors = {
     yellow: '#EB7121',
     //导航背景色
     navBgColor: '#FFF',
+    white: '#fff',
     // 导航title 颜色
     navTitleColor: '#121D3A',
     // 导航左item title color
@@ -90,6 +90,8 @@ export const Font = {
     numFontFamily: 'DINAlternate-Bold',
     numRegular: 'DIN-Regular',
     numMedium: 'DIN-Medium',
+    pingFangMedium: 'PingFang-SC-Medium',
+    pingFangRegular: 'PingFang-SC-Regular',
     //特大字体
     largeFont: text(26),
     //金额输入框字体大小

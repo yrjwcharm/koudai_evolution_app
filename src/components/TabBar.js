@@ -25,7 +25,9 @@ export default class TabBar extends Component {
             ? this.props.btnColor
                 ? this.props.btnColor
                 : Colors.btnColor
-            : Colors.descColor;
+            : this.props.inActiveColor
+            ? this.props.inActiveColor
+            : Colors.darkGrayColor;
         const fontSize = isTabActive
             ? this.props.activeFontSize
                 ? this.props.activeFontSize
@@ -44,8 +46,9 @@ export default class TabBar extends Component {
                         style={[
                             {
                                 color: textColor,
-                                fontWeight: isTabActive ? Font.weightMedium : '400',
+                                fontWeight: isTabActive ? 'bold' : 'normal',
                                 fontSize,
+                                fontFamily: isTabActive ? Font.pingFangMedium : Font.pingFangRegular,
                                 paddingVertical: px(6),
                             },
                         ]}>

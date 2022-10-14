@@ -73,7 +73,7 @@ const Index = () => {
                                 shareModal.current.show();
                             }}
                             style={{paddingHorizontal: px(16)}}>
-                            <Image source={icon ? {uri: icon} : share} style={{width: px(20), height: px(20)}} />
+                            <Image source={icon ? {uri: icon} : share} style={{width: px(24), height: px(24)}} />
                         </TouchableOpacity>
                     ),
                 });
