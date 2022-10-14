@@ -2,14 +2,14 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:
 // //  */
-import {StyleSheet, Text, View, Animated, ImageBackground, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Colors, Style} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
@@ -25,15 +25,15 @@ const CommunityHome = ({navigation, route}) => {
     const [product, setProduct] = useState();
     const getData = async () => {
         let res = await getCommunityHomeData({community_id});
+        getProductList({community_id, type: res.result?.tabs[0]?.type || ''});
         setData(res.result);
     };
-    const getProductList = async () => {
-        let res = await getCommunityProductList();
+    const getProductList = async (params) => {
+        let res = await getCommunityProductList(params);
         setProduct(res.result);
     };
     useEffect(() => {
         getData();
-        getProductList();
     }, []);
     const onScroll = (e) => {
         let y = e.nativeEvent.contentOffset.y;
@@ -102,8 +102,9 @@ const CommunityHome = ({navigation, route}) => {
                     style={styles.listCon}>
                     <Intro data={data?.intro_info} />
                     <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
-                        <View style={{height: px(500)}} tabLabel="哈哈" pointerEvents="none" />
-                        <View style={{height: px(1500)}} tabLabel="哈哈11" />
+                        {data?.tabs?.map((tab, index) => (
+                            <View key={index} style={{flex: 1}} tabLabel={tab?.name} />
+                        ))}
                     </ScrollableTabView>
                 </LinearGradient>
             </Animated.ScrollView>
