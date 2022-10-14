@@ -20,7 +20,7 @@ const HistoryNav = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             // status === 'refresh' && setRefreshing(true);
-            http.get('/fund/nav/history/20210101', route.params || {}).then((res) => {
+            http.get('/fund/nav/history/20210101', {...(route.params || {}), page}).then((res) => {
                 setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);

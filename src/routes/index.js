@@ -267,6 +267,22 @@ import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 
 import MenuList from '~/pages/Common/MenuList'; // 菜单列表
 import AddProductStep1 from '~/pages/CreatorCenter/AddProductStep1'; // 添加产品步骤1
 import AddProductStep2 from '~/pages/CreatorCenter/AddProductStep2'; // 添加产品步骤2
+
+// 专题创建
+import SpecialCreateEntry from '~/pages/CreatorCenter/Special/Create/SpecialCreateEntry'; // 专题创建入口
+import SpecialModifyBgImage from '~/pages/CreatorCenter/Special/Create/SpecialModifyBgImage.js'; // 专题创建-选择之前的图片
+
+import SpecialCreateBaseInfo from '~/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js'; // 专题创建-基础信息
+import SpecailSortContent from '~/pages/CreatorCenter/Special/Create/SpecailSortContent.js'; // 专题创建-内容排序
+import SpecailModifyContent from '~/pages/CreatorCenter/Special/Create/SpecailModifyContent.js'; // 专题创建/修改-内容
+import SpecialSubmitCheck from '~/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js'; // 专题创建-提交审核成功
+
+// 专题修改
+import SpecialModifyEntry from '~/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js'; // 专题修改入口
+import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-基础信息
+import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
+import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1064,6 +1080,41 @@ export default function AppStack() {
                 <Stack.Screen name="MenuList" component={MenuList} options={{title: ''}} />
                 <Stack.Screen name="AddProductStep1" component={AddProductStep1} options={{title: ''}} />
                 <Stack.Screen name="AddProductStep2" component={AddProductStep2} options={{title: ''}} />
+                {/* 专题创建编辑相关页面 */}
+                <Stack.Screen name="SpecialCreateEntry" component={SpecialCreateEntry} options={{headerShown: false}} />
+                <Stack.Screen
+                    name="SpecailModifyContent"
+                    component={SpecailModifyContent}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen name="SpecailSortContent" component={SpecailSortContent} options={{headerShown: false}} />
+                <Stack.Screen
+                    name="SpecialModifyBaseInfo"
+                    component={SpecialModifyBaseInfo}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialCreateBaseInfo"
+                    component={SpecialCreateBaseInfo}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyBgImage"
+                    component={SpecialModifyBgImage}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyActiveInfo"
+                    component={SpecialModifyActiveInfo}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecailModifyComment"
+                    component={SpecailModifyComment}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen name="SpecialSubmitCheck" component={SpecialSubmitCheck} options={{headerShown: false}} />
+                <Stack.Screen name="SpecialModifyEntry" component={SpecialModifyEntry} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );
