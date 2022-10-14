@@ -8,6 +8,7 @@ import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import WaterfallFlow from 'react-native-waterfall-flow';
+import {useIsFocused} from '@react-navigation/native';
 import close from '~/assets/img/icon/close.png';
 import live from '~/assets/img/vision/live.gif';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -318,7 +319,7 @@ const Follow = forwardRef(({list = []}, ref) => {
 });
 
 /** @name 推荐瀑布流列表 */
-const RecommendList = forwardRef(({type}, ref) => {
+export const WaterfallFlowList = forwardRef(({getData = () => {}, params}, ref) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -327,7 +328,7 @@ const RecommendList = forwardRef(({type}, ref) => {
     const waterfallFlow = useRef();
 
     const init = () => {
-        getRecommendData({page, type})
+        getData({...params, page})
             .then((res) => {
                 if (res.code === '000000') {
                     setData((prev) => {
@@ -418,7 +419,7 @@ const RecommendList = forwardRef(({type}, ref) => {
 
     useEffect(() => {
         init();
-    }, [page, type]);
+    }, [page]);
 
     return (
         <WaterfallFlow
@@ -495,7 +496,11 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
                     const {name, type} = tab;
                     return (
                         <View key={name + type} style={{flex: 1}} tabLabel={name}>
-                            <RecommendList ref={(list) => (recommendList.current[i] = list)} type={type} />
+                            <WaterfallFlowList
+                                getData={getRecommendData}
+                                params={{type}}
+                                ref={(list) => (recommendList.current[i] = list)}
+                            />
                         </View>
                     );
                 })}
@@ -537,7 +542,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                         style={styles.closeBtn}>
                         <Image source={close} style={styles.close} />
                     </TouchableOpacity>
-                    <View style={[Style.flexRowCenter, {paddingTop: px(64)}]}>
+                    <View style={[Style.flexEvenly, {paddingTop: px(64)}]}>
                         {btn_list?.map((item, index) => {
                             const {icon, name, url} = item;
                             return (
@@ -548,7 +553,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                                         bottomModal.current.hide();
                                         jump(url);
                                     }}
-                                    style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(56)}]}>
+                                    style={Style.flexCenter}>
                                     <Image source={{uri: icon}} style={{width: px(48), height: px(48)}} />
                                     <Text style={[styles.desc, {marginTop: px(8), color: Colors.defaultColor}]}>
                                         {name}
@@ -564,6 +569,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
 });
 
 const Index = ({navigation, setLoading}) => {
+    const isFocused = useIsFocused();
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
     const {follow, recommend, tabs, user_info} = data;
@@ -585,16 +591,18 @@ const Index = ({navigation, setLoading}) => {
 
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            init();
-            if (active === 0) {
-                followRef.current?.refresh?.();
-            } else {
-                recommendRef.current?.refresh?.();
+            if (isFocused) {
+                init();
+                if (active === 0) {
+                    followRef.current?.refresh?.();
+                } else {
+                    recommendRef.current?.refresh?.();
+                }
+                publishRef.current?.refresh?.();
             }
-            publishRef.current?.refresh?.();
         });
         return () => listener();
-    }, [active]);
+    }, [active, isFocused]);
 
     useEffect(() => {
         init();

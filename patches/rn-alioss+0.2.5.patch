@@ -1,0 +1,13 @@
+diff --git a/node_modules/rn-alioss/android/src/main/java/com/reactnativealioss/utils/ConfigUtils.java b/node_modules/rn-alioss/android/src/main/java/com/reactnativealioss/utils/ConfigUtils.java
+index ef963c0..bc57cc9 100644
+--- a/node_modules/rn-alioss/android/src/main/java/com/reactnativealioss/utils/ConfigUtils.java
++++ b/node_modules/rn-alioss/android/src/main/java/com/reactnativealioss/utils/ConfigUtils.java
+@@ -16,7 +16,7 @@ public class ConfigUtils {
+        conf.setSocketTimeout(configuration.getInt("timeoutIntervalForRequest") * 1000);
+        conf.setMaxConcurrentRequest(configuration.getInt("maxRetryCount"));
+        conf.setMaxErrorRetry(configuration.getInt("maxRetryCount"));
+-       conf.setCheckCRC64(configuration.getBoolean("verifyCRC64"));
++       // conf.setCheckCRC64(configuration.getBoolean("verifyCRC64"));
+        return conf;
+    }
+ }
