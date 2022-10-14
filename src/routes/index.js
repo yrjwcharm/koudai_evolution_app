@@ -81,7 +81,6 @@ import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
-import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
@@ -233,7 +232,7 @@ import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAsset
 import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
 import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
 import CommunityHome from '~/pages/Community/CommunityHome/CommunityHome'; //社区主页
-
+import CommunityVodCreate from '~/pages/Community/CommunityVodCreate'; // 发布视频
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -1057,6 +1056,7 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: false}} />
                 <Stack.Screen name="CommunityVideo" component={CommunityVideo} options={{headerShown: false}} />
+                <Stack.Screen name="CommunityVodCreate" component={CommunityVodCreate} options={{headerShown: false}} />
 
                 {/* v7新页面 End */}
                 <Stack.Screen name="InvestorInfoTable" component={InvestorInfoTable} options={{title: ''}} />
