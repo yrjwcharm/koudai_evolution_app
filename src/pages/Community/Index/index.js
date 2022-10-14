@@ -542,7 +542,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                         style={styles.closeBtn}>
                         <Image source={close} style={styles.close} />
                     </TouchableOpacity>
-                    <View style={[Style.flexRowCenter, {paddingTop: px(64)}]}>
+                    <View style={[Style.flexEvenly, {paddingTop: px(64)}]}>
                         {btn_list?.map((item, index) => {
                             const {icon, name, url} = item;
                             return (
@@ -553,7 +553,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                                         bottomModal.current.hide();
                                         jump(url);
                                     }}
-                                    style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(56)}]}>
+                                    style={Style.flexCenter}>
                                     <Image source={{uri: icon}} style={{width: px(48), height: px(48)}} />
                                     <Text style={[styles.desc, {marginTop: px(8), color: Colors.defaultColor}]}>
                                         {name}
