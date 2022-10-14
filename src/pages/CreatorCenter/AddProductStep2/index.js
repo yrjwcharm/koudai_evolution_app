@@ -4,7 +4,7 @@
  * @Date: 2022-10-12 14:19:09
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 import {Modal} from '~/components/Modal';
@@ -13,6 +13,7 @@ import RenderHtml from '~/components/RenderHtml';
 import {px} from '~/utils/appUtil';
 import CategoryProductList from './CategoryProductList';
 import {getData, getListData} from './services';
+import {cloneDeep} from 'lodash';
 
 const AddProductStep2 = ({navigation, route}) => {
     const jump = useJump();
@@ -45,17 +46,7 @@ const AddProductStep2 = ({navigation, route}) => {
                 } else {
                     params.categories = JSON.stringify(d.categories || []);
                 }
-                getListData(params).then((result) => {
-                    if (result.code === '000000') {
-                        if (d?.category_mode === 2) {
-                            // 添加分类id
-                            result.result?.style_data?.groups?.forEach((g, index) => {
-                                g.category_id = d.categories[index].id;
-                            });
-                        }
-                        setListData(result.result);
-                    }
-                });
+                getList(params, d?.category_mode, d.categories);
                 // 设置标题栏
                 navigation.setOptions({
                     title: res.result.title || '添加产品',
@@ -75,6 +66,72 @@ const AddProductStep2 = ({navigation, route}) => {
             }
         });
     }, [route, navigation, handlerTopButton]);
+
+    const getList = (params, mode, categories) => {
+        getListData(params).then((result) => {
+            if (result.code === '000000') {
+                if (mode === 2) {
+                    // 添加分类id
+                    result.result?.style_data?.groups?.forEach((g, index) => {
+                        g.category_id = categories[index].id;
+                        // g.items.forEach((item) => {
+                        //     item.edit_button.handler = () => {
+                        //         jump({
+                        //             path: 'EditProduct',
+                        //             params: {
+                        //                 desc: item.reason,
+                        //                 id: item.id,
+                        //             },
+                        //         });
+                        //     };
+                        // });
+                    });
+                }
+                setListData(result.result);
+            }
+        });
+    };
+
+    useEffect(() => {
+        DeviceEventEmitter.addListener('editProduct', (option) => {
+            if (option.category_id) {
+                setData((val) => {
+                    // 更新原始map的当前产品
+                    let newVal = cloneDeep(val);
+                    let products = newVal.categories.find((item) => item.id === option.category_id);
+                    let obj = products.find((item) => item.id === option.id);
+                    for (let key in obj) {
+                        obj[key] = option[key];
+                    }
+                    //不再自己循环找出对应项修改 通过接口更新
+                    getList(
+                        {
+                            ...route.params,
+                            categories: JSON.stringify(newVal.categories || []),
+                        },
+                        2,
+                        newVal.categories
+                    );
+                    return newVal;
+                });
+            } else {
+                setData((val) => {
+                    // 更新原始map的当前产品
+                    let newVal = cloneDeep(val);
+                    let obj = newVal.products.find((item) => item.id === option.id);
+                    for (let key in obj) {
+                        obj[key] = option[key];
+                    }
+                    //不再自己循环找出对应项修改 通过接口更新
+                    getList({
+                        ...route.params,
+                        products: JSON.stringify(newVal.products || []),
+                    });
+                    return newVal;
+                });
+            }
+        });
+    }, [route.params]);
 
     const handlerTopButton = useCallback(
         (button) => {

@@ -140,6 +140,18 @@ const CreatorCenterIndex = () => {
                                             activeOpacity={0.7}
                                             style={styles.cardItemHeader}
                                             onPress={() => {
+                                                // jump({
+                                                //     path: 'EditProduct',
+                                                //     params: {
+                                                //         id: 179,
+                                                //         product_type: 1,
+                                                //         product_id: '000001',
+                                                //         desc: '',
+                                                //         yield_range: '',
+                                                //         style_id: 0,
+                                                //         category_id: '',
+                                                //     },
+                                                // });
                                                 jump({path: 'AddProductStep1', params: {subject_id: 111}});
                                             }}>
                                             <Text style={styles.cardItemHeaderTitle}>社区合集</Text>
