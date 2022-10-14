@@ -4,7 +4,7 @@
  * @Description: 定投详情新页面
  */
 
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -13,6 +13,7 @@ import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {enterToReadCardPage} from '../../CreateAccount/Account/TokenCloudBridge';
 import {useJump} from '../../../components/hooks';
+import {callFixedInvestDetailApi} from './services';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -22,7 +23,7 @@ const shadow = {
     y: 2,
 };
 
-const FixedInvestDetail = ({navigation}) => {
+const FixedInvestDetail = ({navigation, r}) => {
     const jump = useJump();
     const [visible, setVisible] = useState(false);
     const [selectData] = useState(['修改', '暂停', '终止']);
@@ -42,6 +43,10 @@ const FixedInvestDetail = ({navigation}) => {
             ),
         });
     }, []);
+    const initData = async () => {
+        const res = await callFixedInvestDetailApi({});
+    };
+    useEffect(() => {}, []);
     return (
         <View style={styles.container}>
             {/*定投*/}

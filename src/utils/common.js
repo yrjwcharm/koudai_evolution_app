@@ -66,3 +66,15 @@ export function transNumber(num, point) {
         return parseFloat(parseInt(num / 100000000) + '.' + decimal) + '亿';
     }
 }
+
+/**
+ * 判断字符串文本是否为空 包括(undefined,null,'')
+ * @param str
+ * @returns {boolean}
+ */
+export function isEmpty(str) {
+    if ((str ?? '') == '') {
+        return true;
+    }
+    return false;
+}

@@ -4,13 +4,14 @@
  * @Description: 已终止定投页面
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
 import {callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
+
 const TerminatedFixedInvest = ({navigation, route}) => {
     const [times, setTimes] = useState('');
     const [sum, setSum] = useState('');
@@ -21,13 +22,15 @@ const TerminatedFixedInvest = ({navigation, route}) => {
     });
     const initData = async () => {
         const res = await callTerminatedFixedApi({times, sum});
-        const {title = '', head_list = [], data_list = []} = res.result || {};
-        setState({
-            headList: head_list,
-            dataList: data_list,
-            loading: false,
-        });
-        navigation.setOptions({title});
+        if (res.code === '000000') {
+            const {title = '', head_list = [], data_list = []} = res.result || {};
+            setState({
+                headList: head_list,
+                dataList: data_list,
+                loading: false,
+            });
+            navigation.setOptions({title});
+        }
     };
     useEffect(() => {
         initData();

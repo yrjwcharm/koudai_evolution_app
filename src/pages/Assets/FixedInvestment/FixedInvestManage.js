@@ -15,6 +15,7 @@ import InvestHeader from './components/InvestHeader';
 import RenderItem from './components/RenderItem';
 import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
+import {isEmpty} from '../../../utils/common';
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
     const [times, setTimes] = useState('');
@@ -45,7 +46,7 @@ const FixedInvestManage = ({navigation, route}) => {
                 setHeadList(head_list);
                 setDetail(detail);
                 setData(res[1].result);
-                setTerminatedCount(res[1].result?.data_list?.length);
+                setTerminatedCount(res[2].result?.data_list?.length);
                 setLoading(false);
             }
         };
@@ -94,13 +95,15 @@ const FixedInvestManage = ({navigation, route}) => {
                                             );
                                         })}
                                     <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
-                                    <ImageBackground
-                                        style={{width: px(51), height: px(17)}}
-                                        source={require('./assets/label.png')}>
-                                        <View style={styles.labelView}>
-                                            <Text style={styles.label}>{detail?.tip}</Text>
-                                        </View>
-                                    </ImageBackground>
+                                    {!isEmpty(detail?.tip) && (
+                                        <ImageBackground
+                                            style={{width: px(51), height: px(17)}}
+                                            source={require('./assets/label.png')}>
+                                            <View style={styles.labelView}>
+                                                <Text style={styles.label}>{detail?.tip}</Text>
+                                            </View>
+                                        </ImageBackground>
+                                    )}
                                 </View>
                             ) : (
                                 <View style={styles.emptyInvest}>
@@ -160,8 +163,10 @@ const FixedInvestManage = ({navigation, route}) => {
                         <RenderItem navigation={navigation} dataList={data.data_list ?? []} />
                     </>
                     {terminatedCount !== 0 && (
-                        <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
-                            <View style={{marginTop: px(12), ...Style.flexCenter}}>
+                        <TouchableOpacity
+                            style={{marginTop: px(20)}}
+                            onPress={() => navigation.navigate('TerminatedInvest')}>
+                            <View style={{...Style.flexCenter}}>
                                 <View style={Style.flexRow}>
                                     <Text style={styles.termintal}>查看已终止的定投({terminatedCount})</Text>
                                     <Image source={require('./assets/more.png')} />
