@@ -234,7 +234,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             {type != 10 && (
                                 <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                                     <View style={Style.flexRow}>
-                                        <Text style={styles.name}>{name}</Text>
+                                        <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
                                         {!!tag_info && <TagInfo data={tag_info} />}
                                     </View>
                                     {!!open_tip && (
