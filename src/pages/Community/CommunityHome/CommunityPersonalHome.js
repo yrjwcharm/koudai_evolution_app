@@ -85,56 +85,19 @@ const CommunityPersonalHome = ({navigation, route}) => {
                     }
                 )}>
                 <CommunityHomeHeader
-                    // data={}
+                    data={data?.community_info}
                     style={{
                         width: deviceWidth,
                         paddingTop: headerHeight + px(20),
                     }}
                 />
-                <ImageBackground
-                    source={{
-                        uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/08/yanglao2@3x.jpg',
-                    }}
-                    style={{
-                        width: deviceWidth,
-                        height: px(220),
-                        paddingTop: headerHeight + px(20),
-                        paddingHorizontal: px(20),
-                    }}>
-                    <View style={Style.flexBetween}>
-                        <View style={Style.flexRow}>
-                            <Image
-                                source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png'}}
-                                style={styles.headerAvatar}
-                            />
-                            <View>
-                                <Text style={styles.vName}>马老师</Text>
-                                <View style={Style.flexRow}>
-                                    <Image
-                                        source={{
-                                            uri:
-                                                'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png',
-                                        }}
-                                        style={{width: px(16), height: px(16), borderRadius: px(8), marginRight: px(2)}}
-                                    />
-                                    <Text style={{fontSize: px(12), lineHeight: px(17), color: '#fff'}}>马老师</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.attentionBtn}>
-                            <Text style={{fontSize: px(12)}}>已关注</Text>
-                        </View>
-                    </View>
-                </ImageBackground>
                 <LinearGradient
                     start={{x: 0, y: 0.25}}
                     end={{x: 0.8, y: 0.8}}
                     colors={['#fff', Colors.bgColor]}
                     style={styles.listCon}>
                     <View style={{paddingHorizontal: px(16)}}>
-                        <Text>
-                            从大明星到小黑马，从权益到债券，从理念到八卦，这群中国最聪明的人，全天候社区带你慢慢了解！
-                        </Text>
+                        <Text>{data?.intro}</Text>
                     </View>
 
                     <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>

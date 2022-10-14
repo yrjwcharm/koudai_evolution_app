@@ -232,6 +232,8 @@ import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
 import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
+import CommunityHome from '~/pages/Community/CommunityHome/CommunityHome'; //社区主页
+
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表
 import IdentityAssertion from '../pages/PE/IdentityAssertion'; // 个人税收居民身份声明
@@ -1053,6 +1055,7 @@ export default function AppStack() {
                     component={CommunityPersonalHome}
                     options={{headerShown: false}}
                 />
+                <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: false}} />
                 <Stack.Screen name="CommunityVideo" component={CommunityVideo} options={{headerShown: false}} />
 
                 {/* v7新页面 End */}
