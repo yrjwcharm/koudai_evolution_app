@@ -304,45 +304,6 @@ const TradeRecordDetail = (props) => {
     };
 
     const {notice} = data || {};
-    const renderChildren = (children) => {
-        return (
-            <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
-                {children?.head && (
-                    <View style={[Style.flexBetween, {height: px(30)}]}>
-                        {children?.head.map((text, key) => (
-                            <Text key={text + key} style={styles.light_text}>
-                                {text}
-                            </Text>
-                        ))}
-                    </View>
-                )}
-                {children?.body?.map((child, key) => (
-                    <View style={styles.fund_item} key={`${child.k}${key}`}>
-                        <TouchableOpacity
-                            onPress={() => jump(child.url)}
-                            activeOpacity={1}
-                            style={[Style.flexBetween, {marginBottom: px(4)}]}>
-                            <Text style={styles.fund_name}>{child?.k}</Text>
-                            <Text style={styles.fund_amount}>{child?.v}</Text>
-                        </TouchableOpacity>
-                        {child?.ds ? (
-                            child?.ds?.map?.((_ds, _key) =>
-                                _ds?.k ? (
-                                    <HTML
-                                        html={_ds?.k}
-                                        key={_ds.k + _key}
-                                        style={{fontSize: px(12), lineHeight: px(17)}}
-                                    />
-                                ) : null
-                            )
-                        ) : child?.d ? (
-                            <HTML html={child?.d} style={{fontSize: px(12), lineHeight: px(17)}} />
-                        ) : null}
-                    </View>
-                ))}
-            </View>
-        );
-    };
     return (
         <ScrollView bounces={false} style={styles.container}>
             {/* 小黄条 */}
@@ -396,9 +357,6 @@ const TradeRecordDetail = (props) => {
                             {data?.part1?.type?.text}
                         </Text>
                     </View>
-                    <Text style={{color: Colors.defaultColor, fontSize: px(16), maxWidth: px(300)}}>
-                        {data?.part1?.name}
-                    </Text>
                     {data?.part1?.transfer_name ? (
                         <View style={{flexDirection: 'row'}}>
                             <View>
@@ -412,7 +370,9 @@ const TradeRecordDetail = (props) => {
                             </View>
                         </View>
                     ) : (
-                        <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
+                        <Text style={{color: Colors.defaultColor, fontSize: px(16), maxWidth: px(300)}}>
+                            {data?.part1?.name}
+                        </Text>
                     )}
                 </View>
                 {data?.part1?.table ? (
@@ -536,7 +496,7 @@ const TradeRecordDetail = (props) => {
                         <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>{data?.desc}</Text>
                     ) : null}
                     {data?.part2?.map((item, index) => {
-                        const {children, extra_step, k, k1, type: recordType, v} = item;
+                        const {children, extra_step, k, k1, v} = item;
                         return (
                             <View
                                 key={`${v}${index}`}
@@ -588,63 +548,6 @@ const TradeRecordDetail = (props) => {
                                             <HTML html={k1} style={styles.name} />
                                         </View>
                                     ) : null}
-
-                                    {recordType === 'adjust_compare' && children && showMore[index] ? (
-                                        // 调仓
-                                        <View style={[styles.buy_table, {borderTopWidth: children?.head ? 0.5 : 0}]}>
-                                            {children?.head ? (
-                                                <View style={[Style.flexBetween, {height: px(30)}]}>
-                                                    {children?.head.map((text, key) => (
-                                                        <Text
-                                                            key={text + key}
-                                                            style={[
-                                                                styles.light_text,
-                                                                {width: key == 0 ? px(163) : 'auto'},
-                                                            ]}>
-                                                            {text}
-                                                        </Text>
-                                                    ))}
-                                                </View>
-                                            ) : null}
-
-                                            {children?.body?.map?.((child, key) => (
-                                                <View
-                                                    key={`${child.name}${key}`}
-                                                    style={[Style.flexBetween, styles.fund_item]}>
-                                                    <Text numberOfLines={1} style={styles.fund_name}>
-                                                        {child?.name}
-                                                    </Text>
-                                                    <Text style={styles.fund_amount}>{child?.src}</Text>
-                                                    <View style={Style.flexRow}>
-                                                        <Text
-                                                            style={[
-                                                                styles.fund_amount,
-                                                                {
-                                                                    color: child?.type
-                                                                        ? child?.type == 'down'
-                                                                            ? Colors.green
-                                                                            : Colors.red
-                                                                        : Colors.lightBlackColor,
-                                                                },
-                                                            ]}>
-                                                            {child?.dst}
-                                                        </Text>
-                                                        {child.type ? (
-                                                            <Icon
-                                                                name={`arrow-long-${child?.type}`}
-                                                                color={
-                                                                    child?.type == 'down' ? Colors.green : Colors.red
-                                                                }
-                                                            />
-                                                        ) : null}
-                                                    </View>
-                                                </View>
-                                            ))}
-                                        </View>
-                                    ) : null}
-                                    {recordType !== 'adjust_compare' && children && showMore[index]
-                                        ? renderChildren(children)
-                                        : null}
                                     {showMore[index]
                                         ? extra_step?.map?.((step, i) => {
                                               const {children: extraChildren, k: key, v: value} = step;
@@ -654,7 +557,7 @@ const TradeRecordDetail = (props) => {
                                                           <HTML html={key} style={styles.name} />
                                                           <Text style={styles.date}>{value}</Text>
                                                       </View>
-                                                      {extraChildren?.length > 0 && renderChildren(extraChildren)}
+                                                      {extraChildren?.length > 0 && handlerCardContent(step, i)}
                                                   </Fragment>
                                               );
                                           })
