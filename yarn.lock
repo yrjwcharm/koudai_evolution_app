@@ -8015,6 +8015,11 @@ rimraf@~2.2.6:
   resolved "https://registry.npm.taobao.org/rimraf/download/rimraf-2.2.8.tgz"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
+rn-alioss@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.npmmirror.com/rn-alioss/-/rn-alioss-0.2.5.tgz#b07ee2bb194b679f706acffd8ca00d950010298c"
+  integrity sha512-ITnpJ541MTl7WLGKkKacUsGK/bh4lj8SPu1OrfFp+DzBEFswCCmcz5SpEb/QEQh7VMUZ7uWftzgLoxIa+Gmm0g==
+
 rn-fetch-blob@^0.12.0:
   version "0.12.0"
   resolved "https://registry.npm.taobao.org/rn-fetch-blob/download/rn-fetch-blob-0.12.0.tgz"

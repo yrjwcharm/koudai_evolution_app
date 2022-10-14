@@ -20,12 +20,14 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
 import {ShareModal} from '~/components/Modal';
-import {px} from '~/utils/appUtil';
+import {deviceWidth, formaNum, px} from '~/utils/appUtil';
 
 /** @name 社区卡片封面 */
 export const CommunityCardCover = ({
-    aspect_ratio,
+    attention_num,
+    attention_user,
     cover, // 封面
+    cover_aspect_ratio,
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
     media_duration, // 媒体时长
     people_num_desc, // 直播时间或观看人数
@@ -35,12 +37,17 @@ export const CommunityCardCover = ({
     type_str, // 类型文案
     width: coverWidth = px(180), // 封面宽度
 }) => {
-    const [aspectRatio, setAspectRatio] = useState(aspect_ratio || Infinity); // 图片宽高比
+    const [aspectRatio, setAspectRatio] = useState(cover_aspect_ratio || Infinity); // 图片宽高比
+    const statusColor = useRef({
+        1: '#FF7D41',
+        2: Colors.red,
+        3: Colors.brandColor,
+    });
 
     return (
         <View style={[Style.flexCenter, styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
             <Image
-                onLoad={({nativeEvent: {width, height}}) => !aspect_ratio && setAspectRatio(width / height)}
+                onLoad={({nativeEvent: {width, height}}) => !cover_aspect_ratio && setAspectRatio(width / height)}
                 source={{uri: cover}}
                 style={styles.cover}
             />
@@ -52,14 +59,7 @@ export const CommunityCardCover = ({
                             style={[
                                 Style.flexRow,
                                 styles.waitTag,
-                                {
-                                    backgroundColor:
-                                        live_status === 1
-                                            ? '#FF7D41'
-                                            : live_status === 2
-                                            ? Colors.red
-                                            : Colors.brandColor,
-                                },
+                                {backgroundColor: statusColor.current[live_status]},
                             ]}>
                             <Image source={live_status === 2 ? live : video} style={styles.liveIcon} />
                             <Text style={styles.numDesc}>{status_desc}</Text>
@@ -89,6 +89,24 @@ export const CommunityCardCover = ({
             ) : null}
             {/* 视频播放图片 */}
             {type === 3 ? <Image source={videoPlay} style={styles.videoPlay} /> : null}
+            {/* 社区关注人数 */}
+            {attention_num && attention_user ? (
+                <View style={[Style.flexRow, styles.communityFollowNum]}>
+                    {attention_user.map?.((img, i) => {
+                        return (
+                            <Image
+                                key={img + i}
+                                source={{uri: img}}
+                                style={[styles.smAvatar, {marginLeft: i === 0 ? 0 : -px(4)}]}
+                            />
+                        );
+                    })}
+                    <Text style={[styles.smText, {marginLeft: px(4), color: '#fff'}]}>
+                        <Text style={{fontFamily: Font.numRegular}}>{formaNum(attention_num, 'nozero')}</Text>
+                        人关注
+                    </Text>
+                </View>
+            ) : null}
         </View>
     );
 };
@@ -150,7 +168,7 @@ export const CommunityFollowCard = ({
                             style={{...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}}
                             type={type}
                             type_str={type_str}
-                            width={play_mode === 2 ? px(319) : px(180)}
+                            width={play_mode === 2 ? deviceWidth - 2 * Space.padding - 2 * px(12) : px(180)}
                         />
                     ) : null}
                 </TouchableOpacity>
@@ -303,6 +321,16 @@ const styles = StyleSheet.create({
     videoPlay: {
         width: px(48),
         height: px(48),
+    },
+    communityFollowNum: {
+        position: 'absolute',
+        top: px(8),
+        left: px(10),
+    },
+    smAvatar: {
+        borderRadius: px(16),
+        width: px(16),
+        height: px(16),
     },
     operationIcon: {
         marginRight: px(2),

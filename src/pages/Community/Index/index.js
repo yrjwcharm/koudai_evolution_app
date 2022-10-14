@@ -18,7 +18,7 @@ import {BottomModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 import {CommunityCardCover, CommunityFollowCard} from '../components/CommunityCard';
 import {
     getCanPublishContent,
@@ -366,7 +366,7 @@ const RecommendList = forwardRef(({type}, ref) => {
                     },
                 ]}>
                 {cover ? (
-                    <CommunityCardCover {...item} aspect_ratio={0.75} style={{width: '100%'}} width={px(180)} />
+                    <CommunityCardCover {...item} style={{width: '100%'}} width={deviceWidth - 3 * px(5)} />
                 ) : (
                     <Image
                         source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
@@ -504,16 +504,72 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-const Index = ({navigation, setLoading}) => {
+export const PublishContent = forwardRef(({community_id = 0}, ref) => {
     const jump = useJump();
+    const [data, setData] = useState({});
+    const {add_icon, btn_list = []} = data;
+    const bottomModal = useRef();
+
+    const init = () => {
+        getCanPublishContent({community_id}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
+    };
+
+    useImperativeHandle(ref, () => ({refresh: init}));
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    return Object.keys(data).length > 0 ? (
+        <>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => bottomModal.current.show()} style={styles.addContent}>
+                <Image source={{uri: add_icon}} style={styles.addIcon} />
+            </TouchableOpacity>
+            <BottomModal header={<View />} ref={bottomModal} style={{minHeight: px(218)}}>
+                <>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => bottomModal.current.hide()}
+                        style={styles.closeBtn}>
+                        <Image source={close} style={styles.close} />
+                    </TouchableOpacity>
+                    <View style={[Style.flexRowCenter, {paddingTop: px(64)}]}>
+                        {btn_list?.map((item, index) => {
+                            const {icon, name, url} = item;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={name + index}
+                                    onPress={() => {
+                                        bottomModal.current.hide();
+                                        jump(url);
+                                    }}
+                                    style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(56)}]}>
+                                    <Image source={{uri: icon}} style={{width: px(48), height: px(48)}} />
+                                    <Text style={[styles.desc, {marginTop: px(8), color: Colors.defaultColor}]}>
+                                        {name}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </>
+            </BottomModal>
+        </>
+    ) : null;
+});
+
+const Index = ({navigation, setLoading}) => {
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
     const {follow, recommend, tabs, user_info} = data;
-    const [addData, setAddData] = useState({});
-    const {add_icon, btn_list = []} = addData;
     const followRef = useRef();
     const recommendRef = useRef();
-    const bottomModal = useRef();
+    const publishRef = useRef();
 
     const init = () => {
         getPageData()
@@ -525,11 +581,6 @@ const Index = ({navigation, setLoading}) => {
             .finally(() => {
                 setLoading(false);
             });
-        getCanPublishContent().then((res) => {
-            if (res.code === '000000') {
-                setAddData(res.result);
-            }
-        });
     };
 
     useEffect(() => {
@@ -540,9 +591,10 @@ const Index = ({navigation, setLoading}) => {
             } else {
                 recommendRef.current?.refresh?.();
             }
+            publishRef.current?.refresh?.();
         });
         return () => listener();
-    }, []);
+    }, [active]);
 
     useEffect(() => {
         init();
@@ -568,43 +620,7 @@ const Index = ({navigation, setLoading}) => {
                     );
                 })}
             </ScrollableTabView>
-            {Object.keys(addData).length > 0 && (
-                <>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => bottomModal.current.show()}
-                        style={styles.addContent}>
-                        <Image source={{uri: add_icon}} style={styles.addIcon} />
-                    </TouchableOpacity>
-                    <BottomModal header={<View />} ref={bottomModal} style={{minHeight: px(218)}}>
-                        <>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => bottomModal.current.hide()}
-                                style={styles.closeBtn}>
-                                <Image source={close} style={styles.close} />
-                            </TouchableOpacity>
-                            <View style={[Style.flexRowCenter, {paddingTop: px(64)}]}>
-                                {btn_list?.map((item, index) => {
-                                    const {icon, name, url} = item;
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            key={name + index}
-                                            onPress={() => jump(url)}
-                                            style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(56)}]}>
-                                            <Image source={{uri: icon}} style={{width: px(48), height: px(48)}} />
-                                            <Text style={[styles.desc, {marginTop: px(8), color: Colors.defaultColor}]}>
-                                                {name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </View>
-                        </>
-                    </BottomModal>
-                </>
-            )}
+            <PublishContent ref={publishRef} />
         </View>
     ) : null;
 };

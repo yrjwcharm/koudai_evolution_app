@@ -3,19 +3,46 @@
 // //  * @Description:
 // //  */
 import {StyleSheet, Text, View, Animated, ImageBackground, Image, TouchableOpacity} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Style} from '~/common/commonStyle';
-const CommunityHome = ({navigation}) => {
+import {Colors, Font, Style} from '~/common/commonStyle';
+import LinearGradient from 'react-native-linear-gradient';
+import {getCommunityHomeData, getCommunityProductList} from './service';
+import CommunityHomeHeader from '../components/CommunityHomeHeader';
+import Intro from './Intro';
+const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
     const parallaxHeaderHeight = px(130);
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
+    const {community_id = 1} = route?.params || {};
+    const [data, setData] = useState();
+    const [product, setProduct] = useState();
+    const getData = async () => {
+        let res = await getCommunityHomeData({community_id});
+        setData(res.result);
+    };
+    const getProductList = async () => {
+        let res = await getCommunityProductList();
+        setProduct(res.result);
+    };
+    useEffect(() => {
+        getData();
+        getProductList();
+    }, []);
+    const onScroll = (e) => {
+        let y = e.nativeEvent.contentOffset.y;
+        if (y - parallaxHeaderHeight > -px(50)) {
+            setParallTitle(true);
+        } else {
+            setParallTitle(false);
+        }
+    };
     const Header = () => {
         return (
             <Animated.View
@@ -57,56 +84,28 @@ const CommunityHome = ({navigation}) => {
                     {
                         useNativeDriver: false,
                         listener: (e) => {
-                            let y = e.nativeEvent.contentOffset.y;
-                            if (y - parallaxHeaderHeight > -px(50)) {
-                                setParallTitle(true);
-                            } else {
-                                setParallTitle(false);
-                            }
+                            onScroll(e);
                         },
                     }
                 )}>
-                <ImageBackground
-                    source={{
-                        uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/08/yanglao2@3x.jpg',
-                    }}
+                <CommunityHomeHeader
+                    data={data?.community_info}
                     style={{
                         width: deviceWidth,
-                        height: px(220),
                         paddingTop: headerHeight + px(20),
-                        paddingHorizontal: px(20),
-                    }}>
-                    <View style={Style.flexRow}>
-                        <Image
-                            source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png'}}
-                            style={styles.headerAvatar}
-                        />
-                        <View>
-                            <Text style={styles.vName}>马老师</Text>
-                            <View style={Style.flexRow}>
-                                <Image
-                                    source={{
-                                        uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png',
-                                    }}
-                                    style={{width: px(16), height: px(16), borderRadius: px(8), marginRight: px(2)}}
-                                />
-                                <Text style={{fontSize: px(12), lineHeight: px(17), color: '#fff'}}>马老师</Text>
-                            </View>
-                        </View>
-                        <View style={{paddingVertical: px(6), paddingHorizontal: px(14), borderRadius: px(103)}}>
-                            <Text>已关注</Text>
-                        </View>
-                    </View>
-                </ImageBackground>
-                <View style={{marginTop: px(-30), backgroundColor: '#fff'}}>
-                    <Text>
-                        从大明星到小黑马，从权益到债券，从理念到八卦，这群中国最聪明的人，全天候社区带你慢慢了解！
-                    </Text>
-                    <ScrollableTabView renderTabBar={() => <ScrollTabbar />}>
-                        <View style={{height: px(500), backgroundColor: 'red'}} tabLabel="哈哈" pointerEvents="none" />
+                    }}
+                />
+                <LinearGradient
+                    start={{x: 0, y: 0.25}}
+                    end={{x: 0.8, y: 0.8}}
+                    colors={['#fff', Colors.bgColor]}
+                    style={styles.listCon}>
+                    <Intro data={data?.intro_info} />
+                    <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
+                        <View style={{height: px(500)}} tabLabel="哈哈" pointerEvents="none" />
                         <View style={{height: px(1500)}} tabLabel="哈哈11" />
                     </ScrollableTabView>
-                </View>
+                </LinearGradient>
             </Animated.ScrollView>
         </>
     );
@@ -121,13 +120,12 @@ const styles = StyleSheet.create({
         zIndex: 20,
         paddingHorizontal: px(16),
     },
-    headerAvatar: {
-        width: px(66),
-        height: px(66),
-        marginRight: px(12),
-        borderRadius: px(33),
-        borderWidth: px(2),
-        borderColor: '#fff',
+
+    listCon: {
+        borderTopLeftRadius: px(20),
+        borderTopRightRadius: px(20),
+        marginTop: px(-30),
+        paddingTop: px(16),
     },
     vName: {
         fontSize: px(18),

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 14:49:27
+ * @LastEditTime: 2022-10-14 14:20:33
  * @Description:
  */
 
@@ -141,11 +141,18 @@ class ScrollTabbar extends Component {
             </Button>
         );
     };
-
+    CreatCon = (props) => {
+        if (this.props.container == 'view') {
+            return <View {...props} />;
+        }
+        return <ScrollView {...props} />;
+    };
     render() {
+        let Con = this.props.container == 'View' ? View : ScrollView;
+
         return (
             <View style={[styles.tabBarBox, this.props.boxStyle]}>
-                <ScrollView
+                <Con
                     bounces={false}
                     ref={(ref) => (this._scrollTabBarView = ref)}
                     horizontal
@@ -160,7 +167,7 @@ class ScrollTabbar extends Component {
                         })}
                         {this._renderUnderline()}
                     </View>
-                </ScrollView>
+                </Con>
             </View>
         );
     }
