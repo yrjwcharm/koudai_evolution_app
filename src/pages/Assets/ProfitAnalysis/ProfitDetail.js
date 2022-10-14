@@ -12,7 +12,6 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
-import FastImage from 'react-native-fast-image';
 const ProfitDetail = ({navigation, route}) => {
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
@@ -23,8 +22,10 @@ const ProfitDetail = ({navigation, route}) => {
     const initData = async () => {
         const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
         if (res[0].code == '000000') {
-            setTabs(res[0].result?.tabs);
-            setHeadData(res[0].result?.header);
+            const {title = '收益明细', tabs = [], header = {}} = res[0].result || {};
+            setTabs(tabs);
+            setHeadData(header);
+            navigation.setOptions({title});
         }
         if (res[1].code == '000000') {
             const {title = '更新说明', declare_pic = ''} = res[1].result || {};
