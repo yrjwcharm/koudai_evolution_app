@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-11 18:33:18
+ * @LastEditTime: 2022-10-14 18:45:25
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -13,9 +13,11 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
 import RenderHtml from '~/components/RenderHtml';
+
 import Toast from '~/components/Toast';
 import {debounce} from 'lodash';
-const SearchContent = ({data}) => {
+
+const SearchContent = ({data, type}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const onFavor = useCallback(
@@ -23,11 +25,11 @@ const SearchContent = ({data}) => {
             () => {
                 setFavor((_favor) => {
                     if (_favor) {
-                        followCancel({item_id: data.code, item_type: data.item_type || 1}).then((res) => {
+                        followCancel({item_id: data.code_id, item_type: data.item_type || 1}).then((res) => {
                             res.message && Toast.show(res.message);
                         });
                     } else {
-                        followAdd({item_id: data.code, item_type: data.item_type || 1}).then((res) => {
+                        followAdd({item_id: data.code_id, item_type: data.item_type || 1}).then((res) => {
                             res.message && Toast.show(res.message);
                         });
                     }
@@ -39,7 +41,8 @@ const SearchContent = ({data}) => {
         ),
         []
     );
-    return (
+
+    return type != 'content' ? (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
@@ -64,6 +67,23 @@ const SearchContent = ({data}) => {
                         {favor ? '已自选' : '+自选'}
                     </Text>
                 </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+    ) : (
+        // 内容
+        <TouchableOpacity style={styles.con} onPress={() => jump(data.url)} activeOpacity={0.9}>
+            <RenderHtml html={data?.title} style={styles.title} />
+            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                <View style={Style.flexRow}>
+                    {data?.tag_list?.map((text, index) => {
+                        return (
+                            <View key={index} style={styles.tagBox}>
+                                <Text style={{fontSize: px(12), color: Colors.btnColor}}>{text}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
+                <Text style={styles.rateDesc}>{data?.published_at}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -102,5 +122,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(14),
         borderWidth: Space.borderWidth,
         borderRadius: px(103),
+    },
+    tagBox: {
+        marginRight: px(2),
+        paddingVertical: px(4),
+        paddingHorizontal: px(10),
+        borderRadius: px(2),
+        backgroundColor: '#F1F6FF',
     },
 });

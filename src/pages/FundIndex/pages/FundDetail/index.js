@@ -229,7 +229,6 @@ const Index = ({navigation, route}) => {
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 

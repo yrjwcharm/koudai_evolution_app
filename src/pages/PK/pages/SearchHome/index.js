@@ -16,6 +16,7 @@ import HotFundCard from './HotFundCard';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
 import EmptyTip from '~/components/EmptyTip';
+import HotContent from './HotContent';
 const Index = () => {
     const [data, setData] = useState({});
     const {keyword_history = []} = data;
@@ -117,7 +118,7 @@ const Index = () => {
                                         </Text>
                                     ) : null}
                                     {item?.list?.map((_list, index) => (
-                                        <SearchContent data={_list} key={index} />
+                                        <SearchContent data={_list} key={index} type={item?.type} />
                                     ))}
                                 </View>
                             ))}
@@ -186,6 +187,8 @@ const Index = () => {
                                 data={data?.hot_fund}
                             />
                         ) : null}
+                        {/* 热门内容 */}
+                        {data?.hot_content ? <HotContent style={{marginTop: px(16)}} data={data?.hot_content} /> : null}
                     </>
                 )}
             </ScrollView>

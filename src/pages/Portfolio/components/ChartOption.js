@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-02-05 14:32:45
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-08 17:30:42
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -322,7 +319,8 @@ export const areaChart = (
     height = text(220),
     alias = {},
     percent = false,
-    tofixed = 2
+    tofixed = 2,
+    appendPadding = []
 ) => `
 (function(){
 chart = new F2.Chart({
@@ -330,6 +328,7 @@ chart = new F2.Chart({
   pixelRatio: window.devicePixelRatio,
   padding: [56, 'auto', 'auto'],
   width: ${width},
+  appendPadding: ${JSON.stringify(appendPadding)},
   height: ${height}
 });
 chart.source(${JSON.stringify(data)});
@@ -342,7 +341,7 @@ chart.scale({
   value: {
     alias: '${alias.value || ''}',
     tickCount: 5,
-    range: [ 0, 1 ],
+    range: [ 0, 1],
     formatter: (value) => {
       return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value'};
     }
@@ -627,13 +626,17 @@ export const dodgeColumn = (
         '#8683C9',
         '#EBDD69',
     ],
-    width = deviceWidth,
-    appendPadding = [15, 15, 25],
-    size = 10,
-    marginRatio = 0,
-    showGuide = false,
-    showTooltip = true,
-    profitMode = false // 收益模式 根据正负显示红色和绿色
+    //修改成参数默认值形式，方便传某个参数，其他直接赋予默认值
+    {
+        width = deviceWidth,
+        appendPadding = [15, 15, 25],
+        size = 10,
+        marginRatio = 0,
+        showGuide = false,
+        showTooltip = true,
+        profitMode = false,
+        percent = true,
+    } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
 chart = new F2.Chart({
@@ -647,7 +650,7 @@ chart.source(${JSON.stringify(data)}, {
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
-      return (val * 100).toFixed(2) + '%';
+      return ${percent ? '(val * 100).toFixed(2) + "%"' : 'val.toFixed(2)'};
     },
   }
 });
@@ -663,7 +666,7 @@ chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
-    cfg.text = number.toFixed(2) + "%";
+    cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number.toFixed(2)'};
     cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
@@ -706,7 +709,7 @@ if (${showGuide}) {
       attrs: {
         x: point.x + (obj.type === '上证指数' ? 13 : -12),
         y: point.y + (obj.value > 0 ? -5 : 15),
-        text: (obj.value * 100).toFixed(2) + '%',
+        text: ${percent ? '(obj.value * 100).toFixed(2) + "%"' : 'obj.value.toFixed(2)'},
         textAlign: 'center',
         textBaseline: 'bottom',
         fill: '#545968',

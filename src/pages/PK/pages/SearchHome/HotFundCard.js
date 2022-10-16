@@ -20,8 +20,8 @@ const HotFundCard = ({data, style, plateid}) => {
                 colors={['#FFF0EE', '#FFFFFF']}>
                 <View style={Style.flexBetween}>
                     <View style={Style.flexRow}>
-                        <Image source={{uri: data?.icon}} style={{marginRight: px(2), width: px(68), height: px(19)}} />
-                        <Text style={{color: '#3D3D3D', fontSize: px(12)}}>{data?.desc}</Text>
+                        <Image source={{uri: data?.icon}} style={{marginRight: px(4), width: px(68), height: px(19)}} />
+                        <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{data?.desc}</Text>
                     </View>
                     <Image
                         source={require('~/assets/img/attention/hotFund.png')}

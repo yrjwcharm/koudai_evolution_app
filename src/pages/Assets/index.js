@@ -113,6 +113,7 @@ function HomeScreen({navigation}) {
 
         http.get('/asset/holding/20210101').then((res) => {
             if (res.code === '000000') {
+                // debugger;
                 setHoldingData(res.result);
             }
         });
