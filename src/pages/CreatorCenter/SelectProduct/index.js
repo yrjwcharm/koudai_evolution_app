@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 
 const page_size = 10;
 const allNum = 100;
-const AddProduct = ({route}) => {
+const SelectProduct = ({route}) => {
     const {selections} = useSelector((state) => state.selectProduct);
     const [data, setData] = useState();
     const [list, setList] = useState([]);
@@ -179,7 +179,7 @@ const AddProduct = ({route}) => {
     );
 };
 
-export default AddProduct;
+export default SelectProduct;
 
 const styles = StyleSheet.create({
     container: {

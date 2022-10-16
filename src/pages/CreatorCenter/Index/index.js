@@ -154,7 +154,7 @@ const CreatorCenterIndex = () => {
                                                 // });
                                                 // jump({path: 'AddProductStep1', params: {subject_id: 111}});
                                                 jump({
-                                                    path: 'AddProduct',
+                                                    path: 'EditSpecialCardInfo',
                                                     params: {
                                                         maxNum: 6,
                                                         selectType: 1,
