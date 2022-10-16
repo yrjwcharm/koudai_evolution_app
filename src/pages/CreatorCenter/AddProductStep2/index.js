@@ -100,6 +100,12 @@ const AddProductStep2 = ({navigation, route}) => {
                     let newVal = cloneDeep(val);
                     let products = newVal.categories.find((item) => item.id === option.category_id);
                     let obj = products.find((item) => item.id === option.id);
+                    // 如果style_id被更改了，则更新当前分类所有style_id
+                    if (obj.style_id !== option.style_id) {
+                        products.forEach((prd) => {
+                            prd.style_id = option.style_id;
+                        });
+                    }
                     for (let key in obj) {
                         obj[key] = option[key];
                     }
@@ -116,9 +122,15 @@ const AddProductStep2 = ({navigation, route}) => {
                 });
             } else {
                 setData((val) => {
-                    // 更新原始map的当前产品
+                    // 更新原始map的当前的产品
                     let newVal = cloneDeep(val);
                     let obj = newVal.products.find((item) => item.id === option.id);
+                    // 如果style_id被更改了，则更新当前列表所有style_id
+                    if (obj.style_id !== option.style_id) {
+                        newVal.products.forEach((prd) => {
+                            prd.style_id = option.style_id;
+                        });
+                    }
                     for (let key in obj) {
                         obj[key] = option[key];
                     }

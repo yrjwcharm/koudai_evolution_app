@@ -283,6 +283,7 @@ import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/Specia
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
+import AddProduct from '~/pages/CreatorCenter/AddProduct'; // 添加产品
 
 const Stack = createStackNavigator();
 
@@ -1117,6 +1118,7 @@ export default function AppStack() {
                 <Stack.Screen name="SpecialSubmitCheck" component={SpecialSubmitCheck} options={{headerShown: false}} />
                 <Stack.Screen name="SpecialModifyEntry" component={SpecialModifyEntry} options={{headerShown: false}} />
                 <Stack.Screen name="EditProduct" component={EditProduct} options={{title: ''}} />
+                <Stack.Screen name="AddProduct" component={AddProduct} options={{title: '添加产品'}} />
             </Stack.Navigator>
         </>
     );
