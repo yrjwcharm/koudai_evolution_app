@@ -10,69 +10,71 @@ import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {px} from '../../../../utils/appUtil';
 
-const ChartHeader = ({selCalendarType, selBarChartType, isCalendar, isBarChart, subMonth, addMonth, date}) => {
-    return (
-        <View style={Style.flexBetween}>
-            <View style={[styles.chartLeft, {}]}>
-                <TouchableOpacity onPress={selCalendarType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isCalendar && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            日历图
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={selBarChartType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isBarChart && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            柱状图
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+const ChartHeader = React.memo(
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, subMonth, addMonth, date}) => {
+        return (
+            <View style={Style.flexBetween}>
+                <View style={[styles.chartLeft, {}]}>
+                    <TouchableOpacity onPress={selCalendarType}>
+                        <View
+                            style={[
+                                Style.flexCenter,
+                                styles.selChartType,
+                                isCalendar && {
+                                    backgroundColor: Colors.white,
+                                    width: px(60),
+                                },
+                            ]}>
+                            <Text
+                                style={{
+                                    color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
+                                    fontSize: px(12),
+                                    fontFamily: Font.pingFangRegular,
+                                }}>
+                                日历图
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={selBarChartType}>
+                        <View
+                            style={[
+                                Style.flexCenter,
+                                styles.selChartType,
+                                isBarChart && {
+                                    backgroundColor: Colors.white,
+                                    width: px(60),
+                                },
+                            ]}>
+                            <Text
+                                style={{
+                                    color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
+                                    fontSize: px(12),
+                                    fontFamily: Font.pingFangRegular,
+                                }}>
+                                柱状图
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.selMonth}>
+                    <TouchableOpacity onPress={subMonth}>
+                        <Image
+                            style={{width: px(13), height: px(13)}}
+                            source={require('../../../../assets/img/icon/prev.png')}
+                        />
+                    </TouchableOpacity>
+                    <Text style={styles.MMText}>{date}</Text>
+                    <TouchableOpacity onPress={addMonth}>
+                        <Image
+                            style={{width: px(13), height: px(13)}}
+                            source={require('../../../../assets/img/icon/next.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={styles.selMonth}>
-                <TouchableOpacity onPress={subMonth}>
-                    <Image
-                        style={{width: px(13), height: px(13)}}
-                        source={require('../../../../assets/img/icon/prev.png')}
-                    />
-                </TouchableOpacity>
-                <Text style={styles.MMText}>{date}</Text>
-                <TouchableOpacity onPress={addMonth}>
-                    <Image
-                        style={{width: px(13), height: px(13)}}
-                        source={require('../../../../assets/img/icon/next.png')}
-                    />
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
-};
+        );
+    }
+);
 
 ChartHeader.propTypes = {
     selCalendarType: PropTypes.func,

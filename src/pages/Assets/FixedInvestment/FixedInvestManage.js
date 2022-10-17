@@ -5,17 +5,37 @@
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
-import RenderItem from './components/RenderItem';
 import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
+import {useDispatch, useSelector} from 'react-redux';
+import RenderItem from './components/RenderItem';
+import Empty from '../../../components/EmptyTip';
+import {BoxShadow} from 'react-native-shadow';
+const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
+const shadow = {
+    color: '#aaa',
+    border: 6,
+    radius: 1,
+    opacity: 0.102,
+    x: 0,
+    y: 1,
+    style: {
+        position: 'relative',
+        left: px(16),
+    },
+};
 const FixedInvestManage = ({navigation, route}) => {
+    const dispatch = useDispatch();
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [emptyMsg, setEmptyMsg] = useState('');
+    const response = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [times, setTimes] = useState('');
     const [sum, setSum] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
@@ -27,13 +47,13 @@ const FixedInvestManage = ({navigation, route}) => {
     const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);
     useEffect(() => {
-        const initData = async (unitType) => {
+        (async () => {
+            dispatch(callTerminatedFixedApi({}));
             const res = await Promise.all([
                 callFixedHeadDataApi({}),
                 callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
-                callTerminatedFixedApi({}),
             ]);
-            if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
+            if (res[0].code === '000000' && res[1].code === '000000' && response.code === '000000') {
                 const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
                 navigation.setOptions({title});
                 let tabList = tabs.map((el, index) => {
@@ -43,13 +63,11 @@ const FixedInvestManage = ({navigation, route}) => {
                 setHeadList(head_list);
                 setDetail(detail);
                 setData(res[1].result);
-                setTerminatedCount(res[2].result?.data_list?.length);
+                setTerminatedCount(response.result?.data_list.length);
                 setLoading(false);
             }
-        };
-        initData(unitType);
+        })();
     }, [unitType, times, sum]);
-
     const selTab = (item) => {
         setUnitType(item.type);
         tabList.map((_item) => {
@@ -60,6 +78,9 @@ const FixedInvestManage = ({navigation, route}) => {
         });
         setTabList([...tabList]);
     };
+    const renderEmpty = useCallback(() => {
+        return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
+    }, [emptyMsg, showEmpty]);
     const sumSort = useCallback(() => {
         setTimes('');
         sum == 'desc' ? setSum('asc') : setSum('desc');
@@ -68,6 +89,23 @@ const FixedInvestManage = ({navigation, route}) => {
         setSum('');
         times == 'asc' ? setTimes('desc') : setTimes('asc');
     }, [times]);
+    const EmptyData = () => {
+        return (
+            <View style={{marginTop: px(12)}}>
+                <BoxShadow
+                    setting={{
+                        ...shadow,
+                        width: deviceWidth - px(32),
+                        height: px(211),
+                    }}>
+                    <View style={styles.emptyView}>
+                        <Image source={image} style={styles.emptyImg} />
+                        <Text style={styles.emptyText}>暂无数据</Text>
+                    </View>
+                </BoxShadow>
+            </View>
+        );
+    };
     return (
         <>
             {loading ? (
@@ -156,14 +194,19 @@ const FixedInvestManage = ({navigation, route}) => {
                         sortByIssue={issueSort}
                         sortBySum={sumSort}
                     />
-                    <>
-                        <RenderItem navigation={navigation} dataList={data.data_list ?? []} />
-                    </>
+                    <FlatList
+                        windowSize={300}
+                        data={data.dataList || []}
+                        initialNumToRender={20}
+                        keyExtractor={(item, index) => item + index}
+                        ListEmptyComponent={<EmptyData />}
+                        onEndReachedThreshold={0.5}
+                        refreshing={false}
+                        renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
+                    />
                     {terminatedCount !== 0 && (
-                        <TouchableOpacity
-                            style={{marginTop: px(20)}}
-                            onPress={() => navigation.navigate('TerminatedInvest')}>
-                            <View style={{...Style.flexCenter}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
+                            <View style={{alignItems: 'center'}}>
                                 <View style={Style.flexRow}>
                                     <Text style={styles.termintal}>查看已终止的定投({terminatedCount})</Text>
                                     <Image source={require('./assets/more.png')} />
@@ -171,6 +214,7 @@ const FixedInvestManage = ({navigation, route}) => {
                             </View>
                         </TouchableOpacity>
                     )}
+
                     <BottomDesc />
                     {Object.keys(data).length > 0 ? <FixedButton title="新建定投" onPress={() => {}} /> : null}
                 </View>
@@ -183,6 +227,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    emptyView: {
+        backgroundColor: Colors.white,
+        ...Style.flexCenter,
+        height: px(211),
+        borderRadius: px(6),
+    },
+    emptyImg: {
+        height: px(96),
+        width: px(120),
+    },
+    emptyText: {
+        marginTop: px(15),
+        fontSize: px(13),
+        fontFamily: Font.pingFangRegular,
+        fontWeight: 'normal',
+        color: Colors.lightGrayColor,
     },
     emptyInvest: {
         marginLeft: px(16),

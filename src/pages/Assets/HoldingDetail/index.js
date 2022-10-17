@@ -324,9 +324,7 @@ const ChartTabs = ({tabs = []}) => {
                                                     activeOpacity={0.8}
                                                     onPress={() => jump(url)}
                                                     style={[Style.flexBetween, {paddingVertical: px(12)}]}>
-                                                    <Text
-                                                        numberOfLines={1}
-                                                        style={[styles.desc, {marginRight: px(30)}]}>
+                                                    <Text numberOfLines={1} style={[styles.desc, {maxWidth: px(226)}]}>
                                                         {noticeTitle}
                                                     </Text>
                                                     <Text style={styles.publishAt}>{publish_at}</Text>

@@ -19,52 +19,57 @@ const YearProfit = ({type}) => {
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
-    useEffect(() => {
-        initData(selCurYear);
-    }, []);
-    const initData = async (curYear) => {
-        let startYear = dayjs().year() - 5;
-        let endYear = dayjs().year();
-        let arr = [];
-        for (let i = startYear; i < endYear; i++) {
-            arr.push({
-                day: i + 1,
-                profit: '0.00',
-            });
-        }
-        const res = await getChartData({type, unit_type: 'year'});
-        if (res.code === '000000') {
-            const {profit_data_list = []} = res.result ?? {};
-            let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-            let barCharData = profit_data_list
-                .map((el) => {
-                    return {date: el.unit_key + '年', value: parseFloat(el.value)};
-                })
-                .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-            setChart({
-                label: [
-                    {name: '时间', val: profit_data_list[index]?.unit_key},
-                    {name: '收益', val: profit_data_list[index]?.value},
-                ],
-                chart: barCharData,
-            });
-            for (let i = 0; i < arr.length; i++) {
-                for (let j = 0; j < profit_data_list.length; j++) {
-                    if (arr[i].day == profit_data_list[j].unit_key) {
-                        arr[i].profit = profit_data_list[j].value;
-                    }
+    const init = useCallback(
+        (curYear) => {
+            (async () => {
+                let startYear = dayjs().year() - 5;
+                let endYear = dayjs().year();
+                let arr = [];
+                for (let i = startYear; i < endYear; i++) {
+                    arr.push({
+                        day: i + 1,
+                        profit: '0.00',
+                    });
                 }
-            }
+                const res = await getChartData({type, unit_type: 'year'});
+                if (res.code === '000000') {
+                    const {profit_data_list = []} = res.result ?? {};
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+                    let barCharData = profit_data_list
+                        .map((el) => {
+                            return {date: el.unit_key + '年', value: parseFloat(el.value)};
+                        })
+                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                    setChart({
+                        label: [
+                            {name: '时间', val: profit_data_list[index]?.unit_key},
+                            {name: '收益', val: profit_data_list[index]?.value},
+                        ],
+                        chart: barCharData,
+                    });
+                    for (let i = 0; i < arr.length; i++) {
+                        for (let j = 0; j < profit_data_list.length; j++) {
+                            if (arr[i].day == profit_data_list[j].unit_key) {
+                                arr[i].profit = profit_data_list[j].value;
+                            }
+                        }
+                    }
 
-            // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-            let zIndex = arr.findIndex((el) => el.day == curYear);
-            arr[zIndex] && (arr[zIndex].checked = true);
-            setDateArr([...arr]);
-        }
-    };
+                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                    let zIndex = arr.findIndex((el) => el.day == curYear);
+                    arr[zIndex] && (arr[zIndex].checked = true);
+                    setDateArr([...arr]);
+                }
+            })();
+        },
+        [type]
+    );
+    useEffect(() => {
+        init(selCurYear);
+    }, [init]);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
-        initData(item.day);
+        init(item.day);
     };
     const selCalendarType = () => {
         setIsCalendar(true);
@@ -74,47 +79,6 @@ const YearProfit = ({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     };
-    const init = useCallback(() => {
-        // http.get('/profit/month_ratio/20210101', {fund_code: '', poid: 'X00F000003'}).then((res) => {
-        //     setShowEmpty(true);
-        //     if (res.code === '000000') {
-        //         setChart(res.result);
-        //     }
-        // });
-        let res = {
-            code: '000000',
-            message: 'success',
-            result: {
-                label: [
-                    {name: '时间', val: '2022'},
-                    {name: '我的组合', val: '-0.05%'},
-                ],
-                chart: [
-                    {date: '2018', value: 0.0362, type: '我的组合'},
-                    {date: '2019', value: 0.0707, type: '我的组合'},
-                    {date: '2020', value: -0.0188, type: '我的组合'},
-                    {date: '2021', value: -0.0247, type: '我的组合'},
-                    {date: '2022', value: -0.0585, type: '我的组合'},
-                ],
-                tips: {
-                    title: '比较基准',
-                    content: [
-                        {key: '比较基准', val: '上证指数'},
-                        {
-                            key: '什么是比较基准',
-                            val:
-                                '全天候组合中股票类资产的比较基准是上证指数 , 债券类资产的比较基准是中证全债 , 根据配置不同比例的两类资产来作为比较基准',
-                        },
-                    ],
-                },
-            },
-            traceId: '171cb96d48067057171cb96d480432d0',
-        };
-        setChart(res.result);
-    }, []);
-    useEffect(() => {
-        init();
-    }, []);
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft, {}]}>
@@ -132,7 +96,7 @@ const YearProfit = ({type}) => {
                             style={{
                                 color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.numRegular,
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             日历图
                         </Text>
@@ -152,7 +116,7 @@ const YearProfit = ({type}) => {
                             style={{
                                 color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
                                 fontSize: px(12),
-                                fontFamily: Font.numRegular,
+                                fontFamily: Font.pingFangRegular,
                             }}>
                             柱状图
                         </Text>

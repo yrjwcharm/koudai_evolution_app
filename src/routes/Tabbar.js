@@ -9,7 +9,7 @@ import {px, isIphoneX} from '../utils/appUtil';
 // import Index from '../pages/MofangIndex'; //魔方首页
 import Product from '../pages/Product/Index';
 import Vision from '../pages/Vision/Vision'; //视野
-import Community from '../pages/Community/Index'; // 社区首页
+import Community from '../pages/Community/CommunityIndex'; // 社区首页
 import NewHome from '../pages/Assets/Asset/Asset'; //资产页
 import CreatorCenter from '../pages/CreatorCenter/Index'; //管理中心
 import {Colors} from '../common/commonStyle';

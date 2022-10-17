@@ -17,7 +17,7 @@ import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 
-const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
+const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
     const isMounted = useIsMounted();
     const insets = useSafeAreaInsets();
     const [list, setList] = useState([]);
@@ -192,7 +192,7 @@ const AccEarningsCom = ({fund_code = '', intelligent, poid = ''}) => {
             ) : null}
         </>
     );
-};
+});
 
 AccEarningsCom.propTypes = {
     fund_code: PropTypes.string,

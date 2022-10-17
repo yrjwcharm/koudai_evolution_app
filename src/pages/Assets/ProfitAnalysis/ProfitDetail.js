@@ -12,44 +12,52 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
+import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
+    const {fund_code = '', poid = ''} = route?.params;
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
+    const dispatch = useDispatch();
     const [type, setType] = useState(200);
-    const initData = async () => {
-        const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
-        if (res[0].code === '000000') {
-            const {title = '', tabs = [], header = {}} = res[0].result || {};
-            setTabs(tabs);
-            setHeadData(header);
-            navigation.setOptions({title});
-        }
-        if (res[1].code === '000000') {
-            const {title = '', declare_pic = ''} = res[1].result || {};
-            setDeclarePic(declare_pic);
-            setTitle(title);
-            navigation.setOptions({
-                headerRight: () => (
-                    <>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[styles.topRightBtn, Style.flexCenter]}
-                            onPress={() => {
-                                bottomModal.current.show();
-                            }}>
-                            <Text style={styles.title}>收益更新说明</Text>
-                        </TouchableOpacity>
-                    </>
-                ),
-            });
-        }
-    };
     useEffect(() => {
-        initData();
+        dispatch({type: 'updateType', payload: 200});
+    }, [route]);
+    const init = useCallback(() => {
+        (async () => {
+            const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
+            if (res[0].code === '000000') {
+                const {title = '', tabs = [], header = {}} = res[0].result || {};
+                setTabs(tabs);
+                setHeadData(header);
+                navigation.setOptions({title});
+            }
+            if (res[1].code === '000000') {
+                const {title = '', declare_pic = ''} = res[1].result || {};
+                setDeclarePic(declare_pic);
+                setTitle(title);
+                navigation.setOptions({
+                    headerRight: () => (
+                        <>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.topRightBtn, Style.flexCenter]}
+                                onPress={() => {
+                                    bottomModal.current.show();
+                                }}>
+                                <Text style={styles.title}>{title}</Text>
+                            </TouchableOpacity>
+                        </>
+                    ),
+                });
+            }
+        })();
     }, [type]);
+    useEffect(() => {
+        init();
+    }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
@@ -61,6 +69,7 @@ const ProfitDetail = ({navigation, route}) => {
                     initialPage={0}
                     onChangeTab={({i}) => {
                         setType(tabs[i].type);
+                        dispatch({type: 'updateType', payload: tabs[i].type});
                     }}>
                     {tabs.map((el, index) => {
                         return (

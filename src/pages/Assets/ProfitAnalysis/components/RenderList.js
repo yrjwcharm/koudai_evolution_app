@@ -4,7 +4,7 @@
  * @Description:列表渲染封装
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
@@ -12,26 +12,31 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useIsMounted} from '../../../../components/hooks/useIsMounted';
-
-const RenderList = ({type}) => {
+import {useSelector} from 'react-redux';
+import sortUp from '~/assets/img/attention/sortUp.png';
+import sortDown from '~/assets/img/attention/sortDown.png';
+const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
     const [sort, setSort] = useState('desc');
+    const type = useSelector((state) => state.profitDetail.type);
     const [headerList, setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
-    const getProfitDetailData = async () => {
-        const res = await getProfitDetail({type, sort});
-        if (res.code === '000000') {
-            if (isMounted.current) {
-                // 判断当前组件有没有被卸载
-                const {head_list = [], data_list = []} = res.result || {};
-                setHeaderList(head_list);
-                setProfitList(data_list);
+    const init = useCallback(() => {
+        (async () => {
+            const res = await getProfitDetail({type, sort});
+            if (res.code === '000000') {
+                if (isMounted.current) {
+                    const {head_list = [], data_list = []} = res.result || {};
+                    setHeaderList(head_list);
+                    setProfitList(data_list);
+                }
             }
-        }
-    };
-    useEffect(() => {
-        getProfitDetailData();
+        })();
     }, [type, sort]);
+
+    useEffect(() => {
+        init();
+    }, [init]);
     const sortRenderList = useCallback(() => {
         if (sort == 'desc') {
             setSort('asc');
@@ -49,39 +54,48 @@ const RenderList = ({type}) => {
                 <TouchableOpacity onPress={sortRenderList}>
                     <View style={styles.profitHeaderRight}>
                         <Text style={styles.moneyText}>{headerList[1]?.text}</Text>
-                        <Image source={require('../../../../assets/img/icon/sort.png')} />
+                        <Image style={{width: px(12), height: px(12)}} source={sort == 'desc' ? sortDown : sortUp} />
                     </View>
                 </TouchableOpacity>
             </View>
-            {profitList.map((item, index) => {
-                let color =
-                    delMille(item.profit) > 0
-                        ? Colors.red
-                        : delMille(item.profit) < 0
-                        ? Colors.green
-                        : Colors.lightGrayColor;
-                return (
-                    <View style={styles.listRow} key={item + '' + index}>
-                        <View style={styles.typeView}>
-                            <View style={styles.typeWrap}>
-                                <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
-                                    {item.type}
-                                </Text>
-                            </View>
-                            <Text style={styles.title}>{item.text}</Text>
-                            {item.tag ? (
-                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(6)}}>
-                                    <Text style={styles.tag}>{item.tag}</Text>
+            {useMemo(
+                () =>
+                    profitList.map((item, index) => {
+                        let color =
+                            delMille(item.profit) > 0
+                                ? Colors.red
+                                : delMille(item.profit) < 0
+                                ? Colors.green
+                                : Colors.lightGrayColor;
+                        return (
+                            <View style={styles.listRow} key={item + '' + index}>
+                                <View style={styles.typeView}>
+                                    <View style={styles.typeWrap}>
+                                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
+                                            {item.type}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.title}>{item.text}</Text>
+                                    {item.tag ? (
+                                        <View
+                                            style={{
+                                                borderRadius: text(2),
+                                                backgroundColor: '#EFF5FF',
+                                                marginLeft: text(6),
+                                            }}>
+                                            <Text style={styles.tag}>{item.tag}</Text>
+                                        </View>
+                                    ) : null}
                                 </View>
-                            ) : null}
-                        </View>
-                        <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
-                    </View>
-                );
-            })}
+                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+                            </View>
+                        );
+                    }),
+                [profitList]
+            )}
         </>
     );
-};
+});
 
 RenderList.propTypes = {
     data: PropTypes.array,

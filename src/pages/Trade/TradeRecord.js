@@ -31,6 +31,7 @@ const TradeRecord = ({route, navigation}) => {
     const isMfb = fr == 'mfb';
     const scrollTab = useRef();
     const tradeType = useRef([0, -35, 4, -2, -1, 6, 7]);
+    const assetClassType = useRef(route.params.platform_class);
     const mfbType = useRef([0, 1, 2]);
     const getData = useCallback(
         (_page, toast) => {
@@ -38,6 +39,7 @@ const TradeRecord = ({route, navigation}) => {
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
                 type: isMfb ? mfbType.current[tabActive] : tradeType.current[tabActive],
+                platform_class: assetClassType.current,
                 page: Page,
                 poid,
                 prod_code,

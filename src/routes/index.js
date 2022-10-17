@@ -568,11 +568,7 @@ export default function AppStack() {
                     options={{title: '修改定投'}}
                 />
 
-                <Stack.Screen
-                    name="AutomaticInvestDetail"
-                    component={FixedInvestDetail}
-                    options={{title: '定投详情'}}
-                />
+                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: '定投详情'}} />
                 <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
@@ -1082,7 +1078,7 @@ export default function AppStack() {
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
                 <Stack.Screen name="ProductMoreMenu" component={ProductMoreMenu} options={{title: ''}} />
-                <Stack.Screen name="CommunityHome" component={CommunityHome} />
+                <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: false}} />
                 <Stack.Screen
                     name="CommunityPersonalHome"
                     component={CommunityPersonalHome}

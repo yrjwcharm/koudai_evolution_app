@@ -25,7 +25,7 @@ const shadow = {
         left: px(16),
     },
 };
-const InvestHeader = ({headList, times, sum, sortByIssue, sortBySum}) => {
+const InvestHeader = React.memo(({headList, times, sum, sortByIssue, sortBySum}) => {
     const icon1 = times == 'asc' ? sortUp : times == 'desc' ? sortDown : sort;
     const icon2 = sum == 'asc' ? sortUp : sum == 'desc' ? sortDown : sort;
 
@@ -51,7 +51,7 @@ const InvestHeader = ({headList, times, sum, sortByIssue, sortBySum}) => {
             </View>
         </BoxShadow>
     );
-};
+});
 
 InvestHeader.propTypes = {
     headList: PropTypes.array,
