@@ -16,7 +16,7 @@ const uploadDone = ({id, media_duration = 0, status}) => {
 /**
  * @name ali-oss上传文件
  * @param file 上传的文件
- * @returns Promise 成功返回链接 失败返回false
+ * @returns Promise 成功返回链接和id 失败返回false
  *  */
 export const upload = async (file) => {
     const loading = Toast.showLoading('上传中...');
@@ -26,12 +26,12 @@ export const upload = async (file) => {
         const {AccessKeyId, AccessKeySecret, SecurityToken} = credentials;
         AliyunOSS.initWithSecurityToken(SecurityToken, AccessKeyId, AccessKeySecret, domain.split(`${bucket}.`)[1]);
         const uploadRes = await AliyunOSS.asyncUpload(bucket, fullpath, file.uri);
-        if (uploadRes === 'UploadSuccess') {
+        if (uploadRes?.includes?.('UploadSuccess') || uploadRes?.includes?.('completed = YES')) {
             const doneRes = await uploadDone({id, media_duration: file.duration, status: 1});
             if (doneRes?.code === '000000') {
                 Toast.hide(loading);
                 Toast.show('上传成功');
-                return doneRes.result.url;
+                return doneRes.result;
             } else {
                 Toast.hide(loading);
                 Toast.show('上传失败');

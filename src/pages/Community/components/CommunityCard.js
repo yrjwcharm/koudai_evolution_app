@@ -76,11 +76,13 @@ export const CommunityCardCover = ({
             {media_duration || type_str ? (
                 <View style={[Style.flexRow, styles.durationBox]}>
                     {media_duration ? (
-                        type === 2 ? (
-                            <Feather color="#fff" name="headphones" size={px(8)} />
-                        ) : (
-                            <FontAwesome5 color="#fff" name="play" size={px(8)} />
-                        )
+                        <View style={{marginRight: px(4)}}>
+                            {type === 2 ? (
+                                <Feather color="#fff" name="headphones" size={px(5)} />
+                            ) : (
+                                <FontAwesome5 color="#fff" name="play" size={px(5)} />
+                            )}
+                        </View>
                     ) : null}
                     <Text style={media_duration ? [styles.numDesc, {fontFamily: Font.numRegular}] : styles.numDesc}>
                         {media_duration || type_str}

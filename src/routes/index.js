@@ -300,6 +300,9 @@ import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
 import EditSpecialCardInfo from '~/pages/CreatorCenter/EditSpecialCardInfo';
 import SpecialCardStylePreview from '~/pages/CreatorCenter/SpecialCardStylePreview';
 import SpecialExamine from '~/pages/CreatorCenter/SpecialExamine'; // 专题审核
+import CommunityInfoCreate from '~/pages/Community/CommunityInfoCreate'; // 创建社区
+import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑社区资料
+import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
 
 const Stack = createStackNavigator();
 
@@ -1195,6 +1198,17 @@ export default function AppStack() {
                     name="SpecialModifyProductItem"
                     component={SpecialModifyProductItem}
                     options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="CommunityInfoCreate"
+                    component={CommunityInfoCreate}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen name="CommunityInfoEdit" component={CommunityInfoEdit} options={{title: ''}} />
+                <Stack.Screen
+                    name="CommunityArticleSubmitCheck"
+                    component={CommunityArticleSubmitCheck}
+                    options={{title: ''}}
                 />
             </Stack.Navigator>
         </>
