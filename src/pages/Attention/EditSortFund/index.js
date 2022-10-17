@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-10 18:04:46
+ * @LastEditTime: 2022-10-17 15:35:03
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -10,9 +10,7 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import {Colors, Style} from '~/common/commonStyle';
 import {isIphoneX, px} from '~/utils/appUtil';
-import Entypo from 'react-native-vector-icons/Entypo';
 import {changeSort, getList, handleCancle} from './services';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
 import FastImage from 'react-native-fast-image';
@@ -162,7 +160,14 @@ export default function EditSortFund({navigation, route}) {
             </View>
             <View style={{...Style.flexBetween, ...styles.footer}}>
                 <TouchableOpacity onPress={toggleAll} style={[Style.flexRow]}>
-                    <AntDesign name={'checkcircle'} size={px(16)} color={check == 2 ? Colors.btnColor : '#ddd'} />
+                    <FastImage
+                        source={{
+                            uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                check == 2 ? 'check' : 'uncheck'
+                            }.png`,
+                        }}
+                        style={{width: px(16), height: px(16)}}
+                    />
                     <Text style={{fontSize: px(13), marginLeft: px(8)}}>全选</Text>
                 </TouchableOpacity>
                 {result?.button ? (

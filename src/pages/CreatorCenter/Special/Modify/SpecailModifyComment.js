@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 20:55:14
+ * @LastEditTime: 2022-10-17 17:45:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
- * @Description: 精选内容
+ * @Description: 修改专题-评论管理
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -12,15 +12,11 @@ import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
 import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from '~/components/Toast';
 import {Modal, PageModal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import {Style, Colors, Space, Font} from '~/common/commonStyle';
-// import ScrollableTabBar from '../../components/ScrollableTabBar';
+
 import {Button} from '~/components/Button';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import dayjs from 'dayjs';
-import Icon from 'react-native-vector-icons/AntDesign';
 
 /** 列表为空时填充 */
 function EmptyLit() {
@@ -270,7 +266,33 @@ export default function SpecailModifyComment({navigation}) {
     const handlePageChange = (idx) => {
         setActiveTab(idx);
     };
-    const handleCommentAction = (comment, op) => {};
+    const handleCommentAction = (comment, op) => {
+        if (op.op_type === 'del') {
+            Modal.show({
+                content: '删除后相关点赞数、评论都将删除，且不可恢复，确认要删除评论吗？',
+                confirm: true,
+                confirmText: '确认',
+                confirmCallBack: () => {
+                    //  TODO: del
+                },
+            });
+            return;
+        }
+
+        if (op.op_type === 'recommend') {
+            Modal.show({
+                content: '是否将该评论替换成专题简介？',
+                confirm: true,
+                confirmText: '确认',
+                confirmCallBack: () => {
+                    //  TODO: del
+                },
+            });
+            return;
+        }
+
+        // TODO: op action handle
+    };
 
     const renderItem = ({item, index}) => {
         return <CommentItem item={item} index={index} onAction={(op) => handleCommentAction(item, op)} />;

@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-01-20 10:25:41
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 21:09:35
  * @Description: 购买定投
  */
 import React, {Component, useState} from 'react';
@@ -621,6 +618,7 @@ class TradeBuy extends Component {
         if ((obj.from == 0 && obj.i == 0) || (obj.from == 1 && obj.i == 1)) {
             return;
         }
+        global.LogTool(obj.i === 0 ? 'purchase' : 'Fixedinvestment');
         this._tabType = obj.i;
         this.setState({type: obj.i, errTip: ''}, () => {
             this.init(null, 'cacheBank');
@@ -829,7 +827,10 @@ class TradeBuy extends Component {
                             <>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={this.changeBankCard}
+                                    onPress={() => {
+                                        global.LogTool({event: 'BankCard'});
+                                        this.changeBankCard();
+                                    }}
                                     style={[{flex: 1}, Style.flexRow]}>
                                     <View>
                                         <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
@@ -880,6 +881,7 @@ class TradeBuy extends Component {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
+                                global.LogTool('speedbuy');
                                 this.ratioChange(null, 1);
                             }}
                             style={Style.flexRow}>
@@ -910,6 +912,7 @@ class TradeBuy extends Component {
                                 <TouchableOpacity
                                     style={[styles.yel_btn]}
                                     onPress={() => {
+                                        global.LogTool('usebutton');
                                         this.jumpPage('LargeAmount');
                                     }}>
                                     <Text style={{color: Colors.yellow}}>
@@ -1039,7 +1042,7 @@ class TradeBuy extends Component {
                                     {fontFamily: `${amount}`.length > 0 ? Font.numMedium : null},
                                 ]}
                                 onBlur={() => {
-                                    global.LogTool('buy_input');
+                                    global.LogTool({event: 'EnterAmount', oid: amount});
                                 }}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.placeholderColor}

@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-16 11:16:02
+ * @LastEditTime: 2022-10-17 14:36:40
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -178,7 +178,12 @@ const Product = ({navigation}) => {
                                     <Text style={styles.light_text}>{item.desc}</Text>
                                 </View>
                             </View>
-                            <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
+                            <FastImage
+                                style={{width: px(12), height: px(12)}}
+                                source={{
+                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow.png',
+                                }}
+                            />
                         </TouchableOpacity>
                     </BoxShadow>
                 ))}
@@ -605,7 +610,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: px(28),
-        marginTop: px(10),
+        marginTop: px(8),
     },
     menuItem: {
         justifyContent: 'center',

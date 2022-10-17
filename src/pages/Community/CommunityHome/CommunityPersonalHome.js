@@ -2,7 +2,7 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:社区个人主页
 // //  */
-import {StyleSheet, Text, View, Animated, ImageBackground, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Animated, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
@@ -10,31 +10,32 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '~/common/commonStyle';
+
 import LinearGradient from 'react-native-linear-gradient';
 import {getPersonalHomeData, getPersonaProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
-import {PublishContent} from '../CommunityIndex';
+import {PublishContent, WaterfallFlowList} from '../CommunityIndex';
+import Intro from './Intro';
 const CommunityPersonalHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
     const parallaxHeaderHeight = px(130);
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
-    const {to_uid = 1000000002} = route?.params || {};
+    const {muid = 1000000002} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
     const {community_id = 1} = route?.params || {};
     const getData = async () => {
-        let res = await getPersonalHomeData({to_uid});
+        let res = await getPersonalHomeData({muid});
         setData(res.result);
     };
-    const getProductList = async () => {
-        let res = await getPersonaProductList();
+    const getProductList = async (params) => {
+        let res = await getPersonaProductList(params);
         setProduct(res.result);
     };
     useEffect(() => {
         getData();
-        getProductList();
     }, []);
     const Header = () => {
         return (
@@ -87,26 +88,29 @@ const CommunityPersonalHome = ({navigation, route}) => {
                     }
                 )}>
                 <CommunityHomeHeader
-                    data={data?.community_info}
+                    data={data?.user_info}
                     style={{
                         width: deviceWidth,
                         paddingTop: headerHeight + px(20),
                     }}
                 />
-                <LinearGradient
-                    start={{x: 0, y: 0.25}}
-                    end={{x: 0.8, y: 0.8}}
-                    colors={['#fff', Colors.bgColor]}
-                    style={styles.listCon}>
-                    <View style={{paddingHorizontal: px(16)}}>
-                        <Text>{data?.intro}</Text>
-                    </View>
-
-                    <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
-                        <View style={{height: px(500)}} tabLabel="哈哈" pointerEvents="none" />
-                        <View style={{height: px(1500)}} tabLabel="哈哈11" />
-                    </ScrollableTabView>
-                </LinearGradient>
+                {data?.tabs ? (
+                    <LinearGradient
+                        start={{x: 0, y: 0.25}}
+                        end={{x: 0.8, y: 0.8}}
+                        colors={['#fff', Colors.bgColor]}
+                        style={styles.listCon}>
+                        <Intro data={data?.intro_info} />
+                        <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
+                            {data?.tabs?.map(({name, type}, index) => (
+                                <View key={name + type} style={{height: px(300)}} tabLabel={name}>
+                                    <FlatList data={[1, 2, 3]} renderItem={({item}) => <Text>111</Text>} />
+                                    <WaterfallFlowList getData={getProductList} params={{muid, type: type}} />
+                                </View>
+                            ))}
+                        </ScrollableTabView>
+                    </LinearGradient>
+                ) : null}
             </Animated.ScrollView>
             <PublishContent community_id={community_id} />
         </>

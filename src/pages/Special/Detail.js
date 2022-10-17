@@ -243,19 +243,30 @@ const SpecialDetail = ({navigation, route}) => {
                     }}>
                     <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
                 </TouchableOpacity>
-                {data?.icon_btns?.map?.((item, idx) => (
-                    <TouchableOpacity
-                        style={{marginLeft: px(24), alignItems: 'center'}}
-                        activeOpacity={0.8}
-                        key={idx}
-                        onPress={() => handlerIconBtnClick(item)}>
-                        <FastImage
-                            source={{uri: item.icon}}
-                            style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
-                        />
-                        <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d'}}>{item.text}</Text>
-                    </TouchableOpacity>
-                ))}
+                <View
+                    style={[
+                        {
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        },
+                    ]}>
+                    {data?.icon_btns?.map?.((item, idx) => (
+                        <TouchableOpacity
+                            style={[{alignItems: 'center'}, idx === 0 ? {flex: 1} : {width: px(25)}]}
+                            activeOpacity={0.8}
+                            key={idx}
+                            onPress={() => handlerIconBtnClick(item)}>
+                            <FastImage
+                                source={{uri: item.icon}}
+                                style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                            />
+                            <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d', textAlign: 'center'}}>
+                                {item.text}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
             <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                 <TextInput
@@ -302,7 +313,7 @@ const styles = StyleSheet.create({
         height: px(36),
         backgroundColor: '#F3F5F8',
         borderRadius: px(322),
-        flex: 1,
+        width: px(255),
         paddingLeft: px(16),
         justifyContent: 'center',
     },

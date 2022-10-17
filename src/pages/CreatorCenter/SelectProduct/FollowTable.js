@@ -155,8 +155,8 @@ const FollowTable = ({data = {}, handleSort, stickyHeaderY, scrollY}) => {
                                                                                 : sortDown
                                                                         }
                                                                         style={{
-                                                                            width: px(8),
-                                                                            height: px(18),
+                                                                            width: px(6),
+                                                                            height: px(12),
                                                                             marginLeft: px(2),
                                                                         }}
                                                                     />

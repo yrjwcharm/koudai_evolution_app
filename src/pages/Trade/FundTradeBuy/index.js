@@ -152,7 +152,15 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                         {hidden_text}
                     </Text>
                 )}
-                <TextInput keyboardType="numeric" onChangeText={onChange} style={styles.input} value={`${value}`} />
+                <TextInput
+                    keyboardType="numeric"
+                    onBlur={() => {
+                        global.LogTool({event: 'EnterAmount', oid: value});
+                    }}
+                    onChangeText={onChange}
+                    style={styles.input}
+                    value={`${value}`}
+                />
                 {`${value}`.length > 0 && (
                     <TouchableOpacity activeOpacity={0.8} onPress={() => onChange('')}>
                         <AntDesign color="#BDC2CC" name="closecircle" size={px(16)} />
@@ -297,7 +305,10 @@ const PayMethod = ({
                     )}
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => bankCardModal.current.show()}
+                        onPress={() => {
+                            global.LogTool({event: 'BankCard'});
+                            bankCardModal.current.show();
+                        }}
                         style={[Style.flexBetween, styles.payMethodBox]}>
                         <View style={Style.flexRow}>
                             <Image source={{uri: bank_icon}} style={styles.bankIcon} />
@@ -320,7 +331,10 @@ const PayMethod = ({
                         <View style={Style.flexRow}>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => setIsLarge(true)}
+                                onPress={() => {
+                                    global.LogTool('speedbuy');
+                                    setIsLarge(true);
+                                }}
                                 style={styles.radioBox}>
                                 <View style={styles.radioWrap}>
                                     <View
@@ -344,7 +358,10 @@ const PayMethod = ({
                                 {button?.text ? (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => jump(button.url)}
+                                        onPress={() => {
+                                            global.LogTool('usebutton');
+                                            jump(button.url);
+                                        }}
                                         style={[Style.flexRow, styles.useBtn]}>
                                         <Text style={[styles.desc, styles.useText]}>{button.text}</Text>
                                         <FontAwesome color={'#FF7D41'} name={'angle-right'} size={16} />

@@ -3,12 +3,12 @@
  * @Autor: wxp
  * @Date: 2022-10-09 10:51:22
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {px} from '~/utils/appUtil';
-import {getData, getUnRead} from './services';
+import {getData, getList, getUnRead} from './services';
 import bellWhite from '~/assets/img/creatorCenter/bell-white.png';
 import bellBlack from '~/assets/img/creatorCenter/bell-black.png';
 import {useFocusEffect} from '@react-navigation/native';
@@ -18,40 +18,66 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollableTabBar from '../components/ScrollableTabBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '~/components/hooks';
+import LoginMask from '~/components/LoginMask';
+import Loading from '~/pages/Portfolio/components/PageLoading';
+import RenderHtml from '~/components/RenderHtml';
 
 const CreatorCenterIndex = () => {
     const inset = useSafeAreaInsets();
     const userInfo = useSelector((store) => store.userInfo);
     const jump = useJump();
 
+    const [loading, setLoading] = useState(true);
+    const [listLoading, setListLoading] = useState(true);
     const [{system}, setUnreadData] = useState({});
     const [data, setData] = useState();
+    const [list, setList] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [criticalState, setScrollCriticalState] = useState(false);
 
     const navBarRef = useRef();
-
-    useEffect(() => {
-        getData().then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-            }
-        });
-    }, []);
+    const scrollableRef = useRef();
+    const showNum = useRef(0);
 
     useFocusEffect(
         useCallback(() => {
             if (userInfo.toJS().is_login) getUnReadData();
+
+            showNum.current === 0 && setLoading(true);
+
+            getData()
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                        setLoading(false);
+                        showNum.current > 0 && getListData(res.result?.items);
+                    }
+                })
+                .finally((_) => {
+                    showNum.current++;
+                });
         }, [getUnReadData, userInfo])
     );
+
+    const getListData = (items) => {
+        setListLoading(true);
+        const index = scrollableRef.current?.state?.currentPage || 0;
+        getList(items?.[index]?.params)
+            .then((res) => {
+                if (res.code === '000000') {
+                    setList(res.result);
+                }
+            })
+            .finally((_) => {
+                setListLoading(false);
+            });
+    };
 
     const getUnReadData = useCallback(() => {
         getUnRead().then((res) => {
             setUnreadData(res.result);
         });
     }, []);
-
-    const onChangeTab = useCallback(() => {}, []);
 
     const onScroll = (e) => {
         const y = e.nativeEvent.contentOffset.y;
@@ -79,16 +105,30 @@ const CreatorCenterIndex = () => {
         });
     };
 
-    return (
+    const onChangeTab = useCallback(() => {
+        getListData(data?.items);
+    }, [data]);
+
+    return loading ? (
+        <Loading color={Colors.btnColor} />
+    ) : (
         <View style={styles.container}>
             <View style={{width: '100%', height: px(265)}}>
-                <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/51664352728_.pic_.png'}}
-                    style={styles.topBgImg}
-                />
+                <FastImage source={{uri: data?.head?.bg_img}} style={styles.topBgImg} />
                 <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>
                     {criticalState && <Text style={styles.navTitle}>管理中心</Text>}
-                    <TouchableOpacity activeOpacity={0.8} style={styles.bellWrap}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.bellWrap}
+                        onPress={() => {
+                            jump({
+                                path: 'MessageNotice',
+                                type: 1,
+                                params: {
+                                    type: 'system',
+                                },
+                            });
+                        }}>
                         <FastImage source={criticalState ? bellBlack : bellWhite} style={styles.bell} />
                         {system ? (
                             <View style={[styles.point_sty, Style.flexCenter, {left: system > 99 ? px(11) : px(15)}]}>
@@ -102,7 +142,23 @@ const CreatorCenterIndex = () => {
                 style={{flex: 1, marginTop: px(-178)}}
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {}} />}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        tintColor="#fff"
+                        onRefresh={() => {
+                            setRefreshing(true);
+                            getData()
+                                .then((res) => {
+                                    if (res.code === '000000') {
+                                        setData(res.result);
+                                        getListData(res.result.items);
+                                    }
+                                })
+                                .finally((_) => setRefreshing(false));
+                        }}
+                    />
+                }
                 onScroll={onScroll}>
                 <View style={{height: px(25)}} />
                 <View style={styles.briefWrap}>
@@ -111,88 +167,118 @@ const CreatorCenterIndex = () => {
                             <FastImage
                                 style={styles.avatar}
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/break_even.png',
+                                    uri: data?.head?.info?.avatar,
                                 }}
                             />
-                            <Text style={styles.nickName}>理财小能手</Text>
+                            <Text style={styles.nickName}>{data?.head?.info?.name}</Text>
                         </View>
                         <View style={styles.briefMainRight}>
-                            <TouchableOpacity style={styles.editBtnWrap} activeOpacity={0.8}>
-                                <Text style={styles.editBtnText}>编辑</Text>
-                            </TouchableOpacity>
+                            {data?.head?.button ? (
+                                <TouchableOpacity
+                                    style={styles.editBtnWrap}
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(data?.head?.button.url);
+                                    }}>
+                                    <Text style={styles.editBtnText}>{data?.head?.button.text}</Text>
+                                </TouchableOpacity>
+                            ) : null}
                         </View>
                     </View>
                     <View style={styles.briefDescWrap}>
-                        <Text style={styles.briefDesc}>理财魔方联合创始人，对外经贸大学经济学硕士</Text>
-                        <Text style={styles.briefDesc}>理财魔方联合创始人，对外经贸大学经济学硕士</Text>
+                        {data?.head?.info?.desc?.show_edit ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={Style.flexRow}
+                                onPress={() => {
+                                    jump(data?.head?.button.url);
+                                }}>
+                                <Text style={styles.briefDesc}>点击添加我的简介</Text>
+                                <FastImage
+                                    style={styles.editIcon}
+                                    source={{
+                                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-icon.png',
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        ) : (
+                            <RenderHtml style={styles.briefDesc} html={data?.head?.info?.desc?.content} />
+                        )}
                     </View>
                 </View>
                 <View style={styles.cardsWrap}>
                     <ScrollableTabView
-                        initialPage={1}
+                        initialPage={0}
                         renderTabBar={() => <ScrollableTabBar style={{paddingHorizontal: px(15), marginTop: px(2)}} />}
+                        ref={scrollableRef}
                         onChangeTab={onChangeTab}>
-                        {['作品', '专题', '社区', '评论'].map((item, idx) => {
+                        {data?.items?.map?.((item, idx) => {
                             return (
-                                <View style={styles.cardWrap} key={idx} tabLabel={item}>
-                                    <View style={styles.cardItem}>
-                                        <TouchableOpacity
-                                            activeOpacity={0.7}
-                                            style={styles.cardItemHeader}
-                                            onPress={() => {
-                                                // jump({
-                                                //     path: 'EditProduct',
-                                                //     params: {
-                                                //         id: 179,
-                                                //         product_type: 1,
-                                                //         product_id: '000001',
-                                                //         desc: '',
-                                                //         yield_range: '',
-                                                //         style_id: 0,
-                                                //         category_id: '',
-                                                //     },
-                                                // });
-                                                // jump({path: 'AddProductStep1', params: {subject_id: 111}});
-                                                jump({
-                                                    path: 'EditSpecialCardInfo',
-                                                    params: {
-                                                        maxNum: 6,
-                                                        selectType: 1,
-                                                    },
-                                                });
-                                            }}>
-                                            <Text style={styles.cardItemHeaderTitle}>社区合集</Text>
-                                            <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
-                                        </TouchableOpacity>
-                                        <View style={styles.cardItemPanel}>
-                                            {[1, 2, 3].map((itm, index) => (
-                                                <View style={styles.cardItemPanelSubItem} key={index}>
-                                                    <Text style={styles.cardItemPanelSubItemNum}>10</Text>
-                                                    <Text style={styles.cardItemPanelSubItemDesc}>已发布</Text>
+                                <View style={styles.cardWrap} key={idx} tabLabel={item.title}>
+                                    {listLoading ? (
+                                        <View style={{paddingVertical: px(20)}}>
+                                            <ActivityIndicator />
+                                        </View>
+                                    ) : (
+                                        <>
+                                            {list?.list?.map((itm, index) => (
+                                                <View style={styles.cardItem} key={index}>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.7}
+                                                        style={styles.cardItemHeader}
+                                                        onPress={() => {
+                                                            // jump({
+                                                            //     path: 'EditProduct',
+                                                            //     params: {
+                                                            //         id: 179,
+                                                            //         product_type: 1,
+                                                            //         product_id: '000001',
+                                                            //         desc: '',
+                                                            //         yield_range: '',
+                                                            //         style_id: 0,
+                                                            //         category_id: '',
+                                                            //     },
+                                                            // });
+                                                            // jump({path: 'AddProductStep1', params: {subject_id: 111}});
+                                                            // jump({
+                                                            //     path: 'EditSpecialCardInfo',
+                                                            //     params: {
+                                                            //         maxNum: 6,
+                                                            //         selectType: 1,
+                                                            //     },
+                                                            // });
+                                                            jump(itm?.url);
+                                                        }}>
+                                                        <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
+                                                        <Icon
+                                                            color={Colors.descColor}
+                                                            name="angle-right"
+                                                            size={px(14)}
+                                                        />
+                                                    </TouchableOpacity>
+                                                    <View style={styles.cardItemPanel}>
+                                                        {itm.items?.map?.((obj, i) => (
+                                                            <View style={styles.cardItemPanelSubItem} key={i}>
+                                                                <Text style={styles.cardItemPanelSubItemNum}>
+                                                                    {obj.val}
+                                                                </Text>
+                                                                <Text style={styles.cardItemPanelSubItemDesc}>
+                                                                    {obj.key}
+                                                                </Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
                                                 </View>
                                             ))}
-                                        </View>
-                                    </View>
-                                    <View style={styles.cardItem}>
-                                        <TouchableOpacity activeOpacity={0.7} style={styles.cardItemHeader}>
-                                            <Text style={styles.cardItemHeaderTitle}>数据明细</Text>
-                                            <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
-                                        </TouchableOpacity>
-                                        <View style={styles.cardItemPanel}>
-                                            {[1, 2, 3].map((itm, index) => (
-                                                <View style={styles.cardItemPanelSubItem} key={index}>
-                                                    <Text style={styles.cardItemPanelSubItemNum}>8899</Text>
-                                                    <Text style={styles.cardItemPanelSubItemDesc}>单日访问量uv</Text>
-                                                </View>
-                                            ))}
-                                        </View>
-                                    </View>
+                                        </>
+                                    )}
                                 </View>
                             );
                         })}
                     </ScrollableTabView>
                 </View>
             </ScrollView>
+            {!userInfo.toJS().is_login && <LoginMask />}
         </View>
     );
 };
@@ -286,11 +372,17 @@ const styles = StyleSheet.create({
     },
     briefDescWrap: {
         marginTop: px(16),
+        height: px(34),
     },
     briefDesc: {
         fontSize: px(12),
         lineHeight: px(17),
         color: '#fff',
+    },
+    editIcon: {
+        width: px(12),
+        height: px(12),
+        marginLeft: px(4),
     },
     cardsWrap: {
         backgroundColor: '#F5F6F8',

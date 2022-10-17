@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 14:40:32
+ * @LastEditTime: 2022-10-17 17:46:26
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
- * @Description:
+ * @Description: 修改专题 - 活动信息
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
