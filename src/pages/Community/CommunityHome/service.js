@@ -11,7 +11,7 @@ export const getCommunityHomeData = (params) => {
     return http.get('/community/homepage/20220928', params);
 };
 export const getPersonaProductList = (params) => {
-    return http.get('/community/product/list/20220928', params);
+    return http.get('/community/resource/list/20220928', params);
 };
 export const getCommunityProductList = (params) => {
     return http.get('/community/relation/list/20220928', params);

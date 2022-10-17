@@ -11,7 +11,7 @@ const CommunityHomeHeader = ({data, style}) => {
     return data ? (
         <ImageBackground
             source={{
-                uri: data?.bg_img,
+                uri: data?.bg_img || data?.avatar,
             }}
             resizeMode="cover"
             style={{
