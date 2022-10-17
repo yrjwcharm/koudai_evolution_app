@@ -75,6 +75,7 @@ export default class FixedButton extends Component {
                             title={agreement?.text}
                             text1={agreement?.text1}
                             onChange={(checkStatus) => {
+                                global.LogTool({ctrl: checkStatus ? 'check' : 'uncheck', event: 'contract'});
                                 this.setState({check: checkStatus});
                                 this.setState({showCheckTag: !checkStatus});
                             }}
