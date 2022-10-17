@@ -99,6 +99,15 @@ const SpecialDetail = ({navigation, route}) => {
             }
         });
     };
+
+    const writeComment = () => {
+        if (!data?.commentable) return;
+        inputModal.current.show();
+        setTimeout(() => {
+            inputRef?.current?.focus();
+        }, 100);
+    };
+
     return (
         <View style={styles.container}>
             <NavBar
@@ -184,6 +193,8 @@ const SpecialDetail = ({navigation, route}) => {
                         } else if (data?.indexOf('logParams=') > -1) {
                             const logParams = JSON.parse(data?.split('logParams=')[1] || []);
                             global.LogTool(logParams);
+                        } else if (data?.indexOf('writeComment=') > -1) {
+                            writeComment();
                         }
                     }}
                     originWhitelist={['*']}
@@ -231,16 +242,7 @@ const SpecialDetail = ({navigation, route}) => {
             ) : null}
 
             <View style={[styles.footer, Style.flexRow]}>
-                <TouchableOpacity
-                    style={styles.footer_content}
-                    activeOpacity={0.9}
-                    onPress={() => {
-                        if (!data?.commentable) return;
-                        inputModal.current.show();
-                        setTimeout(() => {
-                            inputRef?.current?.focus();
-                        }, 100);
-                    }}>
+                <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={writeComment}>
                     <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
                 </TouchableOpacity>
                 <View
