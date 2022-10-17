@@ -20,7 +20,7 @@ import AuditModal from '~/components/AuditModal';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
-    const [data, setData] = useState('green');
+    const [data, setData] = useState();
     const [token, setToken] = useState('');
     const [content, setContent] = useState('');
     const [scrolling, setScrolling] = useState(false);
@@ -52,7 +52,7 @@ const SpecialDetail = ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            init();
+            route.params.scence !== 'create' && init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -241,35 +241,43 @@ const SpecialDetail = ({navigation, route}) => {
                 />
             ) : null}
 
-            <View style={[styles.footer, Style.flexRow]}>
-                <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={writeComment}>
-                    <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
-                </TouchableOpacity>
-                <View
-                    style={[
-                        {
-                            flex: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        },
-                    ]}>
-                    {data?.icon_btns?.map?.((item, idx) => (
-                        <TouchableOpacity
-                            style={[{alignItems: 'center'}, idx === 0 ? {flex: 1} : {width: px(25)}]}
-                            activeOpacity={0.8}
-                            key={idx}
-                            onPress={() => handlerIconBtnClick(item)}>
-                            <FastImage
-                                source={{uri: item.icon}}
-                                style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
-                            />
-                            <Text style={{fontSize: px(11), lineHeight: px(15), color: '#3d3d3d', textAlign: 'center'}}>
-                                {item.text}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+            {data ? (
+                <View style={[styles.footer, Style.flexRow]}>
+                    <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={writeComment}>
+                        <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
+                    </TouchableOpacity>
+                    <View
+                        style={[
+                            {
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                            },
+                        ]}>
+                        {data?.icon_btns?.map?.((item, idx) => (
+                            <TouchableOpacity
+                                style={[{alignItems: 'center'}, idx === 0 ? {flex: 1} : {width: px(25)}]}
+                                activeOpacity={0.8}
+                                key={idx}
+                                onPress={() => handlerIconBtnClick(item)}>
+                                <FastImage
+                                    source={{uri: item.icon}}
+                                    style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: px(11),
+                                        lineHeight: px(15),
+                                        color: '#3d3d3d',
+                                        textAlign: 'center',
+                                    }}>
+                                    {item.text}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
-            </View>
+            ) : null}
             <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                 <TextInput
                     ref={inputRef}
