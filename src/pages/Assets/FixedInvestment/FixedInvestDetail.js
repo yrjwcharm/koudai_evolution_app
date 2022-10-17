@@ -10,7 +10,7 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
-import {callFixedInvestDetailApi} from './services';
+import {useDispatch} from 'react-redux';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -20,7 +20,8 @@ const shadow = {
     y: 2,
 };
 
-const FixedInvestDetail = ({navigation, r}) => {
+const FixedInvestDetail = ({navigation}) => {
+    const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
     const [selectData] = useState(['修改', '暂停', '终止']);
     useLayoutEffect(() => {
@@ -39,10 +40,11 @@ const FixedInvestDetail = ({navigation, r}) => {
             ),
         });
     }, []);
-    const initData = async () => {
-        const res = await callFixedInvestDetailApi({});
-    };
-    useEffect(() => {}, []);
+    useEffect(() => {
+        (async () => {
+            // dispatch(callFixedInvestDetailApi({poid, code: fund_code}));
+        })();
+    }, []);
     return (
         <View style={styles.container}>
             {/*定投*/}
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(13),
-        fontFamily: Font.pingFangMedium,
+        fontFamily: Font.pingFangRegular,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },

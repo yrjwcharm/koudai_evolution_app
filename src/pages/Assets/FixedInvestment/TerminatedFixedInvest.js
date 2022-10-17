@@ -4,25 +4,30 @@
  * @Description: 已终止定投页面
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {px} from '../../../utils/appUtil';
-import {Colors} from '../../../common/commonStyle';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import InvestHeader from './components/InvestHeader';
-import RenderItem from './components/RenderItem';
-import {callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
-
-const TerminatedFixedInvest = ({navigation, route}) => {
-    const [times, setTimes] = useState('');
-    const [sum, setSum] = useState('');
+import Empty from '../../../components/EmptyTip';
+import {callTerminatedFixedApi} from './services';
+import {useDispatch, useSelector} from 'react-redux';
+import RenderItem from './components/RenderItem';
+const TerminatedFixedInvest = ({navigation}) => {
+    const dispatch = useDispatch();
+    const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [state, setState] = useState({
         headList: [],
         dataList: [],
         loading: true,
     });
-    const initData = async () => {
-        const res = await callTerminatedFixedApi({times, sum});
-        if (res.code === '000000') {
+    const [times, setTimes] = useState('');
+    const [sum, setSum] = useState('');
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [emptyMsg, setEmptyMsg] = useState('');
+    useEffect(() => {
+        (async () => {
+            dispatch(callTerminatedFixedApi({times, sum}));
             const {title = '', head_list = [], data_list = []} = res.result || {};
             setState({
                 headList: head_list,
@@ -30,11 +35,11 @@ const TerminatedFixedInvest = ({navigation, route}) => {
                 loading: false,
             });
             navigation.setOptions({title});
-        }
-    };
-    useEffect(() => {
-        initData();
+        })();
     }, [times, sum]);
+    const renderEmpty = useCallback(() => {
+        return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
+    }, [emptyMsg, showEmpty]);
     const sumSort = useCallback(() => {
         setTimes('');
         sum == 'desc' ? setSum('asc') : setSum('desc');
@@ -57,7 +62,16 @@ const TerminatedFixedInvest = ({navigation, route}) => {
                         sortByIssue={issueSort}
                         sortBySum={sumSort}
                     />
-                    <RenderItem dataList={state.dataList} />
+                    <FlatList
+                        windowSize={300}
+                        data={state.dataList}
+                        initialNumToRender={20}
+                        keyExtractor={(item, index) => item + index}
+                        ListEmptyComponent={renderEmpty}
+                        onEndReachedThreshold={0.5}
+                        refreshing={false}
+                        renderItem={RenderItem}
+                    />
                 </View>
             )}
         </>

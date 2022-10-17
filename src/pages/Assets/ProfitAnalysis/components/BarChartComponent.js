@@ -16,7 +16,7 @@ import EmptyTip from '../../../../components/EmptyTip';
 import {BottomModal} from '../../../../components/Modal';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const BarChartComponent = ({chartData}) => {
+const BarChartComponent = React.memo(({chartData}) => {
     const insets = useSafeAreaInsets();
     const textTime = useRef(null);
     const textThisFund = useRef(null);
@@ -146,7 +146,7 @@ const BarChartComponent = ({chartData}) => {
             </BottomModal>
         </>
     );
-};
+});
 
 BarChartComponent.propTypes = {};
 

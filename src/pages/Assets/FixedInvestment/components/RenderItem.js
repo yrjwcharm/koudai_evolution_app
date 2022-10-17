@@ -9,7 +9,7 @@ import {deviceWidth, px, isEmpty} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {useJump} from '../../../../components/hooks';
+import {useNavigation} from '@react-navigation/native';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -22,127 +22,118 @@ const shadow = {
         left: px(16),
     },
 };
-const RenderItem = ({navigation, dataList}) => {
-    const jump = useJump();
+const RenderItem = ({item, index}) => {
+    const navigation = useNavigation();
     return (
-        <>
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'handled'}>
-                <View style={styles.listItem}>
-                    {dataList.map((item, index) => {
-                        return (
-                            <TouchableOpacity
-                                key={item + `` + index}
-                                onPress={() => navigation.navigate('AutomaticInvestDetail')}>
-                                <View style={{marginTop: px(8)}}>
-                                    <BoxShadow
-                                        setting={{
-                                            ...shadow,
-                                            width: deviceWidth - px(32),
-                                            height: item.detail ? px(111) : px(70),
-                                        }}>
-                                        <View style={[styles.listRowWrap]}>
-                                            <View
+        <TouchableOpacity
+            style={{marginTop: px(8)}}
+            key={item + `` + index}
+            onPress={() => navigation.navigate('AutomaticInvestDetail')}>
+            <View>
+                <BoxShadow
+                    setting={{
+                        ...shadow,
+                        width: deviceWidth - px(32),
+                        height: !isEmpty(item.detail) ? px(111) : px(70),
+                    }}>
+                    <View style={[styles.listRowWrap]}>
+                        <View
+                            style={[
+                                styles.status,
+                                {
+                                    backgroundColor:
+                                        item.status == '定投中'
+                                            ? '#EDF7EC'
+                                            : item.status == '已暂停'
+                                            ? '#FDEFE4'
+                                            : '#E9EAEF',
+                                },
+                            ]}>
+                            <Text
+                                style={[
+                                    styles.statusText,
+                                    {
+                                        color:
+                                            item.status == '定投中'
+                                                ? Colors.green
+                                                : item.status == '已暂停'
+                                                ? '#FF7D41'
+                                                : Colors.lightGrayColor,
+                                    },
+                                ]}>
+                                {item.status}
+                            </Text>
+                        </View>
+                        <View style={styles.listRowTopView}>
+                            <View style={styles.listRowTopWrap}>
+                                <View style={styles.top}>
+                                    <View style={styles.topView}>
+                                        <Text style={styles.type}>{item.type}</Text>
+                                    </View>
+                                    <Text
+                                        style={[
+                                            styles.invest_num,
+                                            {
+                                                fontSize: px(12),
+                                                marginLeft: px(8),
+                                                fontWeight: 'normal',
+                                                fontFamily: Font.pingFangMedium,
+                                            },
+                                        ]}>
+                                        {item.name}
+                                    </Text>
+                                </View>
+                                <View style={[styles.bottom, {marginTop: px(11)}]}>
+                                    <View style={styles.bottomWrap}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.autoInvestIssure}>{item.unit}</Text>
+                                            <Text
                                                 style={[
-                                                    styles.status,
+                                                    styles.invest_num,
                                                     {
-                                                        backgroundColor:
-                                                            item.status == '定投中'
-                                                                ? '#EDF7EC'
-                                                                : item.status == '已暂停'
-                                                                ? '#FDEFE4'
-                                                                : '#E9EAEF',
+                                                        fontSize: px(14),
+                                                        fontWeight: '500',
+                                                        fontFamily: Font.numMedium,
                                                     },
                                                 ]}>
-                                                <Text
-                                                    style={[
-                                                        styles.statusText,
-                                                        {
-                                                            color:
-                                                                item.status == '定投中'
-                                                                    ? Colors.green
-                                                                    : item.status == '已暂停'
-                                                                    ? '#FF7D41'
-                                                                    : Colors.lightGrayColor,
-                                                        },
-                                                    ]}>
-                                                    {item.status}
-                                                </Text>
-                                            </View>
-                                            <View style={styles.listRowTopView}>
-                                                <View style={styles.listRowTopWrap}>
-                                                    <View style={styles.top}>
-                                                        <View style={styles.topView}>
-                                                            <Text style={styles.type}>{item.type}</Text>
-                                                        </View>
-                                                        <Text
-                                                            style={[
-                                                                styles.invest_num,
-                                                                {
-                                                                    fontSize: px(12),
-                                                                    marginLeft: px(8),
-                                                                    fontWeight: 'normal',
-                                                                    fontFamily: Font.pingFangMedium,
-                                                                },
-                                                            ]}>
-                                                            {item.name}
-                                                        </Text>
-                                                    </View>
-                                                    <View style={[styles.bottom, {marginTop: px(11)}]}>
-                                                        <View style={styles.bottomWrap}>
-                                                            <View style={Style.flexRow}>
-                                                                <Text style={styles.autoInvestIssure}>{item.unit}</Text>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.invest_num,
-                                                                        {
-                                                                            fontSize: px(14),
-                                                                            fontWeight: '500',
-                                                                            fontFamily: Font.numMedium,
-                                                                        },
-                                                                    ]}>
-                                                                    {item.values}
-                                                                </Text>
-                                                            </View>
-                                                            <Text
-                                                                style={[
-                                                                    styles.invest_num,
-                                                                    {
-                                                                        fontSize: px(14),
-                                                                        fontWeight: '500',
-                                                                        fontFamily: Font.numMedium,
-                                                                    },
-                                                                ]}>
-                                                                {item.times}
-                                                            </Text>
-                                                            <Text
-                                                                style={[
-                                                                    styles.invest_num,
-                                                                    {
-                                                                        fontSize: px(14),
-                                                                        fontWeight: '500',
-                                                                        fontFamily: Font.numMedium,
-                                                                    },
-                                                                ]}>
-                                                                {item.sum}
-                                                            </Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                            {!isEmpty(item.detail) && (
-                                                <View style={styles.listRowBottomView}>
-                                                    <Text style={styles.desc}>{item.detail}</Text>
-                                                </View>
-                                            )}
+                                                {item.values}
+                                            </Text>
                                         </View>
-                                    </BoxShadow>
+                                        <Text
+                                            style={[
+                                                styles.invest_num,
+                                                {
+                                                    fontSize: px(14),
+                                                    fontWeight: '500',
+                                                    fontFamily: Font.numMedium,
+                                                },
+                                            ]}>
+                                            {item.times}
+                                        </Text>
+                                        <Text
+                                            style={[
+                                                styles.invest_num,
+                                                {
+                                                    fontSize: px(14),
+                                                    fontWeight: '500',
+                                                    fontFamily: Font.numMedium,
+                                                },
+                                            ]}>
+                                            {item.sum}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </ScrollView>
-        </>
+                            </View>
+                        </View>
+                        {!isEmpty(item.detail) && (
+                            <View style={styles.listRowBottomView}>
+                                <Text style={styles.desc}>{item.detail}</Text>
+                            </View>
+                        )}
+                    </View>
+                </BoxShadow>
+            </View>
+        </TouchableOpacity>
     );
 };
 

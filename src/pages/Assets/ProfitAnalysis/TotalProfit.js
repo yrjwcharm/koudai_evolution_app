@@ -9,7 +9,8 @@ import {isIphoneX, px} from '../../../utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
 import AccEarningsCom from './components/AccEarningsCom';
-const TotalProfit = ({type}) => {
+import {useSelector} from 'react-redux';
+const TotalProfit = React.memo(() => {
     return (
         <View style={styles.container}>
             <AccEarningsCom />
@@ -17,11 +18,11 @@ const TotalProfit = ({type}) => {
                 style={{
                     paddingHorizontal: px(12),
                 }}>
-                <RenderList type={type} />
+                <RenderList />
             </View>
         </View>
     );
-};
+});
 
 TotalProfit.propTypes = {};
 

@@ -18,6 +18,8 @@ import pkPinningReducer from './reducers/pk/pkPinningReducer';
 import ocrFundListReducer from './reducers/ocrFundListReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
+import fixedInvestReducer from '~/pages/Assets/FixedInvestment/reducer'; // 定投reducer
+import profitDetailReducer from '~/pages/Assets/ProfitAnalysis/reducer';
 const persistConfig = {
     transforms: [immutableTransform()],
     key: 'root',
@@ -40,6 +42,8 @@ const reducer = combineReducers({
     pkProducts: pkProductsReducer,
     pkPinning: pkPinningReducer,
     ocrFund: ocrFundListReducer,
+    fixedInvest: fixedInvestReducer,
+    profitDetail: profitDetailReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

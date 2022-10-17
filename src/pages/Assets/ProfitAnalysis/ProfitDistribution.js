@@ -28,7 +28,8 @@ const shadow = {
         zIndex: 0,
     },
 };
-const ProfitDistribution = ({headData, type, isLockScroll}) => {
+export const appContext = React.createContext();
+const ProfitDistribution = React.memo(({headData, type}) => {
     const [loading, setLoading] = useState(true);
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
@@ -129,17 +130,11 @@ const ProfitDistribution = ({headData, type, isLockScroll}) => {
                                 }}>
                                 {tabs.map((tab, index) => {
                                     if (index == 0)
-                                        return (
-                                            <DayProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
-                                        );
+                                        return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
                                     if (index == 1)
-                                        return (
-                                            <MonthProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
-                                        );
+                                        return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
                                     if (index == 2)
-                                        return (
-                                            <YearProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
-                                        );
+                                        return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
                                     if (index == 3)
                                         return (
                                             <TotalProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
@@ -152,7 +147,7 @@ const ProfitDistribution = ({headData, type, isLockScroll}) => {
             )}
         </>
     );
-};
+});
 
 ProfitDistribution.propTypes = {
     setLoadingFn: PropTypes.func,
