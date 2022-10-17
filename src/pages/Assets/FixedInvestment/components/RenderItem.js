@@ -22,13 +22,14 @@ const shadow = {
         left: px(16),
     },
 };
-const RenderItem = ({item, index}) => {
-    const navigation = useNavigation();
+const RenderItem = ({item, index, navigation}) => {
     return (
         <TouchableOpacity
             style={{marginTop: px(8)}}
             key={item + `` + index}
-            onPress={() => navigation.navigate('AutomaticInvestDetail')}>
+            onPress={() => {
+                navigation.navigate('FixedInvestDetail');
+            }}>
             <View>
                 <BoxShadow
                     setting={{

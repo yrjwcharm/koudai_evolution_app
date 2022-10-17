@@ -70,7 +70,7 @@ const TerminatedFixedInvest = ({navigation}) => {
                         ListEmptyComponent={renderEmpty}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
-                        renderItem={RenderItem}
+                        renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
                     />
                 </View>
             )}

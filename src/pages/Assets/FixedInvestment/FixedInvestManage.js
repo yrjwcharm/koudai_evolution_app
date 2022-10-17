@@ -16,7 +16,21 @@ import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';
 import Empty from '../../../components/EmptyTip';
+import {BoxShadow} from 'react-native-shadow';
+const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
+const shadow = {
+    color: '#aaa',
+    border: 6,
+    radius: 1,
+    opacity: 0.102,
+    x: 0,
+    y: 1,
+    style: {
+        position: 'relative',
+        left: px(16),
+    },
+};
 const FixedInvestManage = ({navigation, route}) => {
     const dispatch = useDispatch();
     const [showEmpty, setShowEmpty] = useState(false);
@@ -75,6 +89,23 @@ const FixedInvestManage = ({navigation, route}) => {
         setSum('');
         times == 'asc' ? setTimes('desc') : setTimes('asc');
     }, [times]);
+    const EmptyData = () => {
+        return (
+            <View style={{marginTop: px(12)}}>
+                <BoxShadow
+                    setting={{
+                        ...shadow,
+                        width: deviceWidth - px(32),
+                        height: px(211),
+                    }}>
+                    <View style={styles.emptyView}>
+                        <Image source={image} style={styles.emptyImg} />
+                        <Text style={styles.emptyText}>暂无数据</Text>
+                    </View>
+                </BoxShadow>
+            </View>
+        );
+    };
     return (
         <>
             {loading ? (
@@ -168,10 +199,10 @@ const FixedInvestManage = ({navigation, route}) => {
                         data={data.dataList || []}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
-                        ListEmptyComponent={renderEmpty}
+                        ListEmptyComponent={<EmptyData />}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
-                        renderItem={RenderItem}
+                        renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
                     />
                     {terminatedCount !== 0 && (
                         <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
@@ -196,6 +227,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    emptyView: {
+        backgroundColor: Colors.white,
+        ...Style.flexCenter,
+        height: px(211),
+        borderRadius: px(6),
+    },
+    emptyImg: {
+        height: px(96),
+        width: px(120),
+    },
+    emptyText: {
+        marginTop: px(15),
+        fontSize: px(13),
+        fontFamily: Font.pingFangRegular,
+        fontWeight: 'normal',
+        color: Colors.lightGrayColor,
     },
     emptyInvest: {
         marginLeft: px(16),

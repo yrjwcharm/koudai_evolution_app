@@ -568,11 +568,7 @@ export default function AppStack() {
                     options={{title: '修改定投'}}
                 />
 
-                <Stack.Screen
-                    name="AutomaticInvestDetail"
-                    component={FixedInvestDetail}
-                    options={{title: '定投详情'}}
-                />
+                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: '定投详情'}} />
                 <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
