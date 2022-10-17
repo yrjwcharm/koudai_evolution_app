@@ -725,6 +725,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         bottom: 0,
+        zIndex: 11,
     },
     recommendTab: {
         paddingVertical: px(6),
