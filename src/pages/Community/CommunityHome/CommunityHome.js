@@ -14,6 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
+import {PublishContent} from '../CommunityIndex';
 const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
@@ -95,19 +96,22 @@ const CommunityHome = ({navigation, route}) => {
                         paddingTop: headerHeight + px(20),
                     }}
                 />
-                <LinearGradient
-                    start={{x: 0, y: 0.25}}
-                    end={{x: 0.8, y: 0.8}}
-                    colors={['#fff', Colors.bgColor]}
-                    style={styles.listCon}>
-                    <Intro data={data?.intro_info} />
-                    <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
-                        {data?.tabs?.map((tab, index) => (
-                            <View key={index} style={{flex: 1}} tabLabel={tab?.name} />
-                        ))}
-                    </ScrollableTabView>
-                </LinearGradient>
+                {data?.tabs ? (
+                    <LinearGradient
+                        start={{x: 0, y: 0.25}}
+                        end={{x: 0.8, y: 0.8}}
+                        colors={['#fff', Colors.bgColor]}
+                        style={styles.listCon}>
+                        <Intro data={data?.intro_info} />
+                        <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
+                            {data?.tabs?.map((tab, index) => (
+                                <View key={index} style={{flex: 1}} tabLabel={tab?.name} />
+                            ))}
+                        </ScrollableTabView>
+                    </LinearGradient>
+                ) : null}
             </Animated.ScrollView>
+            <PublishContent community_id={community_id} />
         </>
     );
 };

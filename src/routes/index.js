@@ -1078,7 +1078,7 @@ export default function AppStack() {
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
                 <Stack.Screen name="ProductMoreMenu" component={ProductMoreMenu} options={{title: ''}} />
-                <Stack.Screen name="CommunityHome" component={CommunityHome} />
+                <Stack.Screen name="CommunityHome" component={CommunityHome} options={{headerShown: false}} />
                 <Stack.Screen
                     name="CommunityPersonalHome"
                     component={CommunityPersonalHome}
