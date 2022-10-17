@@ -6,7 +6,11 @@
 import http from '~/services';
 
 export const getData = (data) => {
-    return http.get('/xxx', data);
+    return http.get('/manage_center/index/20221010', data);
+};
+
+export const getList = (data) => {
+    return http.get('/manage_center/collect_list/20221010', data);
 };
 
 export const getUnRead = (data) => {
