@@ -278,26 +278,31 @@ const Index = ({navigation, route}) => {
                 <BottomDesc />
             </ScrollView>
             <View style={[Style.flexRow, styles.bottomBtns]}>
-                {icon_btns?.map((btn, i) => {
-                    const {icon, subs, title} = btn;
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            key={title + i}
-                            onPress={() => onPressLeftBtns(btn)}
-                            style={[Style.flexCenter, styles.leftBtns]}>
-                            <Image source={{uri: icon}} style={styles.leftBtnIcon} />
-                            <Text style={styles.leftBtnText}>{title}</Text>
-                            {subs?.length > 0 && (
-                                <BottomModal
-                                    title={'选择咨询方式'}
-                                    ref={bottomModal}
-                                    children={renderContactContent(subs)}
-                                />
-                            )}
-                        </TouchableOpacity>
-                    );
-                })}
+                <View style={[Style.flexRow, {flex: 1}]}>
+                    {icon_btns?.map((btn, i, arr) => {
+                        const {icon, subs, title} = btn;
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={title + i}
+                                onPress={() => onPressLeftBtns(btn)}
+                                style={[
+                                    Style.flexCenter,
+                                    i === arr.length - 1 ? {flex: 1} : {marginLeft: i === 0 ? 0 : px(22)},
+                                ]}>
+                                <Image source={{uri: icon}} style={styles.leftBtnIcon} />
+                                <Text style={styles.leftBtnText}>{title}</Text>
+                                {subs?.length > 0 && (
+                                    <BottomModal
+                                        title={'选择咨询方式'}
+                                        ref={bottomModal}
+                                        children={renderContactContent(subs)}
+                                    />
+                                )}
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
                 <View style={[Style.flexRow, styles.rightBtns]}>
                     {simple_btns?.map((btn, i, arr) => {
                         const {avail, event_id, text, url} = btn;
@@ -346,12 +351,9 @@ const styles = StyleSheet.create({
     },
     bottomBtns: {
         paddingTop: Space.padding,
-        paddingHorizontal: px(12),
+        paddingHorizontal: Space.padding,
         paddingBottom: isIphoneX() ? 34 : Space.padding,
         backgroundColor: '#fff',
-    },
-    leftBtns: {
-        paddingHorizontal: px(12),
     },
     leftBtnIcon: {
         width: px(20),
@@ -364,9 +366,8 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     rightBtns: {
-        marginLeft: px(12),
         borderRadius: Space.borderRadius,
-        flex: 1,
+        width: px(210),
         height: px(44),
         overflow: 'hidden',
     },
