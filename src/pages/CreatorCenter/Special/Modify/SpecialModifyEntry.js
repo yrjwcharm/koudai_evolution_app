@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 14:58:03
+ * @LastEditTime: 2022-10-14 09:27:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
- * @Description: 修改内容排序
+ * @Description: 修改专题的入口
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, SectionList, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
