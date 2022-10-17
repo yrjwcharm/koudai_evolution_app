@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -12,19 +12,17 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = ''} = route?.params;
+    const {fund_code = '', poid = ''} = route.params || {};
+    const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const dispatch = useDispatch();
-    const [type, setType] = useState(200);
-    useEffect(() => {
-        dispatch({type: 'updateType', payload: 200});
-    }, [route]);
+    const type = useSelector((state) => state.profitDetail.type);
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
@@ -32,6 +30,7 @@ const ProfitDetail = ({navigation, route}) => {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 setTabs(tabs);
                 setHeadData(header);
+                // Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
                 navigation.setOptions({title});
             }
             if (res[1].code === '000000') {
@@ -65,10 +64,10 @@ const ProfitDetail = ({navigation, route}) => {
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (
                 <ScrollableTabView
+                    ref={scrollTab}
                     renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
                     initialPage={0}
                     onChangeTab={({i}) => {
-                        setType(tabs[i].type);
                         dispatch({type: 'updateType', payload: tabs[i].type});
                     }}>
                     {tabs.map((el, index) => {
