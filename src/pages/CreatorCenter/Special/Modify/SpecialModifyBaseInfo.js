@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 14:02:21
+ * @LastEditTime: 2022-10-14 09:27:18
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyBaseInfo.js
- * @Description:
+ * @Description: 修改专题 基础信息
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';

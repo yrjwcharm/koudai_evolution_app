@@ -283,6 +283,11 @@ import SpecialModifyEntry from '~/pages/CreatorCenter/Special/Modify/SpecialModi
 import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-基础信息
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
+import SpecialModifyRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js'; // 专题修改-推广位样式
+import SpecialPreviewRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js'; // 专题修改-推广位样式
+import SpecialModifyProductInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js'; // 专题修改-推广位-产品信息填写
+import SpecialModifyProductItem from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js'; // 专题修改-推广位-产品信息填写-选择产品
+
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
 import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
 
@@ -1171,6 +1176,26 @@ export default function AppStack() {
                     options={{title: ''}}
                 />
                 <Stack.Screen name="SpecialExamine" component={SpecialExamine} options={{title: ''}} />
+                <Stack.Screen
+                    name="SpecialModifyRecommend"
+                    component={SpecialModifyRecommend}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialPreviewRecommend"
+                    component={SpecialPreviewRecommend}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyProductInfo"
+                    component={SpecialModifyProductInfo}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyProductItem"
+                    component={SpecialModifyProductItem}
+                    options={{headerShown: false}}
+                />
             </Stack.Navigator>
         </>
     );

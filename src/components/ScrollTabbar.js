@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-05-18 11:46:01
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-14 14:20:33
  * @Description:
  */
 
@@ -52,7 +49,9 @@ class ScrollTabbar extends Component {
             if (newX < 0) {
                 newX = 0;
             }
-            this?._scrollTabBarView?.scrollTo({x: newX, animated: true});
+            if (this?._scrollTabBarView && this.props.container != 'View') {
+                this?._scrollTabBarView?.scrollTo({x: newX, animated: true});
+            }
         }, 10);
     };
     measureTabContainer(evt) {
@@ -141,15 +140,8 @@ class ScrollTabbar extends Component {
             </Button>
         );
     };
-    CreatCon = (props) => {
-        if (this.props.container == 'view') {
-            return <View {...props} />;
-        }
-        return <ScrollView {...props} />;
-    };
     render() {
         let Con = this.props.container == 'View' ? View : ScrollView;
-
         return (
             <View style={[styles.tabBarBox, this.props.boxStyle]}>
                 <Con

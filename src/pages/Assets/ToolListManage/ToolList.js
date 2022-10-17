@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 15:59:19
  * @Description:工具管理
  */
-import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {ScrollView, StyleSheet, Text, View, Image} from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import {getList, toolSave} from './service';
 import {Colors, Space, Style} from '~/common/commonStyle';
@@ -100,7 +100,7 @@ const ToolList = ({route}) => {
             } else {
                 global.LogTool('icon_click', item?.text, item.tool_id);
             }
-            jump(item.url);
+            !isEditState && jump(item.url);
             return;
         }
         if (data?.my_tools?.tool_list?.length >= 9) {

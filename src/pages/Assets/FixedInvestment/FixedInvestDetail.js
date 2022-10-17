@@ -10,7 +10,8 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {callFixedInvestDetailApi} from './services';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -20,9 +21,11 @@ const shadow = {
     y: 2,
 };
 
-const FixedInvestDetail = ({navigation}) => {
+const FixedInvestDetail = ({navigation, route}) => {
+    const {poid = ''} = route?.params;
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
+    const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [selectData] = useState(['修改', '暂停', '终止']);
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -42,7 +45,9 @@ const FixedInvestDetail = ({navigation}) => {
     }, []);
     useEffect(() => {
         (async () => {
-            // dispatch(callFixedInvestDetailApi({poid, code: fund_code}));
+            dispatch(callFixedInvestDetailApi({poid, code: '66444'}));
+            if (res.code === '000000') {
+            }
         })();
     }, []);
     return (
