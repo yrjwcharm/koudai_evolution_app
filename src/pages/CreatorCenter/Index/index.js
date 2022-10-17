@@ -152,7 +152,14 @@ const CreatorCenterIndex = () => {
                                                 //         category_id: '',
                                                 //     },
                                                 // });
-                                                jump({path: 'AddProductStep1', params: {subject_id: 111}});
+                                                // jump({path: 'AddProductStep1', params: {subject_id: 111}});
+                                                jump({
+                                                    path: 'EditSpecialCardInfo',
+                                                    params: {
+                                                        maxNum: 6,
+                                                        selectType: 1,
+                                                    },
+                                                });
                                             }}>
                                             <Text style={styles.cardItemHeaderTitle}>社区合集</Text>
                                             <Icon color={Colors.descColor} name="angle-right" size={px(14)} />

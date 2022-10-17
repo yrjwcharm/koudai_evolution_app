@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-27 22:52:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-16 13:07:03
  * @Description:
  */
 import {applyMiddleware, createStore, compose} from 'redux';
@@ -15,6 +15,7 @@ import AccountReducer from './reducers/accountReducer';
 import ModalReducer from './reducers/modalReducer';
 import pkProductsReducer from './reducers/pk/pkProductsReducer';
 import pkPinningReducer from './reducers/pk/pkPinningReducer';
+import selectProductReducer from './reducers/creatorCenter/selectProductReducer';
 import ocrFundListReducer from './reducers/ocrFundListReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
@@ -44,6 +45,7 @@ const reducer = combineReducers({
     ocrFund: ocrFundListReducer,
     fixedInvest: fixedInvestReducer,
     profitDetail: profitDetailReducer,
+    selectProduct: selectProductReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

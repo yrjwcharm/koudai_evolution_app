@@ -284,12 +284,16 @@ import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/Specia
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
+import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
 
 import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
 import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
 import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
+import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
+import EditSpecialCardInfo from '~/pages/CreatorCenter/EditSpecialCardInfo';
+import SpecialCardStylePreview from '~/pages/CreatorCenter/SpecialCardStylePreview';
 
 const Stack = createStackNavigator();
 
@@ -1161,6 +1165,14 @@ export default function AppStack() {
                 <Stack.Screen name="SpecialSubmitCheck" component={SpecialSubmitCheck} options={{headerShown: false}} />
                 <Stack.Screen name="SpecialModifyEntry" component={SpecialModifyEntry} options={{headerShown: false}} />
                 <Stack.Screen name="EditProduct" component={EditProduct} options={{title: ''}} />
+                <Stack.Screen name="AddProduct" component={AddProduct} options={{title: '添加产品'}} />
+                <Stack.Screen name="SetSpecialCardStyle" component={SetSpecialCardStyle} options={{title: ''}} />
+                <Stack.Screen name="EditSpecialCardInfo" component={EditSpecialCardInfo} options={{title: ''}} />
+                <Stack.Screen
+                    name="SpecialCardStylePreview"
+                    component={SpecialCardStylePreview}
+                    options={{title: ''}}
+                />
             </Stack.Navigator>
         </>
     );
