@@ -178,7 +178,8 @@ export default function Tabbar() {
             {/* <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} /> */}
             {/* <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
             <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} /> */}
-            {userInfo?.toJS()?.show_manage_center ? (
+            {/* userInfo?.toJS()?.show_manage_center */}
+            {true ? (
                 <Tab.Screen name="CreatorCenter" options={{tabBarLabel: '管理中心'}} component={CreatorCenter} />
             ) : null}
             <Tab.Screen name="Community" component={Community} options={{tabBarLabel: '社区'}} />

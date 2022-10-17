@@ -294,6 +294,7 @@ import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'
 import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
 import EditSpecialCardInfo from '~/pages/CreatorCenter/EditSpecialCardInfo';
 import SpecialCardStylePreview from '~/pages/CreatorCenter/SpecialCardStylePreview';
+import SpecialExamine from '~/pages/CreatorCenter/SpecialExamine'; // 专题审核
 
 const Stack = createStackNavigator();
 
@@ -1169,6 +1170,7 @@ export default function AppStack() {
                     component={SpecialCardStylePreview}
                     options={{title: ''}}
                 />
+                <Stack.Screen name="SpecialExamine" component={SpecialExamine} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );
