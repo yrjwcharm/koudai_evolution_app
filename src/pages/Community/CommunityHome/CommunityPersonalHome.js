@@ -13,6 +13,7 @@ import {Colors, Style} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import {getPersonalHomeData, getPersonaProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
+import {PublishContent} from '../CommunityIndex';
 const CommunityPersonalHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
@@ -22,6 +23,7 @@ const CommunityPersonalHome = ({navigation, route}) => {
     const {to_uid = 1000000002} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
+    const {community_id = 1} = route?.params || {};
     const getData = async () => {
         let res = await getPersonalHomeData({to_uid});
         setData(res.result);
@@ -106,6 +108,7 @@ const CommunityPersonalHome = ({navigation, route}) => {
                     </ScrollableTabView>
                 </LinearGradient>
             </Animated.ScrollView>
+            <PublishContent community_id={community_id} />
         </>
     );
 };
