@@ -11,7 +11,6 @@ import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
-import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';

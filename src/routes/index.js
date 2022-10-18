@@ -291,10 +291,12 @@ import SpecialModifyProductItem from '~/pages/CreatorCenter/Special/Modify/Speci
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
 import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
 
-import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
+import ProfitDetail from '~/pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
-import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
+import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
+import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest';
+
 import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
 import EditSpecialCardInfo from '~/pages/CreatorCenter/EditSpecialCardInfo';
 import SpecialCardStylePreview from '~/pages/CreatorCenter/SpecialCardStylePreview';
@@ -570,6 +572,7 @@ export default function AppStack() {
                     component={FixedInvestManage}
                     options={{title: '定投管理'}}
                 />
+                <Stack.Screen name="ModifyFixedInvest" component={ModifyFixedInvest} options={{title: ''}} />
 
                 <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: ''}} />
                 <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />

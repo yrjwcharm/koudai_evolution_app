@@ -32,3 +32,14 @@ export const callFixedInvestDetailApi = (params) => {
         dispatch({type: 'fetchSuccess', payload: {fixedInvestDetail: res} || {}});
     };
 };
+/**
+ * 修改界面定投详情
+ */
+export const callModifyFixedInvestApi = (params) =>
+    http.get(`/platform_tool/invest_regularly/fix_detail/20221010`, params);
+/**
+ * 定投管理工具-执行修改定投
+ * @param params
+ */
+export const executeModifyFixedInvestApi = (params) =>
+    http.post(`/platform_tool/invest_regularly/update/20221010`, params);
