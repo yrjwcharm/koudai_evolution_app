@@ -4,7 +4,7 @@
  * @Description: 定投管理
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
@@ -16,6 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';
 import Empty from '../../../components/EmptyTip';
 import {BoxShadow} from 'react-native-shadow';
+import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
+import {useFocusEffect} from '@react-navigation/native';
 const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
 const shadow = {
@@ -45,27 +47,27 @@ const FixedInvestManage = ({navigation, route}) => {
     const {fund_code = '', poid = ''} = route?.params || {};
     const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);
-    useEffect(() => {
-        // (async () => {
-        //     dispatch(callTerminatedFixedApi({}));
-        //     const res = await Promise.all([
-        //         callFixedHeadDataApi({}),
-        //         callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
-        //     ]);
-        //     if (res[0].code === '000000' && res[1].code === '000000' && response.code === '000000') {
-        //         const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
-        //         navigation.setOptions({title});
-        //         let tabList = tabs.map((el, index) => {
-        //             return {...el, checked: el.type == unitType ? true : false};
-        //         });
-        //         setTabList(tabList);
-        //         setHeadList(head_list);
-        //         setDetail(detail);
-        //         setData(res[1].result);
-        //         setTerminatedCount(response.result?.data_list.length);
-        //         setLoading(false);
-        //     }
-        // })();
+    useFocusEffect(() => {
+        (async () => {
+            dispatch(callTerminatedFixedApi({}));
+            const res = await Promise.all([
+                callFixedHeadDataApi({}),
+                callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
+            ]);
+            if (res[0].code === '000000' && res[1].code === '000000' && response.code === '000000') {
+                const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
+                navigation.setOptions({title});
+                let tabList = tabs.map((el, index) => {
+                    return {...el, checked: el.type == unitType ? true : false};
+                });
+                setTabList(tabList);
+                setHeadList(head_list);
+                setDetail(detail);
+                setData(res[1].result);
+                setTerminatedCount(response.result?.data_list.length);
+                setLoading(false);
+            }
+        })();
     }, [unitType, times, sum]);
     const selTab = (item) => {
         setUnitType(item.type);
@@ -111,11 +113,11 @@ const FixedInvestManage = ({navigation, route}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <View style={styles.container}>
-                    <TouchableOpacity onPress={() => navigation.navigate('FixedInvestDetail', {poid})}>
+                    <TouchableOpacity onPress={() => navigation.navigate('FixedInvestDetail', {plan_id: '66444'})}>
                         <Text>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, accusantium amet aut,
-                            commodi, deleniti ducimus enim esse itaque laborum minus molestiae nemo nisi nulla saepe
-                            sequi soluta sunt ullam voluptatum!
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda cum deleniti, harum
+                            itaque magnam mollitia numquam quod sapiente similique ullam vitae, voluptatem. Adipisci
+                            eligendi quae quis sit! Eveniet, quisquam sunt?
                         </Text>
                     </TouchableOpacity>
                     <View style={styles.header}>
@@ -220,7 +222,6 @@ const FixedInvestManage = ({navigation, route}) => {
                             </View>
                         </TouchableOpacity>
                     )}
-
                     <BottomDesc />
                     {Object.keys(data).length > 0 ? <FixedButton title="新建定投" onPress={() => {}} /> : null}
                 </View>

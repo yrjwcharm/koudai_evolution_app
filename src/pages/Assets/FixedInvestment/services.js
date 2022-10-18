@@ -41,5 +41,4 @@ export const callModifyFixedInvestApi = (params) =>
  * 定投管理工具-执行修改定投
  * @param params
  */
-export const executeModifyFixedInvestApi = (params) =>
-    http.post(`/platform_tool/invest_regularly/update/20221010`, params);
+export const executeStopFixedInvestApi = (params) => http.get(`/platform_tool/invest_regularly/stop/20221010`, params);
