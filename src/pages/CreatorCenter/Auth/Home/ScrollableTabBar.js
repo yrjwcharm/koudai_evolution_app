@@ -33,10 +33,11 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
     },
     tabItem: {
         alignItems: 'center',
+        marginRight: px(16),
     },
     tabTextDefault: {
         fontSize: px(12),

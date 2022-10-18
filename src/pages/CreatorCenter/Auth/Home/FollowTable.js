@@ -51,14 +51,12 @@ function BodyCell({text, isFisrt, maxLen}) {
 }
 
 /** 简单的表格，支持首行固定  */
-const FollowTable = ({data = [], headerData, columns, stickyHeaderY, scrollY, ...other}) => {
-    const firstLineWidth = px(80); //第一列宽度
+const FollowTable = ({data = [], headerData, isLoading, isLoadingMore, columns, stickyHeaderY, scrollY, ...other}) => {
     const otherLineWidth = px(80);
     const jump = useJump();
     const [isScroll, setIsScroll] = useState(false);
-    console.dir(headerData);
 
-    if (!columns || !headerData) {
+    if (isLoading) {
         return (
             <View style={{...Style.flexCenter, height: px(200)}}>
                 <LoadingTips color="#ddd" />
@@ -70,13 +68,24 @@ const FollowTable = ({data = [], headerData, columns, stickyHeaderY, scrollY, ..
     columns.map((key) => {
         let max = 0;
         data.forEach((row) => {
-            max = Math.max(row[key].length);
+            const str = row[key].replace(/[^\x00-\xff]/g, 'xx');
+            max = Math.max(str.length, max);
         });
-        maxLen[key] = px(max * 12);
+        maxLen[key] = px(max * 9) + 30;
     });
-
+    const handleScroll = (e) => {
+        const endHeight =
+            e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height - e.nativeEvent.contentSize.height;
+        console.log(`endHeight:${endHeight}`);
+        if (endHeight >= 0) {
+            other.onloadMore();
+        }
+    };
     return (
-        <View style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6), ...other.style}}>
+        <ScrollView
+            style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6), ...other.style}}
+            onScroll={handleScroll}
+            nestedScrollEnabled={true}>
             <View style={{flexDirection: 'row'}}>
                 {/* 处理第一列固定 */}
                 {/* 分割线 */}
@@ -109,6 +118,7 @@ const FollowTable = ({data = [], headerData, columns, stickyHeaderY, scrollY, ..
                     showsHorizontalScrollIndicator={false}
                     style={{flex: 1}}
                     snapToInterval={otherLineWidth}
+                    nestedScrollEnabled={true}
                     bounces={false}
                     onMomentumScrollEnd={() => setIsScroll(false)}
                     onScrollBeginDrag={(e) => setIsScroll(true)}>
@@ -143,7 +153,12 @@ const FollowTable = ({data = [], headerData, columns, stickyHeaderY, scrollY, ..
                     </View>
                 </ScrollView>
             </View>
-        </View>
+            {isLoadingMore && (
+                <View style={{width: '100%', height: px(30)}}>
+                    <LoadingTips color="#ddd" />
+                </View>
+            )}
+        </ScrollView>
     );
 };
 
@@ -174,6 +189,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: px(16),
         height: px(40),
+        maxWidth: deviceWidth / 2,
     },
 
     headerText: {

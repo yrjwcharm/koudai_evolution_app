@@ -1,16 +1,16 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-18 18:18:19
+ * @LastEditTime: 2022-10-18 20:03:10
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
 
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {px} from '~/utils/appUtil';
+import {deviceHeight, px} from '~/utils/appUtil';
 
 import bellWhite from '~/assets/img/creatorCenter/bell-white.png';
 import bellBlack from '~/assets/img/creatorCenter/bell-black.png';
@@ -31,6 +31,7 @@ export default function CreatorAuthHome(props) {
 
     const [loading, setLoading] = useState(true);
     const [listLoading, setListLoading] = useState(true);
+    const [listLoadingMore, setListLoadingMore] = useState(true);
     const [{system}, setUnreadData] = useState({});
     const [data, setData] = useState();
     const [list, setList] = useState([]);
@@ -66,19 +67,23 @@ export default function CreatorAuthHome(props) {
     );
 
     const getListData = (item, nextPage) => {
-        setListLoading(true);
+        if (nextPage > page) {
+            setListLoadingMore(true);
+        } else {
+            setListLoading(true);
+        }
 
+        const oldActiveTab = activeTab;
         getList({type: item.type})
             .then((res) => {
-                if (res.code === '000000') {
-                    setList(res.result.items);
-                    // setListHeader(res.result.header);
-                    setListHeader({
-                        type: '类型',
-                        applier: '申请者',
-                        apply_time: '申请时刻',
-                        business_process: '业务审核进度',
-                    });
+                if (res.code === '000000' && oldActiveTab === activeTab) {
+                    if (nextPage > page) {
+                        setList(list.concat(res.result.items));
+                    } else {
+                        setList(res.result.items);
+                    }
+
+                    setListHeader(res.result.header);
                     setHasMore(res.result.hasMore);
                     setPage(nextPage);
                 }
@@ -88,6 +93,7 @@ export default function CreatorAuthHome(props) {
             })
             .finally((_) => {
                 setListLoading(false);
+                setListLoadingMore(false);
             });
     };
 
@@ -119,11 +125,12 @@ export default function CreatorAuthHome(props) {
 
     const handleTabChange = useCallback(
         (idx) => {
+            if (activeTab === idx) return;
             setActiveTab(idx);
             let item = data.items[idx];
             getListData(item, 1);
         },
-        [data]
+        [data, activeTab]
     );
 
     const handleNoticeClick = () => {
@@ -149,6 +156,11 @@ export default function CreatorAuthHome(props) {
                 }
             })
             .finally((_) => setRefreshing(false));
+    };
+    const handleListNextPage = () => {
+        if (!hasMore && listLoadingMore) return;
+        const item = data.items[activeTab];
+        getListData(item, page + 1);
     };
 
     const columns = useMemo(() => {
@@ -204,21 +216,29 @@ export default function CreatorAuthHome(props) {
                         goToPage={handleTabChange}
                         style={{paddingHorizontal: px(15), marginTop: px(2)}}
                     />
-
-                    <FollowTable
-                        style={styles.table}
-                        data={list}
-                        headerData={listHeader}
-                        columns={columns}
-                        scrollY={px(100)}
-                        stickyHeaderY={px(41)}
-                    />
+                    <View
+                        style={{
+                            marginTop: px(12),
+                            height: deviceHeight - px(44) - inset.top,
+                            paddingBottom: inset.bottom,
+                        }}>
+                        <FollowTable
+                            style={[styles.table, {}]}
+                            data={list}
+                            headerData={listHeader}
+                            columns={columns}
+                            isLoading={listLoading}
+                            isLoadingMore={listLoadingMore}
+                            scrollY={px(100)}
+                            onloadMore={handleListNextPage}
+                            stickyHeaderY={px(41)}
+                        />
+                    </View>
                 </View>
             </ScrollView>
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -299,8 +319,9 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     table: {
-        marginTop: px(12),
+        marginTop: px(20),
         flex: 1,
+        paddingBottom: px(30),
     },
 
     cardsWrap: {
