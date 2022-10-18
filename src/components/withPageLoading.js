@@ -6,11 +6,11 @@ import React, {forwardRef, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {Colors, Style} from '../common/commonStyle';
 
-const PageLoadingComponent = ({Component, color = Colors.lightGrayColor, _ref, ...props}) => {
+const PageLoadingComponent = ({Component, color, _ref, style, ...props}) => {
     const [loading, setLoading] = useState(true);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             <Component {...props} _ref={_ref} setLoading={setLoading} />
             {loading && (
                 <View style={[Style.flexCenter, styles.loadingContainer]}>
@@ -39,5 +39,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default (Component, color) =>
-    forwardRef((props, ref) => <PageLoadingComponent {...props} Component={Component} color={color} _ref={ref} />);
+export default (Component, {color = Colors.lightGrayColor, style = {}} = {}) =>
+    forwardRef((props, ref) => (
+        <PageLoadingComponent {...props} Component={Component} color={color} _ref={ref} style={style} />
+    ));

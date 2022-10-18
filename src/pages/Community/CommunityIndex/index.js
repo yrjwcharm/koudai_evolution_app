@@ -328,7 +328,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params}, ref) 
     const waterfallFlow = useRef();
 
     const init = () => {
-        console.log('first');
         getData({...params, page})
             .then((res) => {
                 if (res.code === '000000') {
@@ -346,14 +345,12 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params}, ref) 
                 setRefreshing(false);
             });
     };
-    console.log(data);
     const refresh = () => {
         waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
     const renderItem = ({item, index, columnIndex}) => {
-        console.log(item, 'item');
         const {author, cover, desc, live_status, title, type: _type, url} = item;
         return (
             <TouchableOpacity
@@ -419,7 +416,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params}, ref) 
     useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
-        console.log(getData, params);
         init();
     }, [page]);
     return (
