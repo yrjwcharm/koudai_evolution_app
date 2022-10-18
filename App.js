@@ -130,7 +130,7 @@ function App(props) {
     return (
         <SafeAreaProvider>
             <RootSiblingParent>
-                {/*启用React严格模式，暴漏一些不必要的潜在风险及警告⚠️*/}
+                {/*启用React严格模式，暴漏出必要的代码潜在风险及警告⚠️*/}
                 <React.StrictMode>
                     <Provider store={store}>
                         <StatusBar
