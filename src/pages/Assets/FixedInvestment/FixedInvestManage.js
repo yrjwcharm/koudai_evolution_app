@@ -112,6 +112,13 @@ const FixedInvestManage = ({navigation, route}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <View style={styles.container}>
+                    <TouchableOpacity onPress={() => navigation.navigate('FixedInvestDetail', {poid})}>
+                        <Text>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, accusantium amet aut,
+                            commodi, deleniti ducimus enim esse itaque laborum minus molestiae nemo nisi nulla saepe
+                            sequi soluta sunt ullam voluptatum!
+                        </Text>
+                    </TouchableOpacity>
                     <View style={styles.header}>
                         <ImageBackground
                             style={{width, height: px(120)}}

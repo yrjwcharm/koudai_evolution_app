@@ -22,6 +22,8 @@ import {Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
 import {Button} from '~/components/Button';
+import {FixedButton} from '../../components/Button';
+import {isIPhoneX} from '../../components/IM/app/chat/utils';
 
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
@@ -139,7 +141,7 @@ export default function FixedUpdate({navigation, route}) {
             })
                 .then((res) => {
                     if (res.code === '000000') {
-                        navigation.setOptions({title: res.result.title || '修改计划'});
+                        navigation.setOptions({title: res.result.title || '修改定投'});
                         if (isFocused && res.result.risk_disclosure && show_risk_disclosure.current) {
                             if (res.result?.pay_methods[0]?.pop_risk_disclosure) {
                                 showRiskDisclosure(res.result.risk_disclosure);
@@ -342,9 +344,9 @@ export default function FixedUpdate({navigation, route}) {
             <ActivityIndicator color={Colors.brandColor} />
         </View>
     ) : (
-        <>
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView keyboardShouldPersistTaps="handled" style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                <ScrollView keyboardShouldPersistTaps="handled">
                     {showMask && (
                         <Mask
                             onClick={() => {
@@ -472,37 +474,12 @@ export default function FixedUpdate({navigation, route}) {
                         </View>
                     )}
                     {render_deductionHint()}
-                    {data?.button?.length > 0 ? (
-                        <View
-                            style={[
-                                Style.flexRow,
-                                {marginHorizontal: Space.marginAlign, marginTop: Space.marginVertical},
-                            ]}>
-                            {data.button.map?.((btn, i, arr) => {
-                                const {avail, text: btnText} = btn;
-                                return (
-                                    <Button
-                                        disabled={
-                                            (i === arr.length - 1 &&
-                                                payMethod.pay_method === 'wallet' &&
-                                                autoChargeStatus) ||
-                                            avail === 0
-                                        }
-                                        key={btnText + i}
-                                        onPress={() => handleClick(i === 0 && arr.length > 1 ? 'redeem' : 'update')}
-                                        style={{flex: 1, marginLeft: i > 0 ? text(12) : 0}}
-                                        textStyle={{fontSize: Font.textH2}}
-                                        title={btnText}
-                                        type={i === 0 && arr.length > 1 ? 'minor' : 'primary'}
-                                    />
-                                );
-                            })}
-                        </View>
-                    ) : null}
-                    <BottomDesc />
                 </ScrollView>
             )}
-        </>
+            <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
+
+            {data?.button?.length > 0 && <FixedButton title={'确认修改'} onPress={() => handleClick('update')} />}
+        </View>
     );
 }
 const styles = StyleSheet.create({
