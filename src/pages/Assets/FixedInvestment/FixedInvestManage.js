@@ -12,12 +12,12 @@ import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
 import Loading from '../../Portfolio/components/PageLoading';
-import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';
 import Empty from '../../../components/EmptyTip';
 import {BoxShadow} from 'react-native-shadow';
 import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import {useFocusEffect} from '@react-navigation/native';
+import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
 const shadow = {
@@ -33,42 +33,43 @@ const shadow = {
     },
 };
 const FixedInvestManage = ({navigation, route}) => {
-    const dispatch = useDispatch();
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
-    const response = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [times, setTimes] = useState('');
     const [sum, setSum] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
     const [data, setData] = useState({});
     const [detail, setDetail] = useState({});
     const [headList, setHeadList] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const {fund_code = '', poid = ''} = route?.params || {};
     const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);
-    useFocusEffect(() => {
-        (async () => {
-            dispatch(callTerminatedFixedApi({}));
-            const res = await Promise.all([
-                callFixedHeadDataApi({}),
-                callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
-            ]);
-            if (res[0].code === '000000' && res[1].code === '000000' && response.code === '000000') {
-                const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
-                navigation.setOptions({title});
-                let tabList = tabs.map((el, index) => {
-                    return {...el, checked: el.type == unitType ? true : false};
-                });
-                setTabList(tabList);
-                setHeadList(head_list);
-                setDetail(detail);
-                setData(res[1].result);
-                setTerminatedCount(response.result?.data_list.length);
-                setLoading(false);
-            }
-        })();
-    }, [unitType, times, sum]);
+
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                const res = await Promise.all([
+                    callFixedHeadDataApi({}),
+                    callHistoryDataApi({type: unitType, times, sum}),
+                    callTerminatedFixedApi({}),
+                ]);
+                if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
+                    const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
+                    navigation.setOptions({title});
+                    let tabList = tabs.map((el, index) => {
+                        return {...el, checked: el.type == unitType ? true : false};
+                    });
+                    setTabList(tabList);
+                    setHeadList(head_list);
+                    setDetail(detail);
+                    setData(res[1].result);
+                    setTerminatedCount(res[2].result?.data_list.length);
+                    setLoading(false);
+                }
+            })();
+        }, [unitType, times, sum])
+    );
     const selTab = (item) => {
         setUnitType(item.type);
         tabList.map((_item) => {
@@ -113,13 +114,6 @@ const FixedInvestManage = ({navigation, route}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <View style={styles.container}>
-                    <TouchableOpacity onPress={() => navigation.navigate('FixedInvestDetail', {plan_id: '66444'})}>
-                        <Text>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda cum deleniti, harum
-                            itaque magnam mollitia numquam quod sapiente similique ullam vitae, voluptatem. Adipisci
-                            eligendi quae quis sit! Eveniet, quisquam sunt?
-                        </Text>
-                    </TouchableOpacity>
                     <View style={styles.header}>
                         <ImageBackground
                             style={{width, height: px(120)}}
@@ -204,7 +198,7 @@ const FixedInvestManage = ({navigation, route}) => {
                     />
                     <FlatList
                         windowSize={300}
-                        data={data.dataList || []}
+                        data={data.data_list || []}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         ListEmptyComponent={<EmptyData />}
@@ -222,7 +216,8 @@ const FixedInvestManage = ({navigation, route}) => {
                             </View>
                         </TouchableOpacity>
                     )}
-                    <BottomDesc />
+                    <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
+
                     {Object.keys(data).length > 0 ? <FixedButton title="新建定投" onPress={() => {}} /> : null}
                 </View>
             )}

@@ -27,7 +27,7 @@ const shadow = {
 };
 
 const FixedInvestDetail = ({navigation, route}) => {
-    const {poid = '', plan_id = ''} = route?.params;
+    const {invest_plan_id: plan_id = ''} = route?.params;
     const [type, setType] = useState();
     const jump = useJump();
     const passwordModal = useRef(null);
@@ -230,7 +230,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                             <Text style={styles.rowTitle}>金额(元)</Text>
                             <Text style={styles.rowTitle}>交易状态</Text>
                         </View>
-                        {state.records?.data_list.map((item, index) => {
+                        {state.records?.data_list?.map((item, index) => {
                             return (
                                 <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
                                     <View style={{width: '38.5%'}}>

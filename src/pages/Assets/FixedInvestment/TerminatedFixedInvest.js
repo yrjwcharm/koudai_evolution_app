@@ -15,7 +15,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';
 const TerminatedFixedInvest = ({navigation}) => {
     const dispatch = useDispatch();
-    const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [state, setState] = useState({
         headList: [],
         dataList: [],
@@ -27,7 +26,7 @@ const TerminatedFixedInvest = ({navigation}) => {
     const [emptyMsg, setEmptyMsg] = useState('');
     useEffect(() => {
         (async () => {
-            dispatch(callTerminatedFixedApi({times, sum}));
+            const res = await callTerminatedFixedApi({times, sum});
             const {title = '', head_list = [], data_list = []} = res.result || {};
             setState({
                 headList: head_list,
@@ -70,7 +69,7 @@ const TerminatedFixedInvest = ({navigation}) => {
                         ListEmptyComponent={renderEmpty}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
-                        renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
+                        renderItem={({item, index}) => <RenderItem item={item} index={index} />}
                     />
                 </View>
             )}
