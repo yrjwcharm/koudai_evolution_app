@@ -130,63 +130,78 @@ function App(props) {
     return (
         <SafeAreaProvider>
             <RootSiblingParent>
-                <Provider store={store}>
-                    <StatusBar
-                        animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
-                        hidden={false} //是否隐藏状态栏。
-                        backgroundColor={'transparent'} //状态栏的背景色
-                        translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
-                        barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
-                    />
-                    <PersistGate loading={null} persistor={persistor}>
-                        <NavigationContainer
-                            // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
-                            ref={navigationRef}
-                            onReady={() => {
-                                global.refName = navigationRef.current.getCurrentRoute().name;
-                                return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
-                            }}
-                            onStateChange={() => {
-                                var staytime = new Date().getTime() - ts;
-                                ts = new Date().getTime();
-                                const previousRoutePageId = routeNameRef.current;
-                                const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                let currentRoute = navigationRef.current.getCurrentRoute();
-                                onStateChange(currentRouteName, homeShowModal.current, navigationRef);
-                                let article_id = getRouteNameId(currentRoute, 'ArticleDetail', 'article_id');
-                                let cu_plan_id = getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id');
-                                let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
-                                let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
-                                let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
-                                let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
-                                let cate_id = getRouteNameId(currentRoute, 'ArticleList', 'id');
-                                let code = getRouteNameId(currentRoute, 'FundDetail', 'code');
-                                let balancePoid = getRouteNameId(currentRoute, 'BlancedPortfolio', 'poid');
-                                let PortfolioAssetListId = getRouteNameId(currentRoute, 'PortfolioAssetList', 'type');
-                                let currentRoutePageId =
-                                    currentRouteName +
-                                    article_id +
-                                    cu_plan_id +
-                                    poid +
-                                    scene +
-                                    type +
-                                    assetPoid +
-                                    cate_id +
-                                    code +
-                                    balancePoid +
-                                    PortfolioAssetListId;
-                                global.previousRoutePageId = previousRoutePageId;
-                                global.currentRoutePageId = currentRoutePageId;
-                                if (previousRoutePageId !== currentRouteName) {
-                                    LogTool('jump', null, null, currentRoutePageId, previousRoutePageId, null, null);
-                                    LogTool('staytime', null, null, previousRoutePageId, null, staytime);
-                                }
-                                routeNameRef.current = currentRoutePageId;
-                            }}>
-                            <AppStack />
-                        </NavigationContainer>
-                    </PersistGate>
-                </Provider>
+                {/*启用React严格模式，暴漏一些不必要的潜在风险及警告⚠️*/}
+                <React.StrictMode>
+                    <Provider store={store}>
+                        <StatusBar
+                            animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
+                            hidden={false} //是否隐藏状态栏。
+                            backgroundColor={'transparent'} //状态栏的背景色
+                            translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
+                            barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
+                        />
+                        <PersistGate loading={null} persistor={persistor}>
+                            <NavigationContainer
+                                // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+                                ref={navigationRef}
+                                onReady={() => {
+                                    global.refName = navigationRef.current.getCurrentRoute().name;
+                                    return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
+                                }}
+                                onStateChange={() => {
+                                    var staytime = new Date().getTime() - ts;
+                                    ts = new Date().getTime();
+                                    const previousRoutePageId = routeNameRef.current;
+                                    const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                    let currentRoute = navigationRef.current.getCurrentRoute();
+                                    onStateChange(currentRouteName, homeShowModal.current, navigationRef);
+                                    let article_id = getRouteNameId(currentRoute, 'ArticleDetail', 'article_id');
+                                    let cu_plan_id = getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id');
+                                    let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
+                                    let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
+                                    let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
+                                    let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
+                                    let cate_id = getRouteNameId(currentRoute, 'ArticleList', 'id');
+                                    let code = getRouteNameId(currentRoute, 'FundDetail', 'code');
+                                    let balancePoid = getRouteNameId(currentRoute, 'BlancedPortfolio', 'poid');
+                                    let PortfolioAssetListId = getRouteNameId(
+                                        currentRoute,
+                                        'PortfolioAssetList',
+                                        'type'
+                                    );
+                                    let currentRoutePageId =
+                                        currentRouteName +
+                                        article_id +
+                                        cu_plan_id +
+                                        poid +
+                                        scene +
+                                        type +
+                                        assetPoid +
+                                        cate_id +
+                                        code +
+                                        balancePoid +
+                                        PortfolioAssetListId;
+                                    global.previousRoutePageId = previousRoutePageId;
+                                    global.currentRoutePageId = currentRoutePageId;
+                                    if (previousRoutePageId !== currentRouteName) {
+                                        LogTool(
+                                            'jump',
+                                            null,
+                                            null,
+                                            currentRoutePageId,
+                                            previousRoutePageId,
+                                            null,
+                                            null
+                                        );
+                                        LogTool('staytime', null, null, previousRoutePageId, null, staytime);
+                                    }
+                                    routeNameRef.current = currentRoutePageId;
+                                }}>
+                                <AppStack />
+                            </NavigationContainer>
+                        </PersistGate>
+                    </Provider>
+                </React.StrictMode>
             </RootSiblingParent>
         </SafeAreaProvider>
     );
