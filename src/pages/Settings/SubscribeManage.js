@@ -39,7 +39,7 @@ const SubscribeManage = ({start}) => {
                         start?.(false, scrollViewRef.current);
                         showCopilot.current = false;
                     }
-                }, 20);
+                }, 500);
             }
         });
     };

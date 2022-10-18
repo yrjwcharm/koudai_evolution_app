@@ -247,7 +247,21 @@ const CreatorCenterIndex = () => {
                                                             //         selectType: 1,
                                                             //     },
                                                             // });
-                                                            jump(itm?.url);
+                                                            jump({
+                                                                path: 'SpecialDetail',
+                                                                type: 1,
+
+                                                                params: {
+                                                                    link:
+                                                                        'http://192.168.190.51:3000/specialDetailDraft',
+                                                                    scence: 'create',
+                                                                    params: {
+                                                                        subject_id: 111,
+                                                                        scene: 'creating',
+                                                                    },
+                                                                },
+                                                            });
+                                                            // jump(itm?.url);
                                                         }}>
                                                         <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
                                                         <Icon

@@ -15,7 +15,7 @@ import {getChartData} from './services';
 import Html from '~/components/RenderHtml';
 import {cloneDeep} from 'lodash';
 
-const ChartComponent = ({isActive}) => {
+const ChartComponent = ({isActive, options}) => {
     const [data, setData] = useState();
     const [activeTab, setActiveTab] = useState(0);
     const [chartLabel, setChartLabel] = useState(null);
@@ -29,16 +29,14 @@ const ChartComponent = ({isActive}) => {
     }, [isActive, activeTab]);
 
     const getData = () => {
-        getChartData({allocation_id: 800060, benchmark_id: 700010, poid: 'X00F000003', period: 'y1', type: 1}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    setData();
-                    setData(res.result);
-                    setChartLabel(res.result?.yield_info?.label);
-                    chartLabelDefaultRef.current = res.result?.yield_info?.label;
-                }
+        getChartData(options).then((res) => {
+            if (res.code === '000000') {
+                setData();
+                setData(res.result);
+                setChartLabel(res.result?.yield_info?.label);
+                chartLabelDefaultRef.current = res.result?.yield_info?.label;
             }
-        );
+        });
     };
 
     const onChartChange = useCallback((obj) => {

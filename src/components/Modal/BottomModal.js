@@ -33,6 +33,7 @@ const BottomModal = React.forwardRef((props, ref) => {
         onClose = () => {},
         destroy = () => {},
         showClose = true,
+        keyboardAvoiding = true,
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -79,14 +80,16 @@ const BottomModal = React.forwardRef((props, ref) => {
         }).start();
     };
     useEffect(() => {
-        Picker.hide();
-        Keyboard.addListener('keyboardWillShow', keyboardWillShow);
-        Keyboard.addListener('keyboardWillHide', keyboardWillHide);
-        return () => {
+        if (keyboardAvoiding) {
             Picker.hide();
-            Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
-            Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
-        };
+            Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+            Keyboard.addListener('keyboardWillHide', keyboardWillHide);
+            return () => {
+                Picker.hide();
+                Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
+                Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
+            };
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useImperativeHandle(ref, () => {

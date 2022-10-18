@@ -71,7 +71,19 @@ const AlbumHeader = ({
     );
 };
 
-const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, style_type = 'default', subject_id}) => {
+const Index = ({
+    groups = [],
+    header,
+    img,
+    img_url,
+    items,
+    plateid,
+    rec_json,
+    style_type = 'default',
+    subject_id,
+    bottom_btns,
+    show_mask,
+}) => {
     const jump = useJump();
     const [active, setActive] = useState(0);
 
@@ -146,17 +158,20 @@ const Index = ({groups = [], header, img, img_url, items, plateid, rec_json, sty
                         <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
-                {true ? (
-                    <TouchableOpacity activeOpacity={0.8} style={styles.bottomBtnWrap}>
-                        <FastImage
-                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit.png'}}
-                            style={styles.bottomBtnIcon}
-                        />
-                        <Text style={styles.bottomBtnText}>修改专题</Text>
+                {bottom_btns?.map?.((btn, idx) => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.bottomBtnWrap}
+                        key={idx}
+                        onPress={() => {
+                            jump(btn.url);
+                        }}>
+                        <FastImage source={{uri: btn.icon}} style={styles.bottomBtnIcon} />
+                        <Text style={styles.bottomBtnText}>{btn.name}</Text>
                     </TouchableOpacity>
-                ) : null}
+                ))}
             </View>
-            {false ? <View style={styles.mask} /> : null}
+            {show_mask ? <View style={styles.mask} /> : null}
         </View>
     );
 };
