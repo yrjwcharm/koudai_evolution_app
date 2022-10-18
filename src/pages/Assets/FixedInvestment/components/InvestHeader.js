@@ -4,7 +4,7 @@
  * @Description: 定投header
  */
 
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {deviceWidth, px} from '../../../../utils/appUtil';
 import {Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';

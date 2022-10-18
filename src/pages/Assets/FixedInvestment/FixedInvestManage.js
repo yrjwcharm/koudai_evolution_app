@@ -4,7 +4,7 @@
  * @Description: 定投管理
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';

@@ -71,7 +71,6 @@ const FixedInvestDetail = ({navigation, route}) => {
                         </>
                     ),
                 });
-                let actionPanelList = btn_list.map((el) => el.text);
                 setState({
                     header,
                     pay_info,

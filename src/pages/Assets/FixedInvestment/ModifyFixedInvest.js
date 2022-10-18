@@ -21,10 +21,9 @@ import BottomDesc from '../../../components/BottomDesc';
 import {Modal} from '../../../components/Modal';
 import {useSelector} from 'react-redux';
 import Html from '../../../components/RenderHtml';
-import {Button} from '~/components/Button';
 import {FixedButton} from '../../../components/Button';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
-import {callModifyFixedInvestApi, executeModifyFixedInvestApi} from './services';
+import {callModifyFixedInvestApi} from './services';
 
 const ModifyFixedInvest = ({navigation, route}) => {
     const {plan_id = ''} = route?.params;
@@ -165,138 +164,6 @@ const ModifyFixedInvest = ({navigation, route}) => {
                     });
                 }
             })();
-            // const res = {
-            //     code: '000000',
-            //     message: 'success',
-            //     result: {
-            //         title: '修改定投',
-            //         name: '全天候组合',
-            //         fund_code: '',
-            //         invest_id: '66444',
-            //         target_info: {
-            //             invest: {init_amount: 5, amount: '5.00', incr: 500, text: '定投金额(元)'},
-            //             fix_period: {
-            //                 text: '定投周期',
-            //                 current_date: '每月 22日',
-            //                 date_items: [
-            //                     {key: '每周', val: ['周一', '周二', '周三', '周四', '周五']},
-            //                     {key: '每两周', val: ['周一', '周二', '周三', '周四', '周五']},
-            //                     {
-            //                         key: '每月',
-            //                         val: [
-            //                             '1日',
-            //                             '2日',
-            //                             '3日',
-            //                             '4日',
-            //                             '5日',
-            //                             '6日',
-            //                             '7日',
-            //                             '8日',
-            //                             '9日',
-            //                             '10日',
-            //                             '11日',
-            //                             '12日',
-            //                             '13日',
-            //                             '14日',
-            //                             '15日',
-            //                             '16日',
-            //                             '17日',
-            //                             '18日',
-            //                             '19日',
-            //                             '20日',
-            //                             '21日',
-            //                             '22日',
-            //                             '23日',
-            //                             '24日',
-            //                             '25日',
-            //                             '26日',
-            //                             '27日',
-            //                             '28日',
-            //                         ],
-            //                     },
-            //                 ],
-            //             },
-            //         },
-            //         pay_methods: [
-            //             {
-            //                 pay_method: 'wallet',
-            //                 bank_icon: 'https://static.licaimofang.com/wp-content/uploads/2021/04/mfb2@3x.png',
-            //                 bank_name: '魔方宝',
-            //                 limit_desc: '可用额度728.15元',
-            //                 bank_no: '',
-            //                 type: 1,
-            //                 button: {
-            //                     text: '去充值',
-            //                     url: {path: 'MfbIn', type: 1, params: {code: '000678'}},
-            //                     avail: 1,
-            //                     action: '',
-            //                 },
-            //                 left_amount: 728.15,
-            //                 single_amount: 728.15,
-            //                 pay_type: 1,
-            //                 notice: '',
-            //                 pop_risk_disclosure: false,
-            //                 day_limit: 99999999.99,
-            //             },
-            //             {
-            //                 uid: 1000000002,
-            //                 bank_icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/pingan.png',
-            //                 pay_method: 'X:PAB9770001',
-            //                 pay_code: 'PAB9770001',
-            //                 bank_name: '平安银行',
-            //                 bank_no: '尾号 9770',
-            //                 type: 1,
-            //                 day_limit: 10000,
-            //                 pay_type: 0,
-            //                 left_amount: 10000,
-            //                 single_amount: 5000,
-            //                 limit_desc: '单笔限额：5千 单日限额：1万',
-            //                 single_deduction_amount: 50000,
-            //                 pop_risk_disclosure: false,
-            //             },
-            //             {
-            //                 uid: 1000000002,
-            //                 bank_icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/nongye.png',
-            //                 pay_method: 'X:ABC9316001',
-            //                 pay_code: 'ABC9316001',
-            //                 bank_name: '农业银行',
-            //                 bank_no: '尾号 9316',
-            //                 type: 1,
-            //                 day_limit: 20000,
-            //                 pay_type: 0,
-            //                 left_amount: 20000,
-            //                 single_amount: 10000,
-            //                 limit_desc: '单笔限额：1万 单日限额：2万',
-            //                 single_deduction_amount: 10000,
-            //                 pop_risk_disclosure: false,
-            //             },
-            //             {
-            //                 uid: 1000000002,
-            //                 bank_icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/jianshe.png',
-            //                 pay_method: 'X:CCB6382001',
-            //                 pay_code: 'CCB6382001',
-            //                 bank_name: '建设银行',
-            //                 bank_no: '尾号 6382',
-            //                 type: 1,
-            //                 day_limit: 800000,
-            //                 pay_type: 0,
-            //                 left_amount: 800000,
-            //                 single_amount: 400000,
-            //                 limit_desc: '单笔限额：40万 单日限额：80万',
-            //                 single_deduction_amount: 400000,
-            //                 pop_risk_disclosure: false,
-            //             },
-            //         ],
-            //         button: [
-            //             {
-            //                 text: '确认修改',
-            //                 url: {path: 'FixedPlanList', type: 1, params: {poid: 'X00F000003', fund_code: ''}},
-            //                 avail: 1,
-            //                 action: '',
-            //             },
-            //         ],
-            //     },
-            // };
         }, [])
     );
     const selectTime = () => {

@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:月收益
  */
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';

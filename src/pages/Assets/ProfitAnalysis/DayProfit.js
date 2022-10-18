@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description: 日收益
  */
-import React, {lazy, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';

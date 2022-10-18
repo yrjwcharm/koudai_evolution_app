@@ -4,12 +4,10 @@
  * @Description: 渲染列表
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {deviceWidth, px, isEmpty} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {useNavigation} from '@react-navigation/native';
 const shadow = {
     color: '#aaa',
     border: 6,

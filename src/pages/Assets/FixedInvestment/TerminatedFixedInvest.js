@@ -4,9 +4,9 @@
  * @Description: 已终止定投页面
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {px} from '../../../utils/appUtil';
+import {Colors} from '../../../common/commonStyle';
 import InvestHeader from './components/InvestHeader';
 import Loading from '../../Portfolio/components/PageLoading';
 import Empty from '../../../components/EmptyTip';
