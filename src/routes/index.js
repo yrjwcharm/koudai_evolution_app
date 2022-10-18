@@ -304,6 +304,7 @@ import SpecialExamine from '~/pages/CreatorCenter/SpecialExamine'; // 专题审�
 import CommunityInfoCreate from '~/pages/Community/CommunityInfoCreate'; // 创建社区
 import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑社区资料
 import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
+import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的关注/我的粉丝
 
 const Stack = createStackNavigator();
 
@@ -1207,6 +1208,7 @@ export default function AppStack() {
                     component={CommunityArticleSubmitCheck}
                     options={{title: ''}}
                 />
+                <Stack.Screen name="CommunityMyFollow" component={CommunityMyFollow} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );
