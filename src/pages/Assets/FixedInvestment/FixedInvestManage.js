@@ -35,12 +35,10 @@ const shadow = {
 const FixedInvestManage = ({navigation, route}) => {
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
-    const [times, setTimes] = useState('');
-    const [sum, setSum] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
     const [data, setData] = useState({});
-    const [detail, setDetail] = useState({});
     const [headList, setHeadList] = useState([]);
+    const [detail, setDetail] = useState({});
     const [loading, setLoading] = useState(true);
     const {fund_code = '', poid = ''} = route?.params || {};
     const [unitType, setUnitType] = useState(200);
@@ -49,9 +47,10 @@ const FixedInvestManage = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             (async () => {
+                let params = {};
                 const res = await Promise.all([
                     callFixedHeadDataApi({}),
-                    callHistoryDataApi({type: unitType, times, sum}),
+                    callHistoryDataApi({type: unitType}),
                     callTerminatedFixedApi({}),
                 ]);
                 if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
@@ -61,14 +60,14 @@ const FixedInvestManage = ({navigation, route}) => {
                         return {...el, checked: el.type == unitType ? true : false};
                     });
                     setTabList(tabList);
-                    setHeadList(head_list);
                     setDetail(detail);
+                    setHeadList(head_list);
                     setData(res[1].result);
                     setTerminatedCount(res[2].result?.data_list.length);
                     setLoading(false);
                 }
             })();
-        }, [unitType, times, sum])
+        }, [unitType])
     );
     const selTab = (item) => {
         setUnitType(item.type);
@@ -83,14 +82,6 @@ const FixedInvestManage = ({navigation, route}) => {
     const renderEmpty = useCallback(() => {
         return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
     }, [emptyMsg, showEmpty]);
-    const sumSort = useCallback(() => {
-        setTimes('');
-        sum == 'desc' ? setSum('asc') : setSum('desc');
-    }, [sum]);
-    const issueSort = useCallback(() => {
-        setSum('');
-        times == 'asc' ? setTimes('desc') : setTimes('asc');
-    }, [times]);
     const EmptyData = () => {
         return (
             <View style={{marginTop: px(12)}}>
@@ -108,6 +99,19 @@ const FixedInvestManage = ({navigation, route}) => {
             </View>
         );
     };
+    const executeSort = useCallback((data) => {
+        if (data.sort_key) {
+            callHistoryDataApi({
+                type: unitType,
+                sort_key: data?.sort_key,
+                sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
+            }).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            });
+        }
+    }, []);
     return (
         <>
             {loading ? (
@@ -189,16 +193,10 @@ const FixedInvestManage = ({navigation, route}) => {
                             );
                         })}
                     </View>
-                    <InvestHeader
-                        headList={data.head_list ?? []}
-                        times={times}
-                        sum={sum}
-                        sortByIssue={issueSort}
-                        sortBySum={sumSort}
-                    />
+                    <InvestHeader headList={data?.head_list ?? []} handleSort={executeSort} />
                     <FlatList
                         windowSize={300}
-                        data={data.data_list || []}
+                        data={data?.data_list || []}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         ListEmptyComponent={<EmptyData />}
