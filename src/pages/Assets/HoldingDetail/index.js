@@ -672,10 +672,9 @@ const BuyMode = ({data = {}}) => {
                 )}>
                 {list?.map?.((item, index) => {
                     const {name: tabLabel} = item;
-                    const {icon, indicators, remind_info, signals} = list[current];
+                    const {indicators, remind_info, signals} = list[current];
                     return (
                         <View key={tabLabel + index} style={{paddingBottom: Space.padding}} tabLabel={tabLabel}>
-                            {icon ? <Image source={{uri: icon}} style={styles.signalModeIcon} /> : null}
                             <View style={[Style.flexRow, {marginTop: px(12)}]}>
                                 {signals?.length > 0 && (
                                     <View style={[Style.flexBetween, styles.signalWrapper]}>
@@ -741,6 +740,7 @@ const BuyMode = ({data = {}}) => {
                     );
                 })}
             </ScrollableTabView>
+            {list?.[current]?.icon ? <Image source={{uri: list[current].icon}} style={styles.signalModeIcon} /> : null}
         </View>
     );
 };
@@ -1273,7 +1273,7 @@ const styles = StyleSheet.create({
     },
     signalModeIcon: {
         position: 'absolute',
-        top: -px(32),
+        top: px(50),
         right: 0,
         width: px(34),
         height: px(24),
