@@ -29,6 +29,6 @@ export const callTerminatedFixedApi = (params) => {
 export const callFixedInvestDetailApi = (params) => {
     return async (dispatch) => {
         const res = await http.get(`/platform_tool/invest_regularly/detail/20221010`, params);
-        dispatch({type: 'fetchSuccess', payload: res.result || {}});
+        dispatch({type: 'fetchSuccess', payload: {fixedInvestDetail: res} || {}});
     };
 };

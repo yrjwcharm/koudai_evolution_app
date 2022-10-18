@@ -293,7 +293,6 @@ import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
 
 import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
-import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
 import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
 import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
@@ -567,13 +566,8 @@ export default function AppStack() {
                     component={FixedInvestManage}
                     options={{title: '定投管理'}}
                 />
-                <Stack.Screen
-                    name="UpdateAutomaticInvest"
-                    component={ModifyFixedInvest}
-                    options={{title: '修改定投'}}
-                />
 
-                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: '定投详情'}} />
+                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: ''}} />
                 <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />

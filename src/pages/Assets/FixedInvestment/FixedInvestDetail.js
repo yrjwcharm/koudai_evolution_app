@@ -4,14 +4,16 @@
  * @Description: 定投详情新页面
  */
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {deviceWidth, px} from '../../../utils/appUtil';
+import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {callFixedInvestDetailApi} from './services';
+import {useJump} from '../../../components/hooks';
+import Loading from '../../Portfolio/components/PageLoading';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -23,141 +25,302 @@ const shadow = {
 
 const FixedInvestDetail = ({navigation, route}) => {
     const {poid = ''} = route?.params;
+    const jump = useJump();
     const dispatch = useDispatch();
+    const [state, setState] = useState({
+        loading: true,
+        btn_list: [],
+        pay_info: {},
+        records: {},
+    });
     const [visible, setVisible] = useState(false);
     const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
-    const [selectData] = useState(['修改', '暂停', '终止']);
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={[styles.topRightBtn, Style.flexCenter]}
-                        onPress={() => {
-                            setVisible(true);
-                        }}>
-                        <Text style={styles.title}>管理</Text>
-                    </TouchableOpacity>
-                </>
-            ),
-        });
-    }, []);
+    const selectData = useRef(['修改', '暂停', '终止']);
     useEffect(() => {
         (async () => {
-            dispatch(callFixedInvestDetailApi({poid, code: '66444'}));
+            dispatch(callFixedInvestDetailApi({plan_id: '66444'}));
             if (res.code === '000000') {
+                const {
+                    title = '',
+                    header = {},
+                    pay_info = {},
+                    records = {},
+                    manage_list: {btn_list = [], text},
+                } = res.result || {};
+                navigation.setOptions({
+                    title,
+                    headerRight: () => (
+                        <>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.topRightBtn, Style.flexCenter]}
+                                onPress={() => {
+                                    setVisible(true);
+                                }}>
+                                <Text style={styles.title}>{text}</Text>
+                            </TouchableOpacity>
+                        </>
+                    ),
+                });
+                let actionPanelList = btn_list.map((el) => el.text);
+                setState({
+                    header,
+                    pay_info,
+                    records,
+                    btn_list,
+                    loading: false,
+                });
             }
+            // const res1 = {
+            //     code: '000000',
+            //     message: 'success',
+            //     result: {
+            //         title: '定投详情',
+            //         header: {
+            //             name: '全天候组合',
+            //             code: '',
+            //             url: {
+            //                 text: '详情',
+            //                 url: {
+            //                     path: 'PortfolioDetails',
+            //                     type: 4,
+            //                     params: {
+            //                         link: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn/PortfolioDetails',
+            //                         title: '组合详情',
+            //                         timestamp: 1,
+            //                         params: {plan_id: 2, risk_level: '', fr: '', poid: ''},
+            //                     },
+            //                 },
+            //                 avail: 1,
+            //                 action: '',
+            //             },
+            //             head_list: [
+            //                 {text: '每期定投（元）', value: '5.00'},
+            //                 {text: '已投期数（期）', value: 0},
+            //                 {text: '累计定投（元）', value: 0},
+            //             ],
+            //         },
+            //         pay_info: {
+            //             title: '定投',
+            //             bank_icon: 'https://static.licaimofang.com/wp-content/uploads/2021/04/mfb2@3x.png',
+            //             bank_name: '魔方宝',
+            //             limit_desc: '',
+            //             status: '已终止',
+            //             text: '每月22日 定投5.00元',
+            //             uid: 1000000002,
+            //             remind: '2022-09-22（星期四）将扣款5.00元，请保持账户资金充足',
+            //         },
+            //         records: {
+            //             title: '定投记录(1)',
+            //             data_list: [{date: '2022-09-22', value: '5.00', status: '定投失败'}],
+            //         },
+            //         manage_list: {
+            //             text: '管理',
+            //             btn_list: [
+            //                 {
+            //                     text: '修改',
+            //                     url: {path: 'FixedUpdate', type: 1, params: {invest_id: '66444'}},
+            //                     avail: 1,
+            //                     action: '',
+            //                 },
+            //                 {text: '暂停', avail: 1, action: ''},
+            //                 {
+            //                     text: '终止',
+            //                     popup: {
+            //                         type: 'alert',
+            //                         title: '终止确认',
+            //                         content:
+            //                             '定投是以不同的持有成本买入，持续投入可起到摊平成本，分散风险的作用，贵在坚持！',
+            //                         confirm: {text: '仍要终止', url: '', avail: 1, action: ''},
+            //                         cancel: {text: '再坚持一下', url: '', avail: 1, action: ''},
+            //                         back_close: true,
+            //                         touch_close: true,
+            //                     },
+            //                     avail: 1,
+            //                 },
+            //                 {text: '取消', avail: 1, action: ''},
+            //             ],
+            //         },
+            //     },
+            // };
         })();
     }, []);
     return (
-        <View style={styles.container}>
-            {/*定投*/}
-            <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(123)}}>
-                <View style={styles.investHeader}>
-                    <View style={styles.headerTop}>
-                        <View style={styles.headerTopWrap}>
-                            <View style={Style.flexBetween}>
-                                <Text style={styles.fundName}>中欧价值发现混合A</Text>
-                                <Text style={styles.detail}>详情</Text>
+        <>
+            {state.loading ? (
+                <Loading color={Colors.btnColor} />
+            ) : (
+                <View style={styles.container}>
+                    {/*定投*/}
+                    <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(123)}}>
+                        <View style={styles.investHeader}>
+                            <View style={styles.headerTop}>
+                                <View style={styles.headerTopWrap}>
+                                    <View style={Style.flexBetween}>
+                                        <Text style={styles.fundName}>{state.header?.name}</Text>
+                                        <TouchableOpacity onPress={() => jump(state.header?.url?.url)}>
+                                            <Text style={styles.detail}>{state.header?.url?.text}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {!isEmpty(state.header?.code) && (
+                                        <Text style={styles.fundCode}>{state.header?.code}</Text>
+                                    )}
+                                </View>
                             </View>
-                            <Text style={styles.fundCode}>000888</Text>
-                        </View>
-                    </View>
-                    <View style={styles.headerBottom}>
-                        <View style={styles.headerBottomWrap}>
-                            <View style={styles.headerBottomWrapItem}>
-                                <Text style={styles.itemValue}>5,000.00</Text>
-                                <Text style={styles.itemLabel}>每期定投(元)</Text>
-                            </View>
-                            <View style={styles.headerBottomWrapItem}>
-                                <Text style={styles.itemValue}>3</Text>
-                                <Text style={styles.itemLabel}>已投期数</Text>
-                            </View>
-                            <View style={styles.headerBottomWrapItem}>
-                                <Text style={styles.itemValue}>15,000.00</Text>
-                                <Text style={styles.itemLabel}>累计定投(元)</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </BoxShadow>
-            <View style={{marginTop: px(12)}}>
-                <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(156)}}>
-                    <View style={styles.section}>
-                        <View style={[styles.status, {backgroundColor: '#EDF7EC'}]}>
-                            <Text style={[styles.statusText, {color: Colors.green}]}>定投中</Text>
-                        </View>
-                        <Text style={styles.title}>定投</Text>
-                        <View style={styles.bankcard}>
-                            <Image resizeMode={'cover'} source={require('./assets/logo.png')} />
-                            <View style={{marginLeft: px(8)}}>
-                                <Text style={styles.card}>招商银行 (尾号8888)</Text>
-                                <Text style={[styles.transfer, {marginTop: px(2)}]}>
-                                    单笔限额:10万，单日限额：100万
-                                </Text>
-                                <Text style={[styles.schedule, {marginTop: px(12)}]}>每月10日 定投5,000.00元</Text>
+                            <View style={styles.headerBottom}>
+                                <View style={styles.headerBottomWrap}>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[2]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[2]?.text}</Text>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                        <View style={{height: px(41), justifyContent: 'center'}}>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.redText}>2022-09-10(星期一)</Text>
-                                <Text style={styles.blackText}>将扣款</Text>
-                                <Text style={styles.redText}>5,000元</Text>
-                                <Text style={styles.blackText}>,请保持账户资金充足</Text>
+                    </BoxShadow>
+                    <View style={{marginTop: px(12)}}>
+                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(156)}}>
+                            <View style={styles.section}>
+                                <View
+                                    style={[
+                                        styles.status,
+                                        {
+                                            backgroundColor:
+                                                state.pay_info?.status == '定投中'
+                                                    ? '#EDF7EC'
+                                                    : state.pay_info?.status == '已暂停'
+                                                    ? '#FDEFE4'
+                                                    : '#E9EAEF',
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            styles.statusText,
+                                            {
+                                                color:
+                                                    state.pay_info?.status == '定投中'
+                                                        ? Colors.green
+                                                        : state.pay_info?.status == '已暂停'
+                                                        ? '#FF7D41'
+                                                        : Colors.lightGrayColor,
+                                            },
+                                        ]}>
+                                        {state.pay_info?.status}
+                                    </Text>
+                                </View>
+                                <Text style={styles.title}>{state.pay_info?.title}</Text>
+                                <View style={styles.bankcard}>
+                                    <Image
+                                        resizeMode={'cover'}
+                                        style={{width: px(25), height: px(27)}}
+                                        source={{uri: state.pay_info?.bank_icon}}
+                                    />
+                                    <View style={{marginLeft: px(8)}}>
+                                        <Text style={styles.card}>{state.pay_info?.bank_name}</Text>
+                                        {!isEmpty(state.pay_info?.limit_desc) && (
+                                            <Text style={[styles.transfer, {marginTop: px(2)}]}>
+                                                {state.pay_info?.limit_desc}
+                                            </Text>
+                                        )}
+                                        <Text style={[styles.schedule, {marginTop: px(12)}]}>
+                                            {state.pay_info?.text}
+                                        </Text>
+                                    </View>
+                                </View>
+                                {!isEmpty(state.pay_info?.remind) && (
+                                    <View style={{height: px(41), justifyContent: 'center'}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.redText}>
+                                                {state.pay_info?.remind.substring(
+                                                    0,
+                                                    state.pay_info?.remind.indexOf('）') + 1
+                                                )}
+                                            </Text>
+                                            <Text style={styles.blackText}>将扣款</Text>
+                                            <Text style={styles.redText}>
+                                                {state.pay_info?.remind.substring(
+                                                    state.pay_info?.remind.indexOf('款') + 1,
+                                                    state.pay_info?.remind.lastIndexOf('元')
+                                                )}
+                                                元
+                                            </Text>
+                                            <Text style={styles.blackText}>,请保持账户资金充足</Text>
+                                        </View>
+                                    </View>
+                                )}
                             </View>
-                        </View>
+                        </BoxShadow>
                     </View>
-                </BoxShadow>
-            </View>
-            <View style={styles.footer}>
-                <View>
-                    <Text style={styles.listRowTitle}>定投记录(5)</Text>
-                </View>
-                <View style={Style.flexBetween}>
-                    <Text style={styles.rowTitle}>日期</Text>
-                    <Text style={styles.rowTitle}>金额(元)</Text>
-                    <Text style={styles.rowTitle}>交易状态</Text>
-                </View>
-                <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                    <View style={{width: '38.5%'}}>
-                        <Text style={styles.date}>2022-02-10</Text>
-                    </View>
-                    <View style={{width: '38.5%'}}>
-                        <Text style={styles.money}>5,000.00</Text>
-                    </View>
-                    <View style={{width: '23%', flexDirection: 'row', alignItems: 'center'}}>
-                        {/*<Text style={styles.investStatus}>定投成功</Text>*/}
+                    <View style={styles.footer}>
                         <View>
-                            <Text style={[styles.investFail, {textAlign: 'right'}]}>定投失败</Text>
-                            <Text style={styles.failReason}>银行卡余额不足</Text>
+                            <Text style={styles.listRowTitle}>{state.records?.title}</Text>
                         </View>
-                        <Image source={require('./assets/more.png')} />
+                        <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                            <Text style={styles.rowTitle}>日期</Text>
+                            <Text style={styles.rowTitle}>金额(元)</Text>
+                            <Text style={styles.rowTitle}>交易状态</Text>
+                        </View>
+                        {state.records?.data_list.map((item, index) => {
+                            return (
+                                <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
+                                    <View style={{width: '38.5%'}}>
+                                        <Text style={styles.date}>{item.date}</Text>
+                                    </View>
+                                    <View style={{width: '38.5%'}}>
+                                        <Text style={styles.money}>{item.value}</Text>
+                                    </View>
+                                    <View style={{width: '23%', flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                        <View style={Style.flexRow}>
+                                            <View>
+                                                {/*<Text style={styles.investStatus}>定投成功</Text>*/}
+                                                <Text style={[styles.investFail, {textAlign: 'right'}]}>
+                                                    {item.status}
+                                                </Text>
+                                                {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                                            </View>
+                                            <Image source={require('./assets/more.png')} style={{marginLeft: px(4)}} />
+                                        </View>
+                                    </View>
+                                </View>
+                            );
+                        })}
                     </View>
+                    <SelectModal
+                        style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
+                        callback={(index) => {
+                            if (index === 0) {
+                                jump(state.btn_list[index]?.url);
+                            } else if (index === 1) {
+                            } else if (index === 2) {
+                                const {
+                                    popup: {title, content, confirm, cancel, back_close, touch_close},
+                                } = state.btn_list[index];
+                                Modal.show({
+                                    title,
+                                    confirm: true,
+                                    isTouchMaskToClose: back_close,
+                                    backButtonClose: touch_close,
+                                    cancelText: cancel.text,
+                                    confirmCallBack: () => {},
+                                    confirmText: confirm.text,
+                                    content,
+                                });
+                            }
+                        }}
+                        closeModal={() => setVisible(false)}
+                        entityList={selectData.current}
+                        show={visible}
+                    />
                 </View>
-            </View>
-            <SelectModal
-                style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
-                callback={(index) => {
-                    if (index === 0) {
-                        navigation.navigate('UpdateAutomaticInvest');
-                    } else if (index === 1) {
-                    } else if (index === 2) {
-                        Modal.show({
-                            title: '终止确认',
-                            confirm: true,
-                            cancelText: '仍要终止',
-                            confirmCallBack: () => {},
-                            confirmText: '在坚持一下',
-                            content: `定投是以不同的持有成本买入，持续投入可起到摊平成本，分散风险的作用，贵在坚持！`,
-                        });
-                    }
-                }}
-                closeModal={() => setVisible(false)}
-                entityList={selectData}
-                show={visible}
-            />
-        </View>
+            )}
+        </>
     );
 };
 
