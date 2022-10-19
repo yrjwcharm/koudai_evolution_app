@@ -133,6 +133,7 @@ class BankInfo extends Component {
                 amount: this.props.route?.params?.amount,
                 fr: this.props.route?.params?.fr,
                 fund_code: this.props.route?.params?.fund_code,
+                append: this.props.route?.params?.append || '',
             },
             '正在提交数据...'
         ).then((res) => {
