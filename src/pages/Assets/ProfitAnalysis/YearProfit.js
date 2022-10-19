@@ -140,7 +140,6 @@ const YearProfit = ({type}) => {
             </View>
             {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
-            <RenderList type={type} />
         </View>
     );
 };
@@ -180,8 +179,6 @@ const styles = StyleSheet.create({
         paddingTop: px(16),
         paddingBottom: px(20),
         paddingHorizontal: px(12),
-        borderBottomLeftRadius: px(5),
-        borderBottomRightRadius: px(5),
         backgroundColor: Colors.white,
     },
     chartLeft: {

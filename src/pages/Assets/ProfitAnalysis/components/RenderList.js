@@ -50,26 +50,28 @@ const RenderList = React.memo(() => {
     };
     return (
         <>
-            <View style={styles.profitHeader}>
-                <View style={styles.profitHeaderLeft}>
-                    <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                    <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                </View>
-                <TouchableOpacity onPress={() => executeSort(right)}>
-                    <View style={styles.profitHeaderRight}>
-                        <Text style={styles.moneyText}>{right?.text}</Text>
-                        <Image
-                            source={
-                                isEmpty(right?.sort_type)
-                                    ? require('../assets/sort.png')
-                                    : right?.sort_type == 'desc'
-                                    ? require('../assets/desc.png')
-                                    : require('../assets/asc.png')
-                            }
-                        />
+            {left && right && (
+                <View style={styles.profitHeader}>
+                    <View style={styles.profitHeaderLeft}>
+                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity onPress={() => executeSort(right)}>
+                        <View style={styles.profitHeaderRight}>
+                            <Text style={styles.moneyText}>{right?.text}</Text>
+                            <Image
+                                source={
+                                    isEmpty(right?.sort_type)
+                                        ? require('../assets/sort.png')
+                                        : right?.sort_type == 'desc'
+                                        ? require('../assets/desc.png')
+                                        : require('../assets/asc.png')
+                                }
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )}
             {useMemo(
                 () =>
                     profitList.map((item, index) => {
@@ -116,7 +118,6 @@ RenderList.propTypes = {
 export default RenderList;
 const styles = StyleSheet.create({
     profitHeader: {
-        marginTop: px(24),
         ...Style.flexBetween,
     },
     tag: {
