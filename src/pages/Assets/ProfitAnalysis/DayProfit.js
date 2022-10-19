@@ -24,6 +24,10 @@ const DayProfit = React.memo(({type}) => {
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
+    const [isNext, setIsNext] = useState(false);
+    const [isPrev, setIsPrev] = useState(true);
+    const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
     /**
      * 初始化日历日期
      */
@@ -74,40 +78,45 @@ const DayProfit = React.memo(({type}) => {
                 }
                 const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
                 //双重for循环判断日历是否超过、小于或等于当前日期
-                // let maxDateArr = [];
                 if (res.code === '000000') {
-                    const {profit_data_list = []} = res.result ?? {};
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            //小于当前日期的情况
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                if (arr[i].day == profit_data_list[j].unit_key) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    const {profit_data_list = [], unit_list = []} = res.result ?? {};
+                    setMinDate(unit_list[unit_list.length - 1].value);
+                    setMaxDate(unit_list[0].value);
+                    if (profit_data_list.length > 0) {
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                //小于当前日期的情况
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    if (arr[i].day == profit_data_list[j].unit_key) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
-                    }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: el.unit_key, value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        chart: barCharData,
-                    });
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                        );
+                        let barCharData = profit_data_list
+                            .map((el) => {
+                                return {date: el.unit_key, value: parseFloat(el.value)};
+                            })
+                            .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[index]?.unit_key},
+                                {name: '收益', val: profit_data_list[index]?.value},
+                            ],
+                            chart: barCharData,
+                        });
 
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    let zIndex = arr.findIndex((el) => el.day == selCurDate);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setDate(dayjs_);
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        let zIndex = arr.findIndex((el) => el.day == selCurDate);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setDate(dayjs_);
+                    }
                 }
             })();
         },
@@ -120,12 +129,24 @@ const DayProfit = React.memo(({type}) => {
      * 向上递增一个月
      */
     const addMonth = () => {
+        let cur = date.format('YYYY-MM');
+        let min = dayjs(maxDate).format('YYYY-MM');
+        if (cur === min) {
+            setIsNext(false);
+            return;
+        }
         setDiff((diff) => diff + 1);
     };
     /**
      * 向下递减一个月
      */
     const subMonth = () => {
+        let cur = date.format('YYYY-MM');
+        let min = dayjs(minDate).format('YYYY-MM');
+        if (cur === min) {
+            setIsPrev(false);
+            return;
+        }
         setDiff((diff) => diff - 1);
     };
     /**
@@ -180,6 +201,8 @@ const DayProfit = React.memo(({type}) => {
                 isBarChart={isBarChart}
                 subMonth={subMonth}
                 addMonth={addMonth}
+                isPrev={isPrev}
+                isNext={isNext}
                 date={date.month() + 1 + '月'}
             />
             {/*日历*/}
