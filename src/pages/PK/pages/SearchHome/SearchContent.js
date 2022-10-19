@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-14 18:45:25
+ * @LastEditTime: 2022-10-19 11:01:22
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -16,8 +16,10 @@ import RenderHtml from '~/components/RenderHtml';
 
 import Toast from '~/components/Toast';
 import {debounce} from 'lodash';
+import FastImage from 'react-native-fast-image';
+import {genKey} from '~/pages/CreatorCenter/SelectProduct/utils';
 
-const SearchContent = ({data, type}) => {
+const SearchContent = ({data, type, selections, handlerSelections}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const onFavor = useCallback(
@@ -55,18 +57,43 @@ const SearchContent = ({data, type}) => {
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity
-                    style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
-                    onPress={onFavor}
-                    activeOpacity={0.8}>
-                    <Text
-                        style={[
-                            {fontSize: Font.textH3, lineHeight: px(17)},
-                            {color: favor ? '#BDC2CC' : Colors.brandColor},
-                        ]}>
-                        {favor ? '已自选' : '+自选'}
-                    </Text>
-                </TouchableOpacity>
+                {selections ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            let newVal = [...selections];
+
+                            let i = newVal.findIndex((v) => genKey(v) === genKey(data?.product_info));
+
+                            i > -1 ? newVal.splice(i, 1) : newVal.unshift(data?.product_info);
+
+                            handlerSelections(newVal);
+                        }}>
+                        <FastImage
+                            source={{
+                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                    selections.find((item) => genKey(item) === genKey(data?.product_info))
+                                        ? 'check'
+                                        : 'uncheck'
+                                }.png`,
+                            }}
+                            style={{width: px(16), height: px(16)}}
+                        />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
+                        onPress={onFavor}
+                        activeOpacity={0.8}>
+                        <Text
+                            style={[
+                                {fontSize: Font.textH3, lineHeight: px(17)},
+                                {color: favor ? '#BDC2CC' : Colors.brandColor},
+                            ]}>
+                            {favor ? '已自选' : '+自选'}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </TouchableOpacity>
     ) : (

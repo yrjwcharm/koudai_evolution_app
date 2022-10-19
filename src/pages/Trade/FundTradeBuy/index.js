@@ -383,7 +383,7 @@ const PayMethod = ({
 
 const Index = ({navigation, route}) => {
     const jump = useJump();
-    const {amount: _amount = '', code, type = 0} = route.params;
+    const {amount: _amount = '', code, type = 0, append = ''} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
     const [amount, setAmount] = useState(_amount);
@@ -495,7 +495,7 @@ const Index = ({navigation, route}) => {
     const onSubmit = (password) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
-        const params = {amount, fund_code: code, password, pay_method: method.pay_method, poid: data.poid};
+        const params = {amount, fund_code: code, password, pay_method: method.pay_method, poid: data.poid, append};
         if (type === 1) {
             params.cycle = period_info.current_date[0];
             params.need_buy = false;

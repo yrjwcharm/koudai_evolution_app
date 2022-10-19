@@ -4,12 +4,11 @@
  * @Description: 渲染列表
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {deviceWidth, px, isEmpty} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {useNavigation} from '@react-navigation/native';
+import {useJump} from '../../../../components/hooks';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -22,14 +21,10 @@ const shadow = {
         left: px(16),
     },
 };
-const RenderItem = ({item, index, navigation}) => {
+const RenderItem = ({item, index}) => {
+    const jump = useJump();
     return (
-        <TouchableOpacity
-            style={{marginTop: px(8)}}
-            key={item + `` + index}
-            onPress={() => {
-                navigation.navigate('FixedInvestDetail');
-            }}>
+        <TouchableOpacity style={{marginTop: px(8)}} key={item + `` + index} onPress={() => jump(item.url)}>
             <View>
                 <BoxShadow
                     setting={{

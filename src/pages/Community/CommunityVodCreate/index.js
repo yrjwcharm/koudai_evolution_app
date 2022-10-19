@@ -2,42 +2,226 @@
  * @Date: 2022-10-13 17:56:52
  * @Description: 发布视频
  */
-import React, {useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import {launchImageLibrary} from 'react-native-image-picker';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Video from 'react-native-video';
+import deleteVideo from '~/assets/img/icon/delete.png';
 import uploadImg from '~/assets/img/icon/upload.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Button} from '~/components/Button';
+import {useJump} from '~/components/hooks';
+import {BottomModal} from '~/components/Modal';
 import NavBar from '~/components/NavBar';
-import {px} from '~/utils/appUtil';
+import Toast from '~/components/Toast';
+import withPageLoading from '~/components/withPageLoading';
+import {deviceHeight, px, resolveTimeStemp} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
+import {getTagList, publishVideo} from './services';
 
-const Index = () => {
+const ChooseTag = ({setTags, tags}) => {
+    const bottomModal = useRef();
+    const [value, setVal] = useState('');
+    const [selectedTags, setSelectedTags] = useState(tags || []);
+    const [list, setList] = useState([]);
+    const timer = useRef();
+
+    const renderItem = ({item, index}) => {
+        const {article_count, id, name, pv_count} = item;
+        const selected = selectedTags?.some((tag) => tag.id === id);
+        return (
+            <TouchableOpacity activeOpacity={1} style={[Style.flexBetween, {paddingTop: px(24)}]}>
+                <View>
+                    <Text style={styles.subTitle}>#{name}</Text>
+                    <Text style={[styles.desc, {marginTop: px(4)}]}>
+                        {article_count}篇内容 · {pv_count}次浏览
+                    </Text>
+                </View>
+                <Button
+                    disabled={selected || selectedTags?.length === 4}
+                    disabledColor="#E9EAEF"
+                    onPress={() => setSelectedTags((prev) => [...prev, item])}
+                    style={styles.addBtn}
+                    textStyle={{
+                        ...styles.desc,
+                        color: selected ? Colors.lightGrayColor : '#fff',
+                        fontWeight: Font.weightMedium,
+                    }}
+                    title={selected ? '已添加' : '添加'}
+                />
+            </TouchableOpacity>
+        );
+    };
+
+    useEffect(() => {
+        if (value?.length > 0) {
+            timer.current && clearTimeout(timer.current);
+            timer.current = setTimeout(() => {
+                getTagList({kw: value}).then((res) => {
+                    if (res.code === '000000') {
+                        setList(res.result);
+                    }
+                });
+            }, 300);
+        }
+    }, [value]);
+
+    return (
+        <>
+            <View style={styles.tagsContainer}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setSelectedTags(tags || []);
+                        bottomModal.current.show();
+                    }}
+                    style={[styles.tagBox, {backgroundColor: Colors.bgColor}]}>
+                    <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '标签(至少添加一个)'}</Text>
+                </TouchableOpacity>
+                {tags?.map?.((tag, i) => {
+                    const {id, name} = tag;
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={name + id + i}
+                            onPress={() => {
+                                const next = [...tags];
+                                next.splice(i, 1);
+                                setTags(next);
+                            }}
+                            style={[
+                                Style.flexRow,
+                                styles.tagBox,
+                                {marginTop: i < 3 ? 0 : px(8), marginLeft: i !== 0 && i % 3 === 0 ? 0 : px(8)},
+                            ]}>
+                            <Text style={[styles.desc, {color: Colors.brandColor}]}>{name}</Text>
+                            <AntDesign color={Colors.brandColor} name="close" size={px(12)} />
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+            <BottomModal
+                confirmText="完成"
+                keyboardAvoiding={false}
+                onDone={() => setTags?.(selectedTags)}
+                ref={bottomModal}
+                style={{height: deviceHeight - px(92)}}
+                title="添加标签">
+                <>
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        <View style={[Style.flexRow, styles.searchBox]}>
+                            <Image
+                                source={{
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
+                                }}
+                                style={styles.searchIcon}
+                            />
+                            <TextInput
+                                clearButtonMode="while-editing"
+                                maxLength={8}
+                                onChangeText={(text) => setVal(text)}
+                                placeholder="搜索标签"
+                                placeholderTextColor={Colors.lightGrayColor}
+                                style={styles.searchInput}
+                                value={value}
+                            />
+                        </View>
+                        <Text style={[styles.desc, {marginTop: px(12)}]}>至少添加一个标签</Text>
+                        {selectedTags?.length > 0 && (
+                            <View style={[styles.tagsContainer, {marginTop: px(8)}]}>
+                                {selectedTags.map?.((tag, i) => {
+                                    const {id, name} = tag;
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            key={name + id + i}
+                                            onPress={() =>
+                                                setSelectedTags((prev) => {
+                                                    const next = [...prev];
+                                                    next.splice(i, 1);
+                                                    return next;
+                                                })
+                                            }
+                                            style={[
+                                                Style.flexRow,
+                                                styles.tagBox,
+                                                {marginTop: i < 3 ? 0 : px(8), marginLeft: i % 3 === 0 ? 0 : px(8)},
+                                            ]}>
+                                            <Text style={[styles.desc, {color: Colors.brandColor}]}>{name}</Text>
+                                            <AntDesign color={Colors.brandColor} name="close" size={px(12)} />
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
+                        )}
+                    </View>
+                    {list?.length > 0 && (
+                        <FlatList
+                            data={list}
+                            initialNumToRender={20}
+                            keyExtractor={({id, name}, index) => name + id + index}
+                            ListFooterComponent={null}
+                            onEndReachedThreshold={0.99}
+                            renderItem={renderItem}
+                            scrollIndicatorInsets={{right: 1}}
+                            style={{paddingHorizontal: Space.padding}}
+                        />
+                    )}
+                </>
+            </BottomModal>
+        </>
+    );
+};
+
+const Index = ({navigation, route, setLoading}) => {
+    const jump = useJump();
     const [video, setVideo] = useState();
+    const [paused, setPaused] = useState(true);
+    const [showDuration, setShowDuration] = useState(true);
+    const videoRef = useRef();
 
     const finished = useMemo(() => {
         const {intro, tags, url} = video || {};
-        return intro && tags && url ? true : false;
+        return intro?.length > 0 && tags?.length > 0 && url ? true : false;
     }, [video]);
 
     const openPicker = () => {
         launchImageLibrary({mediaType: 'video', selectionLimit: 1}, (resp) => {
-            const {
-                assets: [file],
-            } = resp;
-            upload({...file, fileType: 'vod'}).then((res) => {
-                res && setVideo({duration: file.duration, url: res});
-            });
+            const {assets: [file] = []} = resp;
+            if (file) {
+                if (file.fileSize > 100 * 1024 * 1024) {
+                    Toast.show('视频大小不能超过100M');
+                } else {
+                    const duration = resolveTimeStemp(file.duration * 1000)
+                        .slice(-2)
+                        .join(':');
+                    upload({...file, fileType: 'vod'}).then((res) => {
+                        res && setVideo({duration, ...res});
+                    });
+                }
+            }
         });
     };
 
     const renderRight = () => {
-        if (video)
+        if (video?.url)
             return (
                 <Button
                     disabled={!finished}
                     disabledColor={'rgba(0, 81, 204, 0.3)'}
+                    onPress={onPublish}
                     style={styles.pubBtn}
                     textStyle={styles.title}
                     title="发布"
@@ -46,6 +230,26 @@ const Index = () => {
         else return null;
     };
 
+    const onPublish = () => {
+        const loading = Toast.showLoading('提交审核中...');
+        publishVideo({media_ids: video.id, tag_ids: video.tags.map?.((tag) => tag.id)?.join(','), title: video.intro})
+            .then((res) => {
+                Toast.hide(loading);
+                if (res.code === '000000') {
+                    jump(res.result.url);
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally(() => {
+                Toast.hide(loading);
+            });
+    };
+
+    useEffect(() => {
+        setLoading(false);
+    }, []);
+
     return (
         <View style={styles.container}>
             <NavBar leftIcon="chevron-left" renderRight={renderRight()} title="发布视频" />
@@ -53,10 +257,72 @@ const Index = () => {
                 bounces={false}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1, paddingHorizontal: Space.padding}}>
-                <Text style={[styles.bigTitle, {marginTop: px(12)}]}>上传视频</Text>
-                <TouchableOpacity activeOpacity={0.8} onPress={openPicker} style={[Style.flexCenter, styles.uploadBtn]}>
-                    <Image source={uploadImg} style={styles.uploadImg} />
-                </TouchableOpacity>
+                {video?.url ? (
+                    <>
+                        <View>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    setShowDuration(false);
+                                    setPaused((prev) => !prev);
+                                }}>
+                                <Video
+                                    allowsExternalPlayback={false}
+                                    controls
+                                    muted={false}
+                                    paused={paused}
+                                    playInBackground
+                                    playWhenInactive
+                                    posterResizeMode="contain"
+                                    rate={1}
+                                    ref={videoRef}
+                                    resizeMode="contain"
+                                    source={{uri: video.url}}
+                                    style={styles.video}
+                                    volume={1}
+                                />
+                            </TouchableWithoutFeedback>
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => setVideo()} style={styles.deleteVideo}>
+                                <Image source={deleteVideo} style={styles.deleteIcon} />
+                            </TouchableOpacity>
+                            {showDuration && (
+                                <View style={[Style.flexRow, styles.durationBox]}>
+                                    <FontAwesome5 color="#fff" name="play" size={px(5)} style={{marginRight: px(4)}} />
+                                    <Text style={[styles.numDesc, {fontFamily: Font.numRegular}]}>
+                                        {video.duration}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                        <View style={[Style.flexRow, styles.inputBox]}>
+                            <TextInput
+                                clearButtonMode="while-editing"
+                                maxLength={25}
+                                onChangeText={(text) => setVideo((prev) => ({...prev, intro: text}))}
+                                placeholder="请输入视频介绍"
+                                placeholderTextColor={Colors.placeholderColor}
+                                style={styles.input}
+                                value={video.intro || ''}
+                            />
+                            <Text style={[styles.title, {color: Colors.lightGrayColor}]}>
+                                {video.intro?.length || 0}/25
+                            </Text>
+                        </View>
+                        <ChooseTag
+                            setTags={(selectedTags) => setVideo((prev) => ({...prev, tags: selectedTags}))}
+                            tags={video?.tags}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <Text style={[styles.bigTitle, {marginTop: px(12)}]}>上传视频</Text>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={openPicker}
+                            style={[Style.flexCenter, styles.uploadBtn]}>
+                            <Image source={uploadImg} style={styles.uploadImg} />
+                        </TouchableOpacity>
+                    </>
+                )}
             </ScrollView>
         </View>
     );
@@ -85,6 +351,17 @@ const styles = StyleSheet.create({
         lineHeight: px(20),
         color: '#fff',
     },
+    subTitle: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    desc: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.lightGrayColor,
+    },
     uploadBtn: {
         marginTop: px(12),
         borderRadius: Space.borderRadius,
@@ -96,6 +373,85 @@ const styles = StyleSheet.create({
         width: px(24),
         height: px(24),
     },
+    video: {
+        marginTop: Space.marginVertical,
+        borderRadius: Space.borderRadius,
+        width: '100%',
+        height: px(194),
+        overflow: 'hidden',
+    },
+    playBtn: {
+        width: px(48),
+        height: px(48),
+    },
+    deleteVideo: {
+        position: 'absolute',
+        top: px(8),
+        right: px(8),
+    },
+    deleteIcon: {
+        width: px(14),
+        height: px(14),
+    },
+    durationBox: {
+        paddingHorizontal: px(6),
+        borderRadius: px(4),
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        height: px(16),
+        position: 'absolute',
+        right: px(8),
+        bottom: px(8),
+    },
+    numDesc: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#fff',
+    },
+    inputBox: {
+        marginTop: Space.marginVertical,
+        paddingBottom: px(12),
+        borderBottomWidth: Space.borderWidth,
+        borderColor: '#BDC2CC',
+    },
+    input: {
+        flex: 1,
+        fontSize: Font.textH1,
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    tagsContainer: {
+        marginTop: Space.marginVertical,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    tagBox: {
+        paddingVertical: px(4),
+        paddingHorizontal: px(12),
+        borderRadius: px(40),
+        backgroundColor: '#F1F6FF',
+    },
+    searchBox: {
+        marginTop: Space.marginVertical,
+        padding: px(6),
+        borderRadius: px(40),
+        backgroundColor: '#E9EAEF',
+    },
+    searchIcon: {
+        width: px(18),
+        height: px(18),
+    },
+    searchInput: {
+        flex: 1,
+        paddingLeft: px(4),
+        fontSize: Font.textH3,
+        color: Colors.defaultColor,
+    },
+    addBtn: {
+        borderRadius: px(50),
+        width: px(64),
+        height: px(30),
+        backgroundColor: Colors.brandColor,
+    },
 });
 
-export default Index;
+export default withPageLoading(Index);

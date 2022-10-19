@@ -64,6 +64,7 @@ const SetTradePassword = ({navigation, route}) => {
                             fr: route?.params?.fr,
                             fund_code: route?.params?.fund_code,
                             amount: route?.params?.amount,
+                            append: route?.params?.append,
                         }).then((data) => {
                             if (data.code === '000000') {
                                 dispatch(getUserInfo());

@@ -11,12 +11,20 @@ import sortUp from '~/assets/img/attention/sortUp.png';
 import sortDown from '~/assets/img/attention/sortDown.png';
 import {useJump} from '~/components/hooks';
 import LoadingTips from '~/components/LoadingTips';
-const FollowTable = ({data = {}, handleSort, stickyHeaderY, scrollY}) => {
+import FastImage from 'react-native-fast-image';
+import {genKey} from './utils';
+
+const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stickyHeaderY, scrollY}) => {
     const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
     const jump = useJump();
     const [isScroll, setIsScroll] = useState(false);
     const {header, body} = data;
+
+    const checkeds = useMemo(() => {
+        return selections.map((item) => genKey(item));
+    }, [selections]);
+
     const _handleSort = (_data) => {
         if (_data.order_by_field) {
             handleSort({
@@ -39,44 +47,64 @@ const FollowTable = ({data = {}, handleSort, stickyHeaderY, scrollY}) => {
                                 borderRightColor: '#E9EAEF',
                                 borderRightWidth: isScroll ? 0.5 : 0,
                             }}>
-                            <View
-                                stickyHeaderY={stickyHeaderY + px(42) + (header ? px(75 + 9) : 0)} // 把头部高度传入
-                                stickyScrollY={scrollY} // 把滑动距离传入
-                            >
-                                <View style={[styles.tr, {height: px(47)}]}>
-                                    <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
-                                        <Text
-                                            numberOfLines={1}
-                                            style={{
-                                                fontSize: px(12),
-                                                color: Colors.lightBlackColor,
-                                            }}>
-                                            {body?.th[0]?.line?.title}
-                                        </Text>
-                                    </View>
+                            <View style={[styles.tr, {height: px(47)}]}>
+                                <View style={[Style.flexRow, {paddingHorizontal: px(9)}]}>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{
+                                            fontSize: px(12),
+                                            color: Colors.lightBlackColor,
+                                            marginLeft: px(25),
+                                        }}>
+                                        {body?.th[0]?.line?.title}
+                                    </Text>
                                 </View>
                             </View>
                             {body?.tr?.map((tr, index) => (
                                 <TouchableOpacity
-                                    style={styles.tr}
-                                    activeOpacity={0.9}
+                                    style={[styles.tr]}
+                                    activeOpacity={0.8}
                                     key={index}
                                     onPress={() => {
-                                        tr[0]?.LogTool?.();
-                                        jump(tr[0].url);
+                                        const obj = tr[0]?.product_info;
+                                        let newVal = [...selections];
+
+                                        let i = newVal.findIndex((v) => genKey(v) === genKey(obj));
+
+                                        i > -1 ? newVal.splice(i, 1) : newVal.unshift(obj);
+
+                                        handlerSelections(newVal);
                                     }}>
-                                    <View style={[{paddingLeft: px(16)}]}>
+                                    <View style={{paddingLeft: px(16)}}>
                                         {/* 每一个td */}
-                                        <Text
-                                            numberOfLines={1}
-                                            style={[
-                                                {
-                                                    color: tr[0]?.line1?.color || Colors.lightBlackColor,
-                                                    fontSize: px(13),
-                                                },
-                                            ]}>
-                                            {tr[0]?.line1?.value}
-                                        </Text>
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                            }}>
+                                            <FastImage
+                                                source={{
+                                                    uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                                        checkeds.includes(genKey(tr[0]?.product_info))
+                                                            ? 'check'
+                                                            : 'uncheck'
+                                                    }.png`,
+                                                }}
+                                                style={{width: px(16), height: px(16)}}
+                                            />
+                                            <Text
+                                                numberOfLines={1}
+                                                style={[
+                                                    {
+                                                        color: tr[0]?.line1?.color || Colors.lightBlackColor,
+                                                        fontSize: px(13),
+                                                        marginLeft: px(9),
+                                                    },
+                                                ]}>
+                                                {tr[0]?.line1?.value}
+                                            </Text>
+                                        </View>
+
                                         <View style={Style.flexRow}>
                                             {tr[0]?.line2 ? (
                                                 <Text
@@ -84,6 +112,7 @@ const FollowTable = ({data = {}, handleSort, stickyHeaderY, scrollY}) => {
                                                         color: tr[0]?.line2?.color || Colors.lightBlackColor,
                                                         fontSize: px(11),
                                                         marginTop: px(2),
+                                                        marginLeft: px(25),
                                                     }}>
                                                     {tr[0]?.line2?.value}
                                                 </Text>
@@ -174,10 +203,7 @@ const FollowTable = ({data = {}, handleSort, stickyHeaderY, scrollY}) => {
                                         style={[styles.tr]}
                                         key={index}
                                         activeOpacity={0.9}
-                                        onPress={() => {
-                                            tr[0]?.LogTool?.();
-                                            jump(tr[0].url);
-                                        }}>
+                                        onPress={() => {}}>
                                         <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
                                             {tr.map((item, _index) =>
                                                 _index == 0 ? null : (

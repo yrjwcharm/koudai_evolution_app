@@ -4,19 +4,20 @@
  * @Description: 定投管理
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
-import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
-import {useDispatch, useSelector} from 'react-redux';
 import RenderItem from './components/RenderItem';
 import Empty from '../../../components/EmptyTip';
 import {BoxShadow} from 'react-native-shadow';
+import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
+import {useFocusEffect} from '@react-navigation/native';
+import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
 const shadow = {
@@ -32,42 +33,42 @@ const shadow = {
     },
 };
 const FixedInvestManage = ({navigation, route}) => {
-    const dispatch = useDispatch();
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
-    const response = useSelector((state) => state.fixedInvest.fixedInvestDetail);
-    const [times, setTimes] = useState('');
-    const [sum, setSum] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
     const [data, setData] = useState({});
-    const [detail, setDetail] = useState({});
     const [headList, setHeadList] = useState([]);
+    const [detail, setDetail] = useState({});
     const [loading, setLoading] = useState(true);
     const {fund_code = '', poid = ''} = route?.params || {};
     const [unitType, setUnitType] = useState(200);
     const [tabList, setTabList] = useState([]);
-    useEffect(() => {
-        (async () => {
-            dispatch(callTerminatedFixedApi({}));
-            const res = await Promise.all([
-                callFixedHeadDataApi({}),
-                callHistoryDataApi({type: unitType, poid, code: fund_code, times, sum}),
-            ]);
-            if (res[0].code === '000000' && res[1].code === '000000' && response.code === '000000') {
-                const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
-                navigation.setOptions({title});
-                let tabList = tabs.map((el, index) => {
-                    return {...el, checked: el.type == unitType ? true : false};
-                });
-                setTabList(tabList);
-                setHeadList(head_list);
-                setDetail(detail);
-                setData(res[1].result);
-                setTerminatedCount(response.result?.data_list.length);
-                setLoading(false);
-            }
-        })();
-    }, [unitType, times, sum]);
+
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                let params = {};
+                const res = await Promise.all([
+                    callFixedHeadDataApi({}),
+                    callHistoryDataApi({type: unitType}),
+                    callTerminatedFixedApi({}),
+                ]);
+                if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
+                    const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
+                    navigation.setOptions({title});
+                    let tabList = tabs.map((el, index) => {
+                        return {...el, checked: el.type == unitType ? true : false};
+                    });
+                    setTabList(tabList);
+                    setDetail(detail);
+                    setHeadList(head_list);
+                    setData(res[1].result);
+                    setTerminatedCount(res[2].result?.data_list.length);
+                    setLoading(false);
+                }
+            })();
+        }, [unitType])
+    );
     const selTab = (item) => {
         setUnitType(item.type);
         tabList.map((_item) => {
@@ -81,14 +82,6 @@ const FixedInvestManage = ({navigation, route}) => {
     const renderEmpty = useCallback(() => {
         return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
     }, [emptyMsg, showEmpty]);
-    const sumSort = useCallback(() => {
-        setTimes('');
-        sum == 'desc' ? setSum('asc') : setSum('desc');
-    }, [sum]);
-    const issueSort = useCallback(() => {
-        setSum('');
-        times == 'asc' ? setTimes('desc') : setTimes('asc');
-    }, [times]);
     const EmptyData = () => {
         return (
             <View style={{marginTop: px(12)}}>
@@ -106,6 +99,19 @@ const FixedInvestManage = ({navigation, route}) => {
             </View>
         );
     };
+    const executeSort = useCallback((data) => {
+        if (data.sort_key) {
+            callHistoryDataApi({
+                type: unitType,
+                sort_key: data?.sort_key,
+                sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
+            }).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            });
+        }
+    }, []);
     return (
         <>
             {loading ? (
@@ -187,16 +193,10 @@ const FixedInvestManage = ({navigation, route}) => {
                             );
                         })}
                     </View>
-                    <InvestHeader
-                        headList={data.head_list ?? []}
-                        times={times}
-                        sum={sum}
-                        sortByIssue={issueSort}
-                        sortBySum={sumSort}
-                    />
+                    <InvestHeader headList={data?.head_list ?? []} handleSort={executeSort} />
                     <FlatList
                         windowSize={300}
-                        data={data.dataList || []}
+                        data={data?.data_list || []}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         ListEmptyComponent={<EmptyData />}
@@ -214,8 +214,8 @@ const FixedInvestManage = ({navigation, route}) => {
                             </View>
                         </TouchableOpacity>
                     )}
+                    <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
 
-                    <BottomDesc />
                     {Object.keys(data).length > 0 ? <FixedButton title="新建定投" onPress={() => {}} /> : null}
                 </View>
             )}

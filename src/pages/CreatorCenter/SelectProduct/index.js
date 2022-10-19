@@ -3,79 +3,92 @@
  * @Autor: wxp
  * @Date: 2022-10-14 18:10:01
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    ActivityIndicator,
+    DeviceEventEmitter,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Style} from '~/common/commonStyle';
 import FollowTable from './FollowTable';
 import {isIphoneX, px} from '~/utils/appUtil';
-import {getData, getList} from './services';
+import {getList} from './services';
 import ScrollableTabBar from './ScrollableTabBar';
 import DetailModal from './DetailModal';
-import {useSelector} from 'react-redux';
+import {useJump} from '~/components/hooks';
+import Toast from '~/components/Toast';
 
-const page_size = 10;
-const allNum = 100;
 const SelectProduct = ({route}) => {
-    const {selections} = useSelector((state) => state.selectProduct);
-    const [data, setData] = useState();
+    const jump = useJump();
+    const [selections, setSelections] = useState(route?.params?.selections);
     const [list, setList] = useState([]);
-    const [scrollLoading, setScrollLoading] = useState(false);
-    const [scrollContentHeight, setScrollContentHeight] = useState(0);
-    const [scrollViewHeight, setScrollViewHeight] = useState(0);
-    const [sortOption, setSortOption] = useState(0);
-    const [page, setPage] = useState(1);
+    const [listLoading, setListLoading] = useState(false);
     const [bottomHeight, setBottomHeight] = useState(0);
     const [detailModalVisible, setDetailModalVisible] = useState(false);
 
-    const allScroll = useMemo(() => {
-        return scrollContentHeight - scrollViewHeight;
-    }, [scrollContentHeight, scrollViewHeight]);
+    const {max_products_num, product_type} = route?.params;
 
-    const isEnd = useMemo(() => {
-        return list?.length && allNum - list.length;
-    }, [list]);
+    const scrollableRef = useRef();
 
     useEffect(() => {
-        getData().then((res) => {
-            console.log(res);
+        getListData();
+        DeviceEventEmitter.addListener('searchToSelect', (_selections) => {
+            setTimeout(() => {
+                setSelections(_selections);
+            }, 200);
         });
     }, []);
 
-    const getListData = () => {
-        setScrollLoading(true);
+    const getListData = (sortOption = {}) => {
+        setListLoading(true);
         getList({
-            page,
-            page_size,
-            // type:tabs[index]
-            // ...{sortOption},
-        }).finally((_) => {
-            setScrollLoading(false);
-        });
+            type: list?.tabs?.[scrollableRef.current?.state?.currentPage]?.value,
+            ...sortOption,
+        })
+            .then((res) => {
+                if (res.code === '000000') {
+                    setList(res.result);
+                }
+            })
+            .finally((_) => {
+                setListLoading(false);
+            });
     };
 
     const onChangeOptionalTab = () => {
-        setPage(1);
         getListData();
     };
 
-    const onScroll = (y, idx) => {
-        let restHeight = allScroll - y;
-        if (!scrollLoading && restHeight && restHeight <= 50 && !isEnd) {
-            setPage((_page) => _page++);
-            setTimeout(() => {
-                getListData();
-            });
+    const handlerSelections = useCallback((arr) => {
+        try {
+            if (arr.length > max_products_num) {
+                throw Error('最多可添加' + max_products_num + '个产品');
+            }
+            if (+product_type) {
+                let obj = arr.find((item) => item.product_type !== product_type);
+                if (obj) throw Error('只能添加基金或组合一种产品');
+            } else {
+                for (let i = 1; i < arr.length; i++) {
+                    if (arr[i].product_type !== arr[i - 1].product_type) {
+                        throw Error('只能添加基金或组合一种产品');
+                    }
+                }
+            }
+            setSelections(arr);
+        } catch (error) {
+            Toast.show(error.message);
         }
-    };
+    }, []);
 
     const handleSort = useCallback((option) => {
-        setSortOption(option);
-        setTimeout(() => {
-            getListData();
-        });
+        getListData(option);
     }, []);
 
     const onDetailModalClose = useCallback(() => {
@@ -85,57 +98,65 @@ const SelectProduct = ({route}) => {
     return (
         <View style={styles.container}>
             <View style={styles.searchWrap}>
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={[styles.searchInput]}
-                    onPress={() => {
-                        // jump();
-                    }}>
-                    <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
-                        style={{width: px(18), height: px(18), marginLeft: px(2), marginRight: px(4)}}
-                    />
-                    <Text style={styles.searchPlaceHolder}>{'可通过搜索基金简称/代码/组合名称添加产品'}</Text>
-                </TouchableOpacity>
-                <View style={styles.selectHint}>
-                    <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
-                        style={styles.hintIcon}
-                    />
-                    <Text style={styles.hintText}>同一个分类下基金或组合只能有一种样式</Text>
-                </View>
+                {list?.search ? (
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={[styles.searchInput]}
+                        onPress={() => {
+                            jump({
+                                path: 'SearchHome',
+                                params: {
+                                    ...route?.params,
+                                    selections,
+                                },
+                            });
+                        }}>
+                        <FastImage
+                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                            style={{width: px(18), height: px(18), marginLeft: px(2), marginRight: px(4)}}
+                        />
+                        <Text style={styles.searchPlaceHolder}>{list?.search?.placeholder}</Text>
+                    </TouchableOpacity>
+                ) : null}
+                {list?.desc ? (
+                    <View style={styles.selectHint}>
+                        <FastImage source={{uri: list?.desc?.desc_icon}} style={styles.hintIcon} />
+                        <Text style={styles.hintText}>{list?.desc?.desc}</Text>
+                    </View>
+                ) : null}
             </View>
             <View style={styles.selectCardWrap}>
-                <ScrollableTabView
-                    locked={true}
-                    style={{flex: 1}}
-                    renderTabBar={() => <ScrollableTabBar />}
-                    initialPage={0}
-                    onChangeTab={onChangeOptionalTab}>
-                    {['自选', '已购'].map((item, idx) => (
-                        <ScrollView
-                            scrollIndicatorInsets={{right: 1}}
-                            key={idx}
-                            tabLabel={item}
-                            style={{flex: 1}}
-                            scrollEventThrottle={6}
-                            onScroll={(e) => {
-                                onScroll(e.nativeEvent.contentOffset.y, idx);
-                            }}
-                            onLayout={(e) => {
-                                setScrollViewHeight(e.nativeEvent.layout.height);
-                            }}
-                            onContentSizeChange={(w, h) => {
-                                setScrollContentHeight(h);
-                            }}>
-                            {/* <FollowTable
-                                data={list}
-                                handleSort={handleSort}
-                            /> */}
-                            {scrollLoading && <ActivityIndicator />}
-                        </ScrollView>
-                    ))}
-                </ScrollableTabView>
+                {list?.tabs ? (
+                    <ScrollableTabView
+                        locked={true}
+                        style={{flex: 1}}
+                        renderTabBar={() => <ScrollableTabBar />}
+                        initialPage={0}
+                        ref={scrollableRef}
+                        onChangeTab={onChangeOptionalTab}>
+                        {list?.tabs?.map((item, idx) => (
+                            <ScrollView
+                                scrollIndicatorInsets={{right: 1}}
+                                key={idx}
+                                tabLabel={item.name}
+                                style={{flex: 1}}
+                                scrollEventThrottle={6}>
+                                {listLoading ? (
+                                    <View style={{paddingVertical: px(20)}}>
+                                        <ActivityIndicator />
+                                    </View>
+                                ) : (
+                                    <FollowTable
+                                        data={list}
+                                        handleSort={handleSort}
+                                        selections={selections}
+                                        handlerSelections={handlerSelections}
+                                    />
+                                )}
+                            </ScrollView>
+                        ))}
+                    </ScrollableTabView>
+                ) : null}
             </View>
             <View
                 style={styles.bottomWrap}
@@ -144,7 +165,7 @@ const SelectProduct = ({route}) => {
                 }}>
                 <View style={Style.flexRow}>
                     <Text style={styles.normalText}>
-                        最多添加{route.params.maxNum}个，已选
+                        最多添加{max_products_num}个，已选
                         {selections.length ? '' : '0'}
                     </Text>
                     {selections.length > 0 ? <Text style={styles.blueText}>{selections.length}</Text> : null}
@@ -170,11 +191,22 @@ const SelectProduct = ({route}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     disabled={!selections.length}
-                    style={[styles.bottomBtn, {opacity: selections.length ? 1 : 0.3}]}>
+                    style={[styles.bottomBtn, {opacity: selections.length ? 1 : 0.3}]}
+                    onPress={() => {
+                        DeviceEventEmitter.emit('selectToList', selections);
+                        jump({path: 'AddProductStep2'});
+                    }}>
                     <Text style={styles.bottomBtnText}>确定</Text>
                 </TouchableOpacity>
             </View>
-            {detailModalVisible ? <DetailModal bottom={bottomHeight} onClose={onDetailModalClose} /> : null}
+            {detailModalVisible ? (
+                <DetailModal
+                    bottom={bottomHeight}
+                    onClose={onDetailModalClose}
+                    selections={selections}
+                    handlerSelections={handlerSelections}
+                />
+            ) : null}
         </View>
     );
 };

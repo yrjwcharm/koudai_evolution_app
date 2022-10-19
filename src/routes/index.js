@@ -283,17 +283,32 @@ import SpecialModifyEntry from '~/pages/CreatorCenter/Special/Modify/SpecialModi
 import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-基础信息
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
-import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
-import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
+import SpecialModifyRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js'; // 专题修改-推广位样式
+import SpecialPreviewRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js'; // 专题修改-推广位样式
+import SpecialModifyProductInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js'; // 专题修改-推广位-产品信息填写
+import SpecialModifyProductItem from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js'; // 专题修改-推广位-产品信息填写-选择产品
 
-import ProfitDetail from '../pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
+import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
+import SelectProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
+
+import ProfitDetail from '~/pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
-import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest'; //修改定投
-import TerminatedFixedInvest from '../pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
+import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
 import FixedInvestDetail from '~/pages/Assets/FixedInvestment/FixedInvestDetail'; //定投详情
+import ModifyFixedInvest from '~/pages/Assets/FixedInvestment/ModifyFixedInvest';
+
 import SetSpecialCardStyle from '~/pages/CreatorCenter/SetSpecialCardStyle';
 import EditSpecialCardInfo from '~/pages/CreatorCenter/EditSpecialCardInfo';
 import SpecialCardStylePreview from '~/pages/CreatorCenter/SpecialCardStylePreview';
+import SpecialExamine from '~/pages/CreatorCenter/SpecialExamine'; // 专题审核
+import CommunityInfoCreate from '~/pages/Community/CommunityInfoCreate'; // 创建社区
+import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑社区资料
+import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
+import SortProduct from '~/pages/CreatorCenter/AddProductStep2/SortProduct'; // 排序产品
+import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的关注/我的粉丝
+
+// 审核中心
+import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
 
 const Stack = createStackNavigator();
 
@@ -562,13 +577,9 @@ export default function AppStack() {
                     component={FixedInvestManage}
                     options={{title: '定投管理'}}
                 />
-                <Stack.Screen
-                    name="UpdateAutomaticInvest"
-                    component={ModifyFixedInvest}
-                    options={{title: '修改定投'}}
-                />
+                <Stack.Screen name="ModifyFixedInvest" component={ModifyFixedInvest} options={{title: ''}} />
 
-                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: '定投详情'}} />
+                <Stack.Screen name="FixedInvestDetail" component={FixedInvestDetail} options={{title: ''}} />
                 <Stack.Screen name="TerminatedInvest" component={TerminatedFixedInvest} options={{title: ''}} />
                 <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
                 <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
@@ -1161,7 +1172,7 @@ export default function AppStack() {
                 <Stack.Screen name="SpecialSubmitCheck" component={SpecialSubmitCheck} options={{headerShown: false}} />
                 <Stack.Screen name="SpecialModifyEntry" component={SpecialModifyEntry} options={{headerShown: false}} />
                 <Stack.Screen name="EditProduct" component={EditProduct} options={{title: ''}} />
-                <Stack.Screen name="AddProduct" component={AddProduct} options={{title: '添加产品'}} />
+                <Stack.Screen name="SelectProduct" component={SelectProduct} options={{title: '添加产品'}} />
                 <Stack.Screen name="SetSpecialCardStyle" component={SetSpecialCardStyle} options={{title: ''}} />
                 <Stack.Screen name="EditSpecialCardInfo" component={EditSpecialCardInfo} options={{title: ''}} />
                 <Stack.Screen
@@ -1169,6 +1180,41 @@ export default function AppStack() {
                     component={SpecialCardStylePreview}
                     options={{title: ''}}
                 />
+                <Stack.Screen name="SpecialExamine" component={SpecialExamine} options={{title: ''}} />
+                <Stack.Screen
+                    name="SpecialModifyRecommend"
+                    component={SpecialModifyRecommend}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialPreviewRecommend"
+                    component={SpecialPreviewRecommend}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyProductInfo"
+                    component={SpecialModifyProductInfo}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="SpecialModifyProductItem"
+                    component={SpecialModifyProductItem}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="CommunityInfoCreate"
+                    component={CommunityInfoCreate}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen name="CommunityInfoEdit" component={CommunityInfoEdit} options={{title: ''}} />
+                <Stack.Screen
+                    name="CommunityArticleSubmitCheck"
+                    component={CommunityArticleSubmitCheck}
+                    options={{title: ''}}
+                />
+                <Stack.Screen name="SortProduct" component={SortProduct} options={{title: '调整列表'}} />
+                <Stack.Screen name="CommunityMyFollow" component={CommunityMyFollow} options={{title: ''}} />
+                <Stack.Screen name="CreatorAuthHome" component={CreatorAuthHome} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );

@@ -98,6 +98,9 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
             tags,
             url,
             edit_button,
+            style_id,
+            drawback,
+            drawback_desc,
         } = item;
         const containerSty = out_box
             ? {
@@ -124,77 +127,186 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                         jump(url);
                     }}
                     style={Style.flexRow}>
-                    <LeftPart {...item} />
-                    <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
-                        <View>
-                            <View style={Style.flexBetween}>
-                                <View style={Style.flexRow}>
-                                    <Text style={styles.name}>{name}</Text>
-                                    {red_tag ? (
-                                        <View style={styles.redTagBox}>
-                                            <Text
-                                                style={[
-                                                    styles.ratioLableText1,
-                                                    {color: '#fff', fontWeight: Font.weightMedium},
-                                                ]}>
-                                                {red_tag}
-                                            </Text>
+                    {(() => {
+                        switch (style_id) {
+                            case 105:
+                                return (
+                                    <View>
+                                        <Text style={styles.name}>{name}</Text>
+                                        {tags?.length > 0 && (
+                                            <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                                                {tags.map((tag, i) => (
+                                                    <View key={tag + i} style={styles.tagBox}>
+                                                        <Text style={styles.tagText}>{tag}</Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        )}
+                                        <View style={styles.mainRowWrap}>
+                                            <View style={{width: px(64), height: px(34)}}>
+                                                <DelayChart chart={item.chart} />
+                                            </View>
+                                            {profit ? (
+                                                <View style={{marginLeft: px(12), alignItems: 'center'}}>
+                                                    <HTML
+                                                        html={
+                                                            '<span style="font-size:16px;line-height:19px">' +
+                                                            profit +
+                                                            '</span>'
+                                                        }
+                                                        style={styles.bigProfit}
+                                                    />
+                                                    <Text style={styles.profitLabel}>{profit_desc}</Text>
+                                                </View>
+                                            ) : null}
+                                            {drawback ? (
+                                                <View style={{marginLeft: px(47), alignItems: 'center'}}>
+                                                    <HTML
+                                                        html={
+                                                            '<span style="font-size:16px;line-height:19px">' +
+                                                            drawback +
+                                                            '</span>'
+                                                        }
+                                                        style={styles.bigProfit}
+                                                    />
+                                                    <Text style={styles.profitLabel}>{drawback_desc}</Text>
+                                                </View>
+                                            ) : null}
                                         </View>
-                                    ) : null}
-                                    {labels?.length > 0 ? (
-                                        <View style={[Style.flexRow, {marginLeft: px(8), flexShrink: 1}]}>
-                                            {labels.map((label, i) => (
+                                    </View>
+                                );
+                            case 106:
+                                return (
+                                    <View style={[styles.mainRowWrap, {marginTop: 0}]}>
+                                        <View style={{width: px(64), height: px(34)}}>
+                                            <DelayChart chart={item.chart} />
+                                        </View>
+                                        {profit ? (
+                                            <View style={{marginLeft: px(12), alignItems: 'center'}}>
                                                 <HTML
-                                                    html={i === 0 ? label : `| ${label}`}
-                                                    key={label + i}
-                                                    numberOfLines={1}
-                                                    style={styles.label}
+                                                    html={
+                                                        '<span style="font-size:16px;line-height:19px">' +
+                                                        profit +
+                                                        '</span>'
+                                                    }
+                                                    style={styles.bigProfit}
                                                 />
-                                            ))}
+                                                <Text style={styles.profitLabel}>{profit_desc}</Text>
+                                            </View>
+                                        ) : null}
+                                        <View style={{marginLeft: px(47), flex: 1}}>
+                                            <Text style={[styles.name, {}]} numberOfLines={1}>
+                                                {name}
+                                            </Text>
+                                            {tags?.length > 0 && (
+                                                <View style={[Style.flexRow]}>
+                                                    {tags.map((tag, i) => (
+                                                        <View
+                                                            key={tag + i}
+                                                            style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            {i > 0 ? (
+                                                                <View
+                                                                    style={{
+                                                                        width: 1,
+                                                                        height: px(11),
+                                                                        backgroundColor: '#9AA0B1',
+                                                                        marginHorizontal: px(3),
+                                                                    }}
+                                                                />
+                                                            ) : null}
+                                                            <Text style={styles.profitLabel}>{tag}</Text>
+                                                        </View>
+                                                    ))}
+                                                </View>
+                                            )}
                                         </View>
-                                    ) : null}
-                                </View>
-                                {edit_button ? (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            jump(edit_button.url);
-                                        }}
-                                        style={styles.editBtn}>
-                                        <Text style={styles.editBtnText}>{edit_button.name}</Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </View>
-                            {tags?.length > 0 && (
-                                <View style={[Style.flexRow, {marginTop: px(4)}]}>
-                                    {tags.map((tag, i) => (
-                                        <View key={tag + i} style={styles.tagBox}>
-                                            <Text style={styles.tagText}>{tag}</Text>
+                                    </View>
+                                );
+                            default:
+                                return (
+                                    <>
+                                        <LeftPart {...item} />
+                                        <View style={flex_between ? [Style.flexBetween, {flex: 1}] : {flex: 1}}>
+                                            <View>
+                                                <View style={Style.flexBetween}>
+                                                    <View style={Style.flexRow}>
+                                                        <Text style={styles.name}>{name}</Text>
+                                                        {red_tag ? (
+                                                            <View style={styles.redTagBox}>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.ratioLableText1,
+                                                                        {
+                                                                            color: '#fff',
+                                                                            fontWeight: Font.weightMedium,
+                                                                        },
+                                                                    ]}>
+                                                                    {red_tag}
+                                                                </Text>
+                                                            </View>
+                                                        ) : null}
+                                                        {labels?.length > 0 ? (
+                                                            <View
+                                                                style={[
+                                                                    Style.flexRow,
+                                                                    {marginLeft: px(8), flexShrink: 1},
+                                                                ]}>
+                                                                {labels.map((label, i) => (
+                                                                    <HTML
+                                                                        html={i === 0 ? label : `| ${label}`}
+                                                                        key={label + i}
+                                                                        numberOfLines={1}
+                                                                        style={styles.label}
+                                                                    />
+                                                                ))}
+                                                            </View>
+                                                        ) : null}
+                                                    </View>
+                                                    {edit_button ? (
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.8}
+                                                            onPress={() => {
+                                                                jump(edit_button.url);
+                                                            }}
+                                                            style={styles.editBtn}>
+                                                            <Text style={styles.editBtnText}>{edit_button.name}</Text>
+                                                        </TouchableOpacity>
+                                                    ) : null}
+                                                </View>
+                                                {tags?.length > 0 && (
+                                                    <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                                                        {tags.map((tag, i) => (
+                                                            <View key={tag + i} style={styles.tagBox}>
+                                                                <Text style={styles.tagText}>{tag}</Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
+                                                )}
+                                            </View>
+                                            {desc ? <Text style={styles.managerDesc}>{desc}</Text> : null}
+                                            {profit ? (
+                                                <View
+                                                    style={
+                                                        flex_between
+                                                            ? {alignItems: 'flex-end'}
+                                                            : [Style.flexRow, {marginTop: desc ? px(4) : px(12)}]
+                                                    }>
+                                                    <HTML html={profit} style={styles.bigProfit} />
+                                                    <Text
+                                                        style={
+                                                            flex_between
+                                                                ? [styles.profitLabel, {marginTop: px(4)}]
+                                                                : [styles.profitLabel, {marginLeft: px(8)}]
+                                                        }>
+                                                        {profit_desc}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
                                         </View>
-                                    ))}
-                                </View>
-                            )}
-                        </View>
-                        {desc ? <Text style={styles.managerDesc}>{desc}</Text> : null}
-                        {profit ? (
-                            <View
-                                style={
-                                    flex_between
-                                        ? {alignItems: 'flex-end'}
-                                        : [Style.flexRow, {marginTop: desc ? px(4) : px(12)}]
-                                }>
-                                <HTML html={profit} style={styles.bigProfit} />
-                                <Text
-                                    style={
-                                        flex_between
-                                            ? [styles.profitLabel, {marginTop: px(4)}]
-                                            : [styles.profitLabel, {marginLeft: px(8)}]
-                                    }>
-                                    {profit_desc}
-                                </Text>
-                            </View>
-                        ) : null}
-                    </View>
+                                    </>
+                                );
+                        }
+                    })()}
                 </TouchableOpacity>
                 {reason ? (
                     <View style={styles.reasonBox}>
@@ -582,6 +694,11 @@ const styles = StyleSheet.create({
         fontSize: px(10),
         lineHeight: px(10),
         color: '#0051CC',
+    },
+    mainRowWrap: {
+        marginTop: px(12),
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 });
 

@@ -20,11 +20,11 @@ const QuestionnaireResult = () => {
     const jump = useJump();
     const navigation = useNavigation();
     const route = useRoute();
-    const {fr, fund_code = '', upid = ''} = route.params;
+    const {fr, fund_code = '', upid = '', append = ''} = route.params;
     const [data, setData] = useState({});
 
     useEffect(() => {
-        http.get('/questionnaire/result/20210101', {fr, fund_code, upid}).then((res) => {
+        http.get('/questionnaire/result/20210101', {fr, fund_code, upid, append}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }

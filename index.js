@@ -8,7 +8,6 @@
 /**
  * @format
  */
-
 import {AppRegistry, LogBox} from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import App from './App';

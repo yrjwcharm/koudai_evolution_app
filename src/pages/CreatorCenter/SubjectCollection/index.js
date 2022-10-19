@@ -3,18 +3,51 @@
  * @Autor: wxp
  * @Date: 2022-10-09 15:37:08
  */
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import EmptyTip from '~/components/EmptyTip';
+import {useJump} from '~/components/hooks';
 import {AlbumCard} from '~/components/Product';
 import {isIphoneX, px} from '~/utils/appUtil';
 import ScrollableTabBar from '../components/ScrollableTabBar';
+import {getData, getList} from './serverces';
 
 const SubjectCollection = () => {
-    const [refreshing, setRefreshing] = useState(false);
+    const jump = useJump();
+    const [data, setData] = useState();
+    const [listData, setListData] = useState();
+    const [listLoading, setListLoading] = useState(true);
+    useEffect(() => {
+        getData().then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+                getListData(res.result?.header?.[0]?.type);
+            }
+        });
+    }, []);
 
-    const onChangeTab = () => {};
-    return (
+    const getListData = (type) => {
+        setListLoading(true);
+        getList({type})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setListData(res.result);
+                }
+            })
+            .finally((_) => {
+                setListLoading(false);
+            });
+    };
+
+    const onChangeTab = useCallback(
+        ({i}) => {
+            getListData(data?.header?.[i]?.type);
+        },
+        [data]
+    );
+
+    return data ? (
         <View style={styles.container}>
             <ScrollableTabView
                 renderTabBar={() => (
@@ -23,34 +56,46 @@ const SubjectCollection = () => {
                     />
                 )}
                 onChangeTab={onChangeTab}>
-                {['已发布', '审核未通过', '审核中'].map((item, idx) => (
-                    <ScrollView
-                        tabLabel={item}
-                        key={idx}
-                        showsHorizontalScrollIndicator={false}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {}} />}
-                        style={{flex: 1}}>
-                        <View style={styles.cardsWrap}>
-                            {subjects.map((subject, index) => (
-                                <View style={styles.cardItem} key={index}>
-                                    <AlbumCard {...subject} />
-                                </View>
-                            ))}
-                        </View>
-                        {true ? <Text style={styles.hint}>*如有疑问，可联系审核人员，电话：xxxxxxx</Text> : false}
+                {data?.header?.map?.((item, idx) => (
+                    <ScrollView tabLabel={item?.val} key={idx} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
+                        {listLoading ? (
+                            <View style={{paddingVertical: px(20)}}>
+                                <ActivityIndicator />
+                            </View>
+                        ) : (
+                            <>
+                                {listData?.items?.[0] ? (
+                                    <View style={styles.cardsWrap}>
+                                        {listData?.items?.map?.((subject, index) => (
+                                            <View style={styles.cardItem} key={index}>
+                                                <AlbumCard {...subject} />
+                                            </View>
+                                        ))}
+                                    </View>
+                                ) : (
+                                    <EmptyTip />
+                                )}
+                                {listData?.tip ? <Text style={styles.hint}>{listData?.tip}</Text> : null}
+                            </>
+                        )}
                         <View style={{height: 50}} />
                     </ScrollView>
                 ))}
             </ScrollableTabView>
-            {true ? (
+            {listData?.button ? (
                 <View style={styles.bottomWrap}>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.bottomBtn}>
-                        <Text style={styles.bottomBtnText}>+创建新专题</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        style={styles.bottomBtn}
+                        onPress={() => {
+                            jump(listData?.button?.url);
+                        }}>
+                        <Text style={styles.bottomBtnText}>{listData?.button?.text}</Text>
                     </TouchableOpacity>
                 </View>
             ) : null}
         </View>
-    );
+    ) : null;
 };
 
 export default SubjectCollection;

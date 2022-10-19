@@ -20,22 +20,10 @@ import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
     const isMounted = useIsMounted();
     const insets = useSafeAreaInsets();
-    const [list, setList] = useState([]);
     const [period, setPeriod] = useState('this_year');
     const [chartData, setChartData] = useState({});
     const [onlyAll, setOnlyAll] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
-    const init = useCallback(() => {
-        if (isMounted.current) {
-            if (!poid) {
-                http.get('/profit/user_portfolios/20210101').then((res) => {
-                    if (res.code === '000000') {
-                        setList(res.result.list || []);
-                    }
-                });
-            }
-        }
-    }, [poid]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
         if (isMounted.current) {
@@ -56,9 +44,8 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => 
         }
     }, [period]);
     useEffect(() => {
-        init();
         getChart();
-    }, [getChart, init]);
+    }, [getChart]);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
         if (!t) {

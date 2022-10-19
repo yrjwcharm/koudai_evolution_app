@@ -130,6 +130,8 @@ function App(props) {
     return (
         <SafeAreaProvider>
             <RootSiblingParent>
+                {/*启用React严格模式，暴漏出必要的代码潜在风险及警告⚠️*/}
+                {/*<React.StrictMode>*/}
                 <Provider store={store}>
                     <StatusBar
                         animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
@@ -187,6 +189,7 @@ function App(props) {
                         </NavigationContainer>
                     </PersistGate>
                 </Provider>
+                {/*</React.StrictMode>*/}
             </RootSiblingParent>
         </SafeAreaProvider>
     );

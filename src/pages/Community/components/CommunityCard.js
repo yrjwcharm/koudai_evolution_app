@@ -28,10 +28,10 @@ export const CommunityCardCover = ({
     attention_user,
     cover, // 封面
     cover_aspect_ratio,
+    left_desc, // 直播状态或预约人数
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
     media_duration, // 媒体时长
-    people_num_desc, // 直播时间或观看人数
-    status_desc, // 直播状态或预约人数
+    right_desc, // 直播时间或观看人数
     style, // 自定义样式
     type, // 卡片类型 1文章 2音频 3视频 9直播
     type_str, // 类型文案
@@ -52,9 +52,9 @@ export const CommunityCardCover = ({
                 style={styles.cover}
             />
             {/* 预约人数直播观看人数 */}
-            {people_num_desc || status_desc ? (
+            {left_desc || right_desc ? (
                 <View style={[Style.flexRow, styles.liveInfo]}>
-                    {people_num_desc ? (
+                    {left_desc ? (
                         <View
                             style={[
                                 Style.flexRow,
@@ -62,12 +62,12 @@ export const CommunityCardCover = ({
                                 {backgroundColor: statusColor.current[live_status]},
                             ]}>
                             <Image source={live_status === 2 ? live : video} style={styles.liveIcon} />
-                            <Text style={styles.numDesc}>{status_desc}</Text>
+                            <Text style={styles.numDesc}>{left_desc}</Text>
                         </View>
                     ) : null}
-                    {status_desc ? (
+                    {right_desc ? (
                         <View style={[Style.flexRow, styles.waitTag, {paddingLeft: px(6)}]}>
-                            <Text style={styles.numDesc}>{people_num_desc}</Text>
+                            <Text style={styles.numDesc}>{right_desc}</Text>
                         </View>
                     ) : null}
                 </View>
@@ -76,11 +76,13 @@ export const CommunityCardCover = ({
             {media_duration || type_str ? (
                 <View style={[Style.flexRow, styles.durationBox]}>
                     {media_duration ? (
-                        type === 2 ? (
-                            <Feather color="#fff" name="headphones" size={px(8)} />
-                        ) : (
-                            <FontAwesome5 color="#fff" name="play" size={px(8)} />
-                        )
+                        <View style={{marginRight: px(4)}}>
+                            {type === 2 ? (
+                                <Feather color="#fff" name="headphones" size={px(5)} />
+                            ) : (
+                                <FontAwesome5 color="#fff" name="play" size={px(5)} />
+                            )}
+                        </View>
                     ) : null}
                     <Text style={media_duration ? [styles.numDesc, {fontFamily: Font.numRegular}] : styles.numDesc}>
                         {media_duration || type_str}
@@ -124,12 +126,12 @@ export const CommunityFollowCard = ({
     favor_num, // 点赞数
     favor_status, // 点赞状态 0 未点赞 1 已点赞
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
-    people_num_desc, // 直播时间或观看人数
+    left_desc, // 直播状态或预约人数
     play_mode, // 视频播放模式 1 竖屏 2 横屏
     reserved, // 直播是否已预约
+    right_desc, // 直播时间或观看人数
     share_num, // 分享数
     share_info, // 分享相关信息
-    status_desc, // 直播状态或预约人数
     style, // 自定义样式
     title, // 卡片标题
     type, // 卡片类型 1文章 2音频 3视频 9直播
@@ -163,8 +165,8 @@ export const CommunityFollowCard = ({
                         <CommunityCardCover
                             cover={cover}
                             live_status={live_status}
-                            people_num_desc={people_num_desc}
-                            status_desc={status_desc}
+                            left_desc={left_desc}
+                            right_desc={right_desc}
                             style={{...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}}
                             type={type}
                             type_str={type_str}
@@ -176,9 +178,7 @@ export const CommunityFollowCard = ({
                     live_status === 1 ? (
                         // 直播预约按钮
                         <View style={[Style.flexBetween, styles.applyBox]}>
-                            <Text style={[styles.numDesc, {color: Colors.defaultColor}]}>
-                                直播时间：{people_num_desc}
-                            </Text>
+                            <Text style={[styles.numDesc, {color: Colors.defaultColor}]}>直播时间：{right_desc}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={isReserved}

@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -12,32 +12,28 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = ''} = route?.params;
+    const {fund_code = '', poid = '', page = 0} = route.params || {};
+    const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
+    const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();
-    const [type, setType] = useState(200);
-    useEffect(() => {
-        dispatch({type: 'updateType', payload: 200});
-    }, [route]);
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
+                navigation.setOptions({title});
                 setTabs(tabs);
                 setHeadData(header);
-                navigation.setOptions({title});
             }
             if (res[1].code === '000000') {
                 const {title = '', declare_pic = ''} = res[1].result || {};
-                setDeclarePic(declare_pic);
-                setTitle(title);
                 navigation.setOptions({
                     headerRight: () => (
                         <>
@@ -52,6 +48,8 @@ const ProfitDetail = ({navigation, route}) => {
                         </>
                     ),
                 });
+                setDeclarePic(declare_pic);
+                setTitle(title);
             }
         })();
     }, [type]);
@@ -61,25 +59,21 @@ const ProfitDetail = ({navigation, route}) => {
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
+    // useEffect(() => {
+    //     Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
+    // }, [page]);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (
                 <ScrollableTabView
+                    ref={scrollTab}
                     renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
-                    initialPage={0}
+                    initialPage={page}
                     onChangeTab={({i}) => {
-                        setType(tabs[i].type);
                         dispatch({type: 'updateType', payload: tabs[i].type});
                     }}>
                     {tabs.map((el, index) => {
-                        return (
-                            <ProfitDistribution
-                                type={type}
-                                headData={headData}
-                                tabLabel={el.text}
-                                key={`${el + '' + index}`}
-                            />
-                        );
+                        return <ProfitDistribution headData={headData} tabLabel={el.text} key={`${el + '' + index}`} />;
                     })}
                 </ScrollableTabView>
             )}

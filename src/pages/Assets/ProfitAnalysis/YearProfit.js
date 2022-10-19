@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:年收益
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px, delMille} from '../../../utils/appUtil';
@@ -12,7 +12,11 @@ import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
-const YearProfit = ({type}) => {
+import {useDispatch, useSelector} from 'react-redux';
+const YearProfit = () => {
+    const dispatch = useDispatch();
+    const type = useSelector((state) => state.profitDetail.type);
+    const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -34,7 +38,6 @@ const YearProfit = ({type}) => {
                 const res = await getChartData({type, unit_type: 'year'});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
                     let barCharData = profit_data_list
                         .map((el) => {
                             return {date: el.unit_key + '年', value: parseFloat(el.value)};
@@ -42,8 +45,8 @@ const YearProfit = ({type}) => {
                         .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
                     setChart({
                         label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
+                            {name: '时间', val: profit_data_list[0]?.unit_key},
+                            {name: '收益', val: profit_data_list[0]?.value},
                         ],
                         chart: barCharData,
                     });
@@ -54,10 +57,16 @@ const YearProfit = ({type}) => {
                             }
                         }
                     }
-
+                    let index;
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    let zIndex = arr.findIndex((el) => el.day == curYear);
-                    arr[zIndex] && (arr[zIndex].checked = true);
+                    if (curYear == dayjs().year()) {
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
+                        index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
+                    } else {
+                        index = arr.findIndex((el) => el.day == curYear);
+                        dispatch({type: 'updateUnitKey', payload: curYear});
+                    }
+                    arr[index] && (arr[index].checked = true);
                     setDateArr([...arr]);
                 }
             })();
@@ -79,6 +88,21 @@ const YearProfit = ({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     };
+    const renderCalendar = useMemo(
+        () =>
+            dateArr.map((el, index) => {
+                const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
+                return (
+                    <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
+                        <View style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
+                            <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
+                            <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
+                        </View>
+                    </TouchableOpacity>
+                );
+            }),
+        [dateArr]
+    );
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft, {}]}>
@@ -123,28 +147,9 @@ const YearProfit = ({type}) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            {isCalendar && (
-                <View style={styles.yearFlex}>
-                    {dateArr.map((el, index) => {
-                        const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
-                        return (
-                            <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
-                                <View
-                                    style={[
-                                        styles.year,
-                                        wrapStyle,
-                                        {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0},
-                                    ]}>
-                                    <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
-                                    <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            )}
+            {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
-            <RenderList type={type} />
+            <RenderList />
         </View>
     );
 };
@@ -184,9 +189,9 @@ const styles = StyleSheet.create({
         paddingTop: px(16),
         paddingBottom: px(20),
         paddingHorizontal: px(12),
+        backgroundColor: Colors.white,
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
-        backgroundColor: Colors.white,
     },
     chartLeft: {
         width: px(126),

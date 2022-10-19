@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-10-12 14:19:09
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useRef, useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
@@ -12,20 +12,27 @@ import {ProductList} from '~/components/Product';
 import RenderHtml from '~/components/RenderHtml';
 import {px} from '~/utils/appUtil';
 import CategoryProductList from './CategoryProductList';
-import {getData, getListData} from './services';
+import {getData, goSave, getListData} from './services';
 import {cloneDeep} from 'lodash';
+import Toast from '~/components/Toast';
 
 const AddProductStep2 = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState();
     const [listData, setListData] = useState({});
     const [tabActive, setTabActive] = useState(0);
+    const handlerSelectToListRef = useRef();
+    const handlerEditProductRef = useRef();
+    const handlerSortProductRef = useRef();
+    const handlerTopButtonRef = useRef();
 
     const style_data = useMemo(() => listData?.style_data, [listData]);
     const listLength = useMemo(() => {
-        return data?.data?.category_mode === 1
-            ? style_data?.items?.length
-            : style_data?.groups?.[tabActive]?.items?.length;
+        return (
+            (data?.data?.category_mode === 1
+                ? style_data?.items?.length
+                : style_data?.groups?.[tabActive]?.items?.length) || 0
+        );
     }, [data, style_data, tabActive]);
 
     const cateNumInfo = useMemo(() => {
@@ -46,7 +53,7 @@ const AddProductStep2 = ({navigation, route}) => {
                 } else {
                     params.categories = JSON.stringify(d.categories || []);
                 }
-                getList(params, d?.category_mode, d.categories);
+                getList(params);
                 // 设置标题栏
                 navigation.setOptions({
                     title: res.result.title || '添加产品',
@@ -56,7 +63,7 @@ const AddProductStep2 = ({navigation, route}) => {
                                 suppressHighlighting={true}
                                 style={styles.topBtnText}
                                 onPress={() => {
-                                    handlerTopButton(res.result.top_button);
+                                    handlerTopButtonRef.current(res.result.top_button);
                                 }}>
                                 {res.result?.top_button?.text}
                             </Text>
@@ -65,115 +72,207 @@ const AddProductStep2 = ({navigation, route}) => {
                 });
             }
         });
-    }, [route, navigation, handlerTopButton]);
+    }, []);
 
-    const getList = (params, mode, categories) => {
-        getListData(params).then((result) => {
-            if (result.code === '000000') {
-                if (mode === 2) {
-                    // 添加分类id
-                    result.result?.style_data?.groups?.forEach((g, index) => {
-                        g.category_id = categories[index].id;
-                        // g.items.forEach((item) => {
-                        //     item.edit_button.handler = () => {
-                        //         jump({
-                        //             path: 'EditProduct',
-                        //             params: {
-                        //                 desc: item.reason,
-                        //                 id: item.id,
-                        //             },
-                        //         });
-                        //     };
-                        // });
-                    });
+    const getList = (params) => {
+        const loading = Toast.showLoading();
+        getListData(params)
+            .then((result) => {
+                if (result.code === '000000') {
+                    setListData(result.result);
                 }
-                setListData(result.result);
-            }
-        });
+            })
+            .finally((_) => {
+                Toast.hide(loading);
+            });
     };
 
-    useEffect(() => {
-        DeviceEventEmitter.addListener('editProduct', (option) => {
-            if (option.category_id) {
+    const handlerSelectToList = useCallback(
+        (option = []) => {
+            if (!data) return;
+            if (data?.data?.category_mode === 2) {
                 setData((val) => {
-                    // 更新原始map的当前产品
+                    // 更新原始map中的当前产品
                     let newVal = cloneDeep(val);
-                    let products = newVal.categories.find((item) => item.id === option.category_id);
-                    let obj = products.find((item) => item.id === option.id);
-                    // 如果style_id被更改了，则更新当前分类所有style_id
-                    if (obj.style_id !== option.style_id) {
-                        products.forEach((prd) => {
-                            prd.style_id = option.style_id;
-                        });
-                    }
-                    for (let key in obj) {
-                        obj[key] = option[key];
-                    }
+                    newVal.data.categories[tabActive].products = option;
                     //不再自己循环找出对应项修改 通过接口更新
-                    getList(
-                        {
-                            ...route.params,
-                            categories: JSON.stringify(newVal.categories || []),
-                        },
-                        2,
-                        newVal.categories
-                    );
+                    getList({
+                        ...route.params,
+                        categories: JSON.stringify(newVal.data.categories || []),
+                    });
                     return newVal;
                 });
             } else {
                 setData((val) => {
                     // 更新原始map的当前的产品
                     let newVal = cloneDeep(val);
-                    let obj = newVal.products.find((item) => item.id === option.id);
-                    // 如果style_id被更改了，则更新当前列表所有style_id
+                    newVal.data.products = option || [];
+
+                    //不再自己循环找出对应项修改 通过接口更新
+                    getList({
+                        ...route.params,
+                        products: JSON.stringify(newVal.data.products || []),
+                    });
+                    return newVal;
+                });
+            }
+        },
+        [data, tabActive]
+    );
+
+    const handlerEditProduct = useCallback(
+        (option) => {
+            if (data?.data?.category_mode === 2) {
+                setData((val) => {
+                    // 更新原始map的当前产品
+                    let newVal = cloneDeep(val);
+                    let products = newVal.data.categories?.[tabActive]?.products || [];
+                    let obj = products.find((item) => item.product_id === option.product_id);
+                    // 如果style_id被更改了，则更新当前分类所有style_id
                     if (obj.style_id !== option.style_id) {
-                        newVal.products.forEach((prd) => {
+                        products.forEach((prd) => {
                             prd.style_id = option.style_id;
                         });
                     }
-                    for (let key in obj) {
+                    for (let key in option) {
                         obj[key] = option[key];
                     }
                     //不再自己循环找出对应项修改 通过接口更新
                     getList({
                         ...route.params,
-                        products: JSON.stringify(newVal.products || []),
+                        categories: JSON.stringify(newVal.data.categories || []),
+                    });
+                    return newVal;
+                });
+            } else {
+                setData((val) => {
+                    // 更新原始map的当前的产品
+                    let newVal = cloneDeep(val);
+                    let obj = newVal.data.products.find((item) => item.product_id === option.product_id);
+                    // 如果style_id被更改了，则更新当前列表所有style_id
+                    if (obj.style_id !== option.style_id) {
+                        newVal.data.products.forEach((prd) => {
+                            prd.style_id = option.style_id;
+                        });
+                    }
+                    for (let key in option) {
+                        obj[key] = option[key];
+                    }
+                    //不再自己循环找出对应项修改 通过接口更新
+                    getList({
+                        ...route.params,
+                        products: JSON.stringify(newVal.data.products || []),
                     });
                     return newVal;
                 });
             }
+        },
+        [data, tabActive]
+    );
+
+    const handlerSortProduct = useCallback(
+        (option) => {
+            if (!data) return;
+            if (data?.data?.category_mode === 1) {
+                setListData((val) => {
+                    let newVal = {...val};
+                    newVal.style_data.items = option;
+                    return {...newVal};
+                });
+                setData((val) => {
+                    // 更新原始map的当前的产品
+                    let newVal = cloneDeep(val);
+                    newVal.data.products = option.map((opt) =>
+                        newVal.data.products.find((item) => item.product_id === opt.product_id)
+                    );
+                    return newVal;
+                });
+            } else {
+                setListData((val) => {
+                    let newVal = {...val};
+                    newVal.style_data.groups[tabActive].items = option;
+                    return {...newVal};
+                });
+                setData((val) => {
+                    // 更新原始map的当前产品
+                    let newVal = cloneDeep(val);
+                    newVal.data.categories[tabActive].products = option.map((opt) =>
+                        newVal.data.categories[tabActive].products.find((item) => item.product_id === opt.product_id)
+                    );
+                    return newVal;
+                });
+            }
+        },
+        [data, tabActive]
+    );
+
+    useEffect(() => {
+        DeviceEventEmitter.addListener('selectToList', (option) => {
+            setTimeout(() => {
+                handlerSelectToListRef.current(option);
+            }, 500);
         });
-    }, [route.params]);
+        DeviceEventEmitter.addListener('editProduct', (option) => {
+            setTimeout(() => {
+                handlerEditProductRef.current(option);
+            }, 500);
+        });
+        DeviceEventEmitter.addListener('sortProduct', (option) => {
+            setTimeout(() => {
+                handlerSortProductRef.current(option);
+            }, 500);
+        });
+        return () => {
+            DeviceEventEmitter.removeAllListeners('selectToList');
+            DeviceEventEmitter.removeAllListeners('editProduct');
+            DeviceEventEmitter.removeAllListeners('sortProduct');
+        };
+    }, []);
+
+    useEffect(() => {
+        handlerSelectToListRef.current = handlerSelectToList;
+        handlerEditProductRef.current = handlerEditProduct;
+        handlerSortProductRef.current = handlerSortProduct;
+        handlerTopButtonRef.current = handlerTopButton;
+    }, [handlerSelectToList, handlerEditProduct, handlerSortProduct, handlerTopButton]);
 
     const handlerTopButton = useCallback(
         (button) => {
-            if (false) {
+            let hasEmpty = false;
+            if (data?.data?.category_mode === 2) {
+                hasEmpty = data.data.categories.find((item) => !item.products?.length);
+            } else {
+                hasEmpty = !data.data.products?.length;
+            }
+            if (hasEmpty) {
                 Modal.show({
-                    content: '更换样式后不保留已添加的产品，确定更换吗？',
-                    confirm: true,
-                    confirmText: '不更换',
-                    cancelText: '确定更换',
-                    confirmCallBack: () => {
-                        // setStyleCheck(initStyleCheckRef.current);
-                        // jump(button.url);
-                    },
-                    cancelCallBack: () => {
-                        // goSave({
-                        //     subject_id: route.params?.subject_id,
-                        //     style_type: styleCheckRef.current,
-                        // }).then((res) => {
-                        //     if (res.code === '000000') {
-                        //         initStyleCheckRef.current = styleCheckRef.current;
-                        //         jump(button.url);
-                        //     }
-                        // });
-                    },
+                    content: '尚有分类未添加产品，请调整后再提交',
+                    confirmText: '我知道了',
                 });
             } else {
-                jump(button.url);
+                const d = data.data;
+                let params = {...d};
+                if (d?.category_mode === 1) {
+                    params.products = JSON.stringify(d.products || []);
+                } else {
+                    params.categories = JSON.stringify(d.categories || []);
+                }
+                let loading = Toast.showLoading();
+                goSave(params)
+                    .then((res) => {
+                        if (res.code === '000000') {
+                            Toast.show('保存成功');
+                            setTimeout(() => {
+                                jump(button.url);
+                            }, 1000);
+                        }
+                    })
+                    .finally((_) => {
+                        Toast.hide(loading);
+                    });
             }
         },
-        [route, jump]
+        [route, jump, data]
     );
 
     const onTabChange = (idx) => {
@@ -189,7 +288,7 @@ const AddProductStep2 = ({navigation, route}) => {
 
             // 更新原始数据的列表顺序
             const _groups = categories.map((item) => {
-                let obj = listData.style_data.groups.find((itm) => item.id === itm.category_id);
+                let obj = listData.style_data.groups.find((itm) => item.id === itm.id);
                 return obj || {};
             });
             let listData2 = {...listData};
@@ -198,6 +297,15 @@ const AddProductStep2 = ({navigation, route}) => {
         },
         [data, listData]
     );
+
+    const handlerSort = () => {
+        jump({
+            path: 'SortProduct',
+            params: {
+                data: data?.data?.category_mode === 1 ? style_data?.items : style_data?.groups?.[tabActive]?.items,
+            },
+        });
+    };
 
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -226,9 +334,9 @@ const AddProductStep2 = ({navigation, route}) => {
                 <View style={styles.mainCardBottom}>
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        disabled={!!listLength}
+                        disabled={!listLength}
                         style={styles.bottomBtn}
-                        onPress={() => {}}>
+                        onPress={handlerSort}>
                         <FastImage
                             style={{width: px(16), height: px(16)}}
                             source={{
@@ -246,7 +354,20 @@ const AddProductStep2 = ({navigation, route}) => {
                         activeOpacity={0.7}
                         disabled={listLength >= cateNumInfo?.max_products_num}
                         style={styles.bottomBtn}
-                        onPress={() => {}}>
+                        onPress={() => {
+                            const selections =
+                                (data?.data?.category_mode === 1
+                                    ? data?.data.products
+                                    : data?.data?.categories[tabActive]?.products) || [];
+                            jump({
+                                path: 'SelectProduct',
+                                params: {
+                                    max_products_num: cateNumInfo.max_products_num,
+                                    product_type: selections?.[0]?.product_type || 0, // 0 皆可 1 基金 2 组合
+                                    selections,
+                                },
+                            });
+                        }}>
                         <FastImage
                             style={{width: px(16), height: px(16)}}
                             source={{
@@ -266,6 +387,7 @@ const AddProductStep2 = ({navigation, route}) => {
                 </View>
             </View>
             {data?.num_info?.num_desc ? <Text style={styles.desc}>{data?.num_info?.num_desc}</Text> : null}
+            <View style={{height: 38}} />
         </ScrollView>
     );
 };

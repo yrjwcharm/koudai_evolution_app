@@ -13,6 +13,7 @@ const ScrollableTabBar = ({tabs, activeTab, goToPage}) => {
             {tabs.map((item, idx) => (
                 <TouchableOpacity
                     activeOpacity={0.8}
+                    key={idx}
                     onPress={() => {
                         goToPage(idx);
                     }}

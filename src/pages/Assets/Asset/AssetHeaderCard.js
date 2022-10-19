@@ -15,7 +15,9 @@ import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
 import {Chart, chartOptions} from '~/components/Chart';
 import {useFocusEffect} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const [chart, setChart] = useState();
     const getChartData = async () => {
@@ -28,7 +30,12 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
         }, [])
     );
     return (
-        <TouchableWithoutFeedback onPress={() => jump(summary?.url)}>
+        <TouchableWithoutFeedback
+            onPress={() => {
+                //type获取
+                dispatch({type: 'updateType', payload: 200});
+                jump(summary?.url);
+            }}>
             <LinearGradient
                 colors={['#F1F9FF', Colors.bgColor]}
                 start={{x: 0, y: 0}}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 18:52:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 15:45:02
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-17 16:45:24
  * @Description: 数据空的时候提示组件
  */
 import React, {PureComponent} from 'react';
@@ -10,7 +10,7 @@ import {Text, View, Image, StyleSheet} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Font} from '../../common/commonStyle';
 const image = require('../../assets/img/emptyTip/empty.png');
-const index = (props) => {
+const EmptyTip = (props) => {
     const {text = '暂无数据', img = image, style, textStyle, imageStyle, type = 'page', desc = ''} = props;
     return (
         <View style={[styles.con, style]}>
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default index;
+export default EmptyTip;

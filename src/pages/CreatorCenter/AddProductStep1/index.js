@@ -110,7 +110,15 @@ const AddProductStep1 = ({navigation, route}) => {
                     },
                 });
             } else {
-                jump(button.url);
+                goSave({
+                    subject_id: route.params?.subject_id,
+                    style_type: styleCheckRef.current,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        initStyleCheckRef.current = styleCheckRef.current;
+                        jump(button.url);
+                    }
+                });
             }
         },
         [route, jump]

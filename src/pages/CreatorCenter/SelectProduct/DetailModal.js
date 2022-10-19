@@ -3,16 +3,39 @@
  * @Autor: wxp
  * @Date: 2022-10-16 11:56:53
  */
-import React from 'react';
-import {ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {ScrollView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '~/common/commonStyle';
-import {px} from '~/utils/appUtil';
+import http from '~/services';
+import {deviceHeight, px} from '~/utils/appUtil';
+import {genKey} from './utils';
 
-const DetailModal = ({bottom, onClose}) => {
+const DetailModal = ({bottom, onClose, selections, handlerSelections}) => {
+    const list = useRef(selections);
+    const [data, setData] = useState();
+
+    useEffect(() => {
+        http.post('/subject/manage/products/names/20220901', {products: JSON.stringify(selections)}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
+    }, []);
     return (
-        <View style={[styles.container, {position: 'absolute', bottom}]}>
+        <View
+            style={[
+                styles.container,
+                {position: 'absolute', bottom, height: deviceHeight, backgroundColor: 'rgba(30,31,32,0.7)'},
+            ]}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={{flex: 1}}
+                onPress={() => {
+                    onClose();
+                }}
+            />
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>选择明细</Text>
                 <Icon
@@ -24,27 +47,43 @@ const DetailModal = ({bottom, onClose}) => {
                     }}
                 />
             </View>
-            <ScrollView contentContainerStyle={styles.content} scrollIndicatorInsets={{right: 1}}>
-                {[1, 2, 3, 4].map((item, idx) => (
-                    <TouchableOpacity
-                        style={[styles.item, {marginTop: idx > 0 ? px(27) : 0}]}
-                        key={idx}
-                        activeOpacity={0.8}
-                        onPress={() => {}}>
-                        <FastImage
-                            source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
-                                    true ? 'check' : 'uncheck'
-                                }.png`,
-                            }}
-                            style={{width: px(16), height: px(16)}}
-                        />
-                        <Text style={styles.itemText} numberOfLines={1}>
-                            {'汇添富中证主要消费ETF联接A'}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+            <View>
+                <ScrollView contentContainerStyle={styles.content} scrollIndicatorInsets={{right: 1}}>
+                    {data ? (
+                        list.current.map((item, idx) => (
+                            <TouchableOpacity
+                                style={[styles.item, {marginTop: idx > 0 ? px(27) : 0}]}
+                                key={idx}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    let newVal = [...selections];
+
+                                    let i = newVal.findIndex((v) => genKey(v) === genKey(item));
+
+                                    i > -1 ? newVal.splice(i, 1) : newVal.push(item);
+
+                                    handlerSelections(newVal);
+                                }}>
+                                <FastImage
+                                    source={{
+                                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                            selections.find((itm) => genKey(itm) === genKey(item)) ? 'check' : 'uncheck'
+                                        }.png`,
+                                    }}
+                                    style={{width: px(16), height: px(16)}}
+                                />
+                                <Text style={styles.itemText} numberOfLines={1}>
+                                    {data[idx].product_name}
+                                </Text>
+                            </TouchableOpacity>
+                        ))
+                    ) : (
+                        <View style={{paddingVertical: px(20)}}>
+                            <ActivityIndicator />
+                        </View>
+                    )}
+                </ScrollView>
+            </View>
         </View>
     );
 };

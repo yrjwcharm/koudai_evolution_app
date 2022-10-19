@@ -19,6 +19,7 @@ module.exports = {
             },
             // 'react-native-reanimated/plugin',
         ],
+        '@babel/plugin-proposal-logical-assignment-operators',
         // 'react-native-reanimated/plugin',
     ],
     // plugins: ["transform-decorators-legacy"]
