@@ -1333,6 +1333,10 @@ function WithHooks(props) {
                     },
                     confirmCallBack: () => {
                         setModal('');
+                        if (anti_pop.confirm_action?.url) {
+                            anti_pop.confirm_action.url.params ??= {}
+                            anti_pop.confirm_action.url.params.append = props.route?.params?.append || ''
+                        }
                         jump(anti_pop.confirm_action?.url);
                     },
                     cancelText: anti_pop.cancel_action?.text,
