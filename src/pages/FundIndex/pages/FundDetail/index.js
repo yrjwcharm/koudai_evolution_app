@@ -41,7 +41,7 @@ const Index = ({navigation, route}) => {
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
 
     const init = () => {
-        getPageData({code})
+        getPageData(route.params || {})
             .then((res) => {
                 if (res.code === '000000') {
                     const {title} = res.result;
