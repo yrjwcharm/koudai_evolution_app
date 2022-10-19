@@ -14,6 +14,7 @@ import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData} from './services';
 import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
+import {useDispatch} from 'react-redux';
 const shadow = {
     color: '#AAA',
     border: 4,
@@ -32,6 +33,7 @@ const shadow = {
 };
 export const appContext = React.createContext();
 const ProfitDistribution = React.memo(({headData, type}) => {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
@@ -45,6 +47,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
         setLoading(false);
     };
     useEffect(() => {
+        dispatch({type: 'updateUnitType', payload: unitType});
         initData();
     }, [type, unitType]);
     return (
@@ -52,7 +55,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
-                <>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     <BoxShadow setting={{...shadow}}>
                         <View style={styles.header}>
                             <View style={Style.flexEvenly}>
@@ -130,25 +133,45 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                 {tabs.map((tab, index) => {
                                     if (index == 0)
                                         return (
-                                            <DayProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                            <DayProfit
+                                                type={type}
+                                                unitType={unitType}
+                                                tabLabel={tab.text}
+                                                key={`${tab + '' + index}`}
+                                            />
                                         );
                                     if (index == 1)
                                         return (
-                                            <MonthProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                            <MonthProfit
+                                                type={type}
+                                                unitType={unitType}
+                                                tabLabel={tab.text}
+                                                key={`${tab + '' + index}`}
+                                            />
                                         );
                                     if (index == 2)
                                         return (
-                                            <YearProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                            <YearProfit
+                                                type={type}
+                                                unitType={unitType}
+                                                tabLabel={tab.text}
+                                                key={`${tab + '' + index}`}
+                                            />
                                         );
                                     if (index == 3)
                                         return (
-                                            <TotalProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                            <TotalProfit
+                                                type={type}
+                                                unitType={unitType}
+                                                tabLabel={tab.text}
+                                                key={`${tab + '' + index}`}
+                                            />
                                         );
                                 })}
                             </ScrollableTabView>
                         )}
                     </View>
-                </>
+                </ScrollView>
             )}
         </>
     );
