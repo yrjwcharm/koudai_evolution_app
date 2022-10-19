@@ -11,3 +11,6 @@ export const getData = (data) => {
 export const getListData = (data) => {
     return http.post('/subject/manage/products/show/20220901', data);
 };
+export const goSave = (data) => {
+    return http.post('/subject/manage/products/modify/20220901', data);
+};

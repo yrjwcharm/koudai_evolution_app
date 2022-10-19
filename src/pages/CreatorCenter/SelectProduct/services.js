@@ -5,9 +5,6 @@
  */
 const {default: http} = require('~/services');
 
-export const getData = (data) => {
-    return http.get('/subject/manage/products/my/20220901', data);
-};
 export const getList = (data) => {
-    return http.get('/xxx', data);
+    return http.get('/subject/manage/products/my/20220901', data);
 };

@@ -20,8 +20,8 @@ const EditProduct = ({navigation, route}) => {
     const [data, setData] = useState();
     const [pageModalType, setPageModalType] = useState(1);
 
-    const [activeModalStyle, setActiveModalStyle] = useState();
-    const [activeModalRange, setActiveModalRange] = useState();
+    const [activeModalStyle, setActiveModalStyle] = useState(route.params.style_id);
+    const [activeModalRange, setActiveModalRange] = useState(route.params.yield_range);
 
     const pageModalRef = useRef();
 
@@ -30,7 +30,7 @@ const EditProduct = ({navigation, route}) => {
     }, [data, option]);
 
     const curRange = useMemo(() => {
-        return data?.range_list[option.yield_range];
+        return data?.range_list?.find?.((item) => item.key === option.yield_range);
     }, [data, option]);
 
     useEffect(() => {
@@ -59,6 +59,7 @@ const EditProduct = ({navigation, route}) => {
                             if (!activeModalRange) {
                                 return Toast.show('请选择展示区间');
                             }
+                            console.log(option);
                             DeviceEventEmitter.emit('editProduct', option);
                             navigation.goBack();
                         }}>
@@ -107,7 +108,6 @@ const EditProduct = ({navigation, route}) => {
                             <Text style={styles.cardHeaderTitle}>产品展示样式</Text>
                         </View>
                         <View style={styles.cardHeaderRight}>
-                            <Text style={styles.cardHeaderDesc}>123123</Text>
                             <Icon color={Colors.descColor} name={'angle-down'} size={px(14)} />
                         </View>
                     </TouchableOpacity>
@@ -203,7 +203,7 @@ const EditProduct = ({navigation, route}) => {
                                   </View>
                               </TouchableOpacity>
                           ))
-                        : Object.values(data?.range_list)?.map((range) => (
+                        : data?.range_list?.map((range) => (
                               <TouchableOpacity
                                   style={styles.rangeItem}
                                   key={range.key}

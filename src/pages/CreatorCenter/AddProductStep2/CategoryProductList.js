@@ -66,6 +66,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                                         ...originData[0],
                                         name: '分类' + md.length,
                                         desc: '',
+                                        products: [],
                                         id: '$' + Date.now(),
                                     };
                                     return md.slice(0, -1).concat([addObj, md[md.length - 1]]);
@@ -194,10 +195,11 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                     {allHaveDesc && (
                         <Text style={[styles.categoryDesc, {marginTop: px(12)}]}>{originData[tabActive].desc}</Text>
                     )}
+                    <View style={{height: modalVisible ? modalCardHeight - px(12) - cateLayout.height : 0}} />
                     {data?.groups?.[tabActive]?.items?.length > 0 && (
                         <View
                             style={{
-                                paddingTop: px(12) + (modalVisible ? modalCardHeight - px(12) - cateLayout.height : 0),
+                                paddingTop: px(12),
                             }}>
                             <ProductList data={data?.groups[tabActive].items} type={data.style_type} />
                         </View>

@@ -253,10 +253,10 @@ const CreatorCenterIndex = () => {
 
                                                                 params: {
                                                                     link:
-                                                                        'http://192.168.190.51:3000/specialDetailDraft',
+                                                                        'http://192.168.190.31:3000/specialDetailDraft',
                                                                     scence: 'create',
                                                                     params: {
-                                                                        subject_id: 111,
+                                                                        subject_id: 134,
                                                                         scene: 'creating',
                                                                     },
                                                                 },

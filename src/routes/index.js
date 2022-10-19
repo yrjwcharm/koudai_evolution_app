@@ -289,7 +289,7 @@ import SpecialModifyProductInfo from '~/pages/CreatorCenter/Special/Modify/Speci
 import SpecialModifyProductItem from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js'; // 专题修改-推广位-产品信息填写-选择产品
 
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
-import AddProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
+import SelectProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
 
 import ProfitDetail from '~/pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
@@ -304,6 +304,7 @@ import SpecialExamine from '~/pages/CreatorCenter/SpecialExamine'; // 专题审�
 import CommunityInfoCreate from '~/pages/Community/CommunityInfoCreate'; // 创建社区
 import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑社区资料
 import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
+import SortProduct from '~/pages/CreatorCenter/AddProductStep2/SortProduct'; // 排序产品
 
 const Stack = createStackNavigator();
 
@@ -1167,7 +1168,7 @@ export default function AppStack() {
                 <Stack.Screen name="SpecialSubmitCheck" component={SpecialSubmitCheck} options={{headerShown: false}} />
                 <Stack.Screen name="SpecialModifyEntry" component={SpecialModifyEntry} options={{headerShown: false}} />
                 <Stack.Screen name="EditProduct" component={EditProduct} options={{title: ''}} />
-                <Stack.Screen name="AddProduct" component={AddProduct} options={{title: '添加产品'}} />
+                <Stack.Screen name="SelectProduct" component={SelectProduct} options={{title: '添加产品'}} />
                 <Stack.Screen name="SetSpecialCardStyle" component={SetSpecialCardStyle} options={{title: ''}} />
                 <Stack.Screen name="EditSpecialCardInfo" component={EditSpecialCardInfo} options={{title: ''}} />
                 <Stack.Screen
@@ -1207,6 +1208,7 @@ export default function AppStack() {
                     component={CommunityArticleSubmitCheck}
                     options={{title: ''}}
                 />
+                <Stack.Screen name="SortProduct" component={SortProduct} options={{title: '调整列表'}} />
             </Stack.Navigator>
         </>
     );

@@ -2,11 +2,11 @@
  * @Date: 2022-06-10 18:41:07
  * @Description:搜索
  */
-import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, ScrollView, Keyboard, DeviceEventEmitter} from 'react-native';
 import React, {useState, useRef, useCallback} from 'react';
 import Icons from 'react-native-vector-icons/AntDesign';
 import {Colors, Space, Style} from '~/common/commonStyle';
-import {px} from '~/utils/appUtil';
+import {isIphoneX, px} from '~/utils/appUtil';
 import SearchInput from './SearchInput';
 import SearchTag from './SearchTag';
 import SearchContent from './SearchContent';
@@ -17,7 +17,9 @@ import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
 import EmptyTip from '~/components/EmptyTip';
 import HotContent from './HotContent';
-const Index = () => {
+import Toast from '~/components/Toast';
+const Index = ({navigation, route}) => {
+    const [selections, setSelections] = useState(route?.params?.selections);
     const [data, setData] = useState({});
     const {keyword_history = []} = data;
     const [searchList, setSearchList] = useState([]);
@@ -25,6 +27,8 @@ const Index = () => {
     const [historyCancle, setHistoryCancle] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
     const input = useRef();
+    const {max_products_num, product_type} = route?.params;
+
     //获取搜索页数据
     const getSearchIndexInfo = async () => {
         let info = await getSearchInfo();
@@ -40,7 +44,11 @@ const Index = () => {
     const getSerachList = async (content) => {
         if (!content) return;
         setSearchLoading(true);
-        let res = await getSearchData({keyword: content});
+        let params = {keyword: content};
+        if (route.params.selections) {
+            params.scene = 'subject_product';
+        }
+        let res = await getSearchData(params);
         if (res.code === '000000') {
             setSearchList(res.result);
         }
@@ -86,6 +94,27 @@ const Index = () => {
             getSearchIndexInfo();
         }, [])
     );
+    const handlerSelections = useCallback((arr) => {
+        try {
+            if (arr.length > max_products_num) {
+                throw Error('最多可添加' + max_products_num + '个产品');
+            }
+            if (+product_type) {
+                let obj = arr.find((item) => item.product_type !== product_type);
+                if (obj) throw Error('只能添加基金或组合一种产品');
+            } else {
+                for (let i = 1; i < arr.length; i++) {
+                    if (arr[i].product_type !== arr[i - 1].product_type) {
+                        throw Error('只能添加基金或组合一种产品');
+                    }
+                }
+            }
+            setSelections(arr);
+        } catch (error) {
+            Toast.show(error.message);
+        }
+    }, []);
+
     return data ? (
         <View style={styles.con}>
             {/* 搜索框 */}
@@ -117,9 +146,18 @@ const Index = () => {
                                             {item.title}
                                         </Text>
                                     ) : null}
-                                    {item?.list?.map((_list, index) => (
-                                        <SearchContent data={_list} key={index} type={item?.type} />
-                                    ))}
+                                    {item?.list?.map((_list, index) => {
+                                        let options = {
+                                            data: _list,
+                                            key: index,
+                                            type: item?.type,
+                                        };
+                                        if (route?.params?.selections) {
+                                            options.handlerSelections = handlerSelections;
+                                            options.selections = selections;
+                                        }
+                                        return <SearchContent {...options} />;
+                                    })}
                                 </View>
                             ))}
                         </View>
@@ -192,6 +230,19 @@ const Index = () => {
                     </>
                 )}
             </ScrollView>
+            {route.params?.selections && keyword && searchList?.length > 0 ? (
+                <View style={styles.bottomWrap}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            DeviceEventEmitter.emit('searchToSelect', selections);
+                            navigation.goBack();
+                        }}
+                        style={styles.bottomBtn}>
+                        <Text style={styles.bottomBtnText}>选好了</Text>
+                    </TouchableOpacity>
+                </View>
+            ) : null}
         </View>
     ) : (
         <LoadingTips />
@@ -208,5 +259,24 @@ const styles = StyleSheet.create({
         lineHeight: px(22),
         fontWeight: '700',
         color: '#121D3A',
+    },
+    bottomWrap: {
+        paddingVertical: px(8),
+        paddingHorizontal: px(16),
+        backgroundColor: '#fff',
+        paddingBottom: isIphoneX() ? 34 : px(8),
+        borderTopColor: '#E2E4EA',
+        borderTopWidth: 0.5,
+    },
+    bottomBtn: {
+        paddingVertical: px(13),
+        borderRadius: px(6),
+        backgroundColor: '#0051CC',
+    },
+    bottomBtnText: {
+        fontSize: px(15),
+        lineHeight: px(18),
+        color: '#fff',
+        textAlign: 'center',
     },
 });
