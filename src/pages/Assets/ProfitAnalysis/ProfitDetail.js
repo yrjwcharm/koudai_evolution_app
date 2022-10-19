@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -30,7 +30,6 @@ const ProfitDetail = ({navigation, route}) => {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 setTabs(tabs);
                 setHeadData(header);
-                // Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
                 navigation.setOptions({title});
             }
             if (res[1].code === '000000') {

@@ -35,6 +35,7 @@ class Index extends Component {
             careerList: [],
             btnDisable: true,
             idErrorMsg: '',
+            append: this.props.route?.params?.append || '',
         };
     }
     componentWillUnmount() {
@@ -100,7 +101,7 @@ class Index extends Component {
         this.checkData(name, id_no);
     };
     jumpBank = (nav) => {
-        const {name, id_no, rcode, rname} = this.state;
+        const {name, id_no, rcode, rname, append} = this.state;
         var checkData = [
             {
                 field: name,
@@ -139,6 +140,7 @@ class Index extends Component {
                         fr: this.props.route?.params?.fr || '',
                         fund_code: this.props.route?.params?.fund_code,
                         url: this.props.route?.params?.url || '',
+                        append
                     });
                 }
             } else {

@@ -11,9 +11,12 @@ import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
-import {callFixedInvestDetailApi} from './services';
+import {callFixedInvestDetailApi, executePauseFixedInvestApi, executeStopFixedInvestApi} from './services';
 import {useJump} from '../../../components/hooks';
 import Loading from '../../Portfolio/components/PageLoading';
+import {PasswordModal} from '../../../components/Password';
+import Http from '../../../services';
+import Toast from '../../../components/Toast';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -24,8 +27,10 @@ const shadow = {
 };
 
 const FixedInvestDetail = ({navigation, route}) => {
-    const {poid = ''} = route?.params;
+    const {invest_plan_id: plan_id = ''} = route?.params;
+    const [type, setType] = useState();
     const jump = useJump();
+    const passwordModal = useRef(null);
     const dispatch = useDispatch();
     const [state, setState] = useState({
         loading: true,
@@ -36,9 +41,13 @@ const FixedInvestDetail = ({navigation, route}) => {
     const [visible, setVisible] = useState(false);
     const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const selectData = useRef(['修改', '暂停', '终止']);
+    const handleClick = (t) => {
+        setType(t);
+        passwordModal?.current?.show();
+    };
     useEffect(() => {
         (async () => {
-            dispatch(callFixedInvestDetailApi({plan_id: '66444'}));
+            dispatch(callFixedInvestDetailApi({plan_id}));
             if (res.code === '000000') {
                 const {
                     title = '',
@@ -62,7 +71,6 @@ const FixedInvestDetail = ({navigation, route}) => {
                         </>
                     ),
                 });
-                let actionPanelList = btn_list.map((el) => el.text);
                 setState({
                     header,
                     pay_info,
@@ -73,6 +81,33 @@ const FixedInvestDetail = ({navigation, route}) => {
             }
         })();
     }, []);
+    const submit = async (password) => {
+        const loading = Toast.showLoading();
+        let range = ['recover', 'pause', 'terminate'];
+        if (range.includes('pause') || range.includes('recover')) {
+            const res = await executeStopFixedInvestApi({
+                plan_id,
+                password,
+                type: type == 'pause' ? 20 : 30,
+            });
+            if (res.code === '000001') {
+                Toast.hide(loading);
+                let timer = setTimeout(() => {
+                    Toast.show(res.message);
+                    timer && clearTimeout(timer);
+                }, 500);
+            }
+        } else {
+            Http.get('/trade/stop/invest_plan/20210101', {
+                invest_id: plan_id,
+                password,
+            }).then((res) => {
+                Toast.show(res.message);
+                if (res.code == '000000') {
+                }
+            });
+        }
+    };
     return (
         <>
             {state.loading ? (
@@ -195,7 +230,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                             <Text style={styles.rowTitle}>金额(元)</Text>
                             <Text style={styles.rowTitle}>交易状态</Text>
                         </View>
-                        {state.records?.data_list.map((item, index) => {
+                        {state.records?.data_list?.map((item, index) => {
                             return (
                                 <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
                                     <View style={{width: '38.5%'}}>
@@ -220,12 +255,15 @@ const FixedInvestDetail = ({navigation, route}) => {
                             );
                         })}
                     </View>
+                    <PasswordModal ref={passwordModal} onDone={submit} />
+
                     <SelectModal
                         style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
                         callback={(index) => {
                             if (index === 0) {
                                 jump(state.btn_list[index]?.url);
                             } else if (index === 1) {
+                                handleClick(state.pay_info?.status == '已暂停' ? 'recover' : 'pause');
                             } else if (index === 2) {
                                 const {
                                     popup: {title, content, confirm, cancel, back_close, touch_close},
@@ -236,7 +274,9 @@ const FixedInvestDetail = ({navigation, route}) => {
                                     isTouchMaskToClose: back_close,
                                     backButtonClose: touch_close,
                                     cancelText: cancel.text,
-                                    confirmCallBack: () => {},
+                                    confirmCallBack: () => {
+                                        handleClick('terminate');
+                                    },
                                     confirmText: confirm.text,
                                     content,
                                 });

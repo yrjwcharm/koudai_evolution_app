@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 14:02:38
+ * @LastEditTime: 2022-10-19 16:12:37
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -30,7 +30,8 @@ import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {Style, Colors, Space} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import {getStashSpeical, saveStashSpeical} from '../services';
+import {getStashBaseInfo, saveStashBaseInfo} from './services';
+import LoadingTips from '~/components/LoadingTips';
 
 function Tag(props) {
     let {text, onPress, onClose} = props;
@@ -139,8 +140,10 @@ const blockCal = () => {
 
 export default function SpecialModifyBaseInfo({navigation, route}) {
     const jump = useJump();
+    const {subject_id} = route?.params ?? {};
     const [bgSource, setBgSource] = useState();
-    const {isEdit} = route.params;
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState({});
 
     const [showPickerModal, setPickerModal] = useState(false);
     const [title, setTitle] = useState('');
@@ -150,8 +153,8 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     const showSelectImg = () => {
         setPickerModal(true);
     };
+
     const rightPress = () => {
-        // TODO: check input
         if (!bgSource || bgSource.length === 0) {
             Toast.show('未选择背景图片');
             return;
@@ -168,25 +171,44 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             Toast.show('专题标签未填写');
             return;
         }
-        jump({
-            path: 'SpecialCreateEntry',
+
+        saveStashBaseInfo({
+            subject_id: subject_id || 0,
+            name: title,
+            bg_img: bgSource,
+            desc: desc,
+            tags,
+        }).then((res) => {
+            if (res.code === '000000') {
+                jump(data.next_button.url);
+                // jump({
+                //     path: 'SpecialCreateEntry',
+                // });
+            }
         });
     };
 
     const handleBack = () => {
         if (bgSource || title || desc || tags.length > 1) {
             Modal.show({
-                title: '已编辑内容是否要保存草稿？下次可继续编辑。',
+                content: '已编辑内容是否要保存草稿？下次可继续编辑。',
                 cancelText: '不保存草稿',
                 confirmText: '保存草稿',
+                confirm: true,
                 backCloseCallbackExecute: true,
                 cancelCallBack: () => {
                     navigation.goBack();
                 },
                 confirmCallBack: () => {
-                    // TODO: save stack
-
-                    navigation.goBack();
+                    saveStashBaseInfo({
+                        subject_id: subject_id || 0,
+                        name: title,
+                        bg_img: bgSource,
+                        desc: desc,
+                        tags,
+                    }).then((_) => {
+                        navigation.goBack();
+                    });
                 },
             });
         } else {
@@ -245,13 +267,32 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     };
 
     useEffect(() => {
-        getStashSpeical().then((res) => {
-            setTitle('');
-            setDesc('');
-            setTags([]);
-            setBgSource('');
-        });
+        setLoading(true);
+        getStashBaseInfo({subject_id: subject_id || 0})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    setTitle(res.result.name || '');
+                    setDesc(res.result.desc || '');
+                    setTags(res.result.tags || []);
+                    setBgSource(res.result.bg_img || null);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
     }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'创建专题'} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     let uploadImgSection;
     if (bgSource) {
@@ -282,7 +323,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             <NavBar
                 title={'创建专题'}
                 leftIcon="chevron-left"
-                rightText={'下一步'}
+                rightText={data.next_button?.text ?? '下一步'}
                 rightPress={rightPress}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}

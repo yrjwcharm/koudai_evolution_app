@@ -9,7 +9,6 @@ import {isIphoneX, px} from '../../../utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
 import AccEarningsCom from './components/AccEarningsCom';
-import {useSelector} from 'react-redux';
 const TotalProfit = React.memo(() => {
     return (
         <View style={styles.container}>
@@ -32,8 +31,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         paddingBottom: px(22),
-        borderBottomRightRadius: px(5),
         borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
     },
     topLine: {
         borderTopWidth: Space.borderWidth,

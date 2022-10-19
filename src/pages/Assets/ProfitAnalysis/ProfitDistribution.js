@@ -12,6 +12,8 @@ import TotalProfit from './TotalProfit';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData} from './services';
+import RenderList from './components/RenderList';
+import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 const shadow = {
     color: '#AAA',
     border: 4,
@@ -50,10 +52,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
-                <ScrollView
-                    style={styles.container}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}>
+                <>
                     <BoxShadow setting={{...shadow}}>
                         <View style={styles.header}>
                             <View style={Style.flexEvenly}>
@@ -130,11 +129,17 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                 }}>
                                 {tabs.map((tab, index) => {
                                     if (index == 0)
-                                        return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <DayProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 1)
-                                        return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <MonthProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 2)
-                                        return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <YearProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 3)
                                         return (
                                             <TotalProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
@@ -143,7 +148,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             </ScrollableTabView>
                         )}
                     </View>
-                </ScrollView>
+                </>
             )}
         </>
     );
@@ -157,6 +162,15 @@ export default ProfitDistribution;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.bgColor,
+    },
+    renderList: {
+        paddingBottom: px(20),
+        paddingHorizontal: px(12),
+        marginBottom: isIPhoneX() ? px(54) : px(20),
+        backgroundColor: Colors.white,
+        marginHorizontal: px(16),
+        borderBottomRightRadius: px(5),
+        borderBottomLeftRadius: px(5),
     },
     header: {
         flexDirection: 'column',
@@ -186,6 +200,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(5),
     },
     section: {
+        flex: 1,
         marginHorizontal: px(16),
     },
 });

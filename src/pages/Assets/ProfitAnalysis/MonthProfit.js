@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:月收益
  */
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
@@ -53,37 +53,38 @@ const MonthProfit = React.memo(({type}) => {
                 const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        chart: barCharData,
-                    });
-                    // //双重for循环判断日历是否超过、小于或等于当前日期
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                let unit = profit_data_list[j].unit_key;
-                                if (arr[i].day == unit) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        // //双重for循环判断日历是否超过、小于或等于当前日期
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    let unit = profit_data_list[j].unit_key;
+                                    if (arr[i].day == unit) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
+                        let barCharData = profit_data_list
+                            .map((el) => {
+                                return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
+                            })
+                            .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[0]?.unit_key},
+                                {name: '收益', val: profit_data_list[0]?.value},
+                            ],
+                            chart: barCharData,
+                        });
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        let index = arr.findIndex((el) => el.day == selCurDate);
+                        arr[index] && (arr[index].checked = true);
+                        setDateArr([...arr]);
+                        setDate(dayjs_);
                     }
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    let zIndex = arr.findIndex((el) => el.day == selCurDate);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setDate(dayjs_);
                 }
             })();
         },
@@ -104,6 +105,22 @@ const MonthProfit = React.memo(({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
+    const renderCalendar = useMemo(
+        () =>
+            dateArr?.map((el, index) => {
+                const month = dayjs(el?.day).month() + 1;
+                const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
+                return (
+                    <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
+                        <View style={[commonStyle.month, wrapStyle]}>
+                            <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
+                            {el?.profit && <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>}
+                        </View>
+                    </TouchableOpacity>
+                );
+            }),
+        [dateArr]
+    );
     return (
         <View style={styles.container}>
             <CalendarHeader
@@ -116,24 +133,7 @@ const MonthProfit = React.memo(({type}) => {
                 add={add}
                 isAdd={isAdd}
             />
-            {isCalendar && (
-                <View style={commonStyle.monthFlex}>
-                    {dateArr?.map((el, index) => {
-                        const month = dayjs(el?.day).month() + 1;
-                        const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
-                        return (
-                            <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
-                                <View style={[commonStyle.month, wrapStyle]}>
-                                    <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
-                                    {el?.profit && (
-                                        <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            )}
+            {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList />

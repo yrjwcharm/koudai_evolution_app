@@ -6,24 +6,21 @@
 
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
-import {delMille} from '../../../../utils/appUtil';
+import {delMille, isEmpty} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 import {useSelector} from 'react-redux';
-import sortUp from '~/assets/img/attention/sortUp.png';
-import sortDown from '~/assets/img/attention/sortDown.png';
 const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
-    const [sort, setSort] = useState('desc');
     const type = useSelector((state) => state.profitDetail.type);
-    const [headerList, setHeaderList] = useState([]);
+    const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const init = useCallback(() => {
         (async () => {
-            const res = await getProfitDetail({type, sort});
+            const res = await getProfitDetail({type});
             if (res.code === '000000') {
                 if (isMounted.current) {
                     const {head_list = [], data_list = []} = res.result || {};
@@ -32,32 +29,49 @@ const RenderList = React.memo(() => {
                 }
             }
         })();
-    }, [type, sort]);
+    }, [type]);
 
     useEffect(() => {
         init();
     }, [init]);
-    const sortRenderList = useCallback(() => {
-        if (sort == 'desc') {
-            setSort('asc');
-        } else {
-            setSort('desc');
+    const executeSort = async (data) => {
+        if (data.sort_key) {
+            const res = await getProfitDetail({
+                type,
+                sort_key: data?.sort_key,
+                sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
+            });
+            if (res.code === '000000') {
+                const {head_list = [], data_list = []} = res.result || {};
+                setHeaderList(head_list);
+                setProfitList(data_list);
+            }
         }
-    }, [sort]);
+    };
     return (
         <>
-            <View style={styles.profitHeader}>
-                <View style={styles.profitHeaderLeft}>
-                    <Text style={styles.profitLabel}>{headerList[0]?.text.substring(0, 4)}</Text>
-                    <Text style={styles.profitDate}>{headerList[0]?.text.substring(4)}</Text>
-                </View>
-                <TouchableOpacity onPress={sortRenderList}>
-                    <View style={styles.profitHeaderRight}>
-                        <Text style={styles.moneyText}>{headerList[1]?.text}</Text>
-                        <Image style={{width: px(12), height: px(12)}} source={sort == 'desc' ? sortDown : sortUp} />
+            {left && right && (
+                <View style={styles.profitHeader}>
+                    <View style={styles.profitHeaderLeft}>
+                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity onPress={() => executeSort(right)}>
+                        <View style={styles.profitHeaderRight}>
+                            <Text style={styles.moneyText}>{right?.text}</Text>
+                            <Image
+                                source={
+                                    isEmpty(right?.sort_type)
+                                        ? require('../assets/sort.png')
+                                        : right?.sort_type == 'desc'
+                                        ? require('../assets/desc.png')
+                                        : require('../assets/asc.png')
+                                }
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )}
             {useMemo(
                 () =>
                     profitList.map((item, index) => {

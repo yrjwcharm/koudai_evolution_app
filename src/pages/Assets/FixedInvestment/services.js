@@ -15,12 +15,8 @@ export const callHistoryDataApi = (params) => http.get(`/platform_tool/invest_re
  * 定投管理工具-已经终止的定投
  * @param params
  */
-export const callTerminatedFixedApi = (params) => {
-    return async (dispatch) => {
-        const res = await http.get(`/platform_tool/invest_regularly/terminated/20221010`, params);
-        dispatch({type: 'fetchSuccess', payload: res || {}});
-    };
-};
+export const callTerminatedFixedApi = (params) =>
+    http.get(`/platform_tool/invest_regularly/terminated/20221010`, params);
 
 /**
  * 定投管理工具-定投详情
@@ -41,5 +37,4 @@ export const callModifyFixedInvestApi = (params) =>
  * 定投管理工具-执行修改定投
  * @param params
  */
-export const executeModifyFixedInvestApi = (params) =>
-    http.post(`/platform_tool/invest_regularly/update/20221010`, params);
+export const executeStopFixedInvestApi = (params) => http.get(`/platform_tool/invest_regularly/stop/20221010`, params);

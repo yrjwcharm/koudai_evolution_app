@@ -305,6 +305,10 @@ import CommunityInfoCreate from '~/pages/Community/CommunityInfoCreate'; // 创�
 import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑社区资料
 import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
 import SortProduct from '~/pages/CreatorCenter/AddProductStep2/SortProduct'; // 排序产品
+import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的关注/我的粉丝
+
+// 审核中心
+import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
 
 const Stack = createStackNavigator();
 
@@ -1209,6 +1213,8 @@ export default function AppStack() {
                     options={{title: ''}}
                 />
                 <Stack.Screen name="SortProduct" component={SortProduct} options={{title: '调整列表'}} />
+                <Stack.Screen name="CommunityMyFollow" component={CommunityMyFollow} options={{title: ''}} />
+                <Stack.Screen name="CreatorAuthHome" component={CreatorAuthHome} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );

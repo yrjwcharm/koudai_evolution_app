@@ -268,6 +268,7 @@ class TradeBuy extends Component {
                         pay_method: bank.pay_method || '',
                         page_type: this.props.route.params.page_type || '',
                         is_continue_buy: this.state.is_continue_buy,
+                        append: this.props.route?.params?.append || '',
                     }).then((res) => {
                         Toast.hide(toast);
                         if (res.code === '000000') {
@@ -298,6 +299,7 @@ class TradeBuy extends Component {
                 cycle: currentDate[0],
                 timing: currentDate[1],
                 need_buy: this.need_buy,
+                append: this.props.route?.params?.append || ''
             }).then((res) => {
                 Toast.hide(toast);
                 global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Condition', +this.state.autoChargeStatus);
@@ -325,6 +327,7 @@ class TradeBuy extends Component {
                 init: amount ? 0 : 1,
                 plan_id: this.plan_id,
                 page_type: this.props.route.params.page_type || '',
+                append: this.props.route?.params?.append || '',
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -1330,6 +1333,10 @@ function WithHooks(props) {
                     },
                     confirmCallBack: () => {
                         setModal('');
+                        if (anti_pop.confirm_action?.url) {
+                            anti_pop.confirm_action.url.params ??= {}
+                            anti_pop.confirm_action.url.params.append = props.route?.params?.append || ''
+                        }
                         jump(anti_pop.confirm_action?.url);
                     },
                     cancelText: anti_pop.cancel_action?.text,

@@ -4,14 +4,11 @@
  * @Description: 定投header
  */
 
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {deviceWidth, px} from '../../../../utils/appUtil';
+import {deviceWidth, isEmpty, px} from '../../../../utils/appUtil';
 import {Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {BoxShadow} from 'react-native-shadow';
-import sort from '~/assets/img/attention/sort.png';
-import sortUp from '~/assets/img/attention/sortUp.png';
-import sortDown from '~/assets/img/attention/sortDown.png';
 import {Colors, Font} from '../../../../common/commonStyle';
 const shadow = {
     color: '#aaa',
@@ -25,26 +22,35 @@ const shadow = {
         left: px(16),
     },
 };
-const InvestHeader = React.memo(({headList, times, sum, sortByIssue, sortBySum}) => {
-    const icon1 = times == 'asc' ? sortUp : times == 'desc' ? sortDown : sort;
-    const icon2 = sum == 'asc' ? sortUp : sum == 'desc' ? sortDown : sort;
+const InvestHeader = React.memo(({headList, handleSort}) => {
+    const [left, center, right] = headList;
+    const icon1 = isEmpty(center?.sort_type)
+        ? require('../assets/sort.png')
+        : center?.sort_type == 'desc'
+        ? require('../assets/desc.png')
+        : require('../assets/asc.png');
+    const icon2 = isEmpty(right?.sort_type)
+        ? require('../assets/sort.png')
+        : right?.sort_type == 'desc'
+        ? require('../assets/desc.png')
+        : require('../assets/asc.png');
 
     return (
         <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(37)}}>
             <View style={styles.sortChoiceView}>
                 <View style={styles.sortChoiceWrap}>
-                    <Text style={styles.sortText}>{headList[0]?.text}</Text>
-                    <TouchableOpacity onPress={sortByIssue}>
+                    <Text style={styles.sortText}>{left?.text}</Text>
+                    <TouchableOpacity onPress={() => handleSort(center)}>
                         <View style={styles.investIssue}>
-                            <Text style={styles.sortText}>{headList[1]?.text}</Text>
+                            <Text style={styles.sortText}>{center?.text}</Text>
 
-                            <Image source={icon1} style={styles.sortIcon} />
+                            <Image source={icon1} />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={sortBySum}>
+                    <TouchableOpacity onPress={() => handleSort(right)}>
                         <View style={styles.totalSort}>
-                            <Text style={styles.sortText}>{headList[2]?.text}</Text>
-                            <Image source={icon2} style={styles.sortIcon} />
+                            <Text style={styles.sortText}>{right?.text}</Text>
+                            <Image source={icon2} />
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -55,16 +61,10 @@ const InvestHeader = React.memo(({headList, times, sum, sortByIssue, sortBySum})
 
 InvestHeader.propTypes = {
     headList: PropTypes.array,
-    times: PropTypes.string,
-    sum: PropTypes.string,
 };
 
 export default InvestHeader;
 const styles = StyleSheet.create({
-    sortIcon: {
-        width: px(12),
-        height: px(12),
-    },
     sortText: {
         fontSize: px(11),
         marginRight: px(2),

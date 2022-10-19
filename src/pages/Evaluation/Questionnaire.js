@@ -27,7 +27,7 @@ import Toast from '../../components/Toast';
 const Questionnaire = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const {fr, fund_code = '', plan_id = ''} = route.params;
+    const {fr, fund_code = '', plan_id = '', append = ''} = route.params;
     const summaryIdRef = useRef('');
     const questionnaireRef = useRef('');
     const upidRef = useRef('');
@@ -117,7 +117,8 @@ const Questionnaire = () => {
                         summary_id: summaryIdRef.current,
                         fr,
                         fund_code,
-                    });
+                        append,
+                });
                 }
             }
         });

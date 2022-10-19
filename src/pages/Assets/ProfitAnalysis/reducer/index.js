@@ -1,5 +1,4 @@
 const initState = {
-    // 将对象转成immutable对象
     type: 200,
 };
 
