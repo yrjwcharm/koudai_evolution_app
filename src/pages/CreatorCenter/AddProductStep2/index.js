@@ -248,18 +248,28 @@ const AddProductStep2 = ({navigation, route}) => {
                 Modal.show({
                     content: '尚有分类未添加产品，请调整后再提交',
                     confirmText: '我知道了',
-                    confirmCallBack: () => {
-                        // setStyleCheck(initStyleCheckRef.current);
-                        // jump(button.url);
-                    },
                 });
             } else {
-                goSave({...data}).then((res) => {
-                    console.log(res);
-                    if (res.code === '000000') {
-                        // jump(button.url);
-                    }
-                });
+                const d = data.data;
+                let params = {...d};
+                if (d?.category_mode === 1) {
+                    params.products = JSON.stringify(d.products || []);
+                } else {
+                    params.categories = JSON.stringify(d.categories || []);
+                }
+                let loading = Toast.showLoading();
+                goSave(params)
+                    .then((res) => {
+                        if (res.code === '000000') {
+                            Toast.show('保存成功');
+                            setTimeout(() => {
+                                jump(button.url);
+                            }, 1000);
+                        }
+                    })
+                    .finally((_) => {
+                        Toast.hide(loading);
+                    });
             }
         },
         [route, jump, data]
