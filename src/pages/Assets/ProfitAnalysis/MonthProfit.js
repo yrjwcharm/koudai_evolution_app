@@ -135,6 +135,7 @@ const MonthProfit = React.memo(({type}) => {
             {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
+            <RenderList />
         </View>
     );
 });
@@ -209,6 +210,8 @@ const styles = StyleSheet.create({
         paddingBottom: px(20),
         paddingHorizontal: px(12),
         backgroundColor: Colors.white,
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
     },
     chartHeader: {},
     selMonth: {

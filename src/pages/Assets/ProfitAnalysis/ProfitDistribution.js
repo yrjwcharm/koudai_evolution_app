@@ -52,10 +52,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
-                <ScrollView
-                    style={styles.container}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}>
+                <>
                     <BoxShadow setting={{...shadow}}>
                         <View style={styles.header}>
                             <View style={Style.flexEvenly}>
@@ -151,10 +148,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             </ScrollableTabView>
                         )}
                     </View>
-                    <View style={styles.renderList}>
-                        <RenderList />
-                    </View>
-                </ScrollView>
+                </>
             )}
         </>
     );
@@ -206,6 +200,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(5),
     },
     section: {
+        flex: 1,
         marginHorizontal: px(16),
     },
 });

@@ -16,8 +16,9 @@ const TotalProfit = React.memo(() => {
             <View
                 style={{
                     paddingHorizontal: px(12),
-                }}
-            />
+                }}>
+                <RenderList />
+            </View>
         </View>
     );
 });
@@ -30,6 +31,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         paddingBottom: px(22),
+        borderBottomLeftRadius: px(5),
+        borderBottomRightRadius: px(5),
     },
     topLine: {
         borderTopWidth: Space.borderWidth,

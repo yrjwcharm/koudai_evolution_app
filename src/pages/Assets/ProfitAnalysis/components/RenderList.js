@@ -118,6 +118,7 @@ RenderList.propTypes = {
 export default RenderList;
 const styles = StyleSheet.create({
     profitHeader: {
+        marginTop: px(24),
         ...Style.flexBetween,
     },
     tag: {
