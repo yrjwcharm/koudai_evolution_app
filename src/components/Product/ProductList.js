@@ -99,7 +99,7 @@ const Index = ({data = [], logParams, type = 'default'}) => {
             edit_button,
             style_id,
             drawback,
-            drawbackDesc,
+            drawback_desc,
         } = item;
         const containerSty = out_box
             ? {
@@ -168,7 +168,7 @@ const Index = ({data = [], logParams, type = 'default'}) => {
                                                         }
                                                         style={styles.bigProfit}
                                                     />
-                                                    <Text style={styles.profitLabel}>{drawbackDesc}</Text>
+                                                    <Text style={styles.profitLabel}>{drawback_desc}</Text>
                                                 </View>
                                             ) : null}
                                         </View>
