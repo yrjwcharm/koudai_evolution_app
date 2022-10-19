@@ -54,7 +54,7 @@ const MonthProfit = React.memo(() => {
                     };
                     arr.push(item);
                 }
-                const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
+                const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.year()});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
                     let barCharData = profit_data_list
@@ -97,7 +97,7 @@ const MonthProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type]
+        [diff, type, unitType]
     );
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);

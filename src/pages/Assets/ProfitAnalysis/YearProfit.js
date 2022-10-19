@@ -35,7 +35,7 @@ const YearProfit = () => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: 'year'});
+                const res = await getChartData({type, unit_type: unitType});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
                     let barCharData = profit_data_list
@@ -71,7 +71,7 @@ const YearProfit = () => {
                 }
             })();
         },
-        [type]
+        [type, unitType]
     );
     useEffect(() => {
         init(selCurYear);

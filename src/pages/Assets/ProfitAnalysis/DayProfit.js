@@ -81,7 +81,7 @@ const DayProfit = React.memo(() => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
+                const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.format('YYYY-MM')});
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res.result ?? {};
@@ -128,7 +128,7 @@ const DayProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type]
+        [diff, type, unitType]
     );
     useEffect(() => {
         init(selCurDate);
