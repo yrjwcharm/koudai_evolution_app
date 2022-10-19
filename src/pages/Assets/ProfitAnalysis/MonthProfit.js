@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:月收益
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
@@ -104,6 +104,22 @@ const MonthProfit = React.memo(({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
+    const renderCalendar = useMemo(
+        () =>
+            dateArr?.map((el, index) => {
+                const month = dayjs(el?.day).month() + 1;
+                const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
+                return (
+                    <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
+                        <View style={[commonStyle.month, wrapStyle]}>
+                            <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
+                            {el?.profit && <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>}
+                        </View>
+                    </TouchableOpacity>
+                );
+            }),
+        [dateArr]
+    );
     return (
         <View style={styles.container}>
             <CalendarHeader
@@ -116,24 +132,7 @@ const MonthProfit = React.memo(({type}) => {
                 add={add}
                 isAdd={isAdd}
             />
-            {isCalendar && (
-                <View style={commonStyle.monthFlex}>
-                    {dateArr?.map((el, index) => {
-                        const month = dayjs(el?.day).month() + 1;
-                        const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
-                        return (
-                            <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
-                                <View style={[commonStyle.month, wrapStyle]}>
-                                    <Text style={[commonStyle.monthText, monthStyle]}>{month}</Text>
-                                    {el?.profit && (
-                                        <Text style={[commonStyle.monthProfit, profitStyle]}>{el?.profit}</Text>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            )}
+            {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
             <RenderList />

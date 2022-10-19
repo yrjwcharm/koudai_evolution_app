@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description:年收益
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px, delMille} from '../../../utils/appUtil';
@@ -79,6 +79,21 @@ const YearProfit = ({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     };
+    const renderCalendar = useMemo(
+        () =>
+            dateArr.map((el, index) => {
+                const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
+                return (
+                    <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
+                        <View style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
+                            <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
+                            <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
+                        </View>
+                    </TouchableOpacity>
+                );
+            }),
+        [dateArr]
+    );
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft, {}]}>
@@ -123,26 +138,7 @@ const YearProfit = ({type}) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            {isCalendar && (
-                <View style={styles.yearFlex}>
-                    {dateArr.map((el, index) => {
-                        const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
-                        return (
-                            <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
-                                <View
-                                    style={[
-                                        styles.year,
-                                        wrapStyle,
-                                        {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0},
-                                    ]}>
-                                    <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
-                                    <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            )}
+            {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             <RenderList type={type} />
         </View>

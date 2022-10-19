@@ -30,7 +30,6 @@ const ProfitDetail = ({navigation, route}) => {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 setTabs(tabs);
                 setHeadData(header);
-                // Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
                 navigation.setOptions({title});
             }
             if (res[1].code === '000000') {

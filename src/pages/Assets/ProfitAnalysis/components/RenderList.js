@@ -16,9 +16,8 @@ import {useSelector} from 'react-redux';
 const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
     const type = useSelector((state) => state.profitDetail.type);
-    const [headerList, setHeaderList] = useState([]);
+    const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
-    const [left, right] = headerList;
     const init = useCallback(() => {
         (async () => {
             const res = await getProfitDetail({type});
@@ -43,7 +42,8 @@ const RenderList = React.memo(() => {
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             });
             if (res.code === '000000') {
-                const {data_list = []} = res.result || {};
+                const {head_list = [], data_list = []} = res.result || {};
+                setHeaderList(head_list);
                 setProfitList(data_list);
             }
         }

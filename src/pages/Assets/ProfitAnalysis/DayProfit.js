@@ -3,7 +3,7 @@
  * @Author: yanruifeng
  * @Description: 日收益
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
@@ -143,6 +143,33 @@ const DayProfit = React.memo(({type}) => {
         setIsCalendar(false);
         setIsBarChart(true);
     });
+    const renderWeek = useMemo(
+        () =>
+            week.current?.map((el, index) => {
+                return (
+                    <Text style={styles.week} key={el + '' + index}>
+                        {el}
+                    </Text>
+                );
+            }),
+        []
+    );
+    const renderCalendar = useMemo(
+        () =>
+            dateArr?.map((el, index) => {
+                const date = dayjs(el?.day).date();
+                const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
+                return (
+                    <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
+                        <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
+                            <Text style={[styles.day, dayStyle]}>{date}</Text>
+                            {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
+                        </View>
+                    </TouchableOpacity>
+                );
+            }),
+        [dateArr]
+    );
     return (
         <View style={styles.container}>
             {/*chart类型*/}
@@ -158,29 +185,8 @@ const DayProfit = React.memo(({type}) => {
             {/*日历*/}
             {isCalendar && (
                 <View style={{marginTop: px(12)}}>
-                    <View style={styles.weekFlex}>
-                        {week.current?.map((el, index) => {
-                            return (
-                                <Text style={styles.week} key={el + '' + index}>
-                                    {el}
-                                </Text>
-                            );
-                        })}
-                    </View>
-                    <View style={styles.dateWrap}>
-                        {dateArr?.map((el, index) => {
-                            const date = dayjs(el?.day).date();
-                            const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
-                            return (
-                                <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
-                                    <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
-                                        <Text style={[styles.day, dayStyle]}>{date}</Text>
-                                        {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
+                    <View style={styles.weekFlex}>{renderWeek}</View>
+                    <View style={styles.dateWrap}>{renderCalendar}</View>
                 </View>
             )}
             {isBarChart && <BarChartComponent chartData={chartData} />}

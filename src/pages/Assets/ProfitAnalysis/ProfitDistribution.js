@@ -130,11 +130,17 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                 }}>
                                 {tabs.map((tab, index) => {
                                     if (index == 0)
-                                        return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <DayProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 1)
-                                        return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <MonthProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 2)
-                                        return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                        return (
+                                            <YearProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
+                                        );
                                     if (index == 3)
                                         return (
                                             <TotalProfit type={type} tabLabel={tab.text} key={`${tab + '' + index}`} />
