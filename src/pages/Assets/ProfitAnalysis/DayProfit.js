@@ -128,7 +128,7 @@ const DayProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type, unitType]
+        [diff, type]
     );
     useEffect(() => {
         init(selCurDate);
@@ -138,8 +138,8 @@ const DayProfit = React.memo(() => {
      */
     const addMonth = () => {
         let cur = date.format('YYYY-MM');
-        let min = dayjs(maxDate).format('YYYY-MM');
-        if (cur === min) {
+        let max = dayjs(maxDate).format('YYYY-MM');
+        if (cur === max) {
             setIsNext(false);
             return;
         }
@@ -157,6 +157,14 @@ const DayProfit = React.memo(() => {
         }
         setDiff((diff) => diff - 1);
     };
+    useEffect(() => {
+        let max = dayjs(maxDate).format('YYYY-MM');
+        let cur = date.format('YYY');
+        if (cur === max) {
+            setIsNext(false);
+            return;
+        }
+    }, [diff]);
     /**
      * 通过选中日期获取收益数据
      */

@@ -97,7 +97,7 @@ const MonthProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type, unitType]
+        [diff, type]
     );
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);

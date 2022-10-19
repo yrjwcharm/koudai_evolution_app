@@ -71,7 +71,7 @@ const YearProfit = () => {
                 }
             })();
         },
-        [type, unitType]
+        [type]
     );
     useEffect(() => {
         init(selCurYear);

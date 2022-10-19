@@ -54,7 +54,7 @@ const RenderList = React.memo(() => {
     };
     return (
         <>
-            {profitList.length !== 0 && (
+            {left && right && profitList.length != 0 && (
                 <View style={styles.profitHeader}>
                     <View style={styles.profitHeaderLeft}>
                         <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
