@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -14,7 +14,7 @@ import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = ''} = route.params || {};
+    const {fund_code = '', poid = '', type = 200} = route.params || {};
     const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
@@ -22,20 +22,17 @@ const ProfitDetail = ({navigation, route}) => {
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const dispatch = useDispatch();
-    const type = useSelector((state) => state.profitDetail.type);
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
+                navigation.setOptions({title});
                 setTabs(tabs);
                 setHeadData(header);
-                navigation.setOptions({title});
             }
             if (res[1].code === '000000') {
                 const {title = '', declare_pic = ''} = res[1].result || {};
-                setDeclarePic(declare_pic);
-                setTitle(title);
                 navigation.setOptions({
                     headerRight: () => (
                         <>
@@ -50,6 +47,8 @@ const ProfitDetail = ({navigation, route}) => {
                         </>
                     ),
                 });
+                setDeclarePic(declare_pic);
+                setTitle(title);
             }
         })();
     }, [type]);
@@ -59,6 +58,9 @@ const ProfitDetail = ({navigation, route}) => {
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
+    // useEffect(() => {
+    //     Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
+    // }, [page]);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (
@@ -70,14 +72,7 @@ const ProfitDetail = ({navigation, route}) => {
                         dispatch({type: 'updateType', payload: tabs[i].type});
                     }}>
                     {tabs.map((el, index) => {
-                        return (
-                            <ProfitDistribution
-                                type={type}
-                                headData={headData}
-                                tabLabel={el.text}
-                                key={`${el + '' + index}`}
-                            />
-                        );
+                        return <ProfitDistribution headData={headData} tabLabel={el.text} key={`${el + '' + index}`} />;
                     })}
                 </ScrollableTabView>
             )}

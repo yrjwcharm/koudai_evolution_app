@@ -16,11 +16,13 @@ import {useSelector} from 'react-redux';
 const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
     const type = useSelector((state) => state.profitDetail.type);
+    const unitType = useSelector((state) => state.profitDetail.unitType);
+    const unitKey = useSelector((state) => state.profitDetail.unitKey);
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const init = useCallback(() => {
         (async () => {
-            const res = await getProfitDetail({type});
+            const res = await getProfitDetail({type, unit_type: unitType, unit_key: unitKey});
             if (res.code === '000000') {
                 if (isMounted.current) {
                     const {head_list = [], data_list = []} = res.result || {};
@@ -29,7 +31,7 @@ const RenderList = React.memo(() => {
                 }
             }
         })();
-    }, [type]);
+    }, [type, unitType, unitKey]);
 
     useEffect(() => {
         init();
@@ -38,6 +40,8 @@ const RenderList = React.memo(() => {
         if (data.sort_key) {
             const res = await getProfitDetail({
                 type,
+                unit_type: unitType,
+                unit_key: unitKey,
                 sort_key: data?.sort_key,
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             });
@@ -50,7 +54,7 @@ const RenderList = React.memo(() => {
     };
     return (
         <>
-            {left && right && (
+            {profitList.length !== 0 && (
                 <View style={styles.profitHeader}>
                     <View style={styles.profitHeaderLeft}>
                         <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
