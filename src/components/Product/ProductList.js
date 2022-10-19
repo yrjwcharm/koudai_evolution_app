@@ -76,11 +76,12 @@ const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_pr
     }
 };
 
-const Index = ({data = [], logParams, type = 'default'}) => {
+const ProductList = ({data = [], logParams, type = 'default'}) => {
     const jump = useJump();
 
     /** @name 默认卡片 */
     const renderDefaultItem = (item, index) => {
+        console.log(item);
         const {
             flex_between = false, // 是否两端对齐
             desc,
@@ -584,4 +585,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Index;
+export default ProductList;

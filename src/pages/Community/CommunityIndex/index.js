@@ -319,125 +319,143 @@ const Follow = forwardRef(({list = []}, ref) => {
 });
 
 /** @name 推荐瀑布流列表 */
-export const WaterfallFlowList = forwardRef(({getData = () => {}, params}, ref) => {
-    const jump = useJump();
-    const [refreshing, setRefreshing] = useState(true);
-    const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const waterfallFlow = useRef();
+export const WaterfallFlowList = forwardRef(
+    (
+        {
+            getData = () => {},
+            params,
+            scrollEnabled,
+            onScroll,
+            bounces,
+            onContentSizeChange,
+            onStartShouldSetResponderCapture,
+        },
+        ref
+    ) => {
+        const jump = useJump();
+        const [refreshing, setRefreshing] = useState(true);
+        const [data, setData] = useState([]);
+        const [page, setPage] = useState(1);
+        const [hasMore, setHasMore] = useState(true);
+        const waterfallFlow = useRef();
 
-    const init = () => {
-        console.log('first');
-        getData({...params, page})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setData((prev) => {
-                        if (page === 1) {
-                            return res.result.items;
-                        } else {
-                            return prev.concat(res.result.items);
-                        }
-                    });
-                    setHasMore(res.result.has_more);
-                }
-            })
-            .finally(() => {
-                setRefreshing(false);
-            });
-    };
-    console.log(data);
-    const refresh = () => {
-        waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
-        setRefreshing(true);
-        page > 1 ? setPage(1) : init();
-    };
-    const renderItem = ({item, index, columnIndex}) => {
-        console.log(item, 'item');
-        const {author, cover, desc, live_status, title, type: _type, url} = item;
-        return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => jump(url)}
-                style={[
-                    styles.waterfallFlowItem,
-                    {
-                        marginTop: index < 2 ? 0 : px(5),
-                        marginRight: columnIndex === 1 ? px(5) : px(5) / 2,
-                        marginLeft: columnIndex === 0 ? px(5) : px(5) / 2,
-                    },
-                ]}>
-                {cover ? (
-                    <CommunityCardCover {...item} style={{width: '100%'}} width={deviceWidth - 3 * px(5)} />
-                ) : (
-                    <Image
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
-                        style={styles.contentBg}
-                    />
-                )}
-                <View style={{padding: px(10), paddingBottom: px(12)}}>
-                    {title ? (
-                        <View>
-                            <HTML html={title} numberOfLines={2} style={styles.subTitle} />
-                        </View>
-                    ) : null}
-                    {desc ? (
-                        <View style={{marginTop: px(8)}}>
-                            <HTML html={desc} numberOfLines={4} style={styles.desc} />
-                        </View>
-                    ) : null}
-                    {author ? (
-                        <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                            {_type === 9 && live_status === 2 ? (
-                                <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
-                            ) : (
-                                <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
-                            )}
-                            <Text style={styles.smText}>{author.nickname}</Text>
-                        </View>
-                    ) : null}
-                </View>
-            </TouchableOpacity>
-        );
-    };
+        const init = () => {
+            getData({...params, page})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData((prev) => {
+                            if (page === 1) {
+                                return res.result.items;
+                            } else {
+                                return prev.concat(res.result.items);
+                            }
+                        });
+                        setHasMore(res.result.has_more);
+                    }
+                })
+                .finally(() => {
+                    setRefreshing(false);
+                });
+        };
+        const scrollTo = (value) => {
+            waterfallFlow.current?.scrollToOffset({animated: true, offset: value});
+        };
+        const refresh = () => {
+            waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
+            setRefreshing(true);
+            page > 1 ? setPage(1) : init();
+        };
+        const renderItem = ({item = {}, index, columnIndex}) => {
+            const {author = {}, cover, desc, live_status, title, type: _type, url} = item;
+            return (
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => jump(url)}
+                    style={[
+                        styles.waterfallFlowItem,
+                        {
+                            marginTop: index < 2 ? 0 : px(5),
+                            marginRight: columnIndex === 1 ? px(5) : px(5) / 2,
+                            marginLeft: columnIndex === 0 ? px(5) : px(5) / 2,
+                        },
+                    ]}>
+                    {cover ? (
+                        <CommunityCardCover {...item} style={{width: '100%'}} width={deviceWidth - 3 * px(5)} />
+                    ) : (
+                        <Image
+                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
+                            style={styles.contentBg}
+                        />
+                    )}
+                    <View style={{padding: px(10), paddingBottom: px(12)}}>
+                        {title ? (
+                            <View>
+                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
+                            </View>
+                        ) : null}
+                        {desc ? (
+                            <View style={{marginTop: px(8)}}>
+                                <HTML html={desc} numberOfLines={4} style={styles.desc} />
+                            </View>
+                        ) : null}
+                        {author?.nickname ? (
+                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                {_type === 9 && live_status === 2 ? (
+                                    <AnimateAvatar source={author?.avatar} style={styles.recommendAvatar} />
+                                ) : (
+                                    <Image source={{uri: author?.avatar}} style={styles.recommendAvatar} />
+                                )}
+                                <Text style={styles.smText}>{author?.nickname}</Text>
+                            </View>
+                        ) : null}
+                    </View>
+                </TouchableOpacity>
+            );
+        };
 
-    /** @name 上拉加载 */
-    const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) return false;
-        if (hasMore) setPage((p) => p + 1);
-    };
+        /** @name 上拉加载 */
+        const onEndReached = ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) return false;
+            if (hasMore) setPage((p) => p + 1);
+        };
 
-    /** @name 渲染底部 */
-    const renderFooter = () => {
+        /** @name 渲染底部 */
+        const renderFooter = () => {
+            return data?.length > 0 ? (
+                <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
+                    {hasMore ? '正在加载...' : '我们是有底线的...'}
+                </Text>
+            ) : null;
+        };
+
+        useImperativeHandle(ref, () => ({refresh, scrollTo, waterfallFlow}));
+
+        useEffect(() => {
+            init();
+        }, [page]);
         return data?.length > 0 ? (
-            <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
-                {hasMore ? '正在加载...' : '我们是有底线的...'}
-            </Text>
+            <WaterfallFlow
+                data={data}
+                scrollEnabled={scrollEnabled != undefined ? scrollEnabled : true}
+                bounces={bounces != undefined ? bounces : true}
+                initialNumToRender={20}
+                keyExtractor={(item, index) => item.title + item.id + index}
+                ListFooterComponent={renderFooter}
+                onEndReached={onEndReached}
+                onScroll={onScroll}
+                onEndReachedThreshold={0.99}
+                onRefresh={() => (page > 1 ? setPage(1) : init())}
+                ref={waterfallFlow}
+                refreshing={refreshing}
+                renderItem={renderItem}
+                onStartShouldSetResponderCapture={onStartShouldSetResponderCapture}
+                scrollIndicatorInsets={{right: 1}}
+                onContentSizeChange={onContentSizeChange}
+                scrollEventThrottle={1}
+            />
         ) : null;
-    };
-
-    useImperativeHandle(ref, () => ({refresh}));
-
-    useEffect(() => {
-        console.log(getData, params);
-        init();
-    }, [page]);
-    return (
-        <WaterfallFlow
-            data={data}
-            initialNumToRender={20}
-            keyExtractor={(item, index) => item.title + item.id + index}
-            ListFooterComponent={renderFooter}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.99}
-            onRefresh={() => (page > 1 ? setPage(1) : init())}
-            ref={waterfallFlow}
-            refreshing={refreshing}
-            renderItem={renderItem}
-            scrollIndicatorInsets={{right: 1}}
-        />
-    );
-});
+    }
+);
 
 /** @name 推荐 */
 const Recommend = forwardRef(({tabs = []}, ref) => {

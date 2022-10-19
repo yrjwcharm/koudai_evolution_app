@@ -25,6 +25,7 @@ import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 import {BoxShadow} from 'react-native-shadow';
 import _ from 'lodash';
+import BottomSheet from '../Community/CommunityHome/Example.js';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -379,12 +380,14 @@ const Vision = ({navigation}) => {
                                     </TouchableOpacity>
                                 </>
                             </View>
+
                             <BottomDesc />
                         </LinearGradient>
                     ) : (
                         <LoadingTips loadingStyle={{marginTop: px(100)}} />
                     )}
                 </ScrollView>
+                {/* <BottomSheet /> */}
             </>
         );
     };

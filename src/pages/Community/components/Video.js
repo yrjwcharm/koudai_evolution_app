@@ -22,14 +22,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import _ from 'lodash';
 
 import {useNavigation} from '@react-navigation/native';
+import VideoFooter from './VideoFooter';
 const HEIGHT = Dimensions.get('screen').height;
-const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) => {
+const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment}) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
     const [sliderValue, setSlierValue] = useState(0); //进度条的进度
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
-    const navigation = useNavigation();
     const video = useRef();
 
     useEffect(() => {
@@ -70,9 +70,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) =>
         }, 100),
         []
     );
-    const onOpen = () => {
-        openModal();
-    };
+
     return (
         <>
             <TouchableWithoutFeedback onPress={onPlayPausePress}>
@@ -93,7 +91,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) =>
                             ],
                         }}>
                         <Video
-                            source={{uri: data.uri}}
+                            source={{uri: data.media_url}}
                             ref={video}
                             rate={1.0}
                             paused={paused}
@@ -123,15 +121,14 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) =>
             </TouchableWithoutFeedback>
 
             <View style={styles.bottomCon}>
-                <TouchableWithoutFeedback onPress={onOpen}>
-                    <Text style={{color: '#fff'}}>Open the modal</Text>
-                </TouchableWithoutFeedback>
                 <View style={[Style.flexRow, {marginBottom: px(8)}]}>
-                    <Image
-                        source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png'}}
-                        style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}
-                    />
-                    <Text style={{fontSize: px(14), color: '#fff'}}>小马哥</Text>
+                    {!!data?.author?.avatar && (
+                        <Image
+                            source={{uri: data?.author?.avatar}}
+                            style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}
+                        />
+                    )}
+                    <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
                     <TouchableWithoutFeedback>
                         <View style={styles.button}>
                             <Text style={{fontSize: px(12), color: '#fff'}}>+关注</Text>
@@ -139,7 +136,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) =>
                     </TouchableWithoutFeedback>
                 </View>
                 <Text style={{fontSize: px(13), color: '#fff', marginBottom: px(8), lineHeight: px(22)}}>
-                    智能组合里有两支基金持仓很类似，请问是出于什么考量看很多描述然后会遇到多行情况会遇到多行情况。
+                    {data?.title}
                 </Text>
                 {/* 进度条按钮     */}
                 <View style={[styles.sliderBox, Style.flexRow]}>
@@ -162,6 +159,16 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, openModal}) =>
                     />
                     <Text style={styles.timeText}>{formatMediaTime(duration)}</Text>
                 </View>
+                <VideoFooter
+                    data={{
+                        favor_num: data?.favor_num,
+                        favor_status: data?.favor_status,
+                        collect_num: data?.collect_num,
+                        collect_status: data?.collect_status,
+                        comment_num: data?.comment_num,
+                    }}
+                    handleComment={handleComment}
+                />
             </View>
         </>
     );

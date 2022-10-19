@@ -15,6 +15,10 @@ import {getCommunityHomeData, getCommunityProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
+import {CommunityFollowCard} from '../components/CommunityCard';
+import ProductList from '../../../components/Product/ProductList';
+import ProductCards from '../../../components/Portfolios/ProductCards';
+import {ShareModal} from '../../../components/Modal';
 const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
@@ -24,6 +28,8 @@ const CommunityHome = ({navigation, route}) => {
     const {community_id = 1} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
+    const [currentTab, setCurrentTab] = useState(0);
+    const shareModal = useRef();
     const getData = async () => {
         let res = await getCommunityHomeData({community_id});
         getProductList({community_id, type: res.result?.tabs[0]?.type || ''});
@@ -33,6 +39,7 @@ const CommunityHome = ({navigation, route}) => {
         let res = await getCommunityProductList(params);
         setProduct(res.result);
     };
+    useEffect(() => {}, [currentTab]);
     useEffect(() => {
         getData();
     }, []);
@@ -66,7 +73,9 @@ const CommunityHome = ({navigation, route}) => {
                 {parallTitle && (
                     <Text style={[styles.vName, {color: Colors.defaultColor, marginBottom: 0}]}>马老师</Text>
                 )}
-                <TouchableOpacity style={{width: px(40), alignItems: 'flex-end'}}>
+                <TouchableOpacity
+                    style={{width: px(40), alignItems: 'flex-end'}}
+                    onPress={() => shareModal?.current?.show()}>
                     <Icon name="ellipsis1" size={px(30)} color={parallTitle ? Colors.defaultColor : '#fff'} />
                 </TouchableOpacity>
             </Animated.View>
@@ -103,14 +112,29 @@ const CommunityHome = ({navigation, route}) => {
                         colors={['#fff', Colors.bgColor]}
                         style={styles.listCon}>
                         <Intro data={data?.intro_info} />
-                        <ScrollableTabView renderTabBar={() => <ScrollTabbar container="View" />}>
-                            {data?.tabs?.map((tab, index) => (
-                                <View key={index} style={{flex: 1}} tabLabel={tab?.name} />
-                            ))}
+                        <ScrollableTabView
+                            renderTabBar={() => <ScrollTabbar container="View" />}
+                            onChangeTab={({i}) => getProductList({community_id, type: data?.tabs[i].type})}>
+                            {data?.tabs?.map((tab, index) =>
+                                tab.type == 1 ? (
+                                    <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
+                                        {product?.map((_data) => (
+                                            <CommunityFollowCard key={_data.id} {..._data} />
+                                        ))}
+                                    </View>
+                                ) : (
+                                    <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
+                                        {product?.map((_data) => (
+                                            <ProductCards key={_data.id} data={_data} />
+                                        ))}
+                                    </View>
+                                )
+                            )}
                         </ScrollableTabView>
                     </LinearGradient>
                 ) : null}
             </Animated.ScrollView>
+            <ShareModal ref={shareModal} shareContent={data?.share_info} title={data?.title} />
             <PublishContent community_id={community_id} />
         </>
     );
