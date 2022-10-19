@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 const YearProfit = () => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
+    const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -70,7 +71,7 @@ const YearProfit = () => {
                 }
             })();
         },
-        [type]
+        [type, unitType]
     );
     useEffect(() => {
         init(selCurYear);

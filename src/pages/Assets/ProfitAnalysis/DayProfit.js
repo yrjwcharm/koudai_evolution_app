@@ -19,6 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 const DayProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
+    const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -127,7 +128,7 @@ const DayProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type]
+        [diff, type, unitType]
     );
     useEffect(() => {
         init(selCurDate);

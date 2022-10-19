@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from 'react-redux';
 const MonthProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
+    const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -27,7 +28,6 @@ const MonthProfit = React.memo(() => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
-    const [unitKey, setUnitKey] = useState('');
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -97,7 +97,7 @@ const MonthProfit = React.memo(() => {
                 }
             })();
         },
-        [diff, type]
+        [diff, type, unitType]
     );
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
@@ -145,7 +145,7 @@ const MonthProfit = React.memo(() => {
             {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
             {isBarChart && <BarChartComponent chartData={chartData} />}
             {/*收益数据-根据实际情形选择map渲染*/}
-            <RenderList unitKey={unitKey} />
+            <RenderList />
         </View>
     );
 });
