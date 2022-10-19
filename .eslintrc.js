@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-04-25 17:43:29
  * @Author: yhc
- * @LastEditors: yhc
+ * @LastEditors: yanruifeng
  * @LastEditTime: 2021-08-30 12:38:53
  * @Description:
  */
@@ -18,7 +18,7 @@ module.exports = {
   },
   extends: ['@react-native-community',"prettier",],
   rules: {
-    'react-hooks/exhaustive-deps': 0,//关闭reactHooks副作用依赖项为空的eslint警告
+    'react-hooks/exhaustive-deps': 0,//关闭reactHooks副作用依赖项的eslint警告
     'react-native/no-inline-styles': 0, //关闭内联样式警告
     'no-extend-native': [1, { 'exceptions': ['Date', 'String'] }],
     'no-control-regex': 0,  //允许正则表达式中的控制字符
