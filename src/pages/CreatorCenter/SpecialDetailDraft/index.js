@@ -11,7 +11,6 @@ import {Style} from '~/common/commonStyle';
 import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
-import AuditModal from '~/components/AuditModal';
 import {editComment} from './services';
 
 const SpecialDetailDraft = ({navigation, route}) => {
@@ -24,7 +23,6 @@ const SpecialDetailDraft = ({navigation, route}) => {
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
-    const auditModal = useRef();
     const inputRef = useRef();
     const navBarRef = useRef();
 
@@ -102,7 +100,8 @@ const SpecialDetailDraft = ({navigation, route}) => {
                         } else if (data?.indexOf('scrolling=') > -1) {
                             const _scrolling = JSON.parse(data.split('scrolling=')[1]);
                             setScrolling(_scrolling == 1);
-                        } else if (data?.indexOf('logParams=') > -1) {
+                        } else if (data?.indexOf('goBack=') > -1) {
+                            navigation.goBack();
                         } else if (data?.indexOf('writeComment=') > -1) {
                             const _content = JSON.parse(data.split('writeComment=')[1]);
                             setContent(_content + '');
@@ -177,7 +176,6 @@ const SpecialDetailDraft = ({navigation, route}) => {
                     </View>
                 </View>
             </PageModal>
-            <AuditModal ref={auditModal} />
         </View>
     );
 };

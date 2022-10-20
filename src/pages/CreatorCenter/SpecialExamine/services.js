@@ -6,5 +6,8 @@
 import http from '~/services';
 
 export const getData = (data) => {
-    return http.get('/manage_center/ss_collect/index/20221010', data);
+    return http.get('/audit_center/preview/20221010', data);
+};
+export const submit = (data) => {
+    return http.post('/audit_center/audit/20221010', data);
 };
