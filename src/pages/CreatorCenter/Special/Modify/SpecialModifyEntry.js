@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 11:10:04
+ * @LastEditTime: 2022-10-20 13:26:06
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -22,21 +22,10 @@ import {getModifyList, submitModify} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import Html from '~/components/RenderHtml';
 
-/** 列表每行的key */
-const ListKeys = {
-    BaseInfo: 'BaseInfo',
-    ActiveInfo: 'ActiveInfo',
-    ProductInfo: 'ProductInfo',
-    ContentInfo: 'ContentInfo',
-    CommentInfo: 'CommentInfo',
-    CardInfo: 'CardInfo',
-    SpreadInfo: 'SpreadInfo',
-};
-
 export default function SpecialModifyEntry({navigation, route}) {
     const {fix_id} = route?.params ?? {fix_id: 1021};
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState([]);
+    const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
     const bottomModalRef = useRef(null);
     const jump = useJump();
@@ -104,7 +93,7 @@ export default function SpecialModifyEntry({navigation, route}) {
             </SafeAreaView>
         );
     }
-    const sections = data.line_group.map((group) => ({data: group.line_list}));
+    const sections = (data.line_group || []).map((group) => ({data: group.line_list}));
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
@@ -135,9 +124,9 @@ export default function SpecialModifyEntry({navigation, route}) {
                     </TouchableOpacity>
                 </View>
             </View>
-            <BottomModal title={data.apply_info.title} ref={bottomModalRef}>
+            <BottomModal title={data?.apply_info?.title} ref={bottomModalRef}>
                 <View style={{width: '100%', minHeight: px(100), padding: px(16)}}>
-                    <Text style={{fontSize: px(13), color: '#545968'}}>{data.apply_info.reason}</Text>
+                    <Text style={{fontSize: px(13), color: '#545968'}}>{data?.apply_info?.reason}</Text>
                 </View>
             </BottomModal>
         </SafeAreaView>

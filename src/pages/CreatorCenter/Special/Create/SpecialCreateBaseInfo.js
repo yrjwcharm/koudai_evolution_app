@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 00:16:15
+ * @LastEditTime: 2022-10-20 12:45:13
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -30,7 +30,7 @@ import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {Style, Colors, Space} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import {getStashBaseInfo, saveStashBaseInfo} from './services';
+import {getStashBaseInfo, saveStashBaseInfo, uploadImage} from './services';
 import LoadingTips from '~/components/LoadingTips';
 
 function Tag(props) {
@@ -224,11 +224,10 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 onSure: (uri) => {
                     setBgSource(uri);
                 },
-                selectedUri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-3.png',
+                selectedUri: bgSource,
             },
         });
     };
-    const uploadImage = () => {};
 
     const openPicker = () => {
         setTimeout(() => {
@@ -247,8 +246,11 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                         fileName: image.filename,
                         type: image.mime,
                         uri: image.path,
+                    }).then((res) => {
+                        if (res.code === '000000') {
+                            setBgSource(res.result.url);
+                        }
                     });
-                    setBgSource(image.path);
                 })
                 .catch((err) => {
                     console.warn(err);
@@ -266,20 +268,20 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
             console.warn(err);
         }
     };
-    useEffect(() => {
-        jump({
-            path: 'SpecialDetail',
-            type: 4,
-            params: {
-                link: 'http://localhost:3001/specialDetailDraft',
-                secne: 'create',
-                params: {
-                    subject_id: '1021',
-                    secne: 'creating',
-                },
-            },
-        });
-    }, []);
+    // useEffect(() => {
+    //     jump({
+    //         path: 'SpecialDetail',
+    //         type: 4,
+    //         params: {
+    //             link: 'http://localhost:3001/specialDetailDraft',
+    //             secne: 'create',
+    //             params: {
+    //                 subject_id: '1021',
+    //                 secne: 'creating',
+    //             },
+    //         },
+    //     });
+    // }, []);
 
     useEffect(() => {
         setLoading(true);

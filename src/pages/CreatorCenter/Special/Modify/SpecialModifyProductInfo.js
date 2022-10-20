@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 16:58:12
+ * @LastEditTime: 2022-10-20 12:18:20
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -39,7 +39,10 @@ function SelectInput(props) {
                 <Text style={styles.inputTitle}>{props.title}</Text>
             </View>
             <TouchableOpacity style={styles.inputWrap_end} onPress={props.onPress}>
-                {props.value.length > 0 && <RenderHtml style={styles.input_value} html={props.value} />}
+                {props.value?.name && <RenderHtml style={styles.input_value} html={props.value.name} />}
+                {!props.value.name && props.value.length > 0 && (
+                    <RenderHtml style={styles.input_value} html={props.value} />
+                )}
                 <AntDesign name="right" size={12} />
             </TouchableOpacity>
         </View>
@@ -67,12 +70,16 @@ function TagInput(props) {
     );
 }
 
-const getProductTemplate = () => [
+const getProductTemplate = (item) => [
     {
         title: '选择推广产品',
         require: true,
         key: ListKeys.Product,
-        value: '',
+        value: {
+            product_id: item.product_id,
+            product_type: item.product_type,
+            name: item.name,
+        },
         component: SelectInput,
     },
     {
@@ -80,33 +87,34 @@ const getProductTemplate = () => [
         require: true,
         isHtml: true,
         key: ListKeys.Recommend,
-        value: '',
+        value: item.desc,
         component: SelectInput,
     },
     {
         title: '标签1',
         require: true,
         key: ListKeys.Tag1,
-        value: '',
+        value: item.tags[0],
         component: TagInput,
     },
     {
         title: '标签2',
         require: true,
         key: ListKeys.Tag2,
-        value: '',
+        value: item.tags[1],
         component: TagInput,
     },
     {
         title: '标签3',
         require: true,
         key: ListKeys.Tag3,
-        value: '',
+        value: item.tags[2],
         component: TagInput,
     },
 ];
 
 export default function SpecialModifyProductInfo({navigation, route}) {
+    const {items, subject_id} = route.params;
     const [data, setData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
@@ -119,23 +127,51 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         {
             title: '推广产品1(必填)',
             isOpen: true,
-            data: getProductTemplate(),
+            data: getProductTemplate(items[0]),
         },
         {
             title: '推广产品2(选填)',
-            data: getProductTemplate(),
+            data: getProductTemplate(items[1]),
         },
         {
             title: '推广产品3(选填)',
-            data: getProductTemplate(),
+            data: getProductTemplate(items[2]),
         },
     ]);
 
     const handleBack = () => {
         navigation.goBack();
     };
-
-    const onRefresh = () => {};
+    const getValue = () => {
+        const result = [];
+        list.forEach((sec) => {
+            const item = {};
+            sec.data.forEach((row) => {
+                if (row.key === ListKeys.Product) {
+                    item.product = row.value;
+                } else if (row.key === ListKeys.Recommend) {
+                    item.title = row.value;
+                } else {
+                    item.tags = (item.tags || []).push(row.value);
+                }
+            });
+            result.push(item);
+        });
+        return result;
+    };
+    const rightPress = () => {
+        jump({
+            path: 'SpecialPreviewRecommend',
+            params: {
+                type: 2,
+                subject_id,
+                items: getValue(),
+                onSave: () => {
+                    navigation.goBack(-3);
+                },
+            },
+        });
+    };
 
     const handleSectionToggle = (section) => {
         section.isOpen = !section.isOpen;
@@ -151,8 +187,11 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 path: 'SpecialModifyProductItem',
                 params: {
                     callback: (productItem) => {
-                        item.value = productItem.title;
-                        item.productItem = {...productItem};
+                        item.value = {
+                            product_id: productItem.product_id,
+                            product_type: productItem.product_type,
+                            name: productItem.name,
+                        };
                     },
                 },
             });
@@ -196,7 +235,14 @@ export default function SpecialModifyProductInfo({navigation, route}) {
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
-            <NavBar title={'产品信息填写'} leftIcon="chevron-left" leftPress={handleBack} />
+            <NavBar
+                title={'产品信息填写'}
+                leftIcon="chevron-left"
+                leftPress={handleBack}
+                rightText={'保存'}
+                rightPress={rightPress}
+                rightTextStyle={styles.right_sty}
+            />
             <View style={styles.content}>
                 <View style={styles.listWrap}>
                     <SectionList
@@ -204,8 +250,6 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         onEndReachedThreshold={0.2}
-                        onRefresh={onRefresh}
-                        refreshing={refreshing}
                         renderSectionHeader={renderSectionHeader}
                         renderItem={renderItem}
                         style={[styles.sectionList, {paddingBottom: insets.bottom}]}
