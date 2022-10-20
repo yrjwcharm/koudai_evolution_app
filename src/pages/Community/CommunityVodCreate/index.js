@@ -2,19 +2,11 @@
  * @Date: 2022-10-13 17:56:52
  * @Description: 发布视频
  */
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from 'react-native';
+import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {Modalize} from 'react-native-modalize';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Video from 'react-native-video';
@@ -23,36 +15,60 @@ import uploadImg from '~/assets/img/icon/upload.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
-import {BottomModal} from '~/components/Modal';
 import NavBar from '~/components/NavBar';
+import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {deviceHeight, px, resolveTimeStemp} from '~/utils/appUtil';
+import {deviceHeight, isIphoneX, px, resolveTimeStemp} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
-import {getTagList, publishVideo} from './services';
+import {getSearchList, publishVideo} from './services';
 
-const ChooseTag = ({setTags, tags}) => {
+/**
+ * @name 搜索选择标签、产品和作品
+ * @param maxCoutn 最多选择几个
+ * @param onDone 完成回调，回传选择的项
+ * @param type 类型 article 作品 fund 基金和组合 tag 标签
+ * */
+export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref) => {
     const bottomModal = useRef();
     const [value, setVal] = useState('');
-    const [selectedTags, setSelectedTags] = useState(tags || []);
+    const [selectedItems, setSelectedItems] = useState([]);
     const [list, setList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
     const timer = useRef();
+    const titleObj = useRef({
+        article: {placeholder: '搜索作品名称', title: '添加作品'},
+        fund: {placeholder: '搜索基金/组合', title: '添加产品'},
+        tag: {placeholder: '搜索标签', title: '添加标签'},
+    });
 
     const renderItem = ({item, index}) => {
-        const {article_count, id, name, pv_count} = item;
-        const selected = selectedTags?.some((tag) => tag.id === id);
+        const {desc, id, name, ratio} = item;
+        const selected = selectedItems?.some((itm) => itm.id === id);
         return (
-            <TouchableOpacity activeOpacity={1} style={[Style.flexBetween, {paddingTop: px(24)}]}>
+            <View
+                style={[
+                    Style.flexBetween,
+                    {marginTop: px(24), marginBottom: index === list.length - 1 ? (isIphoneX() ? 34 : px(24)) : 0},
+                ]}>
                 <View>
-                    <Text style={styles.subTitle}>#{name}</Text>
-                    <Text style={[styles.desc, {marginTop: px(4)}]}>
-                        {article_count}篇内容 · {pv_count}次浏览
+                    <Text numberOfLines={1} style={[styles.subTitle, {maxWidth: px(270)}]}>
+                        {name}
                     </Text>
+                    <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                        {ratio ? (
+                            <View style={{marginRight: px(4)}}>
+                                <HTML html={ratio} style={styles.ratio} />
+                            </View>
+                        ) : null}
+                        <Text style={styles.desc}>{desc}</Text>
+                    </View>
                 </View>
                 <Button
-                    disabled={selected || selectedTags?.length === 4}
+                    disabled={selected || selectedItems?.length === maxCount}
                     disabledColor="#E9EAEF"
-                    onPress={() => setSelectedTags((prev) => [...prev, item])}
+                    onPress={() => setSelectedItems((prev) => [...prev, item])}
                     style={styles.addBtn}
                     textStyle={{
                         ...styles.desc,
@@ -61,7 +77,7 @@ const ChooseTag = ({setTags, tags}) => {
                     }}
                     title={selected ? '已添加' : '添加'}
                 />
-            </TouchableOpacity>
+            </View>
         );
     };
 
@@ -69,14 +85,149 @@ const ChooseTag = ({setTags, tags}) => {
         if (value?.length > 0) {
             timer.current && clearTimeout(timer.current);
             timer.current = setTimeout(() => {
-                getTagList({kw: value}).then((res) => {
+                getSearchList({keyword: value, page, type}).then((res) => {
                     if (res.code === '000000') {
-                        setList(res.result);
+                        const {has_more, list: _list} = res.result;
+                        setList((prev) => {
+                            if (page === 1) return _list;
+                            else return prev.concat(_list);
+                        });
+                        setHasMore(has_more);
                     }
                 });
             }, 300);
         }
-    }, [value]);
+    }, [page, value]);
+
+    useImperativeHandle(ref, () => ({
+        show: (items) => {
+            setVal('');
+            setList([]);
+            setSelectedItems(items || []);
+            bottomModal.current.open();
+        },
+    }));
+
+    return (
+        <Modalize
+            flatListProps={{
+                data: list,
+                initialNumToRender: 20,
+                keyExtractor: ({id, name}, index) => name + id + index,
+                ListFooterComponent: null,
+                onEndReached: ({distanceFromEnd}) => {
+                    if (distanceFromEnd < 0) return false;
+                    if (hasMore) setPage((p) => p + 1);
+                },
+                onEndReachedThreshold: 0.99,
+                renderItem,
+                scrollIndicatorInsets: {right: 1},
+                style: {paddingHorizontal: Space.padding},
+            }}
+            HeaderComponent={() => {
+                return (
+                    <>
+                        <View style={[Style.flexBetween, styles.modalHeader]}>
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => bottomModal.current.close()}>
+                                <AntDesign color={Colors.descColor} name="close" size={px(18)} />
+                            </TouchableOpacity>
+                            <Text style={styles.bigTitle}>{titleObj.current[type].title}</Text>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                disabled={selectedItems?.length === 0}
+                                onPress={() => {
+                                    onDone?.(selectedItems);
+                                    bottomModal.current.close();
+                                }}>
+                                <Text
+                                    style={[
+                                        styles.title,
+                                        {color: Colors.brandColor, fontWeight: Font.weightMedium},
+                                        {opacity: selectedItems?.length > 0 ? 1 : 0.3},
+                                    ]}>
+                                    完成
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{paddingHorizontal: Space.padding}}>
+                            <View style={[Style.flexRow, styles.searchBox]}>
+                                <Image
+                                    source={{
+                                        uri:
+                                            'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
+                                    }}
+                                    style={styles.searchIcon}
+                                />
+                                <TextInput
+                                    maxLength={8}
+                                    onChangeText={(text) => {
+                                        setVal(text);
+                                        setPage(1);
+                                    }}
+                                    placeholder={titleObj.current[type].placeholder}
+                                    placeholderTextColor={Colors.lightGrayColor}
+                                    style={styles.searchInput}
+                                    value={value}
+                                />
+                            </View>
+                            {type === 'tag' && (
+                                <>
+                                    <Text style={[styles.desc, {marginTop: px(12)}]}>至少添加一个标签</Text>
+                                    {selectedItems?.length > 0 && (
+                                        <View style={[styles.tagsContainer, {marginTop: px(8)}]}>
+                                            {selectedItems.map?.((itm, i) => {
+                                                const {id, name} = itm;
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        key={name + id + i}
+                                                        onPress={() =>
+                                                            setSelectedItems((prev) => {
+                                                                const next = [...prev];
+                                                                next.splice(i, 1);
+                                                                return next;
+                                                            })
+                                                        }
+                                                        style={[
+                                                            Style.flexRow,
+                                                            styles.tagBox,
+                                                            {
+                                                                marginTop: i < 3 ? 0 : px(8),
+                                                                marginLeft: i % 3 === 0 ? 0 : px(8),
+                                                            },
+                                                        ]}>
+                                                        <Text style={[styles.desc, {color: Colors.brandColor}]}>
+                                                            {name}
+                                                        </Text>
+                                                        <AntDesign
+                                                            color={Colors.brandColor}
+                                                            name="close"
+                                                            size={px(12)}
+                                                        />
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    )}
+                                </>
+                            )}
+                        </View>
+                    </>
+                );
+            }}
+            modalHeight={deviceHeight - px(92)}
+            overlayStyle={{backgroundColor: 'rgba(30, 30, 32, 0.8)'}}
+            // panGestureEnabled={false}
+            ref={bottomModal}
+            withHandle={false}
+            withReactModal
+        />
+    );
+});
+
+/** @name 选择标签 */
+export const ChooseTag = ({setTags, tags}) => {
+    const chooseModal = useRef();
 
     return (
         <>
@@ -84,8 +235,7 @@ const ChooseTag = ({setTags, tags}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        setSelectedTags(tags || []);
-                        bottomModal.current.show();
+                        chooseModal.current.show(tags);
                     }}
                     style={[styles.tagBox, {backgroundColor: Colors.bgColor}]}>
                     <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '标签(至少添加一个)'}</Text>
@@ -112,80 +262,12 @@ const ChooseTag = ({setTags, tags}) => {
                     );
                 })}
             </View>
-            <BottomModal
-                confirmText="完成"
-                keyboardAvoiding={false}
-                onDone={() => setTags?.(selectedTags)}
-                ref={bottomModal}
-                style={{height: deviceHeight - px(92)}}
-                title="添加标签">
-                <>
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        <View style={[Style.flexRow, styles.searchBox]}>
-                            <Image
-                                source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png',
-                                }}
-                                style={styles.searchIcon}
-                            />
-                            <TextInput
-                                clearButtonMode="while-editing"
-                                maxLength={8}
-                                onChangeText={(text) => setVal(text)}
-                                placeholder="搜索标签"
-                                placeholderTextColor={Colors.lightGrayColor}
-                                style={styles.searchInput}
-                                value={value}
-                            />
-                        </View>
-                        <Text style={[styles.desc, {marginTop: px(12)}]}>至少添加一个标签</Text>
-                        {selectedTags?.length > 0 && (
-                            <View style={[styles.tagsContainer, {marginTop: px(8)}]}>
-                                {selectedTags.map?.((tag, i) => {
-                                    const {id, name} = tag;
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            key={name + id + i}
-                                            onPress={() =>
-                                                setSelectedTags((prev) => {
-                                                    const next = [...prev];
-                                                    next.splice(i, 1);
-                                                    return next;
-                                                })
-                                            }
-                                            style={[
-                                                Style.flexRow,
-                                                styles.tagBox,
-                                                {marginTop: i < 3 ? 0 : px(8), marginLeft: i % 3 === 0 ? 0 : px(8)},
-                                            ]}>
-                                            <Text style={[styles.desc, {color: Colors.brandColor}]}>{name}</Text>
-                                            <AntDesign color={Colors.brandColor} name="close" size={px(12)} />
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </View>
-                        )}
-                    </View>
-                    {list?.length > 0 && (
-                        <FlatList
-                            data={list}
-                            initialNumToRender={20}
-                            keyExtractor={({id, name}, index) => name + id + index}
-                            ListFooterComponent={null}
-                            onEndReachedThreshold={0.99}
-                            renderItem={renderItem}
-                            scrollIndicatorInsets={{right: 1}}
-                            style={{paddingHorizontal: Space.padding}}
-                        />
-                    )}
-                </>
-            </BottomModal>
+            <ChooseModal maxCount={4} onDone={setTags} ref={chooseModal} type="tag" />
         </>
     );
 };
 
-const Index = ({navigation, route, setLoading}) => {
+const Index = ({setLoading}) => {
     const jump = useJump();
     const [video, setVideo] = useState();
     const [paused, setPaused] = useState(true);
@@ -430,6 +512,11 @@ const styles = StyleSheet.create({
         borderRadius: px(40),
         backgroundColor: '#F1F6FF',
     },
+    modalHeader: {
+        padding: Space.padding,
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
     searchBox: {
         marginTop: Space.marginVertical,
         padding: px(6),
@@ -451,6 +538,12 @@ const styles = StyleSheet.create({
         width: px(64),
         height: px(30),
         backgroundColor: Colors.brandColor,
+    },
+    ratio: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
     },
 });
 
