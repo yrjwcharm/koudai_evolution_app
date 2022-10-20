@@ -28,31 +28,28 @@ const shadow = {
 
 const FixedInvestDetail = ({navigation, route}) => {
     const {invest_plan_id: plan_id = ''} = route?.params;
-    const [type, setType] = useState();
     const jump = useJump();
     const passwordModal = useRef(null);
-    const dispatch = useDispatch();
     const [state, setState] = useState({
         loading: true,
         btn_list: [],
         pay_info: {},
         records: {},
     });
+    const [type, setType] = useState('');
     const [visible, setVisible] = useState(false);
-    const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
     const [selectData, setSelectData] = useState([]);
-    const handleClick = (t) => {
-        setType(t);
+    const handleClick = () => {
         passwordModal?.current?.show();
     };
-    const init = () => {
-        dispatch(callFixedInvestDetailApi({plan_id}));
+    const init = async () => {
+        const res = await callFixedInvestDetailApi({plan_id});
         if (res.code === '000000') {
             const {
                 title = '',
-                header = {},
-                pay_info = {},
-                records = {},
+                header,
+                pay_info,
+                records,
                 manage_list: {btn_list = [], text},
             } = res.result || {};
             navigation.setOptions({
@@ -75,24 +72,18 @@ const FixedInvestDetail = ({navigation, route}) => {
             setState({
                 header,
                 pay_info,
-                records,
                 btn_list,
+                records,
                 loading: false,
             });
         }
     };
     useEffect(() => {
-        (async () => {
-            init();
-        })();
+        init();
     }, []);
-    useEffect(() => {
-        alert(JSON.stringify(state.pay_info));
-    }, [state]);
     const submit = async (password) => {
         const loading = Toast.showLoading();
-        let range = [20, 30];
-        if (range.includes(type)) {
+        if (type == 20 || type == 30) {
             const res = await executeStopFixedInvestApi({
                 plan_id,
                 password,
@@ -278,7 +269,8 @@ const FixedInvestDetail = ({navigation, route}) => {
                             if (index === 0) {
                                 jump(state.btn_list[index]?.url);
                             } else if (index === 1) {
-                                handleClick(state.pay_info?.btn_type);
+                                setType(state.pay_info?.btn_type);
+                                handleClick();
                             } else if (index === 2) {
                                 const {
                                     popup: {title, content, confirm, cancel, back_close, touch_close},

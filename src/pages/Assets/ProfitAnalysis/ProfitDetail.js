@@ -12,7 +12,7 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);

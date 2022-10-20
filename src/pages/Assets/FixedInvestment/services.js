@@ -22,12 +22,7 @@ export const callTerminatedFixedApi = (params) =>
  * 定投管理工具-定投详情
  * @param params
  */
-export const callFixedInvestDetailApi = (params) => {
-    return async (dispatch) => {
-        const res = await http.get(`/platform_tool/invest_regularly/detail/20221010`, params);
-        dispatch({type: 'fetchSuccess', payload: {fixedInvestDetail: res} || {}});
-    };
-};
+export const callFixedInvestDetailApi = (params) => http.get(`/platform_tool/invest_regularly/detail/20221010`, params);
 /**
  * 修改界面定投详情
  */
