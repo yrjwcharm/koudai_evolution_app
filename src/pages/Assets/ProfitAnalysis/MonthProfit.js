@@ -29,7 +29,7 @@ const MonthProfit = React.memo(() => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
-    const [isHasData, setIsHasData] = useState(true);
+    const [isHasData, setIsHasData] = useState(false);
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -43,6 +43,7 @@ const MonthProfit = React.memo(() => {
     const init = useCallback(
         (selCurDate) => {
             (async () => {
+                setIsHasData(true);
                 let dayjs_ = dayjs().add(diff, 'year').startOf('year');
                 let arr = [];
                 //for循环装载日历数据

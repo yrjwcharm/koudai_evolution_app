@@ -24,10 +24,11 @@ const YearProfit = () => {
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
-    const [isHasData, setIsHasData] = useState(true);
+    const [isHasData, setIsHasData] = useState(false);
     const init = useCallback(
         (curYear) => {
             (async () => {
+                setIsHasData(true);
                 let startYear = dayjs().year() - 5;
                 let endYear = dayjs().year();
                 let arr = [];
