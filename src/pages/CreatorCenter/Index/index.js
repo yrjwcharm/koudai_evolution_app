@@ -244,14 +244,13 @@ const CreatorCenterIndex = () => {
                                                             //     },
                                                             // });
                                                             // jump({
-                                                            //     path: 'SpecialDetail',
+                                                            //     path: 'SpecialDetailDraft',
                                                             //     type: 1,
                                                             //     params: {
                                                             //         link:
                                                             //             'http://192.168.190.43:3000/specialDetailDraft',
-                                                            //         scence: 'create',
                                                             //         params: {
-                                                            //             subject_id: 134,
+                                                            //             subject_id: 1026,
                                                             //             scene: 'creating',
                                                             //         },
                                                             //     },
@@ -264,6 +263,12 @@ const CreatorCenterIndex = () => {
                                                             //         img:
                                                             //             'https://lcmf.oss-cn-hangzhou.aliyuncs.com/upload/identity/1000000002/2022102016002449805_png_?OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1977292824&Signature=yJ3jQzDLx8OKSE7eDkCNLvYlwJU%3D',
                                                             //         desc: '123123123',
+                                                            //     },
+                                                            // });
+                                                            // jump({
+                                                            //     path: 'SpecialExamine',
+                                                            //     params: {
+                                                            //         apply_id: 2,
                                                             //     },
                                                             // });
                                                         }}>

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, Platform, TextInput} from 'react-native';
+import {View, StyleSheet, Text, Platform, TextInput, TouchableOpacity} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {WebView as RNWebView} from 'react-native-webview';
@@ -13,6 +13,7 @@ import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {editComment} from './services';
 import {useFocusEffect} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const SpecialDetailDraft = ({navigation, route}) => {
     const jump = useJump();
@@ -20,12 +21,14 @@ const SpecialDetailDraft = ({navigation, route}) => {
     const [token, setToken] = useState('');
     const [content, setContent] = useState('');
     const [scrolling, setScrolling] = useState(false);
+    const [refuseObj, setRefuseObj] = useState({});
 
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
     const inputRef = useRef();
     const navBarRef = useRef();
+    const refuseModal = useRef();
 
     useEffect(() => {
         const getToken = () => {
@@ -89,7 +92,7 @@ const SpecialDetailDraft = ({navigation, route}) => {
                 style={{
                     backgroundColor: scrolling ? '#fff' : 'transparent',
                     position: 'absolute',
-                    zIndex: 20,
+                    zIndex: 2,
                 }}
             />
             {token ? (
@@ -114,6 +117,12 @@ const SpecialDetailDraft = ({navigation, route}) => {
                             setContent(_content + '');
                             setTimeout(() => {
                                 writeComment();
+                            });
+                        } else if (data?.indexOf('refuse=') > -1) {
+                            const _refuseObj = JSON.parse(data.split('refuse=')[1]);
+                            setRefuseObj(_refuseObj);
+                            setTimeout(() => {
+                                refuseModal.current.show();
                             });
                         }
                     }}
@@ -183,6 +192,43 @@ const SpecialDetailDraft = ({navigation, route}) => {
                     </View>
                 </View>
             </PageModal>
+            <PageModal
+                ref={refuseModal}
+                style={{height: px(315)}}
+                header={
+                    <View style={styles.auditHeader}>
+                        <Text style={styles.auditHeaderLeft}>{refuseObj.title}</Text>
+                        {refuseObj.right_button ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={Style.flexRow}
+                                onPress={() => {
+                                    jump(refuseObj.right_button.url);
+                                }}>
+                                <Text style={styles.auditHeaderRight}>{refuseObj.right_button.text}</Text>
+                                <FastImage
+                                    source={{
+                                        uri:
+                                            'http://static.licaimofang.com/wp-content/uploads/2022/10/right-blue-icon.png',
+                                    }}
+                                    style={{width: px(10), height: px(10), marginLeft: px(4)}}
+                                />
+                            </TouchableOpacity>
+                        ) : null}
+                    </View>
+                }>
+                <View style={{}}>
+                    <TextInput
+                        value={refuseObj.reason}
+                        editable={false}
+                        multiline={true}
+                        style={styles.input}
+                        maxLength={500}
+                        textAlignVertical="top"
+                        placeholder=""
+                    />
+                </View>
+            </PageModal>
         </View>
     );
 };
@@ -221,6 +267,7 @@ const styles = StyleSheet.create({
         height: px(215),
         fontSize: px(14),
         lineHeight: px(20),
+        color: '#545968',
     },
     rightIconWrap: {
         borderRadius: px(19),
@@ -238,5 +285,60 @@ const styles = StyleSheet.create({
     rightIcon: {
         width: px(20),
         height: px(20),
+    },
+    auditHeader: {
+        paddingVertical: px(16),
+        paddingHorizontal: px(16),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomColor: '#DDDDDD',
+        borderBottomWidth: 0.5,
+    },
+    auditHeaderLeft: {
+        fontSize: px(16),
+        lineHeight: px(22),
+        color: '#1e2331',
+    },
+    auditHeaderRight: {
+        fontSize: px(14),
+        lineHeight: px(20),
+        color: '#0051cc',
+    },
+    auditContent: {
+        flex: 1,
+    },
+    auditFooter: {
+        paddingTop: px(8),
+        paddingBottom: isIphoneX() ? 34 : px(8),
+        paddingHorizontal: px(16),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    auditFooterLeftBtn: {
+        borderWidth: 0.5,
+        borderColor: '#545968',
+        borderRadius: px(6),
+        width: px(165),
+        paddingVertical: px(12),
+    },
+    auditFooterRightBtn: {
+        borderRadius: px(6),
+        width: px(165),
+        paddingVertical: px(12),
+        backgroundColor: '#0051CC',
+    },
+    auditFooterLeftBtnText: {
+        fontSize: px(15),
+        lineHeight: px(21),
+        color: '#545968',
+        textAlign: 'center',
+    },
+    auditFooterRightBtnText: {
+        fontSize: px(15),
+        lineHeight: px(21),
+        color: '#fff',
+        textAlign: 'center',
     },
 });
