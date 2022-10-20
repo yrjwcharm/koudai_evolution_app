@@ -130,11 +130,7 @@ const CreatorCenterIndex = () => {
                             });
                         }}>
                         <FastImage source={criticalState ? bellBlack : bellWhite} style={styles.bell} />
-                        {system ? (
-                            <View style={[styles.point_sty, Style.flexCenter, {left: system > 99 ? px(11) : px(15)}]}>
-                                <Text style={styles.point_text}>{system > 99 ? '99+' : system}</Text>
-                            </View>
-                        ) : null}
+                        {system ? <View style={[styles.point_sty, {}]} /> : null}
                     </TouchableOpacity>
                 </View>
             </View>
@@ -339,14 +335,13 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(15),
-        top: px(-5),
+        right: px(0),
+        top: px(0),
         backgroundColor: Colors.red,
         borderRadius: px(20),
         zIndex: 3,
-        minWidth: px(14),
-        height: px(14),
-        paddingHorizontal: 4,
+        minWidth: px(6),
+        height: px(6),
     },
     point_text: {
         textAlign: 'center',
