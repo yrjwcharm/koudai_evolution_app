@@ -8,12 +8,13 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille, isEmpty} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
+let listener = null;
 const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
     const type = useSelector((state) => state.profitDetail.type);
@@ -27,10 +28,11 @@ const RenderList = React.memo(() => {
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: unitKey});
             if (res.code === '000000') {
                 if (isMounted.current) {
-                    const {head_list = [], data_list = []} = res.result || {};
+                    const {head_list = [], data_list = [], button = {}} = res.result || {};
                     setHeaderList(head_list);
                     setProfitList(data_list);
                     setLoading(false);
+                    DeviceEventEmitter.emit('sendTrigger', button);
                 }
             }
         })();

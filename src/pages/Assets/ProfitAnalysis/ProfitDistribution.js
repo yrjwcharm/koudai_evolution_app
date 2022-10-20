@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, Text, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, ScrollView, DeviceEventEmitter} from 'react-native';
 import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
@@ -16,6 +16,7 @@ import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
+import {useJump} from '../../../components/hooks';
 const shadow = {
     color: '#AAA',
     border: 4,
@@ -34,8 +35,9 @@ const shadow = {
 };
 export const appContext = React.createContext();
 const ProfitDistribution = React.memo(({headData, type}) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({});
     const dispatch = useDispatch();
+    const jump = useJump();
     const [loading, setLoading] = useState(true);
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
@@ -51,10 +53,9 @@ const ProfitDistribution = React.memo(({headData, type}) => {
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: unitType});
         initData();
+        let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
+        return () => listener && listener.remove();
     }, [type, unitType]);
-    const callbackData = (data) => {
-        setData(data);
-    };
     return (
         <>
             {loading ? (
@@ -150,7 +151,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             )}
                         </View>
                     </ScrollView>
-                    {data.length > 0 && <FixedButton title={'去理财市场看看'} />}
+                    {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}
                 </View>
             )}
         </>

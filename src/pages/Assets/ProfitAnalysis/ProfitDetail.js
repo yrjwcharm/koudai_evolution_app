@@ -14,14 +14,14 @@ import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', page = 0} = route.params || {};
+    const {fund_code = '', poid = '', type = 200} = route.params || {};
     const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
-    const type = useSelector((state) => state.profitDetail.type);
+    const [page, setPage] = useState(0);
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
@@ -29,6 +29,10 @@ const ProfitDetail = ({navigation, route}) => {
             if (res[0].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 navigation.setOptions({title});
+                let newTabs = tabs.map((el, index) => {
+                    return {page: index, type: el.type};
+                });
+                setPage(newTabs.find((el) => el.type == type).page);
                 setTabs(tabs);
                 setHeadData(header);
             }
