@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px as text, px} from '../../../utils/appUtil';
+import {isIphoneX, px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {compareDate, delMille} from '../../../utils/appUtil';
 import RenderList from './components/RenderList';
@@ -15,7 +15,7 @@ import ChartHeader from './components/ChartHeader';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
+import EmptyData from './components/EmptyData';
 const DayProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
@@ -33,6 +33,7 @@ const DayProfit = React.memo(() => {
     const [isPrev, setIsPrev] = useState(true);
     const [minDate, setMinDate] = useState('');
     const [maxDate, setMaxDate] = useState('');
+    const [isHasData, setIsHasData] = useState(true);
     /**
      * 初始化日历日期
      */
@@ -81,7 +82,7 @@ const DayProfit = React.memo(() => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
+                const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.format('YYYY-MM')});
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res.result ?? {};
@@ -124,6 +125,9 @@ const DayProfit = React.memo(() => {
                         arr[index] && (arr[index].checked = true);
                         setDateArr([...arr]);
                         setDate(dayjs_);
+                        setIsHasData(true);
+                    } else {
+                        setIsHasData(false);
                     }
                 }
             })();
@@ -138,8 +142,8 @@ const DayProfit = React.memo(() => {
      */
     const addMonth = () => {
         let cur = date.format('YYYY-MM');
-        let min = dayjs(maxDate).format('YYYY-MM');
-        if (cur === min) {
+        let max = dayjs(maxDate).format('YYYY-MM');
+        if (cur === max) {
             setIsNext(false);
             return;
         }
@@ -157,6 +161,14 @@ const DayProfit = React.memo(() => {
         }
         setDiff((diff) => diff - 1);
     };
+    useEffect(() => {
+        let max = dayjs(maxDate).format('YYYY-MM');
+        let cur = date.format('YYY');
+        if (cur === max) {
+            setIsNext(false);
+            return;
+        }
+    }, [diff]);
     /**
      * 通过选中日期获取收益数据
      */
@@ -200,29 +212,35 @@ const DayProfit = React.memo(() => {
         [dateArr]
     );
     return (
-        <View style={styles.container}>
-            {/*chart类型*/}
-            <ChartHeader
-                selCalendarType={selCalendarType}
-                selBarChartType={selBarChartType}
-                isCalendar={isCalendar}
-                isBarChart={isBarChart}
-                subMonth={subMonth}
-                addMonth={addMonth}
-                isPrev={isPrev}
-                isNext={isNext}
-                date={date.month() + 1 + '月'}
-            />
-            {/*日历*/}
-            {isCalendar && (
-                <View style={{marginTop: px(12)}}>
-                    <View style={styles.weekFlex}>{renderWeek}</View>
-                    <View style={styles.dateWrap}>{renderCalendar}</View>
+        <>
+            {isHasData ? (
+                <View style={styles.container}>
+                    {/*chart类型*/}
+                    <ChartHeader
+                        selCalendarType={selCalendarType}
+                        selBarChartType={selBarChartType}
+                        isCalendar={isCalendar}
+                        isBarChart={isBarChart}
+                        subMonth={subMonth}
+                        addMonth={addMonth}
+                        isPrev={isPrev}
+                        isNext={isNext}
+                        date={date.month() + 1 + '月'}
+                    />
+                    {/*日历*/}
+                    {isCalendar && (
+                        <View style={{marginTop: px(12)}}>
+                            <View style={styles.weekFlex}>{renderWeek}</View>
+                            <View style={styles.dateWrap}>{renderCalendar}</View>
+                        </View>
+                    )}
+                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    <RenderList />
                 </View>
+            ) : (
+                <EmptyData />
             )}
-            {isBarChart && <BarChartComponent chartData={chartData} />}
-            <RenderList />
-        </View>
+        </>
     );
 });
 export default DayProfit;
@@ -234,6 +252,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
+        marginBottom: isIphoneX() ? px(58) : px(24),
     },
     dateWrap: {
         marginTop: px(8),

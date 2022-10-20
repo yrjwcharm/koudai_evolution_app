@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 14:28:39
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-18 15:14:50
  * @Description:评论内容体
  */
 import {StyleSheet, Text, View} from 'react-native';

@@ -150,12 +150,12 @@ export const CommunityFollowCard = ({
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
                     <TouchableOpacity activeOpacity={0.8} onPress={() => jump(author.url)} style={Style.flexRow}>
                         {type === 9 && live_status === 2 ? (
-                            <AnimateAvatar source={author.avatar} style={styles.avatar} />
+                            <AnimateAvatar source={author?.avatar} style={styles.avatar} />
                         ) : (
-                            <Image source={{uri: author.avatar}} style={styles.avatar} />
+                            <Image source={{uri: author?.avatar}} style={styles.avatar} />
                         )}
                         <View>
-                            <Text style={styles.subTitle}>{author.nickname}</Text>
+                            <Text style={styles.subTitle}>{author?.nickname}</Text>
                             <Text style={[styles.smText, {marginTop: px(2)}]}>{author_desc}</Text>
                         </View>
                     </TouchableOpacity>

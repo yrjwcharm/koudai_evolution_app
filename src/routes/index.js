@@ -235,7 +235,7 @@ import ProductMoreMenu from '~/pages/FundIndex/pages/ProductMoreMenu'; // 更多
 
 import CommunityHome from '~/pages/Community/CommunityHome/CommunityHome';
 import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
-import CommunityVideo from '~/pages/Community/CommunityVideo'; //社区音频
+import CommunityVideo from '~/pages/Community/CommunityVideo/CommunityVideo'; //社区音频
 import CommunityVodCreate from '~/pages/Community/CommunityVodCreate'; // 发布视频
 // v7新页面 End
 import InvestorInfoTable from '../pages/PE/InvestorInfoTable'; // 投资者信息表

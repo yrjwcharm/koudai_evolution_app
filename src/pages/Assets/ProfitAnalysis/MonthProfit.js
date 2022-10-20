@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px} from '../../../utils/appUtil';
+import {isIphoneX, px} from '../../../utils/appUtil';
 import commonStyle from './styles/style';
 import dayjs from 'dayjs';
 import {compareDate, delMille} from '../../../utils/appUtil';
@@ -15,6 +15,7 @@ import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
+import EmptyData from './components/EmptyData';
 const MonthProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
@@ -28,6 +29,7 @@ const MonthProfit = React.memo(() => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
+    const [isHasData, setIsHasData] = useState(true);
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -54,46 +56,51 @@ const MonthProfit = React.memo(() => {
                     };
                     arr.push(item);
                 }
-                const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
+                const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.year()});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[0]?.unit_key},
-                            {name: '收益', val: profit_data_list[0]?.value},
-                        ],
-                        chart: barCharData,
-                    });
                     // //双重for循环判断日历是否超过、小于或等于当前日期
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                let unit = profit_data_list[j].unit_key;
-                                if (arr[i].day == unit) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    let unit = profit_data_list[j].unit_key;
+                                    if (arr[i].day == unit) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
+                        let barCharData = profit_data_list
+                            .map((el) => {
+                                return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
+                            })
+                            .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[0]?.unit_key},
+                                {name: '收益', val: profit_data_list[0]?.value},
+                            ],
+                            chart: barCharData,
+                        });
+                        let index;
+                        //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        if (selCurDate == dayjs().format('YYYY-MM')) {
+                            index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
+                            dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
+                        } else {
+                            index = arr.findIndex((el) => el.day == selCurDate);
+                            dispatch({type: 'updateUnitKey', payload: selCurDate});
+                        }
+                        arr[index] && (arr[index].checked = true);
+                        setDateArr([...arr]);
+                        setDate(dayjs_);
+                        setIsHasData(true);
                     }
-                    let index;
-                    //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (selCurDate == dayjs().format('YYYY-MM')) {
-                        index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
-                    } else {
-                        index = arr.findIndex((el) => el.day == selCurDate);
-                        dispatch({type: 'updateUnitKey', payload: selCurDate});
-                    }
-                    arr[index] && (arr[index].checked = true);
-                    setDateArr([...arr]);
-                    setDate(dayjs_);
+                } else {
+                    setIsHasData(false);
                 }
             })();
         },
@@ -131,22 +138,28 @@ const MonthProfit = React.memo(() => {
         [dateArr]
     );
     return (
-        <View style={styles.container}>
-            <CalendarHeader
-                isCalendar={isCalendar}
-                isBarChart={isBarChart}
-                selCalendarType={selCalendarType}
-                selBarChartType={selBarChartType}
-                date={date.year()}
-                subtract={subtract}
-                add={add}
-                isAdd={isAdd}
-            />
-            {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
-            {isBarChart && <BarChartComponent chartData={chartData} />}
-            {/*收益数据-根据实际情形选择map渲染*/}
-            <RenderList />
-        </View>
+        <>
+            {isHasData ? (
+                <View style={styles.container}>
+                    <CalendarHeader
+                        isCalendar={isCalendar}
+                        isBarChart={isBarChart}
+                        selCalendarType={selCalendarType}
+                        selBarChartType={selBarChartType}
+                        date={date.year()}
+                        subtract={subtract}
+                        add={add}
+                        isAdd={isAdd}
+                    />
+                    {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
+                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    {/*收益数据-根据实际情形选择map渲染*/}
+                    <RenderList />
+                </View>
+            ) : (
+                <EmptyData />
+            )}
+        </>
     );
 });
 const CalendarHeader = React.memo(
@@ -222,6 +235,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
+        marginBottom: isIphoneX() ? px(58) : px(24),
     },
     chartHeader: {},
     selMonth: {

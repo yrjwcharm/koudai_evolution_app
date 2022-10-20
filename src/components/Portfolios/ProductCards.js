@@ -232,6 +232,7 @@ const RecommendCard = ({data = {}, isPking}) => {
         reason,
         tags = [],
         yield_info,
+        icon_url,
     } = data;
     const btnText = isPking ? 'PK中' : button?.text;
     const [showChart, setShowChart] = useState(false);
@@ -272,6 +273,7 @@ const RecommendCard = ({data = {}, isPking}) => {
                             ) : null}
                         </>
                     )}
+                    {!!icon_url && <Image source={{uri: icon_url}} style={{width: px(64), height: px(64)}} />}
                 </View>
                 <View style={{flex: 1}}>
                     <View style={Style.flexRow}>

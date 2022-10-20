@@ -13,6 +13,7 @@ import RenderList from './components/RenderList';
 import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
+import EmptyData from './components/EmptyData';
 const YearProfit = () => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
@@ -23,6 +24,7 @@ const YearProfit = () => {
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
+    const [isHasData, setIsHasData] = useState(true);
     const init = useCallback(
         (curYear) => {
             (async () => {
@@ -35,39 +37,44 @@ const YearProfit = () => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: 'year'});
+                const res = await getChartData({type, unit_type: unitType});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: el.unit_key + '年', value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[0]?.unit_key},
-                            {name: '收益', val: profit_data_list[0]?.value},
-                        ],
-                        chart: barCharData,
-                    });
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            if (arr[i].day == profit_data_list[j].unit_key) {
-                                arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (arr[i].day == profit_data_list[j].unit_key) {
+                                    arr[i].profit = profit_data_list[j].value;
+                                }
                             }
                         }
+                        let barCharData = profit_data_list
+                            .map((el) => {
+                                return {date: el.unit_key + '年', value: parseFloat(el.value)};
+                            })
+                            .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[0]?.unit_key},
+                                {name: '收益', val: profit_data_list[0]?.value},
+                            ],
+                            chart: barCharData,
+                        });
+                        let index;
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        if (curYear == dayjs().year()) {
+                            dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
+                            index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
+                        } else {
+                            index = arr.findIndex((el) => el.day == curYear);
+                            dispatch({type: 'updateUnitKey', payload: curYear});
+                        }
+                        arr[index] && (arr[index].checked = true);
+                        setDateArr([...arr]);
+                        setIsHasData(true);
                     }
-                    let index;
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (curYear == dayjs().year()) {
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
-                        index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
-                    } else {
-                        index = arr.findIndex((el) => el.day == curYear);
-                        dispatch({type: 'updateUnitKey', payload: curYear});
-                    }
-                    arr[index] && (arr[index].checked = true);
-                    setDateArr([...arr]);
+                } else {
+                    setIsHasData(false);
                 }
             })();
         },
@@ -104,53 +111,59 @@ const YearProfit = () => {
         [dateArr]
     );
     return (
-        <View style={styles.container}>
-            <View style={[styles.chartLeft, {}]}>
-                <TouchableOpacity onPress={selCalendarType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isCalendar && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            日历图
-                        </Text>
+        <>
+            {isHasData ? (
+                <View style={styles.container}>
+                    <View style={[styles.chartLeft]}>
+                        <TouchableOpacity onPress={selCalendarType}>
+                            <View
+                                style={[
+                                    Style.flexCenter,
+                                    styles.selChartType,
+                                    isCalendar && {
+                                        backgroundColor: Colors.white,
+                                        width: px(60),
+                                    },
+                                ]}>
+                                <Text
+                                    style={{
+                                        color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
+                                        fontSize: px(12),
+                                        fontFamily: Font.pingFangRegular,
+                                    }}>
+                                    日历图
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={selBarChartType}>
+                            <View
+                                style={[
+                                    Style.flexCenter,
+                                    styles.selChartType,
+                                    isBarChart && {
+                                        backgroundColor: Colors.white,
+                                        width: px(60),
+                                    },
+                                ]}>
+                                <Text
+                                    style={{
+                                        color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
+                                        fontSize: px(12),
+                                        fontFamily: Font.pingFangRegular,
+                                    }}>
+                                    柱状图
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={selBarChartType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isBarChart && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            柱状图
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
-            {isBarChart && <BarChartComponent chartData={chartData} />}
-            <RenderList />
-        </View>
+                    {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
+                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    <RenderList />
+                </View>
+            ) : (
+                <EmptyData />
+            )}
+        </>
     );
 };
 

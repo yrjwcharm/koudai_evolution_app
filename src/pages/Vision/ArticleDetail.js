@@ -38,7 +38,6 @@ import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
 import {useOnTogglePlayback} from '../Community/components/audioService/useOnTogglePlayback.js';
 import {startAudio} from '../Community/components/audioService/StartAudioService.js';
 import {updateUserInfo} from '~/redux/actions/userInfo.js';
-import {audioOptions} from '../Community/components/audioService/AudioConfig.js';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -702,7 +701,7 @@ const ArticleDetail = ({navigation, route}) => {
                                         ? require('../../assets/animation/zanActive.json')
                                         : require('../../assets/animation/zan.json')
                                 }
-                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                                style={{height: px(36), width: px(36), marginBottom: px(-4)}}
                             />
 
                             <Text style={styles.iconText}>{`${favor_num >= 0 ? favor_num : 0}`}</Text>
@@ -720,7 +719,7 @@ const ArticleDetail = ({navigation, route}) => {
                                         ? require('../../assets/animation/collect.json')
                                         : require('../../assets/animation/collectActive.json')
                                 }
-                                style={{height: px(40), width: px(40), marginBottom: px(-4)}}
+                                style={{height: px(36), width: px(36), marginBottom: px(-4)}}
                             />
 
                             <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
@@ -733,7 +732,7 @@ const ArticleDetail = ({navigation, route}) => {
                             }}
                             style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
                             <Image
-                                source={require('../../assets/img/article/share.png')}
+                                source={require('~/assets/img/article/share.png')}
                                 style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
                             />
                         </TouchableOpacity>
