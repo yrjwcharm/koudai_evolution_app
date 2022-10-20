@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-18 22:32:23
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-19 14:38:23
+ * @LastEditTime: 2022-10-20 14:08:51
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/services.js
  * @Description:
  */
@@ -13,3 +13,13 @@ export const getTemplateBgImg = (params = {}) => http.get('/subject/manage/bgImg
 export const getStashBaseInfo = (params = {}) => http.get('/subject/manage/base_info/20220901', params);
 /** 专题基本信息保存 */
 export const saveStashBaseInfo = (params = {}) => http.post('/subject/manage/base_info/modify/20220901', params, true);
+
+/** 图片上传 */
+export const uploadImage = (params = {}) => http.uploadFiles('/common/image/upload', params, true);
+
+/** 专题 内容 - 已保存 */
+export const getContentList = (params = {}) => http.get('/subject/manage/articles/all/20220901', params, false);
+/** 专题 内容 - 文章库 */
+export const getStashContentList = (params = {}) => http.get('/subject/manage/articles/20220901', params, false);
+/** 专题 内容 - 保存 */
+export const saveStashContentList = (params = {}) => http.get('/subject/manage/articles/modify/20220901', params, true);

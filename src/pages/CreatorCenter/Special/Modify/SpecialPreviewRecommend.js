@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:53:27
+ * @LastEditTime: 2022-10-20 12:23:15
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -22,25 +22,9 @@ import Radio from '~/components/Radio.js';
 import {Children} from 'react/cjs/react.production.min';
 import Html from '~/components/RenderHtml';
 import {RecommendItemWrap, RecommendProduct, RecommendImage} from '../../components/SpecialRecommend.js';
-
+import {saveRecommendInfo} from './services.js';
 export default function SpecialPreviewRecommend(props) {
-    // const {type, uri, items} = props.route?.params ?? {};
-    const type = 1;
-    const uri = '';
-    const items = [
-        {
-            title:
-                '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
-            desc: '股债平衡组合',
-            tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
-        },
-        {
-            title:
-                '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
-            desc: '股债平衡组合',
-            tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
-        },
-    ];
+    const {type, uri, subject_id, items, onSave} = props.route?.params ?? {};
 
     let tabs = [];
     if (type === 1) {
@@ -49,11 +33,25 @@ export default function SpecialPreviewRecommend(props) {
     }
 
     const handleSaveBaseInfo = () => {
-        // TODO: save info
-        props.navigation.goBack();
+        const params = {sid: subject_id, save_status: 2, rec_type: type};
+        if (type === 1) {
+            params.s_img = uri;
+        } else {
+            params.products = items.map((it) => ({
+                product_id: it.product.product_id,
+                product_type: it.product.product_type,
+                name: it.product.name,
+                desc: it.desc,
+                tags: it.tags,
+            }));
+        }
+        saveRecommendInfo(params).then((res) => {
+            if (res.code === '000000') {
+                onSave();
+            }
+        });
     };
     const handleBack = () => {
-        // TODO: show modal
         props.navigation.goBack();
     };
     return (

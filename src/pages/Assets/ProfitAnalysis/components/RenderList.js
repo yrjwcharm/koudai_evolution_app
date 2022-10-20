@@ -13,6 +13,7 @@ import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 import {useSelector} from 'react-redux';
+import Loading from '../../../Portfolio/components/PageLoading';
 const RenderList = React.memo(() => {
     const isMounted = useIsMounted();
     const type = useSelector((state) => state.profitDetail.type);
@@ -20,6 +21,7 @@ const RenderList = React.memo(() => {
     const unitKey = useSelector((state) => state.profitDetail.unitKey);
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const init = useCallback(() => {
         (async () => {
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: unitKey});
@@ -28,6 +30,7 @@ const RenderList = React.memo(() => {
                     const {head_list = [], data_list = []} = res.result || {};
                     setHeaderList(head_list);
                     setProfitList(data_list);
+                    setLoading(false);
                 }
             }
         })();
@@ -52,64 +55,71 @@ const RenderList = React.memo(() => {
             }
         }
     };
+    const renderProfitList = useMemo(
+        () =>
+            profitList.map((item, index) => {
+                let color =
+                    delMille(item.profit) > 0
+                        ? Colors.red
+                        : delMille(item.profit) < 0
+                        ? Colors.green
+                        : Colors.lightGrayColor;
+                return (
+                    <View style={styles.listRow} key={item + '' + index}>
+                        <View style={styles.typeView}>
+                            <View style={styles.typeWrap}>
+                                <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
+                                    {item.type}
+                                </Text>
+                            </View>
+                            <Text style={styles.title}>{item.text}</Text>
+                            {item.tag ? (
+                                <View
+                                    style={{
+                                        borderRadius: text(2),
+                                        backgroundColor: '#EFF5FF',
+                                        marginLeft: text(6),
+                                    }}>
+                                    <Text style={styles.tag}>{item.tag}</Text>
+                                </View>
+                            ) : null}
+                        </View>
+                        <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+                    </View>
+                );
+            }),
+        [profitList]
+    );
     return (
         <>
-            {left && right && profitList.length != 0 && (
-                <View style={styles.profitHeader}>
-                    <View style={styles.profitHeaderLeft}>
-                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => executeSort(right)}>
-                        <View style={styles.profitHeaderRight}>
-                            <Text style={styles.moneyText}>{right?.text}</Text>
-                            <Image
-                                source={
-                                    isEmpty(right?.sort_type)
-                                        ? require('../assets/sort.png')
-                                        : right?.sort_type == 'desc'
-                                        ? require('../assets/desc.png')
-                                        : require('../assets/asc.png')
-                                }
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            )}
-            {useMemo(
-                () =>
-                    profitList.map((item, index) => {
-                        let color =
-                            delMille(item.profit) > 0
-                                ? Colors.red
-                                : delMille(item.profit) < 0
-                                ? Colors.green
-                                : Colors.lightGrayColor;
-                        return (
-                            <View style={styles.listRow} key={item + '' + index}>
-                                <View style={styles.typeView}>
-                                    <View style={styles.typeWrap}>
-                                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
-                                            {item.type}
-                                        </Text>
-                                    </View>
-                                    <Text style={styles.title}>{item.text}</Text>
-                                    {item.tag ? (
-                                        <View
-                                            style={{
-                                                borderRadius: text(2),
-                                                backgroundColor: '#EFF5FF',
-                                                marginLeft: text(6),
-                                            }}>
-                                            <Text style={styles.tag}>{item.tag}</Text>
-                                        </View>
-                                    ) : null}
-                                </View>
-                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+            {loading ? (
+                <Loading color={Colors.btnColor} />
+            ) : (
+                <>
+                    {left && right && profitList.length != 0 && (
+                        <View style={styles.profitHeader}>
+                            <View style={styles.profitHeaderLeft}>
+                                <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                                <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
                             </View>
-                        );
-                    }),
-                [profitList]
+                            <TouchableOpacity onPress={() => executeSort(right)}>
+                                <View style={styles.profitHeaderRight}>
+                                    <Text style={styles.moneyText}>{right?.text}</Text>
+                                    <Image
+                                        source={
+                                            isEmpty(right?.sort_type)
+                                                ? require('../assets/sort.png')
+                                                : right?.sort_type == 'desc'
+                                                ? require('../assets/desc.png')
+                                                : require('../assets/asc.png')
+                                        }
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {renderProfitList}
+                </>
             )}
         </>
     );

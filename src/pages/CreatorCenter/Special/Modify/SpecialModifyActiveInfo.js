@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:46:26
+ * @LastEditTime: 2022-10-20 12:41:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -116,8 +116,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
                         fileName: image.filename,
                         type: image.mime,
                         uri: image.path,
+                    }).then((res) => {
+                        if (res.code === '000000') {
+                            setBgSource(res.result.url);
+                        }
                     });
-                    setBgSource(image.path);
                 })
                 .catch((err) => {
                     console.warn(err);

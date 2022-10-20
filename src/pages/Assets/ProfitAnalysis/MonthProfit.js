@@ -29,7 +29,7 @@ const MonthProfit = React.memo(() => {
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
-    const [isHasData, setIsHasData] = useState(false);
+    const [isHasData, setIsHasData] = useState(true);
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -43,7 +43,6 @@ const MonthProfit = React.memo(() => {
     const init = useCallback(
         (selCurDate) => {
             (async () => {
-                setIsHasData(true);
                 let dayjs_ = dayjs().add(diff, 'year').startOf('year');
                 let arr = [];
                 //for循环装载日历数据
@@ -61,47 +60,43 @@ const MonthProfit = React.memo(() => {
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
-                    if (profit_data_list.length > 0) {
-                        for (let i = 0; i < arr.length; i++) {
-                            for (let j = 0; j < profit_data_list.length; j++) {
-                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                    let unit = profit_data_list[j].unit_key;
-                                    if (arr[i].day == unit) {
-                                        arr[i].profit = profit_data_list[j].value;
-                                    }
-                                } else {
-                                    delete arr[i].profit;
+                    for (let i = 0; i < arr.length; i++) {
+                        for (let j = 0; j < profit_data_list.length; j++) {
+                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                let unit = profit_data_list[j].unit_key;
+                                if (arr[i].day == unit) {
+                                    arr[i].profit = profit_data_list[j].value;
                                 }
+                            } else {
+                                delete arr[i].profit;
                             }
                         }
-                        let barCharData = profit_data_list
-                            .map((el) => {
-                                return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
-                            })
-                            .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
-                        setChart({
-                            label: [
-                                {name: '时间', val: profit_data_list[0]?.unit_key},
-                                {name: '收益', val: profit_data_list[0]?.value},
-                            ],
-                            chart: barCharData,
-                        });
-                        let index;
-                        //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                        if (selCurDate == dayjs().format('YYYY-MM')) {
-                            index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
-                            dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
-                        } else {
-                            index = arr.findIndex((el) => el.day == selCurDate);
-                            dispatch({type: 'updateUnitKey', payload: selCurDate});
-                        }
-                        arr[index] && (arr[index].checked = true);
-                        setDateArr([...arr]);
-                        setDate(dayjs_);
-                        setIsHasData(true);
                     }
-                } else {
-                    setIsHasData(false);
+                    let barCharData = profit_data_list
+                        .map((el) => {
+                            return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
+                        })
+                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                    setChart({
+                        label: [
+                            {name: '时间', val: profit_data_list[0]?.unit_key},
+                            {name: '收益', val: profit_data_list[0]?.value},
+                        ],
+                        chart: barCharData,
+                    });
+                    let index;
+                    //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                    if (selCurDate == dayjs().format('YYYY-MM')) {
+                        index = arr.findIndex((el) => el.day == profit_data_list[0]?.unit_key);
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0]?.unit_key});
+                    } else {
+                        index = arr.findIndex((el) => el.day == selCurDate);
+                        dispatch({type: 'updateUnitKey', payload: selCurDate});
+                    }
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                    arr[index] && (arr[index].checked = true);
+                    setDateArr([...arr]);
+                    setDate(dayjs_);
                 }
             })();
         },

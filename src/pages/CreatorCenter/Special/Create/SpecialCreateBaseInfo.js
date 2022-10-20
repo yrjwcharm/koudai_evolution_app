@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-19 16:12:37
+ * @LastEditTime: 2022-10-20 15:47:40
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -30,7 +30,7 @@ import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {Style, Colors, Space} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import {getStashBaseInfo, saveStashBaseInfo} from './services';
+import {getStashBaseInfo, saveStashBaseInfo, uploadImage} from './services';
 import LoadingTips from '~/components/LoadingTips';
 
 function Tag(props) {
@@ -66,7 +66,7 @@ function TagWrap(props) {
     const handleTagChange = (i) => {
         console.log('handleTagChange:', i);
         setIndex(i);
-        if (index === -1) {
+        if (i === -1) {
             setText('');
         } else {
             setText(tags[i]);
@@ -138,7 +138,7 @@ const blockCal = () => {
     });
 };
 
-export default function SpecialModifyBaseInfo({navigation, route}) {
+export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     const jump = useJump();
     const {subject_id} = route?.params ?? {};
     const [bgSource, setBgSource] = useState();
@@ -180,10 +180,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             tags,
         }).then((res) => {
             if (res.code === '000000') {
-                jump(data.next_button.url);
-                // jump({
-                //     path: 'SpecialCreateEntry',
-                // });
+                if (isEdit) {
+                    navigation.goBack();
+                } else {
+                    jump(data.next_button.url);
+                }
             }
         });
     };
@@ -223,11 +224,10 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
                 onSure: (uri) => {
                     setBgSource(uri);
                 },
-                selectedUri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-3.png',
+                selectedUri: bgSource,
             },
         });
     };
-    const uploadImage = () => {};
 
     const openPicker = () => {
         setTimeout(() => {
@@ -246,8 +246,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
                         fileName: image.filename,
                         type: image.mime,
                         uri: image.path,
+                    }).then((res) => {
+                        if (res.code === '000000') {
+                            setBgSource(res.result.url);
+                        }
                     });
-                    setBgSource(image.path);
                 })
                 .catch((err) => {
                     console.warn(err);
@@ -274,7 +277,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
                     setData(res.result);
                     setTitle(res.result.name || '');
                     setDesc(res.result.desc || '');
-                    setTags(res.result.tags || []);
+                    setTags(res.result.tags.filter((t) => t.length > 0) || []);
                     setBgSource(res.result.bg_img || null);
                 }
             })
@@ -286,7 +289,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     if (loading) {
         return (
             <SafeAreaView edges={['bottom']}>
-                <NavBar title={'创建专题'} leftIcon="chevron-left" leftPress={handleBack} />
+                <NavBar
+                    title={isEdit ? '修改专题基础信息' : '创建专题'}
+                    leftIcon="chevron-left"
+                    leftPress={handleBack}
+                />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
                 </View>
@@ -299,7 +306,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
         // 背景图片是否已选择
         uploadImgSection = (
             <TouchableOpacity style={[styles.uload_btn, Style.flexCenter]} activeOpacity={0.9} onPress={showSelectImg}>
-                <ImageBackground source={{uri: bgSource}} style={[styles.bg_image]}>
+                <ImageBackground resizeMode="cover" source={{uri: bgSource}} style={[styles.bg_image]}>
                     <FastImage
                         source={require('~/components/IM/app/source/image/camera.png')}
                         style={[styles.upload_centerCamera]}
@@ -321,9 +328,9 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
-                title={'创建专题'}
+                title={isEdit ? '修改专题基础信息' : '创建专题'}
                 leftIcon="chevron-left"
-                rightText={data.next_button?.text ?? '下一步'}
+                rightText={isEdit ? '保存' : data.next_button?.text ?? '下一步'}
                 rightPress={rightPress}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
@@ -432,6 +439,7 @@ const styles = StyleSheet.create({
 
     bg_image: {
         width: '100%',
+        height: '100%',
         minHeight: 100,
         display: 'flex',
         justifyContent: 'center',
@@ -484,9 +492,12 @@ const styles = StyleSheet.create({
         fontSize: px(12),
     },
     tagItem_closeIcon: {
+        color: 'red',
         marginLeft: 10,
         height: px(10),
         width: px(10),
+        lineHeight: px(10),
+        fontSize: px(10),
     },
     tagItemAdd: {
         backgroundColor: '#F5F6F8',

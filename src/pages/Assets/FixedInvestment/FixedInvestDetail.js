@@ -90,7 +90,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                 password,
                 type: type == 'pause' ? 20 : 30,
             });
-            if (res.code === '000001') {
+            if (res.code === '000001' || res.code === '000000') {
                 Toast.hide(loading);
                 let timer = setTimeout(() => {
                     Toast.show(res.message);
@@ -221,40 +221,45 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                         </BoxShadow>
                     </View>
-                    <View style={styles.footer}>
-                        <View>
-                            <Text style={styles.listRowTitle}>{state.records?.title}</Text>
-                        </View>
-                        <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                            <Text style={styles.rowTitle}>日期</Text>
-                            <Text style={styles.rowTitle}>金额(元)</Text>
-                            <Text style={styles.rowTitle}>交易状态</Text>
-                        </View>
-                        {state.records?.data_list?.map((item, index) => {
-                            return (
-                                <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
-                                    <View style={{width: '38.5%'}}>
-                                        <Text style={styles.date}>{item.date}</Text>
-                                    </View>
-                                    <View style={{width: '38.5%'}}>
-                                        <Text style={styles.money}>{item.value}</Text>
-                                    </View>
-                                    <View style={{width: '23%', flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                        <View style={Style.flexRow}>
-                                            <View>
-                                                {/*<Text style={styles.investStatus}>定投成功</Text>*/}
-                                                <Text style={[styles.investFail, {textAlign: 'right'}]}>
-                                                    {item.status}
-                                                </Text>
-                                                {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                    {state.records?.data_list?.length > 0 && (
+                        <View style={styles.footer}>
+                            <View>
+                                <Text style={styles.listRowTitle}>{state.records?.title}</Text>
+                            </View>
+                            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                                <Text style={styles.rowTitle}>日期</Text>
+                                <Text style={styles.rowTitle}>金额(元)</Text>
+                                <Text style={styles.rowTitle}>交易状态</Text>
+                            </View>
+                            {state.records?.data_list?.map((item, index) => {
+                                return (
+                                    <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
+                                        <View style={{width: '38.5%'}}>
+                                            <Text style={styles.date}>{item.date}</Text>
+                                        </View>
+                                        <View style={{width: '38.5%'}}>
+                                            <Text style={styles.money}>{item.value}</Text>
+                                        </View>
+                                        <View style={{width: '23%', flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                            <View style={Style.flexRow}>
+                                                <View>
+                                                    {/*<Text style={styles.investStatus}>定投成功</Text>*/}
+                                                    <Text style={[styles.investFail, {textAlign: 'right'}]}>
+                                                        {item.status}
+                                                    </Text>
+                                                    {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                                                </View>
+                                                <Image
+                                                    source={require('./assets/more.png')}
+                                                    style={{marginLeft: px(4)}}
+                                                />
                                             </View>
-                                            <Image source={require('./assets/more.png')} style={{marginLeft: px(4)}} />
                                         </View>
                                     </View>
-                                </View>
-                            );
-                        })}
-                    </View>
+                                );
+                            })}
+                        </View>
+                    )}
                     <PasswordModal ref={passwordModal} onDone={submit} />
 
                     <SelectModal

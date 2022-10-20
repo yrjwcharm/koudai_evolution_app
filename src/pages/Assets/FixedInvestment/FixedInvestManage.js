@@ -18,6 +18,7 @@ import {BoxShadow} from 'react-native-shadow';
 import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
+import {useJump} from '../../../components/hooks';
 const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
 const shadow = {
@@ -33,6 +34,7 @@ const shadow = {
     },
 };
 const FixedInvestManage = ({navigation, route}) => {
+    const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
     const [terminatedCount, setTerminatedCount] = useState(0);
@@ -40,14 +42,13 @@ const FixedInvestManage = ({navigation, route}) => {
     const [headList, setHeadList] = useState([]);
     const [detail, setDetail] = useState({});
     const [loading, setLoading] = useState(true);
-    const {fund_code = '', poid = ''} = route?.params || {};
-    const [unitType, setUnitType] = useState(200);
+    const {fund_code = '', poid = '', type = 200} = route?.params || {};
+    const [unitType, setUnitType] = useState(type);
     const [tabList, setTabList] = useState([]);
 
     useFocusEffect(
         useCallback(() => {
             (async () => {
-                let params = {};
                 const res = await Promise.all([
                     callFixedHeadDataApi({}),
                     callHistoryDataApi({type: unitType}),
@@ -216,7 +217,9 @@ const FixedInvestManage = ({navigation, route}) => {
                     )}
                     <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
 
-                    {Object.keys(data).length > 0 ? <FixedButton title="新建定投" onPress={() => {}} /> : null}
+                    {Object.keys(data).length > 0 && (
+                        <FixedButton title={data.button.text} onPress={() => jump(data.button.url)} />
+                    )}
                 </View>
             )}
         </>

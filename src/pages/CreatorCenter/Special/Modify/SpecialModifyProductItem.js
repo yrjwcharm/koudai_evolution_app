@@ -1,33 +1,30 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:51:26
+ * @LastEditTime: 2022-10-20 14:54:32
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet,  Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import NavBar from '~/components/NavBar';
-import {Colors, Font, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from '~/components/Toast';
- 
-import {useJump} from '~/components/hooks';
- 
+import {getProductList} from './services';
+import LoadingTips from '~/components/LoadingTips';
+import {useFocusEffect} from '@react-navigation/native';
 
 function Item(props) {
-    const {title, ratio, ratio_desc, isSelected, onPress} = props;
+    const {item, isSelected, onPress} = props;
     return (
         <TouchableOpacity onPress={onPress} style={styles.cell}>
             <AntDesign name="checkcircle" size={16} color={isSelected ? '#0051CC' : '#BDC2CC'} />
             <View style={styles.cellContent}>
-                <Text style={styles.cell_title}>{title}</Text>
+                <Text style={styles.cell_title}>{item.product_name}</Text>
                 <View style={styles.cell_descWrap}>
-                    <Text style={styles.cell_ratio}>{ratio}</Text>
-                    <Text style={styles.cell_desc}>{ratio_desc}</Text>
+                    <Text style={styles.cell_ratio}>{item.yield_info.ratio}</Text>
+                    <Text style={styles.cell_desc}>{item.yield_info.title}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -39,43 +36,51 @@ function ItemSeparator() {
 }
 
 export default function SpecialModifyProductItem({navigation, route}) {
-    const [data, setData] = useState([]);
-    const callback = route?.params?.callback; // 返回的回调
-    const [refreshing, setRefreshing] = useState(false);
-    const [curIndex, setIndex] = useState(0);
-    const [list, setList] = useState([
-        {
-            id: '1',
-            title: '招商中证白酒指数C',
-            ratio: '34.23%',
-            ratio_desc: '近一年收益率',
-        },
-        {
-            id: '2',
-            title: '招商中证白酒指数C',
-            ratio: '34.23%',
-            ratio_desc: '近一年收益率',
-        },
-    ]);
+    const {callback, subject_id, selected} = route?.params ?? {}; // 返回的回调
+    const [loading, setLoading] = useState(false);
+    const [selectedId, setId] = useState(selected || 0);
+    const [list, setList] = useState([]);
 
-    const jump = useJump();
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            getProductList({sid: subject_id})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setList(res.result.list || []);
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        }, [subject_id])
+    );
 
     const handleBack = () => {
         navigation.goBack();
     };
     const handleSure = () => {
-        let item = list[curIndex];
+        let item = list.find((it) => it.product_id === selectedId);
         if (callback) {
             callback(item);
         }
         navigation.goBack();
     };
 
-    const onRefresh = () => {};
-
     const renderItem = ({item, index}) => {
-        return <Item {...item} isSelected={index === curIndex} onPress={() => setIndex(index)} />;
+        return <Item {...item} isSelected={item.product_id === selectedId} onPress={() => setId(item.product_id)} />;
     };
+
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'选择推广产品'} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
@@ -89,8 +94,6 @@ export default function SpecialModifyProductItem({navigation, route}) {
             <View style={styles.content}>
                 <FlatList
                     data={list}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
                     ItemSeparatorComponent={ItemSeparator}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}

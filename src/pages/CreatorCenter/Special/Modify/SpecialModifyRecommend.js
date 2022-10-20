@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:52:55
+ * @LastEditTime: 2022-10-20 15:21:39
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -19,18 +19,19 @@ import Input from '~/components/Input';
 import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import Radio from '~/components/Radio.js';
-import {Children} from 'react/cjs/react.production.min';
-import Html from '~/components/RenderHtml';
 import {RecommendItemWrap, RecommendProduct, RecommendImage} from '../../components/SpecialRecommend.js';
+import {getRecommendInfo, getRecommendProductInfo, saveRecommendInfo, uploadImage} from './services';
+
+import LoadingTips from '~/components/LoadingTips';
 
 function RecommendCell(props) {
-    const {index, curIndex, handleSelect, title, children} = props;
+    const {type, curType, onSelect, title, children} = props;
     return (
         <View style={styles.cellWrap}>
             <TouchableOpacity
-                style={[styles.cellWrap_header, index === 0 ? {marginTop: 12} : {}]}
-                onPress={() => handleSelect(index)}>
-                <Radio checked={curIndex === index} />
+                style={[styles.cellWrap_header, type === 1 ? {marginTop: 12} : {}]}
+                onPress={() => onSelect(type)}>
+                <Radio checked={curType === type} />
                 <Text style={styles.cellWrap_title}>{title}</Text>
             </TouchableOpacity>
             {children}
@@ -50,20 +51,90 @@ const blockCal = () => {
     });
 };
 
-export default function SpecialModifyRecommend(props) {
-    const {selectedUri, onSure} = props.route.params || {};
-    const [refreshing, setRefreshing] = useState(false);
-    const [data, setData] = useState({
-        title: '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
-        desc: '股债平衡组合',
-        tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
-    });
+const example = {
+    title: '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
+    desc: '股债平衡组合',
+    tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
+};
+
+export default function SpecialModifyRecommend({route, navigation}) {
+    const jump = useJump();
+    const {subject_id} = route?.params ?? {};
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState();
     const [index, setIndex] = useState(0);
+    const items = useRef([]);
+
+    useEffect(() => {
+        setLoading(true);
+        getRecommendInfo({subject_id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    setIndex(res.result.selected);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+
+        getRecommendProductInfo({subject_id}).then((res) => {
+            if (res.code === '000000') {
+                const its = [];
+                res.result.products.map((it) => {
+                    let item = {};
+                    item.desc = it.desc.val;
+                    item.tags = (it.tags || []).map((t) => t.val);
+                    item.product = {
+                        product_id: it?.id,
+                        product_type: it?.type,
+                        name: it?.val,
+                    };
+                    its.push(item);
+                });
+                items.current = its;
+            }
+        });
+    }, []);
 
     const rightPress = () => {
-        handlePickAlumn();
+        if (index === 0) return;
+        if (index === 1) {
+            handlePickAlumn();
+        } else {
+            jump({
+                path: 'SpecialModifyProductInfo',
+                params: {
+                    subject_id,
+                    items,
+                },
+            });
+        }
     };
-    const handleBack = () => {};
+    const handleBack = () => {
+        navigation.goBack();
+        // Modal.show({
+        //     content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+        //     cancelText: '不保存草稿',
+        //     confirmText: '保存草稿',
+        //     confirm: true,
+        //     backCloseCallbackExecute: true,
+        //     cancelCallBack: () => {
+        //         navigation.goBack();
+        //     },
+        //     confirmCallBack: () => {
+        //         saveRecommendInfo({
+        //             subject_id: subject_id || 0,
+        //             name: title,
+        //             bg_img: bgSource,
+        //             desc: desc,
+        //             tags,
+        //         }).then((_) => {
+        //             navigation.goBack();
+        //         });
+        //     },
+        // });
+    };
 
     const openPicker = () => {
         setTimeout(() => {
@@ -77,13 +148,25 @@ export default function SpecialModifyRecommend(props) {
                 mediaType: 'photo',
             })
                 .then((image) => {
-                    console.log('image picker:', image);
-                    // uploadImage({
-                    //     fileName: image.filename,
-                    //     type: image.mime,
-                    //     uri: image.path,
-                    // });
-                    // setBgSource(image.path);
+                    uploadImage({
+                        fileName: image.filename,
+                        type: image.mime,
+                        uri: image.path,
+                    }).then((res) => {
+                        if (res.code === '000000') {
+                            jump({
+                                path: 'SpecialPreviewRecommend',
+                                params: {
+                                    type: 1,
+                                    uri: res.result.url,
+                                    subject_id,
+                                    onSave: () => {
+                                        navigation.goBack(-2);
+                                    },
+                                },
+                            });
+                        }
+                    });
                 })
                 .catch((err) => {
                     console.warn(err);
@@ -102,6 +185,22 @@ export default function SpecialModifyRecommend(props) {
         }
     };
 
+    const handleSelect = (type) => {
+        // TODO: tip
+        setIndex(type);
+    };
+
+    if (loading || !data) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'推广位样式设置'} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
@@ -113,19 +212,21 @@ export default function SpecialModifyRecommend(props) {
                 rightTextStyle={styles.right_sty}
             />
             <View style={styles.pageWrap}>
-                <RecommendCell title="选择推广该专题" index={0} curIndex={index} handleSelect={setIndex}>
-                    <RecommendItemWrap tabs={['推广位一', '推广位二']}>
-                        <RecommendImage />
-                        <RecommendImage />
-                    </RecommendItemWrap>
+                <RecommendCell
+                    title="选择推广该专题"
+                    curType={index}
+                    type={data.rec_subject.rec_type}
+                    onSelect={handleSelect}>
+                    <FastImage source={{uri: data.rec_subject.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
-                <RecommendCell title="选择推广专题中的产品">
-                    <RecommendItemWrap tabs={['推广位一', '推广位二']}>
-                        <RecommendProduct {...data} />
-                        <RecommendProduct {...data} />
-                    </RecommendItemWrap>
+                <RecommendCell
+                    title="选择推广专题中的产品"
+                    curType={index}
+                    type={data.rec_product.rec_type}
+                    onSelect={handleSelect}>
+                    <FastImage source={{uri: data.rec_product.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
-                <Text style={styles.tip}>*实际推广位内容将参考用户来源、用户特征等指标综合推荐</Text>
+                <Text style={styles.tip}>{data.tip}</Text>
             </View>
         </SafeAreaView>
     );
@@ -157,6 +258,10 @@ const styles = StyleSheet.create({
         marginLeft: px(8),
         fontSize: px(13),
         color: '#121D3A',
+    },
+    cardImg: {
+        width: '100%',
+        height: px(200),
     },
     tip: {
         marginTop: px(15),
