@@ -6,9 +6,9 @@
 import http from '~/services';
 
 export const getData = (data) => {
-    return http.get('/xxx', data);
+    return http.get('/subject/manage/card_style/options/20220901', data);
 };
 
 export const goSave = (data) => {
-    return http.post('/xxx', data);
+    return http.post('/subject/manage/card_style/modify/20220901', data);
 };

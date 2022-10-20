@@ -81,7 +81,6 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
 
     /** @name 默认卡片 */
     const renderDefaultItem = (item, index) => {
-        console.log(item);
         const {
             flex_between = false, // 是否两端对齐
             desc,

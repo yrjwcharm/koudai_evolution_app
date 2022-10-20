@@ -9,7 +9,6 @@ import FastImage from 'react-native-fast-image';
 import {AlbumCard} from '~/components/Product';
 import {px} from '~/utils/appUtil';
 import {getData, goSave} from './services';
-import RenderHtml from '~/components/RenderHtml';
 import {Modal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import Toast from '~/components/Toast';
@@ -108,7 +107,15 @@ const SetSpecialCardStyle = ({navigation, route}) => {
                     },
                 });
             } else {
-                jump(button.url);
+                goSave({
+                    subject_id: route.params?.subject_id,
+                    style_type: styleCheckRef.current,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        initStyleCheckRef.current = styleCheckRef.current;
+                        jump(button.url);
+                    }
+                });
             }
         },
         [route, jump]
@@ -116,9 +123,6 @@ const SetSpecialCardStyle = ({navigation, route}) => {
 
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <View style={{marginBottom: px(12)}}>
-                <RenderHtml html={data?.step_desc} />
-            </View>
             {data?.list?.map((item, idx) => (
                 <View style={styles.styleCard} key={idx}>
                     <TouchableOpacity
@@ -139,7 +143,7 @@ const SetSpecialCardStyle = ({navigation, route}) => {
                         <Text style={styles.desc}>{item.desc}</Text>
                     </TouchableOpacity>
                     <View style={styles.styleMain}>
-                        <AlbumCard {...item} />
+                        <AlbumCard {...item.style_data} />
                     </View>
                 </View>
             ))}
@@ -178,7 +182,7 @@ const styles = StyleSheet.create({
         marginTop: px(16),
         backgroundColor: '#fff',
         borderRadius: px(6),
-        padding: px(12),
+        paddingBottom: px(12),
     },
     topBtnText: {
         fontSize: px(14),
