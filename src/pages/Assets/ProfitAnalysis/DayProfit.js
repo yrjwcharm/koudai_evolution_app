@@ -40,7 +40,6 @@ const DayProfit = React.memo(() => {
     const init = useCallback(
         (selCurDate) => {
             (async () => {
-                setIsHasData(true);
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 let dayNums = dayjs_.daysInMonth();
                 let weekDay = dayjs_.startOf('month').day();
@@ -87,7 +86,6 @@ const DayProfit = React.memo(() => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res.result ?? {};
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     setMinDate(unit_list[unit_list.length - 1].value);
                     setMaxDate(unit_list[0].value);
                     for (let i = 0; i < arr.length; i++) {
@@ -116,17 +114,17 @@ const DayProfit = React.memo(() => {
                     });
                     let index;
                     if (selCurDate == dayjs().format('YYYY-MM-DD')) {
-                        index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
+                        index = arr.findIndex((el) => el.day == profit_data_list[0]?.unit_key);
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0]?.unit_key});
                     } else {
                         index = arr.findIndex((el) => el.day == selCurDate);
                         dispatch({type: 'updateUnitKey', payload: selCurDate});
                     }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[index] && (arr[index].checked = true);
                     setDateArr([...arr]);
                     setDate(dayjs_);
-                    setIsHasData(true);
                 }
             })();
         },

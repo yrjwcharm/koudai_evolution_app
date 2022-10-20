@@ -24,11 +24,10 @@ const YearProfit = () => {
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
-    const [isHasData, setIsHasData] = useState(false);
+    const [isHasData, setIsHasData] = useState(true);
     const init = useCallback(
         (curYear) => {
             (async () => {
-                setIsHasData(true);
                 let startYear = dayjs().year() - 5;
                 let endYear = dayjs().year();
                 let arr = [];
@@ -41,7 +40,6 @@ const YearProfit = () => {
                 const res = await getChartData({type, unit_type: unitType});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res.result ?? {};
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             if (arr[i].day == profit_data_list[j].unit_key) {
@@ -64,15 +62,15 @@ const YearProfit = () => {
                     let index;
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (curYear == dayjs().year()) {
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0].unit_key});
-                        index = arr.findIndex((el) => el.day == profit_data_list[0].unit_key);
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0]?.unit_key});
+                        index = arr.findIndex((el) => el.day == profit_data_list[0]?.unit_key);
                     } else {
                         index = arr.findIndex((el) => el.day == curYear);
                         dispatch({type: 'updateUnitKey', payload: curYear});
                     }
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[index] && (arr[index].checked = true);
                     setDateArr([...arr]);
-                    setIsHasData(true);
                 }
             })();
         },
