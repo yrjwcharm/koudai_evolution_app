@@ -16,6 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
+import {FixedButton} from '../../../components/Button';
 const DayProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
@@ -40,6 +41,7 @@ const DayProfit = React.memo(() => {
     const init = useCallback(
         (selCurDate) => {
             (async () => {
+                setIsHasData(true);
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 let dayNums = dayjs_.daysInMonth();
                 let weekDay = dayjs_.startOf('month').day();
