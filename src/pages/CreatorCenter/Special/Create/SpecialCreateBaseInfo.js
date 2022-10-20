@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 12:45:13
+ * @LastEditTime: 2022-10-20 15:47:40
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -268,20 +268,6 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
             console.warn(err);
         }
     };
-    // useEffect(() => {
-    //     jump({
-    //         path: 'SpecialDetail',
-    //         type: 4,
-    //         params: {
-    //             link: 'http://localhost:3001/specialDetailDraft',
-    //             secne: 'create',
-    //             params: {
-    //                 subject_id: '1021',
-    //                 secne: 'creating',
-    //             },
-    //         },
-    //     });
-    // }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -291,7 +277,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                     setData(res.result);
                     setTitle(res.result.name || '');
                     setDesc(res.result.desc || '');
-                    setTags(res.result.tags || []);
+                    setTags(res.result.tags.filter((t) => t.length > 0) || []);
                     setBgSource(res.result.bg_img || null);
                 }
             })
@@ -320,7 +306,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         // 背景图片是否已选择
         uploadImgSection = (
             <TouchableOpacity style={[styles.uload_btn, Style.flexCenter]} activeOpacity={0.9} onPress={showSelectImg}>
-                <ImageBackground source={{uri: bgSource}} style={[styles.bg_image]}>
+                <ImageBackground resizeMode="cover" source={{uri: bgSource}} style={[styles.bg_image]}>
                     <FastImage
                         source={require('~/components/IM/app/source/image/camera.png')}
                         style={[styles.upload_centerCamera]}
@@ -453,6 +439,7 @@ const styles = StyleSheet.create({
 
     bg_image: {
         width: '100%',
+        height: '100%',
         minHeight: 100,
         display: 'flex',
         justifyContent: 'center',

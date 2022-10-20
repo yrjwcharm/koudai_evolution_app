@@ -39,7 +39,6 @@ export default function SpecialModifyBgImage(props) {
         setLoading(true);
         getTemplateBgImg()
             .then((res) => {
-                console.log('loadTemplate', res);
                 if (res.code === '000000') {
                     let i = res.result.items.findIndex((item) => item.url === selectedUri);
                     if (selectedUri && i > -1) {
@@ -61,7 +60,6 @@ export default function SpecialModifyBgImage(props) {
     }, [loadTemplate]);
 
     const rightPress = () => {
-        //TODO: save image to server
         onSure(data.items[index].url);
         props.navigation.goBack();
     };
@@ -70,7 +68,7 @@ export default function SpecialModifyBgImage(props) {
         return <BgSelectItem {...item} index={i} curIndex={index} handleSelect={(idx) => setIndex(idx)} />;
     };
 
-    if (setLoading) {
+    if (loading) {
         return (
             <SafeAreaView edges={['bottom']}>
                 <NavBar title={data?.title || '更换专题图片'} leftIcon="chevron-left" />
