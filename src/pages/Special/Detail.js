@@ -81,19 +81,10 @@ const SpecialDetail = ({navigation, route}) => {
 
     //发布评论
     const publish = () => {
-        let doRequest;
-        if (route.params.scence !== 'create') {
-            doRequest = publishNewComment({
-                ...data?.comment_params,
-                content,
-            });
-        } else {
-            doRequest = addInitComment({
-                subject_id: route.params.subject_id,
-                content,
-            });
-        }
-        doRequest.then((res) => {
+        publishNewComment({
+            ...data?.comment_params,
+            content,
+        }).then((res) => {
             if (res.code == '000000') {
                 inputModal.current.cancel();
                 setContent('');
