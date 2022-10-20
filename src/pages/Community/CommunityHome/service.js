@@ -19,3 +19,6 @@ export const getCommunityProductList = (params) => {
 export const removeProduct = (params) => {
     return http.post('/community/remove_relation/data/20220928', params);
 };
+export const addProduct = (params) => {
+    return http.post('/community/relation/data/20220928', params);
+};

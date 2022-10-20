@@ -11,7 +11,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
-import {getCommunityHomeData, getCommunityProductList, removeProduct} from './service';
+import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
@@ -21,6 +21,7 @@ import ProductCards from '../../../components/Portfolios/ProductCards';
 import {ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
 import {Button} from '../../../components/Button';
+import {ChooseModal} from '../CommunityVodCreate';
 const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
@@ -30,10 +31,12 @@ const CommunityHome = ({navigation, route}) => {
     const {community_id = 1} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
-    const [currentTab, setCurrentTab] = useState(0);
+    const currentTab = useRef();
     const shareModal = useRef();
+    const chooseModal = useRef();
     const getData = async () => {
         let res = await getCommunityHomeData({community_id});
+        currentTab.current = res.result?.tabs[0]?.type;
         getProductList({community_id, type: res.result?.tabs[0]?.type || ''});
         setData(res.result);
     };
@@ -65,6 +68,13 @@ const CommunityHome = ({navigation, route}) => {
                 tmp.splice(index, 1);
                 return tmp;
             });
+        }
+    };
+    //添加
+    const handleAddProduct = async (_data) => {
+        let res = await addProduct({community_id, item_id: _data.item_id, type: _data.relation_type});
+        if (res.code == '000000') {
+            getProductList({community_id, type: currentTab.current});
         }
     };
     const Header = () => {
@@ -132,7 +142,10 @@ const CommunityHome = ({navigation, route}) => {
                         <Intro data={data?.intro_info} />
                         <ScrollableTabView
                             renderTabBar={() => <ScrollTabbar container="View" />}
-                            onChangeTab={({i}) => getProductList({community_id, type: data?.tabs[i].type})}>
+                            onChangeTab={({i}) => {
+                                currentTab.current = data?.tabs[i].type;
+                                getProductList({community_id, type: data?.tabs[i].type});
+                            }}>
                             {data?.tabs?.map((tab, index) =>
                                 tab.type == 1 ? (
                                     <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
@@ -146,6 +159,7 @@ const CommunityHome = ({navigation, route}) => {
                                                 text="暂无相关作品"
                                                 imageStyle={{marginBottom: px(-30)}}>
                                                 <Button
+                                                    onPress={() => chooseModal?.current?.show('article', product)}
                                                     title="添加作品"
                                                     style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
                                                 />
@@ -164,6 +178,7 @@ const CommunityHome = ({navigation, route}) => {
                                                 text="暂无相关产品"
                                                 imageStyle={{marginBottom: px(-30)}}>
                                                 <Button
+                                                    onPress={() => chooseModal?.current?.show('fund', product)}
                                                     title="添加产品"
                                                     style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
                                                 />
@@ -176,6 +191,8 @@ const CommunityHome = ({navigation, route}) => {
                     </LinearGradient>
                 ) : null}
             </Animated.ScrollView>
+
+            <ChooseModal ref={chooseModal} onDone={handleAddProduct} maxCount={1} />
             {data?.share_info ? (
                 <ShareModal
                     ref={shareModal}
