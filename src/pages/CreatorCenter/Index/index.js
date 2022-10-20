@@ -262,9 +262,12 @@ const CreatorCenterIndex = () => {
                                                             // });
                                                             jump(itm?.url);
                                                             // jump({
-                                                            //     path: 'EditSpecialCardInfo',
+                                                            //     path: 'SpecialCardStylePreview',
                                                             //     params: {
                                                             //         subject_id: 134,
+                                                            //         img:
+                                                            //             'https://lcmf.oss-cn-hangzhou.aliyuncs.com/upload/identity/1000000002/2022102016002449805_png_?OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1977292824&Signature=yJ3jQzDLx8OKSE7eDkCNLvYlwJU%3D',
+                                                            //         desc: '123123123',
                                                             //     },
                                                             // });
                                                         }}>

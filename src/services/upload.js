@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-30 20:09:37
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-20 16:13:53
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
