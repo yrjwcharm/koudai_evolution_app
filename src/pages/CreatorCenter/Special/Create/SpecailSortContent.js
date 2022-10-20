@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 09:30:54
+ * @LastEditTime: 2022-10-20 21:09:43
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 修改内容排序
  */
@@ -22,28 +22,7 @@ export default function SpecailSortContent({navigation, route}) {
     const {items = [], changeCallBack} = route.params || {};
     const [data, setData] = useState(items);
     console.log('setData:', setData);
-    // const [data, setData] = useState([
-    // {
-    //     col_num: '101',
-    //     fav_num: '231',
-    //     id: 0,
-    //     isAdded: true,
-    //     title: '低位抢筹，逆势蓄力，魔方低估值蓄势',
-    //     tran_num: '23',
-    //     uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-1.png',
-    // },
-    // {
-    //     col_num: '101',
-    //     fav_num: '231',
-    //     id: 1,
-    //     isAdded: true,
-    //     title: '低位抢筹，逆势蓄力，魔方低估值蓄势 估值低位抢筹，逆势蓄力，魔方低估值蓄势估值',
-    //     tran_num: '23',
-    //     uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-2.png',
-    // },
-    // ]);
 
-    console.log('data:', data);
     const [check, setCheck] = useState(0); // 0没有选中 1部分选中 2全选
 
     const handleBack = () => {
