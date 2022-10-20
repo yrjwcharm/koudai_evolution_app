@@ -260,13 +260,13 @@ const CreatorCenterIndex = () => {
                                                             //         },
                                                             //     },
                                                             // });
-                                                            // jump(itm?.url);
-                                                            jump({
-                                                                path: 'SetSpecialCardStyle',
-                                                                params: {
-                                                                    subject_id: 134,
-                                                                },
-                                                            });
+                                                            jump(itm?.url);
+                                                            // jump({
+                                                            //     path: 'EditSpecialCardInfo',
+                                                            //     params: {
+                                                            //         subject_id: 134,
+                                                            //     },
+                                                            // });
                                                         }}>
                                                         <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
                                                         <Icon
