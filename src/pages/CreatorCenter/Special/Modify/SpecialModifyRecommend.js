@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 14:57:48
+ * @LastEditTime: 2022-10-20 15:17:59
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -83,12 +83,12 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 const its = [];
                 res.result.products.map((it) => {
                     let item = {};
-                    item.desc = it.desc.value;
-                    item.tags = it.tags.value;
+                    item.desc = it.desc.val;
+                    item.tags = it.tags.val;
                     item.product = {
                         product_id: it?.id,
                         product_type: it?.type,
-                        name: it?.name,
+                        name: it?.val,
                     };
                     its.push(item);
                 });
