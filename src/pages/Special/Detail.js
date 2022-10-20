@@ -15,7 +15,7 @@ import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
-import {publishNewComment} from '../Common/CommentList/services';
+import {publishNewComment, addInitComment} from '../Common/CommentList/services';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();

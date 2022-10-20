@@ -207,7 +207,9 @@ const FixedInvestManage = ({navigation, route}) => {
                         renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
                     />
                     {terminatedCount !== 0 && (
-                        <TouchableOpacity onPress={() => navigation.navigate('TerminatedInvest')}>
+                        <TouchableOpacity
+                            style={{marginTop: px(20)}}
+                            onPress={() => navigation.navigate('TerminatedInvest')}>
                             <View style={{alignItems: 'center'}}>
                                 <View style={Style.flexRow}>
                                     <Text style={styles.termintal}>查看已终止的定投({terminatedCount})</Text>

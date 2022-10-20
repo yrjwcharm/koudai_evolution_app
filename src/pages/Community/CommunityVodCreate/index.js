@@ -29,7 +29,7 @@ import {getSearchList, publishVideo} from './services';
  * @param onDone 完成回调，回传选择的项
  * @param type 类型 article 作品 fund 基金和组合 tag 标签
  * */
-export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref) => {
+export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
     const bottomModal = useRef();
     const [value, setVal] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
@@ -37,6 +37,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const timer = useRef();
+    const type = useRef('article');
     const titleObj = useRef({
         article: {placeholder: '搜索作品名称', title: '添加作品'},
         fund: {placeholder: '搜索基金/组合', title: '添加产品'},
@@ -68,7 +69,14 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
                 <Button
                     disabled={selected || selectedItems?.length === maxCount}
                     disabledColor="#E9EAEF"
-                    onPress={() => setSelectedItems((prev) => [...prev, item])}
+                    onPress={() => {
+                        if (maxCount == 1) {
+                            onDone?.(item);
+                            bottomModal.current.close();
+                        } else {
+                            setSelectedItems((prev) => [...prev, item]);
+                        }
+                    }}
                     style={styles.addBtn}
                     textStyle={{
                         ...styles.desc,
@@ -80,17 +88,16 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
             </View>
         );
     };
-
     useEffect(() => {
         if (value?.length > 0) {
             timer.current && clearTimeout(timer.current);
             timer.current = setTimeout(() => {
-                getSearchList({keyword: value, page, type}).then((res) => {
+                getSearchList({keyword: value, page, type: type.current}).then((res) => {
                     if (res.code === '000000') {
-                        const {has_more, list: _list} = res.result;
+                        const {has_more, items} = res.result;
                         setList((prev) => {
-                            if (page === 1) return _list;
-                            else return prev.concat(_list);
+                            if (page === 1) return items;
+                            else return prev.concat(items);
                         });
                         setHasMore(has_more);
                     }
@@ -100,14 +107,17 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
     }, [page, value]);
 
     useImperativeHandle(ref, () => ({
-        show: (items) => {
+        show: (_type, items) => {
+            if (_type) {
+                type.current = _type;
+            }
+
             setVal('');
             setList([]);
             setSelectedItems(items || []);
             bottomModal.current.open();
         },
     }));
-
     return (
         <Modalize
             flatListProps={{
@@ -131,7 +141,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
                             <TouchableOpacity activeOpacity={0.8} onPress={() => bottomModal.current.close()}>
                                 <AntDesign color={Colors.descColor} name="close" size={px(18)} />
                             </TouchableOpacity>
-                            <Text style={styles.bigTitle}>{titleObj.current[type].title}</Text>
+                            <Text style={styles.bigTitle}>{titleObj.current[type?.current]?.title}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={selectedItems?.length === 0}
@@ -164,7 +174,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type}, ref)
                                         setVal(text);
                                         setPage(1);
                                     }}
-                                    placeholder={titleObj.current[type].placeholder}
+                                    placeholder={titleObj.current[type?.current]?.placeholder}
                                     placeholderTextColor={Colors.lightGrayColor}
                                     style={styles.searchInput}
                                     value={value}
@@ -235,7 +245,7 @@ export const ChooseTag = ({setTags, tags}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        chooseModal.current.show(tags);
+                        chooseModal.current.show('tag', tags);
                     }}
                     style={[styles.tagBox, {backgroundColor: Colors.bgColor}]}>
                     <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '标签(至少添加一个)'}</Text>
@@ -262,7 +272,7 @@ export const ChooseTag = ({setTags, tags}) => {
                     );
                 })}
             </View>
-            <ChooseModal maxCount={4} onDone={setTags} ref={chooseModal} type="tag" />
+            <ChooseModal maxCount={4} onDone={setTags} ref={chooseModal} />
         </>
     );
 };

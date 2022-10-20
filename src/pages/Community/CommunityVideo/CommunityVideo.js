@@ -118,6 +118,8 @@ const CommunityVideo = ({navigation, route}) => {
                     currentIndex={currentItem}
                     animated={animated}
                     handleComment={handleComment}
+                    community_id={community_id}
+                    muid={muid}
                 />
             </View>
         );
@@ -181,40 +183,40 @@ const CommunityVideo = ({navigation, route}) => {
                                 <View style={styles.footer_content}>
                                     <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
                                 </View>
-                            </TouchableOpacity>
-                            <BottomModal
-                                ref={inputModal}
-                                title="写评论"
-                                style={{height: px(360)}}
-                                modalHeight={px(360)}
-                                withHandle={false}
-                                keyboardAvoidingBehavior={'padding'}>
-                                <TextInput
-                                    ref={inputRef}
-                                    value={content}
-                                    multiline={true}
-                                    style={styles.input}
-                                    onChangeText={(value) => {
-                                        setContent(value);
-                                    }}
-                                    maxLength={inputMaxLength}
-                                    textAlignVertical="top"
-                                    placeholder="我来聊两句..."
-                                />
-                                <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                                            {content.length}/{inputMaxLength}
-                                        </Text>
-                                        <Button
-                                            title="发布"
-                                            disabled={content.length <= 0}
-                                            style={styles.button}
-                                            onPress={publish}
-                                        />
+                                <BottomModal
+                                    ref={inputModal}
+                                    title="写评论"
+                                    style={{height: px(360)}}
+                                    modalHeight={px(360)}
+                                    withHandle={false}
+                                    keyboardAvoidingBehavior={'padding'}>
+                                    <TextInput
+                                        ref={inputRef}
+                                        value={content}
+                                        multiline={true}
+                                        style={styles.input}
+                                        onChangeText={(value) => {
+                                            setContent(value);
+                                        }}
+                                        maxLength={inputMaxLength}
+                                        textAlignVertical="top"
+                                        placeholder="我来聊两句..."
+                                    />
+                                    <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                                                {content.length}/{inputMaxLength}
+                                            </Text>
+                                            <Button
+                                                title="发布"
+                                                disabled={content.length <= 0}
+                                                style={styles.button}
+                                                onPress={publish}
+                                            />
+                                        </View>
                                     </View>
-                                </View>
-                            </BottomModal>
+                                </BottomModal>
+                            </TouchableOpacity>
                         </>
                     );
                 }}

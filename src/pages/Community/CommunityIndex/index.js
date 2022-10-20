@@ -347,7 +347,7 @@ export const WaterfallFlowList = forwardRef(
                             if (page === 1) {
                                 return res.result.items;
                             } else {
-                                return prev.concat(res.result.items);
+                                return prev.concat(res.result.items || []);
                             }
                         });
                         setHasMore(res.result.has_more);

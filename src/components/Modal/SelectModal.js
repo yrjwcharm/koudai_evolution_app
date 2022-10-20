@@ -16,12 +16,12 @@ export default class SelectModal extends Component {
         super(props);
         this.state = {
             isVisible: this.props.show || false,
+            entityList: props.entityList,
         };
-        this.entityList = this.props.entityList;
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState({isVisible: nextProps.show});
+        this.setState({isVisible: nextProps.show, entityList: nextProps.entityList});
     }
 
     closeModal() {
@@ -58,7 +58,7 @@ export default class SelectModal extends Component {
         return (
             <View style={[styles.modalStyle, {...this.props.style}]}>
                 <View style={styles.optArea}>
-                    {this.entityList.map((item, i) => this.renderItem(item, i))}
+                    {this.state.entityList.map((item, i) => this.renderItem(item, i))}
                     <View style={{height: px(6), backgroundColor: '#f7f7f7'}} />
                     <TouchableOpacity onPress={this.closeModal.bind(this)} style={[styles.item]}>
                         <Text style={styles.itemText}>取消</Text>

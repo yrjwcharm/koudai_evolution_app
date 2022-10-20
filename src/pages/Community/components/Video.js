@@ -3,39 +3,31 @@
  * @Date: 2022-09-28 14:44:03
  * @Description:
  */
-import {
-    StyleSheet,
-    TouchableWithoutFeedback,
-    TouchableOpacity,
-    View,
-    Text,
-    Image,
-    Dimensions,
-    Animated,
-} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions, Animated} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import Slider from 'react-native-slider';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import _ from 'lodash';
 
-import {useNavigation} from '@react-navigation/native';
 import VideoFooter from './VideoFooter';
+import http from '../../../services';
 const HEIGHT = Dimensions.get('screen').height;
-const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment}) => {
+const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid}) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
     const [sliderValue, setSlierValue] = useState(0); //进度条的进度
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
+    const [followBtnText, setFollowBtnText] = useState('');
     const video = useRef();
 
     useEffect(() => {
         setShowPause(false);
         setPaused(index != currentIndex);
         customerSliderValue(0);
+        setFollowBtnText(data?.follow_status == 1 ? '已关注' : '+关注');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, currentIndex]);
 
@@ -70,7 +62,15 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment}
         }, 100),
         []
     );
-
+    //关注
+    const handleFollow = () => {
+        if (data?.follow_status == 1) return;
+        http.post('/follow/add/202206', {item_id: 10, item_type: community_id || muid}).then((res) => {
+            if (res.code == '000000') {
+                setFollowBtnText('已关注');
+            }
+        });
+    };
     return (
         <>
             <TouchableWithoutFeedback onPress={onPlayPausePress}>
@@ -129,9 +129,9 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment}
                         />
                     )}
                     <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={handleFollow}>
                         <View style={styles.button}>
-                            <Text style={{fontSize: px(12), color: '#fff'}}>+关注</Text>
+                            <Text style={{fontSize: px(12), color: '#fff'}}>{followBtnText}</Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
