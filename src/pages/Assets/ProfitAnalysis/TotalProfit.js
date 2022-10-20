@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         paddingBottom: px(22),
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
+        marginBottom: isIphoneX() ? px(58) : px(24),
     },
     topLine: {
         borderTopWidth: Space.borderWidth,
