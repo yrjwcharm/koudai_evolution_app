@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, Platform, TextInput} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {isIphoneX, px} from '~/utils/appUtil';
@@ -12,6 +12,7 @@ import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {editComment} from './services';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SpecialDetailDraft = ({navigation, route}) => {
     const jump = useJump();
@@ -34,6 +35,12 @@ const SpecialDetailDraft = ({navigation, route}) => {
         };
         getToken();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+        }, [])
+    );
 
     //发布评论
     const publish = () => {
