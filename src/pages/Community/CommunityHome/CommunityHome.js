@@ -11,7 +11,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
-import {getCommunityHomeData, getCommunityProductList} from './service';
+import {getCommunityHomeData, getCommunityProductList, removeProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
@@ -19,6 +19,8 @@ import {CommunityFollowCard} from '../components/CommunityCard';
 import ProductList from '../../../components/Product/ProductList';
 import ProductCards from '../../../components/Portfolios/ProductCards';
 import {ShareModal} from '../../../components/Modal';
+import EmptyTip from '../../../components/EmptyTip';
+import {Button} from '../../../components/Button';
 const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
@@ -49,6 +51,20 @@ const CommunityHome = ({navigation, route}) => {
             setParallTitle(true);
         } else {
             setParallTitle(false);
+        }
+    };
+    //移除产品
+    const onDelete = async (type, item_id) => {
+        let res = await removeProduct({type, community_id, item_id});
+        if (res.code == '000000') {
+            setProduct((prev) => {
+                let tmp = [...prev];
+                let index = product.findIndex((item) => {
+                    return item.id == item_id || item.code == item_id;
+                });
+                tmp.splice(index, 1);
+                return tmp;
+            });
         }
     };
     const Header = () => {
@@ -100,6 +116,8 @@ const CommunityHome = ({navigation, route}) => {
                 )}>
                 <CommunityHomeHeader
                     data={data?.community_info}
+                    item_type={11}
+                    item_id={community_id}
                     style={{
                         width: deviceWidth,
                         paddingTop: headerHeight + px(20),
@@ -118,15 +136,39 @@ const CommunityHome = ({navigation, route}) => {
                             {data?.tabs?.map((tab, index) =>
                                 tab.type == 1 ? (
                                     <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
-                                        {product?.map((_data) => (
-                                            <CommunityFollowCard key={_data.id} {..._data} />
-                                        ))}
+                                        {product?.length ? (
+                                            product?.map((_data) => (
+                                                <CommunityFollowCard key={_data.id} {..._data} onDelete={onDelete} />
+                                            ))
+                                        ) : (
+                                            <EmptyTip
+                                                desc="请点击按钮进行添加"
+                                                text="暂无相关作品"
+                                                imageStyle={{marginBottom: px(-30)}}>
+                                                <Button
+                                                    title="添加作品"
+                                                    style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
+                                                />
+                                            </EmptyTip>
+                                        )}
                                     </View>
                                 ) : (
                                     <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
-                                        {product?.map((_data) => (
-                                            <ProductCards key={_data.id} data={_data} />
-                                        ))}
+                                        {product?.length ? (
+                                            product?.map((_data) => (
+                                                <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
+                                            ))
+                                        ) : (
+                                            <EmptyTip
+                                                desc="请点击按钮进行添加"
+                                                text="暂无相关产品"
+                                                imageStyle={{marginBottom: px(-30)}}>
+                                                <Button
+                                                    title="添加产品"
+                                                    style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
+                                                />
+                                            </EmptyTip>
+                                        )}
                                     </View>
                                 )
                             )}
@@ -134,7 +176,14 @@ const CommunityHome = ({navigation, route}) => {
                     </LinearGradient>
                 ) : null}
             </Animated.ScrollView>
-            <ShareModal ref={shareModal} shareContent={data?.share_info} title={data?.title} />
+            {data?.share_info ? (
+                <ShareModal
+                    ref={shareModal}
+                    shareContent={data?.share_info}
+                    otherList={data?.share_button}
+                    title={'更多'}
+                />
+            ) : null}
             <PublishContent community_id={community_id} />
         </>
     );

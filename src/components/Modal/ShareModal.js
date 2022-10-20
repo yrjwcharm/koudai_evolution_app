@@ -29,6 +29,7 @@ const ShareModal = React.forwardRef((props, ref) => {
         likeCallback = () => {},
         collectCallback = () => {},
         needLogin = false,
+        otherList = [],
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -68,6 +69,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             title: '更多',
             type: 'MoreOptions',
         },
+        ...otherList,
     ]);
     const show = () => {
         setVisible(true);
@@ -179,6 +181,9 @@ const ShareModal = React.forwardRef((props, ref) => {
                     }
                 );
             }
+        } else if (item?.url) {
+            hide();
+            navigation.navigate(item?.url?.path, item?.url?.params);
         }
     };
 
@@ -227,7 +232,6 @@ const ShareModal = React.forwardRef((props, ref) => {
                                     ? require('../../assets/img/share/collectActive.png')
                                     : require('../../assets/img/share/collect.png');
                             }
-
                             if (!more) {
                                 if (item.type === 'Like' || item.type === 'Collect') {
                                     return null;
@@ -242,7 +246,10 @@ const ShareModal = React.forwardRef((props, ref) => {
                                     activeOpacity={0.8}
                                     onPress={() => share(item)}
                                     style={[Style.flexCenter, styles.option]}>
-                                    <Image source={item.img} style={styles.icon} />
+                                    <Image
+                                        source={item.img.toString()?.indexOf('https') > -1 ? {uri: item.img} : item.img}
+                                        style={styles.icon}
+                                    />
                                     <Text style={styles.opTitle}>{item.title}</Text>
                                 </TouchableOpacity>
                             );
