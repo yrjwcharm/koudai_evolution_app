@@ -45,50 +45,55 @@ const FixedInvestDetail = ({navigation, route}) => {
         setType(t);
         passwordModal?.current?.show();
     };
+    const init = () => {
+        dispatch(callFixedInvestDetailApi({plan_id}));
+        if (res.code === '000000') {
+            const {
+                title = '',
+                header = {},
+                pay_info = {},
+                records = {},
+                manage_list: {btn_list = [], text},
+            } = res.result || {};
+            navigation.setOptions({
+                title,
+                headerRight: () => (
+                    <>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.topRightBtn, Style.flexCenter]}
+                            onPress={() => {
+                                setVisible(true);
+                            }}>
+                            <Text style={styles.title}>{text}</Text>
+                        </TouchableOpacity>
+                    </>
+                ),
+            });
+            let selectArr = btn_list.map((el) => el.text);
+            selectData.current = selectArr.slice(0, -1);
+            setState({
+                header,
+                pay_info,
+                records,
+                btn_list,
+                loading: false,
+            });
+        }
+    };
     useEffect(() => {
         (async () => {
-            dispatch(callFixedInvestDetailApi({plan_id}));
-            if (res.code === '000000') {
-                const {
-                    title = '',
-                    header = {},
-                    pay_info = {},
-                    records = {},
-                    manage_list: {btn_list = [], text},
-                } = res.result || {};
-                navigation.setOptions({
-                    title,
-                    headerRight: () => (
-                        <>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.topRightBtn, Style.flexCenter]}
-                                onPress={() => {
-                                    setVisible(true);
-                                }}>
-                                <Text style={styles.title}>{text}</Text>
-                            </TouchableOpacity>
-                        </>
-                    ),
-                });
-                setState({
-                    header,
-                    pay_info,
-                    records,
-                    btn_list,
-                    loading: false,
-                });
-            }
+            init();
         })();
     }, []);
     const submit = async (password) => {
         const loading = Toast.showLoading();
-        let range = ['recover', 'pause', 'terminate'];
-        if (range.includes('pause') || range.includes('recover')) {
+        let range = [20, 30];
+        if (range.includes(type)) {
             const res = await executeStopFixedInvestApi({
                 plan_id,
                 password,
-                type: type == 'pause' ? 20 : 30,
+                type,
             });
             if (res.code === '000001' || res.code === '000000') {
                 Toast.hide(loading);
@@ -102,11 +107,13 @@ const FixedInvestDetail = ({navigation, route}) => {
                 invest_id: plan_id,
                 password,
             }).then((res) => {
-                Toast.show(res.message);
                 if (res.code == '000000') {
+                    Toast.show(res.message);
                 }
+                Toast.hide(loading);
             });
         }
+        init();
     };
     return (
         <>
@@ -156,9 +163,9 @@ const FixedInvestDetail = ({navigation, route}) => {
                                         styles.status,
                                         {
                                             backgroundColor:
-                                                state.pay_info?.status == '定投中'
+                                                state.pay_info?.btn_type == 20
                                                     ? '#EDF7EC'
-                                                    : state.pay_info?.status == '已暂停'
+                                                    : state.pay_info?.btn_type == 30
                                                     ? '#FDEFE4'
                                                     : '#E9EAEF',
                                         },
@@ -168,9 +175,9 @@ const FixedInvestDetail = ({navigation, route}) => {
                                             styles.statusText,
                                             {
                                                 color:
-                                                    state.pay_info?.status == '定投中'
+                                                    state.pay_info?.btn_type == 20
                                                         ? Colors.green
-                                                        : state.pay_info?.status == '已暂停'
+                                                        : state.pay_info?.btn_type == 30
                                                         ? '#FF7D41'
                                                         : Colors.lightGrayColor,
                                             },
@@ -268,7 +275,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                             if (index === 0) {
                                 jump(state.btn_list[index]?.url);
                             } else if (index === 1) {
-                                handleClick(state.pay_info?.status == '已暂停' ? 'recover' : 'pause');
+                                handleClick(state.pay_info?.btn_type);
                             } else if (index === 2) {
                                 const {
                                     popup: {title, content, confirm, cancel, back_close, touch_close},
@@ -280,7 +287,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                     backButtonClose: touch_close,
                                     cancelText: cancel.text,
                                     confirmCallBack: () => {
-                                        handleClick('terminate');
+                                        handleClick();
                                     },
                                     confirmText: confirm.text,
                                     content,
