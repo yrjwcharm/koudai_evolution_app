@@ -1,25 +1,22 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, Platform, TouchableOpacity, TextInput, DeviceEventEmitter} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, Text, Platform, TextInput} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '~/utils/storage';
-import http from '~/services';
-import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '~/components/hooks';
-import Loading from '../Portfolio/components/PageLoading';
+import Loading from '../../Portfolio/components/PageLoading';
 import URI from 'urijs';
 import {Style} from '~/common/commonStyle';
-import FastImage from 'react-native-fast-image';
 import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
-import {followAdd, followCancel} from '../Attention/Index/service';
-import {publishNewComment} from '../Common/CommentList/services';
+import AuditModal from '~/components/AuditModal';
+import {editComment} from './services';
 
-const SpecialDetail = ({navigation, route}) => {
+const SpecialDetailDraft = ({navigation, route}) => {
     const jump = useJump();
-    const [data, setData] = useState();
+    const [title, setTitle] = useState();
     const [token, setToken] = useState('');
     const [content, setContent] = useState('');
     const [scrolling, setScrolling] = useState(false);
@@ -27,9 +24,9 @@ const SpecialDetail = ({navigation, route}) => {
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
+    const auditModal = useRef();
     const inputRef = useRef();
     const navBarRef = useRef();
-    const clickRef = useRef(true);
 
     useEffect(() => {
         const getToken = () => {
@@ -40,66 +37,29 @@ const SpecialDetail = ({navigation, route}) => {
         getToken();
     }, []);
 
-    const init = () => {
-        http.get('/products/subject/detail_btn/20220901', route?.params?.params).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-            }
-        });
-    };
-
-    useFocusEffect(
-        useCallback(() => {
-            init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
-
-    const handlerIconBtnClick = (item) => {
-        global.LogTool({event: item.event_id});
-        switch (item.event_id) {
-            case 'optional':
-                if (!clickRef.current) return;
-                clickRef.current = false;
-                (item?.is_follow ? followCancel : followAdd)({item_id: item.subject_id, item_type: 6}).then((res) => {
-                    if (res.code === '000000') {
-                        res.message && Toast.show(res.message);
-                        setTimeout(() => {
-                            clickRef.current = true;
-                        }, 100);
-                        init();
-                    }
-                });
-                break;
-            case 'share':
-                DeviceEventEmitter.emit('globalShareShow');
-                break;
-            default:
-                item?.url && jump(item?.url);
-        }
-    };
-
     //发布评论
     const publish = () => {
-        publishNewComment({
-            ...data?.comment_params,
+        const loading = Toast.showLoading();
+        editComment({
+            subject_id: route.params?.params?.subject_id,
             content,
-        }).then((res) => {
-            if (res.code == '000000') {
-                inputModal.current.cancel();
-                setContent('');
-                Modal.show({
-                    title: '提示',
-                    content: res.result.message,
-                });
-            } else {
-                Toast.show(res.message);
-            }
-        });
+        })
+            .then((res) => {
+                if (res.code == '000000') {
+                    inputModal.current.cancel();
+                    setContent('');
+                    Toast.show('发布成功');
+                    webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally((_) => {
+                Toast.hide(loading);
+            });
     };
 
     const writeComment = () => {
-        if (!data?.commentable) return;
         inputModal.current.show();
         setTimeout(() => {
             inputRef?.current?.focus();
@@ -118,57 +78,8 @@ const SpecialDetail = ({navigation, route}) => {
                             marginLeft: px(13),
                             color: scrolling ? '#121D3A' : '#fff',
                         }}>
-                        {data?.title}
+                        {title}
                     </Text>
-                }
-                renderRight={
-                    <View
-                        style={[
-                            styles.rightIconWrap,
-                            {
-                                backgroundColor: scrolling ? '#fff' : 'rgba(0,0,0,0.2)',
-                                borderColor: scrolling ? '#E9EAEF' : 'rgba(255,255,255,0.4)',
-                            },
-                        ]}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                DeviceEventEmitter.emit('globalShareShow');
-                            }}
-                            style={styles.rightIconItemWrap}>
-                            <FastImage
-                                style={styles.rightIcon}
-                                source={{
-                                    uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/more-' +
-                                        (scrolling ? 'black' : 'white') +
-                                        '.png',
-                                }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                navigation.goBack();
-                            }}
-                            style={[
-                                styles.rightIconItemWrap,
-                                {
-                                    borderLeftWidth: 0.5,
-                                    borderLeftColor: scrolling ? '#E9EAEF' : 'rgba(255,255,255,0.5)',
-                                },
-                            ]}>
-                            <FastImage
-                                style={styles.rightIcon}
-                                source={{
-                                    uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/close-' +
-                                        (scrolling ? 'black' : 'white') +
-                                        '.png',
-                                }}
-                            />
-                        </TouchableOpacity>
-                    </View>
                 }
                 style={{
                     backgroundColor: scrolling ? '#fff' : 'transparent',
@@ -185,14 +96,19 @@ const SpecialDetail = ({navigation, route}) => {
                         if (data?.indexOf('url=') > -1) {
                             const url = JSON.parse(data.split('url=')[1]);
                             jump(url);
+                        } else if (data?.indexOf('title=') > -1) {
+                            const _title = JSON.parse(data.split('title=')[1]);
+                            setTitle(_title);
                         } else if (data?.indexOf('scrolling=') > -1) {
                             const _scrolling = JSON.parse(data.split('scrolling=')[1]);
                             setScrolling(_scrolling == 1);
                         } else if (data?.indexOf('logParams=') > -1) {
-                            const logParams = JSON.parse(data?.split('logParams=')[1] || []);
-                            global.LogTool(logParams);
                         } else if (data?.indexOf('writeComment=') > -1) {
-                            writeComment();
+                            const _content = JSON.parse(data.split('writeComment=')[1]);
+                            setContent(_content + '');
+                            setTimeout(() => {
+                                writeComment();
+                            });
                         }
                     }}
                     originWhitelist={['*']}
@@ -239,43 +155,6 @@ const SpecialDetail = ({navigation, route}) => {
                 />
             ) : null}
 
-            {data ? (
-                <View style={[styles.footer, Style.flexRow]}>
-                    <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={writeComment}>
-                        <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={[
-                            {
-                                flex: 1,
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                            },
-                        ]}>
-                        {data?.icon_btns?.map?.((item, idx) => (
-                            <TouchableOpacity
-                                style={[{alignItems: 'center'}, idx === 0 ? {flex: 1} : {width: px(25)}]}
-                                activeOpacity={0.8}
-                                key={idx}
-                                onPress={() => handlerIconBtnClick(item)}>
-                                <FastImage
-                                    source={{uri: item.icon}}
-                                    style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: px(11),
-                                        lineHeight: px(15),
-                                        color: '#3d3d3d',
-                                        textAlign: 'center',
-                                    }}>
-                                    {item.text}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </View>
-            ) : null}
             <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                 <TextInput
                     ref={inputRef}
@@ -292,17 +171,18 @@ const SpecialDetail = ({navigation, route}) => {
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
                         <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {content.length}/{500}
+                            {content.length || 0}/{500}
                         </Text>
                         <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
                     </View>
                 </View>
             </PageModal>
+            <AuditModal ref={auditModal} />
         </View>
     );
 };
 
-export default SpecialDetail;
+export default SpecialDetailDraft;
 
 const styles = StyleSheet.create({
     container: {

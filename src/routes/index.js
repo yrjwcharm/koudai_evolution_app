@@ -309,6 +309,7 @@ import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的�
 
 // 审核中心
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
+import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // 专题草稿
 
 const Stack = createStackNavigator();
 
@@ -1215,6 +1216,7 @@ export default function AppStack() {
                 <Stack.Screen name="SortProduct" component={SortProduct} options={{title: '调整列表'}} />
                 <Stack.Screen name="CommunityMyFollow" component={CommunityMyFollow} options={{title: ''}} />
                 <Stack.Screen name="CreatorAuthHome" component={CreatorAuthHome} options={{headerShown: false}} />
+                <Stack.Screen name="SpecialDetailDraft" component={SpecialDetailDraft} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );
