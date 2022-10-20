@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 15:21:39
+ * @LastEditTime: 2022-10-20 17:58:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -9,19 +9,14 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, ImageBackground, PermissionsAndroid, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
 import NavBar from '~/components/NavBar';
 import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {Style, Colors, Space} from '~/common/commonStyle';
-import Input from '~/components/Input';
 import {useJump} from '~/components/hooks';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import Radio from '~/components/Radio.js';
-import {RecommendItemWrap, RecommendProduct, RecommendImage} from '../../components/SpecialRecommend.js';
-import {getRecommendInfo, getRecommendProductInfo, saveRecommendInfo, uploadImage} from './services';
 
+import {getRecommendInfo, getRecommendProductInfo} from './services';
+import pickerUploadImg from '~/utils/pickerUploadImg';
 import LoadingTips from '~/components/LoadingTips';
 
 function RecommendCell(props) {
@@ -38,18 +33,6 @@ function RecommendCell(props) {
         </View>
     );
 }
-
-const blockCal = () => {
-    Modal.show({
-        title: '权限申请',
-        content: '权限没打开,请前往手机的“设置”选项中,允许该权限',
-        confirm: true,
-        confirmText: '前往',
-        confirmCallBack: () => {
-            openSettings().catch(() => console.warn('cannot open settings'));
-        },
-    });
-};
 
 const example = {
     title: '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
@@ -136,53 +119,20 @@ export default function SpecialModifyRecommend({route, navigation}) {
         // });
     };
 
-    const openPicker = () => {
-        setTimeout(() => {
-            ImagePicker.openPicker({
-                width: px(1125),
-                height: px(600),
-                cropping: true,
-                cropperChooseText: '选择',
-                cropperCancelText: '取消',
-                loadingLabelText: '加载中',
-                mediaType: 'photo',
-            })
-                .then((image) => {
-                    uploadImage({
-                        fileName: image.filename,
-                        type: image.mime,
-                        uri: image.path,
-                    }).then((res) => {
-                        if (res.code === '000000') {
-                            jump({
-                                path: 'SpecialPreviewRecommend',
-                                params: {
-                                    type: 1,
-                                    uri: res.result.url,
-                                    subject_id,
-                                    onSave: () => {
-                                        navigation.goBack(-2);
-                                    },
-                                },
-                            });
-                        }
-                    });
-                })
-                .catch((err) => {
-                    console.warn(err);
-                });
-        }, 200);
-    };
     const handlePickAlumn = () => {
-        try {
-            if (Platform.OS == 'android') {
-                requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, openPicker, blockCal);
-            } else {
-                requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
-            }
-        } catch (err) {
-            console.warn(err);
-        }
+        pickerUploadImg((url) => {
+            jump({
+                path: 'SpecialPreviewRecommend',
+                params: {
+                    type: 1,
+                    uri: url,
+                    subject_id,
+                    onSave: () => {
+                        navigation.goBack(-2);
+                    },
+                },
+            });
+        });
     };
 
     const handleSelect = (type) => {
