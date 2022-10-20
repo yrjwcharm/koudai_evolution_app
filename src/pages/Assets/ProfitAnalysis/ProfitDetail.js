@@ -14,7 +14,7 @@ import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', page = 0, type: initType = 30} = route.params || {};
+    const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
