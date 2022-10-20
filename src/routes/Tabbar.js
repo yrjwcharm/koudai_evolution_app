@@ -16,6 +16,7 @@ import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
 import {useFocusEffect} from '@react-navigation/native';
+import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
@@ -181,6 +182,9 @@ export default function Tabbar() {
             {/* userInfo?.toJS()?.show_manage_center */}
             {userInfo?.toJS()?.show_manage_center ? (
                 <Tab.Screen name="CreatorCenter" options={{tabBarLabel: '管理中心'}} component={CreatorCenter} />
+            ) : null}
+            {userInfo?.toJS()?.show_audit_center ? (
+                <Tab.Screen name="CreatorAuthHome" options={{tabBarLabel: '审核中心'}} component={CreatorAuthHome} />
             ) : null}
             <Tab.Screen name="Community" component={Community} options={{tabBarLabel: '社区'}} />
             <Tab.Screen
