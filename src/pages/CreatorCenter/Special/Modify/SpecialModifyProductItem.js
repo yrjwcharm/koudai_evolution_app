@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 11:35:43
+ * @LastEditTime: 2022-10-20 14:54:32
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
@@ -13,6 +13,7 @@ import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getProductList} from './services';
 import LoadingTips from '~/components/LoadingTips';
+import {useFocusEffect} from '@react-navigation/native';
 
 function Item(props) {
     const {item, isSelected, onPress} = props;
@@ -40,18 +41,20 @@ export default function SpecialModifyProductItem({navigation, route}) {
     const [selectedId, setId] = useState(selected || 0);
     const [list, setList] = useState([]);
 
-    useEffect(() => {
-        setLoading(true);
-        getProductList({sid: subject_id})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setList(res.result.list);
-                }
-            })
-            .finally((_) => {
-                setLoading(false);
-            });
-    });
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            getProductList({sid: subject_id})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setList(res.result.list || []);
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        }, [subject_id])
+    );
 
     const handleBack = () => {
         navigation.goBack();
@@ -63,8 +66,6 @@ export default function SpecialModifyProductItem({navigation, route}) {
         }
         navigation.goBack();
     };
-
-    const onRefresh = () => {};
 
     const renderItem = ({item, index}) => {
         return <Item {...item} isSelected={item.product_id === selectedId} onPress={() => setId(item.product_id)} />;

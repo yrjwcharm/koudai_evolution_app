@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 12:18:20
+ * @LastEditTime: 2022-10-20 14:51:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -20,7 +20,7 @@ import {useJump} from '~/components/hooks';
 import RenderHtml from '~/components/RenderHtml';
 import RichTextInputModal from '../../components/RichTextInputModal.js';
 import KeyboardSpace from '~/components/IM/app/chat/components/pop-view/KeyboardSpace/KeyboardSpace.js';
-
+import {getRecommendProductInfo, saveRecommendInfo} from './services';
 /** 列表每行的key */
 const ListKeys = {
     Product: 'Product',
@@ -76,9 +76,9 @@ const getProductTemplate = (item) => [
         require: true,
         key: ListKeys.Product,
         value: {
-            product_id: item.product_id,
-            product_type: item.product_type,
-            name: item.name,
+            product_id: item?.product_id,
+            product_type: item?.product_type,
+            name: item?.name,
         },
         component: SelectInput,
     },
@@ -87,42 +87,38 @@ const getProductTemplate = (item) => [
         require: true,
         isHtml: true,
         key: ListKeys.Recommend,
-        value: item.desc,
+        value: item?.desc ?? '',
         component: SelectInput,
     },
     {
         title: '标签1',
         require: true,
         key: ListKeys.Tag1,
-        value: item.tags[0],
+        value: item?.tags[0] ?? '',
         component: TagInput,
     },
     {
         title: '标签2',
         require: true,
         key: ListKeys.Tag2,
-        value: item.tags[1],
+        value: item?.tags[1] ?? '',
         component: TagInput,
     },
     {
         title: '标签3',
         require: true,
         key: ListKeys.Tag3,
-        value: item.tags[2],
+        value: item?.tags[2] ?? '',
         component: TagInput,
     },
 ];
 
 export default function SpecialModifyProductInfo({navigation, route}) {
     const {items, subject_id} = route.params;
-    const [data, setData] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
     const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
-    const [submitable, setSubmitable] = useState(false);
     const jump = useJump();
-    const [uid, setUid] = useState('0'); // 当前专题的uid
     const [list, setList] = useState([
         {
             title: '推广产品1(必填)',
@@ -140,8 +136,41 @@ export default function SpecialModifyProductInfo({navigation, route}) {
     ]);
 
     const handleBack = () => {
-        navigation.goBack();
+        Modal.show({
+            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+            cancelText: '不保存草稿',
+            confirmText: '保存草稿',
+            confirm: true,
+            backCloseCallbackExecute: true,
+            cancelCallBack: () => {
+                navigation.goBack();
+            },
+            confirmCallBack: () => {
+                handleSaveBaseInfo().then(() => {
+                    navigation.goBack(-2);
+                });
+            },
+        });
     };
+
+    const handleSaveBaseInfo = () => {
+        const params = {sid: subject_id, save_status: 1, rec_type: 2};
+
+        params.products = items.map((it) => ({
+            product_id: it.product.product_id,
+            product_type: it.product.product_type,
+            name: it.product.name,
+            desc: it.desc,
+            tags: it.tags,
+        }));
+        return saveRecommendInfo(params).then((res) => {
+            if (res.code === '000000') {
+                return Promise.resolve();
+            }
+            return Promise.reject();
+        });
+    };
+
     const getValue = () => {
         const result = [];
         list.forEach((sec) => {

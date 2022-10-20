@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-19 21:17:03
+ * @LastEditTime: 2022-10-20 13:51:53
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -209,7 +209,6 @@ export default function SpecailModifyComment({navigation, route}) {
             .then((res) => {
                 if (res.code === '000000') {
                     let tmp = tpage === 1 ? [] : data;
-                    console.log('data:', tmp);
                     tmp = tmp.concat(res.result?.comment_list || []);
                     setData(tmp);
                     setHasMore(res.result.hasMore);
@@ -246,7 +245,7 @@ export default function SpecailModifyComment({navigation, route}) {
     const handleCommentAction = (item, op) => {
         const doAction = () => {
             http.post(
-                'http://kapi-web.wanggang.mofanglicai.com.cn/ss_manage/comment/op/20221010',
+                '/ss_manage/comment/op/20221010',
                 {
                     op_type: op.op_type,
                     comment_id: item.id,
@@ -284,8 +283,6 @@ export default function SpecailModifyComment({navigation, route}) {
         } else {
             doAction();
         }
-
-        // TODO: op action handle
     };
 
     const renderItem = ({item, index}) => {

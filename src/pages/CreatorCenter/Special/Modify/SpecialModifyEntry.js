@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 13:26:06
+ * @LastEditTime: 2022-10-20 13:47:06
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -23,7 +23,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
-    const {fix_id} = route?.params ?? {fix_id: 1021};
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1021;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
@@ -34,7 +34,7 @@ export default function SpecialModifyEntry({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            getModifyList({fix_id})
+            getModifyList({fix_id: subject_id})
                 .then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
@@ -46,19 +46,19 @@ export default function SpecialModifyEntry({navigation, route}) {
                 .finally((_) => {
                     setLoading(false);
                 });
-        }, [fix_id])
+        }, [subject_id])
     );
 
     const handleShowTip = () => {
         bottomModalRef.current?.show();
     };
     const handleSubmit = () => {
-        submitModify({subject_id: fix_id}).then((res) => {
+        submitModify({subject_id: subject_id}).then((res) => {
             if (res.code === '000000') {
                 navigation.replace({
                     path: 'SpecialSubmitCheck',
                     params: {
-                        subject_id: fix_id,
+                        subject_id: subject_id,
                     },
                 });
             }
@@ -112,19 +112,21 @@ export default function SpecialModifyEntry({navigation, route}) {
                         stickySectionHeadersEnabled={false}
                     />
                 </View>
-                <View style={{...Style.flexBetween, ...styles.footer}}>
-                    <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
-                        <Text style={styles.btn_text}>审核提示</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}
-                        onPress={handleSubmit}>
-                        <Text style={styles.submitBtn_title}>提交审核</Text>
-                        <Text style={styles.submitBtn_desc}>已有{data.edit_num}处修改需审核</Text>
-                    </TouchableOpacity>
-                </View>
+                {data.line_group ? (
+                    <View style={{...Style.flexBetween, ...styles.footer}}>
+                        <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
+                            <Text style={styles.btn_text}>审核提示</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}
+                            onPress={handleSubmit}>
+                            <Text style={styles.submitBtn_title}>提交审核</Text>
+                            <Text style={styles.submitBtn_desc}>已有{data.edit_num}处修改需审核</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : null}
             </View>
-            <BottomModal title={data?.apply_info?.title} ref={bottomModalRef}>
+            <BottomModal title={data?.apply_info?.title ?? '审核提示'} ref={bottomModalRef}>
                 <View style={{width: '100%', minHeight: px(100), padding: px(16)}}>
                     <Text style={{fontSize: px(13), color: '#545968'}}>{data?.apply_info?.reason}</Text>
                 </View>

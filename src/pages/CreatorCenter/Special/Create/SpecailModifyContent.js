@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 09:28:54
+ * @LastEditTime: 2022-10-20 14:12:16
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -15,6 +15,9 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
+
+import {getContentList, getStashContentList, saveStashContentList} from './services';
+
 function Item({item, index}) {
     const {uri, title, source, fav_num, read_count} = item;
     return (
@@ -118,7 +121,9 @@ function ContentSearchModal(props) {
             id: 2,
         },
     ]);
+    useEffect(() => {}, []);
     const [refreshing, setRefreshing] = useState(false);
+    const [query, setQuery] = useState(false);
     // 当前用户名下总文章数
     const [total, setTotal] = useState(3);
 
@@ -140,6 +145,10 @@ function ContentSearchModal(props) {
             item.isAdded = true;
             setSelected([...selected, item]);
         }
+    };
+    const handleSearch = (text) => {
+        setQuery(text);
+        // setpa
     };
 
     const renderItem = ({item, index}) => {
@@ -166,7 +175,12 @@ function ContentSearchModal(props) {
                     source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
                     style={styles.searchWrap_searchIcon}
                 />
-                <TextInput style={styles.searchWrap_input} pla placeholder="搜索作品名称" />
+                <TextInput
+                    style={styles.searchWrap_input}
+                    clearButtonMode="always"
+                    onChangeText={handleSearch}
+                    placeholder="搜索作品名称"
+                />
             </View>
             <FlatList
                 data={searchList}
@@ -195,8 +209,9 @@ function EmptyLit() {
 }
 
 /** 添加内容 */
-export default function SpecailModifyContent({navigation}) {
+export default function SpecailModifyContent({navigation, route}) {
     const [data, setData] = useState([]);
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1021;
 
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
@@ -204,7 +219,11 @@ export default function SpecailModifyContent({navigation}) {
     const bottomModal = useRef(null);
 
     useEffect(() => {
-        loadTemplate();
+        getStashContentList({subject_id}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
     }, []);
     const rightPress = () => {
         // TODO: save stash
