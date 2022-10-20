@@ -12,6 +12,7 @@ import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import Radio from '~/components/Radio.js';
 import {getTemplateBgImg} from './services';
+import LoadingTips from '~/components/LoadingTips';
 
 function BgSelectItem(props) {
     const {index, curIndex, handleSelect, url, name} = props;
@@ -31,12 +32,11 @@ function BgSelectItem(props) {
 
 export default function SpecialModifyBgImage(props) {
     const {selectedUri, onSure} = props.route.params || {};
-    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [index, setIndex] = useState(0);
     const loadTemplate = useCallback(() => {
-        console.log('loadTemplate');
-        setRefreshing(true);
+        setLoading(true);
         getTemplateBgImg()
             .then((res) => {
                 console.log('loadTemplate', res);
@@ -52,7 +52,7 @@ export default function SpecialModifyBgImage(props) {
                 console.log(e);
             })
             .finally((_) => {
-                setRefreshing(false);
+                setLoading(false);
             });
     }, [selectedUri]);
 
@@ -70,6 +70,16 @@ export default function SpecialModifyBgImage(props) {
         return <BgSelectItem {...item} index={i} curIndex={index} handleSelect={(idx) => setIndex(idx)} />;
     };
 
+    if (setLoading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={data?.title || '更换专题图片'} leftIcon="chevron-left" />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
@@ -77,14 +87,11 @@ export default function SpecialModifyBgImage(props) {
                 leftIcon="chevron-left"
                 rightText={'确定'}
                 rightPress={rightPress}
-                on
                 rightTextStyle={styles.right_sty}
             />
             <View style={styles.pageWrap}>
                 <FlatList
                     data={data.items}
-                    refreshing={refreshing}
-                    onRefresh={loadTemplate}
                     renderItem={renderItem}
                     extraData={index}
                     keyExtractor={(item) => item.id}

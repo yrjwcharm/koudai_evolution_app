@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:52:55
+ * @LastEditTime: 2022-10-20 10:27:33
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -22,6 +22,9 @@ import Radio from '~/components/Radio.js';
 import {Children} from 'react/cjs/react.production.min';
 import Html from '~/components/RenderHtml';
 import {RecommendItemWrap, RecommendProduct, RecommendImage} from '../../components/SpecialRecommend.js';
+import {getRecommendInfo} from './services';
+
+import LoadingTips from '~/components/LoadingTips';
 
 function RecommendCell(props) {
     const {index, curIndex, handleSelect, title, children} = props;
@@ -50,15 +53,30 @@ const blockCal = () => {
     });
 };
 
-export default function SpecialModifyRecommend(props) {
-    const {selectedUri, onSure} = props.route.params || {};
+export default function SpecialModifyRecommend({route}) {
+    const jump = useJump();
+    const {subject_id} = route?.params ?? {};
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
         title: '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
         desc: '股债平衡组合',
         tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
     });
     const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        setLoading(true);
+        getRecommendInfo({subject_id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    }, []);
 
     const rightPress = () => {
         handlePickAlumn();
@@ -101,6 +119,17 @@ export default function SpecialModifyRecommend(props) {
             console.warn(err);
         }
     };
+
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'推广位样式设置'} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView edges={['bottom']}>

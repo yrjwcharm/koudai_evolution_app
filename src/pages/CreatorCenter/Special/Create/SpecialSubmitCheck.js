@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-13 09:58:07
+ * @LastEditTime: 2022-10-20 09:55:06
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -18,25 +18,59 @@ import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import {FixedButton} from '~/components/Button';
+import {useFocusEffect} from '@react-navigation/native';
+import http from '~/services';
+import LoadingTips from '~/components/LoadingTips';
 
 export default function SpecialSubmitCheck({navigation, route}) {
+    const {subject_id} = route?.params ?? {};
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
     const handleBack = () => {
         navigation.goBack();
     };
 
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            http.get('/subject/manage/audit/submit_result/20220901', {
+                subject_id,
+            })
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        }, [subject_id])
+    );
+
+    if (loading && data) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={''} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
-            <NavBar title={'提交审核成功'} leftIcon="chevron-left" leftPress={handleBack} />
+            <NavBar title={data.title} leftIcon="chevron-left" leftPress={handleBack} />
             <View style={styles.content}>
-                <FastImage style={styles.success_image} source={require('~/assets/img/special/success.png')} />
-                <Text style={styles.success_title}>您已成功提交审核！</Text>
-                <Text style={{...styles.success_desc, ...{marginTop: px(8)}}}>
-                    预计在2个小时内完成审核，请您关注消息通知
+                <FastImage style={styles.success_image} source={{uri: data.desc_icon}} />
+                <Text style={styles.success_title}>{data.desc}</Text>
+                <Text style={{...styles.success_desc, ...{marginTop: px(8)}}} numberOfLines={0}>
+                    {data.hit}
                 </Text>
-                <Text style={styles.success_desc}>审核结果将第一时间以消息方式通知您</Text>
-                <Text style={styles.success_desc}>如有疑问，可联系客服：1342345345</Text>
+                {/* <Text style={styles.success_desc}>审核结果将第一时间以消息方式通知您</Text>
+                <Text style={styles.success_desc}>如有疑问，可联系客服：1342345345</Text> */}
                 <TouchableOpacity onPress={handleBack} style={styles.success_btn}>
-                    <Text style={styles.success_btntext}>知道了</Text>
+                    <Text style={styles.success_btntext}>{data.button.text}</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

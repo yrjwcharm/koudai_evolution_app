@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-19 16:12:37
+ * @LastEditTime: 2022-10-20 00:16:15
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -66,7 +66,7 @@ function TagWrap(props) {
     const handleTagChange = (i) => {
         console.log('handleTagChange:', i);
         setIndex(i);
-        if (index === -1) {
+        if (i === -1) {
             setText('');
         } else {
             setText(tags[i]);
@@ -138,7 +138,7 @@ const blockCal = () => {
     });
 };
 
-export default function SpecialModifyBaseInfo({navigation, route}) {
+export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     const jump = useJump();
     const {subject_id} = route?.params ?? {};
     const [bgSource, setBgSource] = useState();
@@ -180,10 +180,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             tags,
         }).then((res) => {
             if (res.code === '000000') {
-                jump(data.next_button.url);
-                // jump({
-                //     path: 'SpecialCreateEntry',
-                // });
+                if (isEdit) {
+                    navigation.goBack();
+                } else {
+                    jump(data.next_button.url);
+                }
             }
         });
     };
@@ -265,6 +266,20 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             console.warn(err);
         }
     };
+    useEffect(() => {
+        jump({
+            path: 'SpecialDetail',
+            type: 4,
+            params: {
+                link: 'http://localhost:3001/specialDetailDraft',
+                secne: 'create',
+                params: {
+                    subject_id: '1021',
+                    secne: 'creating',
+                },
+            },
+        });
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -286,7 +301,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     if (loading) {
         return (
             <SafeAreaView edges={['bottom']}>
-                <NavBar title={'创建专题'} leftIcon="chevron-left" leftPress={handleBack} />
+                <NavBar
+                    title={isEdit ? '修改专题基础信息' : '创建专题'}
+                    leftIcon="chevron-left"
+                    leftPress={handleBack}
+                />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
                 </View>
@@ -321,9 +340,9 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
-                title={'创建专题'}
+                title={isEdit ? '修改专题基础信息' : '创建专题'}
                 leftIcon="chevron-left"
-                rightText={data.next_button?.text ?? '下一步'}
+                rightText={isEdit ? '保存' : data.next_button?.text ?? '下一步'}
                 rightPress={rightPress}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
@@ -484,9 +503,12 @@ const styles = StyleSheet.create({
         fontSize: px(12),
     },
     tagItem_closeIcon: {
+        color: 'red',
         marginLeft: 10,
         height: px(10),
         width: px(10),
+        lineHeight: px(10),
+        fontSize: px(10),
     },
     tagItemAdd: {
         backgroundColor: '#F5F6F8',

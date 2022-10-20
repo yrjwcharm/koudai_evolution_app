@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-17 17:45:29
+ * @LastEditTime: 2022-10-19 21:17:03
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -15,23 +15,11 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Modal, PageModal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import {Style, Colors, Space, Font} from '~/common/commonStyle';
-
+import {getCommentList, addComment} from './services';
 import {Button} from '~/components/Button';
-
-/** 列表为空时填充 */
-function EmptyLit() {
-    return (
-        <View style={styles.emptyTipWrap}>
-            <FastImage
-                style={styles.searchEmpty_image}
-                resizeMode={FastImage.resizeMode.contain}
-                source={require('../../../../assets/img/emptyTip/empty.png')}
-            />
-            <Text style={styles.searchEmpty_text}>暂无内容</Text>
-            <View style={styles.line} />
-        </View>
-    );
-}
+import http from '~/services';
+import LoadingTips from '~/components/LoadingTips';
+import Toast from '~/components/Toast';
 
 function Tabs(props) {
     return (
@@ -52,26 +40,28 @@ function Tabs(props) {
     );
 }
 
-function AddCommentWrap({publish}) {
+const AddCommentModal = React.forwardRef(({onPublish}, ref) => {
     const [content, setContent] = useState('');
-    const inputModalRef = useRef(null);
     const inputRef = useRef(null);
-    const handleShowComment = () => {
-        inputModalRef.current?.show();
-        setTimeout(() => {
-            inputRef.current?.focus();
-        }, 300);
-    };
+    const inputModalRef = useRef(null);
+
     const handlePublish = () => {
-        inputModalRef.current?.hide();
+        onPublish(content).then((_) => {
+            inputModalRef.current?.hide();
+        });
     };
+    const handleShow = () => {
+        setContent('');
+        inputModalRef.current?.show();
+    };
+
+    React.useImperativeHandle(ref, () => {
+        return {
+            show: handleShow,
+        };
+    });
     return (
         <>
-            <TouchableOpacity style={styles.footer} onPress={handleShowComment}>
-                <View style={styles.footer_textWrap}>
-                    <Text style={styles.footer_text}>我来聊两句…</Text>
-                </View>
-            </TouchableOpacity>
             <PageModal ref={inputModalRef} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                 <TextInput
                     ref={inputRef}
@@ -101,7 +91,7 @@ function AddCommentWrap({publish}) {
             </PageModal>
         </>
     );
-}
+});
 
 const IconMap = {
     pass: require('~/assets/img/special/pass.png'),
@@ -129,191 +119,240 @@ const getIconByOP = (op) => {
 };
 
 function CommentItem(props) {
-    const {item, onAction} = props;
+    const {item, onAction, isSub} = props;
+
     return (
-        <View style={[styles.commentItem, item.isSub ? styles.commentItem_sub : {}]}>
-            <FastImage
-                style={styles.commentItem_avator}
-                source={{uri: 'https://static.licaimofang.com//wp-content//uploads//2021//03//tx_moren.png'}}
-            />
-            <View style={styles.commentItem_contentWrap}>
-                <Text style={styles.commentItem_name}>{item.user_info.nickname}</Text>
-                <Text style={styles.commentItem_content}>{item.content}</Text>
-                <View style={styles.commentItem_footer}>
-                    <Text style={styles.commentItem_time}>{item.created_at_human}</Text>
-                    <View style={styles.commentItem_actionWrap}>
-                        {(item.op_list || []).map((op) => (
-                            <TouchableOpacity
-                                onPress={onAction}
-                                style={[styles.commentItem_action, styles[`commentItem_action_${op.op_type}`]]}>
-                                <FastImage
-                                    source={op.icon ? {uri: op.icon} : getIconByOP(op)}
-                                    style={[
-                                        styles.commentItem_actionImg,
-                                        styles[`commentItem_actionImg_${op.op_type}`],
-                                    ]}
-                                />
-                                <Text
-                                    style={[
-                                        styles.commentItem_actionText,
-                                        styles[`commentItem_actionText_${op.op_type}`],
-                                    ]}>
-                                    {op.text}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
+        <>
+            <View style={[styles.commentItem, isSub ? styles.commentItem_sub : {}]}>
+                <FastImage style={styles.commentItem_avator} source={{uri: item.user_info.avatar}} />
+                <View style={styles.commentItem_contentWrap}>
+                    <Text style={styles.commentItem_name}>{item.user_info.nickname}</Text>
+                    <Text style={styles.commentItem_content}>{item.content}</Text>
+                    <View style={styles.commentItem_footer}>
+                        <Text style={styles.commentItem_time}>{item.created_at_human}</Text>
+                        <View style={styles.commentItem_actionWrap}>
+                            {(item.op_list || []).map((op) => (
+                                <TouchableOpacity
+                                    onPress={() => onAction(item, op)}
+                                    style={[styles.commentItem_action, styles[`commentItem_action_${op.op_type}`]]}>
+                                    <FastImage
+                                        source={op.icon ? {uri: op.icon} : getIconByOP(op)}
+                                        style={[
+                                            styles.commentItem_actionImg,
+                                            styles[`commentItem_actionImg_${op.op_type}`],
+                                        ]}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.commentItem_actionText,
+                                            styles[`commentItem_actionText_${op.op_type}`],
+                                        ]}>
+                                        {op.text}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
                 </View>
             </View>
-        </View>
+            {(item.children || []).map((it, i) => (
+                <CommentItem item={it} index={props.index * 10 + i} isSub={true} onAction={onAction} />
+            ))}
+        </>
     );
 }
 
-/** 添加内容 */
-export default function SpecailModifyComment({navigation}) {
-    const [data, setData] = useState([
-        {
-            user_info: {
-                nickname: '肆意妹妹',
-                avatar: '',
-            },
-            created_at_human: '1天前',
-            isSub: false,
-            content:
-                '看到理财魔方，感觉像是找到人生中的灯塔，照亮我前行的方向，之前啥也不懂，亏钱亏钱亏钱亏到怀疑人生，现在好了，稳定赚钱赚钱。',
-            op_list: [
-                {
-                    icon: '',
-                    text: '通过',
-                    op_type: 'pass',
-                },
-                {
-                    icon: '',
-                    text: '失败',
-                    op_type: 'refuse',
-                },
-            ],
-        },
-        {
-            user_info: {
-                nickname: '肆意妹妹',
-                avatar: '',
-            },
-            created_at_human: '1天前',
-            isSub: false,
-            content:
-                '看到理财魔方，感觉像是找到人生中的灯塔，照亮我前行的方向，之前啥也不懂，亏钱亏钱亏钱亏到怀疑人生，现在好了，稳定赚钱赚钱。',
-            op_list: [
-                {
-                    icon: '',
-                    text: '1,256',
-                    op_type: 'like',
-                    is_liked: false,
-                },
-                {
-                    icon: '',
-                    text: '1',
-                    op_type: 'comment',
-                },
-                {
-                    icon: '',
-                    text: '删除',
-                    op_type: 'del',
-                },
-                {
-                    icon: '',
-                    text: '',
-                    op_type: 'recommend',
-                },
-            ],
-        },
-        {
-            user_info: {
-                nickname: '肆意妹妹',
-                avatar: '',
-            },
-            isSub: true,
-            created_at_human: '1天前',
-            content:
-                '看到理财魔方，感觉像是找到人生中的灯塔，照亮我前行的方向，之前啥也不懂，亏钱亏钱亏钱亏到怀疑人生，现在好了，稳定赚钱赚钱。',
-        },
-    ]);
+/** 添加审核评论 */
+export default function SpecailModifyComment({navigation, route}) {
+    const {subject_id} = route?.params ?? {subject_id: 100};
 
-    const jump = useJump();
+    const [pageData, setPageData] = useState();
+    const [data, setData] = useState([]);
+
     const [refreshing, setRefreshing] = useState(false);
-    const [activeTab, setActiveTab] = useState(0);
-    const inputModal = useRef(null);
+    const [loading, setLoading] = useState(true);
+
+    const commentModalRef = useRef(null);
     const inputRef = useRef(null);
-    const bottomModal = useRef(null);
+
+    const [activeTab, setActiveTab] = useState(0);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const commentRef = useRef(null);
 
     useEffect(() => {
-        loadTemplate();
-    }, [activeTab]);
-    const rightPress = () => {
-        // TODO: save stash
-        navigation.goBack();
+        setLoading(true);
+        http.get('/ss_manage/comment/index/20221010')
+            .then((res) => {
+                if (res.code === '000000') {
+                    setPageData(res.result);
+                    setPage(1);
+                    setActiveTab(0);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!pageData || !subject_id) return;
+        getList(pageData.tabs[activeTab].type, page, subject_id);
+    }, [pageData, page, activeTab, subject_id]);
+
+    const getList = (type, tpage, sid) => {
+        if (tpage === 1) {
+            setRefreshing(true);
+            setData([]);
+        }
+        getCommentList({sid, type: type, page: tpage})
+            .then((res) => {
+                if (res.code === '000000') {
+                    let tmp = tpage === 1 ? [] : data;
+                    console.log('data:', tmp);
+                    tmp = tmp.concat(res.result?.comment_list || []);
+                    setData(tmp);
+                    setHasMore(res.result.hasMore);
+                }
+            })
+            .finally((_) => {
+                setRefreshing(false);
+            });
     };
 
-    const loadTemplate = () => {
-        // TODO: load stash
-        // setData([]);
-    };
     const handleBack = () => {
         navigation.goBack();
     };
 
-    const handlePublish = () => {};
+    const handleShowComment = () => {
+        commentRef.current = {object_id: 1, object_type: 2, parent_id: 0};
+        commentModalRef.current?.show();
+    };
+
+    const handlePublish = (content, id) => {
+        return addComment({content, ...commentRef.current}).then((res) => {
+            if (res.code === '000000') {
+                setPage(1);
+                Toast.show(res.result.message);
+                return Promise.resolve();
+            }
+            return Promise.reject();
+        });
+    };
     const handlePageChange = (idx) => {
         setActiveTab(idx);
+        setPage(1);
     };
-    const handleCommentAction = (comment, op) => {
+    const handleCommentAction = (item, op) => {
+        const doAction = () => {
+            http.post(
+                'http://kapi-web.wanggang.mofanglicai.com.cn/ss_manage/comment/op/20221010',
+                {
+                    op_type: op.op_type,
+                    comment_id: item.id,
+                },
+                true
+            ).then((res) => {
+                if (res.code === '000000') {
+                    getList(pageData.tabs[activeTab].type, 1, subject_id);
+                }
+            });
+        };
         if (op.op_type === 'del') {
             Modal.show({
                 content: '删除后相关点赞数、评论都将删除，且不可恢复，确认要删除评论吗？',
                 confirm: true,
                 confirmText: '确认',
                 confirmCallBack: () => {
-                    //  TODO: del
+                    doAction();
                 },
             });
             return;
-        }
-
-        if (op.op_type === 'recommend') {
+        } else if (op.op_type === 'recommend') {
             Modal.show({
                 content: '是否将该评论替换成专题简介？',
                 confirm: true,
                 confirmText: '确认',
                 confirmCallBack: () => {
-                    //  TODO: del
+                    doAction();
                 },
             });
             return;
+        } else if (op.op_type === 'comment') {
+            commentRef.current = {parent_id: item.id, object_id: op.object_id, object_type: op.object_type};
+            commentModalRef.current?.show();
+        } else {
+            doAction();
         }
 
         // TODO: op action handle
     };
 
     const renderItem = ({item, index}) => {
-        return <CommentItem item={item} index={index} onAction={(op) => handleCommentAction(item, op)} />;
+        return <CommentItem item={item} isSub={false} index={index} onAction={handleCommentAction} />;
     };
+    const Footer = () => {
+        if (!data || data.length === 0 || refreshing || hasMore) return null;
+        return (
+            <View style={{width: '100%', height: px(40), ...Style.flexCenter}}>
+                <Text style={{color: Colors.lightGrayColor}}>没有更多了</Text>
+            </View>
+        );
+    };
+    /** 列表为空时填充 */
+    const EmptyLit = () => {
+        if (refreshing) return null;
+        return (
+            <View style={styles.emptyTipWrap}>
+                <FastImage
+                    style={styles.searchEmpty_image}
+                    resizeMode={FastImage.resizeMode.contain}
+                    source={require('../../../../assets/img/emptyTip/empty.png')}
+                />
+                <Text style={styles.searchEmpty_text}>暂无内容</Text>
+            </View>
+        );
+    };
+
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'评论'} leftIcon="chevron-left" leftPress={handleBack} />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
+    const tabsText = pageData.tabs.map((it) => it.title);
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar title={'评论'} leftIcon="chevron-left" leftPress={handleBack} />
-            <Tabs tabs={['待审核', '已发布']} activeTab={activeTab} goToPage={setActiveTab} />
+            <Tabs tabs={tabsText} activeTab={activeTab} goToPage={handlePageChange} />
             <View style={styles.listWrap}>
-                {data.length === 0 && <EmptyLit />}
-
                 <FlatList
                     data={data}
                     refreshing={refreshing}
-                    onRefresh={loadTemplate}
+                    ListEmptyComponent={EmptyLit}
+                    onRefresh={() => setPage(1)}
+                    onEndReached={() => {
+                        if (hasMore) {
+                            setPage(page + 1);
+                        }
+                    }}
+                    ListFooterComponent={Footer}
+                    onEndReachedThreshold={0.5}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                 />
             </View>
-            <AddCommentWrap inputModal={inputModal} inputRef={inputRef} publish={handlePublish} />
+            <TouchableOpacity style={styles.footer} onPress={handleShowComment}>
+                <View style={styles.footer_textWrap}>
+                    <Text style={styles.footer_text}>我来聊两句…</Text>
+                </View>
+            </TouchableOpacity>
+            <AddCommentModal ref={commentModalRef} onPublish={handlePublish} />
         </SafeAreaView>
     );
 }

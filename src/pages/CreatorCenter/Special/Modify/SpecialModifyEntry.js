@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-14 09:27:04
+ * @LastEditTime: 2022-10-20 11:10:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -17,6 +17,10 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
+import LoadingTips from '~/components/LoadingTips';
+import {getModifyList, submitModify} from './services';
+import {useFocusEffect} from '@react-navigation/native';
+import Html from '~/components/RenderHtml';
 
 /** 列表每行的key */
 const ListKeys = {
@@ -30,75 +34,45 @@ const ListKeys = {
 };
 
 export default function SpecialModifyEntry({navigation, route}) {
+    const {fix_id} = route?.params ?? {fix_id: 1021};
     const [data, setData] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
-    const insets = useSafeAreaInsets();
+    const [loading, setLoading] = useState([]);
     const [submitable, setSubmitable] = useState(false);
+    const bottomModalRef = useRef(null);
     const jump = useJump();
-    const [uid, setUid] = useState('0'); // 当前专题的uid
-    const [list, setList] = useState([
-        {
-            title: '',
-            data: [
-                {
-                    title: '修改专题基础信息',
-                    key: ListKeys.BaseInfo,
-                    path: 'SpecialModifyBaseInfo',
-                    saved: true,
-                },
-                {
-                    title: '修改活动图片、链接（选填）',
-                    key: ListKeys.ActiveInfo,
-                    path: 'SpecialModifyActiveInfo',
-                },
-            ],
-        },
-        {
-            title: '',
-            data: [
-                {
-                    title: '调整产品',
-                    key: ListKeys.ProductInfo,
-                },
-                {
-                    title: '编辑精选内容',
-                    key: ListKeys.ContentInfo,
-                    path: 'SpecailModifyContent',
-                },
-                {
-                    title: '管理评论',
-                    key: ListKeys.CommentInfo,
-                    path: 'SpecailModifyComment',
-                },
-            ],
-        },
-        {
-            title: '',
-            data: [
-                {
-                    title: '设置专题卡片样式',
-                    key: ListKeys.CardInfo,
-                },
-                {
-                    title: '设置专题推广位',
-                    key: ListKeys.SpreadInfo,
-                },
-            ],
-        },
-    ]);
+    const insets = useSafeAreaInsets();
 
-    const handleBack = () => {
-        navigation.goBack();
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            getModifyList({fix_id})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                        if (res.result.edit_num > 0) {
+                            setSubmitable(true);
+                        }
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        }, [fix_id])
+    );
+
+    const handleShowTip = () => {
+        bottomModalRef.current?.show();
     };
-    useEffect(() => {}, [data]);
-
-    const onRefresh = () => {};
-    const handleCellClick = (item) => {
-        jump({
-            path: item.path,
-            params: {
-                uid: uid,
-            },
+    const handleSubmit = () => {
+        submitModify({subject_id: fix_id}).then((res) => {
+            if (res.code === '000000') {
+                navigation.replace({
+                    path: 'SpecialSubmitCheck',
+                    params: {
+                        subject_id: fix_id,
+                    },
+                });
+            }
         });
     };
 
@@ -110,28 +84,38 @@ export default function SpecialModifyEntry({navigation, route}) {
     };
     const renderItem = ({item, index, section}) => {
         return (
-            <TouchableOpacity style={styles.cell} onPress={() => handleCellClick(item)}>
-                <Text style={styles.cell_title}>{item.title}</Text>
+            <TouchableOpacity style={styles.cell} onPress={() => jump(item.url)}>
+                <Text style={styles.cell_title}>{item.name}</Text>
                 <View style={styles.cell_descWrap}>
-                    {item.saved && <Text style={styles.cell_desc}>已保存修改</Text>}
+                    <Html style={styles.cell_desc} html={item.status_desc} numberOfLines={1} />
                     <AntDesign name="right" size={12} />
                 </View>
             </TouchableOpacity>
         );
     };
 
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'修改专题'} leftIcon="chevron-left" />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
+    const sections = data.line_group.map((group) => ({data: group.line_list}));
+
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
-            <NavBar title={'修改专题'} leftIcon="chevron-left" leftPress={handleBack} />
+            <NavBar title={'修改专题'} leftIcon="chevron-left" />
             <View style={styles.content}>
                 <View style={styles.listWrap}>
                     <SectionList
-                        sections={list}
+                        sections={sections}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         onEndReachedThreshold={0.2}
-                        onRefresh={onRefresh}
-                        refreshing={refreshing}
                         ItemSeparatorComponent={itemSeparatorComponent}
                         renderSectionHeader={renderSectionHeader}
                         renderItem={renderItem}
@@ -140,15 +124,22 @@ export default function SpecialModifyEntry({navigation, route}) {
                     />
                 </View>
                 <View style={{...Style.flexBetween, ...styles.footer}}>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
                         <Text style={styles.btn_text}>审核提示</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}>
+                    <TouchableOpacity
+                        style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}
+                        onPress={handleSubmit}>
                         <Text style={styles.submitBtn_title}>提交审核</Text>
-                        <Text style={styles.submitBtn_desc}>已有3处修改需审核</Text>
+                        <Text style={styles.submitBtn_desc}>已有{data.edit_num}处修改需审核</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <BottomModal title={data.apply_info.title} ref={bottomModalRef}>
+                <View style={{width: '100%', minHeight: px(100), padding: px(16)}}>
+                    <Text style={{fontSize: px(13), color: '#545968'}}>{data.apply_info.reason}</Text>
+                </View>
+            </BottomModal>
         </SafeAreaView>
     );
 }
