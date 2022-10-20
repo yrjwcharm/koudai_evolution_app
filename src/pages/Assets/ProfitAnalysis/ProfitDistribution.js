@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -34,6 +34,7 @@ const shadow = {
 };
 export const appContext = React.createContext();
 const ProfitDistribution = React.memo(({headData, type}) => {
+    const [data, setData] = useState([]);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const {profit_info, profit_acc_info, profit_all} = headData;
@@ -51,12 +52,15 @@ const ProfitDistribution = React.memo(({headData, type}) => {
         dispatch({type: 'updateUnitType', payload: unitType});
         initData();
     }, [type, unitType]);
+    const callbackData = (data) => {
+        setData(data);
+    };
     return (
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
-                <>
+                <View style={{flex: 1, position: 'relative'}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <BoxShadow setting={{...shadow}}>
                             <View style={styles.header}>
@@ -146,7 +150,8 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             )}
                         </View>
                     </ScrollView>
-                </>
+                    {data.length > 0 && <FixedButton title={'去理财市场看看'} />}
+                </View>
             )}
         </>
     );
