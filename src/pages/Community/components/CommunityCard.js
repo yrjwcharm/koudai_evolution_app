@@ -21,7 +21,7 @@ import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
 import {ShareModal} from '~/components/Modal';
 import {deviceWidth, formaNum, px} from '~/utils/appUtil';
-
+import AntdIcon from 'react-native-vector-icons/AntDesign';
 /** @name 社区卡片封面 */
 export const CommunityCardCover = ({
     attention_num,
@@ -137,6 +137,9 @@ export const CommunityFollowCard = ({
     type, // 卡片类型 1文章 2音频 3视频 9直播
     type_str, // 类型文案
     url, // 跳转地址
+    onDelete, //移除作品
+    id,
+    relation_type,
 }) => {
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
@@ -147,6 +150,16 @@ export const CommunityFollowCard = ({
     return (
         <>
             <View style={[styles.communityCard, style]}>
+                {onDelete && (
+                    <TouchableOpacity
+                        style={[styles.cardDelete, Style.flexRow]}
+                        onPress={() => {
+                            onDelete(relation_type, id);
+                        }}>
+                        <AntdIcon name="close" color={Colors.lightGrayColor} />
+                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
+                    </TouchableOpacity>
+                )}
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
                     <TouchableOpacity activeOpacity={0.8} onPress={() => jump(author.url)} style={Style.flexRow}>
                         {type === 9 && live_status === 2 ? (
@@ -350,4 +363,5 @@ const styles = StyleSheet.create({
         borderRadius: px(24),
         borderWidth: Space.borderWidth,
     },
+    cardDelete: {position: 'absolute', right: px(0), top: px(0), padding: px(12), zIndex: 10},
 });

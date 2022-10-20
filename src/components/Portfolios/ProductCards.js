@@ -19,7 +19,7 @@ import {px} from '~/utils/appUtil';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce} from 'lodash';
 import RenderHtml from '~/components/RenderHtml';
-
+import AntdIcon from 'react-native-vector-icons/AntDesign';
 const onPressBtn = debounce(
     ({action, dispatch, item_id, item_type = 1}) => {
         if (action === 'do_pk') {
@@ -218,7 +218,7 @@ const RankCard = ({data = {}, isPking}) => {
 };
 
 /** @name 推荐卡片 */
-const RecommendCard = ({data = {}, isPking}) => {
+const RecommendCard = ({data = {}, onDelete, isPking}) => {
     const dispatch = useDispatch();
     const {
         button,
@@ -233,18 +233,27 @@ const RecommendCard = ({data = {}, isPking}) => {
         tags = [],
         yield_info,
         icon_url,
+        relation_type,
     } = data;
     const btnText = isPking ? 'PK中' : button?.text;
     const [showChart, setShowChart] = useState(false);
-
     useEffect(() => {
         setTimeout(() => {
             chart?.length > 0 && setShowChart(true);
         }, 500);
     }, [chart]);
-
     return (
         <View>
+            {onDelete && (
+                <TouchableOpacity
+                    style={[styles.cardDelete, Style.flexRow]}
+                    onPress={() => {
+                        onDelete(relation_type, code);
+                    }}>
+                    <AntdIcon name="close" color={Colors.lightGrayColor} />
+                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
+                </TouchableOpacity>
+            )}
             <View style={Style.flexRow}>
                 <View style={styles.leftPart}>
                     {showChart ? (
@@ -619,7 +628,7 @@ const DefaultCard = ({data = {}, isPking}) => {
     );
 };
 
-export default ({data = {}, style = {}, tabLabel = ''}) => {
+export default ({data = {}, onDelete, style = {}, tabLabel = ''}) => {
     const jump = useJump();
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
     const {code, type, url, LogTool} = data;
@@ -657,7 +666,7 @@ export default ({data = {}, style = {}, tabLabel = ''}) => {
                         return <RankCard data={data} isPking={isPking} />;
                     // 推荐卡片
                     case 'recommend_card':
-                        return <RecommendCard data={data} isPking={isPking} />;
+                        return <RecommendCard data={data} isPking={isPking} onDelete={onDelete} />;
                     //计划小卡片
                     case 'project_sm_card':
                         return <ProjectSmCard data={data} />;
@@ -928,4 +937,5 @@ const styles = StyleSheet.create({
         height: px(102),
         marginTop: px(12),
     },
+    cardDelete: {position: 'absolute', right: px(-12), top: px(-12), padding: px(12), zIndex: 10},
 });

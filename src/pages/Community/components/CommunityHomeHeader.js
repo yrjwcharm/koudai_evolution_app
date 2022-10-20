@@ -2,12 +2,32 @@
  * @Date: 2022-10-14 15:10:12
  * @Description:
  */
-import {StyleSheet, Text, View, Image, ImageBackground} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Style} from '~/common/commonStyle';
+import {Colors} from '../../../common/commonStyle';
+import {useJump} from '../../../components/hooks';
+import http from '../../../services';
 
-const CommunityHomeHeader = ({data, style}) => {
+const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
+    const jump = useJump();
+    const [followBtnText, setFollowBtnText] = useState('');
+    useEffect(() => {
+        setFollowBtnText(data?.follow_status === 1 ? '已关注' : '关注+');
+    }, [data?.follow_status]);
+    const handleFollow = () => {
+        if (data?.follow_btn?.url) {
+            jump(data?.follow_btn?.url);
+            return;
+        }
+        if (data?.follow_status == 1) return;
+        http.post('/follow/add/202206', {item_id, item_type}).then((res) => {
+            if (res.code == '000000') {
+                setFollowBtnText('已关注');
+            }
+        });
+    };
     return data ? (
         <ImageBackground
             source={{
@@ -42,9 +62,20 @@ const CommunityHomeHeader = ({data, style}) => {
                         )}
                     </View>
                 </View>
-                <View style={styles.attentionBtn}>
-                    <Text style={{fontSize: px(12)}}>已关注</Text>
-                </View>
+                {!!data?.follow_btn && (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.attentionBtn, data?.follow_status == 1 && styles.followedBtn]}
+                        onPress={handleFollow}>
+                        <Text
+                            style={{
+                                fontSize: px(12),
+                                color: data?.follow_status == 1 ? 'rgba(154, 160, 177, 1)' : Colors.btnColor,
+                            }}>
+                            {data?.follow_btn?.url ? data?.follow_btn?.text : followBtnText}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </ImageBackground>
     ) : null;
@@ -81,4 +112,5 @@ const styles = StyleSheet.create({
         borderRadius: px(2),
         marginLeft: px(4),
     },
+    followedBtn: {backgroundColor: 'rgba(233, 234, 239, 1)'},
 });

@@ -10,7 +10,6 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '~/common/commonStyle';
-import * as Animation from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import {getPersonalHomeData, getPersonaProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
@@ -25,9 +24,8 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
     const WaterfallFlowHeight = deviceHeight - headerHeight;
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
-    const {muid = 1000000002} = route?.params || {};
+    const {muid, community_id = 1} = route?.params || {};
     const [data, setData] = useState();
-    const {community_id = 1} = route?.params || {};
     const [scroll, setScroll] = useState(true);
     const currentTabIndex = useRef(0);
     const introHeight = useRef(0);
@@ -105,6 +103,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                                 currentTabListHeight.current[currentTabIndex.current] > WaterfallFlowHeight
                             ) {
                                 setScroll(false);
+                                waterFallRef.current?.scrollTo(10);
                                 // rootScrollViewRef.current.setNativeProps({
                                 //     contentInset: {
                                 //         top: y - (parallaxHeaderHeight - headerHeight) - introHeight.current + px(14),
@@ -113,13 +112,14 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                                 //         right: 0,
                                 //     },
                                 // });
-                                waterFallRef.current?.scrollTo(10);
                             }
                         },
                     }
                 )}>
                 <CommunityHomeHeader
                     data={data?.user_info}
+                    item_type={10}
+                    item_id={muid}
                     style={{
                         width: deviceWidth,
                         paddingTop: headerHeight + px(20),
@@ -148,7 +148,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                                     <WaterfallFlowList
                                         bounces={false}
                                         ref={waterFallRef}
-                                        scrollEnabled={scroll}
+                                        scrollEnabled={!scroll}
                                         onContentSizeChange={(width, height) => {
                                             currentTabListHeight.current[index] = height;
                                         }}
@@ -175,8 +175,15 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                     </View>
                 ) : null}
             </Animated.ScrollView>
-            <ShareModal ref={shareModal} shareContent={data?.share_info} title={data?.title} />
-            <PublishContent community_id={community_id} />
+            {data?.share_info ? (
+                <ShareModal
+                    ref={shareModal}
+                    otherList={data?.share_button}
+                    shareContent={data?.share_info}
+                    title={'更多'}
+                />
+            ) : null}
+            <PublishContent community_id={0} />
         </>
     );
 };
