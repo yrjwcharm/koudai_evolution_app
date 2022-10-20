@@ -14,14 +14,14 @@ import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', type = 200} = route.params || {};
+    const {fund_code = '', poid = '', page = 0, type: initType = 30} = route.params || {};
     const scrollTab = useRef(null);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
-    const [page, setPage] = useState(0);
+    const [type, setType] = useState(initType);
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
@@ -29,10 +29,6 @@ const ProfitDetail = ({navigation, route}) => {
             if (res[0].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 navigation.setOptions({title});
-                let newTabs = tabs.map((el, index) => {
-                    return {page: index, type: el.type};
-                });
-                setPage(newTabs.find((el) => el.type == type).page);
                 setTabs(tabs);
                 setHeadData(header);
             }
@@ -63,9 +59,9 @@ const ProfitDetail = ({navigation, route}) => {
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
-    // useEffect(() => {
-    //     Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
-    // }, [page]);
+    useEffect(() => {
+        Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
+    }, [page]);
     return (
         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {tabs.length > 1 && (
@@ -74,10 +70,18 @@ const ProfitDetail = ({navigation, route}) => {
                     renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
                     initialPage={page}
                     onChangeTab={({i}) => {
+                        setType(tabs[i].type);
                         dispatch({type: 'updateType', payload: tabs[i].type});
                     }}>
                     {tabs.map((el, index) => {
-                        return <ProfitDistribution headData={headData} tabLabel={el.text} key={`${el + '' + index}`} />;
+                        return (
+                            <ProfitDistribution
+                                type={type}
+                                headData={headData}
+                                tabLabel={el.text}
+                                key={`${el + '' + index}`}
+                            />
+                        );
                     })}
                 </ScrollableTabView>
             )}
@@ -106,9 +110,9 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     declareImg: {
-        height: px(160),
+        height: px(140),
         width: deviceWidth - px(32),
-        resizeMode: 'cover',
+        resizeMode: 'contain',
     },
     rightTitle: {
         fontSize: px(13),

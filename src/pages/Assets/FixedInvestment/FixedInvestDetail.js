@@ -11,7 +11,7 @@ import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
-import {callFixedInvestDetailApi, executePauseFixedInvestApi, executeStopFixedInvestApi} from './services';
+import {callFixedInvestDetailApi, executeStopFixedInvestApi} from './services';
 import {useJump} from '../../../components/hooks';
 import Loading from '../../Portfolio/components/PageLoading';
 import {PasswordModal} from '../../../components/Password';
@@ -40,7 +40,7 @@ const FixedInvestDetail = ({navigation, route}) => {
     });
     const [visible, setVisible] = useState(false);
     const res = useSelector((state) => state.fixedInvest.fixedInvestDetail);
-    const selectData = useRef(['修改', '暂停', '终止']);
+    const [selectData, setSelectData] = useState([]);
     const handleClick = (t) => {
         setType(t);
         passwordModal?.current?.show();
@@ -71,7 +71,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                 ),
             });
             let selectArr = btn_list.map((el) => el.text);
-            selectData.current = selectArr.slice(0, -1);
+            setSelectData(selectArr.slice(0, -1));
             setState({
                 header,
                 pay_info,
@@ -86,6 +86,9 @@ const FixedInvestDetail = ({navigation, route}) => {
             init();
         })();
     }, []);
+    useEffect(() => {
+        alert(JSON.stringify(state.pay_info));
+    }, [state]);
     const submit = async (password) => {
         const loading = Toast.showLoading();
         let range = [20, 30];
@@ -295,7 +298,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                             }
                         }}
                         closeModal={() => setVisible(false)}
-                        entityList={selectData.current}
+                        entityList={selectData}
                         show={visible}
                     />
                 </View>

@@ -33,7 +33,6 @@ const shadow = {
         zIndex: 0,
     },
 };
-export const appContext = React.createContext();
 const ProfitDistribution = React.memo(({headData, type}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
@@ -58,102 +57,97 @@ const ProfitDistribution = React.memo(({headData, type}) => {
     }, [type, unitType]);
     return (
         <>
-            {loading ? (
-                <Loading color={Colors.btnColor} />
-            ) : (
-                <View style={{flex: 1, position: 'relative'}}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <BoxShadow setting={{...shadow}}>
-                            <View style={styles.header}>
-                                <View style={Style.flexEvenly}>
-                                    <View style={styles.headerItem}>
-                                        <Text
-                                            style={[
-                                                styles.profitLabel,
-                                                {
-                                                    color:
-                                                        delMille(profit_info?.value) > 0
-                                                            ? Colors.red
-                                                            : delMille(profit_info?.value) < 0
-                                                            ? Colors.green
-                                                            : Colors.lightBlackColor,
-                                                },
-                                            ]}>
-                                            {profit_info?.value}
-                                        </Text>
-                                        <Text style={styles.profitValue}>{profit_info?.text}</Text>
-                                    </View>
-                                    <View style={styles.headerItem}>
-                                        <Text
-                                            style={[
-                                                styles.profitLabel,
-                                                {
-                                                    color:
-                                                        delMille(profit_acc_info?.value) > 0
-                                                            ? Colors.red
-                                                            : delMille(profit_acc_info?.value) < 0
-                                                            ? Colors.green
-                                                            : Colors.lightBlackColor,
-                                                },
-                                            ]}>
-                                            {profit_acc_info?.value}
-                                        </Text>
-                                        <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
-                                    </View>
-                                    <View style={styles.headerItem}>
-                                        <Text
-                                            style={[
-                                                styles.profitLabel,
-                                                {
-                                                    color:
-                                                        delMille(profit_all?.value) > 0
-                                                            ? Colors.red
-                                                            : delMille(profit_all?.value) < 0
-                                                            ? Colors.green
-                                                            : Colors.lightBlackColor,
-                                                },
-                                            ]}>
-                                            {profit_all?.value}
-                                        </Text>
-                                        <Text style={styles.profitValue}>{profit_all?.text}</Text>
-                                    </View>
+            <View style={{flex: 1, position: 'relative'}}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <BoxShadow setting={{...shadow}}>
+                        <View style={styles.header}>
+                            <View style={Style.flexEvenly}>
+                                <View style={styles.headerItem}>
+                                    <Text
+                                        style={[
+                                            styles.profitLabel,
+                                            {
+                                                color:
+                                                    delMille(profit_info?.value) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit_info?.value) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightBlackColor,
+                                            },
+                                        ]}>
+                                        {profit_info?.value}
+                                    </Text>
+                                    <Text style={styles.profitValue}>{profit_info?.text}</Text>
+                                </View>
+                                <View style={styles.headerItem}>
+                                    <Text
+                                        style={[
+                                            styles.profitLabel,
+                                            {
+                                                color:
+                                                    delMille(profit_acc_info?.value) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit_acc_info?.value) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightBlackColor,
+                                            },
+                                        ]}>
+                                        {profit_acc_info?.value}
+                                    </Text>
+                                    <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
+                                </View>
+                                <View style={styles.headerItem}>
+                                    <Text
+                                        style={[
+                                            styles.profitLabel,
+                                            {
+                                                color:
+                                                    delMille(profit_all?.value) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit_all?.value) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightBlackColor,
+                                            },
+                                        ]}>
+                                        {profit_all?.value}
+                                    </Text>
+                                    <Text style={styles.profitValue}>{profit_all?.text}</Text>
                                 </View>
                             </View>
-                        </BoxShadow>
-                        <View style={{marginTop: px(26)}} />
-                        <View style={styles.section}>
-                            {tabs.length > 1 && (
-                                <ScrollableTabView
-                                    renderTabBar={() => (
-                                        //解决key unique
-                                        <Tab
-                                            style={styles.borderStyle}
-                                            btnColor={Colors.defaultColor}
-                                            inActiveColor={Colors.lightBlackColor}
-                                        />
-                                    )}
-                                    locked={true}
-                                    initialPage={0}
-                                    onChangeTab={({i}) => {
-                                        setUnitType(tabs[i].type);
-                                    }}>
-                                    {tabs.map((tab, index) => {
-                                        if (index == 0)
-                                            return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                        if (index == 1)
-                                            return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                        if (index == 2)
-                                            return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                        if (index == 3)
-                                            return <TotalProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                    })}
-                                </ScrollableTabView>
-                            )}
                         </View>
-                    </ScrollView>
-                    {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}
-                </View>
-            )}
+                    </BoxShadow>
+                    <View style={{marginTop: px(26)}} />
+                    <View style={styles.section}>
+                        {tabs.length > 1 && (
+                            <ScrollableTabView
+                                renderTabBar={() => (
+                                    //解决key unique
+                                    <Tab
+                                        style={styles.borderStyle}
+                                        btnColor={Colors.defaultColor}
+                                        inActiveColor={Colors.lightBlackColor}
+                                    />
+                                )}
+                                initialPage={0}
+                                onChangeTab={({i}) => {
+                                    setUnitType(tabs[i].type);
+                                }}>
+                                {tabs.map((tab, index) => {
+                                    if (index == 0)
+                                        return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                    if (index == 1)
+                                        return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                    if (index == 2)
+                                        return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                    if (index == 3)
+                                        return <TotalProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                })}
+                            </ScrollableTabView>
+                        )}
+                    </View>
+                </ScrollView>
+                {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}
+            </View>
         </>
     );
 });
