@@ -90,7 +90,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                 password,
                 type: type == 'pause' ? 20 : 30,
             });
-            if (res.code === '000001') {
+            if (res.code === '000001' || res.code === '000000') {
                 Toast.hide(loading);
                 let timer = setTimeout(() => {
                     Toast.show(res.message);
