@@ -306,6 +306,7 @@ import CommunityInfoEdit from '~/pages/Community/CommunityInfoEdit'; // 编辑�
 import CommunityArticleSubmitCheck from '~/pages/Community/CommunityArticleSubmitCheck'; // 社区审核页面
 import SortProduct from '~/pages/CreatorCenter/AddProductStep2/SortProduct'; // 排序产品
 import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的关注/我的粉丝
+import CommunityArticleCreate from '~/pages/Community/CommunityArticleCreate'; // 写文章
 
 // 审核中心
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
@@ -1217,6 +1218,11 @@ export default function AppStack() {
                 <Stack.Screen name="CommunityMyFollow" component={CommunityMyFollow} options={{title: ''}} />
                 <Stack.Screen name="CreatorAuthHome" component={CreatorAuthHome} options={{headerShown: false}} />
                 <Stack.Screen name="SpecialDetailDraft" component={SpecialDetailDraft} options={{headerShown: false}} />
+                <Stack.Screen
+                    name="CommunityArticleCreate"
+                    component={CommunityArticleCreate}
+                    options={{headerShown: false}}
+                />
             </Stack.Navigator>
         </>
     );

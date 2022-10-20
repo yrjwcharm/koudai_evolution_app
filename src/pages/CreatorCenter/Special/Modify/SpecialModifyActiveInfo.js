@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 12:41:24
+ * @LastEditTime: 2022-10-20 17:55:39
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -32,18 +32,9 @@ import {useJump} from '~/components/hooks';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {getStashSpeical, saveStashSpeical} from '../services';
 
+import pickerUploadImg from '~/utils/pickerUploadImg';
+
 const typeArr = ['选择现有图片', '从相册选择'];
-const blockCal = () => {
-    Modal.show({
-        title: '权限申请',
-        content: '权限没打开,请前往手机的“设置”选项中,允许该权限',
-        confirm: true,
-        confirmText: '前往',
-        confirmCallBack: () => {
-            openSettings().catch(() => console.warn('cannot open settings'));
-        },
-    });
-};
 
 export default function SpecialModifyBaseInfo({navigation, route}) {
     const jump = useJump();
@@ -97,46 +88,11 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             },
         });
     };
-    const uploadImage = () => {};
 
-    const openPicker = () => {
-        setTimeout(() => {
-            ImagePicker.openPicker({
-                width: px(1029),
-                height: px(180),
-                cropping: true,
-                cropperChooseText: '选择',
-                cropperCancelText: '取消',
-                loadingLabelText: '加载中',
-                mediaType: 'photo',
-            })
-                .then((image) => {
-                    console.log('image picker:', image);
-                    uploadImage({
-                        fileName: image.filename,
-                        type: image.mime,
-                        uri: image.path,
-                    }).then((res) => {
-                        if (res.code === '000000') {
-                            setBgSource(res.result.url);
-                        }
-                    });
-                })
-                .catch((err) => {
-                    console.warn(err);
-                });
-        }, 200);
-    };
     const handlePickAlumn = () => {
-        try {
-            if (Platform.OS == 'android') {
-                requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, openPicker, blockCal);
-            } else {
-                requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
-            }
-        } catch (err) {
-            console.warn(err);
-        }
+        pickerUploadImg((url) => {
+            setBgSource(url);
+        });
     };
 
     useEffect(() => {

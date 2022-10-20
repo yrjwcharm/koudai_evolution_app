@@ -16,7 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const MonthProfit = React.memo(() => {
+const MonthProfit = React.memo((callback) => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);

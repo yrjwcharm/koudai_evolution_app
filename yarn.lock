@@ -7438,6 +7438,11 @@ react-native-pdf@^6.2.2:
     crypto-js "^3.2.0"
     prop-types "^15.7.2"
 
+react-native-pell-rich-editor@^1.8.8:
+  version "1.8.8"
+  resolved "https://registry.npmmirror.com/react-native-pell-rich-editor/-/react-native-pell-rich-editor-1.8.8.tgz#c6299635de49d8facfded7175d064c0ff89dbc7d"
+  integrity sha512-pPpj3rVEbmOcGbUMiutuQhpxp5HzOQlhVGhZ6B7aWlsliWWDtsi+lu3RXNV+g62PcQ07qDDtZwKOx1fSzff6HQ==
+
 react-native-permissions@^3.0.0:
   version "3.0.0"
   resolved "https://registry.nlark.com/react-native-permissions/download/react-native-permissions-3.0.0.tgz"

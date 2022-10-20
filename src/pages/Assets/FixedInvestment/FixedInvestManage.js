@@ -56,6 +56,7 @@ const FixedInvestManage = ({navigation, route}) => {
                 ]);
                 if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
                     const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
+                    const {data_list = []} = res[2].result || {};
                     navigation.setOptions({title});
                     let tabList = tabs.map((el, index) => {
                         return {...el, checked: el.type == unitType ? true : false};
@@ -64,7 +65,7 @@ const FixedInvestManage = ({navigation, route}) => {
                     setDetail(detail);
                     setHeadList(head_list);
                     setData(res[1].result);
-                    setTerminatedCount(res[2].result?.data_list.length);
+                    setTerminatedCount(data_list.length ?? 0);
                     setLoading(false);
                 }
             })();

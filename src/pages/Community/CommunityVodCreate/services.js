@@ -4,6 +4,6 @@
  */
 import http from '~/services';
 
-export const getTagList = (params) => http.get('/community/article/gettags/202209', params);
+export const getSearchList = (params) => http.get('/community/search/info/20220928', params);
 
 export const publishVideo = (params) => http.post('community/article/submitpublish/check/202209', params);
