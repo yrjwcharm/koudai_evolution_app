@@ -15,7 +15,7 @@ import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
-import {publishNewComment} from '../Common/CommentList/services';
+import {publishNewComment, addInitComment} from '../Common/CommentList/services';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -81,10 +81,19 @@ const SpecialDetail = ({navigation, route}) => {
 
     //发布评论
     const publish = () => {
-        publishNewComment({
-            ...data?.comment_params,
-            content,
-        }).then((res) => {
+        let doRequest;
+        if (route.params.scence !== 'create') {
+            doRequest = publishNewComment({
+                ...data?.comment_params,
+                content,
+            });
+        } else {
+            doRequest = addInitComment({
+                subject_id: route.params.subject_id,
+                content,
+            });
+        }
+        doRequest.then((res) => {
             if (res.code == '000000') {
                 inputModal.current.cancel();
                 setContent('');
