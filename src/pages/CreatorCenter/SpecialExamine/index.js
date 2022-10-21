@@ -48,6 +48,9 @@ const SpecialExamine = ({navigation, route}) => {
         if (type === 1 && reason) {
             return Toast.show('审核通过无需填写原因');
         }
+        if (type === 0 && !reason) {
+            return Toast.show('请填写审核不通过原因');
+        }
         submit({
             is_pass: type,
             reason,
@@ -55,7 +58,7 @@ const SpecialExamine = ({navigation, route}) => {
         }).then((res) => {
             Toast.show(res.message);
             if (res.code === '000000') {
-            } else {
+                navigation.goBack();
             }
         });
     };
