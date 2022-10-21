@@ -69,7 +69,7 @@ export default class BottomSheet extends Component {
     }
     onHeaderHandlerStateChange = ({nativeEvent}) => {
         console.log(nativeEvent.oldState, State.BEGAN);
-        if (nativeEvent.oldState === State) {
+        if (nativeEvent.oldState === State.ACTIVE) {
             this.lastScrollY.setValue(0);
         }
         this.onHandlerStateChange({nativeEvent});
@@ -104,10 +104,7 @@ export default class BottomSheet extends Component {
     };
     render() {
         return (
-            <TapGestureHandler
-                maxDurationMs={100000}
-                ref={this.masterdrawer}
-                maxDeltaY={this.state.lastSnap - SNAP_POINTS_FROM_TOP[0]}>
+            <TapGestureHandler maxDurationMs={100000} ref={this.masterdrawer} maxDeltaY={this.state.lastSnap}>
                 <View style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
                     <Animated.View
                         style={[

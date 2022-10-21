@@ -9,7 +9,7 @@ import {px} from '~/utils/appUtil';
 
 const Intro = ({data, onLayout}) => {
     return (
-        <View style={{paddingHorizontal: px(20), paddingBottom: px(6)}} onLayout={onLayout}>
+        <View style={{paddingHorizontal: px(20), paddingBottom: px(6), paddingTop: px(16)}} onLayout={onLayout}>
             <View style={Style.flexRow}>
                 <Text style={{marginRight: px(24)}}>
                     <Text style={{fontSize: px(18), lineHeight: px(20), fontFamily: Font.numMedium}}>
