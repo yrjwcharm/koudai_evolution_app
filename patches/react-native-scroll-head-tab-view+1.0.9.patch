@@ -1,0 +1,59 @@
+diff --git a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
+index c993477..4d92cc0 100644
+--- a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
++++ b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
+@@ -25,6 +25,7 @@ interface Props {
+     onContentScroll?: (o: Animated.value) => void; //tab容器滑动改变offsetY值，触发该事件
+     renderTabBar?: (p: any) => React.ReactElement;
+     renderScrollHeader?: (p: any) => React.ReactElement;
++    renderScrollHeaderBg?: object;
+     insetValue?: number; // 状态栏的高度，也就是TabBar距离顶部状态栏的距离
+     headerHeight?: number;
+     tabBarStyle?: ViewStyle;
+@@ -224,10 +225,46 @@ export default class ScrollableTabView extends Component<Props> {
+                         },
+                     ],
+                 }}>
++                {this.renderHeaderBg()}
+                 {renderScrollHeader()}
+             </Animated.View>
+         );
+     };
++    // 渲染可滑动背景图
++    renderHeaderBg = () => {
++        const { renderScrollHeader, headerHeight,renderScrollHeaderBg } = this.props;
++        const { containerOffsetY, containerWidth } = this.state;
++        if (!renderScrollHeader) return null;
++
++        return (
++            <Animated.Image
++                source={{ uri: renderScrollHeaderBg?.uri}}
++                style={{
++                    position: 'absolute',
++                    zIndex: 0,
++                    top: 0,
++                    width: containerWidth,
++                    height: headerHeight,
++                    transform: [
++                        {
++                            translateY: containerOffsetY.interpolate({
++                                inputRange: [-200, 0,255],
++                                outputRange: [-255/2, 0,0],
++                            }),
++                        },
++                        {
++                            scale: containerOffsetY.interpolate({
++                                inputRange: [-255, 0,255],
++                                outputRange: [2, 1,1],
++                            }),
++                        },
++                    ],
++                    ...renderScrollHeaderBg?.style
++                }}>
++              
++            </Animated.Image>
++        );
++    };
+ 
+     updateSceneKeys = ({ page, children = this.props.children, callback = () => {} }) => {
+         let newKeys = this.newSceneKeys({ previousKeys: this.state.sceneKeys, currentPage: page, children });

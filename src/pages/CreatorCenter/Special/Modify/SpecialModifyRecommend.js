@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 16:59:43
+ * @LastEditTime: 2022-10-21 18:28:52
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -42,7 +42,7 @@ const example = {
 
 export default function SpecialModifyRecommend({route, navigation}) {
     const jump = useJump();
-    const {subject_id} = route?.params ?? {};
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1043;
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState();
     const [index, setIndex] = useState(0);
@@ -71,7 +71,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     item.product = {
                         product_id: it?.id,
                         product_type: it?.type,
-                        name: it?.val,
+                        product_name: it?.val,
                     };
                     its.push(item);
                 });

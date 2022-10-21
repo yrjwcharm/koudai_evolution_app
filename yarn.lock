@@ -6060,6 +6060,11 @@ mdn-data@2.0.14:
   resolved "https://registry.nlark.com/mdn-data/download/mdn-data-2.0.14.tgz?cache=0&sync_timestamp=1619048669041&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmdn-data%2Fdownload%2Fmdn-data-2.0.14.tgz"
   integrity sha1-cRP8QoGRfWPOKbQ0RvcB5owlulA=
 
+memoize-one@^5.1.1:
+  version "5.2.1"
+  resolved "https://registry.npmmirror.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+  integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
+
 memoize-one@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmmirror.com/memoize-one/-/memoize-one-6.0.0.tgz#b2591b871ed82948aee4727dc6abceeeac8c1045"
@@ -7503,6 +7508,13 @@ react-native-screens@^2.12.0:
   version "2.16.1"
   resolved "https://registry.nlark.com/react-native-screens/download/react-native-screens-2.16.1.tgz"
   integrity sha1-sQWhJzeNkAGKRtrwwvZRj8pgwG8=
+
+react-native-scroll-head-tab-view@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.npmmirror.com/react-native-scroll-head-tab-view/-/react-native-scroll-head-tab-view-1.0.9.tgz#73ab474f8820e0cf2c5b30c19d581e6b62a92d32"
+  integrity sha512-+1lIdSDxdzgMvyaUvg4IsEVR6xDEPWkChUZqa6n7lYPZZy6uP42NXDp99glqRKvrjUSfo+ItgoD84YJTNKRYdw==
+  dependencies:
+    memoize-one "^5.1.1"
 
 react-native-scrollable-tab-view@^1.0.0:
   version "1.0.0"

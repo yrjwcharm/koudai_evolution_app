@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 16:59:21
+ * @LastEditTime: 2022-10-21 18:25:39
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -39,10 +39,7 @@ function SelectInput(props) {
                 <Text style={styles.inputTitle}>{props.title}</Text>
             </View>
             <TouchableOpacity style={styles.inputWrap_end} onPress={props.onPress}>
-                {props.value?.name && <RenderHtml style={styles.input_value} html={props.value.name} />}
-                {!props.value.name && props.value.length > 0 && (
-                    <RenderHtml style={styles.input_value} html={props.value} />
-                )}
+                <RenderHtml style={styles.input_value} html={props.product?.product_name || props.value || ' '} />
                 <AntDesign name="right" size={12} />
             </TouchableOpacity>
         </View>
@@ -75,11 +72,8 @@ const getProductTemplate = (item) => [
         title: '选择推广产品',
         require: true,
         key: ListKeys.Product,
-        value: {
-            product_id: item?.product_id,
-            product_type: item?.product_type,
-            name: item?.name,
-        },
+        product: item,
+        value: null,
         component: SelectInput,
     },
     {
@@ -159,7 +153,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         params.products = items.map((it) => ({
             product_id: it.product.product_id,
             product_type: it.product.product_type,
-            name: it.product.name,
+            name: it.product.product_name,
             desc: it.desc,
             tags: it.tags,
         }));
@@ -177,11 +171,11 @@ export default function SpecialModifyProductInfo({navigation, route}) {
             const item = {};
             sec.data.forEach((row) => {
                 if (row.key === ListKeys.Product) {
-                    item.product = row.value;
+                    item.product = row.product;
                 } else if (row.key === ListKeys.Recommend) {
                     item.title = row.value;
                 } else {
-                    item.tags = (item.tags || []).push(row.value);
+                    item.tags = [...(item.tags || []), row.value];
                 }
             });
             result.push(item);
@@ -217,11 +211,8 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 params: {
                     subject_id,
                     callback: (productItem) => {
-                        item.value = {
-                            product_id: productItem.product_id,
-                            product_type: productItem.product_type,
-                            name: productItem.name,
-                        };
+                        item.product = productItem;
+                        setList([...list]);
                     },
                 },
             });

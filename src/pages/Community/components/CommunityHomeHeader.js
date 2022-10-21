@@ -2,7 +2,7 @@
  * @Date: 2022-10-14 15:10:12
  * @Description:
  */
-import {StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity, Animated} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Style} from '~/common/commonStyle';
@@ -29,11 +29,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
         });
     };
     return data ? (
-        <ImageBackground
-            source={{
-                uri: data?.bg_img || data?.avatar,
-            }}
-            resizeMode="cover"
+        <View
             style={{
                 height: px(220),
                 paddingHorizontal: px(20),
@@ -41,7 +37,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
             }}>
             <View style={Style.flexBetween}>
                 <View style={Style.flexRow}>
-                    <Image source={{uri: data?.avatar}} style={styles.headerAvatar} />
+                    <Image source={{uri: data?.avatar}} style={[styles.headerAvatar]} />
                     <View>
                         <Text style={styles.vName}>{data?.name}</Text>
                         {!!data?.creator_name && (
@@ -77,7 +73,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
                     </TouchableOpacity>
                 )}
             </View>
-        </ImageBackground>
+        </View>
     ) : null;
 };
 

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 14:54:32
+ * @LastEditTime: 2022-10-21 18:11:27
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
@@ -68,7 +68,8 @@ export default function SpecialModifyProductItem({navigation, route}) {
     };
 
     const renderItem = ({item, index}) => {
-        return <Item {...item} isSelected={item.product_id === selectedId} onPress={() => setId(item.product_id)} />;
+        console.log('renderItem:', item);
+        return <Item item={item} isSelected={item.product_id === selectedId} onPress={() => setId(item.product_id)} />;
     };
 
     if (loading) {

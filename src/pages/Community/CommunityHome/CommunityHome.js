@@ -2,9 +2,8 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:社区主页
 // //  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -21,10 +20,11 @@ import {ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
 import {Button} from '../../../components/Button';
 import {ChooseModal} from '../CommunityVodCreate';
+import {ScrollTabView, ScrollView} from 'react-native-scroll-head-tab-view';
 const CommunityHome = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
-    const parallaxHeaderHeight = px(130);
+    const parallaxHeaderHeight = px(220);
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
     const {community_id = 1} = route?.params || {};
@@ -33,6 +33,8 @@ const CommunityHome = ({navigation, route}) => {
     const currentTab = useRef();
     const shareModal = useRef();
     const chooseModal = useRef();
+    const [introHeight, setIntroHeight] = useState(0);
+    const [loading, setLoading] = useState(true);
     const getData = async () => {
         let res = await getCommunityHomeData({community_id});
         currentTab.current = res.result?.tabs[0]?.type;
@@ -41,20 +43,13 @@ const CommunityHome = ({navigation, route}) => {
     };
     const getProductList = async (params) => {
         let res = await getCommunityProductList(params);
+        setLoading(false);
         setProduct(res.result);
     };
     useEffect(() => {}, [currentTab]);
     useEffect(() => {
         getData();
     }, []);
-    const onScroll = (e) => {
-        let y = e.nativeEvent.contentOffset.y;
-        if (y - parallaxHeaderHeight > -px(50)) {
-            setParallTitle(true);
-        } else {
-            setParallTitle(false);
-        }
-    };
     //移除产品
     const onDelete = async (type, item_id) => {
         let res = await removeProduct({type, community_id, item_id});
@@ -77,120 +72,169 @@ const CommunityHome = ({navigation, route}) => {
         }
     };
     const Header = () => {
+        const animateOpacity = scrollY.interpolate({
+            inputRange: [px(50), parallaxHeaderHeight - 50],
+            outputRange: [0, 1],
+            extrapolate: 'clamp',
+        });
+        const headerTitleStyle = {
+            backgroundColor: '#fff',
+            opacity: animateOpacity,
+            flex: 1,
+            paddingTop: inset.top,
+            height: headerHeight,
+            justifyContent: 'center',
+        };
         return (
-            <Animated.View
-                style={[
-                    styles.header,
-                    Style.flexBetween,
-                    {
-                        height: headerHeight,
-                        paddingTop: inset.top,
-                        backgroundColor: scrollY.interpolate({
-                            inputRange: [px(50), px(130)],
-                            outputRange: ['rgba(0,0,0,0)', '#fff'],
-                            extrapolate: 'clamp',
-                        }),
-                    },
-                ]}>
-                <TouchableOpacity style={{width: px(40)}} onPress={() => navigation.goBack()}>
+            <View style={[styles.header]}>
+                <TouchableOpacity
+                    style={{width: px(40), position: 'absolute', left: px(16), top: inset.top + px(8), zIndex: 10}}
+                    onPress={() => navigation.goBack()}>
                     <Icon name="left" size={px(18)} color={parallTitle ? Colors.defaultColor : '#fff'} />
                 </TouchableOpacity>
-                {parallTitle && (
-                    <Text style={[styles.vName, {color: Colors.defaultColor, marginBottom: 0}]}>马老师</Text>
-                )}
+                <Animated.View style={headerTitleStyle}>
+                    <Text style={[styles.vName, {color: Colors.defaultColor, marginBottom: 0}]}>
+                        {data?.community_info?.name}
+                    </Text>
+                </Animated.View>
                 <TouchableOpacity
-                    style={{width: px(40), alignItems: 'flex-end'}}
+                    style={{width: px(40), position: 'absolute', right: px(16), top: inset.top}}
                     onPress={() => shareModal?.current?.show()}>
                     <Icon name="ellipsis1" size={px(30)} color={parallTitle ? Colors.defaultColor : '#fff'} />
                 </TouchableOpacity>
-            </Animated.View>
+            </View>
         );
     };
     return (
         <>
             <Header />
-            <Animated.ScrollView
-                onScroll={Animated.event(
-                    [
-                        {
-                            nativeEvent: {contentOffset: {y: scrollY}}, // 记录滑动距离
-                        },
-                    ],
-                    {
-                        useNativeDriver: false,
-                        listener: (e) => {
-                            onScroll(e);
-                        },
-                    }
-                )}>
-                <CommunityHomeHeader
-                    data={data?.community_info}
-                    item_type={11}
-                    item_id={community_id}
-                    style={{
-                        width: deviceWidth,
-                        paddingTop: headerHeight + px(20),
-                    }}
-                />
-                {data?.tabs ? (
-                    <LinearGradient
-                        start={{x: 0, y: 0.25}}
-                        end={{x: 0.8, y: 0.8}}
-                        colors={['#fff', Colors.bgColor]}
-                        style={styles.listCon}>
-                        <Intro data={data?.intro_info} />
-                        <ScrollableTabView
-                            renderTabBar={() => <ScrollTabbar container="View" />}
-                            onChangeTab={({i}) => {
-                                currentTab.current = data?.tabs[i].type;
-                                getProductList({community_id, type: data?.tabs[i].type});
-                            }}>
-                            {data?.tabs?.map((tab, index) =>
-                                tab.type == 1 ? (
-                                    <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
-                                        {product?.length ? (
-                                            product?.map((_data) => (
-                                                <CommunityFollowCard key={_data.id} {..._data} onDelete={onDelete} />
-                                            ))
-                                        ) : (
-                                            <EmptyTip
-                                                desc="请点击按钮进行添加"
-                                                text="暂无相关作品"
-                                                imageStyle={{marginBottom: px(-30)}}>
-                                                <Button
-                                                    onPress={() => chooseModal?.current?.show('article', product)}
-                                                    title="添加作品"
-                                                    style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
-                                                />
-                                            </EmptyTip>
-                                        )}
+            <View style={{flex: 1}}>
+                {data?.tabs?.length && (
+                    <ScrollTabView
+                        headerHeight={parallaxHeaderHeight + introHeight - px(30)}
+                        insetValue={headerHeight}
+                        style={{backgroundColor: '#fff', flex: 1}}
+                        onContentScroll={(e) => {
+                            scrollY.setValue(e.value);
+                            if (e.value > 80) {
+                                setParallTitle(true);
+                            } else {
+                                setParallTitle(false);
+                            }
+                        }}
+                        renderTabBar={(_props) => (
+                            <ScrollTabbar {..._props} container="View" boxStyle={{backgroundColor: '#fff'}} />
+                        )}
+                        renderScrollHeaderBg={{
+                            uri: data?.community_info?.bg_img || data?.community_info?.avatar,
+                            style: {
+                                height: parallaxHeaderHeight,
+                            },
+                        }}
+                        renderScrollHeader={() => {
+                            return (
+                                <>
+                                    <CommunityHomeHeader
+                                        data={data?.community_info}
+                                        item_type={11}
+                                        item_id={community_id}
+                                        style={{
+                                            width: deviceWidth,
+                                            paddingTop: headerHeight + px(20),
+                                        }}
+                                    />
+                                    <View
+                                        style={styles.listCon}
+                                        onLayout={(e) => {
+                                            setIntroHeight(e.nativeEvent.layout.height);
+                                        }}>
+                                        <Intro data={data?.intro_info} />
                                     </View>
-                                ) : (
-                                    <View key={index} style={{flex: 1, paddingHorizontal: px(16)}} tabLabel={tab?.name}>
-                                        {product?.length ? (
-                                            product?.map((_data) => (
-                                                <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
-                                            ))
+                                </>
+                            );
+                        }}>
+                        {data?.tabs?.map((tab, index) =>
+                            tab.type == 1 ? (
+                                <ScrollView
+                                    key={index}
+                                    style={{flex: 1, backgroundColor: Colors.bgColor}}
+                                    tabLabel={tab?.name}>
+                                    <LinearGradient
+                                        style={{paddingHorizontal: px(16)}}
+                                        colors={['#fff', Colors.bgColor]}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 0, y: 0.3}}>
+                                        {!loading ? (
+                                            product?.length ? (
+                                                product?.map((_data) => (
+                                                    <CommunityFollowCard
+                                                        key={_data.id}
+                                                        {..._data}
+                                                        onDelete={onDelete}
+                                                    />
+                                                ))
+                                            ) : (
+                                                <EmptyTip
+                                                    desc="请点击按钮进行添加"
+                                                    text="暂无相关作品"
+                                                    imageStyle={{marginBottom: px(-30)}}>
+                                                    <Button
+                                                        onPress={() => chooseModal?.current?.show('article', product)}
+                                                        title="添加作品"
+                                                        style={{
+                                                            width: px(180),
+                                                            borderRadius: px(100),
+                                                            marginTop: px(10),
+                                                        }}
+                                                    />
+                                                </EmptyTip>
+                                            )
                                         ) : (
-                                            <EmptyTip
-                                                desc="请点击按钮进行添加"
-                                                text="暂无相关产品"
-                                                imageStyle={{marginBottom: px(-30)}}>
-                                                <Button
-                                                    onPress={() => chooseModal?.current?.show('fund', product)}
-                                                    title="添加产品"
-                                                    style={{width: px(180), borderRadius: px(100), marginTop: px(10)}}
-                                                />
-                                            </EmptyTip>
+                                            <ActivityIndicator />
                                         )}
-                                    </View>
-                                )
-                            )}
-                        </ScrollableTabView>
-                    </LinearGradient>
-                ) : null}
-            </Animated.ScrollView>
-
+                                    </LinearGradient>
+                                </ScrollView>
+                            ) : (
+                                <ScrollView
+                                    key={index}
+                                    style={{flex: 1, backgroundColor: Colors.bgColor}}
+                                    tabLabel={tab?.name}>
+                                    <LinearGradient
+                                        style={{paddingHorizontal: px(16)}}
+                                        colors={['#fff', Colors.bgColor]}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 0, y: 0.3}}>
+                                        {!loading ? (
+                                            product?.length ? (
+                                                product?.map((_data) => (
+                                                    <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
+                                                ))
+                                            ) : (
+                                                <EmptyTip
+                                                    desc="请点击按钮进行添加"
+                                                    text="暂无相关产品"
+                                                    imageStyle={{marginBottom: px(-30)}}>
+                                                    <Button
+                                                        onPress={() => chooseModal?.current?.show('fund', product)}
+                                                        title="添加产品"
+                                                        style={{
+                                                            width: px(180),
+                                                            borderRadius: px(100),
+                                                            marginTop: px(10),
+                                                        }}
+                                                    />
+                                                </EmptyTip>
+                                            )
+                                        ) : (
+                                            <ActivityIndicator />
+                                        )}
+                                    </LinearGradient>
+                                </ScrollView>
+                            )
+                        )}
+                    </ScrollTabView>
+                )}
+            </View>
             <ChooseModal ref={chooseModal} onDone={handleAddProduct} maxCount={1} />
             {data?.share_info ? (
                 <ShareModal
@@ -212,14 +256,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: deviceWidth,
         zIndex: 20,
-        paddingHorizontal: px(16),
     },
 
     listCon: {
         borderTopLeftRadius: px(20),
         borderTopRightRadius: px(20),
         marginTop: px(-30),
-        paddingTop: px(16),
+        flex: 1,
+        backgroundColor: '#fff',
     },
     vName: {
         fontSize: px(18),
@@ -227,5 +271,6 @@ const styles = StyleSheet.create({
         marginBottom: px(6),
         color: '#fff',
         fontWeight: '700',
+        textAlign: 'center',
     },
 });
