@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 11:01:22
+ * @LastEditTime: 2022-10-21 16:50:16
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -27,13 +27,17 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
             () => {
                 setFavor((_favor) => {
                     if (_favor) {
-                        followCancel({item_id: data.code_id, item_type: data.item_type || 1}).then((res) => {
-                            res.message && Toast.show(res.message);
-                        });
+                        followCancel({item_id: data.code_id || data.plan_id, item_type: data.item_type || 1}).then(
+                            (res) => {
+                                res.message && Toast.show(res.message);
+                            }
+                        );
                     } else {
-                        followAdd({item_id: data.code_id, item_type: data.item_type || 1}).then((res) => {
-                            res.message && Toast.show(res.message);
-                        });
+                        followAdd({item_id: data.code_id || data.plan_id, item_type: data.item_type || 1}).then(
+                            (res) => {
+                                res.message && Toast.show(res.message);
+                            }
+                        );
                     }
                     return !_favor;
                 });

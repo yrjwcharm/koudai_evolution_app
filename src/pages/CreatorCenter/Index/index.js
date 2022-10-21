@@ -257,6 +257,17 @@ const CreatorCenterIndex = () => {
                                                             // });
                                                             jump(itm?.url);
                                                             // jump({
+                                                            //     path: 'SpecialDetail',
+                                                            //     type: 1,
+                                                            //     params: {
+                                                            //         link: 'http://192.168.2.9:3000/specialDetail',
+                                                            //         params: {
+                                                            //             subject_id: 1011,
+                                                            //             is_preview: 0,
+                                                            //         },
+                                                            //     },
+                                                            // });
+                                                            // jump({
                                                             //     path: 'SpecialCardStylePreview',
                                                             //     params: {
                                                             //         subject_id: 134,

@@ -17,6 +17,7 @@ import {useSelector} from 'react-redux';
 import Storage from '../utils/storage';
 import {useFocusEffect} from '@react-navigation/native';
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome';
+// import Attention from '~/pages/Attention/Index';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {

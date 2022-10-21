@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 15:17:03
+ * @LastEditTime: 2022-10-21 17:55:20
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -31,6 +31,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import EmptyTip from '~/components/EmptyTip';
 import LogView from '~/components/LogView';
 import ScrollableTabBar from '~/components/ScrollableTabBar';
+import HotFund from '../Attention/Index/HotFund';
+import Toast from '~/components/Toast';
+import {followAdd} from '../Attention/Index/service';
 
 const Product = ({navigation}) => {
     const jump = useJump();
@@ -146,6 +149,14 @@ const Product = ({navigation}) => {
         getFollowData({
             item_type,
         });
+    };
+
+    //一键关注
+    const onFollow = async (params) => {
+        let res = await followAdd(params);
+        if (res.code == '000000') {
+        }
+        Toast.show(res.message);
     };
 
     const renderSecurity = (menu_list) => {
@@ -310,6 +321,9 @@ const Product = ({navigation}) => {
                                         </View>
                                     );
                                 })}
+                                {followTabs?.hot_data ? (
+                                    <HotFund data={followTabs?.hot_data} onFollow={onFollow} />
+                                ) : null}
                             </ScrollableTabView>
                         ) : (
                             <EmptyTip />
