@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-19 17:45:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 16:39:09
+ * @LastEditTime: 2022-10-21 18:38:43
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/services.js
  * @Description:
  */
@@ -26,10 +26,7 @@ export const getRecommendInfo = (params = {}) => http.get('/ss_manage/rec/settin
 export const getRecommendProductInfo = (params = {}) => http.get('/ss_manage/rec/edit/20221010', params, false);
 
 /** 推广卡片信息保存 */
-export const saveRecommendInfo = (params = {}) => http.get('/ss_manage/rec/save/20221010', params, true);
-
-/** 图片上传 */
-export const uploadImage = (params = {}) => http.get('/common/image/upload', params, true);
+export const saveRecommendInfo = (params = {}) => http.post('/ss_manage/rec/save/20221010', params, true);
 
 /** 推广卡片-产品选择 */
 export const getProductList = (params = {}) => http.get('/ss_manage/rec/products/20221010', params, false);

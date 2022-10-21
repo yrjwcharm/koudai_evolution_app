@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 16:56:55
+ * @LastEditTime: 2022-10-21 18:47:38
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -37,13 +37,15 @@ export default function SpecialPreviewRecommend(props) {
         if (type === 1) {
             params.s_img = uri;
         } else {
-            params.products = items.map((it) => ({
-                product_id: it.product.product_id,
-                product_type: it.product.product_type,
-                name: it.product.name,
-                desc: it.desc,
-                tags: it.tags,
-            }));
+            params.products = JSON.stringify(
+                items.map((it) => ({
+                    product_id: it.product?.product_id || '',
+                    product_type: it.product?.product_type || '',
+                    name: it.product?.product_name || '',
+                    desc: it.title || '',
+                    tags: it.tags || [],
+                }))
+            );
         }
         saveRecommendInfo(params).then((res) => {
             if (res.code === '000000') {
@@ -53,6 +55,19 @@ export default function SpecialPreviewRecommend(props) {
     };
     const handleBack = () => {
         props.navigation.goBack();
+    };
+    const renderRecommandCards = () => {
+        let filterdItems = items.filter((it) => it.product && it.product.product_id && it.title && it.tags?.length > 0);
+        let filterTabs = tabs.slice(0, filterdItems.length);
+        return (
+            <View style={styles.cellWrap}>
+                <RecommendItemWrap tabs={filterTabs}>
+                    {(filterdItems || []).map((item, index) => (
+                        <RecommendProduct {...item} />
+                    ))}
+                </RecommendItemWrap>
+            </View>
+        );
     };
     return (
         <SafeAreaView edges={['bottom']}>
@@ -70,13 +85,7 @@ export default function SpecialPreviewRecommend(props) {
                         <RecommendImage uri={uri} />
                     </View>
                 ) : (
-                    <View style={styles.cellWrap}>
-                        <RecommendItemWrap tabs={tabs}>
-                            {(items || []).map((item, index) => (
-                                <RecommendProduct {...item} />
-                            ))}
-                        </RecommendItemWrap>
-                    </View>
+                    renderRecommandCards()
                 )}
             </View>
         </SafeAreaView>
