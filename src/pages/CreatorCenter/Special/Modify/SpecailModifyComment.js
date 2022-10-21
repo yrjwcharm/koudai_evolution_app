@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 16:45:35
+ * @LastEditTime: 2022-10-21 20:51:05
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -97,8 +97,8 @@ const IconMap = {
     pass: require('~/assets/img/special/pass.png'),
     refuse: require('~/assets/img/special/refuse.png'),
     like: require('~/assets/img/special/like.png'),
-    // like2: require('~/assets/img/special/like-1.png'),
-    // comment: require('~/assets/img/special/comment.png'),
+    like2: require('~/assets/img/special/like-1.png'),
+    comment: require('~/assets/img/special/comment.png'),
     del: require('~/components/IM/app/source/image/delete.png'),
     recommend: require('~/assets/img/special/recommend.png'),
     recommend2: require('~/assets/img/special/recommend-1.png'),
@@ -107,11 +107,11 @@ const IconMap = {
 // 获取评论中操作类型对于的图标
 const getIconByOP = (op) => {
     if (op.op_type === 'like') {
-        if (op.is_liked) return IconMap.like2;
+        if (op.op_value === 1) return IconMap.like2;
         return IconMap.like;
     }
     if (op.op_type === 'recommend') {
-        if (op.is_recommend) return IconMap.recommend2;
+        if (op.op_value === 1) return IconMap.recommend2;
         return IconMap.recommend;
     }
 
@@ -249,6 +249,7 @@ export default function SpecailModifyComment({navigation, route}) {
                 {
                     op_type: op.op_type,
                     comment_id: item.id,
+                    op_value: op.op_value === 0 ? 1 : 0,
                 },
                 true
             ).then((res) => {
