@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-02 17:13:58
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-21 12:20:52
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -23,7 +23,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX, formaNum, onlyNumber} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, formaNum, onlyNumber, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -83,9 +83,10 @@ const Profile = ({navigation}) => {
     );
     const onPress = useCallback(
         (item) => {
-            global.LogTool('click', item.key);
-            if (item.val?.type === 'jump') {
-                if (item.key === '绑定微信') {
+            const {id, key, val: {jump_url, options, text: txt, type} = {}} = item;
+            global.LogTool('click', key);
+            if (type === 'jump') {
+                if (key === '绑定微信') {
                     WeChat.isWXAppInstalled().then((isInstalled) => {
                         if (isInstalled) {
                             const scope = 'snsapi_userinfo';
@@ -116,47 +117,52 @@ const Profile = ({navigation}) => {
                         }
                     });
                 } else {
-                    jump(item.val?.jump_url);
+                    jump(jump_url);
                 }
-            } else if (item.val?.type === 'select') {
+            } else if (type === 'select') {
                 Keyboard.dismiss();
                 setShowMask(true);
                 Picker.init({
                     pickerTitleColor: [31, 36, 50, 1],
-                    pickerTitleText: `请选择${item.key}`,
+                    pickerTitleText: `请选择${key}`,
                     pickerCancelBtnText: '取消',
                     pickerConfirmBtnText: '确定',
                     pickerBg: [255, 255, 255, 1],
                     pickerToolBarBg: [249, 250, 252, 1],
-                    pickerData: item.val?.options?.map((option) => option.val),
+                    pickerData: options?.map((option) => option.val),
                     pickerFontColor: [33, 33, 33, 1],
                     pickerRowHeight: 36,
                     pickerConfirmBtnColor: [0, 81, 204, 1],
                     pickerCancelBtnColor: [128, 137, 155, 1],
                     pickerTextEllipsisLen: 100,
-                    selectedValue: [item.val?.text],
+                    selectedValue: [txt],
                     wheelFlex: [1, 1],
                     onPickerCancel: () => setShowMask(false),
                     onPickerConfirm: (pickedValue, pickedIndex) => {
                         setShowMask(false);
                         http.post('/mapi/update/user_info/20210101', {
-                            id: item.id,
-                            ...(item.val?.options[pickedIndex] || {}),
+                            id: id,
+                            ...(options[pickedIndex] || {}),
                         }).then((res) => {
                             if (res.code === '000000') {
-                                global.LogTool('select', item.key);
+                                global.LogTool('select', key);
                                 init();
                             }
                         });
                     },
                 });
                 Picker.show();
-            } else if (item.val?.type === 'input') {
-                setIptVal(item.val?.text);
+            } else if (['input', 'textarea'].includes(type)) {
+                setIptVal(txt);
                 setModalProps({
                     confirmClick: () => confirmClick(item),
-                    placeholder: `请输入${item.key}金额`,
-                    title: item.key,
+                    inputProps: {
+                        keyboardType: type === 'textarea' ? 'default' : 'decimal-pad',
+                        maxLength: 30,
+                        multiline: type === 'textarea' ? true : false,
+                        placeholder: `请输入${key}`,
+                    },
+                    title: key,
                 });
                 setTimeout(() => {
                     inputRef?.current?.focus();
@@ -227,54 +233,78 @@ const Profile = ({navigation}) => {
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
             <InputModal {...modalProps} ref={inputModal}>
-                <View style={[Style.flexRow, styles.inputContainer]}>
-                    <Text style={styles.unit}>¥</Text>
-                    <TextInput
-                        ref={inputRef}
-                        clearButtonMode={'never'}
-                        keyboardType={'decimal-pad'}
-                        onChangeText={(value) => setIptVal(onlyNumber(value))}
-                        style={[styles.inputStyle]}
-                        value={iptVal}
-                    />
-                    {`${iptVal}`.length === 0 && <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>}
-                    {`${iptVal}`.length > 0 && (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
-                            <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
-                        </TouchableOpacity>
-                    )}
-                </View>
+                {modalProps?.inputProps?.multiline ? (
+                    <View style={styles.textareaBox}>
+                        <TextInput
+                            maxLength={modalProps?.inputProps?.maxLength}
+                            multiline={modalProps?.inputProps?.multiline}
+                            onChangeText={(val) => setIptVal(val)}
+                            placeholder={modalProps?.inputProps?.placeholder}
+                            placeholderTextColor={Colors.placeholderColor}
+                            ref={inputRef}
+                            style={styles.textarea}
+                            textAlignVertical="top"
+                            value={iptVal}
+                        />
+                        <View style={[Style.flexRow, styles.bottomOps]}>
+                            <Text style={[styles.count, {marginRight: px(12)}]}>
+                                {iptVal?.length}/{modalProps?.inputProps?.maxLength}
+                            </Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
+                                <Text style={[styles.count, {color: Colors.brandColor}]}>清除</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ) : (
+                    <View style={[Style.flexRow, styles.inputContainer]}>
+                        <Text style={styles.unit}>¥</Text>
+                        <TextInput
+                            ref={inputRef}
+                            clearButtonMode={'never'}
+                            keyboardType={modalProps?.inputProps?.keyboardType}
+                            maxLength={modalProps?.inputProps?.maxLength}
+                            onChangeText={(value) => setIptVal(onlyNumber(value))}
+                            style={styles.inputStyle}
+                            value={iptVal}
+                        />
+                        {`${iptVal}`.length === 0 && (
+                            <Text style={styles.placeholder}>{modalProps?.inputProps?.placeholder}</Text>
+                        )}
+                        {`${iptVal}`.length > 0 && (
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
+                                <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(16)} />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
             </InputModal>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index, arr) => {
                     return (
                         <View key={`part${index}`} style={[styles.partBox]}>
                             {part.map((item, i) => {
+                                const {key, val: {desc, jump_url, text: txt, type} = {}} = item;
                                 return (
-                                    <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>
-                                        {item.val?.type === 'jump' ||
-                                        item.val?.type === 'select' ||
-                                        item.val?.type === 'input' ? (
+                                    <View key={key} style={[i === 0 ? {} : styles.borderTop]}>
+                                        {['input', 'jump', 'select', 'textarea'].includes(type) ? (
                                             <TouchableOpacity
                                                 activeOpacity={0.8}
-                                                style={[Style.flexBetween, {height: text(56)}]}
+                                                style={[Style.flexBetween, {height: px(56)}]}
                                                 onPress={() => onPress(item)}>
-                                                <Text style={styles.title}>{item.key}</Text>
+                                                <Text style={styles.title}>{key}</Text>
                                                 <View style={Style.flexRow}>
-                                                    {item.val?.desc ? (
-                                                        <HTML
-                                                            html={item.val.desc}
-                                                            style={{...styles.val, ...styles.desc}}
-                                                        />
+                                                    {desc ? (
+                                                        <HTML html={desc} style={{...styles.val, ...styles.desc}} />
                                                     ) : null}
-                                                    {item.val?.text ? (
-                                                        <View style={{marginHorizontal: text(12)}}>
+                                                    {txt ? (
+                                                        <View style={{marginHorizontal: px(12), maxWidth: px(200)}}>
                                                             <HTML
                                                                 html={
-                                                                    item.val?.type === 'input'
-                                                                        ? formaNum(`${item.val.text}`, 'nozero')
-                                                                        : item.val.text
+                                                                    type === 'input'
+                                                                        ? formaNum(`${txt}`, 'nozero')
+                                                                        : txt
                                                                 }
+                                                                numberOfLines={1}
                                                                 style={styles.val}
                                                             />
                                                         </View>
@@ -287,14 +317,28 @@ const Profile = ({navigation}) => {
                                                 </View>
                                             </TouchableOpacity>
                                         ) : (
-                                            <View style={[Style.flexBetween, {height: text(56)}]}>
-                                                <Text style={styles.title}>{item.key}</Text>
-                                                {item.val?.type === 'img' && item.val?.text ? (
-                                                    <Image source={{uri: item.val.text}} style={styles.avatar} />
-                                                ) : (
-                                                    <HTML html={item.val.text} style={styles.val} />
-                                                )}
-                                            </View>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                disabled={!jump_url}
+                                                onPress={() => jump(jump_url)}
+                                                style={[Style.flexBetween, {height: px(56)}]}>
+                                                <Text style={styles.title}>{key}</Text>
+                                                <View style={Style.flexRow}>
+                                                    {type === 'img' && txt ? (
+                                                        <Image source={{uri: txt}} style={styles.avatar} />
+                                                    ) : (
+                                                        <HTML html={txt} style={styles.val} />
+                                                    )}
+                                                    {jump_url ? (
+                                                        <Icon
+                                                            name={'angle-right'}
+                                                            size={20}
+                                                            color={Colors.lightGrayColor}
+                                                            style={{marginLeft: px(12)}}
+                                                        />
+                                                    ) : null}
+                                                </View>
+                                            </TouchableOpacity>
                                         )}
                                     </View>
                                 );
@@ -303,7 +347,7 @@ const Profile = ({navigation}) => {
                     );
                 })}
                 {tip ? (
-                    <Text style={[styles.bottom_text, {marginBottom: isIphoneX() ? 44 : text(20)}]}>{tip}</Text>
+                    <Text style={[styles.bottom_text, {marginBottom: isIphoneX() ? 44 : px(20)}]}>{tip}</Text>
                 ) : null}
             </ScrollView>
         </View>
@@ -327,12 +371,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: Font.textH2,
-        lineHeight: text(20),
+        lineHeight: px(20),
         color: Colors.descColor,
     },
     val: {
         fontSize: Font.textH2,
-        lineHeight: text(24),
+        lineHeight: px(24),
         color: Colors.defaultColor,
         fontFamily: Font.numMedium,
     },
@@ -340,45 +384,65 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
     },
     avatar: {
-        width: text(32),
-        height: text(32),
-        borderRadius: text(16),
+        width: px(32),
+        height: px(32),
+        borderRadius: px(16),
     },
     inputContainer: {
-        marginVertical: text(32),
+        marginVertical: px(32),
         marginHorizontal: Space.marginAlign,
-        paddingBottom: text(12),
+        paddingBottom: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
         position: 'relative',
     },
     unit: {
-        fontSize: text(26),
+        fontSize: px(26),
         fontFamily: Font.numFontFamily,
     },
     inputStyle: {
         flex: 1,
-        fontSize: text(35),
-        lineHeight: text(42),
-        height: text(42),
-        marginLeft: text(14),
+        fontSize: px(35),
+        lineHeight: px(42),
+        height: px(42),
+        marginLeft: px(14),
         padding: 0,
         fontFamily: Font.numMedium,
     },
     placeholder: {
         position: 'absolute',
-        left: text(28),
-        top: text(3.5),
-        fontSize: text(26),
-        lineHeight: text(37),
+        left: px(28),
+        top: px(3.5),
+        fontSize: px(26),
+        lineHeight: px(37),
         color: Colors.placeholderColor,
     },
     bottom_text: {
         color: Colors.darkGrayColor,
-        fontSize: text(11),
-        lineHeight: text(18),
-        marginTop: text(16),
-        paddingHorizontal: text(20),
+        fontSize: px(11),
+        lineHeight: px(18),
+        marginTop: px(16),
+        paddingHorizontal: px(20),
+    },
+    textareaBox: {
+        paddingVertical: px(20),
+        paddingHorizontal: Space.padding,
+    },
+    textarea: {
+        paddingTop: 0,
+        fontSize: Font.textH2,
+        color: Colors.descColor,
+        height: px(270),
+    },
+    bottomOps: {
+        position: 'absolute',
+        right: px(16),
+        bottom: px(20),
+    },
+    count: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.lightGrayColor,
     },
 });
 
