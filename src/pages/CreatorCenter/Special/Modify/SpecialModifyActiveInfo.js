@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 17:55:39
+ * @LastEditTime: 2022-10-21 10:38:28
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -90,7 +90,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
     };
 
     const handlePickAlumn = () => {
-        pickerUploadImg((url) => {
+        pickerUploadImg(({url}) => {
             setBgSource(url);
         });
     };

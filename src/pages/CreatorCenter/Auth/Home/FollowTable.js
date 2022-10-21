@@ -71,7 +71,9 @@ const FollowTable = ({data = [], headerData, isLoading, isLoadingMore, columns, 
             const str = row[key].replace(/[^\x00-\xff]/g, 'xx');
             max = Math.max(str.length, max);
         });
-        maxLen[key] = px(max * 9) + 30;
+        const str = headerData[key].replace(/[^\x00-\xff]/g, 'xx');
+        max = Math.max(str.length, max);
+        maxLen[key] = Math.max(px(max * 9) + 30, 40);
     });
     const handleScroll = (e) => {
         const endHeight =

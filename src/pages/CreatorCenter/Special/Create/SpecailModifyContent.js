@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 22:19:46
+ * @LastEditTime: 2022-10-20 22:22:52
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -328,7 +328,7 @@ export default function SpecailModifyContent({navigation, route}) {
                     ListFooterComponent={
                         <FooterItem
                             onAdd={handleAdd}
-                            edit_buttons={pageData.edit_buttons || []}
+                            data={pageData || {}}
                             cansort={data.length > 0}
                             onSort={handleSort}
                         />

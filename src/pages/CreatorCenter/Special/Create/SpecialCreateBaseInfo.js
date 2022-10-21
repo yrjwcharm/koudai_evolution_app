@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 17:55:15
+ * @LastEditTime: 2022-10-21 11:12:57
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -132,6 +132,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     const jump = useJump();
     const {subject_id} = route?.params ?? {};
     const [bgSource, setBgSource] = useState();
+    const [bgPreview, setBgPreview] = useState();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState({});
 
@@ -173,7 +174,19 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 if (isEdit) {
                     navigation.goBack();
                 } else {
-                    jump(data.next_button.url);
+                    // jump(data.next_button.url);
+                    jump({
+                        path: 'SpecialDetail',
+                        type: 4,
+                        params: {
+                            link: 'http://localhost:3001/specialDetailDraft',
+                            secne: 'create',
+                            params: {
+                                subject_id: '1022',
+                                secne: 'creating',
+                            },
+                        },
+                    });
                 }
             }
         });
@@ -219,7 +232,8 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         });
     };
     const handlePickAlumn = () => {
-        pickerUploadImg((url) => {
+        pickerUploadImg(({url, uri}) => {
+            console.log('pickerUploadImg:', url, uri);
             setBgSource(url);
         });
     };
@@ -229,6 +243,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         getStashBaseInfo({subject_id: subject_id || 0})
             .then((res) => {
                 if (res.code === '000000') {
+                    console.log('getStashBaseInfo:', res);
                     setData(res.result);
                     setTitle(res.result.name || '');
                     setDesc(res.result.desc || '');
@@ -261,7 +276,10 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         // 背景图片是否已选择
         uploadImgSection = (
             <TouchableOpacity style={[styles.uload_btn, Style.flexCenter]} activeOpacity={0.9} onPress={showSelectImg}>
-                <ImageBackground resizeMode="cover" source={{uri: bgSource}} style={[styles.bg_image]}>
+                <ImageBackground
+                    resizeMode="cover"
+                    source={{uri: bgPreview ? bgPreview : bgSource}}
+                    style={[styles.bg_image]}>
                     <FastImage
                         source={require('~/components/IM/app/source/image/camera.png')}
                         style={[styles.upload_centerCamera]}
