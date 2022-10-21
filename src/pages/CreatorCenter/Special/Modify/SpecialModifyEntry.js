@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 13:47:06
+ * @LastEditTime: 2022-10-21 17:01:07
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -23,7 +23,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1021;
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1043;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
@@ -71,9 +71,13 @@ export default function SpecialModifyEntry({navigation, route}) {
     const renderSectionHeader = () => {
         return <View style={styles.sectionHeader} />;
     };
+    const handleJump = (item) => {
+        console.log('item url', item.url);
+        jump(item.url);
+    };
     const renderItem = ({item, index, section}) => {
         return (
-            <TouchableOpacity style={styles.cell} onPress={() => jump(item.url)}>
+            <TouchableOpacity style={styles.cell} onPress={() => handleJump(item)}>
                 <Text style={styles.cell_title}>{item.name}</Text>
                 <View style={styles.cell_descWrap}>
                     <Html style={styles.cell_desc} html={item.status_desc} numberOfLines={1} />
@@ -103,7 +107,7 @@ export default function SpecialModifyEntry({navigation, route}) {
                     <SectionList
                         sections={sections}
                         initialNumToRender={20}
-                        keyExtractor={(item, index) => item + index}
+                        keyExtractor={(item) => item.name}
                         onEndReachedThreshold={0.2}
                         ItemSeparatorComponent={itemSeparatorComponent}
                         renderSectionHeader={renderSectionHeader}

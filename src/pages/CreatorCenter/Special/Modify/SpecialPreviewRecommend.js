@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 12:23:15
+ * @LastEditTime: 2022-10-21 16:56:55
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -27,7 +27,7 @@ export default function SpecialPreviewRecommend(props) {
     const {type, uri, subject_id, items, onSave} = props.route?.params ?? {};
 
     let tabs = [];
-    if (type === 1) {
+    if (type === 2) {
         const nums = ['一', '二', '三'];
         tabs = items.map((i, index) => `推广位${nums[index]}`);
     }
@@ -65,7 +65,7 @@ export default function SpecialPreviewRecommend(props) {
                 rightTextStyle={styles.right_sty}
             />
             <View style={styles.pageWrap}>
-                {type === 0 ? (
+                {type === 1 ? (
                     <View style={styles.flexWrap}>
                         <RecommendImage uri={uri} />
                     </View>

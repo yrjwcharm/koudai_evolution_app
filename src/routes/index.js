@@ -280,8 +280,8 @@ import SpecialSubmitCheck from '~/pages/CreatorCenter/Special/Create/SpecialSubm
 
 // 专题修改
 import SpecialModifyEntry from '~/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js'; // 专题修改入口
-import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-基础信息
-import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
+import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyBaseInfo.js'; // 专题修改-基础信息
+import SpecialModifyActiveInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js'; // 专题修改-活动信息
 import SpecailModifyComment from '~/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js'; // 专题修改-评论础信息
 import SpecialModifyRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js'; // 专题修改-推广位样式
 import SpecialPreviewRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js'; // 专题修改-推广位样式
