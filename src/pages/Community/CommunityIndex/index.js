@@ -3,12 +3,13 @@
  * @Description: 社区首页
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {useSelector} from 'react-redux';
 import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import WaterfallFlow from 'react-native-waterfall-flow';
-import {useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import close from '~/assets/img/icon/close.png';
 import live from '~/assets/img/vision/live.gif';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -22,6 +23,7 @@ import withPageLoading from '~/components/withPageLoading';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {CommunityCardCover, CommunityFollowCard} from '../components/CommunityCard';
 import {
+    getAllMsg,
     getCanPublishContent,
     getFollowedData,
     getPageData,
@@ -32,10 +34,22 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce, groupBy} from 'lodash';
 
 /** @name 社区头部 */
-const Header = ({active, setActive, tabs, userInfo = {}}) => {
+const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const {url, user: {avatar} = {}} = userInfo;
+    const [allMsg, setAll] = useState(0);
+
+    useFocusEffect(
+        useCallback(() => {
+            isLogin &&
+                getAllMsg().then((res) => {
+                    if (res.code === '000000') {
+                        setAll(res.result.all);
+                    }
+                });
+        }, [isLogin])
+    );
 
     return (
         <View style={[Style.flexBetween, styles.header, {paddingTop: insets.top + px(4)}]}>
@@ -62,7 +76,10 @@ const Header = ({active, setActive, tabs, userInfo = {}}) => {
                 })}
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity activeOpacity={0.8} style={{marginRight: px(12)}}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => jump({path: 'SearchHome', type: 1})}
+                    style={{marginRight: px(12)}}>
                     <Image
                         source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png'}}
                         style={styles.headerRightIcon}
@@ -73,6 +90,11 @@ const Header = ({active, setActive, tabs, userInfo = {}}) => {
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'}}
                         style={styles.headerRightIcon}
                     />
+                    {allMsg ? (
+                        <View style={[styles.allMsg, Style.flexCenter, {left: allMsg > 99 ? px(11) : px(15)}]}>
+                            <Text style={styles.msgNum}>{allMsg > 99 ? '99+' : allMsg}</Text>
+                        </View>
+                    ) : null}
                 </TouchableOpacity>
             </View>
         </View>
@@ -571,6 +593,7 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
 
 const Index = ({navigation, setLoading}) => {
     const isFocused = useIsFocused();
+    const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
     const {follow, recommend, tabs, user_info} = data;
@@ -611,7 +634,13 @@ const Index = ({navigation, setLoading}) => {
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
-            <Header active={active} setActive={setActive} tabs={tabs} userInfo={user_info} />
+            <Header
+                active={active}
+                isLogin={userInfo.is_login}
+                setActive={setActive}
+                tabs={tabs}
+                userInfo={user_info}
+            />
             <ScrollableTabView locked page={active} renderTabBar={false} style={{flex: 1}}>
                 {tabs?.map((tab, i) => {
                     const {name, type} = tab;
@@ -661,6 +690,24 @@ const styles = StyleSheet.create({
     headerRightIcon: {
         width: px(24),
         height: px(24),
+    },
+    allMsg: {
+        position: 'absolute',
+        left: px(15),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(20),
+        zIndex: 3,
+        minWidth: px(14),
+        height: px(14),
+        paddingHorizontal: 4,
+    },
+    msgNum: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: px(9),
+        lineHeight: px(13),
+        fontFamily: Font.numFontFamily,
     },
     title: {
         fontSize: Font.textH2,

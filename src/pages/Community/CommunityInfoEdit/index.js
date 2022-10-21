@@ -6,7 +6,8 @@ import React, {useCallback, useRef, useState} from 'react';
 import {ImageBackground, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
+import {openCropper} from 'react-native-image-crop-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import camera from '~/assets/img/icon/camera.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -26,6 +27,7 @@ const Index = ({navigation, route, setLoading}) => {
     const {avatar, intro, name} = data;
     const [value, setValue] = useState('');
     const bottomModal = useRef();
+    const input = useRef();
 
     const init = () => {
         getCommunityInfo({community_id})
@@ -56,24 +58,29 @@ const Index = ({navigation, route, setLoading}) => {
     };
 
     const chooseBg = () => {
-        ImagePicker.openPicker({
-            width: px(375),
-            height: px(220),
-            cropping: true,
-            cropperChooseText: '选择',
-            cropperCancelText: '取消',
-            loadingLabelText: '加载中',
-        })
-            .then((img) => {
-                if (img) {
-                    upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                        res && onSave({bg_img: res.url, community_id});
+        launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
+            const {assets: [file] = []} = resp;
+            file &&
+                openCropper({
+                    path: file.uri,
+                    width: px(375),
+                    height: px(220),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
+                })
+                    .then((img) => {
+                        if (img) {
+                            upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
+                                res && onSave({bg_img: res.url, community_id});
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
                     });
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        });
     };
 
     useFocusEffect(
@@ -107,6 +114,7 @@ const Index = ({navigation, route, setLoading}) => {
                 onPress={() => {
                     setValue(intro || '');
                     bottomModal.current.show();
+                    setTimeout(() => input.current?.focus?.(), 300);
                 }}
                 style={[Style.flexBetween, styles.infoItem]}>
                 <View style={{marginRight: Space.marginAlign}}>
@@ -129,12 +137,12 @@ const Index = ({navigation, route, setLoading}) => {
                 title="社区介绍">
                 <View style={styles.inputBox}>
                     <TextInput
-                        autoFocus
                         maxLength={50}
                         multiline
                         onChangeText={(text) => setValue(text)}
                         placeholder="请输入社区介绍"
                         placeholderTextColor={Colors.placeholderColor}
+                        ref={input}
                         style={styles.input}
                         textAlignVertical="top"
                         value={value}

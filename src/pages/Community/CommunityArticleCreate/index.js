@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {openPicker} from 'react-native-image-crop-picker';
+import {openCropper} from 'react-native-image-crop-picker';
 import {actions, RichEditor} from 'react-native-pell-rich-editor';
 import deleteImg from '~/assets/img/icon/delete.png';
 import uploadImg from '~/assets/img/icon/upload.png';
@@ -30,7 +30,7 @@ import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
-import {ChooseTag} from '../CommunityVodCreate';
+import {ChooseModal, ChooseTag} from '../CommunityVodCreate';
 
 const toolbarIcons = {
     disabled: {
@@ -103,9 +103,10 @@ const WriteArticle = ({article, setArticle}) => {
         {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}},
         {action: 'setItalic', name: 'I', style: {...styles.fontStyleText, fontStyle: 'italic'}},
         {action: 'setUnderline', name: 'U', style: {...styles.fontStyleText, textDecorationLine: 'underline'}},
-        // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
+        {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
     const scrollView = useRef();
+    const chooseModal = useRef();
 
     const fontActive = useMemo(() => {
         return firstLevelOps.find((op) => op.action === 'font')?.active;
@@ -137,6 +138,10 @@ const WriteArticle = ({article, setArticle}) => {
             case 'video':
                 chooseFile({type: action});
                 break;
+            case 'fund':
+            case 'portfolio':
+                chooseModal.current.show('fund');
+                break;
             default:
                 break;
         }
@@ -145,7 +150,7 @@ const WriteArticle = ({article, setArticle}) => {
     const handleSecondLevelOps = ({action, index}) => {
         switch (true) {
             case action === 'setRed':
-                editor.current?.sendAction?.(actions.setTextColor, 'result', Colors.red);
+                editor.current?.setForeColor?.(Colors.red);
                 break;
             default:
                 editor.current?.focusContentEditor?.();
@@ -155,33 +160,31 @@ const WriteArticle = ({article, setArticle}) => {
     };
 
     const chooseFile = ({type}) => {
-        if (type === 'picture') {
-            launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
+        if (type === 'picture' || type === 'video') {
+            launchImageLibrary({mediaType: type === 'picture' ? 'photo' : 'video', selectionLimit: 1}, (resp) => {
                 const {assets: [file] = []} = resp;
                 if (file) {
-                    if (file.fileSize > 10 * 1024 * 1024) {
-                        Toast.show('图片大小不能超过10M');
-                    } else {
-                        upload({...file, fileType: 'pic'}).then((res) => {
-                            if (res) {
-                                editor.current?.focusContentEditor?.();
+                    upload({...file, fileType: type === 'picture' ? 'pic' : 'vod'}).then((res) => {
+                        if (res) {
+                            editor.current?.focusContentEditor?.();
+                            if (type === 'picture') {
                                 editor.current?.sendAction(
                                     actions.insertImage,
                                     'result',
                                     res.url,
                                     `display: block;width: 100%;margin: 12px 0;`
                                 );
+                            } else {
+                                editor.current?.insertHTML(`
+                                    <div class="oss_media" id="oss_vod_${res.id}"><img src="${res.cover}" alt="" style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" videoUrl="${res.url}"></div>
+                                `);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
         }
     };
-
-    useEffect(() => {
-        console.log(editor.current);
-    }, []);
 
     useEffect(() => {
         let showListener, hideListenr;
@@ -227,22 +230,32 @@ const WriteArticle = ({article, setArticle}) => {
                     <RichEditor
                         containerStyle={{marginTop: px(20)}}
                         editorStyle={{
-                            color: Colors.defaultColor,
                             caretColor: Colors.brandColor,
+                            color: Colors.defaultColor,
+                            contentCSSText: `padding: 0;`,
                             initialCSSText: `
                                 h2 {
                                     font-size: 18px;
-                                    line-height: 30px;
+                                    line-height: 25px;
                                     color: #121d3a;
                                     font-weight: 700;
-                                    margin: 28px 0 16px;
+                                    margin: 20px 0 12px;
                                 }
                                 h3 {
                                     font-size: 16px;
-                                    line-height: 32px;
+                                    line-height: 22px;
                                     color: #121d3a;
                                     font-weight: 700;
-                                    margin: 28px 0 16px;
+                                    margin: 20px 0 12px;
+                                }
+                                div {
+                                    font-size: 14px;
+                                    line-height: 20px;
+                                    color: #121d3a;
+                                }
+                                a {
+                                    color: ${Colors.brandColor};
+                                    text-decoration: none;
                                 }
                             `,
                             placeholderColor: Colors.placeholderColor,
@@ -256,13 +269,14 @@ const WriteArticle = ({article, setArticle}) => {
                             });
                         }}
                         onChange={(data) => {
-                            console.log(data);
+                            // console.log(data);
                         }}
                         onCursorPosition={onCursorPosition}
                         onFocus={() => setEditorIsFocused(true)}
                         placeholder="请输入正文"
                         ref={editor}
-                        style={{flex: 1, minHeight: px(200), marginBottom: px(200)}}
+                        showsVerticalScrollIndicator={false}
+                        style={{minHeight: px(400), marginBottom: px(200)}}
                     />
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -326,6 +340,16 @@ const WriteArticle = ({article, setArticle}) => {
                     </View>
                 </View>
             </KeyboardAvoidingView>
+            <ChooseModal
+                maxCount={1}
+                onDone={(res) => {
+                    // console.log(res);
+                    editor.current?.focusContentEditor?.();
+                    editor.current?.insertHTML(res.url);
+                }}
+                ref={chooseModal}
+                type="fund"
+            />
         </>
     );
 };
@@ -367,24 +391,29 @@ const Index = ({navigation, route, setLoading}) => {
     };
 
     const chooseCover = () => {
-        openPicker({
-            width: px(300),
-            height: px(400),
-            cropping: true,
-            cropperChooseText: '选择',
-            cropperCancelText: '取消',
-            loadingLabelText: '加载中',
-        })
-            .then((img) => {
-                if (img) {
-                    upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                        res && setCover(res);
+        launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
+            const {assets: [file] = []} = resp;
+            file &&
+                openCropper({
+                    path: file.uri,
+                    width: px(300),
+                    height: px(400),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
+                })
+                    .then((img) => {
+                        if (img) {
+                            upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
+                                res && setCover(res);
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
                     });
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        });
     };
 
     useEffect(() => {
