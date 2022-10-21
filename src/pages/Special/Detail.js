@@ -114,7 +114,7 @@ const SpecialDetail = ({navigation, route}) => {
                 renderLeft={
                     <Text
                         style={{
-                            fontSize: px(16),
+                            fontSize: px(18),
                             lineHeight: px(22),
                             marginLeft: px(13),
                             color: scrolling ? '#121D3A' : '#fff',
@@ -163,7 +163,7 @@ const SpecialDetail = ({navigation, route}) => {
                                 style={styles.rightIcon}
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/close-' +
+                                        'http://static.licaimofang.com/wp-content/uploads/2022/10/close-' +
                                         (scrolling ? 'black' : 'white') +
                                         '.png',
                                 }}

@@ -370,42 +370,52 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={styles.swiperItem}>
-                {bg_img ? (
-                    <TouchableOpacity
-                        activeOpacity={url ? 0.8 : 1}
-                        onPress={() => {
-                            logParams && global.LogTool({...logParams, oid: product_id});
-                            jump(url);
-                        }}
-                        style={styles.bgImage}>
-                        <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
-                    </TouchableOpacity>
-                ) : null}
-                {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
-                {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
-                {tags?.length > 0 && (
-                    <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
-                        {tags.map?.((tag, i) => {
-                            return (
-                                <View key={tag + i} style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
-                                    <Text style={styles.goldenTagText}>{tag}</Text>
-                                </View>
-                            );
-                        })}
-                    </View>
-                )}
-                {button?.text ? (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        disabled={button?.avail === 0}
-                        onPress={() => {
-                            logParams && global.LogTool({...logParams, oid: product_id});
-                            jump(button?.url);
-                        }}
-                        style={[Style.flexCenter, styles.cardBtn]}>
-                        <Text style={styles.cardBtnText}>{button?.text}</Text>
-                    </TouchableOpacity>
-                ) : null}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        logParams && global.LogTool({...logParams, oid: product_id});
+                        jump(button?.url);
+                    }}
+                    style={{alignItems: 'center', width: '100%', height: '100%'}}>
+                    {bg_img ? (
+                        <TouchableOpacity
+                            activeOpacity={url ? 0.8 : 1}
+                            onPress={() => {
+                                logParams && global.LogTool({...logParams, oid: product_id});
+                                jump(url);
+                            }}
+                            style={styles.bgImage}>
+                            <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
+                        </TouchableOpacity>
+                    ) : null}
+                    {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
+                    {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
+                    {tags?.length > 0 && (
+                        <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
+                            {tags.map?.((tag, i) => {
+                                return (
+                                    <View
+                                        key={tag + i}
+                                        style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
+                                        <Text style={styles.goldenTagText}>{tag}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    )}
+                    {button?.text ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            disabled={button?.avail === 0}
+                            onPress={() => {
+                                logParams && global.LogTool({...logParams, oid: product_id});
+                                jump(button?.url);
+                            }}
+                            style={[Style.flexCenter, styles.cardBtn]}>
+                            <Text style={styles.cardBtnText}>{button?.text}</Text>
+                        </TouchableOpacity>
+                    ) : null}
+                </TouchableOpacity>
             </LinearGradient>
         );
     };

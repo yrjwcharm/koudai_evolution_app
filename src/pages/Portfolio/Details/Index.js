@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 14:45:31
+ * @LastEditTime: 2022-10-21 14:44:45
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -323,6 +323,7 @@ const styles = StyleSheet.create({
     },
     leftBtn: {
         justifyContent: 'center',
+        alignItems: 'center',
         marginRight: px(24),
     },
     leftBtnText: {

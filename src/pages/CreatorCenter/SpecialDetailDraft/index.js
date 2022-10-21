@@ -82,7 +82,7 @@ const SpecialDetailDraft = ({navigation, route}) => {
                 renderLeft={
                     <Text
                         style={{
-                            fontSize: px(16),
+                            fontSize: px(18),
                             lineHeight: px(22),
                             marginLeft: px(13),
                             color: scrolling ? '#121D3A' : '#fff',

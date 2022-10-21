@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-11 15:24:40
+ * @LastEditTime: 2022-10-21 14:42:41
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     },
     sortIcon: {
         marginLeft: px(2),
-        width: px(12),
+        width: px(8),
         height: px(12),
     },
     fundItem: {

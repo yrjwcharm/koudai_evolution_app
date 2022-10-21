@@ -203,13 +203,13 @@ const styles = StyleSheet.create({
         height: px(16),
     },
     title: {
-        fontSize: Font.textH2,
+        fontSize: Font.textH1,
         lineHeight: px(20),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
     },
     desc: {
-        fontSize: Font.textSm,
+        fontSize: Font.textH3,
         lineHeight: px(16),
         color: Colors.descColor,
     },
