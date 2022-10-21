@@ -1,50 +1,34 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 10:38:28
+ * @LastEditTime: 2022-10-21 17:25:38
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-    View,
-    StyleSheet,
-    Text,
-    Platform,
-    TouchableOpacity,
-    TextInput,
-    ScrollView,
-    ImageBackground,
-    Pressable,
-    PermissionsAndroid,
-    DeviceEventEmitter,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
 import NavBar from '~/components/NavBar';
 import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {Style, Colors, Space} from '~/common/commonStyle';
-import {useJump} from '~/components/hooks';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
+
 import {getStashSpeical, saveStashSpeical} from '../services';
 
 import pickerUploadImg from '~/utils/pickerUploadImg';
 
-const typeArr = ['选择现有图片', '从相册选择'];
-
-export default function SpecialModifyBaseInfo({navigation, route}) {
-    const jump = useJump();
+export default function SpecialModifyActiveInfo({navigation, route}) {
     const [bgSource, setBgSource] = useState();
 
-    const [showPickerModal, setPickerModal] = useState(false);
     const [link, setLink] = useState('');
 
     const showSelectImg = () => {
-        setPickerModal(true);
+        pickerUploadImg(({url}) => {
+            setBgSource(url);
+        });
     };
 
     const handleSaveActiveInfo = () => {
@@ -52,6 +36,7 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
             Toast.show('未选择背景图片');
             return;
         }
+        // saveStashSpeical
 
         // TODO: save active info
         navigation.goBack();
@@ -75,24 +60,6 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
         } else {
             navigation.goBack();
         }
-    };
-
-    const handleChooseOld = () => {
-        jump({
-            path: 'SpecialModifyBgImage',
-            params: {
-                onSure: (uri) => {
-                    setBgSource(uri);
-                },
-                selectedUri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-3.png',
-            },
-        });
-    };
-
-    const handlePickAlumn = () => {
-        pickerUploadImg(({url}) => {
-            setBgSource(url);
-        });
     };
 
     useEffect(() => {
@@ -153,21 +120,6 @@ export default function SpecialModifyBaseInfo({navigation, route}) {
                     <View style={[styles.line, styles.space1]} />
                 </View>
             </ScrollView>
-
-            <SelectModal
-                entityList={typeArr}
-                callback={(i) => {
-                    if (i == 0) {
-                        handleChooseOld();
-                    } else {
-                        handlePickAlumn();
-                    }
-                }}
-                show={showPickerModal}
-                closeModal={(show) => {
-                    setPickerModal(show);
-                }}
-            />
         </SafeAreaView>
     );
 }

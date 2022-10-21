@@ -235,6 +235,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         pickerUploadImg(({url, uri}) => {
             console.log('pickerUploadImg:', url, uri);
             setBgSource(url);
+            setBgPreview(uri);
         });
     };
 
