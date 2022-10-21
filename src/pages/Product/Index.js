@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 14:36:40
+ * @LastEditTime: 2022-10-21 15:17:03
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -179,9 +179,9 @@ const Product = ({navigation}) => {
                                 </View>
                             </View>
                             <FastImage
-                                style={{width: px(12), height: px(12)}}
+                                style={{width: px(10), height: px(10)}}
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow.png',
+                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
                                 }}
                             />
                         </TouchableOpacity>
@@ -269,7 +269,7 @@ const Product = ({navigation}) => {
             </LinearGradient>
             <ScrollableTabView
                 ref={tabRef}
-                style={{flex: 1, marginTop: px(-83)}}
+                style={{flex: 1, marginTop: Platform.OS === 'ios' ? px(-83) : px(-95)}}
                 initialPage={1}
                 renderTabBar={false}
                 locked={true}

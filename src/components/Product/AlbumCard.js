@@ -43,7 +43,7 @@ const AlbumHeader = ({
                     />
                     {bg_linear && (
                         <LinearGradient
-                            colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
+                            colors={['#FCFCFC', 'rgba(255, 255, 255, 0.75)']}
                             start={{x: 0, y: 0}}
                             end={{x: 1, y: 0}}
                             style={[styles.bgLinear, {width: bgWidth}]}
@@ -57,7 +57,12 @@ const AlbumHeader = ({
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
                 </View>
-                <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
+                <FastImage
+                    style={{width: px(10), height: px(10)}}
+                    source={{
+                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
+                    }}
+                />
             </View>
             {desc ? (
                 <View style={styles.detailDesc}>
