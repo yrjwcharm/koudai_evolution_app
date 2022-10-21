@@ -661,6 +661,7 @@ chart.axis('date', {
   label: function label(text, index, total) {
     const textCfg = {};
     textCfg.text = text;
+    textCfg.fontSize=10;
     textCfg.fontFamily = 'DINAlternate-Bold';
     return textCfg;
   }
@@ -671,7 +672,7 @@ chart.axis('value', ${
     label: function label(text) {
         const number = parseFloat(text);
         const cfg = {};
-        cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number.toFixed(2)'};
+        cfg.text = ${percent ? 'number.toFixed(2) + "%"' : '~~number'};
         cfg.fontFamily = 'DINAlternate-Bold';
         return cfg;
     }

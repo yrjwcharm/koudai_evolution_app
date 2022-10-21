@@ -12,14 +12,15 @@ import Loading from '../../Portfolio/components/PageLoading';
 import Empty from '../../../components/EmptyTip';
 import {callTerminatedFixedApi} from './services';
 import RenderItem from './components/RenderItem';
-const TerminatedFixedInvest = ({navigation}) => {
+const TerminatedFixedInvest = ({navigation, route}) => {
+    const {type} = route?.params;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
     useEffect(() => {
         (async () => {
-            const res = await callTerminatedFixedApi({});
+            const res = await callTerminatedFixedApi({type});
             if (res.code === '000000') {
                 const {title = ''} = res.result || {};
                 navigation.setOptions({title});

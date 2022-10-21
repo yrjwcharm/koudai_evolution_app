@@ -22,7 +22,7 @@ const shadow = {
         left: px(16),
     },
 };
-const InvestHeader = React.memo(({headList, handleSort}) => {
+const InvestHeader = React.memo(({headList, handleSort, style}) => {
     const [left, center, right] = headList;
     const icon1 = isEmpty(center?.sort_type)
         ? require('../assets/sort.png')
@@ -36,26 +36,28 @@ const InvestHeader = React.memo(({headList, handleSort}) => {
         : require('../assets/asc.png');
 
     return (
-        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(37)}}>
-            <View style={styles.sortChoiceView}>
-                <View style={styles.sortChoiceWrap}>
-                    <Text style={styles.sortText}>{left?.text}</Text>
-                    <TouchableOpacity onPress={() => handleSort(center)}>
-                        <View style={styles.investIssue}>
-                            <Text style={styles.sortText}>{center?.text}</Text>
+        <View style={style}>
+            <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(37)}}>
+                <View style={styles.sortChoiceView}>
+                    <View style={styles.sortChoiceWrap}>
+                        <Text style={styles.sortText}>{left?.text}</Text>
+                        <TouchableOpacity onPress={() => handleSort(center)}>
+                            <View style={styles.investIssue}>
+                                <Text style={styles.sortText}>{center?.text}</Text>
 
-                            <Image source={icon1} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSort(right)}>
-                        <View style={styles.totalSort}>
-                            <Text style={styles.sortText}>{right?.text}</Text>
-                            <Image source={icon2} />
-                        </View>
-                    </TouchableOpacity>
+                                <Image source={icon1} />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleSort(right)}>
+                            <View style={styles.totalSort}>
+                                <Text style={styles.sortText}>{right?.text}</Text>
+                                <Image source={icon2} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-        </BoxShadow>
+            </BoxShadow>
+        </View>
     );
 });
 
