@@ -88,22 +88,8 @@ const DayProfit = React.memo(() => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    let minDate = unit_list[unit_list.length - 1].value;
-                    let maxDate = unit_list[0].value;
-                    let cur = date.format('YYYY-MM');
-                    let max = dayjs(maxDate).format('YYYY-MM');
-                    let min = dayjs(minDate).format('YYYY-MM');
-                    if (cur === max) {
-                        setIsNext(false);
-                    } else if (cur === min) {
-                        setIsPrev(false);
-                    } else if (cur > min && cur < max) {
-                        setIsNext(true);
-                        setIsPrev(false);
-                    } else {
-                        setIsPrev(true);
-                        setIsNext(false);
-                    }
+                    setMinDate(unit_list[unit_list.length - 1].value);
+                    setMaxDate(unit_list[0].value);
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             //小于当前日期的情况
@@ -116,26 +102,11 @@ const DayProfit = React.memo(() => {
                             }
                         }
                     }
-
-                    // let barCharData = arr.map((el) => {
-                    //     return {date: el.day, value: el.profit ?? '0.00'};
-                    // });
-                    // let sortArr = arr.filter((el) => el.day >= startDate && el.day <= lastDate);
-                    // let barCharData = sortArr.map((el, index) => {
-                    //     return {date: el.day, value: parseFloat(el.profit) ?? '0.00'};
-                    // });
-                    // setChart({
-                    //     label: [
-                    //         {name: '时间', val: profit_data_list[0]?.unit_key},
-                    //         {name: '收益', val: profit_data_list[0]?.value},
-                    //     ],
-                    //     chart: barCharData,
-                    // });
                     let barCharData = profit_data_list
                         .map((el) => {
                             return {date: el.unit_key, value: parseFloat(el.value)};
                         })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? -1 : 1));
                     setChart({
                         label: [
                             {name: '时间', val: profit_data_list[0]?.unit_key},
@@ -168,6 +139,12 @@ const DayProfit = React.memo(() => {
      * 向上递增一个月
      */
     const addMonth = () => {
+        let cur = date.format('YYYY-MM');
+        let max = dayjs(maxDate).format('YYYY-MM');
+        if (cur === max) {
+            setIsNext(false);
+            return;
+        }
         setDiff((diff) => diff + 1);
     };
     /**
@@ -182,6 +159,14 @@ const DayProfit = React.memo(() => {
         }
         setDiff((diff) => diff - 1);
     };
+    useEffect(() => {
+        let max = dayjs(maxDate).format('YYYY-MM');
+        let cur = date.format('YYY');
+        if (cur === max) {
+            setIsNext(false);
+            return;
+        }
+    }, [diff]);
     /**
      * 通过选中日期获取收益数据
      */
