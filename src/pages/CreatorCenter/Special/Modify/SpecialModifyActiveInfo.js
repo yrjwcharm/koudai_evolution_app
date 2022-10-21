@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 17:25:38
+ * @LastEditTime: 2022-10-21 17:36:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -21,6 +21,7 @@ import {getStashSpeical, saveStashSpeical} from '../services';
 import pickerUploadImg from '~/utils/pickerUploadImg';
 
 export default function SpecialModifyActiveInfo({navigation, route}) {
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1022;
     const [bgSource, setBgSource] = useState();
 
     const [link, setLink] = useState('');
@@ -44,9 +45,10 @@ export default function SpecialModifyActiveInfo({navigation, route}) {
     const handleBack = () => {
         if (bgSource || link) {
             Modal.show({
-                title: '已编辑内容是否要保存草稿？下次可继续编辑。',
+                content: '已编辑内容是否要保存草稿？下次可继续编辑。',
                 cancelText: '不保存草稿',
                 confirmText: '保存草稿',
+                confirm: true,
                 backCloseCallbackExecute: true,
                 cancelCallBack: () => {
                     navigation.goBack();
@@ -63,7 +65,7 @@ export default function SpecialModifyActiveInfo({navigation, route}) {
     };
 
     useEffect(() => {
-        getStashSpeical().then((res) => {
+        getStashSpeical({subject_id}).then((res) => {
             setLink('');
             setBgSource('');
         });
