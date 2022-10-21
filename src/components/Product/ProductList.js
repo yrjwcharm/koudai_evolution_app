@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
         left: 0,
     },
     name: {
-        fontSize: Font.textH3,
+        fontSize: px(13),
         lineHeight: px(17),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
