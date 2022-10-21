@@ -5,7 +5,7 @@
  */
 import React, {useCallback, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text, TextInput, StyleSheet, TouchableOpacity, View, DeviceEventEmitter} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../../common/commonStyle';
 import {px, px as text} from '../../../../utils/appUtil';
 import Dot from '../../../Portfolio/components/Dot';
@@ -46,6 +46,7 @@ const BarChartComponent = React.memo(({chartData}) => {
                 text: `${items[0]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
             });
+            DeviceEventEmitter.emit('sendChangeTrigger', true);
         },
         [getColor]
     );
@@ -110,13 +111,14 @@ const BarChartComponent = React.memo(({chartData}) => {
                                 );
                             })}
                         </View>
-                        <View style={{height: 200}}>
+                        <View style={{height: px(220)}}>
                             {chartData.chart && (
                                 <Chart
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.green], {
-                                        appendPadding: [15, 50, 20, 15],
+                                        appendPadding: [15, 60, 20, 25],
                                         profitMode: true,
                                         percent: false,
+                                        yAxis: true,
                                     })}
                                     data={chartData.chart}
                                     onChange={onChartChange}

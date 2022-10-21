@@ -41,6 +41,7 @@ const DayProfit = React.memo(() => {
         (selCurDate) => {
             (async () => {
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+                let startDate = dayjs_.format('YYYY-MM-DD');
                 let dayNums = dayjs_.daysInMonth();
                 let weekDay = dayjs_.startOf('month').day();
                 let startTrim = weekDay % 7;
@@ -57,6 +58,7 @@ const DayProfit = React.memo(() => {
                 }
                 //获取当月最后一天是星期几
                 let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
+                let lastDate = dayjs_.add(dayNums - 1, 'day').format('YYYY-MM-DD');
                 let endTrim = 6 - lastWeekDay;
                 //当月日期开始
                 if (startTrim != 7) {
@@ -85,7 +87,7 @@ const DayProfit = React.memo(() => {
                 const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.format('YYYY-MM')});
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
-                    const {profit_data_list = [], unit_list = []} = res.result ?? {};
+                    const {profit_data_list = [], unit_list = []} = res?.result ?? {};
                     setMinDate(unit_list[unit_list.length - 1].value);
                     setMaxDate(unit_list[0].value);
                     for (let i = 0; i < arr.length; i++) {
@@ -100,11 +102,14 @@ const DayProfit = React.memo(() => {
                             }
                         }
                     }
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: el.unit_key, value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+
+                    // let barCharData = arr.map((el) => {
+                    //     return {date: el.day, value: el.profit ?? '0.00'};
+                    // });
+                    let sortArr = arr.filter((el) => el.day >= startDate && el.day <= lastDate);
+                    let barCharData = sortArr.map((el, index) => {
+                        return {date: el.day, value: parseFloat(el.profit) ?? '0.00'};
+                    });
                     setChart({
                         label: [
                             {name: '时间', val: profit_data_list[0]?.unit_key},

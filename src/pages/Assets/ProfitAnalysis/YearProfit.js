@@ -39,7 +39,7 @@ const YearProfit = (callback) => {
                 }
                 const res = await getChartData({type, unit_type: unitType});
                 if (res.code === '000000') {
-                    const {profit_data_list = []} = res.result ?? {};
+                    const {profit_data_list = []} = res?.result ?? {};
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             if (arr[i].day == profit_data_list[j].unit_key) {
@@ -47,11 +47,9 @@ const YearProfit = (callback) => {
                             }
                         }
                     }
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: el.unit_key + '年', value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+                    let barCharData = arr.map((el) => {
+                        return {date: el.day + '年', value: parseFloat(el.profit)};
+                    });
                     setChart({
                         label: [
                             {name: '时间', val: profit_data_list[0]?.unit_key},

@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -16,6 +16,7 @@ import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
+    const [locked, setLocked] = useState(false);
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([]);
     const [title, setTitle] = useState('');
@@ -27,13 +28,13 @@ const ProfitDetail = ({navigation, route}) => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000') {
-                const {title = '', tabs = [], header = {}} = res[0].result || {};
+                const {title = '', tabs = [], header = {}} = res[0]?.result || {};
                 navigation.setOptions({title});
                 setTabs(tabs);
                 setHeadData(header);
             }
             if (res[1].code === '000000') {
-                const {title = '', declare_pic = ''} = res[1].result || {};
+                const {title = '', declare_pic = ''} = res[1]?.result || {};
                 navigation.setOptions({
                     headerRight: () => (
                         <>
@@ -55,6 +56,8 @@ const ProfitDetail = ({navigation, route}) => {
     }, [type]);
     useEffect(() => {
         init();
+        let listener = DeviceEventEmitter.addListener('sendChangeTrigger', (bool) => setLocked(bool));
+        return () => listener && listener.remove();
     }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
@@ -69,6 +72,7 @@ const ProfitDetail = ({navigation, route}) => {
                     ref={scrollTab}
                     renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
                     initialPage={page}
+                    locked={locked}
                     onChangeTab={({i}) => {
                         setType(tabs[i].type);
                         dispatch({type: 'updateType', payload: tabs[i].type});

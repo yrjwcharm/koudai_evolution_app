@@ -1,11 +1,13 @@
 /*
  * @Date: 2021-02-05 14:32:45
+ * @LastEditors: yanruifeng
+ * @LastEditTime: 2022-10-21 15:05:06
  * @Description: 基金相关图表配置
  */
 // 交互图例
 import {Dimensions, Platform} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
-import {px as text} from '../../../utils/appUtil';
+import {px, px as text} from '../../../utils/appUtil';
 export const baseAreaChart = (
     data,
     colors = [
@@ -636,6 +638,7 @@ export const dodgeColumn = (
         showTooltip = true,
         profitMode = false,
         percent = true,
+        yAxis = true,
     } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
@@ -643,7 +646,7 @@ chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
   width: ${width},
-  height: ${text(220)},
+  height: ${px(220)},
   appendPadding: ${JSON.stringify(appendPadding)}
 });
 chart.source(${JSON.stringify(data)}, {
@@ -662,14 +665,18 @@ chart.axis('date', {
     return textCfg;
   }
 });
-chart.axis('value', {
-  label: function label(text) {
-    const number = parseFloat(text);
-    const cfg = {};
-    cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number.toFixed(2)'};
-    cfg.fontFamily = 'DINAlternate-Bold';
-    return cfg;
-  }
+chart.axis('value', ${
+    yAxis
+        ? `{
+    label: function label(text) {
+        const number = parseFloat(text);
+        const cfg = {};
+        cfg.text = ${percent ? 'number.toFixed(2) + "%"' : 'number.toFixed(2)'};
+        cfg.fontFamily = 'DINAlternate-Bold';
+        return cfg;
+    }
+}`
+        : 'false'
 });
 chart.legend(false);
 chart.tooltip({
