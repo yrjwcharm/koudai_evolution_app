@@ -88,8 +88,22 @@ const DayProfit = React.memo(() => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    setMinDate(unit_list[unit_list.length - 1].value);
-                    setMaxDate(unit_list[0].value);
+                    let minDate = unit_list[unit_list.length - 1].value;
+                    let maxDate = unit_list[0].value;
+                    let cur = date.format('YYYY-MM');
+                    let max = dayjs(maxDate).format('YYYY-MM');
+                    let min = dayjs(minDate).format('YYYY-MM');
+                    if (cur === max) {
+                        setIsNext(false);
+                    } else if (cur === min) {
+                        setIsPrev(false);
+                    } else if (cur > min && cur < max) {
+                        setIsNext(true);
+                        setIsPrev(false);
+                    } else {
+                        setIsPrev(true);
+                        setIsNext(false);
+                    }
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             //小于当前日期的情况
@@ -154,12 +168,6 @@ const DayProfit = React.memo(() => {
      * 向上递增一个月
      */
     const addMonth = () => {
-        let cur = date.format('YYYY-MM');
-        let max = dayjs(maxDate).format('YYYY-MM');
-        if (cur === max) {
-            setIsNext(false);
-            return;
-        }
         setDiff((diff) => diff + 1);
     };
     /**
@@ -174,14 +182,6 @@ const DayProfit = React.memo(() => {
         }
         setDiff((diff) => diff - 1);
     };
-    useEffect(() => {
-        let max = dayjs(maxDate).format('YYYY-MM');
-        let cur = date.format('YYY');
-        if (cur === max) {
-            setIsNext(false);
-            return;
-        }
-    }, [diff]);
     /**
      * 通过选中日期获取收益数据
      */

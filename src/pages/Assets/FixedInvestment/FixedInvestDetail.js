@@ -21,7 +21,7 @@ const shadow = {
     color: '#aaa',
     border: 6,
     radius: 1,
-    opacity: 0.102,
+    opacity: 0.1,
     x: 0,
     y: 2,
 };
@@ -150,7 +150,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                         </View>
                     </BoxShadow>
                     <View style={{marginTop: px(12)}}>
-                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(156)}}>
+                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(168)}}>
                             <View style={styles.section}>
                                 <View
                                     style={[
@@ -199,8 +199,8 @@ const FixedInvestDetail = ({navigation, route}) => {
                                     </View>
                                 </View>
                                 {!isEmpty(state.pay_info?.remind) && (
-                                    <View style={{height: px(41), justifyContent: 'center'}}>
-                                        <View style={Style.flexRow}>
+                                    <View style={styles.payInfo}>
+                                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                                             <Text style={styles.redText}>
                                                 {state.pay_info?.remind.substring(
                                                     0,
@@ -312,6 +312,9 @@ const styles = StyleSheet.create({
         fontFamily: Font.pingFangRegular,
         color: Colors.red,
     },
+    payInfo: {
+        paddingVertical: px(12),
+    },
     money: {
         fontSize: px(13),
         fontFamily: Font.numRegular,
@@ -404,7 +407,7 @@ const styles = StyleSheet.create({
     },
     section: {
         position: 'relative',
-        height: px(156),
+        height: px(168),
         paddingTop: px(12),
         paddingHorizontal: px(16),
         borderRadius: px(6),
