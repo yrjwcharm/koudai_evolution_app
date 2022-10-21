@@ -42,12 +42,20 @@ const AlbumHeader = ({
                         style={{width: bgWidth, height: '100%'}}
                     />
                     {bg_linear && (
-                        <LinearGradient
-                            colors={['#FCFCFC', 'rgba(255, 255, 255, 0.75)']}
-                            start={{x: 0, y: 0}}
-                            end={{x: 1, y: 0}}
-                            style={[styles.bgLinear, {width: bgWidth}]}
-                        />
+                        <View style={[Style.flexRow, styles.bgLinear]}>
+                            <LinearGradient
+                                colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
+                                start={{x: 0, y: 0}}
+                                end={{x: 1, y: 0}}
+                                style={[{width: bgWidth / 2, height: '100%'}]}
+                            />
+                            <LinearGradient
+                                colors={['rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.8)']}
+                                start={{x: 0, y: 0}}
+                                end={{x: 1, y: 0}}
+                                style={[{width: bgWidth / 2, height: '100%'}]}
+                            />
+                        </View>
                     )}
                 </View>
             ) : null}
@@ -201,6 +209,7 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         height: '100%',
+        zIndex: 2,
     },
     icon: {
         marginRight: px(4),
