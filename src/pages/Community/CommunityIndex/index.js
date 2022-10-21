@@ -442,7 +442,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
     useEffect(() => {
         init();
     }, [page]);
-    console.log('rest', rest);
     return data?.length > 0 ? (
         <WaterfallFlow
             data={data}
