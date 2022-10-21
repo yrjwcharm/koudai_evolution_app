@@ -106,10 +106,22 @@ const DayProfit = React.memo(() => {
                     // let barCharData = arr.map((el) => {
                     //     return {date: el.day, value: el.profit ?? '0.00'};
                     // });
-                    let sortArr = arr.filter((el) => el.day >= startDate && el.day <= lastDate);
-                    let barCharData = sortArr.map((el, index) => {
-                        return {date: el.day, value: parseFloat(el.profit) ?? '0.00'};
-                    });
+                    // let sortArr = arr.filter((el) => el.day >= startDate && el.day <= lastDate);
+                    // let barCharData = sortArr.map((el, index) => {
+                    //     return {date: el.day, value: parseFloat(el.profit) ?? '0.00'};
+                    // });
+                    // setChart({
+                    //     label: [
+                    //         {name: '时间', val: profit_data_list[0]?.unit_key},
+                    //         {name: '收益', val: profit_data_list[0]?.value},
+                    //     ],
+                    //     chart: barCharData,
+                    // });
+                    let barCharData = profit_data_list
+                        .map((el) => {
+                            return {date: el.unit_key, value: parseFloat(el.value)};
+                        })
+                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
                     setChart({
                         label: [
                             {name: '时间', val: profit_data_list[0]?.unit_key},

@@ -37,7 +37,7 @@ const FixedInvestManage = ({navigation, route}) => {
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
     const [emptyMsg, setEmptyMsg] = useState('');
-    const [terminatedCount, setTerminatedCount] = useState(0);
+    const [terminateUrl, setTerminateUrl] = useState({});
     const [data, setData] = useState({});
     const [headList, setHeadList] = useState([]);
     const [detail, setDetail] = useState({});
@@ -49,14 +49,10 @@ const FixedInvestManage = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             (async () => {
-                const res = await Promise.all([
-                    callFixedHeadDataApi({}),
-                    callHistoryDataApi({type: unitType}),
-                    callTerminatedFixedApi({}),
-                ]);
-                if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
+                const res = await Promise.all([callFixedHeadDataApi({}), callHistoryDataApi({type: unitType})]);
+                if (res[0].code === '000000' && res[1].code === '000000') {
                     const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
-                    const {data_list = []} = res[2].result || {};
+                    const {terminate_url} = res[1].result;
                     navigation.setOptions({title});
                     let tabList = tabs.map((el, index) => {
                         return {...el, checked: el.type == unitType ? true : false};
@@ -65,7 +61,7 @@ const FixedInvestManage = ({navigation, route}) => {
                     setDetail(detail);
                     setHeadList(head_list);
                     setData(res[1].result);
-                    setTerminatedCount(data_list.length ?? 0);
+                    setTerminateUrl(terminate_url);
                     setLoading(false);
                 }
             })();
@@ -206,13 +202,11 @@ const FixedInvestManage = ({navigation, route}) => {
                         refreshing={false}
                         renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
                     />
-                    {terminatedCount !== 0 && (
-                        <TouchableOpacity
-                            style={{marginTop: px(20)}}
-                            onPress={() => navigation.navigate('TerminatedInvest')}>
+                    {Object.keys(terminateUrl).length > 0 && (
+                        <TouchableOpacity style={{marginTop: px(20)}} onPress={() => jump(terminateUrl.url)}>
                             <View style={{alignItems: 'center'}}>
                                 <View style={Style.flexRow}>
-                                    <Text style={styles.termintal}>查看已终止的定投({terminatedCount})</Text>
+                                    <Text style={styles.termintal}>{terminateUrl.text}</Text>
                                     <Image source={require('./assets/more.png')} />
                                 </View>
                             </View>
