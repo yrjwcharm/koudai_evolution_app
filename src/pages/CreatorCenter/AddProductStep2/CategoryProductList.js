@@ -62,9 +62,13 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                                         return md;
                                     }
                                     // 添加分类
+                                    let name = '分类' + md.length;
+                                    while (md.find((m) => m.name === name)) {
+                                        name = name + '-1';
+                                    }
                                     const addObj = {
                                         ...originData[0],
-                                        name: '分类' + md.length,
+                                        name,
                                         desc: '',
                                         products: [],
                                         id: '$' + Date.now(),
