@@ -38,6 +38,7 @@ import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
 import {useOnTogglePlayback} from '../Community/components/audioService/useOnTogglePlayback.js';
 import {startAudio} from '../Community/components/audioService/StartAudioService.js';
 import {updateUserInfo} from '~/redux/actions/userInfo.js';
+import ProductCards from '~/components/Portfolios/ProductCards.js';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -574,7 +575,7 @@ const ArticleDetail = ({navigation, route}) => {
                                     <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
                                         <RenderTitle title={recommendData?.portfolios?.title} />
                                         {recommendData?.portfolios?.list?.map((item, index) => {
-                                            return <PortfolioCard data={item} key={index} style={styles.cardStye} />;
+                                            return <ProductCards data={item} key={index} style={styles.cardStye} />;
                                         })}
                                         <RenderTitle title={recommendData?.articles?.title} />
                                         {recommendData?.articles?.list?.map((item, index) => {
@@ -716,8 +717,8 @@ const ArticleDetail = ({navigation, route}) => {
                                 autoPlay
                                 source={
                                     collect_status
-                                        ? require('../../assets/animation/collect.json')
-                                        : require('../../assets/animation/collectActive.json')
+                                        ? require('../../assets/animation/collectActive.json')
+                                        : require('../../assets/animation/collect.json')
                                 }
                                 style={{height: px(36), width: px(36), marginBottom: px(-4)}}
                             />

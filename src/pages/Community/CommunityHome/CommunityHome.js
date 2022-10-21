@@ -8,7 +8,7 @@ import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
