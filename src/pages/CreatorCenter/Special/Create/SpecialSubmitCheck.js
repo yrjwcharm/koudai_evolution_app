@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 19:28:37
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-21 12:51:16
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -57,7 +57,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
-            <NavBar title={data.title} leftIcon="chevron-left" leftPress={handleBack} />
+            <NavBar title={data?.title} leftIcon="chevron-left" leftPress={handleBack} />
             <View style={styles.content}>
                 <FastImage style={styles.success_image} source={{uri: data.desc_icon}} />
                 <Text style={styles.success_title}>{data.desc}</Text>
