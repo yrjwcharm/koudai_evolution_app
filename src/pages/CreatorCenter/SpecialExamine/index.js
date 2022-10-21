@@ -122,7 +122,7 @@ const SpecialExamine = ({navigation, route}) => {
                         startInLoadingState={true}
                         style={{height: webviewHeight, opacity: 0.99}}
                         source={{
-                            uri: URI('http://192.168.190.43:3000/specialDetail')
+                            uri: URI(item.link.link)
                                 .addQuery({
                                     timeStamp: timeStamp.current,
                                     ...item.link.params,
