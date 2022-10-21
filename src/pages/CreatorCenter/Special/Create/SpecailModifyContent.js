@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 14:05:55
+ * @LastEditTime: 2022-10-21 14:43:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -42,8 +42,8 @@ function FooterItem({onAdd, onSort, cansort = false, data}) {
             <View style={styles.footer_ActionWrap}>
                 {cansort ? (
                     <TouchableOpacity style={styles.footer_action} onPress={onSort}>
-                        <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons[0]?.icon}} />
-                        <Text style={styles.action_title}>{data?.edit_buttons[0]?.name ?? '调整列表'}</Text>
+                        <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons?.[0]?.icon}} />
+                        <Text style={styles.action_title}>{data?.edit_buttons?.[0]?.name ?? '调整列表'}</Text>
                     </TouchableOpacity>
                 ) : (
                     <TouchableOpacity style={styles.footer_action}>
@@ -51,13 +51,13 @@ function FooterItem({onAdd, onSort, cansort = false, data}) {
                             style={styles.action_icon}
                             source={require('~/assets/img/special/list_sort_disabled.png')}
                         />
-                        <Text style={styles.action_title_disable}>{data?.edit_buttons[0]?.name ?? '调整列表'}</Text>
+                        <Text style={styles.action_title_disable}>{data?.edit_buttons?.[0].name ?? '调整列表'}</Text>
                     </TouchableOpacity>
                 )}
 
                 <TouchableOpacity style={styles.footer_action} onPress={onAdd}>
-                    <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons[1]?.icon}} />
-                    <Text style={styles.action_title}>{data?.edit_buttons[1]?.name ?? '添加内容'}</Text>
+                    <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons?.[1]?.icon}} />
+                    <Text style={styles.action_title}>{data?.edit_buttons?.[1]?.name ?? '添加内容'}</Text>
                 </TouchableOpacity>
             </View>
             <Text style={styles.footerWrap_tip}>{data?.tip ?? ''}</Text>
@@ -331,7 +331,7 @@ export default function SpecailModifyContent({navigation, route}) {
                         <FooterItem
                             onAdd={handleAdd}
                             data={pageData || {}}
-                            cansort={data.length > 0}
+                            cansort={data?.length > 0}
                             onSort={handleSort}
                         />
                     }

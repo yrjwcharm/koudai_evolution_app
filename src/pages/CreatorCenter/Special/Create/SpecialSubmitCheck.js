@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 13:57:46
+ * @LastEditTime: 2022-10-21 14:50:08
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -25,8 +25,13 @@ import LoadingTips from '~/components/LoadingTips';
 export default function SpecialSubmitCheck({navigation, route}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const jump = useJump();
     const handleBack = () => {
-        navigation.goBack();
+        if (data?.button?.url) {
+            jump(data?.button?.url);
+        } else {
+            navigation.goBack();
+        }
     };
 
     useFocusEffect(
@@ -44,7 +49,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
         }, [route?.params])
     );
 
-    if (loading && data) {
+    if (loading) {
         return (
             <SafeAreaView edges={['bottom']}>
                 <NavBar title={''} leftIcon="chevron-left" leftPress={handleBack} />
