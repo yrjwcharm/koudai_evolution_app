@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 14:57:08
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-21 21:36:59
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -111,9 +111,9 @@ const SortProduct = ({navigation, route}) => {
     const handleAllDelete = () => {
         Modal.show({
             title: '温馨提示',
-            content: '将会从关注区删除已选',
+            content: '确认删除已勾选产品吗？',
             confirm: true,
-            confirmText: '确认删除',
+            confirmText: '确认',
             confirmCallBack: async () => {
                 setData(data.filter((item) => !item.check));
             },
