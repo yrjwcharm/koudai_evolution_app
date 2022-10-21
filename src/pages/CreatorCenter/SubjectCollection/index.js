@@ -4,7 +4,7 @@
  * @Date: 2022-10-09 15:37:08
  */
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import EmptyTip from '~/components/EmptyTip';
@@ -19,15 +19,19 @@ const SubjectCollection = () => {
     const [data, setData] = useState();
     const [listData, setListData] = useState();
     const [listLoading, setListLoading] = useState(true);
+    const typeRef = useRef(null);
     useFocusEffect(
         useCallback(() => {
             getData().then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    getListData(res.result?.header?.[0]?.type);
+                    if (!typeRef.current) {
+                        typeRef.current = res.result?.header?.[0]?.type;
+                    }
+                    getListData(typeRef.current);
                 }
             });
-        }, [])
+        }, [typeRef])
     );
 
     const getListData = (type) => {
@@ -45,6 +49,7 @@ const SubjectCollection = () => {
 
     const onChangeTab = useCallback(
         ({i}) => {
+            typeRef.current = data?.header?.[i]?.type;
             getListData(data?.header?.[i]?.type);
         },
         [data]
