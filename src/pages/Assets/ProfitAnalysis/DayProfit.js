@@ -139,6 +139,7 @@ const DayProfit = React.memo(() => {
      * 向上递增一个月
      */
     const addMonth = () => {
+        setIsPrev(true);
         let cur = date.format('YYYY-MM');
         let max = dayjs(maxDate).format('YYYY-MM');
         if (cur === max) {
@@ -151,6 +152,7 @@ const DayProfit = React.memo(() => {
      * 向下递减一个月
      */
     const subMonth = () => {
+        setIsNext(true);
         let cur = date.format('YYYY-MM');
         let min = dayjs(minDate).format('YYYY-MM');
         if (cur === min) {
@@ -159,14 +161,6 @@ const DayProfit = React.memo(() => {
         }
         setDiff((diff) => diff - 1);
     };
-    useEffect(() => {
-        let max = dayjs(maxDate).format('YYYY-MM');
-        let cur = date.format('YYY');
-        if (cur === max) {
-            setIsNext(false);
-            return;
-        }
-    }, [diff]);
     /**
      * 通过选中日期获取收益数据
      */

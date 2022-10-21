@@ -27,7 +27,7 @@ const shadow = {
 };
 
 const FixedInvestDetail = ({navigation, route}) => {
-    const {invest_plan_id: plan_id = ''} = route?.params;
+    const {invest_plan_id: plan_id = '', fund_code = '', poid = ''} = route?.params;
     const jump = useJump();
     const passwordModal = useRef(null);
     const [state, setState] = useState({
@@ -43,7 +43,7 @@ const FixedInvestDetail = ({navigation, route}) => {
         passwordModal?.current?.show();
     };
     const init = async () => {
-        const res = await callFixedInvestDetailApi({plan_id});
+        const res = await callFixedInvestDetailApi({plan_id, fund_code, poid});
         if (res.code === '000000') {
             const {
                 title = '',

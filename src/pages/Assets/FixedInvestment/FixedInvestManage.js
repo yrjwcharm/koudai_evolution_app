@@ -49,7 +49,10 @@ const FixedInvestManage = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             (async () => {
-                const res = await Promise.all([callFixedHeadDataApi({}), callHistoryDataApi({type: unitType})]);
+                const res = await Promise.all([
+                    callFixedHeadDataApi({type, fund_code, poid}),
+                    callHistoryDataApi({type: unitType, fund_code, poid}),
+                ]);
                 if (res[0].code === '000000' && res[1].code === '000000') {
                     const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
                     const {terminate_url} = res[1].result;
@@ -116,82 +119,92 @@ const FixedInvestManage = ({navigation, route}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <View style={styles.container}>
-                    <View style={styles.header}>
-                        <ImageBackground
-                            style={{width, height: px(120)}}
-                            source={require('./assets/lineargradient.png')}>
-                            {Object.keys(detail).length > 0 ? (
-                                <View style={styles.automaticInvestDaysView}>
-                                    <Text style={styles.prevText}>{detail?.left}</Text>
-                                    {detail?.days
-                                        ?.toString()
-                                        .split('')
-                                        .map((el, index) => {
-                                            return (
-                                                <View style={styles.dayView} key={el + '' + index}>
-                                                    <Text style={styles.dayText}>{el}</Text>
+                    {headList.length > 0 && (
+                        <View style={styles.header}>
+                            <ImageBackground
+                                style={{width, height: px(120)}}
+                                source={require('./assets/lineargradient.png')}>
+                                {Object.keys(detail).length > 0 ? (
+                                    <View style={styles.automaticInvestDaysView}>
+                                        <Text style={styles.prevText}>{detail?.left}</Text>
+                                        {detail?.days
+                                            ?.toString()
+                                            .split('')
+                                            .map((el, index) => {
+                                                return (
+                                                    <View style={styles.dayView} key={el + '' + index}>
+                                                        <Text style={styles.dayText}>{el}</Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
+                                        {!isEmpty(detail?.tip) && (
+                                            <ImageBackground
+                                                style={{width: px(51), height: px(17)}}
+                                                source={require('./assets/label.png')}>
+                                                <View style={styles.labelView}>
+                                                    <Text style={styles.label}>{detail?.tip}</Text>
                                                 </View>
-                                            );
-                                        })}
-                                    <Text style={[styles.nextText, {marginRight: px(9)}]}>{detail?.right}</Text>
-                                    {!isEmpty(detail?.tip) && (
-                                        <ImageBackground
-                                            style={{width: px(51), height: px(17)}}
-                                            source={require('./assets/label.png')}>
-                                            <View style={styles.labelView}>
-                                                <Text style={styles.label}>{detail?.tip}</Text>
-                                            </View>
-                                        </ImageBackground>
-                                    )}
-                                </View>
-                            ) : (
-                                <View style={styles.emptyInvest}>
-                                    <Text style={styles.emptyInvestText}>暂未定投，现在开始定投，一点点变富</Text>
-                                </View>
-                            )}
-                        </ImageBackground>
-                        <View style={styles.autoInvestWrap}>
-                            <ImageBackground source={require('./assets/rect.png')} style={styles.autoInvest}>
-                                <View style={styles.investWrap}>
-                                    <View style={styles.investView}>
-                                        <View style={styles.itemWrap}>
-                                            <Text style={styles.investValue}>{headList[0]?.value}</Text>
-                                            <Text style={styles.investLabel}>{headList[0]?.text}</Text>
-                                        </View>
-                                        <View style={styles.itemWrap}>
-                                            <Text style={styles.investValue}>{headList[1]?.value}</Text>
-                                            <Text style={styles.investLabel}>{headList[1]?.text}</Text>
-                                        </View>
+                                            </ImageBackground>
+                                        )}
                                     </View>
-                                </View>
+                                ) : (
+                                    <View style={styles.emptyInvest}>
+                                        <Text style={styles.emptyInvestText}>暂未定投，现在开始定投，一点点变富</Text>
+                                    </View>
+                                )}
                             </ImageBackground>
-                        </View>
-                    </View>
-                    <View style={styles.scrollTab}>
-                        {tabList.map((el, index) => {
-                            return (
-                                <TouchableOpacity key={el + ' ' + index} onPress={() => selTab(el)}>
-                                    <View
-                                        style={[
-                                            styles.defaultTab,
-                                            {backgroundColor: el.checked ? '#DEE8FF' : '#FFFFFF'},
-                                        ]}>
-                                        <Text
-                                            style={[
-                                                styles.defaultTabText,
-                                                {
-                                                    fontFamily: el.checked ? Font.pingFangMedium : Font.pingFangRegular,
-                                                    color: el.checked ? Colors.brandColor : Colors.defaultColor,
-                                                },
-                                            ]}>
-                                            {el.text}
-                                        </Text>
+                            <View style={styles.autoInvestWrap}>
+                                <ImageBackground source={require('./assets/rect.png')} style={styles.autoInvest}>
+                                    <View style={styles.investWrap}>
+                                        <View style={styles.investView}>
+                                            <View style={styles.itemWrap}>
+                                                <Text style={styles.investValue}>{headList[0]?.value}</Text>
+                                                <Text style={styles.investLabel}>{headList[0]?.text}</Text>
+                                            </View>
+                                            <View style={styles.itemWrap}>
+                                                <Text style={styles.investValue}>{headList[1]?.value}</Text>
+                                                <Text style={styles.investLabel}>{headList[1]?.text}</Text>
+                                            </View>
+                                        </View>
                                     </View>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                    <InvestHeader headList={data?.head_list ?? []} handleSort={executeSort} />
+                                </ImageBackground>
+                            </View>
+                        </View>
+                    )}
+                    {tabList.length > 0 && (
+                        <View style={styles.scrollTab}>
+                            {tabList.map((el, index) => {
+                                return (
+                                    <TouchableOpacity key={el + ' ' + index} onPress={() => selTab(el)}>
+                                        <View
+                                            style={[
+                                                styles.defaultTab,
+                                                {backgroundColor: el.checked ? '#DEE8FF' : '#FFFFFF'},
+                                            ]}>
+                                            <Text
+                                                style={[
+                                                    styles.defaultTabText,
+                                                    {
+                                                        fontFamily: el.checked
+                                                            ? Font.pingFangMedium
+                                                            : Font.pingFangRegular,
+                                                        color: el.checked ? Colors.brandColor : Colors.defaultColor,
+                                                    },
+                                                ]}>
+                                                {el?.text}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    )}
+                    <InvestHeader
+                        style={{marginTop: px(12)}}
+                        headList={data?.head_list ?? []}
+                        handleSort={executeSort}
+                    />
                     <FlatList
                         windowSize={300}
                         data={data?.data_list || []}
@@ -215,7 +228,7 @@ const FixedInvestManage = ({navigation, route}) => {
                     <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
 
                     {Object.keys(data).length > 0 && (
-                        <FixedButton title={data.button.text} onPress={() => jump(data.button.url)} />
+                        <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
                     )}
                 </View>
             )}
@@ -278,7 +291,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: px(16),
         marginTop: px(28),
-        marginBottom: px(12),
     },
     itemWrap: {
         alignItems: 'center',
