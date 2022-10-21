@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 12:53:55
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-21 13:57:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingTop: px(12),
+        paddingHorizontal: px(16),
         flex: 1,
         backgroundColor: '#F5F6F8',
         display: 'flex',

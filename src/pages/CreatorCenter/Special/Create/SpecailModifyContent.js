@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 22:22:52
+ * @LastEditTime: 2022-10-21 14:05:55
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -308,6 +308,8 @@ export default function SpecailModifyContent({navigation, route}) {
             </SafeAreaView>
         );
     }
+
+    if (!pageData) return null;
 
     return (
         <SafeAreaView edges={['bottom']}>
