@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 18:23:54
+ * @LastEditTime: 2022-10-21 19:07:30
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -47,6 +47,7 @@ const Product = ({navigation}) => {
     const [followData, setFollowData] = useState();
     const [tabActive, setTabActive] = useState(1);
     const [allMsg, setAll] = useState(0);
+    const [subject, setSubjects] = useState([]);
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
@@ -76,7 +77,7 @@ const Product = ({navigation}) => {
             if (isFocused) {
                 scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
                 setTimeout(() => {
-                    getProData(0);
+                    [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(0);
                 }, 0);
                 global.LogTool('tabDoubleClick', 'ProductIndex');
             }
@@ -97,6 +98,8 @@ const Product = ({navigation}) => {
                 setRefreshing(false);
                 setLoading(false);
             });
+
+        // http.get('/subject/list/20220901');
     };
 
     const getFollowTabs = (type) => {
@@ -324,7 +327,7 @@ const Product = ({navigation}) => {
                                 })}
                             </ScrollableTabView>
                         ) : (
-                            <HotFund data={followTabs?.hot_fund} onFollow={onFollow} />
+                            <HotFund data={followTabs?.hot_fund || {}} onFollow={onFollow} />
                         )}
                     </View>
                 </ScrollView>

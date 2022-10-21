@@ -143,8 +143,8 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                         console.log(response.assets[0]);
                         ImageCropPicker.openCropper({
                             path: response.assets[0],
-                            width: 300,
-                            height: 400,
+                            width: 375,
+                            height: 200,
                             cropperChooseText: '选择',
                             cropperCancelText: '取消',
                             loadingLabelText: '加载中',
