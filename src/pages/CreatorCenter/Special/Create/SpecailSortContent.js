@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 21:09:43
+ * @LastEditTime: 2022-10-21 21:37:22
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 修改内容排序
  */
@@ -101,7 +101,15 @@ export default function SpecailSortContent({navigation, route}) {
         });
     };
     const handleAllDelete = () => {
-        setData(data.filter((item) => !item.check));
+        Modal.show({
+            title: '温馨提示',
+            content: '确认删除已勾选内容吗？',
+            confirm: true,
+            confirmText: '确认',
+            confirmCallBack: async () => {
+                setData(data.filter((item) => !item.check));
+            },
+        });
     };
 
     return (
