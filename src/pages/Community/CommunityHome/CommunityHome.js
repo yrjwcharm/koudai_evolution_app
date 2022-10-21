@@ -16,7 +16,6 @@ import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
 import {CommunityFollowCard} from '../components/CommunityCard';
-import ProductList from '../../../components/Product/ProductList';
 import ProductCards from '../../../components/Portfolios/ProductCards';
 import {ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
