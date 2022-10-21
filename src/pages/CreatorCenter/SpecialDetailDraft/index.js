@@ -113,7 +113,8 @@ const SpecialDetailDraft = ({navigation, route}) => {
                         } else if (data?.indexOf('goBack=') > -1) {
                             navigation.goBack();
                         } else if (data?.indexOf('writeComment=') > -1) {
-                            const _content = JSON.parse(data.split('writeComment=')[1]);
+                            let wc = data.split('writeComment=')[1];
+                            const _content = wc ? JSON.parse(wc) : '';
                             setContent(_content + '');
                             setTimeout(() => {
                                 writeComment();
