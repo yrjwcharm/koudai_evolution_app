@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 14:51:46
+ * @LastEditTime: 2022-10-21 16:59:21
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -215,6 +215,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
             jump({
                 path: 'SpecialModifyProductItem',
                 params: {
+                    subject_id,
                     callback: (productItem) => {
                         item.value = {
                             product_id: productItem.product_id,

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 13:51:53
+ * @LastEditTime: 2022-10-21 16:45:35
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -200,7 +200,7 @@ export default function SpecailModifyComment({navigation, route}) {
         getList(pageData.tabs[activeTab].type, page, subject_id);
     }, [pageData, page, activeTab, subject_id]);
 
-    const getList = (type, tpage, sid) => {
+    const getList = useCallback((type, tpage, sid) => {
         if (tpage === 1) {
             setRefreshing(true);
             setData([]);
@@ -217,7 +217,7 @@ export default function SpecailModifyComment({navigation, route}) {
             .finally((_) => {
                 setRefreshing(false);
             });
-    };
+    }, []);
 
     const handleBack = () => {
         navigation.goBack();

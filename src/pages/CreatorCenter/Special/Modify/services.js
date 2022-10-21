@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-19 17:45:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 14:38:59
+ * @LastEditTime: 2022-10-21 16:39:09
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/services.js
  * @Description:
  */
@@ -16,7 +16,7 @@ export const getCommentList = (params = {}) => http.get('/ss_manage/comment/list
 export const addComment = (params = {}) => http.post('/common/comment/add/20220921', params, true);
 
 /** 编辑专题列表 */
-export const getModifyList = (params = {}) => http.post('/subject/manage/modify/menus/20220901', params, false);
+export const getModifyList = (params = {}) => http.get('/subject/manage/modify/menus/20220901', params, false);
 
 /** 提交修改专题 */
 export const submitModify = (params = {}) => http.post('/subject/manage/audit/submit/20220901', params, true);
