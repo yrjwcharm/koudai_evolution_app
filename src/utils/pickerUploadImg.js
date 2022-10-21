@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-20 17:11:00
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 14:03:22
+ * @LastEditTime: 2022-10-21 15:35:33
  * @FilePath: /koudai_evolution_app/src/utils/pickerUploadImg.js
  * @Description:
  */
@@ -59,7 +59,7 @@ export const doPickerAndUploadImg = (cb) => {
                     cropperChooseText: '选择',
                     cropperCancelText: '取消',
                     loadingLabelText: '加载中',
-                    writeTempFile: false,
+                    cropperToolbarTitle: '使用双指缩放',
                 }).then((image) => {
                     console.log('ImageCropPicker.openCropper:', image);
                     if (image) {
