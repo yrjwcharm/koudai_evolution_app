@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 15:07:10
+ * @LastEditTime: 2022-10-21 18:03:58
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -14,7 +14,7 @@ import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
 import Feather from 'react-native-vector-icons/Feather';
 import {Font} from '../../../common/commonStyle';
-const HotFund = ({data, onFollow}) => {
+const HotFund = ({data, onFollow, style}) => {
     const {header, body, footer} = data;
     const jump = useJump();
     const [checkList, setCheckList] = useState([]);
@@ -68,7 +68,7 @@ const HotFund = ({data, onFollow}) => {
     };
     return (
         <>
-            <View style={styles.card}>
+            <View style={[styles.card, style]}>
                 <Image source={{uri: header?.left_btn?.icon_url}} style={{width: px(68), height: px(19)}} />
                 <View style={[Style.flexBetween, {flexWrap: 'wrap'}]}>
                     {body?.list?.map((item, index) => (
