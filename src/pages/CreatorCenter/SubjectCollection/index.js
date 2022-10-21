@@ -3,6 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-10-09 15:37:08
  */
+import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -18,14 +19,16 @@ const SubjectCollection = () => {
     const [data, setData] = useState();
     const [listData, setListData] = useState();
     const [listLoading, setListLoading] = useState(true);
-    useEffect(() => {
-        getData().then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-                getListData(res.result?.header?.[0]?.type);
-            }
-        });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getData().then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    getListData(res.result?.header?.[0]?.type);
+                }
+            });
+        }, [])
+    );
 
     const getListData = (type) => {
         setListLoading(true);
