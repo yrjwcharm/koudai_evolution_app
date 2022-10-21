@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 09:55:06
+ * @LastEditTime: 2022-10-20 19:28:37
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -23,7 +23,6 @@ import http from '~/services';
 import LoadingTips from '~/components/LoadingTips';
 
 export default function SpecialSubmitCheck({navigation, route}) {
-    const {subject_id} = route?.params ?? {};
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const handleBack = () => {
@@ -33,9 +32,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            http.get('/subject/manage/audit/submit_result/20220901', {
-                subject_id,
-            })
+            http.get('/subject/manage/audit/submit_result/20220901', route.params || {})
                 .then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
@@ -44,7 +41,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
                 .finally((_) => {
                     setLoading(false);
                 });
-        }, [subject_id])
+        }, [route?.params])
     );
 
     if (loading && data) {

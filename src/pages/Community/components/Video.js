@@ -20,14 +20,13 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [duration, setDuration] = useState(0); //总时长
     const [sliderValue, setSlierValue] = useState(0); //进度条的进度
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
-    const [followBtnText, setFollowBtnText] = useState('');
     const video = useRef();
-
+    const [followStatus, setFollowStatus] = useState();
     useEffect(() => {
         setShowPause(false);
         setPaused(index != currentIndex);
         customerSliderValue(0);
-        setFollowBtnText(data?.follow_status == 1 ? '已关注' : '+关注');
+        setFollowStatus(data?.follow_status);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, currentIndex]);
 
@@ -67,7 +66,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         if (data?.follow_status == 1) return;
         http.post('/follow/add/202206', {item_id: 10, item_type: community_id || muid}).then((res) => {
             if (res.code == '000000') {
-                setFollowBtnText('已关注');
+                setFollowStatus(1);
             }
         });
     };
@@ -131,7 +130,9 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                     <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
                     <TouchableWithoutFeedback onPress={handleFollow}>
                         <View style={styles.button}>
-                            <Text style={{fontSize: px(12), color: '#fff'}}>{followBtnText}</Text>
+                            <Text style={{fontSize: px(12), color: '#fff'}}>
+                                {followStatus == 1 ? '已关注' : '+关注'}
+                            </Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>

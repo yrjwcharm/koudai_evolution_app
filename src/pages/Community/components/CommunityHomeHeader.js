@@ -12,9 +12,9 @@ import http from '../../../services';
 
 const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
     const jump = useJump();
-    const [followBtnText, setFollowBtnText] = useState('');
+    const [followStatus, setFollowStatus] = useState();
     useEffect(() => {
-        setFollowBtnText(data?.follow_status === 1 ? '已关注' : '关注+');
+        setFollowStatus(data?.follow_status);
     }, [data?.follow_status]);
     const handleFollow = () => {
         if (data?.follow_btn?.url) {
@@ -24,7 +24,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
         if (data?.follow_status == 1) return;
         http.post('/follow/add/202206', {item_id, item_type}).then((res) => {
             if (res.code == '000000') {
-                setFollowBtnText('已关注');
+                setFollowStatus(1);
             }
         });
     };
@@ -65,14 +65,14 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
                 {!!data?.follow_btn && (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={[styles.attentionBtn, data?.follow_status == 1 && styles.followedBtn]}
+                        style={[styles.attentionBtn, followStatus == 1 && styles.followedBtn]}
                         onPress={handleFollow}>
                         <Text
                             style={{
                                 fontSize: px(12),
-                                color: data?.follow_status == 1 ? 'rgba(154, 160, 177, 1)' : Colors.btnColor,
+                                color: followStatus == 1 ? 'rgba(154, 160, 177, 1)' : Colors.btnColor,
                             }}>
-                            {data?.follow_btn?.url ? data?.follow_btn?.text : followBtnText}
+                            {data?.follow_btn?.url ? data?.follow_btn?.text : followStatus == 1 ? '已关注' : '+关注'}
                         </Text>
                     </TouchableOpacity>
                 )}

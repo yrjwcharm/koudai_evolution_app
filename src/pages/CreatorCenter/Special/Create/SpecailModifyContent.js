@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-20 14:12:16
+ * @LastEditTime: 2022-10-20 22:19:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -17,30 +17,33 @@ import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 
 import {getContentList, getStashContentList, saveStashContentList} from './services';
+import {useFocusEffect} from '@react-navigation/native';
+import LoadingTips from '~/components/LoadingTips';
 
 function Item({item, index}) {
-    const {uri, title, source, fav_num, read_count} = item;
+    const {title, source, view_num, favor_num} = item;
+    const uri = item.cover || item.media_cover;
     return (
         <View style={[styles.itemWrap, index === 0 ? styles.itemWrapFirst : {}]}>
             <View style={styles.item_ContentWrap}>
                 <Text style={styles.item_title}>{title}</Text>
-                <Text style={styles.item_desc}>{`${source} ${fav_num}阅读 ${read_count}点赞`}</Text>
+                <Text style={styles.item_desc}>{`${source || ''} ${view_num}阅读 ${favor_num}点赞`}</Text>
             </View>
-            {uri && <FastImage style={styles.item_image} resizeMode="cover" source={{uri}} />}
+            <FastImage style={styles.item_image} resizeMode="cover" source={{uri}} />
             <View style={styles.line} />
         </View>
     );
 }
 
 // 列表最后的添加和排序按钮
-function FooterItem({onAdd, onSort, selected = []}) {
+function FooterItem({onAdd, onSort, cansort = false, data}) {
     return (
         <View style={[styles.footerWrap]}>
             <View style={styles.footer_ActionWrap}>
-                {selected.length >= 1 ? (
+                {cansort ? (
                     <TouchableOpacity style={styles.footer_action} onPress={onSort}>
-                        <FastImage style={styles.action_icon} source={require('~/assets/img/special/list_sort.png')} />
-                        <Text style={styles.action_title}>调整列表</Text>
+                        <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons[0]?.icon}} />
+                        <Text style={styles.action_title}>{data?.edit_buttons[0]?.name ?? '调整列表'}</Text>
                     </TouchableOpacity>
                 ) : (
                     <TouchableOpacity style={styles.footer_action}>
@@ -48,16 +51,16 @@ function FooterItem({onAdd, onSort, selected = []}) {
                             style={styles.action_icon}
                             source={require('~/assets/img/special/list_sort_disabled.png')}
                         />
-                        <Text style={styles.action_title_disable}>调整列表</Text>
+                        <Text style={styles.action_title_disable}>{data?.edit_buttons[0]?.name ?? '调整列表'}</Text>
                     </TouchableOpacity>
                 )}
 
                 <TouchableOpacity style={styles.footer_action} onPress={onAdd}>
-                    <FastImage style={styles.action_icon} source={require('~/assets/img/special/list_add.png')} />
-                    <Text style={styles.action_title}>添加内容</Text>
+                    <FastImage style={styles.action_icon} source={{uri: data?.edit_buttons[1]?.icon}} />
+                    <Text style={styles.action_title}>{data?.edit_buttons[1]?.name ?? '添加内容'}</Text>
                 </TouchableOpacity>
             </View>
-            <Text style={styles.footerWrap_tip}>*最多可添加20篇内容</Text>
+            <Text style={styles.footerWrap_tip}>{data?.tip ?? ''}</Text>
         </View>
     );
 }
@@ -72,7 +75,7 @@ function SearchItem({item, onToggle}) {
                 <Text
                     style={
                         styles.SearchItem_desc
-                    }>{`${item.fav_num}点赞・${item.col_num}收藏・${item.tran_num}转发`}</Text>
+                    }>{`${item.favor_num}点赞・${item.collect_num}收藏・${item.share_num}转发`}</Text>
             </View>
 
             <TouchableOpacity
@@ -89,43 +92,37 @@ function SearchItem({item, onToggle}) {
 }
 
 function ContentSearchModal(props) {
-    const {selected = [], setSelected} = props;
+    const {selected = [], setSelected, subject_id} = props;
     console.log('selected:', selected);
-    const [searchList, setSearchList] = useState([
-        {
-            title: '低位抢筹，逆势蓄力，魔方低估值蓄势',
-            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-1.png',
-            fav_num: '231',
-            col_num: '101',
-            tran_num: '23',
-            isAdded: false,
-            id: 0,
-        },
-        {
-            title: '低位抢筹，逆势蓄力，魔方低估值蓄势 估值低位抢筹，逆势蓄力，魔方低估值蓄势估值',
-            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-2.png',
-            fav_num: '231',
-            col_num: '101',
-            tran_num: '23',
-            isAdded: false,
-            id: 1,
-        },
-        {
-            title: '韭菜大战华尔街？莫把炮灰当精英战华尔街？',
-            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/brand-2.png',
-            fav_num: '336',
-            source: '理财魔方',
-            read_count: '12,045',
-            tran_num: '23',
-            isAdded: false,
-            id: 2,
-        },
-    ]);
-    useEffect(() => {}, []);
+    const [searchList, setSearchList] = useState([]);
+
     const [refreshing, setRefreshing] = useState(false);
+    const [page, setPage] = useState(1);
     const [query, setQuery] = useState(false);
-    // 当前用户名下总文章数
-    const [total, setTotal] = useState(3);
+    const [hasMore, setHasMore] = useState(true);
+
+    useEffect(() => {
+        if (page == 1) {
+            setSearchList([]);
+            setRefreshing(true);
+        }
+        getContentList({subject_id, page, keyword: query})
+            .then((res) => {
+                if (res.code === '000000') {
+                    let old = page === 1 ? [] : searchList;
+                    let result = old.concat(res.result.articles);
+                    result = result.map((item) => {
+                        item.isAdded = selected.findIndex((it) => it.id === item.id) !== -1;
+                        return {...item};
+                    });
+                    setHasMore(res.result.has_more);
+                    setSearchList(result);
+                }
+            })
+            .finally((_) => {
+                setRefreshing(false);
+            });
+    }, [query, page, subject_id]);
 
     useEffect(() => {
         let result = searchList.map((item) => {
@@ -136,7 +133,6 @@ function ContentSearchModal(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected]);
 
-    const searchContent = () => {};
     const handleToggle = (item, index) => {
         if (item.isAdded) {
             item.isAdded = false;
@@ -155,7 +151,8 @@ function ContentSearchModal(props) {
         return <SearchItem item={item} key={item.id} onToggle={() => handleToggle(item, index)} index={index} />;
     };
 
-    if (total <= 0) {
+    const renderEmpty = useCallback(() => {
+        if (refreshing) return null;
         return (
             <View style={styles.searchEmpty}>
                 <FastImage
@@ -166,7 +163,7 @@ function ContentSearchModal(props) {
                 <Text style={styles.searchEmpty_text}>暂无作品</Text>
             </View>
         );
-    }
+    });
 
     return (
         <View style={styles.searchModal}>
@@ -185,7 +182,15 @@ function ContentSearchModal(props) {
             <FlatList
                 data={searchList}
                 refreshing={refreshing}
-                onRefresh={searchContent}
+                onRefresh={() => setPage(1)}
+                onEndReached={() => {
+                    if (hasMore) {
+                        console.log('onEndReached');
+                        setPage(page + 1);
+                    }
+                }}
+                ListEmptyComponent={renderEmpty}
+                onEndReachedThreshold={0.5}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
             />
@@ -194,7 +199,7 @@ function ContentSearchModal(props) {
 }
 
 /** 列表为空时填充 */
-function EmptyLit() {
+function EmptyLit(props) {
     return (
         <View style={styles.emptyTipWrap}>
             <FastImage
@@ -204,6 +209,7 @@ function EmptyLit() {
             />
             <Text style={styles.searchEmpty_text}>暂无内容</Text>
             <View style={styles.line} />
+            {props.children}
         </View>
     );
 }
@@ -211,29 +217,40 @@ function EmptyLit() {
 /** 添加内容 */
 export default function SpecailModifyContent({navigation, route}) {
     const [data, setData] = useState([]);
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1021;
+    const [pageData, setPageData] = useState([]);
+    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1022;
 
+    const [loading, setLoading] = useState(false);
     const jump = useJump();
-    const [refreshing, setRefreshing] = useState(false);
 
     const bottomModal = useRef(null);
 
-    useEffect(() => {
-        getStashContentList({subject_id}).then((res) => {
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            getStashContentList({subject_id})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setPageData(res.result);
+                        setData(res.result.articles || []);
+                    }
+                })
+                .finally((_) => {
+                    setLoading(false);
+                });
+        }, [route.params])
+    );
+    const rightPress = () => {
+        saveStashContentList({
+            subject_id,
+            article_ids: data.map((it) => it.id).join(','),
+        }).then((res) => {
             if (res.code === '000000') {
-                setData(res.result);
+                navigation.goBack();
             }
         });
-    }, []);
-    const rightPress = () => {
-        // TODO: save stash
-        navigation.goBack();
     };
 
-    const loadTemplate = () => {
-        // TODO: load stash
-        // setData([]);
-    };
     const handleBack = () => {
         Modal.show({
             title: '已编辑内容是否要保存草稿？下次可继续编辑。',
@@ -244,9 +261,14 @@ export default function SpecailModifyContent({navigation, route}) {
                 navigation.goBack();
             },
             confirmCallBack: () => {
-                // TODO: save stack
-
-                navigation.goBack();
+                saveStashContentList({
+                    subject_id,
+                    article_ids: data.map((it) => it.id),
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        navigation.goBack();
+                    }
+                });
             },
         });
     };
@@ -262,8 +284,8 @@ export default function SpecailModifyContent({navigation, route}) {
         });
     };
     const handleAdd = () => {
-        if (data.length >= 20) {
-            Toast.show('最多可添加20篇内容');
+        if (data.length >= pageData.max_num) {
+            Toast.show(pageData.tip);
             return;
         }
         bottomModal.current.show();
@@ -273,25 +295,44 @@ export default function SpecailModifyContent({navigation, route}) {
         return <Item item={item} index={index} />;
     };
 
+    const renderEmpty = () => {
+        return <EmptyLit />;
+    };
+    if (loading) {
+        return (
+            <SafeAreaView edges={['bottom']}>
+                <NavBar title={'精选内容'} leftIcon="chevron-left" />
+                <View style={{width: '100%', height: px(200)}}>
+                    <LoadingTips />
+                </View>
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
-                title={'精选内容'}
+                title={pageData?.title ?? '精选内容'}
                 leftIcon="chevron-left"
-                rightText={'保存'}
+                rightText={pageData?.top_button?.text ?? '保存'}
                 rightPress={rightPress}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
             />
             <View style={styles.pageWrap}>
-                {data.length === 0 && <EmptyLit />}
-
                 <FlatList
+                    style={{flex: 1}}
                     data={data}
-                    refreshing={refreshing}
-                    onRefresh={loadTemplate}
                     renderItem={renderItem}
-                    ListFooterComponent={<FooterItem onAdd={handleAdd} selected={data} onSort={handleSort} />}
+                    ListEmptyComponent={renderEmpty()}
+                    ListFooterComponent={
+                        <FooterItem
+                            onAdd={handleAdd}
+                            edit_buttons={pageData.edit_buttons || []}
+                            cansort={data.length > 0}
+                            onSort={handleSort}
+                        />
+                    }
                     keyExtractor={(item) => item.id}
                 />
             </View>
@@ -300,7 +341,7 @@ export default function SpecailModifyContent({navigation, route}) {
                 title="添加内容"
                 showClose={true}
                 confirmText="确定"
-                children={<ContentSearchModal selected={data} setSelected={setData} />}
+                children={<ContentSearchModal subject_id={subject_id} selected={data} setSelected={setData} />}
             />
         </SafeAreaView>
     );
@@ -312,6 +353,10 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        // flex: 1,
+        width: '100%',
+        height: '100%',
+        // backgroundColor: 'red',
         backgroundColor: '#F5F6F8',
         paddingLeft: px(16),
         paddingRight: px(16),
@@ -379,6 +424,7 @@ const styles = StyleSheet.create({
         height: 70,
         borderRadius: 4,
         marginLeft: 12,
+        backgroundColor: 'lightgray',
     },
     footerWrap: {},
     footer_ActionWrap: {
@@ -455,10 +501,12 @@ const styles = StyleSheet.create({
     },
     searchItem_title: {
         fontSize: px(13),
+        lineHeight: px(17),
         color: '#121D3A',
     },
     SearchItem_desc: {
         fontSize: px(12),
+        lineHeight: px(15),
         color: '#9AA0B1',
     },
     searchItem_btn_added: {

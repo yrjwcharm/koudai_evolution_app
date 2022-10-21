@@ -172,7 +172,7 @@ const ToolList = ({route}) => {
     return (
         <>
             <NavBar
-                title="全部工具"
+                title={isEditState ? '管理工具' : '全部工具'}
                 renderLeft={
                     isEditState ? (
                         <View style={{width: px(40), marginLeft: px(16)}}>
@@ -196,7 +196,10 @@ const ToolList = ({route}) => {
                 style={{backgroundColor: Colors.bgColor, borderWidth: 0.5, borderColor: '#fff'}}
                 scrollEnabled={scrollEnable}>
                 <View style={[styles.card, {marginTop: px(16)}]}>
-                    <Text style={styles.title}>{data?.my_tools?.title}</Text>
+                    <Text style={styles.title}>
+                        {data?.my_tools?.title}{' '}
+                        <Text style={{fontSize: px(11), color: Colors.lightBlackColor}}>拖动可排序</Text>{' '}
+                    </Text>
                     {data?.my_tools?.tool_list ? (
                         <View style={{paddingHorizontal: px(8)}}>
                             <DragSortableView
