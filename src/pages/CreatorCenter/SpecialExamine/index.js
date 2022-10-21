@@ -162,50 +162,51 @@ const SpecialExamine = ({navigation, route}) => {
                     }
                 })}
             </ScrollView>
-            <View style={styles.bottomModal}>
-                <View style={styles.auditHeader}>
-                    <Text style={styles.auditHeaderLeft}>审核不通过原因</Text>
-                    {/* <Text style={styles.auditHeaderRight}>完成</Text> */}
-                </View>
-                <View style={{}}>
-                    <TextInput
-                        value={reason}
-                        multiline={true}
-                        style={styles.input}
-                        onChangeText={(value) => {
-                            setReason(value);
-                        }}
-                        maxLength={500}
-                        textAlignVertical="top"
-                        placeholder="请按照位置+未通过原因编辑。
-                        如：位置：产品“易方达蓝筹混合A”-推荐语“现在买肯定起飞”，未通过原因：言语过激"
-                    />
-                </View>
-                {data?.buttons ? (
-                    <View style={styles.auditFooter}>
-                        {data?.buttons[0] ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={styles.auditFooterLeftBtn}
-                                onPress={() => {
-                                    handlerSubmit(0);
-                                }}>
-                                <Text style={styles.auditFooterLeftBtnText}>{data?.buttons[0]?.text}</Text>
-                            </TouchableOpacity>
-                        ) : null}
-                        {data?.buttons[1] ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={styles.auditFooterRightBtn}
-                                onPress={() => {
-                                    handlerSubmit(1);
-                                }}>
-                                <Text style={styles.auditFooterRightBtnText}>{data?.buttons[1].text}</Text>
-                            </TouchableOpacity>
-                        ) : null}
+            {data?.refuse_info ? (
+                <View style={styles.bottomModal}>
+                    <View style={styles.auditHeader}>
+                        <Text style={styles.auditHeaderLeft}>审核不通过原因</Text>
                     </View>
-                ) : null}
-            </View>
+                    <View style={{}}>
+                        <TextInput
+                            value={reason}
+                            multiline={true}
+                            style={styles.input}
+                            onChangeText={(value) => {
+                                setReason(value);
+                            }}
+                            maxLength={500}
+                            textAlignVertical="top"
+                            placeholder="请按照位置+未通过原因编辑。
+                        如：位置：产品“易方达蓝筹混合A”-推荐语“现在买肯定起飞”，未通过原因：言语过激"
+                        />
+                    </View>
+                    {data?.buttons ? (
+                        <View style={styles.auditFooter}>
+                            {data?.buttons[0] ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={styles.auditFooterLeftBtn}
+                                    onPress={() => {
+                                        handlerSubmit(0);
+                                    }}>
+                                    <Text style={styles.auditFooterLeftBtnText}>{data?.buttons[0]?.text}</Text>
+                                </TouchableOpacity>
+                            ) : null}
+                            {data?.buttons[1] ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={styles.auditFooterRightBtn}
+                                    onPress={() => {
+                                        handlerSubmit(1);
+                                    }}>
+                                    <Text style={styles.auditFooterRightBtnText}>{data?.buttons[1].text}</Text>
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                    ) : null}
+                </View>
+            ) : null}
         </>
     ) : null;
 };

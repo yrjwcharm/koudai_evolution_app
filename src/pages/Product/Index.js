@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 19:07:30
+ * @LastEditTime: 2022-10-21 22:21:38
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
@@ -53,6 +53,7 @@ const Product = ({navigation}) => {
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
+    const pageRef = useRef(1);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
@@ -92,14 +93,15 @@ const Product = ({navigation}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setProData(res.result);
+
+                    // pageRef.current = 1;
+                    // getSubjects(res.result?.page_type);
                 }
             })
             .finally((_) => {
                 setRefreshing(false);
                 setLoading(false);
             });
-
-        // http.get('/subject/list/20220901');
     };
 
     const getFollowTabs = (type) => {
@@ -116,6 +118,14 @@ const Product = ({navigation}) => {
                 setRefreshing(false);
                 setLoading(false);
             });
+    };
+
+    const getSubjects = (page_type) => {
+        http.get('/products/subject/list/20220901', {page_type}).then((res) => {
+            console.log(res);
+            if (res.code === '000000') {
+            }
+        });
     };
 
     const getFollowData = async (params) => {
