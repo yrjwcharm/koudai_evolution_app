@@ -2,13 +2,13 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:社区主页
 // //  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator, Image} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors} from '~/common/commonStyle';
+import {Colors, Style} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
@@ -21,7 +21,11 @@ import EmptyTip from '../../../components/EmptyTip';
 import {Button} from '../../../components/Button';
 import {ChooseModal} from '../CommunityVodCreate';
 import {ScrollTabView, ScrollView} from 'react-native-scroll-head-tab-view';
+import {useFocusEffect} from '@react-navigation/native';
+import {Modalize} from 'react-native-modalize';
+import {useJump} from '~/components/hooks';
 const CommunityHome = ({navigation, route}) => {
+    const jump = useJump();
     const inset = useSafeAreaInsets();
     const headerHeight = inset.top + px(44);
     const parallaxHeaderHeight = px(220);
@@ -35,10 +39,16 @@ const CommunityHome = ({navigation, route}) => {
     const chooseModal = useRef();
     const [introHeight, setIntroHeight] = useState(0);
     const [loading, setLoading] = useState(true);
-    const getData = async () => {
+    const bottomModal = useRef();
+    const getData = async (type) => {
         let res = await getCommunityHomeData({community_id});
-        currentTab.current = res.result?.tabs[0]?.type;
-        getProductList({community_id, type: res.result?.tabs[0]?.type || ''});
+        if (res.result?.bottom_pop) {
+            bottomModal?.current?.open();
+        }
+        getProductList({community_id, type: type || res.result?.tabs[0]?.type});
+        if (!currentTab.current) {
+            currentTab.current = type || res.result?.tabs[0]?.type;
+        }
         setData(res.result);
     };
     const getProductList = async (params) => {
@@ -46,10 +56,12 @@ const CommunityHome = ({navigation, route}) => {
         setLoading(false);
         setProduct(res.result);
     };
-    useEffect(() => {}, [currentTab]);
-    useEffect(() => {
-        getData();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getData(currentTab.current);
+        }, [])
+    );
+
     //移除产品
     const onDelete = async (type, item_id) => {
         let res = await removeProduct({type, community_id, item_id});
@@ -114,6 +126,10 @@ const CommunityHome = ({navigation, route}) => {
                         headerHeight={parallaxHeaderHeight + introHeight - px(30)}
                         insetValue={headerHeight}
                         style={{backgroundColor: '#fff', flex: 1}}
+                        onChangeTab={({i}) => {
+                            getProductList({community_id, type: data?.tabs[i]?.type});
+                            currentTab.current = data?.tabs[i]?.type;
+                        }}
                         onContentScroll={(e) => {
                             scrollY.setValue(e.value);
                             if (e.value > 80) {
@@ -245,6 +261,24 @@ const CommunityHome = ({navigation, route}) => {
                 />
             ) : null}
             <PublishContent community_id={community_id} />
+
+            <Modalize ref={bottomModal} modalHeight={px(280)}>
+                <View style={{alignItems: 'center', marginTop: px(64), marginBottom: px(14)}}>
+                    <Image
+                        source={require('~/assets/img/community/edit.png')}
+                        style={{width: px(48), height: px(48)}}
+                    />
+                </View>
+                <Text style={styles.pop_text}>{data?.bottom_pop?.content}</Text>
+                <Button
+                    onPress={() => {
+                        bottomModal.current.close();
+                        jump(data?.bottom_pop?.button?.url);
+                    }}
+                    title={data?.bottom_pop?.button?.text}
+                    style={{marginTop: px(24), marginHorizontal: px(30)}}
+                />
+            </Modalize>
         </>
     );
 };
@@ -271,6 +305,12 @@ const styles = StyleSheet.create({
         marginBottom: px(6),
         color: '#fff',
         fontWeight: '700',
+        textAlign: 'center',
+    },
+    pop_text: {
+        color: Colors.lightBlackColor,
+        fontSize: px(13),
+        lineHeight: px(19),
         textAlign: 'center',
     },
 });

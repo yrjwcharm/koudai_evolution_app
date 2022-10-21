@@ -442,9 +442,9 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
     useEffect(() => {
         init();
     }, [page]);
+    console.log('rest', rest);
     return data?.length > 0 ? (
         <WaterfallFlow
-            {...rest}
             data={data}
             initialNumToRender={20}
             keyExtractor={(item, index) => item.title + item.id + index}
@@ -457,6 +457,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
             renderItem={renderItem}
             scrollIndicatorInsets={{right: 1}}
             scrollEventThrottle={1}
+            {...rest}
         />
     ) : null;
 });

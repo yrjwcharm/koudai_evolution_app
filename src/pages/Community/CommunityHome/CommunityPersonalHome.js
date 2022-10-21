@@ -122,6 +122,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                         }}>
                         {data?.tabs?.map(({name, type}, index) => (
                             <WaterfallFlowList
+                                key={index}
                                 tabLabel={name}
                                 ref={waterFallRef}
                                 getData={getProductList}
