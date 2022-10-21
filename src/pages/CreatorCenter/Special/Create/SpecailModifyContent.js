@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 15:39:54
+ * @LastEditTime: 2022-10-21 22:32:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -93,7 +93,7 @@ function SearchItem({item, onToggle}) {
 
 function ContentSearchModal(props) {
     const {selected = [], setSelected, subject_id} = props;
-    console.log('selected:', selected);
+
     const [searchList, setSearchList] = useState([]);
 
     const [refreshing, setRefreshing] = useState(false);
@@ -124,15 +124,6 @@ function ContentSearchModal(props) {
             });
     }, [query, page, subject_id]);
 
-    useEffect(() => {
-        let result = searchList.map((item) => {
-            item.isAdded = selected.findIndex((it) => it.id === item.id) !== -1;
-            return {...item};
-        });
-        setSearchList(result);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selected]);
-
     const handleToggle = (item, index) => {
         if (item.isAdded) {
             item.isAdded = false;
@@ -141,6 +132,7 @@ function ContentSearchModal(props) {
             item.isAdded = true;
             setSelected([...selected, item]);
         }
+        setSearchList([...searchList]);
     };
     const handleSearch = (text) => {
         setQuery(text);
@@ -180,13 +172,16 @@ function ContentSearchModal(props) {
                 />
             </View>
             <FlatList
+                style={{flex: 1}}
                 data={searchList}
                 refreshing={refreshing}
                 onRefresh={() => setPage(1)}
                 onEndReached={() => {
                     if (hasMore) {
                         console.log('onEndReached');
-                        setPage(page + 1);
+                        setTimeout(() => {
+                            setPage(page + 1);
+                        }, 200);
                     }
                 }}
                 ListEmptyComponent={renderEmpty}
@@ -225,21 +220,20 @@ export default function SpecailModifyContent({navigation, route}) {
 
     const bottomModal = useRef(null);
 
-    useFocusEffect(
-        useCallback(() => {
-            setLoading(true);
-            getStashContentList({subject_id})
-                .then((res) => {
-                    if (res.code === '000000') {
-                        setPageData(res.result);
-                        setData(res.result.articles || []);
-                    }
-                })
-                .finally((_) => {
-                    setLoading(false);
-                });
-        }, [route.params])
-    );
+    useEffect(() => {
+        setLoading(true);
+        getStashContentList({subject_id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setPageData(res.result);
+                    setData(res.result.articles || []);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    }, [route.params]);
+
     const rightPress = () => {
         saveStashContentList({
             subject_id,
@@ -256,6 +250,7 @@ export default function SpecailModifyContent({navigation, route}) {
             content: '已编辑内容是否要保存草稿？下次可继续编辑。',
             cancelText: '不保存草稿',
             confirmText: '保存草稿',
+            confirm: true,
             backCloseCallbackExecute: true,
             cancelCallBack: () => {
                 navigation.goBack();
@@ -312,7 +307,7 @@ export default function SpecailModifyContent({navigation, route}) {
     if (!pageData) return null;
 
     return (
-        <SafeAreaView edges={['bottom']}>
+        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
             <NavBar
                 title={pageData?.title ?? '精选内容'}
                 leftIcon="chevron-left"
@@ -355,15 +350,12 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
-        // flex: 1,
-        width: '100%',
-        height: '100%',
-        // backgroundColor: 'red',
+        color: 'red',
+        flex: 1,
         backgroundColor: '#F5F6F8',
         paddingLeft: px(16),
         paddingRight: px(16),
         paddingTop: px(12),
-        // minHeight: '100%',
     },
     space1: {
         marginTop: px(12),
