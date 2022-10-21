@@ -58,7 +58,7 @@ const MonthProfit = React.memo((callback) => {
                 }
                 const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.year()});
                 if (res.code === '000000') {
-                    const {profit_data_list = []} = res.result ?? {};
+                    const {profit_data_list = []} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
@@ -72,11 +72,10 @@ const MonthProfit = React.memo((callback) => {
                             }
                         }
                     }
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: dayjs(el.unit_key).month() + 1 + '月', value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? 1 : -1));
+
+                    let barCharData = arr.map((el, index) => {
+                        return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
+                    });
                     setChart({
                         label: [
                             {name: '时间', val: profit_data_list[0]?.unit_key},

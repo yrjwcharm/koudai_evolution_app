@@ -44,7 +44,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
     const initData = async () => {
         const res = await getChartData({type, unit_type: unitType});
         if (res.code === '000000') {
-            const {profit_unit_tab = []} = res.result ?? {};
+            const {profit_unit_tab = []} = res?.result ?? {};
             setTabs(profit_unit_tab);
         }
         setLoading(false);
@@ -129,6 +129,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                     />
                                 )}
                                 initialPage={0}
+                                locked={true}
                                 onChangeTab={({i}) => {
                                     setUnitType(tabs[i].type);
                                 }}>
