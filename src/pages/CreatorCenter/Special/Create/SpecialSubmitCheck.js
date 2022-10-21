@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 12:51:16
+ * @LastEditTime: 2022-10-21 12:53:55
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -55,7 +55,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
         );
     }
 
-    return (
+    return data ? (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar title={data?.title} leftIcon="chevron-left" leftPress={handleBack} />
             <View style={styles.content}>
@@ -71,7 +71,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
-    );
+    ) : null;
 }
 
 const styles = StyleSheet.create({
