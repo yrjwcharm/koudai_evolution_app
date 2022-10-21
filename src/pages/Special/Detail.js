@@ -15,7 +15,8 @@ import {Modal, PageModal} from '~/components/Modal';
 import {Button} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
-import {publishNewComment, addInitComment} from '../Common/CommentList/services';
+import {publishNewComment} from '../Common/CommentList/services';
+import {constants} from '~/components/Modal/util';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -276,7 +277,25 @@ const SpecialDetail = ({navigation, route}) => {
                     </View>
                 </View>
             ) : null}
-            <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
+            <PageModal
+                ref={inputModal}
+                style={{height: px(360)}}
+                backButtonClose={true}
+                header={
+                    <View style={styles.header}>
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={styles.title}>写评论</Text>
+                        </View>
+                        <TouchableOpacity style={styles.close} onPress={inputModal.current?.cancel}>
+                            <FastImage
+                                style={{width: px(24), height: px(24)}}
+                                source={{
+                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/comment-close.png',
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                }>
                 <TextInput
                     ref={inputRef}
                     value={content}
@@ -353,5 +372,30 @@ const styles = StyleSheet.create({
     rightIcon: {
         width: px(20),
         height: px(20),
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomWidth: constants.borderWidth,
+        borderBottomColor: constants.borderColor,
+        paddingHorizontal: 20,
+    },
+    close: {
+        height: constants.titleHeight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    confirm: {
+        position: 'absolute',
+        right: 20,
+        height: constants.titleHeight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: px(16),
+        color: '#333333',
+        fontWeight: '700',
     },
 });
