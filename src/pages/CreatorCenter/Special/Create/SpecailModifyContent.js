@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 14:43:19
+ * @LastEditTime: 2022-10-21 15:39:54
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -253,7 +253,7 @@ export default function SpecailModifyContent({navigation, route}) {
 
     const handleBack = () => {
         Modal.show({
-            title: '已编辑内容是否要保存草稿？下次可继续编辑。',
+            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
             cancelText: '不保存草稿',
             confirmText: '保存草稿',
             backCloseCallbackExecute: true,
