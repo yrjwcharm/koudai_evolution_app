@@ -104,7 +104,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
     };
 
     const inputConfirm = () => {
-        goSave({desc, emptyDesc: !desc, subject_id: route.params.subject_id}).then((res) => {
+        goSave({desc, empty_desc: !desc, subject_id: route.params.subject_id}).then((res) => {
             inputModal.current.cancel();
             getList();
             if (res.code === '000000') {
