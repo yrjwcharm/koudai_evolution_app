@@ -13,7 +13,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import Toast from '~/components/Toast';
-const Index = ({navigation}) => {
+const Index = ({navigation, route}) => {
+    const {popNum = 0} = route.params || {};
     const dispatch = useDispatch();
     const [data, setData] = useState({});
     const inset = useSafeAreaInsets();
@@ -74,7 +75,8 @@ const Index = ({navigation}) => {
             dispatch(getUserInfo());
             setTimeout(() => {
                 Toast.hide(toast);
-                navigation.goBack();
+                if (popNum) navigation.pop(popNum);
+                else navigation.goBack();
             }, 500);
         } else {
             setCurrent((pre) => ++pre);

@@ -31,7 +31,7 @@ const CommunityHome = ({navigation, route}) => {
     const parallaxHeaderHeight = px(220);
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
-    const {community_id = 1} = route?.params || {};
+    const {community_id = 1, muid = 0} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
     const currentTab = useRef();
@@ -268,10 +268,12 @@ const CommunityHome = ({navigation, route}) => {
             ) : null}
             <PublishContent
                 community_id={community_id}
+                muid={muid}
                 onPress={(type) => {
                     chooseModal?.current?.show(type, product);
                 }}
             />
+            <PublishContent community_id={community_id} muid={muid} />
 
             <Modalize ref={bottomModal} modalHeight={px(280)}>
                 <View style={{alignItems: 'center', marginTop: px(64), marginBottom: px(14)}}>

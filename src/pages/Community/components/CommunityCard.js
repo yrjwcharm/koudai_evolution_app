@@ -2,9 +2,12 @@
  * @Date: 2022-10-09 14:51:26
  * @Description: 社区卡片
  */
-import React, {useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
+import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import collect from '~/assets/img/icon/collect.png';
@@ -19,9 +22,11 @@ import zanActive from '~/assets/img/icon/zanActive.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
-import {ShareModal} from '~/components/Modal';
+import {Modal, ShareModal} from '~/components/Modal';
+import HTML from '~/components/RenderHtml';
 import {deviceWidth, formaNum, px} from '~/utils/appUtil';
-import AntdIcon from 'react-native-vector-icons/AntDesign';
+import {liveReserve} from '../CommunityIndex/services';
+
 /** @name 社区卡片封面 */
 export const CommunityCardCover = ({
     attention_num,
@@ -78,7 +83,7 @@ export const CommunityCardCover = ({
                     {media_duration ? (
                         <View style={{marginRight: px(4)}}>
                             {type === 2 ? (
-                                <Feather color="#fff" name="headphones" size={px(5)} />
+                                <Feather color="#fff" name="headphones" size={px(8)} />
                             ) : (
                                 <FontAwesome5 color="#fff" name="play" size={px(5)} />
                             )}
@@ -120,14 +125,19 @@ export const CommunityFollowCard = ({
     button,
     collect_num, // 收藏数
     collect_status, // 收藏状态 0 未收藏 1 已收藏
+    comment_info, //评论
     comment_num, // 评论数
     cover, // 封面
     desc, // 文章内容摘要
     favor_num, // 点赞数
     favor_status, // 点赞状态 0 未点赞 1 已点赞
+    id,
+    isRecommend = false,
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
     left_desc, // 直播状态或预约人数
+    onDelete, //移除作品
     play_mode, // 视频播放模式 1 竖屏 2 横屏
+    relation_type,
     reserved, // 直播是否已预约
     right_desc, // 直播时间或观看人数
     share_num, // 分享数
@@ -137,20 +147,85 @@ export const CommunityFollowCard = ({
     type, // 卡片类型 1文章 2音频 3视频 9直播
     type_str, // 类型文案
     url, // 跳转地址
-    onDelete, //移除作品
-    id,
-    relation_type,
-    comment_info, //评论
 }) => {
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
     const [favored, setFavored] = useState(favor_status); // 是否点赞
     const [isReserved, setIsReserved] = useState(reserved); // 直播是否已预约
+    const [leftDesc, setLeftDesc] = useState(left_desc);
     const shareModal = useRef();
+
+    const checkPermission = (sucess, fail) => {
+        checkNotifications().then(({status}) => {
+            if (status === 'blocked' || status === 'denied') {
+                fail();
+            } else {
+                sucess();
+            }
+        });
+    };
+
+    const handleAppStateChange = (nextState) => {
+        if (nextState === 'active' && !isReserved) {
+            checkPermission(
+                () => postReserve(id),
+                () => {
+                    AppState.removeEventListener('change', handleAppStateChange);
+                    setIsReserved(false);
+                }
+            );
+        }
+    };
+
+    const postReserve = (liveId) => {
+        liveReserve({id: liveId}).then((res) => {
+            if (res.code === '000000') {
+                const {desc: content, title: modalTitle} = res.result;
+                const reservedNum = /\d+/.exec(leftDesc);
+                setIsReserved(true);
+                reservedNum && setLeftDesc((prev) => prev.replace(/\d+/, Number(reservedNum) + 1));
+                modalTitle && Modal.show({content, title: modalTitle});
+            }
+        });
+    };
+
+    const onReserve = () => {
+        checkPermission(
+            () => postReserve(id),
+            () => {
+                requestNotifications(['alert', 'sound']).then(({status: _status}) => {
+                    if (_status === 'granted') {
+                        postReserve(id);
+                    } else {
+                        Modal.show({
+                            title: '权限申请',
+                            content: '我们将在直播前10分钟为您推送提醒，请开启通知权限',
+                            confirm: true,
+                            confirmText: '前往',
+                            confirmCallBack: () => {
+                                AppState.addEventListener('change', handleAppStateChange);
+                                openSettings().catch(() => console.warn('cannot open settings'));
+                            },
+                        });
+                    }
+                });
+            }
+        );
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            setLeftDesc(left_desc);
+            setIsReserved(reserved);
+            return () => {
+                AppState.removeEventListener('change', handleAppStateChange);
+            };
+        }, [left_desc, reserved])
+    );
 
     return (
         <>
-            <View style={[styles.communityCard, style]}>
+            <View style={[isRecommend ? {} : styles.communityCard, style]}>
                 {onDelete && (
                     <TouchableOpacity
                         style={[styles.cardDelete, Style.flexRow]}
@@ -162,34 +237,56 @@ export const CommunityFollowCard = ({
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(author.url)} style={Style.flexRow}>
-                        {type === 9 && live_status === 2 ? (
-                            <AnimateAvatar source={author?.avatar} style={styles.avatar} />
-                        ) : (
-                            <Image source={{uri: author?.avatar}} style={styles.avatar} />
-                        )}
-                        <View>
-                            <Text style={styles.subTitle}>{author?.nickname}</Text>
-                            <Text style={[styles.smText, {marginTop: px(2)}]}>{author_desc}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    {title ? <Text style={[styles.subTitle, {marginTop: px(8)}]}>{title}</Text> : null}
-                    {desc ? <Text style={[styles.desc, {marginTop: px(8)}]}>{desc}</Text> : null}
+                    {isRecommend ? null : (
+                        <>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(author.url)}
+                                style={Style.flexRow}>
+                                {type === 9 && live_status === 2 ? (
+                                    <AnimateAvatar source={author?.avatar} style={styles.avatar} />
+                                ) : (
+                                    <Image source={{uri: author?.avatar}} style={styles.avatar} />
+                                )}
+                                <View>
+                                    <Text style={styles.subTitle}>{author?.nickname}</Text>
+                                    <Text style={[styles.smText, {marginTop: px(2)}]}>{author_desc}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            {title ? <Text style={[styles.subTitle, {marginTop: px(8)}]}>{title}</Text> : null}
+                            {desc ? <Text style={[styles.desc, {marginTop: px(8)}]}>{desc}</Text> : null}
+                        </>
+                    )}
                     {cover ? (
                         <CommunityCardCover
                             cover={cover}
                             live_status={live_status}
-                            left_desc={left_desc}
+                            left_desc={leftDesc}
                             right_desc={right_desc}
-                            style={{...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}}
+                            style={
+                                isRecommend
+                                    ? {width: '100%'}
+                                    : {...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}
+                            }
                             type={type}
                             type_str={type_str}
-                            width={play_mode === 2 ? deviceWidth - 2 * Space.padding - 2 * px(12) : px(180)}
+                            width={
+                                isRecommend
+                                    ? deviceWidth - 3 * px(5)
+                                    : play_mode === 2
+                                    ? deviceWidth - 2 * Space.padding - 2 * px(12)
+                                    : px(180)
+                            }
+                        />
+                    ) : isRecommend ? (
+                        <Image
+                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
+                            style={styles.contentBg}
                         />
                     ) : null}
                 </TouchableOpacity>
                 {/* 评论 */}
-                {comment_info && (
+                {comment_info && !isRecommend && (
                     <View style={{padding: px(8), backgroundColor: '#F5F6F8', borderRadius: px(6), marginTop: px(9)}}>
                         <View style={Style.flexBetween}>
                             <View style={Style.flexRow}>
@@ -222,15 +319,60 @@ export const CommunityFollowCard = ({
                         </Text>
                     </View>
                 )}
-                {type === 9 ? (
-                    live_status === 1 ? (
+                {isRecommend ? (
+                    <View style={{padding: px(10), paddingBottom: px(12)}}>
+                        {title ? (
+                            <View>
+                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
+                            </View>
+                        ) : null}
+                        {desc ? (
+                            <View style={{marginTop: px(8)}}>
+                                <HTML html={desc} numberOfLines={4} style={styles.desc} />
+                            </View>
+                        ) : null}
+                        {author?.nickname ? (
+                            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                <View style={Style.flexRow}>
+                                    {type === 9 && live_status === 2 ? (
+                                        <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
+                                    ) : (
+                                        <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
+                                    )}
+                                    <Text numberOfLines={1} style={[styles.smText, {maxWidth: px(88)}]}>
+                                        {author.nickname}
+                                    </Text>
+                                </View>
+                                {live_status === 1 && button?.text ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        disabled={isReserved}
+                                        onPress={onReserve}
+                                        style={[
+                                            styles.applyBtn,
+                                            {borderColor: isReserved ? Colors.lightGrayColor : Colors.brandColor},
+                                        ]}>
+                                        <Text
+                                            style={[
+                                                styles.desc,
+                                                {color: isReserved ? Colors.lightGrayColor : Colors.brandColor},
+                                            ]}>
+                                            {button.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : null}
+                            </View>
+                        ) : null}
+                    </View>
+                ) : type === 9 ? (
+                    button?.text && live_status === 1 ? (
                         // 直播预约按钮
                         <View style={[Style.flexBetween, styles.applyBox]}>
                             <Text style={[styles.numDesc, {color: Colors.defaultColor}]}>直播时间：{right_desc}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={isReserved}
-                                onPress={() => setIsReserved((prev) => Number(!prev))}
+                                onPress={onReserve}
                                 style={[
                                     styles.applyBtn,
                                     {borderColor: isReserved ? Colors.lightGrayColor : Colors.brandColor},
@@ -281,7 +423,7 @@ export const CommunityFollowCard = ({
                     </View>
                 )}
             </View>
-            {share_info ? (
+            {share_info && !isRecommend ? (
                 <ShareModal ref={shareModal} shareContent={share_info} title={share_info.title || ''} />
             ) : null}
         </>
@@ -398,5 +540,24 @@ const styles = StyleSheet.create({
         borderRadius: px(24),
         borderWidth: Space.borderWidth,
     },
-    cardDelete: {position: 'absolute', right: px(0), top: px(0), padding: px(12), zIndex: 10},
+    cardDelete: {
+        position: 'absolute',
+        right: px(0),
+        top: px(0),
+        padding: px(12),
+        zIndex: 10,
+    },
+    contentBg: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: px(68),
+        height: px(54),
+    },
+    recommendAvatar: {
+        marginRight: px(4),
+        borderRadius: px(16),
+        width: px(16),
+        height: px(16),
+    },
 });

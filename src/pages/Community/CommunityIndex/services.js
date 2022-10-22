@@ -15,3 +15,5 @@ export const getRecommendFollowUsers = (params) => http.get('/follow/recommend/u
 export const getRecommendData = (params) => http.get('/community/index/recommend/20220928', params);
 
 export const getCanPublishContent = (params) => http.get('/community/article/gettypes/202209', params);
+
+export const liveReserve = (params) => http.post('/live/reserve/202202015', params);

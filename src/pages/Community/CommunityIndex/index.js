@@ -20,8 +20,8 @@ import {BottomModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {deviceWidth, px} from '~/utils/appUtil';
-import {CommunityCardCover, CommunityFollowCard} from '../components/CommunityCard';
+import {px} from '~/utils/appUtil';
+import {CommunityFollowCard} from '../components/CommunityCard';
 import {
     getAllMsg,
     getCanPublishContent,
@@ -85,7 +85,7 @@ const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
                         style={styles.headerRightIcon}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => jump({path: 'RemindMessage', type: 1})}>
                     <Image
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'}}
                         style={styles.headerRightIcon}
@@ -166,7 +166,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1, paddingHorizontal: Space.padding}}>
                 <Text style={[styles.title, {marginTop: px(8)}]}>推荐关注</Text>
-                {data.map((item, index) => {
+                {data.map((item) => {
                     const {avatar, count_str, item_id, item_type, name, status, url} = item;
                     const isFollowed = status === 1;
                     return (
@@ -366,16 +366,19 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                 setRefreshing(false);
             });
     };
+
     const scrollTo = (value) => {
         waterfallFlow.current?.scrollToOffset({animated: true, offset: value});
     };
+
     const refresh = () => {
         waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
+
     const renderItem = ({item = {}, index, columnIndex}) => {
-        const {author = {}, cover, desc, live_status, title, type: _type, url} = item;
+        const {url} = item;
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -388,36 +391,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                         marginLeft: columnIndex === 0 ? px(5) : px(5) / 2,
                     },
                 ]}>
-                {cover ? (
-                    <CommunityCardCover {...item} style={{width: '100%'}} width={deviceWidth - 3 * px(5)} />
-                ) : (
-                    <Image
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
-                        style={styles.contentBg}
-                    />
-                )}
-                <View style={{padding: px(10), paddingBottom: px(12)}}>
-                    {title ? (
-                        <View>
-                            <HTML html={title} numberOfLines={2} style={styles.subTitle} />
-                        </View>
-                    ) : null}
-                    {desc ? (
-                        <View style={{marginTop: px(8)}}>
-                            <HTML html={desc} numberOfLines={4} style={styles.desc} />
-                        </View>
-                    ) : null}
-                    {author?.nickname ? (
-                        <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                            {_type === 9 && live_status === 2 ? (
-                                <AnimateAvatar source={author?.avatar} style={styles.recommendAvatar} />
-                            ) : (
-                                <Image source={{uri: author?.avatar}} style={styles.recommendAvatar} />
-                            )}
-                            <Text style={styles.smText}>{author?.nickname}</Text>
-                        </View>
-                    ) : null}
-                </View>
+                <CommunityFollowCard {...item} isRecommend />
             </TouchableOpacity>
         );
     };
@@ -532,14 +506,14 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0, onPress}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, muid = 0, onPress}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
     const bottomModal = useRef();
 
     const init = () => {
-        getCanPublishContent({community_id}).then((res) => {
+        getCanPublishContent({community_id, muid}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -642,6 +616,15 @@ const Index = ({navigation, setLoading}) => {
         }, [])
     );
 
+    // useEffect(() => {
+    //     if (Object.keys(data).length > 0) {
+    //         const page = data.tabs?.findIndex((tab) => tab.is_selected);
+    //         setTimeout(() => {
+    //             setActive(page);
+    //         }, 300);
+    //     }
+    // }, [data]);
+
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <Header
@@ -652,7 +635,7 @@ const Index = ({navigation, setLoading}) => {
                 userInfo={user_info}
             />
             <ScrollableTabView locked page={active} renderTabBar={false} style={{flex: 1}}>
-                {tabs?.map((tab, i) => {
+                {tabs?.map((tab) => {
                     const {name, type} = tab;
                     return (
                         <View key={type} style={{flex: 1}} tabLabel={name}>
@@ -752,6 +735,12 @@ const styles = StyleSheet.create({
         borderRadius: px(32),
         width: px(32),
         height: px(32),
+    },
+    applyBtn: {
+        paddingVertical: px(3),
+        paddingHorizontal: px(12),
+        borderRadius: px(24),
+        borderWidth: Space.borderWidth,
     },
     followBtn: {
         paddingVertical: px(3),

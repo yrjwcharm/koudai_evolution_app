@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-02 13:32:38
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-22 19:12:41
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -125,7 +125,11 @@ class SetLoginPassword extends Component {
                         this.props.getUserInfo();
                         this.props.getAppConfig();
                         this.props.getVerifyGesture(true);
-                        if (this.props.route?.params?.redirect) {
+                        if (res.result.url) {
+                            const {path, params} = res.result.url;
+                            params.popNum = this.props.route.params?.fr ? 3 : 2;
+                            this.props.navigation.replace(path, params);
+                        } else if (this.props.route?.params?.redirect) {
                             this.props.navigation.dispatch((state) => {
                                 // Remove the home route from the stack
                                 const routes = state.routes.filter((r) => {

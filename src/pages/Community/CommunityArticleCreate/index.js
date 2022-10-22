@@ -383,7 +383,7 @@ const WriteArticle = ({article, setArticle}) => {
 
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
-    const {article_id = 0, community_id = 0} = route.params || {};
+    const {article_id = 0, community_id = 0, history_id = 0} = route.params || {};
     const [step, setStep] = useState(1); // 步骤：1 第一步上传文章封面 2 第二步写文章内容
     const [cover, setCover] = useState(''); // 文章封面
     const [article, setArticle] = useState({}); // content 文章内容 tags 文章标签 title 文章标题
@@ -527,22 +527,18 @@ const Index = ({navigation, route, setLoading}) => {
     }, [article, cover]);
 
     useEffect(() => {
-        if (article_id) {
-            getArticleDraft({article_id})
-                .then((res) => {
-                    if (res.code === '000000') {
-                        const {content, cover: coverUrl, cover_media_id, tag_list, title} = res.result;
-                        setArticle({content, tags: tag_list, title});
-                        setCover({id: cover_media_id, url: coverUrl});
-                    }
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        } else {
-            setLoading(false);
-        }
-    }, [article_id]);
+        getArticleDraft({article_id, history_id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    const {content, cover: coverUrl, cover_media_id, tag_list, title} = res.result;
+                    setArticle({content, tags: tag_list, title});
+                    setCover({id: cover_media_id, url: coverUrl});
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <View style={styles.container}>

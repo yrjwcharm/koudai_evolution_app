@@ -140,7 +140,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                     title={'更多'}
                 />
             ) : null}
-            <PublishContent community_id={0} />
+            <PublishContent community_id={0} muid={muid} />
         </>
     );
 };
