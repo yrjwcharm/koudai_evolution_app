@@ -21,8 +21,9 @@ const shadow = {
         left: px(16),
     },
 };
-const RenderItem = ({item, index}) => {
+const RenderItem = ({item, index, avail}) => {
     const jump = useJump();
+    item.url.params.avail = avail;
     return (
         <TouchableOpacity style={{marginTop: px(8)}} key={item + `` + index} onPress={() => jump(item.url)}>
             <View>

@@ -247,7 +247,9 @@ const FixedInvestManage = ({navigation, route}) => {
                                 )}
                             </>
                         )}
-                        renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
+                        renderItem={({item, index}) => (
+                            <RenderItem navigation={navigation} avail={1} item={item} index={index} />
+                        )}
                     />
 
                     {/*<BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />*/}

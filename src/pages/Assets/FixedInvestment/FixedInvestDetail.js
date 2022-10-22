@@ -27,7 +27,7 @@ const shadow = {
 };
 
 const FixedInvestDetail = ({navigation, route}) => {
-    const {invest_plan_id: plan_id = '', fund_code = '', poid = ''} = route?.params;
+    const {invest_plan_id: plan_id = '', fund_code = '', poid = '', avail} = route?.params;
     const jump = useJump();
     const passwordModal = useRef(null);
     const [state, setState] = useState({
@@ -54,18 +54,19 @@ const FixedInvestDetail = ({navigation, route}) => {
             } = res.result || {};
             navigation.setOptions({
                 title,
-                headerRight: () => (
-                    <>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[styles.topRightBtn, Style.flexCenter]}
-                            onPress={() => {
-                                setVisible(true);
-                            }}>
-                            <Text style={styles.title}>{text}</Text>
-                        </TouchableOpacity>
-                    </>
-                ),
+                headerRight: () =>
+                    avail && (
+                        <>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.topRightBtn, Style.flexCenter]}
+                                onPress={() => {
+                                    setVisible(true);
+                                }}>
+                                <Text style={styles.title}>{text}</Text>
+                            </TouchableOpacity>
+                        </>
+                    ),
             });
             let selectArr = btn_list.map((el) => el.text);
             setSelectData(selectArr.slice(0, -1));
@@ -103,6 +104,7 @@ const FixedInvestDetail = ({navigation, route}) => {
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show(res.message);
+                    navigation.goBack();
                 }
                 Toast.hide(loading);
             });
