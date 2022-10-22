@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 14:24:17
+ * @LastEditTime: 2022-10-22 15:40:47
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -38,6 +38,7 @@ export default function SpecialModifyEntry({navigation, route}) {
             setLoading(true);
             getModifyList({fix_id: fix_id})
                 .then((res) => {
+                    console.log('res:', res);
                     if (res.code === '000000') {
                         setData(res.result);
                         subject_idRef.current = res.result.subject_id;
@@ -58,12 +59,9 @@ export default function SpecialModifyEntry({navigation, route}) {
     const handleSubmit = () => {
         submitModify({subject_id: subject_idRef.current}).then((res) => {
             if (res.code === '000000') {
-                navigation.replace({
-                    path: 'SpecialSubmitCheck',
-                    params: {
-                        subject_id: subject_idRef.current,
-                    },
-                });
+                jump(res.result.url);
+            } else {
+                Toast.show(res.message);
             }
         });
     };
@@ -127,9 +125,12 @@ export default function SpecialModifyEntry({navigation, route}) {
                 </View>
                 {data.line_group ? (
                     <View style={{...Style.flexBetween, ...styles.footer}}>
-                        <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
-                            <Text style={styles.btn_text}>审核提示</Text>
-                        </TouchableOpacity>
+                        {data.apply_info?.title && (
+                            <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
+                                <Text style={styles.btn_text}>审核提示</Text>
+                            </TouchableOpacity>
+                        )}
+
                         <TouchableOpacity
                             style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}
                             disabled={!submitable}

@@ -1,13 +1,13 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 22:32:29
+ * @LastEditTime: 2022-10-22 15:33:15
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import {View, StyleSheet, Text, Pressable, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
 import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
@@ -15,7 +15,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
-
+import {Colors, Font, Style} from '~/common/commonStyle';
 import {getContentList, getStashContentList, saveStashContentList} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
@@ -65,29 +65,31 @@ function FooterItem({onAdd, onSort, cansort = false, data}) {
     );
 }
 
-function SearchItem({item, onToggle}) {
+function SearchItem({item, onToggle, isAdded}) {
     return (
-        <View style={styles.searchItem}>
-            <View style={styles.searchItem_content}>
-                <Text style={styles.searchItem_title} numberOfLines={1}>
-                    {item.title}
-                </Text>
-                <Text
-                    style={
-                        styles.SearchItem_desc
-                    }>{`${item.favor_num}点赞・${item.collect_num}收藏・${item.share_num}转发`}</Text>
-            </View>
+        <Pressable>
+            <View style={styles.searchItem}>
+                <View style={styles.searchItem_content}>
+                    <Text style={styles.searchItem_title} numberOfLines={1}>
+                        {item.title}
+                    </Text>
+                    <Text
+                        style={
+                            styles.SearchItem_desc
+                        }>{`${item.favor_num}点赞・${item.collect_num}收藏・${item.share_num}转发`}</Text>
+                </View>
 
-            <TouchableOpacity
-                style={item.isAdded ? styles.searchItem_btn_added : styles.searchItem_btn_unadd}
-                onPress={onToggle}>
-                {item.isAdded ? (
-                    <Text style={styles.searchItem_text_added}>已添加</Text>
-                ) : (
-                    <Text style={styles.searchItem_text_unadd}>添加</Text>
-                )}
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                    style={isAdded ? styles.searchItem_btn_added : styles.searchItem_btn_unadd}
+                    onPress={() => onToggle(!isAdded)}>
+                    {isAdded ? (
+                        <Text style={styles.searchItem_text_added}>已添加</Text>
+                    ) : (
+                        <Text style={styles.searchItem_text_unadd}>添加</Text>
+                    )}
+                </TouchableOpacity>
+            </View>
+        </Pressable>
     );
 }
 
@@ -96,51 +98,65 @@ function ContentSearchModal(props) {
 
     const [searchList, setSearchList] = useState([]);
 
-    const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
-    const [query, setQuery] = useState(false);
+    const [query, setQuery] = useState('');
     const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
+        loadListData();
+    }, [query, page, subject_id]);
+
+    const loadListData = () => {
         if (page == 1) {
             setSearchList([]);
             setRefreshing(true);
+        } else {
+            setLoadingMore(true);
         }
+
         getContentList({subject_id, page, keyword: query})
             .then((res) => {
                 if (res.code === '000000') {
                     let old = page === 1 ? [] : searchList;
                     let result = old.concat(res.result.articles);
-                    result = result.map((item) => {
-                        item.isAdded = selected.findIndex((it) => it.id === item.id) !== -1;
-                        return {...item};
-                    });
+
                     setHasMore(res.result.has_more);
                     setSearchList(result);
                 }
             })
             .finally((_) => {
+                setLoadingMore(false);
                 setRefreshing(false);
             });
-    }, [query, page, subject_id]);
+    };
 
-    const handleToggle = (item, index) => {
-        if (item.isAdded) {
-            item.isAdded = false;
-            setSelected(selected.filter((it) => it.id !== item.id));
-        } else {
-            item.isAdded = true;
+    const handleToggle = (item, add) => {
+        if (add) {
             setSelected([...selected, item]);
+        } else {
+            setSelected(selected.filter((it) => it.id !== item.id));
         }
-        setSearchList([...searchList]);
     };
     const handleSearch = (text) => {
         setQuery(text);
-        // setpa
+        setHasMore(true);
+        setPage(1);
+        setSearchList([]);
     };
 
     const renderItem = ({item, index}) => {
-        return <SearchItem item={item} key={item.id} onToggle={() => handleToggle(item, index)} index={index} />;
+        const isAdded = selected.findIndex((it) => it.id === item.id) !== -1;
+        return (
+            <SearchItem
+                item={item}
+                key={item.id}
+                isAdded={isAdded}
+                onToggle={(add) => handleToggle(item, add)}
+                index={index}
+            />
+        );
     };
 
     const renderEmpty = useCallback(() => {
@@ -157,6 +173,22 @@ function ContentSearchModal(props) {
         );
     });
 
+    const renderLoadingMore = useCallback(() => {
+        if (loadingMore) {
+            return (
+                <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
+                    <LoadingTips />
+                </View>
+            );
+        }
+        if (!hasMore) {
+            <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
+                <Text style={{fontSize: Font.textSm, color: Colors.lightGrayColor}}>没有更多了</Text>)
+            </View>;
+        }
+        return <View style={{width: '100%', ...Style.flexCenter, height: px(40)}} />;
+    }, [loadingMore, hasMore]);
+
     return (
         <View style={styles.searchModal}>
             <View style={[styles.searchWrap]}>
@@ -171,24 +203,30 @@ function ContentSearchModal(props) {
                     placeholder="搜索作品名称"
                 />
             </View>
-            <FlatList
-                style={{flex: 1}}
-                data={searchList}
-                refreshing={refreshing}
-                onRefresh={() => setPage(1)}
-                onEndReached={() => {
-                    if (hasMore) {
-                        console.log('onEndReached');
-                        setTimeout(() => {
-                            setPage(page + 1);
-                        }, 200);
-                    }
-                }}
-                ListEmptyComponent={renderEmpty}
-                onEndReachedThreshold={0.5}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-            />
+            <View style={{flex: 1}}>
+                <FlatList
+                    data={searchList}
+                    refreshing={refreshing}
+                    onRefresh={() => setPage(1)}
+                    initialNumToRender={10}
+                    extraData={{selected, loadingMore, hasMore}}
+                    showsVerticalScrollIndicator={true}
+                    showsHorizontalScrollIndicator={false}
+                    onEndReached={() => {
+                        if (hasMore) {
+                            console.log('onEndReached');
+                            setTimeout(() => {
+                                setPage(page + 1);
+                            }, 200);
+                        }
+                    }}
+                    ListFooterComponent={renderLoadingMore}
+                    ListEmptyComponent={renderEmpty}
+                    onEndReachedThreshold={0.5}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => `${item.title + index}`}
+                />
+            </View>
         </View>
     );
 }
@@ -213,7 +251,7 @@ function EmptyLit(props) {
 export default function SpecailModifyContent({navigation, route}) {
     const [data, setData] = useState([]);
     const [pageData, setPageData] = useState([]);
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1022;
+    const subject_id = route?.params?.subject_id || 1022;
 
     const [loading, setLoading] = useState(false);
     const jump = useJump();
@@ -330,7 +368,7 @@ export default function SpecailModifyContent({navigation, route}) {
                             onSort={handleSort}
                         />
                     }
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => `${item.title + index}`}
                 />
             </View>
             <BottomModal
