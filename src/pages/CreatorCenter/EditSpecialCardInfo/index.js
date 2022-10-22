@@ -72,9 +72,9 @@ const EditSpecialCardInfo = ({navigation, route}) => {
     };
     const handlerTopButton = useCallback(
         (button) => {
-            if (!descObj.current?.value) {
-                return Toast.show('请选择展示卡片样式');
-            }
+            // if (!descObj.current?.value) {
+            //     return Toast.show('请选择展示卡片样式');
+            // }
             jump({
                 path: button.url.path,
                 params: {
