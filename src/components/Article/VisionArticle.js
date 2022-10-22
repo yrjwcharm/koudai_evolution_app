@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 16:56:26
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-22 17:17:41
  * @Description:视野文章模块
  */
 
@@ -73,10 +73,10 @@ export default function VisionArticle({data = '', style, scene}) {
                         <Text style={{height: px(20) * numberOfLines}} />
                     )}
                     {data?.tag_list ? (
-                        <Text style={{marginTop: isHorizontal ? px(13) : px(8)}} numberOfLines={1}>
+                        <Text style={{marginTop: isHorizontal ? px(13) : px(8)}}>
                             {data?.tag_list?.map((item, index) => {
                                 return (
-                                    <Text key={index} style={[styles.light_text]}>
+                                    <Text key={index} style={[styles.light_text, {lineHeight: px(16)}]}>
                                         {item}&ensp;
                                     </Text>
                                 );

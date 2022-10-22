@@ -192,17 +192,21 @@ const CommunityHome = ({navigation, route}) => {
                                             ) : (
                                                 <EmptyTip
                                                     desc="请点击按钮进行添加"
-                                                    text="暂无相关作品"
+                                                    text={data?.show_add_btn ? '暂无相关作品' : ''}
                                                     imageStyle={{marginBottom: px(-30)}}>
-                                                    <Button
-                                                        onPress={() => chooseModal?.current?.show('article', product)}
-                                                        title="添加作品"
-                                                        style={{
-                                                            width: px(180),
-                                                            borderRadius: px(100),
-                                                            marginTop: px(10),
-                                                        }}
-                                                    />
+                                                    {data?.show_add_btn && (
+                                                        <Button
+                                                            onPress={() =>
+                                                                chooseModal?.current?.show('article', product)
+                                                            }
+                                                            title="添加作品"
+                                                            style={{
+                                                                width: px(180),
+                                                                borderRadius: px(100),
+                                                                marginTop: px(10),
+                                                            }}
+                                                        />
+                                                    )}
                                                 </EmptyTip>
                                             )
                                         ) : (
@@ -228,17 +232,19 @@ const CommunityHome = ({navigation, route}) => {
                                             ) : (
                                                 <EmptyTip
                                                     desc="请点击按钮进行添加"
-                                                    text="暂无相关产品"
+                                                    text={data?.show_add_btn ? '暂无相关产品' : ''}
                                                     imageStyle={{marginBottom: px(-30)}}>
-                                                    <Button
-                                                        onPress={() => chooseModal?.current?.show('fund', product)}
-                                                        title="添加产品"
-                                                        style={{
-                                                            width: px(180),
-                                                            borderRadius: px(100),
-                                                            marginTop: px(10),
-                                                        }}
-                                                    />
+                                                    {data?.show_add_btn && (
+                                                        <Button
+                                                            onPress={() => chooseModal?.current?.show('fund', product)}
+                                                            title="添加产品"
+                                                            style={{
+                                                                width: px(180),
+                                                                borderRadius: px(100),
+                                                                marginTop: px(10),
+                                                            }}
+                                                        />
+                                                    )}
                                                 </EmptyTip>
                                             )
                                         ) : (
@@ -260,7 +266,12 @@ const CommunityHome = ({navigation, route}) => {
                     title={'更多'}
                 />
             ) : null}
-            <PublishContent community_id={community_id} />
+            <PublishContent
+                community_id={community_id}
+                onPress={(type) => {
+                    chooseModal?.current?.show(type, product);
+                }}
+            />
 
             <Modalize ref={bottomModal} modalHeight={px(280)}>
                 <View style={{alignItems: 'center', marginTop: px(64), marginBottom: px(14)}}>

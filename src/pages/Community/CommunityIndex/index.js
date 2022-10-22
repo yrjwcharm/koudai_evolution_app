@@ -532,7 +532,7 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, onPress}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
@@ -569,14 +569,20 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                     </TouchableOpacity>
                     <View style={[Style.flexEvenly, {paddingTop: px(64)}]}>
                         {btn_list?.map((item, index) => {
-                            const {icon, name, url} = item;
+                            const {icon, name, url, type} = item;
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     key={name + index}
                                     onPress={() => {
                                         bottomModal.current.hide();
-                                        jump(url);
+                                        if (type == 'addArticle') {
+                                            onPress('article');
+                                        } else if (type == 'addProduct') {
+                                            onPress('fund');
+                                        } else {
+                                            jump(url);
+                                        }
                                     }}
                                     style={Style.flexCenter}>
                                     <Image source={{uri: icon}} style={{width: px(48), height: px(48)}} />

@@ -53,6 +53,9 @@ export default class BottomSheet extends Component {
         this.dragY = new Animated.Value(0);
         this.onGestureEvent = Animated.event([{nativeEvent: {translationY: this.dragY}}], {
             useNativeDriver: USE_NATIVE_DRIVER,
+            // listener: (e) => {
+            //     console.log(e);
+            // },
         });
 
         this.reverseLastScrollY = Animated.multiply(new Animated.Value(-1), this.lastScrollY);
