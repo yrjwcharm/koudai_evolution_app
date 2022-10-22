@@ -4,12 +4,14 @@
  * @Date: 2022-10-16 14:23:12
  */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {AlbumCard} from '~/components/Product';
 import {px} from '~/utils/appUtil';
 import {getData} from './services';
+import {useJump} from '~/components/hooks';
 
 const SpecialCardStylePreview = ({navigation, route}) => {
+    const jump = useJump();
     const [data, setData] = useState();
     useEffect(() => {
         getData(route.params).then((res) => {
@@ -26,14 +28,15 @@ const SpecialCardStylePreview = ({navigation, route}) => {
                         suppressHighlighting={true}
                         style={styles.topBtnText}
                         onPress={() => {
-                            navigation.goBack();
+                            jump(data?.top_button.url);
+                            //navigation.goBack();
                         }}>
-                        保存
+                        {data?.top_button.text || '保存'}
                     </Text>
                 );
             },
         });
-    }, []);
+    }, [jump, data]);
     return (
         <View style={styles.container}>
             <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
