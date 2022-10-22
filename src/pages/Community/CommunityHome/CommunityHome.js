@@ -3,12 +3,12 @@
 // //  * @Description:社区主页
 // //  */
 import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator, Image} from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Style} from '~/common/commonStyle';
+import {Colors} from '~/common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';

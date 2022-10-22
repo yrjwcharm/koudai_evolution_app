@@ -140,6 +140,7 @@ export const CommunityFollowCard = ({
     onDelete, //移除作品
     id,
     relation_type,
+    comment_info, //评论
 }) => {
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
@@ -187,6 +188,40 @@ export const CommunityFollowCard = ({
                         />
                     ) : null}
                 </TouchableOpacity>
+                {/* 评论 */}
+                {comment_info && (
+                    <View style={{padding: px(8), backgroundColor: '#F5F6F8', borderRadius: px(6), marginTop: px(9)}}>
+                        <View style={Style.flexBetween}>
+                            <View style={Style.flexRow}>
+                                <Image
+                                    source={{uri: comment_info?.avatar}}
+                                    style={{width: px(16), height: px(16), marginRight: px(4), borderRadius: px(8)}}
+                                />
+                                <Text>{comment_info?.nickname}</Text>
+                            </View>
+                            <View style={Style.flexRow}>
+                                <Text
+                                    style={{
+                                        color: Colors.lightBlackColor,
+                                        fontSize: px(11),
+                                        fontFamily: Font.numRegular,
+                                    }}>
+                                    {comment_info?.favor_num}
+                                </Text>
+                                <Image source={zan} style={{width: px(16), height: px(16), marginLeft: px(4)}} />
+                            </View>
+                        </View>
+                        <Text
+                            style={{
+                                color: Colors.lightBlackColor,
+                                fontSize: px(12),
+                                lineHeight: px(20),
+                                marginTop: px(8),
+                            }}>
+                            {comment_info?.content}
+                        </Text>
+                    </View>
+                )}
                 {type === 9 ? (
                     live_status === 1 ? (
                         // 直播预约按钮
