@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 12:01:13
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-22 10:58:23
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -175,16 +175,14 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                     navigation.goBack();
                 } else {
                     jump(data.next_button.url);
+
                     // jump({
                     //     path: 'SpecialDetailDraft',
                     //     type: 4,
                     //     params: {
                     //         link: 'http://localhost:3001/specialDetailDraft',
                     //         secne: 'create',
-                    //         params: {
-                    //             subject_id: '1022',
-                    //             secne: 'creating',
-                    //         },
+                    //         params: data.next_button.url.params.params,
                     //     },
                     // });
                 }

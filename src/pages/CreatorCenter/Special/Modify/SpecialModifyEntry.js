@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 17:01:07
+ * @LastEditTime: 2022-10-22 14:24:17
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -23,21 +23,24 @@ import {useFocusEffect} from '@react-navigation/native';
 import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1043;
+    console.log('SpecialModifyEntry:', route?.params);
+    const fix_id = route?.params?.fix_id || 1043;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
     const bottomModalRef = useRef(null);
     const jump = useJump();
     const insets = useSafeAreaInsets();
+    const subject_idRef = useRef('');
 
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            getModifyList({fix_id: subject_id})
+            getModifyList({fix_id: fix_id})
                 .then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
+                        subject_idRef.current = res.result.subject_id;
                         if (res.result.edit_num > 0) {
                             setSubmitable(true);
                         }
@@ -46,19 +49,19 @@ export default function SpecialModifyEntry({navigation, route}) {
                 .finally((_) => {
                     setLoading(false);
                 });
-        }, [subject_id])
+        }, [fix_id])
     );
 
     const handleShowTip = () => {
         bottomModalRef.current?.show();
     };
     const handleSubmit = () => {
-        submitModify({subject_id: subject_id}).then((res) => {
+        submitModify({subject_id: subject_idRef.current}).then((res) => {
             if (res.code === '000000') {
                 navigation.replace({
                     path: 'SpecialSubmitCheck',
                     params: {
-                        subject_id: subject_id,
+                        subject_id: subject_idRef.current,
                     },
                 });
             }
@@ -73,7 +76,13 @@ export default function SpecialModifyEntry({navigation, route}) {
     };
     const handleJump = (item) => {
         console.log('item url', item.url);
-        jump(item.url);
+        jump({
+            ...item.url,
+            params: {
+                ...item.url.params,
+                fix_id: fix_id,
+            },
+        });
     };
     const renderItem = ({item, index, section}) => {
         return (
@@ -123,6 +132,7 @@ export default function SpecialModifyEntry({navigation, route}) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.submitBtn, !submitable ? styles.submitBtn_disabled : {}]}
+                            disabled={!submitable}
                             onPress={handleSubmit}>
                             <Text style={styles.submitBtn_title}>提交审核</Text>
                             <Text style={styles.submitBtn_desc}>已有{data.edit_num}处修改需审核</Text>

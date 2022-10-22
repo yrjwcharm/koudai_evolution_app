@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 18:47:38
+ * @LastEditTime: 2022-10-22 13:55:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -24,8 +24,8 @@ import Html from '~/components/RenderHtml';
 import {RecommendItemWrap, RecommendProduct, RecommendImage} from '../../components/SpecialRecommend.js';
 import {saveRecommendInfo} from './services.js';
 export default function SpecialPreviewRecommend(props) {
-    const {type, uri, subject_id, items, onSave} = props.route?.params ?? {};
-
+    const {type, uri, subject_id, fix_id, items} = props.route?.params ?? {};
+    const jump = useJump();
     let tabs = [];
     if (type === 2) {
         const nums = ['一', '二', '三'];
@@ -49,7 +49,13 @@ export default function SpecialPreviewRecommend(props) {
         }
         saveRecommendInfo(params).then((res) => {
             if (res.code === '000000') {
-                onSave();
+                jump({
+                    path: 'SpecialModifyEntry',
+                    params: {
+                        subject_id,
+                        fix_id,
+                    },
+                });
             }
         });
     };

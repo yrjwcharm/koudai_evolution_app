@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 18:28:52
+ * @LastEditTime: 2022-10-22 14:23:30
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -42,7 +42,8 @@ const example = {
 
 export default function SpecialModifyRecommend({route, navigation}) {
     const jump = useJump();
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1043;
+    const subject_id = route?.params?.subject_id || 1043;
+    console.log('SpecialModifyRecommend:', route?.params);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState();
     const [index, setIndex] = useState(0);
@@ -88,7 +89,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
             jump({
                 path: 'SpecialModifyProductInfo',
                 params: {
-                    subject_id,
+                    ...(route?.params ?? {}),
                     type: 2,
                     items,
                 },
@@ -97,27 +98,6 @@ export default function SpecialModifyRecommend({route, navigation}) {
     };
     const handleBack = () => {
         navigation.goBack();
-        // Modal.show({
-        //     content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-        //     cancelText: '不保存草稿',
-        //     confirmText: '保存草稿',
-        //     confirm: true,
-        //     backCloseCallbackExecute: true,
-        //     cancelCallBack: () => {
-        //         navigation.goBack();
-        //     },
-        //     confirmCallBack: () => {
-        //         saveRecommendInfo({
-        //             subject_id: subject_id || 0,
-        //             name: title,
-        //             bg_img: bgSource,
-        //             desc: desc,
-        //             tags,
-        //         }).then((_) => {
-        //             navigation.goBack();
-        //         });
-        //     },
-        // });
     };
 
     const handlePickAlumn = () => {
@@ -127,7 +107,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 params: {
                     type: 1,
                     uri: url,
-                    subject_id,
+                    ...(route?.params ?? {}),
                     onSave: () => {
                         navigation.goBack(-2);
                     },

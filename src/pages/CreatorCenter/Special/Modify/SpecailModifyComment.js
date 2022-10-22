@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 20:51:05
+ * @LastEditTime: 2022-10-22 14:15:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -164,8 +164,7 @@ function CommentItem(props) {
 
 /** 添加审核评论 */
 export default function SpecailModifyComment({navigation, route}) {
-    const {subject_id} = route?.params ?? {subject_id: 100};
-
+    const subject_id = route?.params?.subject_id || 1024;
     const [pageData, setPageData] = useState();
     const [data, setData] = useState([]);
 
@@ -224,7 +223,7 @@ export default function SpecailModifyComment({navigation, route}) {
     };
 
     const handleShowComment = () => {
-        commentRef.current = {object_id: 1, object_type: 2, parent_id: 0};
+        commentRef.current = {object_id: subject_id, object_type: 2, parent_id: 0};
         commentModalRef.current?.show();
     };
 

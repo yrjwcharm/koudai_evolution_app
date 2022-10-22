@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 17:36:24
+ * @LastEditTime: 2022-10-22 14:15:13
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -21,7 +21,7 @@ import {getStashSpeical, saveStashSpeical} from '../services';
 import pickerUploadImg from '~/utils/pickerUploadImg';
 
 export default function SpecialModifyActiveInfo({navigation, route}) {
-    const subject_id = route?.params?.subject_id || route?.params?.fix_id || 1022;
+    const subject_id = route?.params?.subject_id || 1022;
     const [bgSource, setBgSource] = useState();
 
     const [link, setLink] = useState('');
