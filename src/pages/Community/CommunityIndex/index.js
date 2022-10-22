@@ -561,7 +561,9 @@ export const PublishContent = forwardRef(({community_id = 0}, ref) => {
                 <>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => bottomModal.current.hide()}
+                        onPress={() => {
+                            bottomModal.current.hide();
+                        }}
                         style={styles.closeBtn}>
                         <Image source={close} style={styles.close} />
                     </TouchableOpacity>
@@ -628,9 +630,11 @@ const Index = ({navigation, setLoading}) => {
         return () => listener();
     }, [active, isFocused]);
 
-    useEffect(() => {
-        init();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
@@ -811,6 +815,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: px(16),
         right: px(16),
+        zIndex: 1,
     },
     close: {
         width: px(24),
