@@ -60,10 +60,10 @@ const FollowTable = ({data = [], headerData, isLoading, columns, stickyHeaderY, 
     columns.map((key) => {
         let max = 0;
         data.forEach((row) => {
-            const str = row[key].replace(/[^\x00-\xff]/g, 'xx');
+            const str = row?.[key]?.replace(/[^\x00-\xff]/g, 'xx') ?? '';
             max = Math.max(str.length, max);
         });
-        const str = headerData[key].replace(/[^\x00-\xff]/g, 'xx');
+        const str = headerData?.[key]?.replace(/[^\x00-\xff]/g, 'xx') ?? '';
         max = Math.max(str.length, max);
         maxLen[key] = Math.max(px(max * 9) + 30, 40);
     });

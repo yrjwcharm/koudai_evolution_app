@@ -5,11 +5,19 @@
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {px} from '~/utils/appUtil';
 
 const ScrollableTabBar = (props) => {
     return (
-        <View style={[styles.container, props.style || {}]}>
+        <ScrollView
+            bounces={false}
+            horizontal={true}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={6}
+            contentContainerStyle={styles.container}
+            style={[props.style || {}]}>
             {props.tabs.map((item, idx) => (
                 <TouchableOpacity
                     activeOpacity={props?.disabledTabs?.includes?.(idx) ? 0.5 : 0.8}
@@ -23,7 +31,7 @@ const ScrollableTabBar = (props) => {
                     <View style={[styles.underLine, {opacity: props.activeTab === idx ? 1 : 0}]} />
                 </TouchableOpacity>
             ))}
-        </View>
+        </ScrollView>
     );
 };
 
@@ -34,6 +42,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        paddingHorizontal: px(15),
     },
     tabItem: {
         alignItems: 'center',

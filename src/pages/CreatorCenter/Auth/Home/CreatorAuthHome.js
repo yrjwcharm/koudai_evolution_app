@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 13:10:11
+ * @LastEditTime: 2022-10-22 16:53:20
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -26,14 +26,6 @@ import FollowTable from './FollowTable';
 import ScrollableTabBar from './ScrollableTabBar';
 import LoadingTips from '~/components/LoadingTips';
 
-const getListDataInner = ({type, tpage}, cb) => {
-    return getList({type, page: tpage}).then((res) => {
-        if (res.code === '000000') {
-            cb(res.result, {type, page: tpage});
-        }
-    });
-};
-
 export default function CreatorAuthHome(props) {
     const inset = useSafeAreaInsets();
     const jump = useJump();
@@ -53,6 +45,7 @@ export default function CreatorAuthHome(props) {
     const [scrollY, setScrollY] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
+    const listRef = useRef([]); // 解决连续加载两页导致的list被覆盖的问题
 
     const navBarRef = useRef();
 
@@ -77,7 +70,7 @@ export default function CreatorAuthHome(props) {
                 .finally((_) => {
                     setLoading(false);
                 });
-        }, [activeTab])
+        }, [])
     );
 
     const getListData = (item, nextPage) => {
@@ -91,10 +84,13 @@ export default function CreatorAuthHome(props) {
         getList({type: item.type, page: nextPage})
             .then((res) => {
                 if (res.code === '000000' && oldActiveTab === activeTab) {
-                    console.log('nextPage:', nextPage);
+                    console.log('nextPage:', nextPage, listRef.current);
+
                     if (nextPage >= 2) {
-                        setList(list.concat(res.result.items));
+                        listRef.current = (listRef.current || []).concat(res.result.items);
+                        setList(listRef.current);
                     } else {
+                        listRef.current = res.result.items;
                         setList(res.result.items);
                     }
 
@@ -102,7 +98,9 @@ export default function CreatorAuthHome(props) {
                     setHasMore(res.result.has_more);
                     setPage(nextPage);
                     if (nextPage === 1 && res.result.has_more) {
-                        getListData(item, 2);
+                        setTimeout(() => {
+                            getListData(item, 2);
+                        }, 1000);
                     }
                 }
             })
@@ -135,8 +133,6 @@ export default function CreatorAuthHome(props) {
         } else {
             criticalState && setScrollCriticalState(false);
         }
-
-        console.log('onScroll:', e.nativeEvent);
 
         // 距离底部的距离，为正是部分没显示，为负是容器比内容高
         let bottomDistant = contentSize.height - contentOffset.y - layoutMeasurement.height;
