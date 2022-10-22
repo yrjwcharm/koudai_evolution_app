@@ -4,15 +4,16 @@
  * @Date: 2022-10-16 14:23:12
  */
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {useJump} from '~/components/hooks';
 import {AlbumCard} from '~/components/Product';
 import {px} from '~/utils/appUtil';
 import {getData} from './services';
-import {useJump} from '~/components/hooks';
 
 const SpecialCardStylePreview = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState();
+
     useEffect(() => {
         getData(route.params).then((res) => {
             console.log(res);
@@ -20,6 +21,9 @@ const SpecialCardStylePreview = ({navigation, route}) => {
                 setData(res.result);
             }
         });
+    }, []);
+
+    useEffect(() => {
         navigation.setOptions({
             title: '样式预览',
             headerRight: function () {
