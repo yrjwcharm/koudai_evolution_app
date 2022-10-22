@@ -179,7 +179,9 @@ const WriteArticle = ({article, setArticle}) => {
                                 );
                             } else {
                                 editor.current?.insertHTML(`
-                                    <div class="oss_media" id="oss_vod_${res.id}"><img src="${res.cover}" alt="" style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" videoUrl="${res.url}"></div>
+                                    <br>
+                                    <img class="oss_media" id="oss_vod_${res.id}" src="${res.cover}" alt="" style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" videoUrl="${res.url}">
+                                    <br>
                                 `);
                             }
                         }
