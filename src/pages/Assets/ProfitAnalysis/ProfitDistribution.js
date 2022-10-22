@@ -37,7 +37,6 @@ const ProfitDistribution = React.memo(({headData, type}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
-    const [loading, setLoading] = useState(true);
     const {profit_info, profit_acc_info, profit_all} = headData;
     const [unitType, setUnitType] = useState('day');
     const [tabs, setTabs] = useState([]);
@@ -47,7 +46,6 @@ const ProfitDistribution = React.memo(({headData, type}) => {
             const {profit_unit_tab = []} = res?.result ?? {};
             setTabs(profit_unit_tab);
         }
-        setLoading(false);
     };
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: unitType});
@@ -130,6 +128,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                 )}
                                 initialPage={0}
                                 locked={true}
+                                prerenderingSiblingsNumber={Infinity}
                                 onChangeTab={({i}) => {
                                     setUnitType(tabs[i].type);
                                 }}>

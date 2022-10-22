@@ -12,6 +12,7 @@ import Loading from '../../Portfolio/components/PageLoading';
 import Empty from '../../../components/EmptyTip';
 import {callTerminatedFixedApi} from './services';
 import RenderItem from './components/RenderItem';
+import EmptyData from './components/EmptyData';
 const TerminatedFixedInvest = ({navigation, route}) => {
     const {type, poid = '', fund_code = ''} = route?.params;
     const [data, setData] = useState({});
@@ -57,7 +58,7 @@ const TerminatedFixedInvest = ({navigation, route}) => {
                         data={data?.data_list ?? []}
                         initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
-                        ListEmptyComponent={renderEmpty}
+                        ListEmptyComponent={<EmptyData />}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
                         renderItem={({item, index}) => <RenderItem avail={0} item={item} index={index} />}

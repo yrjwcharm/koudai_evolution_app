@@ -29,20 +29,9 @@ import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from '
 import {useFocusEffect} from '@react-navigation/native';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useJump} from '../../../components/hooks';
+import EmptyData from './components/EmptyData';
 const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
-const shadow = {
-    color: '#aaa',
-    border: 6,
-    radius: 1,
-    opacity: 0.102,
-    x: 0,
-    y: 1,
-    style: {
-        position: 'relative',
-        left: px(16),
-    },
-};
 const FixedInvestManage = ({navigation, route}) => {
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
@@ -93,23 +82,6 @@ const FixedInvestManage = ({navigation, route}) => {
     const renderEmpty = useCallback(() => {
         return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
     }, [emptyMsg, showEmpty]);
-    const EmptyData = () => {
-        return (
-            <View style={{marginTop: px(12)}}>
-                <BoxShadow
-                    setting={{
-                        ...shadow,
-                        width: deviceWidth - px(32),
-                        height: px(211),
-                    }}>
-                    <View style={styles.emptyView}>
-                        <Image source={image} style={styles.emptyImg} />
-                        <Text style={styles.emptyText}>暂无数据</Text>
-                    </View>
-                </BoxShadow>
-            </View>
-        );
-    };
     const executeSort = useCallback((data) => {
         if (data.sort_key) {
             callHistoryDataApi({
@@ -268,23 +240,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.bgColor,
     },
-    emptyView: {
-        backgroundColor: Colors.white,
-        ...Style.flexCenter,
-        height: px(211),
-        borderRadius: px(6),
-    },
-    emptyImg: {
-        height: px(96),
-        width: px(120),
-    },
-    emptyText: {
-        marginTop: px(15),
-        fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
-        fontWeight: 'normal',
-        color: Colors.lightGrayColor,
-    },
+
     emptyInvest: {
         marginLeft: px(16),
         marginTop: px(20),

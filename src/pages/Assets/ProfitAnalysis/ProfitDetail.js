@@ -76,6 +76,7 @@ const ProfitDetail = ({navigation, route}) => {
                             renderTabBar={() => (
                                 <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                             )}
+                            // prerenderingSiblingsNumber={Infinity}
                             initialPage={page}
                             locked={locked}
                             onChangeTab={({i}) => {
