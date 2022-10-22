@@ -33,7 +33,7 @@ const Index = ({navigation, route, setLoading}) => {
                     Toast.show('图片大小不能超过10M');
                 } else {
                     upload({...file, fileType: 'pic'}).then((res) => {
-                        res && setImg(res.url);
+                        res && setImg(res);
                     });
                 }
             }
@@ -42,15 +42,14 @@ const Index = ({navigation, route, setLoading}) => {
 
     const onSubmit = () => {
         const loading = Toast.showLoading();
-        (isEdit ? editCommunity : createCommunity)({avatar: img, community_id, name})
+        (isEdit ? editCommunity : createCommunity)({avatar: img.url, community_id, name, oss_avatar_id: img.id})
             .then((res) => {
                 Toast.hide(loading);
+                Toast.show(res.message);
                 if (res.code === '000000') {
                     const {url} = res.result;
                     if (url) jump(url, 'replace');
                     else navigation.goBack();
-                } else {
-                    Toast.show(res.message);
                 }
             })
             .finally(() => {
@@ -79,9 +78,9 @@ const Index = ({navigation, route, setLoading}) => {
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
                 <View style={Style.flexCenter}>
-                    {img ? (
+                    {img?.url ? (
                         <View style={styles.uploadBtn}>
-                            <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
+                            <Image source={{uri: img.url}} style={{width: '100%', height: '100%'}} />
                             <TouchableOpacity activeOpacity={0.8} onPress={() => setImg('')} style={styles.deleteImg}>
                                 <Image source={deleteImg} style={styles.deleteIcon} />
                             </TouchableOpacity>

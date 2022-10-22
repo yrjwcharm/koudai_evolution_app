@@ -17,6 +17,7 @@ import {
     View,
 } from 'react-native';
 import Image from 'react-native-fast-image';
+// import RNFileSelector from 'react-native-file-selector';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {openCropper} from 'react-native-image-crop-picker';
 import {actions, RichEditor} from 'react-native-pell-rich-editor';
@@ -25,12 +26,14 @@ import uploadImg from '~/assets/img/icon/upload.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
+import {Modal} from '~/components/Modal';
 import NavBar from '~/components/NavBar';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
 import {isIphoneX, px} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {ChooseModal, ChooseTag} from '../CommunityVodCreate';
+import {getArticleDraft, publishArticle, saveArticleDraft} from './services';
 
 const toolbarIcons = {
     disabled: {
@@ -72,12 +75,12 @@ const WriteArticle = ({article, setArticle}) => {
             enabledIcon: toolbarIcons.enabled.picture,
             name: '图片',
         },
-        {
-            action: 'audio',
-            disabledIcon: toolbarIcons.disabled.audio,
-            enabledIcon: toolbarIcons.enabled.audio,
-            name: '音频',
-        },
+        // {
+        //     action: 'audio',
+        //     disabledIcon: toolbarIcons.disabled.audio,
+        //     enabledIcon: toolbarIcons.enabled.audio,
+        //     name: '音频',
+        // },
         {
             action: 'video',
             disabledIcon: toolbarIcons.disabled.video,
@@ -97,7 +100,7 @@ const WriteArticle = ({article, setArticle}) => {
             name: '组合',
         },
     ]);
-    const [secondLevelOps, setSecondLevelOps] = useState([
+    const [secondLevelOps] = useState([
         {action: 'heading2', name: '一级标题', style: {...styles.headingText, fontWeight: Font.weightMedium}},
         {action: 'heading3', name: '二级标题', style: styles.headingText},
         {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}},
@@ -183,6 +186,26 @@ const WriteArticle = ({article, setArticle}) => {
                     });
                 }
             });
+        } else {
+            // RNFileSelector.Show({
+            //     closeMenu: true,
+            //     filter: '.+(.mp3|.MP3|.wma|.WMA|.m4a|.M4A)$',
+            //     onCancel: () => {
+            //         console.log('canceled');
+            //     },
+            //     onDone: (path) => {
+            //         const uri = Platform.OS === 'android' ? `file://${path}` : path;
+            //         upload({fileName: path, fileType: 'audio', uri}).then((res) => {
+            //             if (res) {
+            //                 editor.current?.focusContentEditor?.();
+            //                 editor.current?.insertHTML(`
+            //                     <div class="oss_media" id="oss_audio_${res.id}"></div>
+            //                 `);
+            //             }
+            //         });
+            //     },
+            //     title: '选择音频文件',
+            // });
         }
     };
 
@@ -219,7 +242,7 @@ const WriteArticle = ({article, setArticle}) => {
                     placeholderTextColor={Colors.placeholderColor}
                     ref={input}
                     style={styles.titleInput}
-                    value={article.title || ''}
+                    value={article?.title || ''}
                 />
                 <ChooseTag setTags={(tags) => setArticle((prev) => ({...prev, tags}))} tags={article.tags} />
                 <TouchableWithoutFeedback
@@ -260,6 +283,7 @@ const WriteArticle = ({article, setArticle}) => {
                             `,
                             placeholderColor: Colors.placeholderColor,
                         }}
+                        initialContentHTML={article?.content || ''}
                         onBlur={() => {
                             setEditorIsFocused(false);
                             setFirstLevelOps((prev) => {
@@ -270,6 +294,7 @@ const WriteArticle = ({article, setArticle}) => {
                         }}
                         onChange={(data) => {
                             // console.log(data);
+                            setArticle((prev) => ({...prev, content: data}));
                         }}
                         onCursorPosition={onCursorPosition}
                         onFocus={() => setEditorIsFocused(true)}
@@ -355,9 +380,11 @@ const WriteArticle = ({article, setArticle}) => {
 };
 
 const Index = ({navigation, route, setLoading}) => {
+    const jump = useJump();
+    const {article_id = 0, community_id = 0} = route.params || {};
     const [step, setStep] = useState(1); // 步骤：1 第一步上传文章封面 2 第二步写文章内容
     const [cover, setCover] = useState(''); // 文章封面
-    const [article, setArticle] = useState({}); // content 文章内容 media_ids 文章关联的媒体id tags 文章标签 title 文章标题
+    const [article, setArticle] = useState({}); // content 文章内容 tags 文章标签 title 文章标题
 
     const canPublish = useMemo(() => {
         const {content, tags, title} = article;
@@ -375,12 +402,19 @@ const Index = ({navigation, route, setLoading}) => {
         if (step === 2) {
             return (
                 <View style={[Style.flexRow, {marginRight: px(6)}]}>
-                    <TouchableOpacity activeOpacity={0.8} style={{marginRight: px(10)}}>
-                        <Text style={[styles.title, {color: Colors.descColor}]}>预览</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={!canPublish}
+                        onPress={() => saveDraft((res) => console.log(res))}
+                        style={{marginRight: px(10)}}>
+                        <Text style={[styles.title, {color: canPublish ? Colors.descColor : Colors.lightGrayColor}]}>
+                            预览
+                        </Text>
                     </TouchableOpacity>
                     <Button
                         disabled={!canPublish}
                         disabledColor="rgba(0, 81, 204, 0.3)"
+                        onPress={onPublish}
                         style={styles.pubBtn}
                         textStyle={{...styles.title, color: '#fff'}}
                         title="发布"
@@ -416,9 +450,97 @@ const Index = ({navigation, route, setLoading}) => {
         });
     };
 
+    const saveDraft = (callback) => {
+        const loading = Toast.showLoading('保存中...');
+        const {content = '', tags = [], title = ''} = article;
+        saveArticleDraft({
+            article_id,
+            community_id,
+            content,
+            cover_media_id: cover?.id || '',
+            tag_ids: tags?.map((tag) => tag.id)?.join(','),
+            title,
+        })
+            .then((res) => {
+                Toast.hide(loading);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    callback?.(res.result);
+                }
+            })
+            .finally(() => {
+                Toast.hide(loading);
+            });
+    };
+
+    const onPublish = () => {
+        const loading = Toast.showLoading('提交审核中...');
+        const {content = '', tags = [], title = ''} = article;
+        publishArticle({
+            article_id,
+            community_id,
+            content,
+            cover_media_id: cover?.id || '',
+            tag_ids: tags?.map((tag) => tag.id)?.join(','),
+            title,
+        })
+            .then((res) => {
+                Toast.hide(loading);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    jump(res.result.url, 'replace');
+                }
+            })
+            .finally(() => {
+                Toast.hide(loading);
+            });
+    };
+
     useEffect(() => {
-        setLoading(false);
-    }, []);
+        const {content, tags, title} = article;
+        const needSaveDraft = content?.length > 0 || cover?.url || tags?.length > 0 || title?.length > 0;
+        if (needSaveDraft) {
+            const listener = navigation.addListener('beforeRemove', (e) => {
+                const {action} = e.data;
+                if (['GO_BACK', 'POP'].includes(action.type)) {
+                    e.preventDefault();
+                    // Prompt the user before leaving the screen
+                    Modal.show({
+                        title: '是否保存草稿',
+                        backButtonClose: false,
+                        isTouchMaskToClose: false,
+                        cancelCallBack: () => navigation.dispatch(action),
+                        content: '<span style="text-align: center">保存后再次进入页面可继续编辑</span>',
+                        confirm: true,
+                        confirmCallBack: () => {
+                            saveDraft(() => navigation.dispatch(action));
+                        },
+                    });
+                }
+            });
+            return () => {
+                listener();
+            };
+        }
+    }, [article, cover]);
+
+    useEffect(() => {
+        if (article_id) {
+            getArticleDraft({article_id})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        const {content, cover: coverUrl, cover_media_id, tag_list, title} = res.result;
+                        setArticle({content, tags: tag_list, title});
+                        setCover({id: cover_media_id, url: coverUrl});
+                    }
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+        }
+    }, [article_id]);
 
     return (
         <View style={styles.container}>

@@ -180,7 +180,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
                                     value={value}
                                 />
                             </View>
-                            {type === 'tag' && (
+                            {type.current === 'tag' && (
                                 <>
                                     <Text style={[styles.desc, {marginTop: px(12)}]}>至少添加一个标签</Text>
                                     {selectedItems?.length > 0 && (
@@ -327,10 +327,9 @@ const Index = ({setLoading}) => {
         publishVideo({media_ids: video.id, tag_ids: video.tags.map?.((tag) => tag.id)?.join(','), title: video.intro})
             .then((res) => {
                 Toast.hide(loading);
+                Toast.show(res.message);
                 if (res.code === '000000') {
-                    jump(res.result.url);
-                } else {
-                    Toast.show(res.message);
+                    jump(res.result.url, 'replace');
                 }
             })
             .finally(() => {

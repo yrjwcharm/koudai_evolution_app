@@ -48,6 +48,7 @@ const Index = ({navigation, route, setLoading}) => {
         editCommunity(params)
             .then((res) => {
                 Toast.hide(loading);
+                Toast.show(res.message);
                 if (res.code === '000000') {
                     init();
                 }
@@ -73,7 +74,7 @@ const Index = ({navigation, route, setLoading}) => {
                     .then((img) => {
                         if (img) {
                             upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                                res && onSave({bg_img: res.url, community_id});
+                                res && onSave({bg_img: res.url, community_id, oss_bg_img_id: res.id});
                             });
                         }
                     })
