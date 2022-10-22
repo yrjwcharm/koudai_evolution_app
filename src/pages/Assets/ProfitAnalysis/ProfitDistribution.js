@@ -5,10 +5,6 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import Tab from '../../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import DayProfit from './DayProfit';
-import MonthProfit from './MonthProfit';
-import YearProfit from './YearProfit';
-import TotalProfit from './TotalProfit';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData} from './services';
@@ -17,6 +13,10 @@ import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
 import {useJump} from '../../../components/hooks';
+import DayProfit from './DayProfit';
+import MonthProfit from './MonthProfit';
+import YearProfit from './YearProfit';
+import TotalProfit from './TotalProfit';
 const shadow = {
     color: '#AAA',
     border: 4,
@@ -33,6 +33,13 @@ const shadow = {
         zIndex: 0,
     },
 };
+const comObj = {
+    日收益: DayProfit,
+    月收益: MonthProfit,
+    年收益: YearProfit,
+    累计收益: TotalProfit,
+};
+
 const ProfitDistribution = React.memo(({headData, type}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
@@ -133,14 +140,8 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                                     setUnitType(tabs[i].type);
                                 }}>
                                 {tabs.map((tab, index) => {
-                                    if (index == 0)
-                                        return <DayProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                    if (index == 1)
-                                        return <MonthProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                    if (index == 2)
-                                        return <YearProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
-                                    if (index == 3)
-                                        return <TotalProfit tabLabel={tab.text} key={`${tab + '' + index}`} />;
+                                    const Com = comObj[tab.text];
+                                    return <Com tabLabel={tab.text} key={`tab${index}`} />;
                                 })}
                             </ScrollableTabView>
                         )}

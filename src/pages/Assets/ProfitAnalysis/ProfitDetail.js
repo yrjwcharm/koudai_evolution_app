@@ -17,10 +17,16 @@ import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [locked, setLocked] = useState(false);
     const bottomModal = useRef(null);
-    const tabsRef = useRef([]);
+    const tabsRef = useRef([
+        {text: '全部', type: 200},
+        {text: '公募基金', type: 10},
+        {text: '投顾组合', type: 30},
+        {text: '理财计划', type: 40},
+        {text: '私募基金', type: 20},
+    ]);
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const [type, setType] = useState(initType);
@@ -29,9 +35,8 @@ const ProfitDetail = ({navigation, route}) => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', tabs = [], header = {}} = res[0]?.result || {};
+                const {title: navigationTitle = '', header = {}} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
-                tabsRef.current = tabs;
                 setHeadData(header);
                 setDeclarePic(declare_pic);
                 setLoading(false);
@@ -57,7 +62,7 @@ const ProfitDetail = ({navigation, route}) => {
         init();
         let listener = DeviceEventEmitter.addListener('sendChangeTrigger', (bool) => setLocked(bool));
         return () => listener && listener.remove();
-    }, [init]);
+    }, [init, page]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
@@ -70,31 +75,28 @@ const ProfitDetail = ({navigation, route}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-                    {tabsRef.current.length > 1 && (
-                        <ScrollableTabView
-                            ref={scrollTab}
-                            renderTabBar={() => (
-                                <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
-                            )}
-                            // prerenderingSiblingsNumber={Infinity}
-                            initialPage={page}
-                            locked={locked}
-                            onChangeTab={({i}) => {
-                                setType(tabsRef.current[i].type);
-                                dispatch({type: 'updateType', payload: tabsRef.current[i].type});
-                            }}>
-                            {tabsRef.current.map((el, index) => {
-                                return (
-                                    <ProfitDistribution
-                                        type={type}
-                                        headData={headData}
-                                        tabLabel={el.text}
-                                        key={`${el + '' + index}`}
-                                    />
-                                );
-                            })}
-                        </ScrollableTabView>
-                    )}
+                    <ScrollableTabView
+                        ref={scrollTab}
+                        renderTabBar={() => (
+                            <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
+                        )}
+                        initialPage={page}
+                        locked={false}
+                        onChangeTab={({i}) => {
+                            setType(tabsRef.current[i].type);
+                            dispatch({type: 'updateType', payload: tabsRef.current[i].type});
+                        }}>
+                        {tabsRef.current.map((el, index) => {
+                            return (
+                                <ProfitDistribution
+                                    type={type}
+                                    headData={headData}
+                                    tabLabel={el.text}
+                                    key={`${el + '' + index}`}
+                                />
+                            );
+                        })}
+                    </ScrollableTabView>
                     <BottomModal title={'更新说明'} ref={bottomModal}>
                         <View style={{marginTop: px(30), alignItems: 'center'}}>
                             <Image

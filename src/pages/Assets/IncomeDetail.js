@@ -29,7 +29,6 @@ const IncomeDetail = ({navigation, route}) => {
     useEffect(() => {
         navigation.setOptions({title});
         Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     return (
