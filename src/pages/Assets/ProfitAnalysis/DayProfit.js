@@ -88,8 +88,11 @@ const DayProfit = React.memo(() => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    setMinDate(unit_list[unit_list.length - 1].value);
-                    setMaxDate(unit_list[0].value);
+                    let minDate = unit_list[unit_list.length - 1].value;
+                    let maxDate = unit_list[0].value;
+                    let cur = dayjs_.format('YYYY-MM');
+                    let max = dayjs(maxDate).format('YYYY-MM');
+                    let min = dayjs(minDate).format('YYYY-MM');
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             //小于当前日期的情况
@@ -102,6 +105,7 @@ const DayProfit = React.memo(() => {
                             }
                         }
                     }
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
                     let barCharData = profit_data_list
                         .map((el) => {
                             return {date: el.unit_key, value: parseFloat(el.value)};
@@ -109,24 +113,37 @@ const DayProfit = React.memo(() => {
                         .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? -1 : 1));
                     setChart({
                         label: [
-                            {name: '时间', val: profit_data_list[0]?.unit_key},
-                            {name: '收益', val: profit_data_list[0]?.value},
+                            {name: '时间', val: profit_data_list[index]?.unit_key},
+                            {name: '收益', val: profit_data_list[index]?.value},
                         ],
                         chart: barCharData,
                     });
-                    let index;
+                    let zIndex;
                     if (selCurDate == dayjs().format('YYYY-MM-DD')) {
-                        index = arr.findIndex((el) => el.day == profit_data_list[0]?.unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0]?.unit_key});
+                        zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[index]?.unit_key});
                     } else {
-                        index = arr.findIndex((el) => el.day == selCurDate);
+                        zIndex = arr.findIndex((el) => el.day == selCurDate);
                         dispatch({type: 'updateUnitKey', payload: selCurDate});
                     }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[index] && (arr[index].checked = true);
-                    setDateArr([...arr]);
+                    if (cur > max || cur < min) {
+                        return;
+                    }
+                    if (cur === max) {
+                        setIsNext(false);
+                    }
+                    if (cur === min) {
+                        setIsPrev(false);
+                    }
+                    if (cur > min && cur < max) {
+                        setIsPrev(true);
+                        setIsNext(true);
+                    }
                     setDate(dayjs_);
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                    arr[zIndex] && (arr[zIndex].checked = true);
+                    setDateArr([...arr]);
                 }
             })();
         },
@@ -138,27 +155,13 @@ const DayProfit = React.memo(() => {
     /**
      * 向上递增一个月
      */
-    const addMonth = () => {
-        setIsPrev(true);
-        let cur = date.format('YYYY-MM');
-        let max = dayjs(maxDate).format('YYYY-MM');
-        if (cur === max) {
-            setIsNext(false);
-            return;
-        }
+    const addMonth = async () => {
         setDiff((diff) => diff + 1);
     };
     /**
      * 向下递减一个月
      */
-    const subMonth = () => {
-        setIsNext(true);
-        let cur = date.format('YYYY-MM');
-        let min = dayjs(minDate).format('YYYY-MM');
-        if (cur === min) {
-            setIsPrev(false);
-            return;
-        }
+    const subMonth = async () => {
         setDiff((diff) => diff - 1);
     };
     /**

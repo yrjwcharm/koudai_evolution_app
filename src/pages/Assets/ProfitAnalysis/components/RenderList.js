@@ -16,7 +16,6 @@ import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 let listener = null;
 const RenderList = React.memo(() => {
-    const isMounted = useIsMounted();
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const unitKey = useSelector((state) => state.profitDetail.unitKey);
@@ -27,13 +26,11 @@ const RenderList = React.memo(() => {
         (async () => {
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: unitKey});
             if (res.code === '000000') {
-                if (isMounted.current) {
-                    const {head_list = [], data_list = [], button = {}} = res.result || {};
-                    setHeaderList(head_list);
-                    setProfitList(data_list);
-                    setLoading(false);
-                    DeviceEventEmitter.emit('sendTrigger', button);
-                }
+                const {head_list = [], data_list = [], button = {}} = res.result || {};
+                setHeaderList(head_list);
+                setProfitList(data_list);
+                setLoading(false);
+                DeviceEventEmitter.emit('sendTrigger', button);
             }
         })();
     }, [type, unitType, unitKey]);

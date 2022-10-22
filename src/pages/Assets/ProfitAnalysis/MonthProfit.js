@@ -72,28 +72,28 @@ const MonthProfit = React.memo((callback) => {
                             }
                         }
                     }
-
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
                     let barCharData = arr.map((el, index) => {
                         return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
                     });
                     setChart({
                         label: [
-                            {name: '时间', val: profit_data_list[0]?.unit_key},
-                            {name: '收益', val: profit_data_list[0]?.value},
+                            {name: '时间', val: profit_data_list[index]?.unit_key},
+                            {name: '收益', val: profit_data_list[index]?.value},
                         ],
                         chart: barCharData,
                     });
-                    let index;
+                    let zIndex;
                     //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (selCurDate == dayjs().format('YYYY-MM')) {
-                        index = arr.findIndex((el) => el.day == profit_data_list[0]?.unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[0]?.unit_key});
+                        zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
+                        dispatch({type: 'updateUnitKey', payload: profit_data_list[index]?.unit_key});
                     } else {
-                        index = arr.findIndex((el) => el.day == selCurDate);
+                        zIndex = arr.findIndex((el) => el.day == selCurDate);
                         dispatch({type: 'updateUnitKey', payload: selCurDate});
                     }
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[index] && (arr[index].checked = true);
+                    arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setDate(dayjs_);
                 }

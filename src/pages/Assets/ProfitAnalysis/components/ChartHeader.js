@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {px} from '../../../../utils/appUtil';
+import {debounce, px} from '../../../../utils/appUtil';
 
 const ChartHeader = React.memo(
     ({
