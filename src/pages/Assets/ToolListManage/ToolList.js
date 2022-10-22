@@ -23,6 +23,7 @@ const ToolList = ({route}) => {
     const [scrollEnable, setScrollEnable] = useState(true);
     const [isEditState, setIsEditState] = useState(false);
     const initialToolIds = useRef();
+    const tempTooIds = useRef([]);
     const {type = 50} = route.params || {};
     const getData = async () => {
         let res = await getList({type});
@@ -51,15 +52,26 @@ const ToolList = ({route}) => {
                         //保存
                         toolSave({type, tool_ids: saveToolIds});
                         setIsEditState(!isEditState);
+                        tempTooIds.current = [];
                     },
                     cancelCallBack: () => {
                         setIsEditState(!isEditState);
+                        setIsEditState(!isEditState);
+
+                        if (tempTooIds.current.length > 1) {
+                            setData(
+                                produce((draft) => {
+                                    draft.my_tools.tool_list = tempTooIds.current;
+                                })
+                            );
+                        }
                     },
                 });
             } else {
                 setIsEditState(!isEditState);
             }
         } else {
+            tempTooIds.current = data?.my_tools?.tool_list;
             setIsEditState(!isEditState);
         }
     };
