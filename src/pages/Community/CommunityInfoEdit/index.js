@@ -24,7 +24,7 @@ const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
     const {community_id = 0} = route.params || {};
     const [data, setData] = useState({});
-    const {avatar, intro, name} = data;
+    const {avatar, avatar_upload_id, intro, name} = data;
     const [value, setValue] = useState('');
     const bottomModal = useRef();
     const input = useRef();
@@ -99,7 +99,11 @@ const Index = ({navigation, route, setLoading}) => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() =>
-                    jump({path: 'CommunityInfoCreate', params: {avatar, community_id, fr: 'edit', name}, type: 1})
+                    jump({
+                        path: 'CommunityInfoCreate',
+                        params: {avatar, avatar_upload_id, community_id, fr: 'edit', name},
+                        type: 1,
+                    })
                 }
                 style={[Style.flexBetween, styles.infoItem]}>
                 <View style={Style.flexRow}>

@@ -19,9 +19,9 @@ import {createCommunity, editCommunity} from './services';
 
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
-    const {avatar, community_id = 0, fr = '', name: prevName} = route.params || {};
+    const {avatar, avatar_upload_id, community_id = 0, fr = '', name: prevName} = route.params || {};
     const isEdit = fr === 'edit';
-    const [img, setImg] = useState(avatar || '');
+    const [img, setImg] = useState({id: avatar_upload_id, url: avatar || ''});
     const [name, setName] = useState(prevName || '');
     const input = useRef();
 
