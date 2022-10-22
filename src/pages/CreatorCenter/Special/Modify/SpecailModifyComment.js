@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 14:15:04
+ * @LastEditTime: 2022-10-22 17:19:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -195,9 +195,16 @@ export default function SpecailModifyComment({navigation, route}) {
     }, []);
 
     useEffect(() => {
+        console.log('change page:', page);
         if (!pageData || !subject_id) return;
         getList(pageData.tabs[activeTab].type, page, subject_id);
     }, [pageData, page, activeTab, subject_id]);
+
+    const refresh = () => {
+        if (!pageData || !subject_id) return;
+        setPage(1);
+        getList(pageData.tabs[activeTab].type, 1, subject_id);
+    };
 
     const getList = useCallback((type, tpage, sid) => {
         if (tpage === 1) {
@@ -230,7 +237,7 @@ export default function SpecailModifyComment({navigation, route}) {
     const handlePublish = (content, id) => {
         return addComment({content, ...commentRef.current}).then((res) => {
             if (res.code === '000000') {
-                setPage(1);
+                refresh();
                 Toast.show(res.result.message);
                 return Promise.resolve();
             }
@@ -239,7 +246,7 @@ export default function SpecailModifyComment({navigation, route}) {
     };
     const handlePageChange = (idx) => {
         setActiveTab(idx);
-        setPage(1);
+        refresh();
     };
     const handleCommentAction = (item, op) => {
         const doAction = () => {
@@ -253,7 +260,7 @@ export default function SpecailModifyComment({navigation, route}) {
                 true
             ).then((res) => {
                 if (res.code === '000000') {
-                    getList(pageData.tabs[activeTab].type, 1, subject_id);
+                    refresh();
                 }
             });
         };
@@ -332,7 +339,7 @@ export default function SpecailModifyComment({navigation, route}) {
                     data={data}
                     refreshing={refreshing}
                     ListEmptyComponent={EmptyLit}
-                    onRefresh={() => setPage(1)}
+                    onRefresh={() => refresh()}
                     onEndReached={() => {
                         if (hasMore) {
                             setPage(page + 1);

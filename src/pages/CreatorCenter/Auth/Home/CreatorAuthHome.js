@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 16:53:20
+ * @LastEditTime: 2022-10-22 17:09:31
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -247,7 +247,7 @@ export default function CreatorAuthHome(props) {
 
                 <View style={styles.cardsWrap}>
                     {listLoading ? (
-                        <View style={{width: '100%', height: px(30)}}>
+                        <View style={{width: '100%', height: px(40), ...Style.flexCenter}}>
                             <LoadingTips color="#ddd" />
                         </View>
                     ) : (
@@ -262,11 +262,11 @@ export default function CreatorAuthHome(props) {
                     )}
 
                     {listLoadingMore && (
-                        <View style={{width: '100%', height: px(30)}}>
+                        <View style={{width: '100%', height: px(40), ...Style.flexCenter}}>
                             <LoadingTips color="#ddd" />
                         </View>
                     )}
-                    {!hasMore && (
+                    {!hasMore && !listLoadingMore && (
                         <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
                             <Text style={{fontSize: Font.textSm, color: Colors.lightGrayColor}}>没有更多了</Text>
                         </View>
