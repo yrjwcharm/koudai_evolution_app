@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-20 17:11:00
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 15:35:33
+ * @LastEditTime: 2022-10-22 15:58:31
  * @FilePath: /koudai_evolution_app/src/utils/pickerUploadImg.js
  * @Description:
  */
@@ -82,7 +82,6 @@ export const doPickerAndUploadImg = (cb) => {
                                         uri: image.path,
                                     });
                                 }
-                                ImageCropPicker.clean();
                             },
                             () => {
                                 Toast.hide(loading);
