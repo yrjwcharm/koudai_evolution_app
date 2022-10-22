@@ -5,7 +5,17 @@
  */
 
 import React, {useCallback, useState} from 'react';
-import {Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    Dimensions,
+    FlatList,
+    Image,
+    ScrollView,
+    ImageBackground,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import BottomDesc from '../../../components/BottomDesc';
@@ -173,31 +183,40 @@ const FixedInvestManage = ({navigation, route}) => {
                         </View>
                     )}
                     {tabList.length > 0 && (
-                        <View style={styles.scrollTab}>
-                            {tabList.map((el, index) => {
-                                return (
-                                    <TouchableOpacity key={el + ' ' + index} onPress={() => selTab(el)}>
-                                        <View
-                                            style={[
-                                                styles.defaultTab,
-                                                {backgroundColor: el.checked ? '#DEE8FF' : '#FFFFFF'},
-                                            ]}>
-                                            <Text
-                                                style={[
-                                                    styles.defaultTabText,
-                                                    {
-                                                        fontFamily: el.checked
-                                                            ? Font.pingFangMedium
-                                                            : Font.pingFangRegular,
-                                                        color: el.checked ? Colors.brandColor : Colors.defaultColor,
-                                                    },
-                                                ]}>
-                                                {el?.text}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                );
-                            })}
+                        <View style={{width: deviceWidth - px(16)}}>
+                            <ScrollView
+                                horizontal={true}
+                                automaticallyAdjustContentInsets={false}
+                                showsHorizontalScrollIndicator={false}>
+                                <View style={styles.scrollTab}>
+                                    {tabList.map((el, index) => {
+                                        return (
+                                            <TouchableOpacity key={el + ' ' + index} onPress={() => selTab(el)}>
+                                                <View
+                                                    style={[
+                                                        styles.defaultTab,
+                                                        {backgroundColor: el.checked ? '#DEE8FF' : '#FFFFFF'},
+                                                    ]}>
+                                                    <Text
+                                                        style={[
+                                                            styles.defaultTabText,
+                                                            {
+                                                                fontFamily: el.checked
+                                                                    ? Font.pingFangMedium
+                                                                    : Font.pingFangRegular,
+                                                                color: el.checked
+                                                                    ? Colors.brandColor
+                                                                    : Colors.defaultColor,
+                                                            },
+                                                        ]}>
+                                                        {el?.text}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                            </ScrollView>
                         </View>
                     )}
                     <InvestHeader

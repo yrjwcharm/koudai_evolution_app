@@ -12,14 +12,15 @@ import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
+import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
+    const [loading, setLoading] = useState(true);
     const [locked, setLocked] = useState(false);
     const bottomModal = useRef(null);
-    const [tabs, setTabs] = useState([]);
-    const [title, setTitle] = useState('');
+    const tabsRef = useRef([]);
     const [declarePic, setDeclarePic] = useState('');
     const [headData, setHeadData] = useState({});
     const [type, setType] = useState(initType);
@@ -27,15 +28,15 @@ const ProfitDetail = ({navigation, route}) => {
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
-            if (res[0].code === '000000') {
-                const {title = '', tabs = [], header = {}} = res[0]?.result || {};
-                navigation.setOptions({title});
-                setTabs(tabs);
+            if (res[0].code === '000000' && res[1].code === '000000') {
+                const {title: navigationTitle = '', tabs = [], header = {}} = res[0]?.result || {};
+                const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
+                tabsRef.current = tabs;
                 setHeadData(header);
-            }
-            if (res[1].code === '000000') {
-                const {title = '', declare_pic = ''} = res[1]?.result || {};
+                setDeclarePic(declare_pic);
+                setLoading(false);
                 navigation.setOptions({
+                    title: navigationTitle,
                     headerRight: () => (
                         <>
                             <TouchableOpacity
@@ -44,13 +45,11 @@ const ProfitDetail = ({navigation, route}) => {
                                 onPress={() => {
                                     bottomModal.current.show();
                                 }}>
-                                <Text style={styles.title}>{title}</Text>
+                                <Text style={styles.title}>{rightTitle}</Text>
                             </TouchableOpacity>
                         </>
                     ),
                 });
-                setDeclarePic(declare_pic);
-                setTitle(title);
             }
         })();
     }, [type]);
@@ -63,44 +62,54 @@ const ProfitDetail = ({navigation, route}) => {
         setLoadingFn(loading);
     });
     useEffect(() => {
-        Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
+        // alert('+++' + page);
+        scrollTab.current?.goToPage(4);
+        // Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
     }, [page]);
     return (
-        <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-            {tabs.length > 1 && (
-                <ScrollableTabView
-                    ref={scrollTab}
-                    renderTabBar={() => <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />}
-                    initialPage={page}
-                    locked={locked}
-                    onChangeTab={({i}) => {
-                        setType(tabs[i].type);
-                        dispatch({type: 'updateType', payload: tabs[i].type});
-                    }}>
-                    {tabs.map((el, index) => {
-                        return (
-                            <ProfitDistribution
-                                type={type}
-                                headData={headData}
-                                tabLabel={el.text}
-                                key={`${el + '' + index}`}
+        <>
+            {loading ? (
+                <Loading color={Colors.btnColor} />
+            ) : (
+                <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
+                    {tabsRef.current.length > 1 && (
+                        <ScrollableTabView
+                            ref={scrollTab}
+                            renderTabBar={() => (
+                                <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
+                            )}
+                            initialPage={page}
+                            locked={locked}
+                            onChangeTab={({i}) => {
+                                setType(tabsRef.current[i].type);
+                                dispatch({type: 'updateType', payload: tabsRef.current[i].type});
+                            }}>
+                            {tabsRef.current.map((el, index) => {
+                                return (
+                                    <ProfitDistribution
+                                        type={type}
+                                        headData={headData}
+                                        tabLabel={el.text}
+                                        key={`${el + '' + index}`}
+                                    />
+                                );
+                            })}
+                        </ScrollableTabView>
+                    )}
+                    <BottomModal title={'更新说明'} ref={bottomModal}>
+                        <View style={{marginTop: px(30), alignItems: 'center'}}>
+                            <Image
+                                resizeMode={'cover'}
+                                style={styles.declareImg}
+                                source={{
+                                    uri: declarePic,
+                                }}
                             />
-                        );
-                    })}
-                </ScrollableTabView>
-            )}
-            <BottomModal title={title} ref={bottomModal}>
-                <View style={{marginTop: px(30), alignItems: 'center'}}>
-                    <Image
-                        resizeMode={'cover'}
-                        style={styles.declareImg}
-                        source={{
-                            uri: declarePic,
-                        }}
-                    />
+                        </View>
+                    </BottomModal>
                 </View>
-            </BottomModal>
-        </View>
+            )}
+        </>
     );
 };
 const styles = StyleSheet.create({

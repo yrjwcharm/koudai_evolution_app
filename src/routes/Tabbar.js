@@ -153,7 +153,7 @@ export default function Tabbar() {
                     marginBottom: isIphoneX() ? px(18) : px(10),
                     fontSize: px(11),
                 },
-                style: {height: isIphoneX() ? px(90) : px(56), paddinsgTop: isIphoneX() ? 0 : px(4)},
+                style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Product" options={{tabBarLabel: '产品'}} component={Product} />
             {/* <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} /> */}
