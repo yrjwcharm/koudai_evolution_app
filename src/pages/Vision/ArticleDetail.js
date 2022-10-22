@@ -81,16 +81,17 @@ const ArticleDetail = ({navigation, route}) => {
     const jump = useJump();
     const {position} = useProgress();
     const {isPlaying} = useOnTogglePlayback();
-    const isSameAudio = useRef(false);
-    const audioMedia = useRef(null);
+    const isCurrentArticleAudio = useRef(false);
+    const audioMedia = useRef([]);
 
-    const setAudio = async (audio) => {
-        let track_tmp = await TrackPlayer.getTrack(0);
-        if (track_tmp?.title == audio.title) {
-            isSameAudio.current = true;
+    const setAudio = async (audioList) => {
+        let current_track = await TrackPlayer.getTrack(0);
+        let tmp = audioList.filter((audio) => audio.url == current_track.url);
+        if (tmp.length > 0) {
+            isCurrentArticleAudio.current = true;
             dispatch(updateUserInfo({showAudioModal: false}));
         } else {
-            isSameAudio.current = false;
+            isCurrentArticleAudio.current = false;
         }
     };
     useEffect(() => {
@@ -122,19 +123,13 @@ const ArticleDetail = ({navigation, route}) => {
                     setFinishRead(!!res.result.read_info?.done_status);
                 }
             });
-            http.get('http://kapi-web.jinhongyu.mofanglicai.com.cn:10080/community/article/20210101', {
+            http.get('/community/article/20210101', {
                 article_id: route.params?.article_id,
                 fr,
             }).then((res) => {
                 if (res.code === '000000') {
-                    const {media_url, media_cover, desc, cate_name} = res?.result;
-                    audioMedia.current = {
-                        url: media_url, // Load media from the network
-                        title: desc,
-                        artist: cate_name,
-                        artwork:
-                            media_cover || 'https://static.licaimofang.com/wp-content/uploads/2022/09/broadcast.jpeg',
-                    };
+                    const {media_list = []} = res?.result;
+                    audioMedia.current = media_list.filter((audio) => audio.media_type == 'audio');
                     setAudio(audioMedia.current);
                 }
             });
@@ -153,9 +148,13 @@ const ArticleDetail = ({navigation, route}) => {
     );
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
-        if (eventData == 'audioPlay' && audioMedia.current) {
-            startAudio(audioMedia.current);
-            dispatch(updateUserInfo({showAudioModal: false}));
+        if (eventData.indexOf('audioPlay' > -1) && audioMedia.current.length > 0) {
+            let media_id = eventData.split('+')[1];
+            let currentAudioMedia = audioMedia.current.find((audio) => audio.media_id == media_id);
+            if (currentAudioMedia) {
+                startAudio(currentAudioMedia);
+                dispatch(updateUserInfo({showAudioModal: false}));
+            }
         } else if (eventData == 'audioPause') {
             TrackPlayer.pause();
         } else if (eventData.indexOf('changeAudioTime') > -1) {
@@ -498,7 +497,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 ref={webviewRef}
                                 onLoadEnd={async () => {
                                     setTimeout(() => {
-                                        if (isSameAudio.current && position) {
+                                        if (isCurrentArticleAudio.current && position) {
                                             if (isPlaying) {
                                                 webviewRef.current?.injectJavaScript(
                                                     `window.changeAudioTime(${position},'rn');window.audioPlay();true;`

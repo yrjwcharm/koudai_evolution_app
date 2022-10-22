@@ -2,24 +2,13 @@
  * @Date: 2022-10-14 15:10:12
  * @Description:
  */
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    ImageBackground,
-    TouchableOpacity,
-    Animated,
-    TouchableWithoutFeedback,
-    TouchableHighlight,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {deviceWidth, px} from '~/utils/appUtil';
+import {px} from '~/utils/appUtil';
 import {Style} from '~/common/commonStyle';
 import {Colors} from '../../../common/commonStyle';
 import {useJump} from '../../../components/hooks';
 import http from '../../../services';
-import {Button} from '~/components/Button';
 
 const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
     const jump = useJump();
@@ -28,7 +17,6 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
         setFollowStatus(data?.follow_status);
     }, [data?.follow_status]);
     const handleFollow = () => {
-        alert('1');
         if (data?.follow_btn?.url) {
             jump(data?.follow_btn?.url);
             return;
