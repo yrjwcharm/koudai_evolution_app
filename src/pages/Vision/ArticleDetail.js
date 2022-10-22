@@ -24,7 +24,6 @@ import {updateVision} from '../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderCate from './components/RenderCate.js';
 import RenderTitle from './components/RenderTitle';
-import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';

@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
-index c993477..610114a 100644
+index c993477..4d92cc0 100644
 --- a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
 +++ b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
 @@ -25,6 +25,7 @@ interface Props {
@@ -10,19 +10,7 @@ index c993477..610114a 100644
      insetValue?: number; // 状态栏的高度，也就是TabBar距离顶部状态栏的距离
      headerHeight?: number;
      tabBarStyle?: ViewStyle;
-@@ -210,9 +211,10 @@ export default class ScrollableTabView extends Component<Props> {
- 
-         return (
-             <Animated.View
-+                pointerEvents='none'
-                 style={{
-                     position: 'absolute',
--                    zIndex: 10,
-+                    zIndex: 1,
-                     top: 0,
-                     width: containerWidth,
-                     transform: [
-@@ -224,10 +226,46 @@ export default class ScrollableTabView extends Component<Props> {
+@@ -224,10 +225,46 @@ export default class ScrollableTabView extends Component<Props> {
                          },
                      ],
                  }}>
