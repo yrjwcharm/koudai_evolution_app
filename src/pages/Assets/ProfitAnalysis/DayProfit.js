@@ -127,15 +127,9 @@ const DayProfit = React.memo(() => {
                         dispatch({type: 'updateUnitKey', payload: selCurDate});
                     }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (cur > max || cur < min) {
-                        return;
-                    }
-                    if (cur === max) {
-                        setIsNext(false);
-                    }
-                    if (cur === min) {
-                        setIsPrev(false);
-                    }
+                    if (cur > max || cur < min) return;
+                    cur == max && setIsNext(false);
+                    cur == min && setIsPrev(false);
                     if (cur > min && cur < max) {
                         setIsPrev(true);
                         setIsNext(true);

@@ -24,7 +24,8 @@ const MonthProfit = React.memo((callback) => {
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
     const [diff, setDiff] = useState(0);
-    const [isAdd, setIsAdd] = useState(false);
+    const [isNext, setIsNext] = useState(false);
+    const [isPrev, setIsPrev] = useState(true);
     const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
@@ -33,11 +34,8 @@ const MonthProfit = React.memo((callback) => {
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
-    useEffect(() => {
-        date.year() == dayjs().year() && setIsAdd(false);
-    }, [date]);
+
     const subtract = useCallback(() => {
-        setIsAdd(true);
         setDiff((diff) => diff - 1);
     }, []);
     const init = useCallback(
@@ -58,8 +56,11 @@ const MonthProfit = React.memo((callback) => {
                 }
                 const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.year()});
                 if (res.code === '000000') {
-                    const {profit_data_list = []} = res?.result ?? {};
+                    const {profit_data_list = [], unit_list = []} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
+                    let min = unit_list[unit_list.length - 1].value;
+                    let max = unit_list[0].value;
+                    let cur = dayjs_.year();
                     for (let i = 0; i < arr.length; i++) {
                         for (let j = 0; j < profit_data_list.length; j++) {
                             if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
@@ -91,6 +92,14 @@ const MonthProfit = React.memo((callback) => {
                     } else {
                         zIndex = arr.findIndex((el) => el.day == selCurDate);
                         dispatch({type: 'updateUnitKey', payload: selCurDate});
+                    }
+                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                    if (cur > max || cur < min) return;
+                    cur == max && setIsNext(false);
+                    cur == min && setIsPrev(false);
+                    if (cur > min && cur < max) {
+                        setIsPrev(true);
+                        setIsNext(true);
                     }
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
@@ -144,7 +153,8 @@ const MonthProfit = React.memo((callback) => {
                         date={date.year()}
                         subtract={subtract}
                         add={add}
-                        isAdd={isAdd}
+                        isNext={isNext}
+                        isPrev={isPrev}
                     />
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
                     {isBarChart && <BarChartComponent chartData={chartData} />}
@@ -158,7 +168,7 @@ const MonthProfit = React.memo((callback) => {
     );
 });
 const CalendarHeader = React.memo(
-    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, isAdd, add}) => {
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, isNext, isPrev, add}) => {
         return (
             <View style={Style.flexBetween}>
                 <View style={[styles.chartLeft]}>
@@ -204,11 +214,13 @@ const CalendarHeader = React.memo(
                     </TouchableOpacity>
                 </View>
                 <View style={styles.selMonth}>
-                    <TouchableOpacity onPress={subtract}>
-                        <Image source={require('../../../assets/img/icon/prev.png')} />
-                    </TouchableOpacity>
+                    {isPrev && (
+                        <TouchableOpacity onPress={subtract}>
+                            <Image source={require('../../../assets/img/icon/prev.png')} />
+                        </TouchableOpacity>
+                    )}
                     <Text style={styles.MMText}>{date}</Text>
-                    {isAdd && (
+                    {isNext && (
                         <TouchableOpacity onPress={add}>
                             <Image
                                 style={{width: px(13), height: px(13)}}
