@@ -17,7 +17,7 @@ import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [locked, setLocked] = useState(false);
     const bottomModal = useRef(null);
     const tabsRef = useRef([]);
@@ -54,7 +54,7 @@ const ProfitDetail = ({navigation, route}) => {
         })();
     }, [type]);
     useEffect(() => {
-        // init();
+        init();
         let listener = DeviceEventEmitter.addListener('sendChangeTrigger', (bool) => setLocked(bool));
         return () => listener && listener.remove();
     }, [init]);
