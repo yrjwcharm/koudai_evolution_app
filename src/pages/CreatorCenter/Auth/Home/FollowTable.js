@@ -8,8 +8,6 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import LoadingTips from '~/components/LoadingTips';
-import {re} from 'mathjs';
-import {Props} from 'react-native-image-zoom-viewer/built/image-viewer.type';
 import style from '~/pages/Assets/ProfitAnalysis/styles/style';
 
 function HeaderCell({text, isFisrt, maxLen}) {
@@ -51,18 +49,12 @@ function BodyCell({text, isFisrt, maxLen}) {
 }
 
 /** 简单的表格，支持首行固定  */
-const FollowTable = ({data = [], headerData, isLoading, isLoadingMore, columns, stickyHeaderY, scrollY, ...other}) => {
+const FollowTable = ({data = [], headerData, isLoading, columns, stickyHeaderY, scrollY, ...other}) => {
     const otherLineWidth = px(80);
     const jump = useJump();
     const [isScroll, setIsScroll] = useState(false);
 
-    if (isLoading) {
-        return (
-            <View style={{...Style.flexCenter, height: px(200)}}>
-                <LoadingTips color="#ddd" />
-            </View>
-        );
-    }
+    if (!headerData || !columns || columns.length === 0) return null;
 
     const maxLen = {};
     columns.map((key) => {
@@ -75,19 +67,8 @@ const FollowTable = ({data = [], headerData, isLoading, isLoadingMore, columns, 
         max = Math.max(str.length, max);
         maxLen[key] = Math.max(px(max * 9) + 30, 40);
     });
-    const handleScroll = (e) => {
-        const endHeight =
-            e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height - e.nativeEvent.contentSize.height;
-        console.log(`endHeight:${endHeight}`);
-        if (endHeight >= 0) {
-            other.onloadMore();
-        }
-    };
     return (
-        <ScrollView
-            style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6), ...other.style}}
-            onScroll={handleScroll}
-            nestedScrollEnabled={true}>
+        <View style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6), ...other.style}}>
             <View style={{flexDirection: 'row'}}>
                 {/* 处理第一列固定 */}
                 {/* 分割线 */}
@@ -155,12 +136,7 @@ const FollowTable = ({data = [], headerData, isLoading, isLoadingMore, columns, 
                     </View>
                 </ScrollView>
             </View>
-            {isLoadingMore && (
-                <View style={{width: '100%', height: px(30)}}>
-                    <LoadingTips color="#ddd" />
-                </View>
-            )}
-        </ScrollView>
+        </View>
     );
 };
 

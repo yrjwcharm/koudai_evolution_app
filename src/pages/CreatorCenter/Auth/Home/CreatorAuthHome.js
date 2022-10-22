@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-18 20:03:10
+ * @LastEditTime: 2022-10-22 13:10:11
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -24,14 +24,23 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import {getData, getList, getUnRead} from './services.js';
 import FollowTable from './FollowTable';
 import ScrollableTabBar from './ScrollableTabBar';
+import LoadingTips from '~/components/LoadingTips';
+
+const getListDataInner = ({type, tpage}, cb) => {
+    return getList({type, page: tpage}).then((res) => {
+        if (res.code === '000000') {
+            cb(res.result, {type, page: tpage});
+        }
+    });
+};
 
 export default function CreatorAuthHome(props) {
     const inset = useSafeAreaInsets();
     const jump = useJump();
 
     const [loading, setLoading] = useState(true);
-    const [listLoading, setListLoading] = useState(true);
     const [listLoadingMore, setListLoadingMore] = useState(true);
+    const [listLoading, setListLoading] = useState(true);
     const [{system}, setUnreadData] = useState({});
     const [data, setData] = useState();
     const [list, setList] = useState([]);
@@ -50,42 +59,51 @@ export default function CreatorAuthHome(props) {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
+
             getUnRead().then((res) => {
                 setUnreadData(res.result);
             });
 
-            getData().then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result);
+            getData()
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+
+                        setTabs(res.result.items.map((it) => it.title));
+                        const item = res.result.items[activeTab];
+                        getListData(item, 1);
+                    }
+                })
+                .finally((_) => {
                     setLoading(false);
-                    setTabs(res.result.items.map((it) => it.title));
-                    const item = res.result.items[activeTab];
-                    getListData(item, 1);
-                }
-            });
-        }, [])
+                });
+        }, [activeTab])
     );
 
     const getListData = (item, nextPage) => {
-        if (nextPage > page) {
-            setListLoadingMore(true);
-        } else {
+        if (nextPage === 1) {
             setListLoading(true);
+        } else {
+            setListLoadingMore(true);
         }
 
         const oldActiveTab = activeTab;
-        getList({type: item.type})
+        getList({type: item.type, page: nextPage})
             .then((res) => {
                 if (res.code === '000000' && oldActiveTab === activeTab) {
-                    if (nextPage > page) {
+                    console.log('nextPage:', nextPage);
+                    if (nextPage >= 2) {
                         setList(list.concat(res.result.items));
                     } else {
                         setList(res.result.items);
                     }
 
                     setListHeader(res.result.header);
-                    setHasMore(res.result.hasMore);
+                    setHasMore(res.result.has_more);
                     setPage(nextPage);
+                    if (nextPage === 1 && res.result.has_more) {
+                        getListData(item, 2);
+                    }
                 }
             })
             .catch((_) => {
@@ -98,6 +116,8 @@ export default function CreatorAuthHome(props) {
     };
 
     const onScroll = (e) => {
+        // 内容 偏移 容器
+        const {contentSize, contentOffset, layoutMeasurement} = e.nativeEvent;
         const y = e.nativeEvent.contentOffset.y;
         const criticalNum = 100;
         const interval = 1 / criticalNum;
@@ -116,6 +136,15 @@ export default function CreatorAuthHome(props) {
             criticalState && setScrollCriticalState(false);
         }
 
+        console.log('onScroll:', e.nativeEvent);
+
+        // 距离底部的距离，为正是部分没显示，为负是容器比内容高
+        let bottomDistant = contentSize.height - contentOffset.y - layoutMeasurement.height;
+        // 还有半屏没显示
+        if (bottomDistant <= layoutMeasurement.height * 0.5) {
+            handleListNextPage();
+        }
+
         requestAnimationFrame(() => {
             navBarRef.current.setNativeProps({
                 style: {backgroundColor: `rgba(255,255,255,${opacity})`},
@@ -126,6 +155,7 @@ export default function CreatorAuthHome(props) {
     const handleTabChange = useCallback(
         (idx) => {
             if (activeTab === idx) return;
+            setHasMore(true);
             setActiveTab(idx);
             let item = data.items[idx];
             getListData(item, 1);
@@ -158,7 +188,7 @@ export default function CreatorAuthHome(props) {
             .finally((_) => setRefreshing(false));
     };
     const handleListNextPage = () => {
-        if (!hasMore && listLoadingMore) return;
+        if (!hasMore || listLoadingMore) return;
         const item = data.items[activeTab];
         getListData(item, page + 1);
     };
@@ -194,6 +224,7 @@ export default function CreatorAuthHome(props) {
                 style={{flex: 1, marginTop: px(-178)}}
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
+                stickyHeaderIndices={[2]}
                 refreshControl={<RefreshControl refreshing={refreshing} tintColor="#fff" onRefresh={handleRefresh} />}
                 onScroll={onScroll}>
                 <View style={{height: px(25)}} />
@@ -209,31 +240,41 @@ export default function CreatorAuthHome(props) {
                         <Text style={styles.desc}>{data?.head?.info?.desc}</Text>
                     </View>
                 </View>
-                <View style={styles.cardsWrap}>
+                <View style={styles.tabWrap}>
                     <ScrollableTabBar
                         tabs={tabs}
                         activeTab={activeTab}
                         goToPage={handleTabChange}
-                        style={{paddingHorizontal: px(15), marginTop: px(2)}}
+                        style={{width: '100%', paddingTop: px(16)}}
                     />
-                    <View
-                        style={{
-                            marginTop: px(12),
-                            height: deviceHeight - px(44) - inset.top,
-                            paddingBottom: inset.bottom,
-                        }}>
+                </View>
+
+                <View style={styles.cardsWrap}>
+                    {listLoading ? (
+                        <View style={{width: '100%', height: px(30)}}>
+                            <LoadingTips color="#ddd" />
+                        </View>
+                    ) : (
                         <FollowTable
                             style={[styles.table, {}]}
                             data={list}
                             headerData={listHeader}
                             columns={columns}
-                            isLoading={listLoading}
-                            isLoadingMore={listLoadingMore}
                             scrollY={px(100)}
-                            onloadMore={handleListNextPage}
                             stickyHeaderY={px(41)}
                         />
-                    </View>
+                    )}
+
+                    {listLoadingMore && (
+                        <View style={{width: '100%', height: px(30)}}>
+                            <LoadingTips color="#ddd" />
+                        </View>
+                    )}
+                    {!hasMore && (
+                        <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
+                            <Text style={{fontSize: Font.textSm, color: Colors.lightGrayColor}}>没有更多了</Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
         </View>
@@ -324,12 +365,17 @@ const styles = StyleSheet.create({
         paddingBottom: px(30),
     },
 
-    cardsWrap: {
+    tabWrap: {
         backgroundColor: '#F5F6F8',
         borderTopLeftRadius: px(12),
         borderTopRightRadius: px(12),
-        paddingLeft: px(16),
-        paddingTop: px(16),
-        marginTop: px(24),
+        marginTop: px(26),
+    },
+
+    cardsWrap: {
+        backgroundColor: '#F5F6F8',
+        paddingTop: px(12),
+        flex: 1,
+        paddingBottom: px(20),
     },
 });
