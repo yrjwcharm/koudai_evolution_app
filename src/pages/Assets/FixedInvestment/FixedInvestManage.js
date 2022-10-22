@@ -227,24 +227,30 @@ const FixedInvestManage = ({navigation, route}) => {
                     <FlatList
                         windowSize={300}
                         data={data?.data_list || []}
-                        initialNumToRender={20}
                         keyExtractor={(item, index) => item + index}
                         ListEmptyComponent={<EmptyData />}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
+                        ListFooterComponent={() => (
+                            <>
+                                {Object.keys(terminateUrl).length > 0 && (
+                                    <TouchableOpacity
+                                        style={{marginTop: px(20)}}
+                                        onPress={() => jump(terminateUrl.url)}>
+                                        <View style={{alignItems: 'center'}}>
+                                            <View style={Style.flexRow}>
+                                                <Text style={styles.termintal}>{terminateUrl.text}</Text>
+                                                <Image source={require('./assets/more.png')} />
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                            </>
+                        )}
                         renderItem={({item, index}) => <RenderItem navigation={navigation} item={item} index={index} />}
                     />
-                    {Object.keys(terminateUrl).length > 0 && (
-                        <TouchableOpacity style={{marginTop: px(20)}} onPress={() => jump(terminateUrl.url)}>
-                            <View style={{alignItems: 'center'}}>
-                                <View style={Style.flexRow}>
-                                    <Text style={styles.termintal}>{terminateUrl.text}</Text>
-                                    <Image source={require('./assets/more.png')} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    <BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />
+
+                    {/*<BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />*/}
 
                     {Object.keys(data?.button).length > 0 && (
                         <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
