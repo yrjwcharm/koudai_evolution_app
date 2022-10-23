@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 10:58:23
+ * @LastEditTime: 2022-10-23 11:54:49
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -186,6 +186,8 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                     //     },
                     // });
                 }
+            } else {
+                Toast.show(res.message);
             }
         });
     };

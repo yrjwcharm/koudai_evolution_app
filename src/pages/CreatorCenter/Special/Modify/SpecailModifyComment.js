@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 17:19:04
+ * @LastEditTime: 2022-10-22 21:19:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -244,9 +244,9 @@ export default function SpecailModifyComment({navigation, route}) {
             return Promise.reject();
         });
     };
-    const handlePageChange = (idx) => {
+    const handleTabChange = (idx) => {
         setActiveTab(idx);
-        refresh();
+        setPage(1);
     };
     const handleCommentAction = (item, op) => {
         const doAction = () => {
@@ -333,7 +333,7 @@ export default function SpecailModifyComment({navigation, route}) {
     return (
         <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar title={'评论'} leftIcon="chevron-left" leftPress={handleBack} />
-            <Tabs tabs={tabsText} activeTab={activeTab} goToPage={handlePageChange} />
+            <Tabs tabs={tabsText} activeTab={activeTab} goToPage={handleTabChange} />
             <View style={styles.listWrap}>
                 <FlatList
                     data={data}
