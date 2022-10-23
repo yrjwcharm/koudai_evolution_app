@@ -81,7 +81,7 @@ const ProfitDetail = ({navigation, route}) => {
                             <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                         )}
                         initialPage={page}
-                        locked={false}
+                        locked={true}
                         onChangeTab={({i}) => {
                             setType(tabsRef.current[i].type);
                             dispatch({type: 'updateType', payload: tabsRef.current[i].type});

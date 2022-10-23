@@ -41,7 +41,6 @@ const DayProfit = React.memo(() => {
         (selCurDate) => {
             (async () => {
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
-                let startDate = dayjs_.format('YYYY-MM-DD');
                 let dayNums = dayjs_.daysInMonth();
                 let weekDay = dayjs_.startOf('month').day();
                 let startTrim = weekDay % 7;
@@ -58,7 +57,7 @@ const DayProfit = React.memo(() => {
                 }
                 //获取当月最后一天是星期几
                 let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
-                let lastDate = dayjs_.add(dayNums - 1, 'day').format('YYYY-MM-DD');
+                // let lastDate = dayjs_.add(dayNums - 1, 'day').format('YYYY-MM-DD');
                 let endTrim = 6 - lastWeekDay;
                 //当月日期开始
                 if (startTrim != 7) {
@@ -106,25 +105,14 @@ const DayProfit = React.memo(() => {
                         }
                     }
                     let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    let barCharData = profit_data_list
-                        .map((el) => {
-                            return {date: el.unit_key, value: parseFloat(el.value)};
-                        })
-                        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime() ? -1 : 1));
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        chart: barCharData,
-                    });
+                    // console.log('数据+++++', afterArr, barCharData);
                     let zIndex;
                     if (selCurDate == dayjs().format('YYYY-MM-DD')) {
                         zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[index]?.unit_key});
+                        setSelCurDate(profit_data_list[index]?.unit_key);
                     } else {
                         zIndex = arr.findIndex((el) => el.day == selCurDate);
-                        dispatch({type: 'updateUnitKey', payload: selCurDate});
+                        setSelCurDate(selCurDate);
                     }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (cur > max || cur < min) return;
@@ -138,6 +126,27 @@ const DayProfit = React.memo(() => {
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
+
+                    // //图表数据
+                    // let latestDate = profit_data_list[index]?.unit_key;
+                    // let startDate = dayjs(latestDate).add(diff, 'month').add(-15, 'day').format('YYYY-MM-DD');
+                    // let endDate = dayjs(latestDate).add(diff, 'month').add(15, 'day').format('YYYY-MM-DD');
+                    // let afterArr = arr
+                    //     .filter((el) => el.day >= startDate && el.day <= endDate)
+                    //     .map((el) => {
+                    //         return {date: el.day, value: parseFloat(el.profit) || '0.00'};
+                    //     });
+                    // let barCharData = profit_data_list
+                    //     .map((el) => el.unit_key)
+                    //     .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                    // setChart({
+                    //     label: [
+                    //         {name: '时间', val: profit_data_list[index]?.unit_key},
+                    //         {name: '收益', val: profit_data_list[index]?.value},
+                    //     ],
+                    //     originDates: barCharData,
+                    //     chart: afterArr,
+                    // });
                 }
             })();
         },
@@ -162,7 +171,6 @@ const DayProfit = React.memo(() => {
      * 通过选中日期获取收益数据
      */
     const getProfitBySelDate = (item) => {
-        setSelCurDate(item.day);
         init(item.day);
     };
     const selCalendarType = useCallback(() => {
@@ -224,7 +232,7 @@ const DayProfit = React.memo(() => {
                         </View>
                     )}
                     {isBarChart && <BarChartComponent chartData={chartData} />}
-                    <RenderList />
+                    <RenderList curDate={selCurDate} />
                 </View>
             ) : (
                 <EmptyData />

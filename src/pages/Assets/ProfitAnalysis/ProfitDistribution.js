@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, DeviceEventEmitter} from 'react-native';
 import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -10,7 +10,7 @@ import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData} from './services';
 import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
 import {useJump} from '../../../components/hooks';
 import DayProfit from './DayProfit';
@@ -45,21 +45,17 @@ const ProfitDistribution = React.memo(({headData, type}) => {
     const dispatch = useDispatch();
     const jump = useJump();
     const {profit_info, profit_acc_info, profit_all} = headData;
-    const [unitType, setUnitType] = useState('day');
-    const [tabs, setTabs] = useState([]);
-    const initData = async () => {
-        const res = await getChartData({type, unit_type: unitType});
-        if (res.code === '000000') {
-            const {profit_unit_tab = []} = res?.result ?? {};
-            setTabs(profit_unit_tab);
-        }
-    };
+    const tabsRef = useRef([
+        {type: 'day', text: '日收益'},
+        {type: 'month', text: '月收益'},
+        {type: 'year', text: '年收益'},
+        {type: 'year', text: '累计收益'},
+    ]);
     useEffect(() => {
-        dispatch({type: 'updateUnitType', payload: unitType});
-        initData();
+        dispatch({type: 'updateUnitType', payload: 'day'});
         let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
         return () => listener && listener.remove();
-    }, [type, unitType]);
+    }, []);
     return (
         <>
             <View style={{flex: 1, position: 'relative'}}>
@@ -123,28 +119,26 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                     </BoxShadow>
                     <View style={{marginTop: px(26)}} />
                     <View style={styles.section}>
-                        {tabs.length > 1 && (
-                            <ScrollableTabView
-                                renderTabBar={() => (
-                                    //解决key unique
-                                    <Tab
-                                        style={styles.borderStyle}
-                                        btnColor={Colors.defaultColor}
-                                        inActiveColor={Colors.lightBlackColor}
-                                    />
-                                )}
-                                initialPage={0}
-                                locked={true}
-                                prerenderingSiblingsNumber={Infinity}
-                                onChangeTab={({i}) => {
-                                    setUnitType(tabs[i].type);
-                                }}>
-                                {tabs.map((tab, index) => {
-                                    const Com = comObj[tab.text];
-                                    return <Com tabLabel={tab.text} key={`tab${index}`} />;
-                                })}
-                            </ScrollableTabView>
-                        )}
+                        <ScrollableTabView
+                            renderTabBar={() => (
+                                //解决key unique
+                                <Tab
+                                    style={styles.borderStyle}
+                                    btnColor={Colors.defaultColor}
+                                    inActiveColor={Colors.lightBlackColor}
+                                />
+                            )}
+                            initialPage={0}
+                            locked={true}
+                            // prerenderingSiblingsNumber={Infinity}
+                            onChangeTab={({i}) => {
+                                dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
+                            }}>
+                            {tabsRef.current.map((tab, index) => {
+                                const Com = comObj[tab.text];
+                                return <Com tabLabel={tab.text} key={`tab${index}`} />;
+                            })}
+                        </ScrollableTabView>
                     </View>
                 </ScrollView>
                 {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}

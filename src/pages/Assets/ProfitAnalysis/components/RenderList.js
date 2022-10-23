@@ -15,16 +15,15 @@ import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 let listener = null;
-const RenderList = React.memo(() => {
+const RenderList = React.memo(({curDate}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
-    const unitKey = useSelector((state) => state.profitDetail.unitKey);
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(true);
     const init = useCallback(() => {
         (async () => {
-            const res = await getProfitDetail({type, unit_type: unitType, unit_key: unitKey});
+            const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate});
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
@@ -33,7 +32,7 @@ const RenderList = React.memo(() => {
                 DeviceEventEmitter.emit('sendTrigger', button);
             }
         })();
-    }, [type, unitType, unitKey]);
+    }, [type, unitType, curDate]);
 
     useEffect(() => {
         init();
@@ -43,7 +42,7 @@ const RenderList = React.memo(() => {
             const res = await getProfitDetail({
                 type,
                 unit_type: unitType,
-                unit_key: unitKey,
+                unit_key: curDate,
                 sort_key: data?.sort_key,
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             });

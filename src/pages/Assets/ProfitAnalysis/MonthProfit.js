@@ -16,8 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const MonthProfit = React.memo((callback) => {
-    const dispatch = useDispatch();
+const MonthProfit = React.memo(() => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
@@ -88,10 +87,10 @@ const MonthProfit = React.memo((callback) => {
                     //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (selCurDate == dayjs().format('YYYY-MM')) {
                         zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[index]?.unit_key});
+                        setSelCurDate(profit_data_list[index]?.unit_key);
                     } else {
                         zIndex = arr.findIndex((el) => el.day == selCurDate);
-                        dispatch({type: 'updateUnitKey', payload: selCurDate});
+                        setSelCurDate(selCurDate);
                     }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (cur > max || cur < min) return;
@@ -159,7 +158,7 @@ const MonthProfit = React.memo((callback) => {
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
                     {isBarChart && <BarChartComponent chartData={chartData} />}
                     {/*收益数据-根据实际情形选择map渲染*/}
-                    <RenderList />
+                    <RenderList curDate={selCurDate} />
                 </View>
             ) : (
                 <EmptyData />

@@ -62,10 +62,10 @@ const YearProfit = (callback) => {
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (curYear == dayjs().year()) {
                         zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                        dispatch({type: 'updateUnitKey', payload: profit_data_list[index]?.unit_key});
+                        setSelCurYear(profit_data_list[index]?.unit_key);
                     } else {
                         zIndex = arr.findIndex((el) => el.day == curYear);
-                        dispatch({type: 'updateUnitKey', payload: curYear});
+                        setSelCurYear(curYear);
                     }
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
@@ -153,7 +153,7 @@ const YearProfit = (callback) => {
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
                     {isBarChart && <BarChartComponent chartData={chartData} />}
-                    <RenderList />
+                    <RenderList curDate={selCurYear} />
                 </View>
             ) : (
                 <EmptyData />

@@ -639,6 +639,7 @@ export const dodgeColumn = (
         profitMode = false,
         percent = true,
         yAxis = true,
+        // originDates = [],
     } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
@@ -706,6 +707,7 @@ chart.interval()
     marginRatio: ${marginRatio}
   })
   .size(${size});
+ chart.interaction('pan');
 chart.render();
 if (${showGuide}) {
   const offset = -5;

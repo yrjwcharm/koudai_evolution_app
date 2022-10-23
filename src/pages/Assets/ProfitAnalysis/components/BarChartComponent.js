@@ -46,7 +46,6 @@ const BarChartComponent = React.memo(({chartData}) => {
                 text: `${items[0]?.value}`,
                 style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
             });
-            DeviceEventEmitter.emit('sendChangeTrigger', true);
         },
         [getColor]
     );
@@ -68,49 +67,49 @@ const BarChartComponent = React.memo(({chartData}) => {
             {chartData.chart ? (
                 <>
                     <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
-                        <View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>
-                            {chartData?.label?.map((item, index) => {
-                                return (
-                                    <View key={item.val + index} style={styles.legendItem}>
-                                        <TextInput
-                                            defaultValue={`${item.val}`}
-                                            editable={false}
-                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                            style={[
-                                                styles.legendTitle,
-                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
-                                            ]}
-                                        />
-                                        <View style={Style.flexRow}>
-                                            {index !== 0 && (
-                                                <Dot
-                                                    bgColor={
-                                                        index === 1
-                                                            ? 'rgba(231, 73, 73, 0.15)'
-                                                            : 'rgba(84, 89, 104, 0.15)'
-                                                    }
-                                                    color={index === 1 ? Colors.red : Colors.descColor}
-                                                />
-                                            )}
-                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                                {item.name}
-                                            </Text>
-                                            {chartData?.tips && index === 2 && (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    style={{position: 'absolute', right: text(-16)}}
-                                                    onPress={() => showTips(chartData.tips)}>
-                                                    <FastImage
-                                                        style={{width: text(12), height: text(12)}}
-                                                        source={require('../../../../assets/img/tip.png')}
-                                                    />
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                    </View>
-                                );
-                            })}
-                        </View>
+                        {/*<View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>*/}
+                        {/*    {chartData?.label?.map((item, index) => {*/}
+                        {/*        return (*/}
+                        {/*            <View key={item.val + index} style={styles.legendItem}>*/}
+                        {/*                <TextInput*/}
+                        {/*                    defaultValue={`${item.val}`}*/}
+                        {/*                    editable={false}*/}
+                        {/*                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}*/}
+                        {/*                    style={[*/}
+                        {/*                        styles.legendTitle,*/}
+                        {/*                        index !== 0 ? {color: getColor(`${item.val}`)} : {},*/}
+                        {/*                    ]}*/}
+                        {/*                />*/}
+                        {/*                <View style={Style.flexRow}>*/}
+                        {/*                    {index !== 0 && (*/}
+                        {/*                        <Dot*/}
+                        {/*                            bgColor={*/}
+                        {/*                                index === 1*/}
+                        {/*                                    ? 'rgba(231, 73, 73, 0.15)'*/}
+                        {/*                                    : 'rgba(84, 89, 104, 0.15)'*/}
+                        {/*                            }*/}
+                        {/*                            color={index === 1 ? Colors.red : Colors.descColor}*/}
+                        {/*                        />*/}
+                        {/*                    )}*/}
+                        {/*                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>*/}
+                        {/*                        {item.name}*/}
+                        {/*                    </Text>*/}
+                        {/*                    {chartData?.tips && index === 2 && (*/}
+                        {/*                        <TouchableOpacity*/}
+                        {/*                            activeOpacity={0.8}*/}
+                        {/*                            style={{position: 'absolute', right: text(-16)}}*/}
+                        {/*                            onPress={() => showTips(chartData.tips)}>*/}
+                        {/*                            <FastImage*/}
+                        {/*                                style={{width: text(12), height: text(12)}}*/}
+                        {/*                                source={require('../../../../assets/img/tip.png')}*/}
+                        {/*                            />*/}
+                        {/*                        </TouchableOpacity>*/}
+                        {/*                    )}*/}
+                        {/*                </View>*/}
+                        {/*            </View>*/}
+                        {/*        );*/}
+                        {/*    })}*/}
+                        {/*</View>*/}
                         <View style={{height: px(220)}}>
                             {chartData.chart && (
                                 <Chart
@@ -119,6 +118,7 @@ const BarChartComponent = React.memo(({chartData}) => {
                                         profitMode: true,
                                         percent: false,
                                         yAxis: true,
+                                        originDates: chartData.originDates ?? [],
                                     })}
                                     data={chartData.chart}
                                     onChange={onChartChange}
