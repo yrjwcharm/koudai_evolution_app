@@ -53,7 +53,7 @@ const MonthProfit = React.memo(() => {
                     };
                     arr.push(item);
                 }
-                const res = await getChartData({type, unit_type: unitType, unit_value: dayjs_.year()});
+                const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year()});
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
@@ -73,6 +73,7 @@ const MonthProfit = React.memo(() => {
                         }
                     }
                     let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
                     let barCharData = arr.map((el, index) => {
                         return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
                     });
@@ -83,15 +84,6 @@ const MonthProfit = React.memo(() => {
                         ],
                         chart: barCharData,
                     });
-                    let zIndex;
-                    //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (selCurDate == dayjs().format('YYYY-MM')) {
-                        zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                        setSelCurDate(profit_data_list[index]?.unit_key);
-                    } else {
-                        zIndex = arr.findIndex((el) => el.day == selCurDate);
-                        setSelCurDate(selCurDate);
-                    }
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     if (cur > max || cur < min) return;
                     cur == max && setIsNext(false);
@@ -104,14 +96,21 @@ const MonthProfit = React.memo(() => {
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setDate(dayjs_);
+                    setSelCurDate(arr[zIndex].day);
                 }
             })();
         },
-        [diff, type, unitType]
+        [diff, type]
     );
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
-        init(item.day);
+        dateArr.map((el) => {
+            el.checked = false;
+            if (el.day == item.day) {
+                el.checked = true;
+            }
+        });
+        setDateArr([...dateArr]);
     };
     useEffect(() => {
         init(selCurDate);

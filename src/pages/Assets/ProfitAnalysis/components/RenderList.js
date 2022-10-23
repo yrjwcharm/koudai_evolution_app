@@ -11,7 +11,6 @@ import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
-import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 let listener = null;
@@ -21,7 +20,8 @@ const RenderList = React.memo(({curDate}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const init = useCallback(() => {
+
+    useEffect(() => {
         (async () => {
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate});
             if (res.code === '000000') {
@@ -33,10 +33,6 @@ const RenderList = React.memo(({curDate}) => {
             }
         })();
     }, [type, unitType, curDate]);
-
-    useEffect(() => {
-        init();
-    }, [init]);
     const executeSort = async (data) => {
         if (data.sort_key) {
             const res = await getProfitDetail({
@@ -53,41 +49,6 @@ const RenderList = React.memo(({curDate}) => {
             }
         }
     };
-    const renderProfitList = useMemo(
-        () =>
-            profitList.map((item, index) => {
-                let color =
-                    delMille(item.profit) > 0
-                        ? Colors.red
-                        : delMille(item.profit) < 0
-                        ? Colors.green
-                        : Colors.lightGrayColor;
-                return (
-                    <View style={styles.listRow} key={item + '' + index}>
-                        <View style={styles.typeView}>
-                            <View style={styles.typeWrap}>
-                                <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
-                                    {item.type}
-                                </Text>
-                            </View>
-                            <Text style={styles.title}>{item.text}</Text>
-                            {item.tag ? (
-                                <View
-                                    style={{
-                                        borderRadius: text(2),
-                                        backgroundColor: '#EFF5FF',
-                                        marginLeft: text(6),
-                                    }}>
-                                    <Text style={styles.tag}>{item.tag}</Text>
-                                </View>
-                            ) : null}
-                        </View>
-                        <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
-                    </View>
-                );
-            }),
-        [profitList]
-    );
     return (
         <>
             {loading ? (
@@ -116,7 +77,37 @@ const RenderList = React.memo(({curDate}) => {
                             </TouchableOpacity>
                         </View>
                     )}
-                    {renderProfitList}
+                    {profitList.map((item, index) => {
+                        let color =
+                            delMille(item.profit) > 0
+                                ? Colors.red
+                                : delMille(item.profit) < 0
+                                ? Colors.green
+                                : Colors.lightGrayColor;
+                        return (
+                            <View style={styles.listRow} key={item + '' + index}>
+                                <View style={styles.typeView}>
+                                    <View style={styles.typeWrap}>
+                                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
+                                            {item.type}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.title}>{item.text}</Text>
+                                    {item.tag ? (
+                                        <View
+                                            style={{
+                                                borderRadius: text(2),
+                                                backgroundColor: '#EFF5FF',
+                                                marginLeft: text(6),
+                                            }}>
+                                            <Text style={styles.tag}>{item.tag}</Text>
+                                        </View>
+                                    ) : null}
+                                </View>
+                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+                            </View>
+                        );
+                    })}
                 </>
             )}
         </>

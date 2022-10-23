@@ -37,7 +37,7 @@ const YearProfit = (callback) => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: unitType});
+                const res = await getChartData({type, unit_type: 'year'});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res?.result ?? {};
                     for (let i = 0; i < arr.length; i++) {
@@ -48,6 +48,7 @@ const YearProfit = (callback) => {
                         }
                     }
                     let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
                     let barCharData = arr.map((el) => {
                         return {date: el.day + '年', value: parseFloat(el.profit)};
                     });
@@ -58,29 +59,27 @@ const YearProfit = (callback) => {
                         ],
                         chart: barCharData,
                     });
-                    let zIndex;
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (curYear == dayjs().year()) {
-                        zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                        setSelCurYear(profit_data_list[index]?.unit_key);
-                    } else {
-                        zIndex = arr.findIndex((el) => el.day == curYear);
-                        setSelCurYear(curYear);
-                    }
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
+                    setSelCurYear(arr[zIndex].day);
                 }
             })();
         },
-        [type, unitType]
+        [type]
     );
     useEffect(() => {
         init(selCurYear);
     }, [init]);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
-        init(item.day);
+        dateArr.map((el) => {
+            el.checked = false;
+            if (el.day == item.day) {
+                el.checked = true;
+            }
+        });
+        setDateArr([...dateArr]);
     };
     const selCalendarType = () => {
         setIsCalendar(true);
