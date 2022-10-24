@@ -128,7 +128,7 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                     style={Style.flexRow}>
                     {(() => {
                         switch (style_id) {
-                            case 105:
+                            case 106:
                                 return (
                                     <View>
                                         <Text style={styles.name}>{name}</Text>
@@ -146,7 +146,7 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                                                 <DelayChart chart={item.chart} />
                                             </View>
                                             {profit ? (
-                                                <View style={{marginLeft: px(12), alignItems: 'center'}}>
+                                                <View style={{marginLeft: px(12), alignItems: 'flex-start'}}>
                                                     <HTML
                                                         html={
                                                             '<span style="font-size:16px;line-height:19px">' +
@@ -174,17 +174,17 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                                         </View>
                                     </View>
                                 );
-                            case 106:
+                            case 107:
                                 return (
                                     <View style={[styles.mainRowWrap, {marginTop: 0}]}>
                                         <View style={{width: px(64), height: px(34)}}>
                                             <DelayChart chart={item.chart} />
                                         </View>
                                         {profit ? (
-                                            <View style={{marginLeft: px(12), alignItems: 'center'}}>
+                                            <View style={{marginLeft: px(12), alignItems: 'flex-start'}}>
                                                 <HTML
                                                     html={
-                                                        '<span style="font-size:16px;line-height:19px">' +
+                                                        '<span style="font-size:16px;line-height:19px;">' +
                                                         profit +
                                                         '</span>'
                                                     }
