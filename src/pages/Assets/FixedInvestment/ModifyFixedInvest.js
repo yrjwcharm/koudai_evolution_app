@@ -141,28 +141,33 @@ const ModifyFixedInvest = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             (async () => {
-                const res = await callModifyFixedInvestApi({
-                    plan_id,
-                });
-                if (res.code == '000000') {
-                    const {title, name, fund_code = ''} = res.result || {};
-                    navigation.setOptions({title: title || '修改定投'});
-                    intervalRef.current = res.result.target_info.invest.incr;
-                    initAmount.current = res.result.target_info.invest.init_amount;
-                    setNum(parseFloat(res.result.target_info.invest.amount));
-                    updateAutoChargeStatus(res.result?.auto_charge?.is_open);
-                    const _date = res.result.target_info.fix_period.current_date;
-                    cycleRef.current = _date.split(' ')[0];
-                    timingRef.current = _date.split(' ')[1];
-                    setLoading(false);
-                    setData(res.result);
-                    setPayMethod(res.result.pay_methods[0] || {});
-                    setCycle(_date);
-                    setState({
-                        fund_name: name,
-                        fund_code,
+                Http.get('/trade/update/invest_plan/info/20210101', {
+                    invest_id: plan_id,
+                })
+                    .then((res) => {
+                        if (res.code === '000000') {
+                            navigation.setOptions({title: res.result.title || '修改计划'});
+                            if (isFocused && res.result.risk_disclosure && show_risk_disclosure.current) {
+                                if (res.result?.pay_methods[0]?.pop_risk_disclosure) {
+                                    showRiskDisclosure(res.result.risk_disclosure);
+                                }
+                            }
+                            intervalRef.current = res.result.target_info.invest.incr;
+                            initAmount.current = res.result.target_info.invest.init_amount;
+                            setData(res.result);
+                            setPayMethod(res.result.pay_methods[0] || {});
+                            setNum(parseFloat(res.result.target_info.invest.amount));
+                            updateAutoChargeStatus(res.result?.auto_charge?.is_open);
+                            const _date = res.result.target_info.fix_period.current_date;
+                            setCycle(_date);
+                            cycleRef.current = _date.split(' ')[0];
+                            timingRef.current = _date.split(' ')[1];
+                            setLoading(false);
+                        }
+                    })
+                    .catch(() => {
+                        setLoading(false);
                     });
-                }
             })();
         }, [])
     );

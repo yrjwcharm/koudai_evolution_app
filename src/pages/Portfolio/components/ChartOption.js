@@ -639,7 +639,7 @@ export const dodgeColumn = (
         profitMode = false,
         percent = true,
         yAxis = true,
-        // originDates = [],
+        originDates = [],
     } // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
@@ -651,6 +651,10 @@ chart = new F2.Chart({
   appendPadding: ${JSON.stringify(appendPadding)}
 });
 chart.source(${JSON.stringify(data)}, {
+  date:{
+    tickCount:5,
+    values:${JSON.stringify(originDates)}
+  },
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
