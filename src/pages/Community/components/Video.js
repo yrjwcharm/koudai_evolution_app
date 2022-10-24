@@ -21,6 +21,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [sliderValue, setSlierValue] = useState(0); //进度条的进度
     const video = useRef();
     const [followStatus, setFollowStatus] = useState();
+    const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     useEffect(() => {
         setPaused(index != currentIndex);
         customerSliderValue(0);
@@ -29,6 +30,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     }, [index, currentIndex]);
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
+        if (!paused) setShowPause(true);
         setPaused((pre) => !pre);
     };
     const formatMediaTime = (time) => {
@@ -114,7 +116,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     }}
                                 />
                                 {/* 暂停 */}
-                                {paused && (
+                                {paused && showPause && (
                                     <TouchableWithoutFeedback onPress={onPlayPausePress}>
                                         <Image
                                             style={styles.play}
