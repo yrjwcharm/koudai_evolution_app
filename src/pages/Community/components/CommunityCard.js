@@ -9,7 +9,7 @@ import Image from 'react-native-fast-image';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import collect from '~/assets/img/icon/collect.png';
 import collectActive from '~/assets/img/icon/collectActive.png';
 import comment from '~/assets/img/icon/comment.png';
@@ -89,7 +89,7 @@ export const CommunityCardCover = ({
                             {type === 2 ? (
                                 <Feather color="#fff" name="headphones" size={px(8)} />
                             ) : (
-                                <FontAwesome5 color="#fff" name="play" size={px(5)} />
+                                <FontAwesome color="#fff" name="play" size={px(5)} />
                             )}
                         </View>
                     ) : null}

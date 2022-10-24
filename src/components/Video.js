@@ -6,11 +6,12 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
 import Video from 'react-native-video';
-import Slider from '@react-native-community/slider';
+import Slider from 'react-native-slider';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Octicons from 'react-native-vector-icons/Octicons';
 import play from '~/assets/img/icon/videoPlay.png';
 import {px} from '../utils/appUtil';
+import {Font} from '~/common/commonStyle';
 
 export default class App extends React.Component {
     static defaultProps = {
@@ -86,18 +87,28 @@ export default class App extends React.Component {
                 </TouchableOpacity>
                 {/* 进度条按钮     */}
                 <View style={styles.slide_box}>
-                    <Text style={{color: '#fff'}}>{this.formatMediaTime(this.state.currentTime)}</Text>
+                    <Text style={{color: '#fff', fontFamily: Font.numMedium}}>
+                        {this.formatMediaTime(this.state.currentTime)}
+                    </Text>
                     <Slider
+                        animateTransitions={true}
+                        animationConfig={{useNativeDriver: false}}
                         style={{flex: 1, height: 2, marginHorizontal: px(4)}}
                         value={this.state.sliderValue}
                         maximumValue={this.state.duration}
                         thumbTintColor="#fff" //开关夹点
-                        minimumTrackTintColor="#eee"
-                        maximumTrackTintColor="#666"
+                        thumbStyle={{
+                            width: px(8),
+                            height: px(8),
+                        }}
+                        minimumTrackTintColor="#fff"
+                        maximumTrackTintColor="#5b5b5b"
                         step={1}
                         onSlidingComplete={this.customerSliderValue}
                     />
-                    <Text style={{color: '#fff'}}>{this.formatMediaTime(this.state.duration)}</Text>
+                    <Text style={{color: '#fff', fontFamily: Font.numMedium}}>
+                        {this.formatMediaTime(this.state.duration)}
+                    </Text>
                 </View>
                 {/* 全屏按钮 */}
                 {/* <TouchableOpacity onPress={this.enterFullScreen} style={{marginRight: px(4)}}>

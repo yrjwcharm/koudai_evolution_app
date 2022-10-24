@@ -2,7 +2,7 @@
  * @Date: 2022-10-16 16:54:53
  * @Description: 创建社区
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -24,6 +24,10 @@ const Index = ({navigation, route, setLoading}) => {
     const [img, setImg] = useState({id: avatar_upload_id, url: avatar || ''});
     const [name, setName] = useState(prevName || '');
     const input = useRef();
+
+    const finished = useMemo(() => {
+        return img?.url && name ? true : false;
+    }, [img, name]);
 
     const openPicker = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
@@ -66,8 +70,14 @@ const Index = ({navigation, route, setLoading}) => {
             <NavBar
                 leftIcon="chevron-left"
                 renderRight={
-                    <TouchableOpacity activeOpacity={0.8} onPress={onSubmit} style={{marginRight: px(6)}}>
-                        <Text style={styles.title}>{isEdit ? '确定' : '下一步'}</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={!finished}
+                        onPress={onSubmit}
+                        style={{marginRight: px(6)}}>
+                        <Text style={[styles.title, {color: finished ? Colors.descColor : Colors.lightGrayColor}]}>
+                            {isEdit ? '确定' : '下一步'}
+                        </Text>
                     </TouchableOpacity>
                 }
                 title={isEdit ? '编辑社区' : '创建社区'}

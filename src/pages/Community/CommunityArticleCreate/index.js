@@ -303,7 +303,7 @@ const WriteArticle = ({article, setArticle}) => {
                         placeholder="请输入正文"
                         ref={editor}
                         showsVerticalScrollIndicator={false}
-                        style={{minHeight: px(400)}}
+                        style={{minHeight: px(400), marginBottom: Font.textH1}}
                     />
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -542,7 +542,12 @@ const Index = ({navigation, route, setLoading}) => {
 
     return (
         <View style={styles.container}>
-            <NavBar leftIcon="chevron-left" renderRight={renderRight()} title="写文章" />
+            <NavBar
+                leftIcon="chevron-left"
+                leftPress={() => (step === 1 ? navigation.goBack() : setStep(1))}
+                renderRight={renderRight()}
+                title="写文章"
+            />
             {step === 1 ? (
                 <View style={{paddingHorizontal: Space.padding}}>
                     <Text style={[styles.desc, {marginTop: px(12)}]}>
