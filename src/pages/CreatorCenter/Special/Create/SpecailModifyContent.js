@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 15:33:15
+ * @LastEditTime: 2022-10-24 22:03:13
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -94,7 +94,7 @@ function SearchItem({item, onToggle, isAdded}) {
 }
 
 function ContentSearchModal(props) {
-    const {selected = [], setSelected, subject_id} = props;
+    const {selected = [], setSelected, subject_id, showToast} = props;
 
     const [searchList, setSearchList] = useState([]);
 
@@ -134,7 +134,11 @@ function ContentSearchModal(props) {
 
     const handleToggle = (item, add) => {
         if (add) {
-            setSelected([...selected, item]);
+            if (selected.length >= 20) {
+                showToast('最多可添加20篇内容');
+            } else {
+                setSelected([...selected, item]);
+            }
         } else {
             setSelected(selected.filter((it) => it.id !== item.id));
         }
@@ -284,26 +288,26 @@ export default function SpecailModifyContent({navigation, route}) {
     };
 
     const handleBack = () => {
-        Modal.show({
-            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-            cancelText: '不保存草稿',
-            confirmText: '保存草稿',
-            confirm: true,
-            backCloseCallbackExecute: true,
-            cancelCallBack: () => {
-                navigation.goBack();
-            },
-            confirmCallBack: () => {
-                saveStashContentList({
-                    subject_id,
-                    article_ids: data.map((it) => it.id),
-                }).then((res) => {
-                    if (res.code === '000000') {
-                        navigation.goBack();
-                    }
-                });
-            },
-        });
+        // Modal.show({
+        //     content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+        //     cancelText: '不保存草稿',
+        //     confirmText: '保存草稿',
+        //     confirm: true,
+        //     backCloseCallbackExecute: true,
+        //     cancelCallBack: () => {
+        //         navigation.goBack();
+        //     },
+        //     confirmCallBack: () => {
+        //         saveStashContentList({
+        //             subject_id,
+        //             article_ids: data.map((it) => it.id),
+        //         }).then((res) => {
+        //             if (res.code === '000000') {
+        navigation.goBack();
+        //             }
+        //         });
+        //     },
+        // });
     };
     const handleSort = () => {
         jump({
@@ -330,6 +334,9 @@ export default function SpecailModifyContent({navigation, route}) {
 
     const renderEmpty = () => {
         return <EmptyLit />;
+    };
+    const showToast = (msg) => {
+        bottomModal?.current?.toastShow(msg);
     };
     if (loading) {
         return (
@@ -376,7 +383,14 @@ export default function SpecailModifyContent({navigation, route}) {
                 title="添加内容"
                 showClose={true}
                 confirmText="确定"
-                children={<ContentSearchModal subject_id={subject_id} selected={data} setSelected={setData} />}
+                children={
+                    <ContentSearchModal
+                        subject_id={subject_id}
+                        showToast={showToast}
+                        selected={data}
+                        setSelected={setData}
+                    />
+                }
             />
         </SafeAreaView>
     );
