@@ -58,11 +58,14 @@ const PortfolioAssetList = ({route, navigation}) => {
     }, []);
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
-            return (
-                <>
-                    <Text style={{color: Colors.defaultColor}}>{activeText}</Text>
-                    {text.replace(activeText, '')}
-                </>
+            return text.split('/')?.map((item, index) =>
+                item == activeText ? (
+                    <Text style={{color: Colors.defaultColor}}>
+                        {index == 1 ? '/' : ''} {activeText} {index == 0 ? '/' : ''}
+                    </Text>
+                ) : (
+                    item
+                )
             );
         }
         return text;
@@ -211,6 +214,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                         tag_info,
                         url,
                         name,
+                        anno,
                         amount,
                         share,
                         nav,
@@ -235,6 +239,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                                     <View style={Style.flexRow}>
                                         <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
+                                        {!!anno && <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>}
                                         {!!tag_info && <TagInfo data={tag_info} />}
                                     </View>
                                     {!!open_tip && (
