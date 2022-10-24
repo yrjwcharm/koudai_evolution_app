@@ -104,7 +104,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
     };
 
     const inputConfirm = () => {
-        if(desc && desc.length < 50) return Toast.show('专题描述需大于50个字')
+        if (desc && desc.length < 50) return Toast.show('专题描述需大于50个字');
         goSave({desc, empty_desc: !desc, subject_id: route.params.subject_id}).then((res) => {
             inputModal.current.cancel();
             getList();
@@ -129,7 +129,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                                 }
                             });
                         },
-                        selectedUri:imgObj.current.value
+                        selectedUri: imgObj.current.value,
                     },
                 });
                 break;
@@ -144,7 +144,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                     } else if (response.assets) {
                         console.log(response.assets[0]);
                         ImageCropPicker.openCropper({
-                            path: response.assets[0],
+                            path: response.assets[0].uri,
                             width: 375,
                             height: 200,
                             cropperChooseText: '选择',
@@ -155,7 +155,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                                 console.log(image);
                                 const params = {
                                     type: image.mime,
-                                    uri: image.path.slice(1),
+                                    uri: image.path,
                                     fileName: image.filename || '123.png',
                                 };
                                 upload('/common/image/upload', params, [], (result) => {
