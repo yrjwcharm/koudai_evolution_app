@@ -58,10 +58,23 @@ index c993477..4d92cc0 100644
      updateSceneKeys = ({ page, children = this.props.children, callback = () => {} }) => {
          let newKeys = this.newSceneKeys({ previousKeys: this.state.sceneKeys, currentPage: page, children });
 diff --git a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
-index 4dcd6de..5a21eee 100644
+index 4dcd6de..21a4adf 100644
 --- a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
 +++ b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
-@@ -33,6 +33,7 @@ const compose = (WrappedComponent) => {
+@@ -26,13 +26,19 @@ const compose = (WrappedComponent) => {
+             this.mounted = true;
+             this.addListener();
+         }
+-
++        componentWillReceiveProps(nextProps, nextContext) {
++            if (nextProps.isActive != this.props.isActive && nextProps.isActive) {
++                    this.scrollTo({ y: 0 })
++                    this.props.containerOffsetY.setValue(0)
++            }
++        }
+         componentWillUnmount() {
+             this.removeListener();
+         }
  
          addListener() {
              const { containerOffsetY } = this.props;
@@ -69,7 +82,7 @@ index 4dcd6de..5a21eee 100644
              containerOffsetY?.addListener(this.tabViewScrollHandler);
          }
  
-@@ -53,9 +54,9 @@ const compose = (WrappedComponent) => {
+@@ -53,12 +59,12 @@ const compose = (WrappedComponent) => {
  
          // other TabView sync OffsetY
          tabViewScrollHandler = (e) => {
@@ -77,7 +90,12 @@ index 4dcd6de..5a21eee 100644
 +            const { headerHeight, isActive, containerOffsetY, sceneHeight } = this.props;
              if (!isActive) {
 -                if (e.value > headerHeight && this.scrollOffsetY < headerHeight) {
+-                    this.scrollTo({ y: headerHeight });
 +                if (e.value > headerHeight) {
-                     this.scrollTo({ y: headerHeight });
++                    // this.scrollTo({ y: headerHeight });
                  } else {
-                     this.scrollTo({ y: e.value });
+-                    this.scrollTo({ y: e.value });
++                    // this.scrollTo({ y: e.value });
+                 }
+             }
+         };
