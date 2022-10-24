@@ -224,14 +224,14 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                     onChangeText={(value) => {
                         setDesc(value);
                     }}
-                    maxLength={500}
+                    maxLength={150}
                     textAlignVertical="top"
-                    placeholder="请编辑专题描述，最多500个字"
+                    placeholder="请编辑专题展示描述，最少50字，最多150字"
                 />
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
                         <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {desc?.length}/{500}
+                            {desc?.length}/{150}
                         </Text>
                         <Text
                             style={styles.clearInput}
