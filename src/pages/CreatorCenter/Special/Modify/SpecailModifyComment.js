@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 21:19:19
+ * @LastEditTime: 2022-10-24 21:27:10
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -238,7 +238,9 @@ export default function SpecailModifyComment({navigation, route}) {
         return addComment({content, ...commentRef.current}).then((res) => {
             if (res.code === '000000') {
                 refresh();
-                Toast.show(res.result.message);
+                if ((res?.result?.message?.length ?? 0) > 0) {
+                    Toast.show(res.result.message);
+                }
                 return Promise.resolve();
             }
             return Promise.reject();
