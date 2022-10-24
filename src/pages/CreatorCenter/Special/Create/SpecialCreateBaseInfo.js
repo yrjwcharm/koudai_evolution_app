@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-23 11:54:49
+ * @LastEditTime: 2022-10-24 11:19:45
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -174,6 +174,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 if (isEdit) {
                     navigation.goBack();
                 } else {
+                    console.log('jump:', data.next_button.url);
                     jump(data.next_button.url);
 
                     // jump({
@@ -226,6 +227,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
             params: {
                 onSure: (uri) => {
                     setBgSource(uri);
+                    setBgPreview(null);
                 },
                 selectedUri: bgSource,
             },

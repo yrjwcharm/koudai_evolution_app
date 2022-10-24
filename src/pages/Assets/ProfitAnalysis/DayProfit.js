@@ -119,25 +119,37 @@ const DayProfit = React.memo(() => {
                     setDateArr([...arr]);
                     setSelCurDate(arr[zIndex].day);
                     // //图表数据
-                    // let latestDate = profit_data_list[index]?.unit_key;
-                    // let startDate = dayjs(latestDate).add(diff, 'month').add(-15, 'day').format('YYYY-MM-DD');
-                    // let endDate = dayjs(latestDate).add(diff, 'month').add(15, 'day').format('YYYY-MM-DD');
+                    let latestDate = profit_data_list[index]?.unit_key;
+                    let startDate = dayjs(latestDate).add(diff, 'month').add(-15, 'day').format('YYYY-MM-DD');
+                    let endDate = dayjs(latestDate).add(diff, 'month').add(15, 'day').format('YYYY-MM-DD');
+                    let chartData = arr
+                        .filter((el) => el.day >= startDate && el.day <= endDate)
+                        .map((el) => {
+                            return {
+                                date: el.day,
+                                value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
+                            };
+                        });
                     // let afterArr = arr
                     //     .filter((el) => el.day >= startDate && el.day <= endDate)
                     //     .map((el) => {
-                    //         return {date: el.day, value: parseFloat(el.profit) || '0.00'};
+                    //         return {
+                    //             date: el.day,
+                    //             // value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
+                    //         };
                     //     });
-                    // let barCharData = profit_data_list
-                    //     .map((el) => el.unit_key)
-                    //     .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                    // setChart({
-                    //     label: [
-                    //         {name: '时间', val: profit_data_list[index]?.unit_key},
-                    //         {name: '收益', val: profit_data_list[index]?.value},
-                    //     ],
-                    //     originDates: barCharData,
-                    //     chart: afterArr,
-                    // });
+                    //
+                    let barCharData = profit_data_list
+                        .map((el) => el.unit_key)
+                        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                    setChart({
+                        label: [
+                            {name: '时间', val: profit_data_list[index]?.unit_key},
+                            {name: '收益', val: profit_data_list[index]?.value},
+                        ],
+                        originDates: barCharData,
+                        chart: chartData,
+                    });
                 }
             })();
         },

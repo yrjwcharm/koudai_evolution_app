@@ -14,21 +14,20 @@ import LinearGradient from 'react-native-linear-gradient';
 import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
 import {Chart, chartOptions} from '~/components/Chart';
-import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
     const dispatch = useDispatch();
     const jump = useJump();
-    const [chart, setChart] = useState();
+    const [chart, setChart] = useState([]);
     const getChartData = async () => {
         let res = await getChart();
         setChart(res.result);
     };
-    useFocusEffect(
-        useCallback(() => {
-            getChartData();
-        }, [])
-    );
+    useEffect(() => {
+        setChart([]);
+        getChartData();
+    }, [summary?.asset_info?.value]);
+
     return (
         <TouchableWithoutFeedback
             onPress={() => {
