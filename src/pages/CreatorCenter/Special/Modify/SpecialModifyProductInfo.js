@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 13:56:09
+ * @LastEditTime: 2022-10-24 18:19:10
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -60,6 +60,7 @@ function TagInput(props) {
                     value={props.value}
                     maxLength={6}
                     onChangeText={props.onChangeText}
+                    onEndEditing={() => props.onChangeText(props.value.trim())}
                     placeholder="请填写产品标签，最多6个字符"
                 />
             </View>
@@ -72,7 +73,7 @@ const getProductTemplate = (item) => [
         title: '选择推广产品',
         require: true,
         key: ListKeys.Product,
-        product: item,
+        product: item ?? null,
         value: null,
         component: SelectInput,
     },
@@ -175,7 +176,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 } else if (row.key === ListKeys.Recommend) {
                     item.title = row.value;
                 } else {
-                    item.tags = [...(item.tags || []), row.value];
+                    item.tags = [...(item.tags || []), row.value.trim()];
                 }
             });
             result.push(item);
@@ -183,6 +184,28 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         return result;
     };
     const rightPress = () => {
+        const item = getValue()[0];
+        if (!item.product || !item.product.product_id) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.title || item.title.length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[0] || !item.tags[0].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[1] || !item.tags[1].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[2] || !item.tags[2].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+
         jump({
             path: 'SpecialPreviewRecommend',
             params: {
@@ -258,7 +281,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 title={'产品信息填写'}
                 leftIcon="chevron-left"
                 leftPress={handleBack}
-                rightText={'保存'}
+                rightText={'查看预览'}
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
             />

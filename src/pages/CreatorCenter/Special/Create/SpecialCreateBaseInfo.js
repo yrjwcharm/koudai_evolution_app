@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 11:19:45
+ * @LastEditTime: 2022-10-24 17:28:49
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -63,6 +63,7 @@ function TagWrap(props) {
     const [text, setText] = useState('');
     const [index, setIndex] = useState(-1);
     const bottomModal = useRef(null);
+    const inputRef = useRef(null);
 
     const handleTagChange = (i) => {
         console.log('handleTagChange:', i);
@@ -73,6 +74,9 @@ function TagWrap(props) {
             setText(tags[i]);
         }
         bottomModal.current?.show();
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 200);
     };
     const handelTagDel = (i) => {
         setTags(tags.filter((t, idx) => idx != i));
@@ -115,6 +119,7 @@ function TagWrap(props) {
                 onDone={handleTagEdit}>
                 <View style={styles.tagItem_inputWrap}>
                     <TextInput
+                        ref={inputRef}
                         style={styles.tagItem_input}
                         multiline={false}
                         placeholder="请填写标签内容，最多6个字符"
