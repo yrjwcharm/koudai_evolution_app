@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 21:27:10
+ * @LastEditTime: 2022-10-24 21:32:12
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -277,6 +277,7 @@ export default function SpecailModifyComment({navigation, route}) {
             });
             return;
         } else if (op.op_type === 'recommend') {
+            if (op.op_value === 1) return; // 已经是推荐的不能再点击了
             Modal.show({
                 content: '是否将该评论替换成专题简介？',
                 confirm: true,
