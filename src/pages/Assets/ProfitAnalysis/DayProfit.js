@@ -206,7 +206,7 @@ const DayProfit = React.memo(() => {
                 const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                 return (
                     <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
-                        <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
+                        <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
                             <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
                             {el.day !== currentDay && el?.profit && (
                                 <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>

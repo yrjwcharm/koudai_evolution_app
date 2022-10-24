@@ -19,6 +19,17 @@ export const getStyles = (el, currentDay) => {
                 color: Colors.green,
             };
         }
+        if (delMille(el?.profit) == 0) {
+            wrapStyle = {
+                backgroundColor: el?.day == currentDay ? Colors.transparent : '#F5F6F8',
+            };
+            profitStyle = {
+                color: Colors.lightGrayColor,
+            };
+            dayStyle = {
+                color: Colors.defaultColor,
+            };
+        }
         if (delMille(el?.profit) > 0) {
             wrapStyle = {
                 backgroundColor: '#FFE7EA',
@@ -34,13 +45,29 @@ export const getStyles = (el, currentDay) => {
     if (el.checked) {
         wrapStyle = {
             backgroundColor:
-                delMille(el?.profit) > 0 ? Colors.red : delMille(el?.profit) < 0 ? Colors.green : Colors.inputBg,
+                delMille(el?.profit) > 0
+                    ? Colors.red
+                    : delMille(el?.profit) < 0
+                    ? Colors.green
+                    : delMille(el?.profit) == 0
+                    ? Colors.lightGrayColor
+                    : Colors.inputBg,
         };
         dayStyle = {
-            color: delMille(el?.profit) > 0 || delMille(el?.profit) < 0 ? Colors.white : Colors.defaultColor,
+            color:
+                delMille(el?.profit) > 0 || delMille(el?.profit) < 0
+                    ? Colors.white
+                    : delMille(el?.profit) == 0
+                    ? Colors.white
+                    : Colors.defaultColor,
         };
         profitStyle = {
-            color: delMille(el?.profit) > 0 || delMille(el?.profit) < 0 ? Colors.white : Colors.lightGrayColor,
+            color:
+                delMille(el?.profit) > 0 || delMille(el?.profit) < 0
+                    ? Colors.white
+                    : delMille(el?.profit) == 0
+                    ? Colors.white
+                    : Colors.lightGrayColor,
         };
     }
     return {wrapStyle, dayStyle, profitStyle};
