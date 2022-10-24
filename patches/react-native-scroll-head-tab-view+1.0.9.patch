@@ -57,3 +57,27 @@ index c993477..4d92cc0 100644
  
      updateSceneKeys = ({ page, children = this.props.children, callback = () => {} }) => {
          let newKeys = this.newSceneKeys({ previousKeys: this.state.sceneKeys, currentPage: page, children });
+diff --git a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
+index 4dcd6de..5a21eee 100644
+--- a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
++++ b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
+@@ -33,6 +33,7 @@ const compose = (WrappedComponent) => {
+ 
+         addListener() {
+             const { containerOffsetY } = this.props;
++            containerOffsetY?.setValue(0)
+             containerOffsetY?.addListener(this.tabViewScrollHandler);
+         }
+ 
+@@ -53,9 +54,9 @@ const compose = (WrappedComponent) => {
+ 
+         // other TabView sync OffsetY
+         tabViewScrollHandler = (e) => {
+-            const { headerHeight, isActive } = this.props;
++            const { headerHeight, isActive, containerOffsetY, sceneHeight } = this.props;
+             if (!isActive) {
+-                if (e.value > headerHeight && this.scrollOffsetY < headerHeight) {
++                if (e.value > headerHeight) {
+                     this.scrollTo({ y: headerHeight });
+                 } else {
+                     this.scrollTo({ y: e.value });

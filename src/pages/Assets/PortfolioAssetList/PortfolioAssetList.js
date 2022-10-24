@@ -2,7 +2,7 @@
  * @Date: 2022-09-22 22:33:12
  * @Description:持仓品类列表
  */
-import {StyleSheet, Text, Animated, View, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, Animated, View, TouchableOpacity, Image, RefreshControl} from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -33,8 +33,16 @@ const PortfolioAssetList = ({route, navigation}) => {
     const {type = 30} = route.params || {};
     const [headHeight, setHeaderHeight] = useState(0);
     const scrollY = useRef(new Animated.Value(0)).current;
+    const [refreshing, setRefreshing] = useState(false);
+    const init = (refresh) => {
+        refresh && setRefreshing(true);
+        getData();
+        getHoldData({type});
+        setRefreshing(false);
+    };
     const getData = async () => {
         let res = await _getData({type});
+
         setData(res.result);
     };
     const getHoldData = async (params) => {
@@ -52,8 +60,7 @@ const PortfolioAssetList = ({route, navigation}) => {
         }
     };
     useEffect(() => {
-        getData();
-        getHoldData({type});
+        init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const handleSortText = (isSort, text, activeText) => {
@@ -76,6 +83,7 @@ const PortfolioAssetList = ({route, navigation}) => {
             <Animated.ScrollView
                 scrollIndicatorInsets={{right: 1}}
                 style={{backgroundColor: Colors.bgColor}}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init(true)} />}
                 onScroll={
                     Animated.event(
                         [
@@ -285,20 +293,22 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 )}
                                 {/* 资产份额 */}
                                 <View style={{alignItems: 'flex-end', flex: 1}}>
-                                    <Text style={styles.card_amount}>{amount}</Text>
-                                    <Text style={styles.amountLightText}>{share}</Text>
+                                    <Text style={styles.card_amount}>{showEye === 'true' ? amount : '****'}</Text>
+                                    <Text style={styles.amountLightText}>{showEye === 'true' ? share : '****'}</Text>
                                 </View>
                                 {/* 净值/成本 */}
                                 <View style={{alignItems: 'flex-end', flex: 1}}>
-                                    <Text style={styles.card_amount}>{nav}</Text>
-                                    <Text style={styles.amountLightText}>{cost_nav}</Text>
+                                    <Text style={styles.card_amount}>{showEye === 'true' ? nav : '****'}</Text>
+                                    <Text style={styles.amountLightText}>{showEye === 'true' ? cost_nav : '****'}</Text>
                                 </View>
                                 {/* 收益 */}
                                 <View style={{alignItems: 'flex-end', flex: 1}}>
                                     {type == 10 ? (
-                                        <Text style={styles.card_amount}>{profit}</Text>
+                                        <Text style={styles.card_amount}>{showEye === 'true' ? profit : '****'}</Text>
                                     ) : (
-                                        <Text style={styles.card_amount}>{profit_acc}</Text>
+                                        <Text style={styles.card_amount}>
+                                            {showEye === 'true' ? profit_acc : '****'}
+                                        </Text>
                                     )}
                                 </View>
                             </View>

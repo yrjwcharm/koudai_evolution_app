@@ -368,8 +368,9 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
             });
     };
 
-    const scrollTo = (value) => {
-        waterfallFlow.current?.scrollToOffset({animated: true, offset: value});
+    const scrollTop = () => {
+        // alert('1');
+        // waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
     };
 
     const refresh = () => {
@@ -412,7 +413,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
         ) : null;
     };
 
-    useImperativeHandle(ref, () => ({refresh}));
+    useImperativeHandle(ref, () => ({refresh, scrollTop}));
 
     useEffect(() => {
         init();
@@ -509,12 +510,11 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0, muid = 0, onPress}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleClick}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
     const bottomModal = useRef();
-
     const init = () => {
         getCanPublishContent({community_id, muid}).then((res) => {
             if (res.code === '000000') {
@@ -554,9 +554,9 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, onPress},
                                     onPress={() => {
                                         bottomModal.current.hide();
                                         if (type == 'addArticle') {
-                                            onPress('article');
+                                            handleClick('article');
                                         } else if (type == 'addProduct') {
-                                            onPress('fund');
+                                            handleClick('fund');
                                         } else {
                                             jump(url);
                                         }

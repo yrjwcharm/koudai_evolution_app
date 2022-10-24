@@ -2,14 +2,13 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:社区个人主页
 // //  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Style} from '~/common/commonStyle';
-import LinearGradient from 'react-native-linear-gradient';
+import {Colors} from '~/common/commonStyle';
 import {getPersonalHomeData, getPersonaProductList} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import {PublishContent, WaterfallFlowList} from '../CommunityIndex';
@@ -81,6 +80,9 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                         headerHeight={parallaxHeaderHeight + introHeight - px(30)}
                         insetValue={headerHeight}
                         style={{backgroundColor: '#fff'}}
+                        onChangeTab={() => {
+                            // waterFallRef?.current?.scrollTop();
+                        }}
                         onContentScroll={(e) => {
                             scrollY.setValue(e.value);
                             if (e.value > 80) {
