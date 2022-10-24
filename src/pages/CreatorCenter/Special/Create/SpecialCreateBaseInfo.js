@@ -440,6 +440,8 @@ const styles = StyleSheet.create({
     tip_icon: {
         height: 12,
         width: 12,
+        alignSelf: 'flex-start',
+        marginTop: px(2),
     },
     tip: {
         marginLeft: 4,

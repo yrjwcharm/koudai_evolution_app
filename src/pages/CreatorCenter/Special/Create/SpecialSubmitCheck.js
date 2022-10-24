@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 14:50:08
+ * @LastEditTime: 2022-10-24 16:21:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         color: '#545968',
         fontSize: px(12),
         lineHeight: px(17),
+        textAlign: 'center',
     },
     success_btn: {
         marginTop: px(40),
