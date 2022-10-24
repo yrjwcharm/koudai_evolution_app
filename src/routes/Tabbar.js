@@ -8,7 +8,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {px, isIphoneX} from '../utils/appUtil';
 // import Index from '../pages/MofangIndex'; //魔方首页
 import Product from '../pages/Product/Index';
-import Vision from '../pages/Vision/Vision'; //视野
+// import Vision from '../pages/Vision/Vision'; //视野
 import Community from '../pages/Community/CommunityIndex'; // 社区首页
 import NewHome from '../pages/Assets/Asset/Asset'; //资产页
 import CreatorCenter from '../pages/CreatorCenter/Index'; //管理中心
@@ -21,7 +21,7 @@ import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
-    const vision = useSelector((store) => store.vision);
+    // const vision = useSelector((store) => store.vision);
     const userInfo = useSelector((store) => store.userInfo);
     const [showVersion, setShowVersion] = React.useState(false);
     React.useEffect(() => {
@@ -44,103 +44,62 @@ export default function Tabbar() {
             screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
                     global.navigation = navigation;
-                    if (route.name === 'Index') {
-                        if (focused) {
+                    switch (route.name) {
+                        case 'Community':
                             return (
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/mofangActive.png')}
+                                    source={
+                                        focused
+                                            ? require('../assets/img/tabIcon/communityFocus.png')
+                                            : require('../assets/img/tabIcon/community.png')
+                                    }
                                 />
                             );
-                        } else {
+                        case 'Home':
                             return (
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/mofang.png')}
+                                    source={
+                                        focused
+                                            ? require('../assets/img/tabIcon/homeFocus.png')
+                                            : require('../assets/img/tabIcon/home.png')
+                                    }
                                 />
                             );
-                        }
-                    } else if (route.name === 'Vision' || route.name === 'Community') {
-                        if (focused) {
+                        case 'Product':
                             return (
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/shiyeActive.png')}
+                                    source={
+                                        focused
+                                            ? require('../assets/img/tabIcon/productFocus.png')
+                                            : require('../assets/img/tabIcon/product.png')
+                                    }
                                 />
                             );
-                        } else {
+                        case 'CreatorCenter':
                             return (
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/shiye.png')}
+                                    source={
+                                        focused
+                                            ? require('../assets/img/tabIcon/creatorCenterFocus.png')
+                                            : require('../assets/img/tabIcon/creatorCenter.png')
+                                    }
                                 />
                             );
-                        }
-                    } else if (route.name === 'Home') {
-                        if (focused) {
+                        case 'CreatorAuthHome':
                             return (
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/wodeActive.png')}
+                                    source={
+                                        focused
+                                            ? require('../assets/img/tabIcon/creatorCenterFocus.png')
+                                            : require('../assets/img/tabIcon/creatorCenter.png')
+                                    }
                                 />
                             );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/wode.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'Attention') {
-                        if (focused) {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/guanzhuActive.png')}
-                                />
-                            );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/guanzhu.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'PKHome' || route.name === 'Product') {
-                        if (focused) {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/pkActive.png')}
-                                />
-                            );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/pk.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'ProjectHome') {
-                        if (focused) {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/projectActive.png')}
-                                />
-                            );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/project.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'CreatorCenter') {
                     }
                 },
             })}
@@ -156,31 +115,6 @@ export default function Tabbar() {
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Product" options={{tabBarLabel: '产品'}} component={Product} />
-            {/* <Tab.Screen name="Attention" options={{tabBarLabel: '关注'}} component={Attention} /> */}
-
-            {/* <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} /> */}
-            {userInfo?.toJS()?.show_vision_tab ? (
-                <Tab.Screen
-                    name="Vision"
-                    options={{
-                        tabBarLabel: '视野',
-                        tabBarBadge: '',
-                        tabBarBadgeStyle: {
-                            backgroundColor: '#E74949',
-                            width: vision.toJS().visionUpdate ? 8 : 0,
-                            height: vision.toJS().visionUpdate ? 8 : 0,
-                            minWidth: 0,
-                            marginLeft: 5,
-                            borderRadius: 4,
-                        },
-                    }}
-                    component={Vision}
-                />
-            ) : null}
-            {/* <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} /> */}
-            {/* <Tab.Screen name="PKHome" options={{tabBarLabel: '产品PK'}} component={PKHome} />
-            <Tab.Screen name="ProjectHome" options={{tabBarLabel: '计划'}} component={ProjectHome} /> */}
-            {/* userInfo?.toJS()?.show_manage_center */}
             {userInfo?.toJS()?.show_manage_center ? (
                 <Tab.Screen name="CreatorCenter" options={{tabBarLabel: '管理中心'}} component={CreatorCenter} />
             ) : null}
