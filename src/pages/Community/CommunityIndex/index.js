@@ -32,6 +32,7 @@ import {
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce, groupBy} from 'lodash';
+import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
@@ -411,27 +412,29 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
         ) : null;
     };
 
-    useImperativeHandle(ref, () => ({refresh, scrollTo, waterfallFlow}));
+    useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
         init();
     }, [page]);
     return data?.length > 0 ? (
-        <WaterfallFlow
-            data={data}
-            initialNumToRender={20}
-            keyExtractor={(item, index) => item.title + item.id + index}
-            ListFooterComponent={renderFooter}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.99}
-            onRefresh={() => (page > 1 ? setPage(1) : init())}
-            ref={waterfallFlow}
-            refreshing={refreshing}
-            renderItem={renderItem}
-            scrollIndicatorInsets={{right: 1}}
-            scrollEventThrottle={1}
-            {...rest}
-        />
+        <LinearGradient colors={['#fff', Colors.bgColor]} style={{flex: 1}}>
+            <WaterfallFlow
+                data={data}
+                initialNumToRender={20}
+                keyExtractor={(item, index) => item.title + item.id + index}
+                ListFooterComponent={renderFooter}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.99}
+                onRefresh={() => (page > 1 ? setPage(1) : init())}
+                ref={waterfallFlow}
+                refreshing={refreshing}
+                renderItem={renderItem}
+                scrollIndicatorInsets={{right: 1}}
+                scrollEventThrottle={1}
+                {...rest}
+            />
+        </LinearGradient>
     ) : null;
 });
 
