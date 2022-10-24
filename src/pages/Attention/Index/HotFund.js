@@ -2,7 +2,7 @@
  * @Date: 2022-06-21 16:07:16
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 18:03:58
+ * @LastEditTime: 2022-10-24 21:36:45
  * @Description:
  */
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -12,8 +12,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '~/common/commonStyle';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
-import Feather from 'react-native-vector-icons/Feather';
 import {Font} from '../../../common/commonStyle';
+import FastImage from 'react-native-fast-image';
 const HotFund = ({data, onFollow, style}) => {
     const {header, body, footer} = data;
     const jump = useJump();
@@ -116,7 +116,7 @@ const HotFund = ({data, onFollow, style}) => {
                 />
             </View>
             {/* 底部按钮 */}
-            <View style={[Style.flexBetween, {marginBottom: px(16)}]}>
+            <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
                 {footer?.button_list?.map((button, index) => (
                     <TouchableOpacity
                         activeOpacity={0.9}
@@ -125,8 +125,8 @@ const HotFund = ({data, onFollow, style}) => {
                         onPress={() => {
                             jump(button?.url);
                         }}>
-                        <Feather size={px(18)} name={button.icon == 'SearchFollow' ? 'search' : 'plus-circle'} />
-                        <Text style={{fontSize: px(16), fontWeight: '700', marginLeft: px(4)}}>{button?.text}</Text>
+                        <FastImage source={{uri: button.icon}} style={{width: px(18), height: px(18)}} />
+                        <Text style={{fontSize: px(14), fontWeight: '700', marginLeft: px(2)}}>{button?.text}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         paddingTop: px(14),
         borderRadius: px(6),
         backgroundColor: '#fff',
-        marginBottom: px(20),
+        marginBottom: px(16),
     },
     itemRight: {
         flex: 1,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     },
     card_button: {borderRadius: px(314), marginHorizontal: px(51), marginTop: px(16)},
     bottomBtn: {
-        width: px(164),
+        width: px(166),
         height: px(48),
         ...Style.flexRowCenter,
         backgroundColor: '#fff',

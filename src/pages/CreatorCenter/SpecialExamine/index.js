@@ -7,7 +7,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Platform} from 'react-native';
 import WebView from 'react-native-webview';
 import URI from 'urijs';
-import {useJump} from '~/components/hooks';
+import {Colors} from '~/common/commonStyle';
 import {AlbumCard, ProductList} from '~/components/Product';
 import RenderHtml from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
@@ -125,6 +125,7 @@ const SpecialExamine = ({navigation, route}) => {
                             uri: URI(item.link.link)
                                 .addQuery({
                                     timeStamp: timeStamp.current,
+                                    examine: true,
                                     ...item.link.params,
                                 })
                                 .valueOf(),
@@ -296,6 +297,8 @@ const styles = StyleSheet.create({
     },
     bottomModal: {
         backgroundColor: '#fff',
+        borderTopColor: Colors.borderColor,
+        borderTopWidth: 0.6,
     },
     input: {
         paddingHorizontal: px(20),

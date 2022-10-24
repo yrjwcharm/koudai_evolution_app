@@ -255,6 +255,13 @@ const CreatorCenterIndex = () => {
                                                             //         },
                                                             //     },
                                                             // });
+                                                            // jump({
+                                                            //     path: 'AddProductStep2',
+                                                            //     type: 1,
+                                                            //     params: {
+                                                            //         subject_id: '1056',
+                                                            //     },
+                                                            // });
                                                             jump(itm?.url);
                                                             // jump({
                                                             //     path: 'SpecialDetail',

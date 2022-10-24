@@ -308,7 +308,7 @@ const AddProductStep2 = ({navigation, route}) => {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'handled'}>
             <View style={{marginBottom: px(12)}}>
                 <RenderHtml html={data?.step_desc} />
             </View>

@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 14:20:31
+ * @LastEditTime: 2022-10-24 16:57:22
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -373,9 +373,9 @@ const Product = ({navigation}) => {
                                     );
                                 })}
                             </ScrollableTabView>
-                        ) : (
+                        ) : followTabs?.hot_fund ? (
                             <HotFund data={followTabs?.hot_fund || {}} onFollow={onFollow} />
-                        )}
+                        ) : null}
                     </View>
                 </ScrollView>
                 <LogView.Wrapper
@@ -599,7 +599,16 @@ const Product = ({navigation}) => {
                                             </View>
                                         ) : null}
                                         {!subjectData?.has_more ? (
-                                            <Text style={{textAlign: 'center'}}>已经没有更多了</Text>
+                                            <Text
+                                                style={{
+                                                    textAlign: 'center',
+                                                    fontSize: px(11),
+                                                    lineHeight: px(17),
+                                                    color: '#9aa0b1',
+                                                    marginTop: px(10),
+                                                }}>
+                                                已经没有更多了
+                                            </Text>
                                         ) : null}
                                     </>
                                 ) : null}
@@ -647,7 +656,7 @@ const styles = StyleSheet.create({
     tabActive: {
         fontSize: px(18),
         lineHeight: px(25),
-        fontWeight: '500',
+        fontWeight: 'bold',
     },
     searchInput: {
         marginLeft: px(20),
@@ -800,9 +809,9 @@ const styles = StyleSheet.create({
 
 const SpecialList = ({data, tabButton}) => {
     const jump = useJump();
-    return data?.items ? (
+    return data || tabButton ? (
         <View>
-            {data?.items?.map((item, idx) => (
+            {data?.items?.map?.((item, idx) => (
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
