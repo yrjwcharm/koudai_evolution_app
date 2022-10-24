@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 12:16:09
+ * @LastEditTime: 2022-10-24 14:20:31
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -107,9 +107,8 @@ const Product = ({navigation}) => {
                 if (res.code === '000000') {
                     setProData(res.result);
                     // 获取专题
-                    setSubjectList([]);
                     pageRef.current = 1;
-                    getSubjects(res.result?.page_type);
+                    getSubjects(res.result?.page_type, 'init');
                 }
             })
             .finally((_) => {
@@ -134,7 +133,7 @@ const Product = ({navigation}) => {
             });
     };
 
-    const getSubjects = (page_type) => {
+    const getSubjects = (page_type, type) => {
         if (subjectLoadingRef.current) return;
         setSubjectLoading(true);
         subjectLoadingRef.current = true;
@@ -143,7 +142,8 @@ const Product = ({navigation}) => {
                 setSubjectLoading(false);
                 subjectLoadingRef.current = false;
                 setSubjectsData(res.result);
-                setSubjectList((val) => val.concat(res.result.items || []));
+                const newList = res.result.items || [];
+                setSubjectList((val) => (type === 'init' ? newList : val.concat(newList)));
             }
         });
     };
