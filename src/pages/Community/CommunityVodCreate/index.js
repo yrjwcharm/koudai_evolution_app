@@ -304,7 +304,7 @@ const Index = ({setLoading}) => {
                     const durationText = resolveTimeStemp(file.duration * 1000)
                         .slice(-2)
                         .join(':');
-                    upload({...file, fileType: 'vod'}).then((res) => {
+                    upload({...file, fileName: file.fileName || file.uri, fileType: 'vod'}).then((res) => {
                         res && setVideo({duration: file.duration, durationText, ...res});
                     });
                 }

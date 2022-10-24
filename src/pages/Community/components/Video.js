@@ -19,20 +19,16 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
     const [sliderValue, setSlierValue] = useState(0); //进度条的进度
-    const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const video = useRef();
     const [followStatus, setFollowStatus] = useState();
     useEffect(() => {
-        setShowPause(false);
         setPaused(index != currentIndex);
         customerSliderValue(0);
         setFollowStatus(data?.follow_status);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, currentIndex]);
-
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
-        if (!paused) setShowPause(true);
         setPaused((pre) => !pre);
     };
     const formatMediaTime = (time) => {
@@ -57,7 +53,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     //移动滑块
     const customerSliderValue = useCallback(
         _.debounce((value) => {
-            video.current.seek(value);
+            video.current?.seek(value);
         }, 100),
         []
     );
@@ -89,31 +85,44 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                 },
                             ],
                         }}>
-                        <Video
-                            source={{uri: data.media_url}}
-                            ref={video}
-                            rate={1.0}
-                            paused={paused}
-                            volume={7.0}
-                            playInBackground={true}
-                            repeat={true}
-                            playWhenInactive={true}
-                            isLooping
-                            onEnd={onCustomerEnd}
-                            isMuted={false}
-                            onLoad={customerOnload}
-                            onProgress={customerOnprogress}
-                            resizeMode="contain"
-                            style={{
-                                height: HEIGHT,
-                                width: WIDTH,
-                            }}
-                        />
-                        {/* 暂停 */}
-                        {paused && showPause && (
-                            <TouchableWithoutFeedback onPress={onPlayPausePress}>
-                                <Image style={styles.play} source={require('~/assets/img/community/videoPlay.png')} />
-                            </TouchableWithoutFeedback>
+                        {index == currentIndex && (
+                            <>
+                                <Video
+                                    source={{uri: data.media_url}}
+                                    ref={video}
+                                    rate={1.0}
+                                    paused={paused}
+                                    volume={7.0}
+                                    onLoadStart={(e) => {
+                                        console.log('onLoadStart', e);
+                                    }}
+                                    onBuffer={(isBuffering) => {
+                                        console.log('isBuffering', isBuffering);
+                                    }}
+                                    playInBackground={true}
+                                    repeat={true}
+                                    playWhenInactive={true}
+                                    isLooping
+                                    onEnd={onCustomerEnd}
+                                    isMuted={false}
+                                    onLoad={customerOnload}
+                                    onProgress={customerOnprogress}
+                                    resizeMode="contain"
+                                    style={{
+                                        height: HEIGHT,
+                                        width: WIDTH,
+                                    }}
+                                />
+                                {/* 暂停 */}
+                                {paused && (
+                                    <TouchableWithoutFeedback onPress={onPlayPausePress}>
+                                        <Image
+                                            style={styles.play}
+                                            source={require('~/assets/img/community/videoPlay.png')}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                )}
+                            </>
                         )}
                     </Animated.View>
                 </View>

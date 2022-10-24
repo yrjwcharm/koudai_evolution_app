@@ -134,7 +134,7 @@ const CommunityVideo = ({navigation, route}) => {
             <FlatList
                 data={videoData?.items}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => item.id}
+                keyExtractor={(item, index) => item.id.toString()}
                 getItemLayout={getItemLayout}
                 showsVerticalScrollIndicator={false}
                 pagingEnabled={true}
@@ -166,7 +166,7 @@ const CommunityVideo = ({navigation, route}) => {
                     renderItem: ({item}) => {
                         return <CommentItem key={item.id} data={item} style={{marginBottom: px(9)}} />;
                     },
-                    keyExtractor: (item) => item.id,
+                    keyExtractor: (item) => item.id.toString(),
                     onEndReached: () => {
                         if (hasMore) {
                             setPage((p) => {
