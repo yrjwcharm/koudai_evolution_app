@@ -210,8 +210,13 @@ const DayProfit = React.memo(() => {
                 return (
                     <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
                         <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
-                            <Text style={[styles.day, dayStyle]}>{date}</Text>
-                            {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
+                            <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
+                            {el.day !== currentDay && el?.profit && (
+                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                            )}
+                            {el.day == currentDay && (el?.profit > 0 || el?.profit < 0) && (
+                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                            )}
                         </View>
                     </TouchableOpacity>
                 );
@@ -269,6 +274,8 @@ const styles = StyleSheet.create({
     dateItem: {
         width: Dimensions.get('window').width / 8.5,
         height: px(44),
+        // justifyContent: 'center',
+        // alignItems: 'center',
         marginBottom: px(2),
         ...Style.flexCenter,
         borderRadius: px(4),

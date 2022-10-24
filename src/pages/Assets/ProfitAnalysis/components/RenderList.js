@@ -13,6 +13,7 @@ import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
+import {useJump} from '../../../../components/hooks';
 let listener = null;
 const RenderList = React.memo(({curDate}) => {
     const type = useSelector((state) => state.profitDetail.type);
@@ -20,7 +21,7 @@ const RenderList = React.memo(({curDate}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const jump = useJump();
     useEffect(() => {
         (async () => {
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate});
@@ -92,7 +93,9 @@ const RenderList = React.memo(({curDate}) => {
                                             {item.type}
                                         </Text>
                                     </View>
-                                    <Text style={styles.title}>{item.text}</Text>
+                                    <TouchableOpacity onPress={() => jump(item?.url)}>
+                                        <Text style={styles.title}>{item.text}</Text>
+                                    </TouchableOpacity>
                                     {item.tag ? (
                                         <View
                                             style={{
