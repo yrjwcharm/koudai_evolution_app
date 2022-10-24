@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-20 17:11:00
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-23 11:59:38
+ * @LastEditTime: 2022-10-24 11:16:24
  * @FilePath: /koudai_evolution_app/src/utils/pickerUploadImg.js
  * @Description:
  */
@@ -52,8 +52,12 @@ export const doPickerAndUploadImg = (cb) => {
         } else if (response.assets) {
             console.log('do openCropper:', response.assets[0]);
             setTimeout(() => {
+                let path = Platform.select({
+                    ios: response.assets[0],
+                    android: response.assets[0].uri,
+                });
                 ImageCropPicker.openCropper({
-                    path: response.assets[0],
+                    path: path,
                     width: px(1125),
                     height: px(600),
                     cropperChooseText: '选择',
@@ -64,9 +68,13 @@ export const doPickerAndUploadImg = (cb) => {
                 }).then((image) => {
                     console.log('ImageCropPicker.openCropper:', image);
                     if (image) {
+                        let uri = Platform.select({
+                            ios: image.path.slice(1),
+                            android: image.path,
+                        });
                         const params = {
                             type: image.mime,
-                            uri: image.path.slice(1),
+                            uri: uri,
                             fileName: image.filename || '123.png',
                         };
                         let loading = Toast.showLoading();
