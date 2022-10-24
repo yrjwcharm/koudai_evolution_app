@@ -10,6 +10,7 @@ import _ from 'lodash';
 
 const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProps}, ref) => {
     const containerHeight = useRef();
+    const containerScrollHeight = useRef();
     const scrollRef = useRef();
     const logOptions = useRef({});
 
@@ -79,9 +80,11 @@ const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProp
             onScroll={(e) => {
                 const y = e.nativeEvent.contentOffset.y;
                 handlerScrollLog(y);
-                onScroll?.(e);
+                // 重组scroll事件的 arguments
+                onScroll?.(e, containerHeight.current, containerScrollHeight.current);
             }}
             onContentSizeChange={(w, h) => {
+                containerScrollHeight.current = h;
                 updateTouchHeights();
                 onContentSizeChange?.(w, h);
             }}

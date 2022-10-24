@@ -3,10 +3,19 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 22:21:38
+ * @LastEditTime: 2022-10-24 12:16:09
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Platform, RefreshControl} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    Platform,
+    RefreshControl,
+    ActivityIndicator,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -28,7 +37,6 @@ import {AlbumCard, ProductList} from '~/components/Product';
 import {useSelector} from 'react-redux';
 import LoadingTips from '~/components/LoadingTips';
 import Feather from 'react-native-vector-icons/Feather';
-import EmptyTip from '~/components/EmptyTip';
 import LogView from '~/components/LogView';
 import ScrollableTabBar from '~/components/ScrollableTabBar';
 import HotFund from '../Attention/Index/HotFund';
@@ -47,13 +55,18 @@ const Product = ({navigation}) => {
     const [followData, setFollowData] = useState();
     const [tabActive, setTabActive] = useState(1);
     const [allMsg, setAll] = useState(0);
-    const [subject, setSubjects] = useState([]);
+    const [subjectLoading, setSubjectLoading] = useState(false); // 显示加载动画
+    const [subjectData, setSubjectsData] = useState({});
+    const [subjectList, setSubjectList] = useState([]);
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
     const isFirst = useRef(1);
     const scrollViewRef = useRef();
     const pageRef = useRef(1);
+    const subjectToBottomHeight = useRef(0);
+
+    const subjectLoadingRef = useRef(false); // 为了流程控制
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
@@ -93,9 +106,10 @@ const Product = ({navigation}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setProData(res.result);
-
-                    // pageRef.current = 1;
-                    // getSubjects(res.result?.page_type);
+                    // 获取专题
+                    setSubjectList([]);
+                    pageRef.current = 1;
+                    getSubjects(res.result?.page_type);
                 }
             })
             .finally((_) => {
@@ -121,9 +135,15 @@ const Product = ({navigation}) => {
     };
 
     const getSubjects = (page_type) => {
-        http.get('/products/subject/list/20220901', {page_type}).then((res) => {
-            console.log(res);
+        if (subjectLoadingRef.current) return;
+        setSubjectLoading(true);
+        subjectLoadingRef.current = true;
+        http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++}).then((res) => {
             if (res.code === '000000') {
+                setSubjectLoading(false);
+                subjectLoadingRef.current = false;
+                setSubjectsData(res.result);
+                setSubjectList((val) => val.concat(res.result.items || []));
             }
         });
     };
@@ -215,6 +235,23 @@ const Product = ({navigation}) => {
             </View>
         ) : null;
     };
+
+    const proScroll = useCallback(
+        (e, cHeight, cScrollHeight) => {
+            let resetHeight = cScrollHeight - cHeight;
+            let y = e.nativeEvent.contentOffset.y;
+
+            if (
+                !subjectLoading &&
+                subjectList?.[0] &&
+                subjectData?.has_more &&
+                resetHeight - y <= subjectToBottomHeight.current + 20
+            ) {
+                getSubjects(proData.page_type);
+            }
+        },
+        [subjectLoading, subjectList, subjectData, proData]
+    );
 
     return loading ? (
         <Loading color={Colors.btnColor} />
@@ -352,7 +389,8 @@ const Product = ({navigation}) => {
                             refreshing={refreshing}
                             onRefresh={() => getProData(0)}
                         />
-                    }>
+                    }
+                    onScroll={proScroll}>
                     {Object.keys(proData || {}).length ? (
                         <>
                             <View style={styles.menuWrap}>
@@ -534,29 +572,44 @@ const Product = ({navigation}) => {
                                         </ScrollView>
                                     </View>
                                 )}
-                                {proData?.subjects ? (
-                                    <View style={{backgroundColor: Colors.bgColor}}>
-                                        {proData?.subjects?.map?.((subject, index, ar) => (
-                                            <LogView.Item
-                                                logKey={subject.subject_id}
-                                                handler={() => {
-                                                    let subject = proData?.subjects?.[index];
-                                                    global.LogTool({
-                                                        event: 'rec_show',
-                                                        ctrl: subject.subject_id,
-                                                        plateid: subject.plateid,
-                                                        rec_json: subject.rec_json,
-                                                    });
-                                                }}
-                                                key={subject.subject_id + index}
-                                                style={{marginTop: px(12)}}>
-                                                <AlbumCard {...subject} />
-                                            </LogView.Item>
-                                        ))}
-                                    </View>
+                                {subjectList?.[0] ? (
+                                    <>
+                                        <View style={{backgroundColor: Colors.bgColor}}>
+                                            {subjectList?.map?.((subject, index, ar) => (
+                                                <LogView.Item
+                                                    logKey={subject.subject_id}
+                                                    handler={() => {
+                                                        let subject = subjectList?.[index];
+                                                        global.LogTool({
+                                                            event: 'rec_show',
+                                                            ctrl: subject.subject_id,
+                                                            plateid: subject.plateid,
+                                                            rec_json: subject.rec_json,
+                                                        });
+                                                    }}
+                                                    key={subject.subject_id + index}
+                                                    style={{marginTop: px(12)}}>
+                                                    <AlbumCard {...subject} />
+                                                </LogView.Item>
+                                            ))}
+                                        </View>
+                                        {subjectLoading ? (
+                                            <View style={{paddingVertical: px(20)}}>
+                                                <ActivityIndicator />
+                                            </View>
+                                        ) : null}
+                                        {!subjectData?.has_more ? (
+                                            <Text style={{textAlign: 'center'}}>已经没有更多了</Text>
+                                        ) : null}
+                                    </>
                                 ) : null}
                             </View>
-                            <View style={{backgroundColor: '#f5f6f8'}}>
+                            {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
+                            <View
+                                style={{backgroundColor: '#f5f6f8'}}
+                                onLayout={(e) => {
+                                    subjectToBottomHeight.current = e.nativeEvent.layout.height;
+                                }}>
                                 <BottomDesc />
                             </View>
                         </>
