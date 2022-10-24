@@ -280,8 +280,9 @@ export const ChooseTag = ({setTags, tags}) => {
     );
 };
 
-const Index = ({setLoading}) => {
+const Index = ({route, setLoading}) => {
     const jump = useJump();
+    const {fr = ''} = route.params || {};
     const [video, setVideo] = useState();
     const [paused, setPaused] = useState(true);
     const [showDuration, setShowDuration] = useState(true);
@@ -347,7 +348,12 @@ const Index = ({setLoading}) => {
 
     const onPublish = () => {
         const loading = Toast.showLoading('提交审核中...');
-        publishVideo({media_ids: video.id, tag_ids: video.tags.map?.((tag) => tag.id)?.join(','), title: video.intro})
+        publishVideo({
+            fr,
+            media_ids: video.id,
+            tag_ids: video.tags.map?.((tag) => tag.id)?.join(','),
+            title: video.intro,
+        })
             .then((res) => {
                 Toast.hide(loading);
                 Toast.show(res.message);

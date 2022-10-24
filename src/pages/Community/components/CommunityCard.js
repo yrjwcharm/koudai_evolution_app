@@ -2,10 +2,11 @@
  * @Date: 2022-10-09 14:51:26
  * @Description: 社区卡片
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
+import HapticFeedback from 'react-native-haptic-feedback';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -25,7 +26,8 @@ import {useJump} from '~/components/hooks';
 import {Modal, ShareModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import {deviceWidth, formaNum, px} from '~/utils/appUtil';
-import {liveReserve} from '../CommunityIndex/services';
+import {liveReserve, postCollect, postFavor} from '../CommunityIndex/services';
+import {debounce} from 'lodash';
 
 /** @name 社区卡片封面 */
 export const CommunityCardCover = ({
@@ -48,10 +50,6 @@ export const CommunityCardCover = ({
         2: Colors.red,
         3: Colors.brandColor,
     });
-
-    useEffect(() => {
-        console.log(cover_aspect_ratio, coverWidth);
-    }, []);
 
     return (
         <View style={[Style.flexCenter, styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
@@ -158,7 +156,38 @@ export const CommunityFollowCard = ({
     const [favored, setFavored] = useState(favor_status); // 是否点赞
     const [isReserved, setIsReserved] = useState(reserved); // 直播是否已预约
     const [leftDesc, setLeftDesc] = useState(left_desc);
+    const [favorNum, setFavorNum] = useState(favor_num);
+    const [collectNum, setCollectNum] = useState(collect_num);
     const shareModal = useRef();
+
+    const onBottomOps = useCallback(
+        debounce(
+            (opType) => {
+                (opType === 'collect' ? postCollect : postFavor)({
+                    action_type: Number(!(opType === 'collect' ? collected : favored)),
+                    resource_cate: 'article',
+                    resource_id: id,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        (opType === 'collect' ? setCollected : setFavored)((status) => {
+                            !status &&
+                                HapticFeedback.trigger('impactLight', {
+                                    enableVibrateFallback: true,
+                                    ignoreAndroidSystemSettings: false,
+                                });
+                            return Number(!status);
+                        });
+                        (opType === 'collect' ? setCollectNum : setFavorNum)((num) =>
+                            !(opType === 'collect' ? collected : favored) ? num + 1 : num - 1
+                        );
+                    }
+                });
+            },
+            300,
+            {leading: true, trailing: false}
+        ),
+        [collected, favored]
+    );
 
     const checkPermission = (sucess, fail) => {
         checkNotifications().then(({status}) => {
@@ -220,12 +249,16 @@ export const CommunityFollowCard = ({
 
     useFocusEffect(
         useCallback(() => {
+            setCollected(collect_status);
+            setCollectNum(collect_num);
+            setFavored(favor_status);
+            setFavorNum(favor_num);
             setLeftDesc(left_desc);
             setIsReserved(reserved);
             return () => {
                 AppState.removeEventListener('change', handleAppStateChange);
             };
-        }, [left_desc, reserved])
+        }, [collect_num, collect_status, favor_num, favor_status, left_desc, reserved])
     );
 
     return (
@@ -406,13 +439,13 @@ export const CommunityFollowCard = ({
                         <View style={Style.flexRow}>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => setCollected((prev) => Number(!prev))}
+                                onPress={() => onBottomOps('collect')}
                                 style={[Style.flexRow, {marginRight: px(16)}]}>
                                 <Image
                                     source={collected === 0 ? collect : collectActive}
                                     style={styles.operationIcon}
                                 />
-                                <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{collect_num}</Text>
+                                <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{collectNum}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, {marginRight: px(16)}]}>
                                 <Image source={comment} style={styles.operationIcon} />
@@ -420,10 +453,10 @@ export const CommunityFollowCard = ({
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => setFavored((prev) => Number(!prev))}
+                                onPress={() => onBottomOps('favor')}
                                 style={Style.flexRow}>
                                 <Image source={favored === 0 ? zan : zanActive} style={styles.operationIcon} />
-                                <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{favor_num}</Text>
+                                <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{favorNum}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

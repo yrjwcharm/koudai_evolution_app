@@ -383,7 +383,7 @@ const WriteArticle = ({article, setArticle}) => {
 
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
-    const {article_id = 0, community_id = 0, history_id = 0} = route.params || {};
+    const {article_id = 0, community_id = 0, fr = '', history_id = 0} = route.params || {};
     const [step, setStep] = useState(1); // 步骤：1 第一步上传文章封面 2 第二步写文章内容
     const [cover, setCover] = useState(''); // 文章封面
     const [article, setArticle] = useState({}); // content 文章内容 tags 文章标签 title 文章标题
@@ -397,7 +397,7 @@ const Index = ({navigation, route, setLoading}) => {
         if (step === 1) {
             return (
                 <TouchableOpacity activeOpacity={0.8} onPress={() => setStep(2)} style={{marginRight: px(6)}}>
-                    <Text style={[styles.title, {color: Colors.descColor}]}>{cover ? '下一步' : '跳过'}</Text>
+                    <Text style={[styles.title, {color: Colors.descColor}]}>{cover?.url ? '下一步' : '跳过'}</Text>
                 </TouchableOpacity>
             );
         }
@@ -483,6 +483,7 @@ const Index = ({navigation, route, setLoading}) => {
             community_id,
             content,
             cover_media_id: cover?.id || '',
+            fr,
             tag_ids: tags?.map((tag) => tag.id)?.join(','),
             title,
         })

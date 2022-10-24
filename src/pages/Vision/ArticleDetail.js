@@ -161,6 +161,9 @@ const ArticleDetail = ({navigation, route}) => {
             if (_posi) {
                 TrackPlayer.seekTo(parseInt(_posi));
             }
+        } else if (eventData?.indexOf?.('url=') > -1) {
+            const url = JSON.parse(eventData.split('url=')[1] || '{}');
+            url?.path && jump(url);
         }
 
         if (eventData.indexOf('article_id') !== -1) {

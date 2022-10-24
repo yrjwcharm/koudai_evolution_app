@@ -16,7 +16,7 @@ const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
     const {audit_id, ...leftParams} = route.params || {};
     const [data] = useState(leftParams || {});
-    const {btn_text, btn_url, icon, tip_desc, tip_title} = data;
+    const {btn_text, btn_url, fr = '', icon, tip_desc, tip_title} = data;
 
     useEffect(() => {
         navigation.setOptions({title: '提交审核成功'});
@@ -33,7 +33,11 @@ const Index = ({navigation, route, setLoading}) => {
                 <View style={{marginTop: px(8), maxWidth: px(300)}}>
                     <HTML html={tip_desc} style={styles.desc} />
                 </View>
-                <Button onPress={() => jump(btn_url)} style={styles.btn} title={btn_text} />
+                <Button
+                    onPress={() => jump(btn_url, fr === 'Community' ? 'replace' : 'navigate')}
+                    style={styles.btn}
+                    title={btn_text}
+                />
             </View>
         </ScrollView>
     ) : null;
