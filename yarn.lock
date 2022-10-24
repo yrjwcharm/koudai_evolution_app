@@ -7342,6 +7342,11 @@ react-native-easy-chat-ui@^0.4.14:
   dependencies:
     moment "^2.22.2"
 
+react-native-echarts-pro@^1.8.8:
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/react-native-echarts-pro/-/react-native-echarts-pro-1.8.8.tgz#3856d60c41c43f409628e4a3a1651b72e7d9325a"
+  integrity sha512-1LMSMCBQ7vFecISi2nxHuZA1iCuJbjwc6GmvApnR08Vr8Ab4O26OVYtXwj11vhsEXequvCq/EUCHRJ++fxcX8g==
+
 react-native-error-helper@^0.2.2:
   version "0.2.2"
   resolved "https://registry.npmmirror.com/react-native-error-helper/-/react-native-error-helper-0.2.2.tgz#57971de3526ef70c3d595e0f642c133452542149"

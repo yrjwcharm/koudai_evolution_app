@@ -651,10 +651,11 @@ chart = new F2.Chart({
   appendPadding: ${JSON.stringify(appendPadding)}
 });
 chart.source(${JSON.stringify(data)}, {
-  date:{
-    tickCount:5,
-    values:${JSON.stringify(originDates)}
-  },
+  // date:{
+    // type: "cat", 
+    // tickCount:15,
+    // values:${JSON.stringify(originDates)}
+  // },
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
@@ -711,7 +712,7 @@ chart.interval()
     marginRatio: ${marginRatio}
   })
   .size(${size});
- chart.interaction('pan');
+ // chart.interaction('pan');
 chart.render();
 if (${showGuide}) {
   const offset = -5;

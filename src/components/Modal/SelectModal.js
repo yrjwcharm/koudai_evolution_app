@@ -9,6 +9,7 @@ import React, {Component} from 'react';
 import {Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Mask from '../Mask';
+import {Colors, Font} from '../../common/commonStyle';
 
 const {width} = Dimensions.get('window');
 export default class SelectModal extends Component {
@@ -17,11 +18,12 @@ export default class SelectModal extends Component {
         this.state = {
             isVisible: this.props.show || false,
             entityList: props.entityList,
+            avail: 1,
         };
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState({isVisible: nextProps.show, entityList: nextProps.entityList});
+        this.setState({isVisible: nextProps.show, avail: nextProps.avail, entityList: nextProps.entityList});
     }
 
     closeModal() {
@@ -40,9 +42,16 @@ export default class SelectModal extends Component {
         return (
             <TouchableOpacity
                 key={i}
+                disabled={this.state.avail == 0 ? true : false}
                 onPress={this.choose.bind(this, i)}
-                style={[styles.item, {borderTopWidth: i == 0 ? 0 : 0.5}]}>
-                <Text style={styles.itemText}>{item}</Text>
+                style={[
+                    styles.item,
+                    {backgroundColor: this.state.avail == 0 ? '#DDDDDD' : '#fff'},
+                    {borderTopWidth: i == 0 ? 0 : 0.5},
+                ]}>
+                <Text style={[styles.itemText, {color: this.state.avail == 0 ? Colors.white : Colors.defaultColor}]}>
+                    {item}
+                </Text>
             </TouchableOpacity>
         );
     }
@@ -114,5 +123,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: px(14),
+        fontFamily: Font.pingFangRegular,
+        color: Colors.defaultColor,
     },
 });
