@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         height: '100%',
-        zIndex: 2,
     },
     icon: {
         marginRight: px(4),

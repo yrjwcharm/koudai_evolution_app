@@ -104,6 +104,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
     };
 
     const inputConfirm = () => {
+        if(desc && desc.length < 50) return Toast.show('专题描述需大于50个字')
         goSave({desc, empty_desc: !desc, subject_id: route.params.subject_id}).then((res) => {
             inputModal.current.cancel();
             getList();
@@ -128,6 +129,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                                 }
                             });
                         },
+                        selectedUri:imgObj.current.value
                     },
                 });
                 break;

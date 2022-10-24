@@ -109,6 +109,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
+    "@babel/helper-string-parser": "^7.19.4",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.18.9",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
