@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 18:19:10
+ * @LastEditTime: 2022-10-24 19:06:09
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -109,7 +109,7 @@ const getProductTemplate = (item) => [
 ];
 
 export default function SpecialModifyProductInfo({navigation, route}) {
-    const {items, subject_id, fix_id} = route.params;
+    const {items, subject_id, fix_id, onBack} = route.params;
     const insets = useSafeAreaInsets();
     const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
@@ -131,39 +131,8 @@ export default function SpecialModifyProductInfo({navigation, route}) {
     ]);
 
     const handleBack = () => {
-        Modal.show({
-            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-            cancelText: '不保存草稿',
-            confirmText: '保存草稿',
-            confirm: true,
-            backCloseCallbackExecute: true,
-            cancelCallBack: () => {
-                navigation.goBack();
-            },
-            confirmCallBack: () => {
-                handleSaveBaseInfo().then(() => {
-                    navigation.goBack(-2);
-                });
-            },
-        });
-    };
-
-    const handleSaveBaseInfo = () => {
-        const params = {sid: subject_id, save_status: 1, rec_type: 2};
-
-        params.products = items.map((it) => ({
-            product_id: it.product.product_id,
-            product_type: it.product.product_type,
-            name: it.product.product_name,
-            desc: it.desc,
-            tags: it.tags,
-        }));
-        return saveRecommendInfo(params).then((res) => {
-            if (res.code === '000000') {
-                return Promise.resolve();
-            }
-            return Promise.reject();
-        });
+        onBack(getValue());
+        navigation.goBack();
     };
 
     const getValue = () => {
@@ -174,7 +143,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 if (row.key === ListKeys.Product) {
                     item.product = row.product;
                 } else if (row.key === ListKeys.Recommend) {
-                    item.title = row.value;
+                    item.desc = row.value;
                 } else {
                     item.tags = [...(item.tags || []), row.value.trim()];
                 }
@@ -189,7 +158,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
             Toast.show('请补充产品全部信息后再查看预览');
             return;
         }
-        if (!item.title || item.title.length === 0) {
+        if (!item.desc || item.desc.length === 0) {
             Toast.show('请补充产品全部信息后再查看预览');
             return;
         }
