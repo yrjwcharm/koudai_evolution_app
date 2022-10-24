@@ -49,7 +49,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
         {type: 'day', text: '日收益'},
         {type: 'month', text: '月收益'},
         {type: 'year', text: '年收益'},
-        {type: 'year', text: '累计收益'},
+        {type: 'all', text: '累计收益'},
     ]);
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: 'day'});
@@ -130,7 +130,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             )}
                             initialPage={0}
                             locked={true}
-                            // prerenderingSiblingsNumber={Infinity}
+                            prerenderingSiblingsNumber={Infinity}
                             onChangeTab={({i}) => {
                                 dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
                             }}>
