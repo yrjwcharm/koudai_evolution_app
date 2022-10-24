@@ -303,7 +303,7 @@ const WriteArticle = ({article, setArticle}) => {
                         placeholder="请输入正文"
                         ref={editor}
                         showsVerticalScrollIndicator={false}
-                        style={{minHeight: px(400), marginBottom: px(200)}}
+                        style={{minHeight: px(400), marginBottom: Font.textH1}}
                     />
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -542,13 +542,18 @@ const Index = ({navigation, route, setLoading}) => {
 
     return (
         <View style={styles.container}>
-            <NavBar leftIcon="chevron-left" renderRight={renderRight()} title="写文章" />
+            <NavBar
+                leftIcon="chevron-left"
+                leftPress={() => (step === 1 ? navigation.goBack() : setStep(1))}
+                renderRight={renderRight()}
+                title="写文章"
+            />
             {step === 1 ? (
                 <View style={{paddingHorizontal: Space.padding}}>
                     <Text style={[styles.desc, {marginTop: px(12)}]}>
                         <Text style={styles.bigTitle}>上传封面图</Text> （上传封面图可获得更多曝光率）
                     </Text>
-                    {cover ? (
+                    {cover?.url ? (
                         <ImageBackground source={{uri: cover.url}} style={styles.cover}>
                             <TouchableOpacity activeOpacity={0.8} onPress={() => setCover('')} style={styles.deleteImg}>
                                 <Image source={deleteImg} style={styles.deleteIcon} />

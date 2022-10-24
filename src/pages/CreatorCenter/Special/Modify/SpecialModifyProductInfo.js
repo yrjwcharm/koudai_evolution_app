@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 13:56:09
+ * @LastEditTime: 2022-10-24 19:34:23
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -60,6 +60,7 @@ function TagInput(props) {
                     value={props.value}
                     maxLength={6}
                     onChangeText={props.onChangeText}
+                    onEndEditing={() => props.onChangeText(props.value.trim())}
                     placeholder="请填写产品标签，最多6个字符"
                 />
             </View>
@@ -72,7 +73,7 @@ const getProductTemplate = (item) => [
         title: '选择推广产品',
         require: true,
         key: ListKeys.Product,
-        product: item,
+        product: item ?? null,
         value: null,
         component: SelectInput,
     },
@@ -108,7 +109,7 @@ const getProductTemplate = (item) => [
 ];
 
 export default function SpecialModifyProductInfo({navigation, route}) {
-    const {items, subject_id, fix_id} = route.params;
+    const {items = [], subject_id, fix_id, onBack} = route.params || {};
     const insets = useSafeAreaInsets();
     const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
@@ -130,39 +131,8 @@ export default function SpecialModifyProductInfo({navigation, route}) {
     ]);
 
     const handleBack = () => {
-        Modal.show({
-            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-            cancelText: '不保存草稿',
-            confirmText: '保存草稿',
-            confirm: true,
-            backCloseCallbackExecute: true,
-            cancelCallBack: () => {
-                navigation.goBack();
-            },
-            confirmCallBack: () => {
-                handleSaveBaseInfo().then(() => {
-                    navigation.goBack(-2);
-                });
-            },
-        });
-    };
-
-    const handleSaveBaseInfo = () => {
-        const params = {sid: subject_id, save_status: 1, rec_type: 2};
-
-        params.products = items.map((it) => ({
-            product_id: it.product.product_id,
-            product_type: it.product.product_type,
-            name: it.product.product_name,
-            desc: it.desc,
-            tags: it.tags,
-        }));
-        return saveRecommendInfo(params).then((res) => {
-            if (res.code === '000000') {
-                return Promise.resolve();
-            }
-            return Promise.reject();
-        });
+        onBack(getValue());
+        navigation.goBack();
     };
 
     const getValue = () => {
@@ -173,9 +143,9 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 if (row.key === ListKeys.Product) {
                     item.product = row.product;
                 } else if (row.key === ListKeys.Recommend) {
-                    item.title = row.value;
+                    item.desc = row.value;
                 } else {
-                    item.tags = [...(item.tags || []), row.value];
+                    item.tags = [...(item.tags || []), row.value.trim()];
                 }
             });
             result.push(item);
@@ -183,6 +153,28 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         return result;
     };
     const rightPress = () => {
+        const item = getValue()[0];
+        if (!item.product || !item.product.product_id) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.desc || item.desc.length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[0] || !item.tags[0].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[1] || !item.tags[1].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+        if (!item.tags[2] || !item.tags[2].length === 0) {
+            Toast.show('请补充产品全部信息后再查看预览');
+            return;
+        }
+
         jump({
             path: 'SpecialPreviewRecommend',
             params: {
@@ -258,7 +250,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 title={'产品信息填写'}
                 leftIcon="chevron-left"
                 leftPress={handleBack}
-                rightText={'保存'}
+                rightText={'查看预览'}
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
             />

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 15:42:01
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 18:46:07
+ * @LastEditTime: 2022-10-24 18:50:16
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/SpecialRecommend.js
  * @Description:  专题推荐样式
  * @Usage:  <RecommendItemWrap tabs={['推广位一', '推广位二']}><RecommendImage /><RecommendImage /></RecommendItemWrap>
@@ -39,11 +39,11 @@ export function RecommendImage(props) {
 }
 
 export function RecommendProduct(props) {
-    const {title, product, tags} = props;
+    const {desc, product, tags} = props;
     const filterdTags = tags.filter((t) => t && t.length > 0);
     return (
         <ImageBackground style={styles.itemContent_bg} source={require('~/assets/img/special/bg-product.png')}>
-            <Html style={styles.itemContent_title} html={title} numberOfLines={1} />
+            <Html style={styles.itemContent_title} html={desc} numberOfLines={1} />
             <Text style={styles.itemContent_desc}>{product?.product_name}</Text>
             <View style={styles.itemContent_tagsWrap}>
                 {(filterdTags || []).map((tag) => (

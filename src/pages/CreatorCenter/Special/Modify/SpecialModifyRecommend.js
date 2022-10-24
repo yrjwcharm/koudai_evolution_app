@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 14:23:30
+ * @LastEditTime: 2022-10-24 20:51:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -15,30 +15,31 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useJump} from '~/components/hooks';
 import Radio from '~/components/Radio.js';
 
-import {getRecommendInfo, getRecommendProductInfo} from './services';
+import {getRecommendInfo, getRecommendProductInfo, saveRecommendInfo} from './services';
 import pickerUploadImg from '~/utils/pickerUploadImg';
 import LoadingTips from '~/components/LoadingTips';
+import {Modal} from '~/components/Modal';
+import {useFocusEffect} from '@react-navigation/native';
 
 function RecommendCell(props) {
     const {type, curType, onSelect, title, children} = props;
     return (
-        <View style={styles.cellWrap}>
-            <TouchableOpacity
-                style={[styles.cellWrap_header, type === 1 ? {marginTop: 12} : {}]}
-                onPress={() => onSelect(type)}>
-                <Radio checked={curType === type} />
+        <TouchableOpacity style={styles.cellWrap} onPress={() => onSelect(type)}>
+            <View style={[styles.cellWrap_header, type === 1 ? {marginTop: 12} : {}]}>
+                <FastImage
+                    source={{
+                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                            curType === type ? 'check' : 'uncheck'
+                        }.png`,
+                    }}
+                    style={{width: px(16), height: px(16)}}
+                />
                 <Text style={styles.cellWrap_title}>{title}</Text>
-            </TouchableOpacity>
+            </View>
             {children}
-        </View>
+        </TouchableOpacity>
     );
 }
-
-const example = {
-    title: '<span style="color:#E74949">年度重磅！</span>再管基近3年<span style="color:#E74949">涨超203%</span>',
-    desc: '股债平衡组合',
-    tags: ['某某首只新发', '在管基近1年同类3%', '策略稀缺'],
-};
 
 export default function SpecialModifyRecommend({route, navigation}) {
     const jump = useJump();
@@ -48,6 +49,8 @@ export default function SpecialModifyRecommend({route, navigation}) {
     const [data, setData] = useState();
     const [index, setIndex] = useState(0);
     const items = useRef([]);
+    const oldIndex = useRef(0);
+    const tmpItems = useRef([]); // 修改之后的产品信息，可能不保存
 
     useEffect(() => {
         setLoading(true);
@@ -56,6 +59,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 if (res.code === '000000') {
                     setData(res.result);
                     setIndex(res.result.selected);
+                    oldIndex.current = res.result.selected;
                 }
             })
             .finally((_) => {
@@ -81,23 +85,67 @@ export default function SpecialModifyRecommend({route, navigation}) {
         });
     }, []);
 
-    const rightPress = () => {
-        if (index === 0) return;
-        if (index === 1) {
+    const toNextBtn = (type, withOld) => {
+        if (type === 0) return;
+        if (type === 1) {
             handlePickAlumn();
         } else {
             jump({
                 path: 'SpecialModifyProductInfo',
                 params: {
+                    onBack: (its) => {
+                        tmpItems.current = its;
+                    },
                     ...(route?.params ?? {}),
                     type: 2,
-                    items,
+                    items: !withOld ? [] : items,
                 },
             });
         }
     };
+
+    const rightPress = () => {
+        const isChanged = oldIndex.current !== index;
+
+        if (isChanged) {
+            Modal.show({
+                content: '更换样式后，需要重新编辑推广信息，确定更换么？',
+                cancelText: '不更换',
+                confirmText: '确认更换',
+                confirm: true,
+                backCloseCallbackExecute: true,
+                cancelCallBack: () => {
+                    setIndex(oldIndex.current);
+                    toNextBtn(oldIndex.current, true);
+                },
+                confirmCallBack: () => {
+                    toNextBtn(false);
+                },
+            });
+        } else {
+            toNextBtn(index, true);
+        }
+    };
     const handleBack = () => {
-        navigation.goBack();
+        if (!tmpItems.current) {
+            navigation.goBack();
+        }
+
+        Modal.show({
+            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+            cancelText: '不保存草稿',
+            confirmText: '保存草稿',
+            confirm: true,
+            backCloseCallbackExecute: true,
+            cancelCallBack: () => {
+                navigation.goBack();
+            },
+            confirmCallBack: () => {
+                handleSaveBaseInfo().then(() => {
+                    navigation.goBack();
+                });
+            },
+        });
     };
 
     const handlePickAlumn = () => {
@@ -117,8 +165,28 @@ export default function SpecialModifyRecommend({route, navigation}) {
     };
 
     const handleSelect = (type) => {
-        // TODO: tip
         setIndex(type);
+    };
+
+    const handleSaveBaseInfo = () => {
+        const params = {sid: subject_id, save_status: 1, rec_type: 2};
+        console.log('tmpItems.current:', tmpItems.current);
+
+        params.products = JSON.stringify(
+            tmpItems.current.map((it) => ({
+                product_id: it.product?.product_id ?? '',
+                product_type: it.product?.product_type ?? '',
+                name: it.product?.product_name ?? '',
+                desc: it.desc,
+                tags: it.tags,
+            }))
+        );
+        return saveRecommendInfo(params).then((res) => {
+            if (res.code === '000000') {
+                return Promise.resolve();
+            }
+            return Promise.reject();
+        });
     };
 
     if (loading || !data) {

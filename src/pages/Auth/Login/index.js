@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-09 16:44:29
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-24 14:09:26
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -104,6 +104,11 @@ class Login extends Component {
                                 pass: true,
                                 fr: this.props.route.params?.fr || '',
                             });
+                        } else if (res.result.app_tag_url) {
+                            const {path, params: _params = {}} = res.result.app_tag_url;
+                            const {fr = ''} = this.props.route.params || {};
+                            _params.popNum = fr === 'login' || fr === 'register' ? 2 : 1;
+                            this.props.navigation.replace(path, _params);
                         } else if (
                             this.props.route?.params?.fr == 'register' ||
                             this.props.route?.params?.fr == 'login'

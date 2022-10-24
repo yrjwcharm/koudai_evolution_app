@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {isIphoneX, px as text, px} from '../../../utils/appUtil';
+import {deviceWidth, isIphoneX, px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {compareDate, delMille} from '../../../utils/appUtil';
 import RenderList from './components/RenderList';
@@ -16,6 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
+import RNEChartsPro from 'react-native-echarts-pro';
 const DayProfit = React.memo(() => {
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
@@ -122,32 +123,28 @@ const DayProfit = React.memo(() => {
                     let latestDate = profit_data_list[index]?.unit_key;
                     let startDate = dayjs(latestDate).add(diff, 'month').add(-15, 'day').format('YYYY-MM-DD');
                     let endDate = dayjs(latestDate).add(diff, 'month').add(15, 'day').format('YYYY-MM-DD');
-                    let chartData = arr
-                        .filter((el) => el.day >= startDate && el.day <= endDate)
-                        .map((el) => {
-                            return {
-                                date: el.day,
-                                value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
-                            };
-                        });
-                    // let afterArr = arr
+                    // let chartData = arr
                     //     .filter((el) => el.day >= startDate && el.day <= endDate)
                     //     .map((el) => {
                     //         return {
                     //             date: el.day,
-                    //             // value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
+                    //             value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
                     //         };
                     //     });
-                    //
+                    let chartData = arr
+                        .filter((el) => el.day >= startDate && el.day <= endDate)
+                        .map((el) => (!Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0));
+                    let afterArr = arr.filter((el) => el.day >= startDate && el.day <= endDate).map((el) => el?.day);
+
                     let barCharData = profit_data_list
                         .map((el) => el.unit_key)
                         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
                     setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        originDates: barCharData,
+                        // label: [
+                        //     {name: '时间', val: profit_data_list[index]?.unit_key},
+                        //     {name: '收益', val: profit_data_list[index]?.value},
+                        // ],
+                        originDates: afterArr,
                         chart: chartData,
                     });
                 }
@@ -209,9 +206,14 @@ const DayProfit = React.memo(() => {
                 const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                 return (
                     <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
-                        <View style={[styles.dateItem, wrapStyle, {...el?.style}]}>
-                            <Text style={[styles.day, dayStyle]}>{date}</Text>
-                            {el?.profit && <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>}
+                        <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
+                            <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
+                            {el.day !== currentDay && el?.profit && (
+                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                            )}
+                            {el.day == currentDay && (el?.profit > 0 || el?.profit < 0) && (
+                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                            )}
                         </View>
                     </TouchableOpacity>
                 );
@@ -241,7 +243,131 @@ const DayProfit = React.memo(() => {
                             <View style={styles.dateWrap}>{renderCalendar}</View>
                         </View>
                     )}
-                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    {isBarChart && (
+                        <View style={{position: 'relative', right: px(32)}}>
+                            <RNEChartsPro
+                                width={deviceWidth}
+                                height={px(220)}
+                                option={{
+                                    dataZoom: [
+                                        {
+                                            type: 'inside', // 内置于坐标系中
+                                            start: 0,
+                                            end: 100,
+                                            endValue: 30, //x轴少于31个数据，则显示全部，超过31个数据则显示前31个。
+                                            // startValue: 0, // 从头开始。
+                                            // endValue: 30, // 最多六个
+                                            xAxisIndex: [0],
+                                            // start: 94,
+                                            // end: 100,
+                                            // handleSize: 8,
+
+                                            zoomOnMouseWheel: false, // 关闭滚轮缩放
+                                            moveOnMouseWheel: false, // 开启滚轮平移
+                                            moveOnMouseMove: true, // 鼠标移动能触发数据窗口平移
+                                        },
+                                    ],
+                                    // title: {
+                                    //     text: '产品一周销量情况',
+                                    // },
+                                    tooltip: {
+                                        formatter: '{b}<br>{a}：{c}',
+                                        // formatter:'{c}%'
+                                    },
+                                    toolbox: {
+                                        show: false,
+                                    },
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            nameLocation: 'middle',
+                                            nameGap: 0,
+
+                                            data: chartData.originDates,
+                                            axisLabel: {
+                                                interval: chartData.originDates.length - 2,
+                                                // rotate: 0,
+                                                textStyle: {
+                                                    color: Colors.lightGrayColor, //坐标值得具体的颜色
+                                                    fontSize: px(9),
+                                                    fontFamily: Font.numMedium,
+                                                    fontWeight: 500,
+                                                },
+                                            },
+
+                                            // axisTick: {
+                                            //     length: 6,
+                                            //     lineStyle: {
+                                            //         type: 'dashed',
+                                            //         // ...
+                                            //     },
+                                            // },
+                                            axisTick: {
+                                                show: false,
+                                            },
+                                            axisLine: {
+                                                lineStyle: {
+                                                    color: '#BDC2CC',
+                                                    width: 1, //这里是为了突出显示加上的
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    yAxis: [
+                                        {
+                                            type: 'value',
+                                            show: true,
+                                            axisLine: {
+                                                show: false, // 不显示坐标轴刻度线
+                                            },
+                                            axisTick: {
+                                                //y轴刻度线
+                                                show: false,
+                                            },
+                                            max: 90,
+                                            min: -90,
+                                            splitLine: {
+                                                show: true,
+                                                lineStyle: {
+                                                    color: ['#E9EAEF'],
+                                                    width: 1,
+                                                    type: 'solid',
+                                                },
+                                            },
+                                            axisLabel: {
+                                                show: false, // 不显示坐标轴上的文字
+                                            },
+                                        },
+                                    ],
+                                    series: [
+                                        {
+                                            name: 'Evaporation',
+                                            type: 'bar',
+                                            barWidth: '40%',
+                                            barCategoryGap: '50%',
+                                            // label: {
+                                            //     show: true,
+                                            //     position: 'top',
+                                            // },
+                                            itemStyle: {
+                                                normal: {
+                                                    color: function (params) {
+                                                        //根据数值大小设置相关颜色
+                                                        if (params.value > 0) {
+                                                            return 'red';
+                                                        } else {
+                                                            return 'green';
+                                                        }
+                                                    },
+                                                },
+                                            },
+                                            data: chartData.chart,
+                                        },
+                                    ],
+                                }}
+                            />
+                        </View>
+                    )}
                     <RenderList curDate={selCurDate} />
                 </View>
             ) : (
@@ -269,6 +395,8 @@ const styles = StyleSheet.create({
     dateItem: {
         width: Dimensions.get('window').width / 8.5,
         height: px(44),
+        // justifyContent: 'center',
+        // alignItems: 'center',
         marginBottom: px(2),
         ...Style.flexCenter,
         borderRadius: px(4),

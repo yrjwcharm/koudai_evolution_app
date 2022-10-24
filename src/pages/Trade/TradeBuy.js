@@ -299,7 +299,7 @@ class TradeBuy extends Component {
                 cycle: currentDate[0],
                 timing: currentDate[1],
                 need_buy: this.need_buy,
-                append: this.props.route?.params?.append || ''
+                append: this.props.route?.params?.append || '',
             }).then((res) => {
                 Toast.hide(toast);
                 global.LogTool('DetailFixed_TradeBuy_BabyRecharge_Condition', +this.state.autoChargeStatus);
@@ -1335,9 +1335,9 @@ function WithHooks(props) {
                         setModal('');
                         if (anti_pop.confirm_action?.url) {
                             if (!anti_pop.confirm_action.url.params) {
-                                anti_pop.confirm_action.url.params = {}
+                                anti_pop.confirm_action.url.params = {};
                             }
-                            anti_pop.confirm_action.url.params.append = props.route?.params?.append || ''
+                            anti_pop.confirm_action.url.params.append = props.route?.params?.append || '';
                         }
                         jump(anti_pop.confirm_action?.url);
                     },

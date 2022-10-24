@@ -269,11 +269,12 @@ const CommunityHome = ({navigation, route}) => {
             <PublishContent
                 community_id={community_id}
                 muid={muid}
-                onPress={(type) => {
-                    chooseModal?.current?.show(type, product);
+                handleClick={(type) => {
+                    setTimeout(() => {
+                        chooseModal?.current?.show(type, product);
+                    }, 100);
                 }}
             />
-            <PublishContent community_id={community_id} muid={muid} />
 
             <Modalize ref={bottomModal} modalHeight={px(280)}>
                 <View style={{alignItems: 'center', marginTop: px(64), marginBottom: px(14)}}>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 16:50:16
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-24 20:20:41
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -27,17 +27,19 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
             () => {
                 setFavor((_favor) => {
                     if (_favor) {
-                        followCancel({item_id: data.code_id || data.plan_id, item_type: data.item_type || 1}).then(
-                            (res) => {
-                                res.message && Toast.show(res.message);
-                            }
-                        );
+                        followCancel({
+                            item_id: data.code_id || data.plan_id || data.id,
+                            item_type: data.item_type || 1,
+                        }).then((res) => {
+                            res.message && Toast.show(res.message);
+                        });
                     } else {
-                        followAdd({item_id: data.code_id || data.plan_id, item_type: data.item_type || 1}).then(
-                            (res) => {
-                                res.message && Toast.show(res.message);
-                            }
-                        );
+                        followAdd({
+                            item_id: data.code_id || data.plan_id || data.id,
+                            item_type: data.item_type || 1,
+                        }).then((res) => {
+                            res.message && Toast.show(res.message);
+                        });
                     }
                     return !_favor;
                 });
@@ -48,7 +50,86 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
         []
     );
 
-    return type != 'content' ? (
+    // 内容
+    if (type === 'content') {
+        return (
+            <TouchableOpacity style={styles.con} onPress={() => jump(data.url)} activeOpacity={0.9}>
+                <RenderHtml html={data?.title} style={styles.title} />
+                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                    <View style={Style.flexRow}>
+                        {data?.tag_list?.map((text, index) => {
+                            return (
+                                <View key={index} style={styles.tagBox}>
+                                    <Text style={{fontSize: px(12), color: Colors.btnColor}}>{text}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                    <Text style={styles.rateDesc}>{data?.published_at}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+    if (type === 'subject') {
+        return (
+            <TouchableOpacity
+                style={[styles.con, Style.flexBetween]}
+                onPress={() => jump(data.url)}
+                activeOpacity={0.9}>
+                <View style={{maxWidth: '60%'}}>
+                    <Text html={data?.name} style={styles.title} numberOfLines={1}>
+                        {data?.title}
+                    </Text>
+                    <Text style={styles.rateDesc}>{data?.desc}</Text>
+                </View>
+                <View style={Style.flexRow}>
+                    {selections ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                let newVal = [...selections];
+
+                                let i = newVal.findIndex((v) => genKey(v) === genKey(data?.product_info));
+
+                                i > -1 ? newVal.splice(i, 1) : newVal.unshift(data?.product_info);
+
+                                handlerSelections(newVal);
+                            }}>
+                            <FastImage
+                                source={{
+                                    uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                        selections.find((item) => genKey(item) === genKey(data?.product_info))
+                                            ? 'check'
+                                            : 'uncheck'
+                                    }.png`,
+                                }}
+                                style={{width: px(16), height: px(16)}}
+                            />
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            style={[
+                                styles.pkBtn,
+                                Style.flexCenter,
+                                {borderColor: favor ? '#BDC2CC' : Colors.brandColor},
+                            ]}
+                            onPress={onFavor}
+                            activeOpacity={0.8}>
+                            <Text
+                                style={[
+                                    {fontSize: Font.textH3, lineHeight: px(17)},
+                                    {color: favor ? '#BDC2CC' : Colors.brandColor},
+                                ]}>
+                                {favor ? '已自选' : '+自选'}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    return (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
             <View style={{maxWidth: '60%'}}>
                 <View style={Style.flexRow}>
@@ -98,23 +179,6 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                         </Text>
                     </TouchableOpacity>
                 )}
-            </View>
-        </TouchableOpacity>
-    ) : (
-        // 内容
-        <TouchableOpacity style={styles.con} onPress={() => jump(data.url)} activeOpacity={0.9}>
-            <RenderHtml html={data?.title} style={styles.title} />
-            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                <View style={Style.flexRow}>
-                    {data?.tag_list?.map((text, index) => {
-                        return (
-                            <View key={index} style={styles.tagBox}>
-                                <Text style={{fontSize: px(12), color: Colors.btnColor}}>{text}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-                <Text style={styles.rateDesc}>{data?.published_at}</Text>
             </View>
         </TouchableOpacity>
     );

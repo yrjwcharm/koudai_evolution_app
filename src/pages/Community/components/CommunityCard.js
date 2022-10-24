@@ -2,14 +2,14 @@
  * @Date: 2022-10-09 14:51:26
  * @Description: 社区卡片
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import collect from '~/assets/img/icon/collect.png';
 import collectActive from '~/assets/img/icon/collectActive.png';
 import comment from '~/assets/img/icon/comment.png';
@@ -32,7 +32,7 @@ export const CommunityCardCover = ({
     attention_num,
     attention_user,
     cover, // 封面
-    cover_aspect_ratio,
+    cover_aspect_ratio, // 封面宽高比
     left_desc, // 直播状态或预约人数
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
     media_duration, // 媒体时长
@@ -48,6 +48,10 @@ export const CommunityCardCover = ({
         2: Colors.red,
         3: Colors.brandColor,
     });
+
+    useEffect(() => {
+        console.log(cover_aspect_ratio, coverWidth);
+    }, []);
 
     return (
         <View style={[Style.flexCenter, styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
@@ -85,7 +89,7 @@ export const CommunityCardCover = ({
                             {type === 2 ? (
                                 <Feather color="#fff" name="headphones" size={px(8)} />
                             ) : (
-                                <FontAwesome5 color="#fff" name="play" size={px(5)} />
+                                <FontAwesome color="#fff" name="play" size={px(5)} />
                             )}
                         </View>
                     ) : null}
@@ -128,6 +132,7 @@ export const CommunityFollowCard = ({
     comment_info, //评论
     comment_num, // 评论数
     cover, // 封面
+    cover_aspect_ratio, // 封面宽高比
     desc, // 文章内容摘要
     favor_num, // 点赞数
     favor_status, // 点赞状态 0 未点赞 1 已点赞
@@ -260,6 +265,7 @@ export const CommunityFollowCard = ({
                     {cover ? (
                         <CommunityCardCover
                             cover={cover}
+                            cover_aspect_ratio={cover_aspect_ratio}
                             live_status={live_status}
                             left_desc={leftDesc}
                             right_desc={right_desc}
@@ -272,7 +278,7 @@ export const CommunityFollowCard = ({
                             type_str={type_str}
                             width={
                                 isRecommend
-                                    ? deviceWidth - 3 * px(5)
+                                    ? (deviceWidth - 3 * px(5)) / 2
                                     : play_mode === 2
                                     ? deviceWidth - 2 * Space.padding - 2 * px(12)
                                     : px(180)

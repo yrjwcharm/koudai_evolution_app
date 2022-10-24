@@ -148,7 +148,7 @@ const Index = ({navigation, route}) => {
                             <Text>上一步</Text>
                         </TouchableOpacity>
                     </View>
-                    <ScrollView>
+                    <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                         <Text style={[styles.title, {fontSize: px(22)}]}>{data[current]?.tag_name}</Text>
                         <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
                         {data[current]?.sub_list?.map((item, index) => (

@@ -118,7 +118,7 @@ const BarChartComponent = React.memo(({chartData}) => {
                                         profitMode: true,
                                         percent: false,
                                         yAxis: true,
-                                        originDates: chartData.originDates ?? [],
+                                        originDates: chartData.originDates,
                                     })}
                                     data={chartData.chart}
                                     onChange={onChartChange}

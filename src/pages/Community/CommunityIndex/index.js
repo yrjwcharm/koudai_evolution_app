@@ -32,6 +32,7 @@ import {
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce, groupBy} from 'lodash';
+import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
@@ -367,8 +368,9 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
             });
     };
 
-    const scrollTo = (value) => {
-        waterfallFlow.current?.scrollToOffset({animated: true, offset: value});
+    const scrollTop = () => {
+        // alert('1');
+        // waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
     };
 
     const refresh = () => {
@@ -411,27 +413,29 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
         ) : null;
     };
 
-    useImperativeHandle(ref, () => ({refresh, scrollTo, waterfallFlow}));
+    useImperativeHandle(ref, () => ({refresh, scrollTop}));
 
     useEffect(() => {
         init();
     }, [page]);
     return data?.length > 0 ? (
-        <WaterfallFlow
-            data={data}
-            initialNumToRender={20}
-            keyExtractor={(item, index) => item.title + item.id + index}
-            ListFooterComponent={renderFooter}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.99}
-            onRefresh={() => (page > 1 ? setPage(1) : init())}
-            ref={waterfallFlow}
-            refreshing={refreshing}
-            renderItem={renderItem}
-            scrollIndicatorInsets={{right: 1}}
-            scrollEventThrottle={1}
-            {...rest}
-        />
+        <LinearGradient colors={['#fff', Colors.bgColor]} style={{flex: 1}}>
+            <WaterfallFlow
+                data={data}
+                initialNumToRender={20}
+                keyExtractor={(item, index) => item.title + item.id + index}
+                ListFooterComponent={renderFooter}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.99}
+                onRefresh={() => (page > 1 ? setPage(1) : init())}
+                ref={waterfallFlow}
+                refreshing={refreshing}
+                renderItem={renderItem}
+                scrollIndicatorInsets={{right: 1}}
+                scrollEventThrottle={1}
+                {...rest}
+            />
+        </LinearGradient>
     ) : null;
 });
 
@@ -506,12 +510,11 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0, muid = 0, onPress}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleClick}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
     const bottomModal = useRef();
-
     const init = () => {
         getCanPublishContent({community_id, muid}).then((res) => {
             if (res.code === '000000') {
@@ -551,9 +554,9 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, onPress},
                                     onPress={() => {
                                         bottomModal.current.hide();
                                         if (type == 'addArticle') {
-                                            onPress('article');
+                                            handleClick('article');
                                         } else if (type == 'addProduct') {
-                                            onPress('fund');
+                                            handleClick('fund');
                                         } else {
                                             jump(url);
                                         }
@@ -582,6 +585,7 @@ const Index = ({navigation, setLoading}) => {
     const followRef = useRef();
     const recommendRef = useRef();
     const publishRef = useRef();
+    const firstIn = useRef(true);
 
     const init = () => {
         getPageData()
@@ -616,14 +620,15 @@ const Index = ({navigation, setLoading}) => {
         }, [])
     );
 
-    // useEffect(() => {
-    //     if (Object.keys(data).length > 0) {
-    //         const page = data.tabs?.findIndex((tab) => tab.is_selected);
-    //         setTimeout(() => {
-    //             setActive(page);
-    //         }, 300);
-    //     }
-    // }, [data]);
+    useEffect(() => {
+        if (Object.keys(data).length > 0 && firstIn.current) {
+            const page = data.tabs?.findIndex((tab) => tab.is_selected);
+            setTimeout(() => {
+                firstIn.current = false;
+                setActive(page);
+            }, 300);
+        }
+    }, [data]);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
@@ -800,7 +805,7 @@ const styles = StyleSheet.create({
     addContent: {
         position: 'absolute',
         right: px(5),
-        bottom: px(120),
+        bottom: px(77),
     },
     addIcon: {
         width: px(60),

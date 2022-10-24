@@ -54,19 +54,16 @@ const FixedInvestDetail = ({navigation, route}) => {
             } = res.result || {};
             navigation.setOptions({
                 title,
-                headerRight: () =>
-                    avail && (
-                        <>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.topRightBtn, Style.flexCenter]}
-                                onPress={() => {
-                                    setVisible(true);
-                                }}>
-                                <Text style={styles.title}>{text}</Text>
-                            </TouchableOpacity>
-                        </>
-                    ),
+                headerRight: () => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.topRightBtn, Style.flexCenter]}
+                        onPress={() => {
+                            setVisible(true);
+                        }}>
+                        <Text style={styles.title}>{text}</Text>
+                    </TouchableOpacity>
+                ),
             });
             let selectArr = btn_list.map((el) => el.text);
             setSelectData(selectArr.slice(0, -1));
@@ -291,6 +288,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 });
                             }
                         }}
+                        avail={avail}
                         closeModal={() => setVisible(false)}
                         entityList={selectData}
                         show={visible}

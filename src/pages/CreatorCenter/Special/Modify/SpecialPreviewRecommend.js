@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 13:55:29
+ * @LastEditTime: 2022-10-24 18:50:40
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -42,7 +42,7 @@ export default function SpecialPreviewRecommend(props) {
                     product_id: it.product?.product_id || '',
                     product_type: it.product?.product_type || '',
                     name: it.product?.product_name || '',
-                    desc: it.title || '',
+                    desc: it.desc || '',
                     tags: it.tags || [],
                 }))
             );
@@ -63,7 +63,7 @@ export default function SpecialPreviewRecommend(props) {
         props.navigation.goBack();
     };
     const renderRecommandCards = () => {
-        let filterdItems = items.filter((it) => it.product && it.product.product_id && it.title && it.tags?.length > 0);
+        let filterdItems = items.filter((it) => it.product && it.product.product_id && it.desc && it.tags?.length > 0);
         let filterTabs = tabs.slice(0, filterdItems.length);
         return (
             <View style={styles.cellWrap}>
@@ -78,7 +78,7 @@ export default function SpecialPreviewRecommend(props) {
     return (
         <SafeAreaView edges={['bottom']}>
             <NavBar
-                title={'修改专题基础信息'}
+                title={'样式预览'}
                 leftIcon="chevron-left"
                 rightText={'保存'}
                 rightPress={handleSaveBaseInfo}

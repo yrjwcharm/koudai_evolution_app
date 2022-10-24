@@ -107,6 +107,7 @@ const Questionnaire = () => {
             questionnaire_cate: questionnaireRef.current,
             latency: endTimeRef.current - startTimeRef.current,
             fr,
+            append,
         };
         http.post('/questionnaire/report/20210101', params).then((res) => {
             if (res.code === '000000') {

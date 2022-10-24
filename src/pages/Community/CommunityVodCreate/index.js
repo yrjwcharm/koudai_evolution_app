@@ -2,16 +2,18 @@
  * @Date: 2022-10-13 17:56:52
  * @Description: 发布视频
  */
-import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Modalize} from 'react-native-modalize';
+import Slider from 'react-native-slider';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Video from 'react-native-video';
 import deleteVideo from '~/assets/img/icon/delete.png';
 import uploadImg from '~/assets/img/icon/upload.png';
+import videoPlay from '~/assets/img/icon/videoPlay.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {Button} from '~/components/Button';
 import {useJump} from '~/components/hooks';
@@ -19,9 +21,10 @@ import NavBar from '~/components/NavBar';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {deviceHeight, isIphoneX, px, resolveTimeStemp} from '~/utils/appUtil';
+import {deviceHeight, formatMediaTime, isIphoneX, px, resolveTimeStemp} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {getSearchList, publishVideo} from './services';
+import {debounce} from 'lodash';
 
 /**
  * @name 搜索选择标签、产品和作品
@@ -282,6 +285,8 @@ const Index = ({setLoading}) => {
     const [video, setVideo] = useState();
     const [paused, setPaused] = useState(true);
     const [showDuration, setShowDuration] = useState(true);
+    const [sliderVal, setSliderVal] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
     const videoRef = useRef();
 
     const finished = useMemo(() => {
@@ -296,11 +301,11 @@ const Index = ({setLoading}) => {
                 if (file.fileSize > 100 * 1024 * 1024) {
                     Toast.show('视频大小不能超过100M');
                 } else {
-                    const duration = resolveTimeStemp(file.duration * 1000)
+                    const durationText = resolveTimeStemp(file.duration * 1000)
                         .slice(-2)
                         .join(':');
-                    upload({...file, fileType: 'vod'}).then((res) => {
-                        res && setVideo({duration, ...res});
+                    upload({...file, fileName: file.fileName || file.uri, fileType: 'vod'}).then((res) => {
+                        res && setVideo({duration: file.duration, durationText, ...res});
                     });
                 }
             }
@@ -321,6 +326,24 @@ const Index = ({setLoading}) => {
             );
         else return null;
     };
+
+    const onPause = () => {
+        setShowDuration(false);
+        setPaused((prev) => !prev);
+    };
+
+    const onProgress = (e) => {
+        const {currentTime: time} = e;
+        setCurrentTime(time);
+        setSliderVal(time);
+    };
+
+    const onSlidingComplete = useCallback(
+        debounce((value) => {
+            videoRef.current.seek(value);
+        }, 100),
+        []
+    );
 
     const onPublish = () => {
         const loading = Toast.showLoading('提交审核中...');
@@ -350,16 +373,12 @@ const Index = ({setLoading}) => {
                 style={{flex: 1, paddingHorizontal: Space.padding}}>
                 {video?.url ? (
                     <>
-                        <View>
-                            <TouchableWithoutFeedback
-                                onPress={() => {
-                                    setShowDuration(false);
-                                    setPaused((prev) => !prev);
-                                }}>
+                        <View style={styles.video}>
+                            <TouchableWithoutFeedback onPress={onPause}>
                                 <Video
                                     allowsExternalPlayback={false}
-                                    controls
                                     muted={false}
+                                    onProgress={onProgress}
                                     paused={paused}
                                     playInBackground
                                     playWhenInactive
@@ -368,19 +387,55 @@ const Index = ({setLoading}) => {
                                     ref={videoRef}
                                     resizeMode="contain"
                                     source={{uri: video.url}}
-                                    style={styles.video}
+                                    style={{width: '100%', height: '100%'}}
                                     volume={1}
                                 />
                             </TouchableWithoutFeedback>
+                            {showDuration && video.cover ? (
+                                <TouchableWithoutFeedback onPress={onPause}>
+                                    <Image resizeMode="contain" source={{uri: video.cover}} style={styles.cover} />
+                                </TouchableWithoutFeedback>
+                            ) : null}
+                            {paused && (
+                                <TouchableWithoutFeedback onPress={onPause}>
+                                    <Image source={videoPlay} style={styles.playBtn} />
+                                </TouchableWithoutFeedback>
+                            )}
                             <TouchableOpacity activeOpacity={0.8} onPress={() => setVideo()} style={styles.deleteVideo}>
                                 <Image source={deleteVideo} style={styles.deleteIcon} />
                             </TouchableOpacity>
-                            {showDuration && (
+                            {showDuration ? (
                                 <View style={[Style.flexRow, styles.durationBox]}>
-                                    <FontAwesome5 color="#fff" name="play" size={px(5)} style={{marginRight: px(4)}} />
+                                    <FontAwesome color="#fff" name="play" size={px(6)} style={{marginRight: px(4)}} />
                                     <Text style={[styles.numDesc, {fontFamily: Font.numRegular}]}>
-                                        {video.duration}
+                                        {video.durationText}
                                     </Text>
+                                </View>
+                            ) : (
+                                <View style={[Style.flexRow, styles.bottomOpsBox]}>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={onPause}>
+                                        <AntDesign color="#fff" name={paused ? 'caretright' : 'pause'} size={px(20)} />
+                                    </TouchableOpacity>
+                                    <View style={[Style.flexRow, styles.sliderBox]}>
+                                        <Text style={styles.timeText}>{formatMediaTime(currentTime)}</Text>
+                                        <Slider
+                                            animationConfig={{useNativeDriver: false}}
+                                            animateTransitions={true}
+                                            maximumTrackTintColor="#5b5b5b"
+                                            maximumValue={video.duration}
+                                            minimumTrackTintColor="#fff"
+                                            onSlidingComplete={onSlidingComplete}
+                                            step={1}
+                                            style={styles.slider}
+                                            thumbStyle={{
+                                                width: px(8),
+                                                height: px(8),
+                                            }}
+                                            thumbTintColor="#fff"
+                                            value={sliderVal}
+                                        />
+                                        <Text style={styles.timeText}>{formatMediaTime(video.duration)}</Text>
+                                    </View>
                                 </View>
                             )}
                         </View>
@@ -470,15 +525,54 @@ const styles = StyleSheet.create({
         width: '100%',
         height: px(194),
         overflow: 'hidden',
+        backgroundColor: '#000',
+    },
+    cover: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1,
     },
     playBtn: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
         width: px(48),
         height: px(48),
+        transform: [{translateX: -px(24)}, {translateY: -px(24)}],
+        zIndex: 1,
+    },
+    bottomOpsBox: {
+        paddingVertical: px(6),
+        paddingHorizontal: px(2),
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+    },
+    timeText: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: '#fff',
+        fontFamily: Font.numMedium,
+    },
+    sliderBox: {
+        paddingHorizontal: px(4),
+        flex: 1,
+    },
+    slider: {
+        marginHorizontal: px(4),
+        flex: 1,
+        height: px(3),
     },
     deleteVideo: {
         position: 'absolute',
         top: px(8),
         right: px(8),
+        zIndex: 2,
     },
     deleteIcon: {
         width: px(14),

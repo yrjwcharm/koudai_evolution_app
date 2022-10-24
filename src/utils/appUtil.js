@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yanruifeng
- * @LastEditTime: 2022-10-13 14:18:52
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-24 17:08:04
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -431,6 +431,14 @@ const compareVersion = (v1, v2) => {
         return 1;
     }
 };
+/** @name 格式化媒体时间 */
+const formatMediaTime = (time) => {
+    let minute = Math.floor(time / 60);
+    let second = parseInt(time - minute * 60, 10);
+    minute = minute >= 10 ? minute : '0' + minute;
+    second = second >= 10 ? second : '0' + second;
+    return minute + ':' + second;
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -466,4 +474,5 @@ export {
     countdownTool,
     arrDelete,
     compareVersion,
+    formatMediaTime,
 };

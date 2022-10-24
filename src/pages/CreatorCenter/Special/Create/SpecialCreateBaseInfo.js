@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 11:19:45
+ * @LastEditTime: 2022-10-24 17:28:49
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -63,6 +63,7 @@ function TagWrap(props) {
     const [text, setText] = useState('');
     const [index, setIndex] = useState(-1);
     const bottomModal = useRef(null);
+    const inputRef = useRef(null);
 
     const handleTagChange = (i) => {
         console.log('handleTagChange:', i);
@@ -73,6 +74,9 @@ function TagWrap(props) {
             setText(tags[i]);
         }
         bottomModal.current?.show();
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 200);
     };
     const handelTagDel = (i) => {
         setTags(tags.filter((t, idx) => idx != i));
@@ -103,7 +107,9 @@ function TagWrap(props) {
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
-                <Text style={styles.tip}>专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字</Text>
+                <Text style={styles.tip} numberOfLines={0}>
+                    专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字过6个字
+                </Text>
             </View>
             <BottomModal
                 ref={bottomModal}
@@ -113,6 +119,7 @@ function TagWrap(props) {
                 onDone={handleTagEdit}>
                 <View style={styles.tagItem_inputWrap}>
                     <TextInput
+                        ref={inputRef}
                         style={styles.tagItem_input}
                         multiline={false}
                         placeholder="请填写标签内容，最多6个字符"
@@ -438,6 +445,8 @@ const styles = StyleSheet.create({
     tip_icon: {
         height: 12,
         width: 12,
+        alignSelf: 'flex-start',
+        marginTop: px(2),
     },
     tip: {
         marginLeft: 4,
