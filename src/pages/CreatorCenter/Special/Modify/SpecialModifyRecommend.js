@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 19:13:52
+ * @LastEditTime: 2022-10-24 20:51:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -24,15 +24,20 @@ import {useFocusEffect} from '@react-navigation/native';
 function RecommendCell(props) {
     const {type, curType, onSelect, title, children} = props;
     return (
-        <View style={styles.cellWrap}>
-            <TouchableOpacity
-                style={[styles.cellWrap_header, type === 1 ? {marginTop: 12} : {}]}
-                onPress={() => onSelect(type)}>
-                <Radio checked={curType === type} />
+        <TouchableOpacity style={styles.cellWrap} onPress={() => onSelect(type)}>
+            <View style={[styles.cellWrap_header, type === 1 ? {marginTop: 12} : {}]}>
+                <FastImage
+                    source={{
+                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                            curType === type ? 'check' : 'uncheck'
+                        }.png`,
+                    }}
+                    style={{width: px(16), height: px(16)}}
+                />
                 <Text style={styles.cellWrap_title}>{title}</Text>
-            </TouchableOpacity>
+            </View>
             {children}
-        </View>
+        </TouchableOpacity>
     );
 }
 
