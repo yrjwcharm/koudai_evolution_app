@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 19:06:09
+ * @LastEditTime: 2022-10-24 19:34:23
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -109,7 +109,7 @@ const getProductTemplate = (item) => [
 ];
 
 export default function SpecialModifyProductInfo({navigation, route}) {
-    const {items, subject_id, fix_id, onBack} = route.params;
+    const {items = [], subject_id, fix_id, onBack} = route.params || {};
     const insets = useSafeAreaInsets();
     const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
