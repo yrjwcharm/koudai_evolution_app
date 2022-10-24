@@ -401,14 +401,14 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                     </View>
                 )}
                 {type === 'default' && button?.text ? (
-                    <View style={[Style.flexCenter, {marginTop: px(12)}]}>
+                    <View style={[Style.flexRowCenter, {marginTop: px(12)}]}>
                         <TouchableOpacity
                             activeOpacity={0.8}
                             disabled={button.avail === 0}
                             onPress={() => jump(button.url)}
                             style={[
                                 Style.flexCenter,
-                                styles.primaryBtn,
+                                styles.defaultBtn,
                                 {backgroundColor: button.avail === 0 ? '#E9EAEF' : Colors.brandColor},
                             ]}>
                             <Text style={[styles.btnText, {color: button.avail === 0 ? '#BDC2CC' : '#fff'}]}>
@@ -575,6 +575,11 @@ const styles = StyleSheet.create({
         flex: 1,
         height: px(38),
         backgroundColor: '#FF7D41',
+    },
+    defaultBtn: {
+        paddingHorizontal: px(36),
+        borderRadius: Space.borderRadius,
+        height: px(38),
     },
     btnText: {
         fontSize: px(13),

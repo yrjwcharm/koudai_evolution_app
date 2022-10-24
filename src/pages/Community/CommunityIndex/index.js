@@ -585,6 +585,7 @@ const Index = ({navigation, setLoading}) => {
     const followRef = useRef();
     const recommendRef = useRef();
     const publishRef = useRef();
+    const firstIn = useRef(true);
 
     const init = () => {
         getPageData()
@@ -619,14 +620,15 @@ const Index = ({navigation, setLoading}) => {
         }, [])
     );
 
-    // useEffect(() => {
-    //     if (Object.keys(data).length > 0) {
-    //         const page = data.tabs?.findIndex((tab) => tab.is_selected);
-    //         setTimeout(() => {
-    //             setActive(page);
-    //         }, 300);
-    //     }
-    // }, [data]);
+    useEffect(() => {
+        if (Object.keys(data).length > 0 && firstIn.current) {
+            const page = data.tabs?.findIndex((tab) => tab.is_selected);
+            setTimeout(() => {
+                firstIn.current = false;
+                setActive(page);
+            }, 300);
+        }
+    }, [data]);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
@@ -803,7 +805,7 @@ const styles = StyleSheet.create({
     addContent: {
         position: 'absolute',
         right: px(5),
-        bottom: px(120),
+        bottom: px(77),
     },
     addIcon: {
         width: px(60),
