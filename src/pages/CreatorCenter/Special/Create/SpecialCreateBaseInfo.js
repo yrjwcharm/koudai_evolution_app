@@ -103,7 +103,9 @@ function TagWrap(props) {
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
-                <Text style={styles.tip}>专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字</Text>
+                <Text style={styles.tip} numberOfLines={0}>
+                    专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字过6个字
+                </Text>
             </View>
             <BottomModal
                 ref={bottomModal}
