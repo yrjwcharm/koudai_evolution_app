@@ -657,89 +657,99 @@ const BuyMode = ({data = {}}) => {
                     </TouchableOpacity>
                 ) : null}
             </View>
-            <ScrollableTabView
-                initialPage={0}
-                locked
-                onChangeTab={({i}) => setCurrent(i)}
-                prerenderingSiblingsNumber={Infinity}
-                renderTabBar={() => (
-                    <ScrollTabbar
-                        activeFontSize={px(13)}
-                        boxStyle={styles.chartTabs}
-                        btnColor={Colors.defaultColor}
-                        inActiveFontSize={px(12)}
-                    />
-                )}>
-                {list?.map?.((item, index) => {
-                    const {name: tabLabel} = item;
-                    const {indicators, remind_info, signals} = list[current];
-                    return (
-                        <View key={tabLabel + index} style={{paddingBottom: Space.padding}} tabLabel={tabLabel}>
-                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                                {signals?.length > 0 && (
-                                    <View style={[Style.flexBetween, styles.signalWrapper]}>
-                                        {signals.map?.((signal, i) => {
-                                            const {amount, icon: signalIcon, text, url} = signal;
-                                            return (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    key={text + i}
-                                                    onPress={() => jump(url)}
-                                                    style={Style.flexCenter}>
-                                                    {signalIcon ? (
-                                                        <Image
-                                                            source={{uri: signalIcon}}
-                                                            style={{width: px(30), height: px(30)}}
-                                                        />
-                                                    ) : null}
-                                                    {text ? (
-                                                        <View style={{marginTop: px(4)}}>
-                                                            <HTML
-                                                                html={text}
-                                                                style={{
-                                                                    ...styles.desc,
-                                                                    color: Colors.descColor,
-                                                                    fontWeight: Font.weightMedium,
-                                                                }}
+            {list?.length > 0 && (
+                <ScrollableTabView
+                    initialPage={0}
+                    locked
+                    onChangeTab={({i}) => setCurrent(i)}
+                    prerenderingSiblingsNumber={Infinity}
+                    renderTabBar={() => (
+                        <ScrollTabbar
+                            activeFontSize={px(13)}
+                            boxStyle={styles.chartTabs}
+                            btnColor={Colors.defaultColor}
+                            inActiveFontSize={px(12)}
+                        />
+                    )}
+                    style={{borderTopWidth: StyleSheet.hairlineWidth, borderColor: Colors.borderColor}}>
+                    {list?.map?.((item, index) => {
+                        const {name: tabLabel} = item;
+                        const {indicators, remind_info, signals} = list[current];
+                        return (
+                            <View key={tabLabel + index} style={{paddingBottom: Space.padding}} tabLabel={tabLabel}>
+                                <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                    {signals?.length > 0 && (
+                                        <View style={[Style.flexBetween, styles.signalWrapper]}>
+                                            {signals.map?.((signal, i) => {
+                                                const {amount, icon: signalIcon, text, url} = signal;
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        key={text + i}
+                                                        onPress={() => jump(url)}
+                                                        style={Style.flexCenter}>
+                                                        {signalIcon ? (
+                                                            <Image
+                                                                source={{uri: signalIcon}}
+                                                                style={{width: px(30), height: px(30)}}
                                                             />
-                                                        </View>
-                                                    ) : null}
-                                                    {amount ? (
-                                                        <View style={{marginTop: px(2)}}>
-                                                            <HTML
-                                                                html={amount}
-                                                                style={{...styles.smallText, color: Colors.descColor}}
-                                                            />
-                                                        </View>
-                                                    ) : null}
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
-                                )}
-                                {indicators?.length > 0 && (
-                                    <View style={[Style.flexRow, styles.indicatorWrapper]}>
-                                        {indicators.map?.((indicator, i) => {
-                                            const {text, value} = indicator;
-                                            return (
-                                                <View key={text + i} style={[Style.flexCenter, {marginLeft: px(32)}]}>
-                                                    <HTML html={value} style={styles.indicatorVal} />
-                                                    <Text style={[styles.smallText, {marginTop: px(4)}]}>{text}</Text>
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
-                                )}
-                            </View>
-                            {remind_info ? (
-                                <View style={{paddingHorizontal: Space.padding}}>
-                                    <RenderAlert alert={remind_info} />
+                                                        ) : null}
+                                                        {text ? (
+                                                            <View style={{marginTop: px(4)}}>
+                                                                <HTML
+                                                                    html={text}
+                                                                    style={{
+                                                                        ...styles.desc,
+                                                                        color: Colors.descColor,
+                                                                        fontWeight: Font.weightMedium,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                        ) : null}
+                                                        {amount ? (
+                                                            <View style={{marginTop: px(2)}}>
+                                                                <HTML
+                                                                    html={amount}
+                                                                    style={{
+                                                                        ...styles.smallText,
+                                                                        color: Colors.descColor,
+                                                                    }}
+                                                                />
+                                                            </View>
+                                                        ) : null}
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    )}
+                                    {indicators?.length > 0 && (
+                                        <View style={[Style.flexRow, styles.indicatorWrapper]}>
+                                            {indicators.map?.((indicator, i) => {
+                                                const {text, value} = indicator;
+                                                return (
+                                                    <View
+                                                        key={text + i}
+                                                        style={[Style.flexCenter, {marginLeft: px(32)}]}>
+                                                        <HTML html={value} style={styles.indicatorVal} />
+                                                        <Text style={[styles.smallText, {marginTop: px(4)}]}>
+                                                            {text}
+                                                        </Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    )}
                                 </View>
-                            ) : null}
-                        </View>
-                    );
-                })}
-            </ScrollableTabView>
+                                {remind_info ? (
+                                    <View style={{paddingHorizontal: Space.padding}}>
+                                        <RenderAlert alert={remind_info} />
+                                    </View>
+                                ) : null}
+                            </View>
+                        );
+                    })}
+                </ScrollableTabView>
+            )}
             {list?.[current]?.icon ? <Image source={{uri: list[current].icon}} style={styles.signalModeIcon} /> : null}
         </View>
     );
@@ -1440,8 +1450,6 @@ const styles = StyleSheet.create({
     modeTitle: {
         paddingVertical: px(12),
         paddingHorizontal: Space.padding,
-        borderBottomWidth: Space.borderWidth,
-        borderColor: Colors.borderColor,
     },
     signalWrapper: {
         flex: 1,
