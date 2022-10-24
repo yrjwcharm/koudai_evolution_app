@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 const DayProfit = React.memo(() => {
+    const chartRef = useRef(null);
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
@@ -26,6 +27,8 @@ const DayProfit = React.memo(() => {
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
+    const [endDate, setEndDate] = useState(dayjs().format('YYYY-MM-DD'));
+    const [startDate, setStartDate] = useState(dayjs().add(-15, 'day').format('YYYY-MM'));
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
@@ -119,34 +122,6 @@ const DayProfit = React.memo(() => {
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setSelCurDate(arr[zIndex].day);
-                    // //图表数据
-                    let latestDate = profit_data_list[index]?.unit_key;
-                    let startDate = dayjs(latestDate).add(diff, 'month').add(-15, 'day').format('YYYY-MM-DD');
-                    let endDate = dayjs(latestDate).add(diff, 'month').add(15, 'day').format('YYYY-MM-DD');
-                    // let chartData = arr
-                    //     .filter((el) => el.day >= startDate && el.day <= endDate)
-                    //     .map((el) => {
-                    //         return {
-                    //             date: el.day,
-                    //             value: !Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0,
-                    //         };
-                    //     });
-                    let chartData = arr
-                        .filter((el) => el.day >= startDate && el.day <= endDate)
-                        .map((el) => (!Number.isNaN(parseFloat(el.profit)) ? parseFloat(el.profit) : 0));
-                    let afterArr = arr.filter((el) => el.day >= startDate && el.day <= endDate).map((el) => el?.day);
-
-                    let barCharData = profit_data_list
-                        .map((el) => el.unit_key)
-                        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                    setChart({
-                        // label: [
-                        //     {name: '时间', val: profit_data_list[index]?.unit_key},
-                        //     {name: '收益', val: profit_data_list[index]?.value},
-                        // ],
-                        originDates: afterArr,
-                        chart: chartData,
-                    });
                 }
             })();
         },
@@ -155,6 +130,7 @@ const DayProfit = React.memo(() => {
     useEffect(() => {
         init(selCurDate);
     }, [init]);
+    const initChartData = (startDate, endDate) => {};
     /**
      * 向上递增一个月
      */
@@ -220,6 +196,13 @@ const DayProfit = React.memo(() => {
             }),
         [dateArr]
     );
+    function computedPosition(length, xArraylength) {
+        if (xArraylength >= 10) {
+            return length <= 10 ? (this.end = 35) : (this.end = 100 - Math.floor((35 / length) * 100));
+        } else {
+            return 100; //小于十条数据显示全部
+        }
+    }
     return (
         <>
             {isHasData ? (
@@ -253,14 +236,13 @@ const DayProfit = React.memo(() => {
                                         {
                                             type: 'inside', // 内置于坐标系中
                                             start: 0,
-                                            end: 100,
-                                            endValue: 30, //x轴少于31个数据，则显示全部，超过31个数据则显示前31个。
-                                            // startValue: 0, // 从头开始。
-                                            // endValue: 30, // 最多六个
+                                            end: computedPosition(1, 15),
                                             xAxisIndex: [0],
                                             // start: 94,
+                                            // 是否锁定选择区域（或叫做数据窗口）的大小，如果设置为 true 则锁定选择区域的大小，也就是说，只能平移，不能缩放
+                                            zoomLock: true,
                                             // end: 100,
-                                            // handleSize: 8,
+                                            // handleSize: 15,
 
                                             zoomOnMouseWheel: false, // 关闭滚轮缩放
                                             moveOnMouseWheel: false, // 开启滚轮平移
@@ -283,9 +265,41 @@ const DayProfit = React.memo(() => {
                                             nameLocation: 'middle',
                                             nameGap: 0,
 
-                                            data: chartData.originDates,
+                                            data: [
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5,
+                                                6,
+                                                7,
+                                                8,
+                                                9,
+                                                10,
+                                                11,
+                                                12,
+                                                13,
+                                                14,
+                                                15,
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5,
+                                                6,
+                                                7,
+                                                8,
+                                                9,
+                                                10,
+                                                11,
+                                                12,
+                                                13,
+                                                14,
+                                                15,
+                                                17,
+                                            ],
                                             axisLabel: {
-                                                interval: chartData.originDates.length - 2,
+                                                interval: 0,
                                                 // rotate: 0,
                                                 textStyle: {
                                                     color: Colors.lightGrayColor, //坐标值得具体的颜色
@@ -361,7 +375,39 @@ const DayProfit = React.memo(() => {
                                                     },
                                                 },
                                             },
-                                            data: chartData.chart,
+                                            data: [
+                                                10,
+                                                20,
+                                                30,
+                                                40,
+                                                50,
+                                                60,
+                                                70,
+                                                80,
+                                                90,
+                                                100,
+                                                110,
+                                                120,
+                                                130,
+                                                140,
+                                                150,
+                                                10,
+                                                20,
+                                                30,
+                                                40,
+                                                50,
+                                                60,
+                                                70,
+                                                80,
+                                                90,
+                                                100,
+                                                110,
+                                                120,
+                                                130,
+                                                140,
+                                                150,
+                                                160,
+                                            ],
                                         },
                                     ],
                                 }}
