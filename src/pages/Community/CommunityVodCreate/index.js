@@ -91,21 +91,25 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             </View>
         );
     };
+    const getSearchData = () => {
+        timer.current && clearTimeout(timer.current);
+        timer.current = setTimeout(() => {
+            getSearchList({keyword: value, page, type: type.current}).then((res) => {
+                if (res.code === '000000') {
+                    const {has_more, items} = res.result;
+                    setList((prev) => {
+                        if (page === 1) return items;
+                        else return prev.concat(items);
+                    });
+                    setHasMore(has_more);
+                }
+            });
+        }, 300);
+    };
+
     useEffect(() => {
-        if (value?.length > 0) {
-            timer.current && clearTimeout(timer.current);
-            timer.current = setTimeout(() => {
-                getSearchList({keyword: value, page, type: type.current}).then((res) => {
-                    if (res.code === '000000') {
-                        const {has_more, items} = res.result;
-                        setList((prev) => {
-                            if (page === 1) return items;
-                            else return prev.concat(items);
-                        });
-                        setHasMore(has_more);
-                    }
-                });
-            }, 300);
+        if (value.length > 0) {
+            getSearchData();
         }
     }, [page, value]);
 
@@ -114,10 +118,10 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             if (_type) {
                 type.current = _type;
             }
-
             setVal('');
             setList([]);
             setSelectedItems(items || []);
+            getSearchData();
             bottomModal.current.open();
         },
     }));
@@ -127,7 +131,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
                 data: list,
                 initialNumToRender: 20,
                 keyboardShouldPersistTaps: 'handled',
-                keyExtractor: ({id, name}, index) => name + id + index,
+                keyExtractor: ({id = '123', name}, index) => name + id + index,
                 ListFooterComponent: null,
                 onEndReached: ({distanceFromEnd}) => {
                     if (distanceFromEnd < 0) return false;

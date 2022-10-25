@@ -4,7 +4,16 @@
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    FlatList,
+    RefreshControl,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -33,6 +42,7 @@ import {
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {debounce, differenceBy, groupBy, isEqual} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
+import EmptyTip from '~/components/EmptyTip';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
@@ -361,28 +371,29 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const waterfallFlow = useRef();
+    const [resource_private_tip, setTip] = useState('');
+    const [loading, setLoading] = useState(true);
     const init = () => {
         getData({...params, page})
             .then((res) => {
                 if (res.code === '000000') {
+                    setLoading(false);
                     setData((prev) => {
                         if (page === 1) {
-                            return res.result.items;
+                            return res.result.items || [];
                         } else {
                             return prev.concat(res.result.items || []);
                         }
                     });
+                    if (res.result?.resource_private_tip) {
+                        setTip(res.result?.resource_private_tip);
+                    }
                     setHasMore(res.result.has_more);
                 }
             })
             .finally(() => {
                 setRefreshing(false);
             });
-    };
-
-    const scrollTop = () => {
-        // alert('1');
-        // waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
     };
 
     const refresh = () => {
@@ -425,7 +436,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
         ) : null;
     };
 
-    useImperativeHandle(ref, () => ({refresh, scrollTop}));
+    useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
         init();
@@ -438,7 +449,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                 keyExtractor={(item, index) => item.title + item.id + index}
                 ListFooterComponent={renderFooter}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.99}
+                onEndReachedThreshold={0.1}
                 onRefresh={() => (page > 1 ? setPage(1) : init())}
                 ref={waterfallFlow}
                 refreshing={refreshing}
@@ -448,7 +459,11 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                 {...rest}
             />
         </LinearGradient>
-    ) : null;
+    ) : (
+        <View style={{paddingTop: px(280)}}>
+            {loading ? <ActivityIndicator color={'#ddd'} /> : <EmptyTip text={resource_private_tip || '暂无数据'} />}
+        </View>
+    );
 });
 
 /** @name 推荐 */

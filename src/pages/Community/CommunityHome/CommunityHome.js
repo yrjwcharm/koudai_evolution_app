@@ -117,7 +117,7 @@ const CommunityHome = ({navigation, route}) => {
             </View>
         );
     };
-    return (
+    return data ? (
         <>
             <Header />
             <View style={{flex: 1}}>
@@ -294,7 +294,7 @@ const CommunityHome = ({navigation, route}) => {
                 />
             </Modalize>
         </>
-    );
+    ) : null;
 };
 
 export default CommunityHome;
