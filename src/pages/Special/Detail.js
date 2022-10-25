@@ -227,7 +227,7 @@ const SpecialDetail = ({navigation, route}) => {
                     }}
                     renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                     startInLoadingState={true}
-                    style={{opacity: 0.99, flex: 1}}
+                    style={{opacity: 0.9999, flex: 1}}
                     source={{
                         uri: URI(route.params.link)
                             .addQuery({
