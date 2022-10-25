@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 16:57:22
+ * @LastEditTime: 2022-10-25 14:18:16
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -598,7 +598,7 @@ const Product = ({navigation}) => {
                                                 <ActivityIndicator />
                                             </View>
                                         ) : null}
-                                        {!subjectData?.has_more ? (
+                                        {/* {!subjectData?.has_more ? (
                                             <Text
                                                 style={{
                                                     textAlign: 'center',
@@ -609,7 +609,7 @@ const Product = ({navigation}) => {
                                                 }}>
                                                 已经没有更多了
                                             </Text>
-                                        ) : null}
+                                        ) : null} */}
                                     </>
                                 ) : null}
                             </View>
