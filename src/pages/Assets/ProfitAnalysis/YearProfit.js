@@ -108,6 +108,9 @@ const YearProfit = (callback) => {
             }),
         [dateArr]
     );
+    const executeChangeDate = useCallback((data) => {
+        setSelCurYear(data);
+    }, []);
     return (
         <>
             {isHasData ? (
@@ -155,7 +158,7 @@ const YearProfit = (callback) => {
                         </TouchableOpacity>
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
-                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    {isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}
                     <RenderList curDate={selCurYear} />
                 </View>
             ) : (

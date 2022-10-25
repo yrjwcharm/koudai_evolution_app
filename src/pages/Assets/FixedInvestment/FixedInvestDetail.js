@@ -367,16 +367,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: px(46),
         height: px(19),
+        borderBottomLeftRadius: px(4),
         borderTopRightRadius: px(6),
     },
     redText: {
         fontSize: px(12),
-        fontFamily: Font.numRegular,
+        // fontFamily: Font.numRegular,
+        fontFamily: Font.pingFangRegular,
         color: Colors.red,
     },
     blackText: {
         fontSize: px(12),
-        fontFamily: Font.numRegular,
+        fontFamily: Font.pingFangRegular,
+        // fontFamily: Font.numRegular,
         color: Colors.lightBlackColor,
     },
     bankcard: {
@@ -415,7 +418,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
+        fontFamily: Font.pingFangMedium,
         fontWeight: 'normal',
         color: Colors.defaultColor,
     },
@@ -425,7 +428,7 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
     },
     headerTop: {
-        height: px(59),
+        paddingVertical: px(12),
         justifyContent: 'center',
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderStyle: 'solid',
