@@ -107,7 +107,7 @@ const WriteArticle = ({article, setArticle}) => {
         {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}},
         {action: 'setItalic', name: 'I', style: {...styles.fontStyleText, fontStyle: 'italic'}},
         {action: 'setUnderline', name: 'U', style: {...styles.fontStyleText, textDecorationLine: 'underline'}},
-        {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
+        // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
     const scrollView = useRef();
     const chooseModal = useRef();
@@ -172,12 +172,11 @@ const WriteArticle = ({article, setArticle}) => {
                         if (res) {
                             editor.current?.focusContentEditor?.();
                             if (type === 'picture') {
-                                editor.current?.sendAction(
-                                    actions.insertImage,
-                                    'result',
-                                    res.url,
-                                    `display: block;width: 100%;margin: 12px 0;`
-                                );
+                                editor.current?.insertHTML(`
+                                    <br>
+                                    <img style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" src="${res.url}" alt="">
+                                    <br>
+                                `);
                             } else {
                                 editor.current?.insertHTML(`
                                     <br>
