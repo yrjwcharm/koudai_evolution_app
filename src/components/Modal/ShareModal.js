@@ -16,6 +16,7 @@ import Toast from '../Toast';
 import Clipboard from '@react-native-community/clipboard';
 import * as WeChat from 'react-native-wechat-lib';
 import LazyImage from '../LazyImage';
+import saveImg from '~/utils/saveImg';
 
 const ShareModal = React.forwardRef((props, ref) => {
     const navigation = navigationRef.current;
@@ -166,7 +167,8 @@ const ShareModal = React.forwardRef((props, ref) => {
             }, 500);
         } else if (item.type === 'QRCode') {
             // saveBase64Img();
-            // hide();
+            saveImg(shareContent?.show_qr_code);
+            hide();
         } else if (item.type === 'MoreOptions') {
             global.LogTool('shareStart', props.ctrl);
             if (needLogin) {
