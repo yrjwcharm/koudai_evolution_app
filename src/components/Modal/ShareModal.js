@@ -65,6 +65,11 @@ const ShareModal = React.forwardRef((props, ref) => {
             type: 'Copy',
         },
         {
+            img: require('../../assets/img/share/qrCode.png'),
+            title: '下载页面二维码',
+            type: 'QRCode',
+        },
+        {
             img: require('../../assets/img/share/more.png'),
             title: '更多',
             type: 'MoreOptions',
@@ -159,6 +164,9 @@ const ShareModal = React.forwardRef((props, ref) => {
             setTimeout(() => {
                 Toast.show('复制成功');
             }, 500);
+        } else if (item.type === 'QRCode') {
+            // saveBase64Img();
+            // hide();
         } else if (item.type === 'MoreOptions') {
             global.LogTool('shareStart', props.ctrl);
             if (needLogin) {
@@ -240,6 +248,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                             if (Platform.OS === 'android' && item.type === 'MoreOptions') {
                                 return null;
                             }
+                            if (item.type === 'QRCode' && !shareContent.show_qr_code) return null;
                             return (
                                 <TouchableOpacity
                                     key={index}
