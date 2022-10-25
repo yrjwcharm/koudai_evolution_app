@@ -74,7 +74,7 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                                 setErrText('');
                                 setObj({...obj, name});
                             }}
-                            placeholder="请输入分类名称,最多4个字"
+                            placeholder="请输入分类名称,最多6个字"
                             style={styles.input}
                             value={obj.name}
                             ref={nameRef}
