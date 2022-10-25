@@ -104,7 +104,7 @@ const EditSpecialCardInfo = ({navigation, route}) => {
     };
 
     const inputConfirm = () => {
-        if (desc && desc.length < 50) return Toast.show('专题描述需大于50个字');
+        if (+data?.card_mode === 1 && desc && desc.length < 50) return Toast.show('专题描述需大于50个字');
         goSave({desc, empty_desc: !desc, subject_id: route.params.subject_id}).then((res) => {
             inputModal.current.cancel();
             getList();
@@ -224,14 +224,18 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                     onChangeText={(value) => {
                         setDesc(value);
                     }}
-                    maxLength={150}
+                    maxLength={+data?.card_mode === 1 ? 150 : 16}
                     textAlignVertical="top"
-                    placeholder="请编辑专题展示描述，最少50字，最多150字"
+                    placeholder={
+                        +data?.card_mode === 1
+                            ? '请编辑专题展示描述，最少50字，最多150字'
+                            : '请编辑专题展示描述，最多16个字'
+                    }
                 />
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
                         <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {desc?.length}/{150}
+                            {desc?.length}/{+data?.card_mode === 1 ? 150 : 16}
                         </Text>
                         <Text
                             style={styles.clearInput}
