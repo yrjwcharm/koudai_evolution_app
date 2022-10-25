@@ -32,7 +32,7 @@ import {debounce} from 'lodash';
  * @param onDone 完成回调，回传选择的项
  * @param type 类型 article 作品 fund 基金和组合 tag 标签
  * */
-export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
+export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defaultType = 'article'}, ref) => {
     const bottomModal = useRef();
     const [value, setVal] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
@@ -40,7 +40,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const timer = useRef();
-    const type = useRef('article');
+    const type = useRef(defaultType);
     const titleObj = useRef({
         article: {placeholder: '搜索作品名称', title: '添加作品'},
         fund: {placeholder: '搜索基金/组合', title: '添加产品'},

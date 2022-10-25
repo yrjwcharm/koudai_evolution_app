@@ -2,6 +2,7 @@
  * @Date: 2022-10-13 18:49:43
  * @Description: ali OSS 上传工具
  */
+import {BackHandler} from 'react-native';
 import {AliyunOSS} from 'rn-alioss';
 import Toast from '~/components/Toast';
 import http from '~/services';
@@ -19,6 +20,8 @@ const uploadDone = ({id, media_duration = 0, status}) => {
  * @returns Promise 成功返回链接和id 失败返回false
  *  */
 export const upload = async (file) => {
+    const fun = () => true;
+    BackHandler.addEventListener('hardwareBackPress', fun);
     const loading = Toast.showLoading('上传中...');
     const res = await http.get('/community/upload/prepare/202209', {filename: file.fileName, filetype: file.fileType});
     if (res?.code === '000000') {
@@ -29,21 +32,25 @@ export const upload = async (file) => {
         if (uploadRes?.includes?.('UploadSuccess') || uploadRes?.includes?.('completed = YES')) {
             const doneRes = await uploadDone({id, media_duration: file.duration, status: 1});
             if (doneRes?.code === '000000') {
+                BackHandler.removeEventListener('hardwareBackPress', fun);
                 Toast.hide(loading);
                 Toast.show('上传成功');
                 return doneRes.result;
             } else {
+                BackHandler.removeEventListener('hardwareBackPress', fun);
                 Toast.hide(loading);
                 Toast.show('上传失败');
                 return false;
             }
         } else {
             uploadDone({id, status: 2});
+            BackHandler.removeEventListener('hardwareBackPress', fun);
             Toast.hide(loading);
             Toast.show('上传失败');
             return false;
         }
     } else {
+        BackHandler.removeEventListener('hardwareBackPress', fun);
         Toast.hide(loading);
         Toast.show('上传失败');
         return false;

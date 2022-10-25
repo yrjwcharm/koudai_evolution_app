@@ -3,7 +3,7 @@
  * @Description:
  */
 import React, {useEffect} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
 import {Colors} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
@@ -31,8 +31,8 @@ const Index = ({navigation, route}) => {
             <WebView
                 allowsFullscreenVideo={false}
                 allowsInlineMediaPlayback
+                bounces={false}
                 onMessage={onMessage}
-                scalesPageToFit={Platform.select({ios: true, android: false})}
                 source={{uri: link}}
                 startInLoadingState
                 style={{flex: 1, opacity: compareVersion(global.systemVersion, '12') >= 0 ? 0.99 : 0.9999}}
