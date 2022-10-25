@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 20:26:05
+ * @LastEditTime: 2022-10-25 20:35:03
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -149,6 +149,8 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     const [desc, setDesc] = useState('');
     const [tags, setTags] = useState([]);
 
+    const canGoBack = useRef(false);
+
     const showSelectImg = () => {
         setPickerModal(true);
     };
@@ -186,6 +188,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         }).then((res) => {
             if (res.code === '000000') {
                 if (isEdit) {
+                    canGoBack.current = true;
                     navigation.goBack();
                 } else {
                     console.log('jump:', data.next_button.url);
@@ -210,6 +213,10 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     useEffect(() => {
         navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
+            if (canGoBack.current) {
+                navigation.dispatch(e.data.action);
+                return;
+            }
             if (bgSource || title || desc || tags.length > 1) {
                 Modal.show({
                     content: '已编辑内容是否要保存草稿？下次可继续编辑。',
@@ -329,7 +336,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 leftPress={() => navigation.goBack()}
                 rightTextStyle={styles.right_sty}
             />
-            <ScrollView style={styles.pageWrap}>
+            <ScrollView style={styles.pageWrap} keyboardShouldPersistTaps="handled">
                 <Text style={styles.upload_label}>上传专题背景图片</Text>
                 <View style={[styles.space1, styles.upload_imageWrap]}>{uploadImgSection}</View>
                 <View style={[styles.space2, styles.inputWrap]}>
