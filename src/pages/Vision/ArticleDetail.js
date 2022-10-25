@@ -38,6 +38,7 @@ import {useOnTogglePlayback} from '../Community/components/audioService/useOnTog
 import {startAudio} from '../Community/components/audioService/StartAudioService.js';
 import {updateUserInfo} from '~/redux/actions/userInfo.js';
 import ProductCards from '~/components/Portfolios/ProductCards.js';
+import Storage from '~/utils/storage.js';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -82,6 +83,7 @@ const ArticleDetail = ({navigation, route}) => {
     const {isPlaying} = useOnTogglePlayback();
     const isCurrentArticleAudio = useRef(false);
     const audioMedia = useRef([]);
+    const timeStamp = useRef(Date.now());
 
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
@@ -511,9 +513,13 @@ const ArticleDetail = ({navigation, route}) => {
                                             }
                                         }
                                     }, 500);
+                                    const loginStatus = await Storage.get('loginStatus');
                                     webviewRef.current.postMessage(
                                         JSON.stringify({
+                                            ...loginStatus,
                                             did: global.did,
+                                            timeStamp: timeStamp.current + '',
+                                            ver: global.ver,
                                         })
                                     );
                                     if (data.feedback_status == 1) {
@@ -524,7 +530,9 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 scalesPageToFit={Platform.select({ios: true, android: false})}
                                 source={{
-                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
+                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}?timeStamp=${
+                                        timeStamp.current
+                                    }`,
                                 }}
                                 onError={(err) => {
                                     console.log(err, 'object111');
@@ -574,7 +582,9 @@ const ArticleDetail = ({navigation, route}) => {
 
                                 {Object.keys(recommendData).length > 0 ? (
                                     <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
-                                        <RenderTitle title={recommendData?.portfolios?.title} />
+                                        {recommendData?.portfolios?.list?.length > 0 && (
+                                            <RenderTitle title={recommendData?.portfolios?.title} />
+                                        )}
                                         {recommendData?.portfolios?.list?.map((item, index) => {
                                             return <ProductCards data={item} key={index} style={styles.cardStye} />;
                                         })}

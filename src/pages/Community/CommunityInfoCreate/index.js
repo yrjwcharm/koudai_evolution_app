@@ -5,6 +5,7 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
+import {openCropper} from 'react-native-image-crop-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import deleteImg from '~/assets/img/icon/delete.png';
 import uploadImg from '~/assets/img/icon/upload.png';
@@ -36,8 +37,19 @@ const Index = ({navigation, route, setLoading}) => {
                 if (file.fileSize > 10 * 1024 * 1024) {
                     Toast.show('图片大小不能超过10M');
                 } else {
-                    upload({...file, fileType: 'pic'}).then((res) => {
-                        res && setImg(res);
+                    openCropper({
+                        path: file.uri,
+                        width: px(240),
+                        height: px(240),
+                        cropping: true,
+                        cropperChooseText: '选择',
+                        cropperCancelText: '取消',
+                        loadingLabelText: '加载中',
+                    }).then((image) => {
+                        image &&
+                            upload({fileName: image.path, fileType: 'pic', uri: image.path}).then((res) => {
+                                res && setImg(res);
+                            });
                     });
                 }
             }

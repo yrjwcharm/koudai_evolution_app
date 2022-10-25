@@ -34,6 +34,7 @@ import {isIphoneX, px} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {ChooseModal, ChooseTag} from '../CommunityVodCreate';
 import {getArticleDraft, publishArticle, saveArticleDraft} from './services';
+import {SERVER_URL} from '~/services/config';
 
 const toolbarIcons = {
     disabled: {
@@ -303,7 +304,7 @@ const WriteArticle = ({article, setArticle}) => {
                         placeholder="请输入正文"
                         ref={editor}
                         showsVerticalScrollIndicator={false}
-                        style={{minHeight: px(400), marginBottom: Font.textH1}}
+                        style={{minHeight: px(300), marginBottom: px(100)}}
                     />
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -407,7 +408,16 @@ const Index = ({navigation, route, setLoading}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         disabled={!canPublish}
-                        onPress={() => saveDraft((res) => console.log(res))}
+                        onPress={() =>
+                            saveDraft((res) =>
+                                jump({
+                                    path: 'PreviewArticle',
+                                    params: {
+                                        link: `${SERVER_URL[global.env].H5}/articleDraft?history_id=${res.history_id}`,
+                                    },
+                                })
+                            )
+                        }
                         style={{marginRight: px(10)}}>
                         <Text style={[styles.title, {color: canPublish ? Colors.descColor : Colors.lightGrayColor}]}>
                             预览
@@ -432,8 +442,8 @@ const Index = ({navigation, route, setLoading}) => {
             file &&
                 openCropper({
                     path: file.uri,
-                    width: px(300),
-                    height: px(400),
+                    width: px(400),
+                    height: px(300),
                     cropping: true,
                     cropperChooseText: '选择',
                     cropperCancelText: '取消',

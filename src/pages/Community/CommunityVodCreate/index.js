@@ -91,21 +91,25 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             </View>
         );
     };
+    const getSearchData = () => {
+        timer.current && clearTimeout(timer.current);
+        timer.current = setTimeout(() => {
+            getSearchList({keyword: value, page, type: type.current}).then((res) => {
+                if (res.code === '000000') {
+                    const {has_more, items} = res.result;
+                    setList((prev) => {
+                        if (page === 1) return items;
+                        else return prev.concat(items);
+                    });
+                    setHasMore(has_more);
+                }
+            });
+        }, 300);
+    };
+
     useEffect(() => {
-        if (value?.length > 0) {
-            timer.current && clearTimeout(timer.current);
-            timer.current = setTimeout(() => {
-                getSearchList({keyword: value, page, type: type.current}).then((res) => {
-                    if (res.code === '000000') {
-                        const {has_more, items} = res.result;
-                        setList((prev) => {
-                            if (page === 1) return items;
-                            else return prev.concat(items);
-                        });
-                        setHasMore(has_more);
-                    }
-                });
-            }, 300);
+        if (value.length > 0) {
+            getSearchData();
         }
     }, [page, value]);
 
@@ -114,10 +118,10 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             if (_type) {
                 type.current = _type;
             }
-
             setVal('');
             setList([]);
             setSelectedItems(items || []);
+            getSearchData();
             bottomModal.current.open();
         },
     }));
@@ -126,7 +130,8 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             flatListProps={{
                 data: list,
                 initialNumToRender: 20,
-                keyExtractor: ({id, name}, index) => name + id + index,
+                keyboardShouldPersistTaps: 'handled',
+                keyExtractor: ({id = '123', name}, index) => name + id + index,
                 ListFooterComponent: null,
                 onEndReached: ({distanceFromEnd}) => {
                     if (distanceFromEnd < 0) return false;
@@ -335,8 +340,8 @@ const Index = ({route, setLoading}) => {
 
     const onProgress = (e) => {
         const {currentTime: time} = e;
-        setCurrentTime(time);
-        setSliderVal(time);
+        setCurrentTime(time > video.duration ? video.duration : time);
+        setSliderVal(time > video.duration ? video.duration : time);
     };
 
     const onSlidingComplete = useCallback(
@@ -384,6 +389,10 @@ const Index = ({route, setLoading}) => {
                                 <Video
                                     allowsExternalPlayback={false}
                                     muted={false}
+                                    onEnd={() => {
+                                        setPaused(true);
+                                        videoRef.current.seek(0);
+                                    }}
                                     onProgress={onProgress}
                                     paused={paused}
                                     playInBackground
@@ -407,7 +416,14 @@ const Index = ({route, setLoading}) => {
                                     <Image source={videoPlay} style={styles.playBtn} />
                                 </TouchableWithoutFeedback>
                             )}
-                            <TouchableOpacity activeOpacity={0.8} onPress={() => setVideo()} style={styles.deleteVideo}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    setVideo();
+                                    setCurrentTime(0);
+                                    setSliderVal(0);
+                                }}
+                                style={styles.deleteVideo}>
                                 <Image source={deleteVideo} style={styles.deleteIcon} />
                             </TouchableOpacity>
                             {showDuration ? (

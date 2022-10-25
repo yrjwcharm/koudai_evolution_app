@@ -2,9 +2,18 @@
  * @Date: 2022-10-08 15:06:39
  * @Description: 社区首页
  */
-import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    FlatList,
+    RefreshControl,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -31,8 +40,9 @@ import {
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {debounce, groupBy} from 'lodash';
+import {debounce, groupBy, isEqual} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
+import EmptyTip from '~/components/EmptyTip';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
@@ -108,6 +118,10 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
 
+    const allFollowed = useMemo(() => {
+        return data.every((item) => item.status === 1);
+    }, [data]);
+
     const init = () => {
         getRecommendFollowUsers()
             .then((res) => {
@@ -159,6 +173,10 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     useEffect(() => {
         init();
     }, []);
+
+    useEffect(() => {
+        allFollowed && refresh?.();
+    }, [allFollowed]);
 
     return data?.length > 0 ? (
         <>
@@ -226,6 +244,7 @@ const Follow = forwardRef(({list = []}, ref) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const flatList = useRef();
+    const followedList = useRef(list);
 
     const init = () => {
         getFollowedData({page})
@@ -315,6 +334,17 @@ const Follow = forwardRef(({list = []}, ref) => {
     useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
+        if (followedList.current?.length > 0) {
+            if (!isEqual(followedList.current, list)) {
+                init();
+                followedList.current = list;
+            }
+        } else {
+            followedList.current = list;
+        }
+    }, [list]);
+
+    useEffect(() => {
         init();
     }, [page]);
 
@@ -349,28 +379,29 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const waterfallFlow = useRef();
+    const [resource_private_tip, setTip] = useState('');
+    const [loading, setLoading] = useState(true);
     const init = () => {
         getData({...params, page})
             .then((res) => {
                 if (res.code === '000000') {
+                    setLoading(false);
                     setData((prev) => {
                         if (page === 1) {
-                            return res.result.items;
+                            return res.result.items || [];
                         } else {
                             return prev.concat(res.result.items || []);
                         }
                     });
+                    if (res.result?.resource_private_tip) {
+                        setTip(res.result?.resource_private_tip);
+                    }
                     setHasMore(res.result.has_more);
                 }
             })
             .finally(() => {
                 setRefreshing(false);
             });
-    };
-
-    const scrollTop = () => {
-        // alert('1');
-        // waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
     };
 
     const refresh = () => {
@@ -413,7 +444,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
         ) : null;
     };
 
-    useImperativeHandle(ref, () => ({refresh, scrollTop}));
+    useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
         init();
@@ -426,7 +457,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                 keyExtractor={(item, index) => item.title + item.id + index}
                 ListFooterComponent={renderFooter}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.99}
+                onEndReachedThreshold={0.1}
                 onRefresh={() => (page > 1 ? setPage(1) : init())}
                 ref={waterfallFlow}
                 refreshing={refreshing}
@@ -436,7 +467,11 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
                 {...rest}
             />
         </LinearGradient>
-    ) : null;
+    ) : (
+        <View style={{paddingTop: px(280)}}>
+            {loading ? <ActivityIndicator color={'#ddd'} /> : <EmptyTip text={resource_private_tip || '暂无数据'} />}
+        </View>
+    );
 });
 
 /** @name 推荐 */
@@ -525,9 +560,11 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
 
     useImperativeHandle(ref, () => ({refresh: init}));
 
-    useEffect(() => {
-        init();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <>

@@ -24,6 +24,7 @@ import PointCard from '../components/PointCard';
 import AdInfo from '../components/AdInfo';
 import StickyHeader from '~/components/Sticky';
 import LoadingTips from '~/components/LoadingTips';
+import RenderHtml from '~/components/RenderHtml';
 // type = 公墓 10;私募 20;投顾组合 30;计划 40;
 const PortfolioAssetList = ({route, navigation}) => {
     const jump = useJump();
@@ -304,10 +305,20 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 {/* 收益 */}
                                 <View style={{alignItems: 'flex-end', flex: 1}}>
                                     {type == 10 ? (
-                                        <Text style={styles.card_amount}>{showEye === 'true' ? profit : '****'}</Text>
+                                        <Text style={styles.card_amount}>
+                                            {showEye === 'true' ? (
+                                                <RenderHtml html={profit} style={styles.card_amount} />
+                                            ) : (
+                                                '****'
+                                            )}
+                                        </Text>
                                     ) : (
                                         <Text style={styles.card_amount}>
-                                            {showEye === 'true' ? profit_acc : '****'}
+                                            {showEye === 'true' ? (
+                                                <RenderHtml html={profit_acc} style={styles.card_amount} />
+                                            ) : (
+                                                '****'
+                                            )}
                                         </Text>
                                     )}
                                 </View>

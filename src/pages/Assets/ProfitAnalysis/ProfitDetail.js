@@ -4,21 +4,20 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
-import {getEarningsUpdateNote, getHeadData} from './services';
+import {getEarningsUpdateNote} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(true);
-    const [locked, setLocked] = useState(false);
+    const [loading, setLoading] = useState(false);
     const bottomModal = useRef(null);
     const tabsRef = useRef([
         {text: '全部', type: 200},
@@ -28,8 +27,6 @@ const ProfitDetail = ({navigation, route}) => {
         {text: '私募基金', type: 20},
     ]);
     const [declarePic, setDeclarePic] = useState('');
-    const [headData, setHeadData] = useState({});
-    const [type, setType] = useState(initType);
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
@@ -38,29 +35,28 @@ const ProfitDetail = ({navigation, route}) => {
                 const {title: rightTitle = '', declare_pic = ''} = res.result || {};
                 setDeclarePic(declare_pic);
                 setLoading(false);
-                navigation.setOptions({
-                    title: '更新说明',
-                    headerRight: () => (
-                        <>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[styles.topRightBtn, Style.flexCenter]}
-                                onPress={() => {
-                                    bottomModal.current.show();
-                                }}>
-                                <Text style={styles.title}>{rightTitle}</Text>
-                            </TouchableOpacity>
-                        </>
-                    ),
-                });
+                rightTitle &&
+                    navigation.setOptions({
+                        title: '收益明细',
+                        headerRight: () => (
+                            <>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.topRightBtn, Style.flexCenter]}
+                                    onPress={() => {
+                                        bottomModal.current.show();
+                                    }}>
+                                    <Text style={styles.title}>{rightTitle}</Text>
+                                </TouchableOpacity>
+                            </>
+                        ),
+                    });
             }
         })();
     }, []);
     useEffect(() => {
         init();
-        let listener = DeviceEventEmitter.addListener('sendChangeTrigger', (bool) => setLocked(bool));
-        return () => listener && listener.remove();
-    }, [init, page]);
+    }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
@@ -79,10 +75,9 @@ const ProfitDetail = ({navigation, route}) => {
                             <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                         )}
                         initialPage={page}
-                        prerenderingSiblingsNumber={0}
-                        locked={true}
+                        // prerenderingSiblingsNumber={0}
+                        locked={false}
                         onChangeTab={({i}) => {
-                            setType(tabsRef.current[i].type);
                             dispatch({type: 'updateType', payload: tabsRef.current[i].type});
                         }}>
                         {tabsRef.current.map((el, index) => {

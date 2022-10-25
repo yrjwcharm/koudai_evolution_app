@@ -363,7 +363,7 @@ export const CommunityFollowCard = ({
                     <View style={{padding: px(10), paddingBottom: px(12)}}>
                         {title ? (
                             <View>
-                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
+                                <HTML html={title} numberOfLines={desc ? 2 : 4} style={styles.subTitle} />
                             </View>
                         ) : null}
                         {desc ? (

@@ -308,6 +308,7 @@ import SortProduct from '~/pages/CreatorCenter/AddProductStep2/SortProduct'; // 
 import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的关注/我的粉丝
 import CommunityArticleCreate from '~/pages/Community/CommunityArticleCreate'; // 写文章
 import CommunityPersonalPrivacy from '~/pages/Community/CommunityPersonalPrivacy'; // 社区个人隐私管理
+import PreviewArticle from '~/pages/Community/PreviewArticle'; // 预览文章
 
 // 审核中心
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
@@ -1229,6 +1230,7 @@ export default function AppStack() {
                     component={CommunityPersonalPrivacy}
                     options={{title: ''}}
                 />
+                <Stack.Screen name="PreviewArticle" component={PreviewArticle} options={{title: ''}} />
             </Stack.Navigator>
         </>
     );
