@@ -56,46 +56,52 @@ const MonthProfit = React.memo(() => {
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
-                    let min = unit_list[unit_list.length - 1].value;
-                    let max = unit_list[0].value;
-                    let cur = dayjs_.year();
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                let unit = profit_data_list[j].unit_key;
-                                if (arr[i].day == unit) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        let min = unit_list[unit_list.length - 1].value;
+                        let max = unit_list[0].value;
+                        let cur = dayjs_.year();
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    let unit = profit_data_list[j].unit_key;
+                                    if (arr[i].day == unit) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                        );
+                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        let barCharData = arr.map((el, index) => {
+                            return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
+                        });
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[index]?.unit_key},
+                                {name: '收益', val: profit_data_list[index]?.value},
+                            ],
+                            chart: barCharData,
+                        });
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        if (cur > max || cur < min) return;
+                        cur == max && setIsNext(false);
+                        cur == min && setIsPrev(false);
+                        if (cur > min && cur < max) {
+                            setIsPrev(true);
+                            setIsNext(true);
+                        }
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setDate(dayjs_);
+                        setSelCurDate(arr[zIndex].day);
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                    let barCharData = arr.map((el, index) => {
-                        return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
-                    });
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        chart: barCharData,
-                    });
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    if (cur > max || cur < min) return;
-                    cur == max && setIsNext(false);
-                    cur == min && setIsPrev(false);
-                    if (cur > min && cur < max) {
-                        setIsPrev(true);
-                        setIsNext(true);
-                    }
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setDate(dayjs_);
-                    setSelCurDate(arr[zIndex].day);
+                } else {
+                    setIsHasData(false);
                 }
             })();
         },
