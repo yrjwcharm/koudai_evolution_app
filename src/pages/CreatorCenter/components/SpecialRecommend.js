@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 15:42:01
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 14:27:38
+ * @LastEditTime: 2022-10-25 20:16:28
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/SpecialRecommend.js
  * @Description:  专题推荐样式
  * @Usage:  <RecommendItemWrap tabs={['推广位一', '推广位二']}><RecommendImage /><RecommendImage /></RecommendItemWrap>
@@ -11,19 +11,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
-import NavBar from '~/components/NavBar';
 import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {Style, Colors, Space} from '~/common/commonStyle';
-import Input from '~/components/Input';
-import {useJump} from '~/components/hooks';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import Radio from '~/components/Radio.js';
-import {Children} from 'react/cjs/react.production.min';
 import Html from '~/components/RenderHtml';
-import ScrollableTabBar from './ScrollableTabBar';
 
 export function RecommendImage(props) {
     const {uri} = props;
@@ -151,7 +140,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F6E2C3',
         borderRadius: px(2),
         height: px(18),
-        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: px(6),
@@ -160,7 +148,6 @@ const styles = StyleSheet.create({
     itemContent_tagText: {
         color: '#B38051',
         fontSize: px(10),
-        marginLeft: px(8),
     },
     itemContent_btn: {
         height: px(34),

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 12:00:48
+ * @LastEditTime: 2022-10-25 20:10:43
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -37,8 +37,9 @@ function Item({item, index}) {
 
 // 列表最后的添加和排序按钮
 function FooterItem({onAdd, onSort, cansort = false, data}) {
+    const insets = useSafeAreaInsets();
     return (
-        <View style={[styles.footerWrap]}>
+        <View style={[styles.footerWrap, {marginBottom: insets.bottom}]}>
             <View style={styles.footer_ActionWrap}>
                 {cansort ? (
                     <TouchableOpacity style={styles.footer_action} onPress={onSort}>
@@ -329,7 +330,7 @@ export default function SpecailModifyContent({navigation, route}) {
     };
     const handleAdd = () => {
         if (data.length >= pageData.max_num) {
-            Toast.show(pageData.tip);
+            Toast.show(pageData.tip.replace('*', ''));
             return;
         }
         bottomModal.current.show();
@@ -341,6 +342,9 @@ export default function SpecailModifyContent({navigation, route}) {
 
     const renderEmpty = () => {
         return <EmptyLit />;
+    };
+    const renderListHeader = () => {
+        return <View style={styles.listHeader} />;
     };
     const showToast = (msg) => {
         bottomModal?.current?.toastShow(msg);
@@ -359,7 +363,7 @@ export default function SpecailModifyContent({navigation, route}) {
     if (!pageData) return null;
 
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <View style={styles.pageWrap}>
             <NavBar
                 title={pageData?.title ?? '精选内容'}
                 leftIcon="chevron-left"
@@ -368,12 +372,14 @@ export default function SpecailModifyContent({navigation, route}) {
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
             />
-            <View style={styles.pageWrap}>
+            <View style={styles.contentWrap}>
                 <FlatList
                     style={{flex: 1}}
                     data={data}
                     renderItem={renderItem}
                     ListEmptyComponent={renderEmpty()}
+                    ListHeaderComponent={renderListHeader()}
+                    ListHeaderComponentStyle={styles.listHeader}
                     ListFooterComponent={
                         <FooterItem
                             onAdd={handleAdd}
@@ -388,6 +394,7 @@ export default function SpecailModifyContent({navigation, route}) {
             <BottomModal
                 ref={bottomModal}
                 title="添加内容"
+                keyboardAvoiding={false}
                 showClose={true}
                 confirmText="确定"
                 children={
@@ -399,7 +406,7 @@ export default function SpecailModifyContent({navigation, route}) {
                     />
                 }
             />
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -409,12 +416,13 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
-        color: 'red',
         flex: 1,
         backgroundColor: '#F5F6F8',
+    },
+    contentWrap: {
+        flex: 1,
         paddingLeft: px(16),
         paddingRight: px(16),
-        paddingTop: px(12),
     },
     space1: {
         marginTop: px(12),
@@ -478,6 +486,10 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginLeft: 12,
         backgroundColor: 'lightgray',
+    },
+    listHeader: {
+        height: px(16),
+        width: '100%',
     },
     footerWrap: {},
     footer_ActionWrap: {
