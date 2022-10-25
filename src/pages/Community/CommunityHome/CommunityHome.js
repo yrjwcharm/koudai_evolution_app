@@ -191,8 +191,8 @@ const CommunityHome = ({navigation, route}) => {
                                                 ))
                                             ) : (
                                                 <EmptyTip
-                                                    desc="请点击按钮进行添加"
-                                                    text={data?.show_add_btn ? '暂无相关作品' : ''}
+                                                    desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                                    text={'暂无相关作品'}
                                                     imageStyle={{marginBottom: px(-30)}}>
                                                     {data?.show_add_btn && (
                                                         <Button
@@ -231,8 +231,8 @@ const CommunityHome = ({navigation, route}) => {
                                                 ))
                                             ) : (
                                                 <EmptyTip
-                                                    desc="请点击按钮进行添加"
-                                                    text={data?.show_add_btn ? '暂无相关产品' : ''}
+                                                    desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                                    text={'暂无相关产品'}
                                                     imageStyle={{marginBottom: px(-30)}}>
                                                     {data?.show_add_btn && (
                                                         <Button
