@@ -205,7 +205,11 @@ const CreatorCenterIndex = () => {
                 <View style={styles.cardsWrap}>
                     <ScrollableTabView
                         initialPage={0}
-                        renderTabBar={() => <ScrollableTabBar style={{paddingHorizontal: px(15), marginTop: px(2)}} />}
+                        renderTabBar={() => (
+                            <ScrollableTabBar
+                                style={{paddingHorizontal: px(15), marginTop: px(2), justifyContent: 'space-around'}}
+                            />
+                        )}
                         ref={scrollableRef}
                         onChangeTab={onChangeTab}>
                         {data?.items?.map?.((item, idx) => {
