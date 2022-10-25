@@ -130,8 +130,20 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                         switch (style_id) {
                             case 106:
                                 return (
-                                    <View>
-                                        <Text style={styles.name}>{name}</Text>
+                                    <View style={{flex: 1}}>
+                                        <View style={Style.flexBetween}>
+                                            <Text style={styles.name}>{name}</Text>
+                                            {edit_button ? (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        jump(edit_button.url);
+                                                    }}
+                                                    style={styles.editBtn}>
+                                                    <Text style={styles.editBtnText}>{edit_button.name}</Text>
+                                                </TouchableOpacity>
+                                            ) : null}
+                                        </View>
                                         {tags?.length > 0 && (
                                             <View style={[Style.flexRow, {marginTop: px(4)}]}>
                                                 {tags.map((tag, i) => (
@@ -219,6 +231,21 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                                                 </View>
                                             )}
                                         </View>
+                                        {edit_button ? (
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                onPress={() => {
+                                                    jump(edit_button.url);
+                                                }}
+                                                style={styles.editBtnFloat}>
+                                                {[1, 2, 3].map((i) => (
+                                                    <View
+                                                        style={[styles.editBtnIcon, {marginTop: i > 1 ? px(4) : 0}]}
+                                                        key={i}
+                                                    />
+                                                ))}
+                                            </TouchableOpacity>
+                                        ) : null}
                                     </View>
                                 );
                             default:
@@ -261,16 +288,6 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                                                             </View>
                                                         ) : null}
                                                     </View>
-                                                    {edit_button ? (
-                                                        <TouchableOpacity
-                                                            activeOpacity={0.8}
-                                                            onPress={() => {
-                                                                jump(edit_button.url);
-                                                            }}
-                                                            style={styles.editBtn}>
-                                                            <Text style={styles.editBtnText}>{edit_button.name}</Text>
-                                                        </TouchableOpacity>
-                                                    ) : null}
                                                 </View>
                                                 {tags?.length > 0 && (
                                                     <View style={[Style.flexRow, {marginTop: px(4)}]}>
@@ -302,6 +319,21 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                                                 </View>
                                             ) : null}
                                         </View>
+                                        {edit_button ? (
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                onPress={() => {
+                                                    jump(edit_button.url);
+                                                }}
+                                                style={styles.editBtnFloat}>
+                                                {[1, 2, 3].map((i) => (
+                                                    <View
+                                                        style={[styles.editBtnIcon, {marginTop: i > 1 ? px(4) : 0}]}
+                                                        key={i}
+                                                    />
+                                                ))}
+                                            </TouchableOpacity>
+                                        ) : null}
                                     </>
                                 );
                         }
@@ -698,6 +730,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(7),
         paddingVertical: px(5),
         borderRadius: px(10),
+    },
+    editBtnFloat: {
+        position: 'absolute',
+        right: -px(12),
+        height: '100%',
+        width: px(35),
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderLeftColor: Colors.borderColor,
+        borderLeftWidth: 0.6,
+    },
+    editBtnIcon: {
+        width: px(3),
+        height: px(3),
+        backgroundColor: '#0051CC',
+        borderRadius: px(3),
     },
     editBtnText: {
         fontSize: px(10),
