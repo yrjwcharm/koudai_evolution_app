@@ -2,13 +2,13 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, View, TouchableWithoutFeedback, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Entypo';
 import {useJump} from '~/components/hooks';
 import LinearGradient from 'react-native-linear-gradient';
 import TradeNotice from '../components/TradeNotice';
@@ -36,7 +36,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                 jump(summary?.url);
             }}>
             <LinearGradient
-                colors={['#F1F9FF', Colors.bgColor]}
+                colors={['#ECF5FF', Colors.bgColor]}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={{marginBottom: px(12), paddingTop: px(8)}}>
@@ -45,7 +45,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 1}}
                     style={styles.assetsContainer}>
-                    <Icon name="right" color="#fff" size={px(14)} style={styles.rightIcon} />
+                    <Icon name="chevron-thin-right" color="#fff" size={px(13)} style={styles.rightIcon} />
                     {/* 资产信息 */}
                     <View style={Style.flexRowCenter}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
@@ -76,6 +76,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                                 </View>
                             </View>
                         </View>
+
                         {chart?.length > 0 ? (
                             <View style={{width: px(120), height: px(70)}}>
                                 <Chart
@@ -87,6 +88,10 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
                     </View>
                     {/* 交易通知 */}
                     {tradeMes ? <TradeNotice data={tradeMes} /> : null}
+                    <Image
+                        source={require('~/assets/img/index/assetHeaderBg.png')}
+                        style={{height: px(107), width: px(105), position: 'absolute', right: 0, top: 0}}
+                    />
                 </LinearGradient>
             </LinearGradient>
         </TouchableWithoutFeedback>

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 12:01:13
+ * @LastEditTime: 2022-10-25 15:46:13
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -108,7 +108,7 @@ function TagWrap(props) {
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
                 <Text style={styles.tip} numberOfLines={0}>
-                    专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字过6个字
+                    专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字
                 </Text>
             </View>
             <BottomModal
@@ -165,6 +165,12 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
             Toast.show('专题简介未填写');
             return;
         }
+
+        if (desc.length < 50) {
+            Toast.show('专题简介需大于50个字');
+            return;
+        }
+
         if (!tags || tags.length === 0) {
             Toast.show('专题标签未填写');
             return;
@@ -327,16 +333,20 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                         onChangeText={setTitle}
                         placeholder="请输入专题名称，最多13个字符"
                         value={title}
+                        maxLength={13}
                         clearButtonMode="while-editing"
                     />
                     <View style={[styles.line, styles.space1]} />
                 </View>
-                <View style={[styles.space2, styles.inputWrap]}>
+                <View style={[styles.space2, styles.descInputWrap]}>
                     <TextInput
-                        style={styles.desc}
-                        placeholder="请输入专题简介"
+                        style={styles.descInput}
+                        placeholder="请输入专题简介，最少50个字，最多150个字"
                         onChangeText={setDesc}
-                        maxLength={13}
+                        maxLength={150}
+                        numberOfLines={4}
+                        multiline={true}
+                        editable
                         value={desc}
                         clearButtonMode="while-editing"
                     />
@@ -432,10 +442,11 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         color: '#121D3A',
     },
-    desc: {
+    descInput: {
         fontSize: px(13),
         color: '#545968',
     },
+    descInputWrap: {},
     tipWrap: {
         display: 'flex',
         flexDirection: 'row',

@@ -6,7 +6,7 @@ import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Entypo';
 import {useJump} from '~/components/hooks';
 const PointCard = ({data, style}) => {
     const {icon, list, number, url} = data;
@@ -26,7 +26,7 @@ const PointCard = ({data, style}) => {
                         {''} ({number})
                     </Text>
                 </View>
-                <Icon name="right" color={Colors.lightGrayColor} />
+                <Icon name="chevron-thin-right" color={Colors.lightGrayColor} />
             </TouchableOpacity>
             <View style={{paddingBottom: px(6), paddingTop: px(12)}}>
                 {list?.map((item, index) => (

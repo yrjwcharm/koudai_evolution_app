@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         marginBottom: px(8),
     },
     topMenuTitle: {
-        fontSize: Font.textH3,
+        fontSize: Font.textSm,
         lineHeight: px(15),
     },
     tip: {
