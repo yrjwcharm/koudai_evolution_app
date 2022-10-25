@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 14:18:16
+ * @LastEditTime: 2022-10-25 20:37:30
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -105,6 +105,7 @@ const Product = ({navigation}) => {
         http.get('/products/index/20220901')
             .then((res) => {
                 if (res.code === '000000') {
+                    res?.result?.app_tag_url && jump(res?.result?.app_tag_url);
                     setProData(res.result);
                     // 获取专题
                     pageRef.current = 1;
@@ -399,34 +400,6 @@ const Product = ({navigation}) => {
                                         <TouchableOpacity
                                             activeOpacity={0.8}
                                             onPress={() => {
-                                                // jump({
-                                                //     path: 'PortfolioDetails',
-                                                //     params: {
-                                                //         link: 'http://192.168.190.43:3000/portfolioDetails',
-                                                //         params: {
-                                                //             plan_id: '29',
-                                                //         },
-                                                //     },
-                                                // });
-                                                // jump({
-                                                //     path: 'SpecialDetail',
-                                                //     params: {
-                                                //         link: 'http://192.168.190.33:3000/specialDetail',
-                                                //         params: {
-                                                //             subject_id: '1',
-                                                //         },
-                                                //     },
-                                                // });
-                                                // jump({
-                                                //     path: 'PortfolioDetails',
-                                                //     type: 1,
-                                                //     params: {
-                                                //         link: 'http://192.168.190.57:3000/portfolioDetails',
-                                                //         params: {
-                                                //             plan_id: 30,
-                                                //         },
-                                                //     },
-                                                // });
                                                 jump(item.url);
                                                 global.LogTool({
                                                     event: item.event_id,
