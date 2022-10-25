@@ -122,6 +122,11 @@ const DayProfit = React.memo(() => {
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setSelCurDate(arr[zIndex].day);
+                    // let num = Math.floor(that.echartsData.length / 30);
+                    // let startVal = 0;
+                    // if (that.echartsData.length > 15) {
+                    //     startVal = (num - 2) * 6;
+                    // }
                 }
             })();
         },
@@ -130,7 +135,6 @@ const DayProfit = React.memo(() => {
     useEffect(() => {
         init(selCurDate);
     }, [init]);
-    const initChartData = (startDate, endDate) => {};
     /**
      * 向上递增一个月
      */
@@ -196,13 +200,6 @@ const DayProfit = React.memo(() => {
             }),
         [dateArr]
     );
-    function computedPosition(length, xArraylength) {
-        if (xArraylength >= 10) {
-            return length <= 10 ? (this.end = 35) : (this.end = 100 - Math.floor((35 / length) * 100));
-        } else {
-            return 100; //小于十条数据显示全部
-        }
-    }
     return (
         <>
             {isHasData ? (
@@ -224,194 +221,6 @@ const DayProfit = React.memo(() => {
                         <View style={{marginTop: px(12)}}>
                             <View style={styles.weekFlex}>{renderWeek}</View>
                             <View style={styles.dateWrap}>{renderCalendar}</View>
-                        </View>
-                    )}
-                    {isBarChart && (
-                        <View style={{position: 'relative', right: px(32)}}>
-                            <RNEChartsPro
-                                width={deviceWidth}
-                                height={px(220)}
-                                option={{
-                                    dataZoom: [
-                                        {
-                                            type: 'inside', // 内置于坐标系中
-                                            start: 0,
-                                            end: computedPosition(1, 15),
-                                            xAxisIndex: [0],
-                                            // start: 94,
-                                            // 是否锁定选择区域（或叫做数据窗口）的大小，如果设置为 true 则锁定选择区域的大小，也就是说，只能平移，不能缩放
-                                            zoomLock: true,
-                                            // end: 100,
-                                            // handleSize: 15,
-
-                                            zoomOnMouseWheel: false, // 关闭滚轮缩放
-                                            moveOnMouseWheel: false, // 开启滚轮平移
-                                            moveOnMouseMove: true, // 鼠标移动能触发数据窗口平移
-                                        },
-                                    ],
-                                    // title: {
-                                    //     text: '产品一周销量情况',
-                                    // },
-                                    tooltip: {
-                                        formatter: '{b}<br>{a}：{c}',
-                                        // formatter:'{c}%'
-                                    },
-                                    toolbox: {
-                                        show: false,
-                                    },
-                                    xAxis: [
-                                        {
-                                            type: 'category',
-                                            nameLocation: 'middle',
-                                            nameGap: 0,
-
-                                            data: [
-                                                1,
-                                                2,
-                                                3,
-                                                4,
-                                                5,
-                                                6,
-                                                7,
-                                                8,
-                                                9,
-                                                10,
-                                                11,
-                                                12,
-                                                13,
-                                                14,
-                                                15,
-                                                1,
-                                                2,
-                                                3,
-                                                4,
-                                                5,
-                                                6,
-                                                7,
-                                                8,
-                                                9,
-                                                10,
-                                                11,
-                                                12,
-                                                13,
-                                                14,
-                                                15,
-                                                17,
-                                            ],
-                                            axisLabel: {
-                                                interval: 0,
-                                                // rotate: 0,
-                                                textStyle: {
-                                                    color: Colors.lightGrayColor, //坐标值得具体的颜色
-                                                    fontSize: px(9),
-                                                    fontFamily: Font.numMedium,
-                                                    fontWeight: 500,
-                                                },
-                                            },
-
-                                            // axisTick: {
-                                            //     length: 6,
-                                            //     lineStyle: {
-                                            //         type: 'dashed',
-                                            //         // ...
-                                            //     },
-                                            // },
-                                            axisTick: {
-                                                show: false,
-                                            },
-                                            axisLine: {
-                                                lineStyle: {
-                                                    color: '#BDC2CC',
-                                                    width: 1, //这里是为了突出显示加上的
-                                                },
-                                            },
-                                        },
-                                    ],
-                                    yAxis: [
-                                        {
-                                            type: 'value',
-                                            show: true,
-                                            axisLine: {
-                                                show: false, // 不显示坐标轴刻度线
-                                            },
-                                            axisTick: {
-                                                //y轴刻度线
-                                                show: false,
-                                            },
-                                            max: 90,
-                                            min: -90,
-                                            splitLine: {
-                                                show: true,
-                                                lineStyle: {
-                                                    color: ['#E9EAEF'],
-                                                    width: 1,
-                                                    type: 'solid',
-                                                },
-                                            },
-                                            axisLabel: {
-                                                show: false, // 不显示坐标轴上的文字
-                                            },
-                                        },
-                                    ],
-                                    series: [
-                                        {
-                                            name: 'Evaporation',
-                                            type: 'bar',
-                                            barWidth: '40%',
-                                            barCategoryGap: '50%',
-                                            // label: {
-                                            //     show: true,
-                                            //     position: 'top',
-                                            // },
-                                            itemStyle: {
-                                                normal: {
-                                                    color: function (params) {
-                                                        //根据数值大小设置相关颜色
-                                                        if (params.value > 0) {
-                                                            return 'red';
-                                                        } else {
-                                                            return 'green';
-                                                        }
-                                                    },
-                                                },
-                                            },
-                                            data: [
-                                                10,
-                                                20,
-                                                30,
-                                                40,
-                                                50,
-                                                60,
-                                                70,
-                                                80,
-                                                90,
-                                                100,
-                                                110,
-                                                120,
-                                                130,
-                                                140,
-                                                150,
-                                                10,
-                                                20,
-                                                30,
-                                                40,
-                                                50,
-                                                60,
-                                                70,
-                                                80,
-                                                90,
-                                                100,
-                                                110,
-                                                120,
-                                                130,
-                                                140,
-                                                150,
-                                                160,
-                                            ],
-                                        },
-                                    ],
-                                }}
-                            />
                         </View>
                     )}
                     <RenderList curDate={selCurDate} />

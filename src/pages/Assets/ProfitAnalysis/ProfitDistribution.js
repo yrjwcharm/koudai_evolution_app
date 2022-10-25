@@ -130,7 +130,7 @@ const ProfitDistribution = React.memo(({headData, type}) => {
                             )}
                             initialPage={0}
                             locked={true}
-                            prerenderingSiblingsNumber={Infinity}
+                            prerenderingSiblingsNumber={0}
                             onChangeTab={({i}) => {
                                 dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
                             }}>
