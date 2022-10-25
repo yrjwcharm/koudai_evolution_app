@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 11:36:32
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-25 20:21:44
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -107,7 +107,7 @@ export default function SpecialModifyEntry({navigation, route}) {
     const sections = (data.line_group || []).map((group) => ({data: group.line_list}));
 
     return (
-        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
+        <View style={styles.pageWrap}>
             <NavBar title={'修改专题'} leftIcon="chevron-left" />
             <View style={styles.content}>
                 <View style={styles.listWrap}>
@@ -119,12 +119,12 @@ export default function SpecialModifyEntry({navigation, route}) {
                         ItemSeparatorComponent={itemSeparatorComponent}
                         renderSectionHeader={renderSectionHeader}
                         renderItem={renderItem}
-                        style={[styles.sectionList, {paddingBottom: insets.bottom}]}
+                        style={[styles.sectionList, {paddingBottom: 58 + insets.bottom}]}
                         stickySectionHeadersEnabled={false}
                     />
                 </View>
                 {data.line_group ? (
-                    <View style={{...Style.flexBetween, ...styles.footer}}>
+                    <View style={{...Style.flexBetween, ...styles.footer, height: 58 + insets.bottom}}>
                         {data.apply_info?.title && (
                             <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
                                 <Text style={styles.btn_text}>审核提示</Text>
@@ -146,7 +146,7 @@ export default function SpecialModifyEntry({navigation, route}) {
                     <Text style={{fontSize: px(13), color: '#545968'}}>{data?.apply_info?.reason}</Text>
                 </View>
             </BottomModal>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -203,6 +203,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         flexDirection: 'row',
         justifyContent: 'space-around',
+        alignItems: 'flex-start',
+        paddingTop: px(10),
     },
     btn: {
         borderColor: Colors.btnColor,
