@@ -582,7 +582,9 @@ const ArticleDetail = ({navigation, route}) => {
 
                                 {Object.keys(recommendData).length > 0 ? (
                                     <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
-                                        <RenderTitle title={recommendData?.portfolios?.title} />
+                                        {recommendData?.portfolios?.list?.length > 0 && (
+                                            <RenderTitle title={recommendData?.portfolios?.title} />
+                                        )}
                                         {recommendData?.portfolios?.list?.map((item, index) => {
                                             return <ProductCards data={item} key={index} style={styles.cardStye} />;
                                         })}
