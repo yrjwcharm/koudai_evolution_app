@@ -259,7 +259,7 @@ const CreatorCenterIndex = () => {
                                                             //     path: 'AddProductStep2',
                                                             //     type: 1,
                                                             //     params: {
-                                                            //         subject_id: '1056',
+                                                            //         subject_id: '1030',
                                                             //     },
                                                             // });
                                                             // jump({
