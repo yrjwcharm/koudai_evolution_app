@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 15:46:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-25 20:16:59
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -19,6 +19,7 @@ import {
     Pressable,
     PermissionsAndroid,
     DeviceEventEmitter,
+    BackHandler,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -206,7 +207,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         });
     };
 
-    const handleBack = () => {
+    const handleBack = (back) => {
         if (bgSource || title || desc || tags.length > 1) {
             Modal.show({
                 content: '已编辑内容是否要保存草稿？下次可继续编辑。',
@@ -215,7 +216,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 confirm: true,
                 backCloseCallbackExecute: true,
                 cancelCallBack: () => {
-                    navigation.goBack();
+                    back ? back() : navigation.goBack();
                 },
                 confirmCallBack: () => {
                     saveStashBaseInfo({
@@ -225,14 +226,22 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                         desc: desc,
                         tags,
                     }).then((_) => {
-                        navigation.goBack();
+                        back ? back() : navigation.goBack();
                     });
                 },
             });
         } else {
-            navigation.goBack();
+            back ? back() : navigation.goBack();
         }
     };
+
+    useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            handleBack(() => navigation.dispatch(e.data.action));
+        });
+        return () => navigation.removeListener('beforeRemove');
+    }, [handleBack]);
 
     const handleChooseOld = () => {
         jump({
