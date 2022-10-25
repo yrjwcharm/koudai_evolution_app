@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 21:49:51
+ * @LastEditTime: 2022-10-25 11:36:32
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         position: 'relative',
         height: deviceHeight,
-        borderBottomWidth: 0.5,
+        flex: 1,
     },
     content: {
         flex: 1,
