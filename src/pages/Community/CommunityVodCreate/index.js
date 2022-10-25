@@ -126,6 +126,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone}, ref) => {
             flatListProps={{
                 data: list,
                 initialNumToRender: 20,
+                keyboardShouldPersistTaps: 'handled',
                 keyExtractor: ({id, name}, index) => name + id + index,
                 ListFooterComponent: null,
                 onEndReached: ({distanceFromEnd}) => {

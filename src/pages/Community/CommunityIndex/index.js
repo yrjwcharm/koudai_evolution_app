@@ -31,7 +31,7 @@ import {
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {debounce, groupBy} from 'lodash';
+import {debounce, differenceBy, groupBy, isEqual} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
@@ -226,6 +226,7 @@ const Follow = forwardRef(({list = []}, ref) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const flatList = useRef();
+    const followedList = useRef(list);
 
     const init = () => {
         getFollowedData({page})
@@ -313,6 +314,17 @@ const Follow = forwardRef(({list = []}, ref) => {
     };
 
     useImperativeHandle(ref, () => ({refresh}));
+
+    useEffect(() => {
+        if (followedList.current?.length > 0) {
+            if (!isEqual(followedList.current, list)) {
+                init();
+                followedList.current = list;
+            }
+        } else {
+            followedList.current = list;
+        }
+    }, [list]);
 
     useEffect(() => {
         init();
@@ -525,9 +537,11 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
 
     useImperativeHandle(ref, () => ({refresh: init}));
 
-    useEffect(() => {
-        init();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <>
