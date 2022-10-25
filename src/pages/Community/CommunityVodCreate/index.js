@@ -340,8 +340,8 @@ const Index = ({route, setLoading}) => {
 
     const onProgress = (e) => {
         const {currentTime: time} = e;
-        setCurrentTime(time);
-        setSliderVal(time);
+        setCurrentTime(time > video.duration ? video.duration : time);
+        setSliderVal(time > video.duration ? video.duration : time);
     };
 
     const onSlidingComplete = useCallback(
@@ -389,6 +389,10 @@ const Index = ({route, setLoading}) => {
                                 <Video
                                     allowsExternalPlayback={false}
                                     muted={false}
+                                    onEnd={() => {
+                                        setPaused(true);
+                                        videoRef.current.seek(0);
+                                    }}
                                     onProgress={onProgress}
                                     paused={paused}
                                     playInBackground
@@ -412,7 +416,14 @@ const Index = ({route, setLoading}) => {
                                     <Image source={videoPlay} style={styles.playBtn} />
                                 </TouchableWithoutFeedback>
                             )}
-                            <TouchableOpacity activeOpacity={0.8} onPress={() => setVideo()} style={styles.deleteVideo}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    setVideo();
+                                    setCurrentTime(0);
+                                    setSliderVal(0);
+                                }}
+                                style={styles.deleteVideo}>
                                 <Image source={deleteVideo} style={styles.deleteIcon} />
                             </TouchableOpacity>
                             {showDuration ? (

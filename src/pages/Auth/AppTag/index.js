@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {getTagData, handleDone, handleQuestion} from './service';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {deviceWidth, px} from '~/utils/appUtil';
+import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
@@ -151,8 +151,12 @@ const Index = ({navigation, route}) => {
                     <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                         <Text style={[styles.title, {fontSize: px(22)}]}>{data[current]?.tag_name}</Text>
                         <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
-                        {data[current]?.sub_list?.map((item, index) => (
-                            <View key={item.tag_name + index} style={{marginBottom: px(16)}}>
+                        {data[current]?.sub_list?.map((item, index, list) => (
+                            <View
+                                key={item.tag_name + index}
+                                style={{
+                                    marginBottom: index === list.length - 1 ? px(76) + (isIphoneX() ? 34 : 0) : px(16),
+                                }}>
                                 <Text style={styles.tag_title} key={index}>
                                     {item.tag_name}
                                     <Text style={{fontWeight: '400', color: Colors.lightBlackColor, fontSize: px(14)}}>

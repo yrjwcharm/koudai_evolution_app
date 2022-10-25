@@ -2,7 +2,7 @@
  * @Date: 2022-10-08 15:06:39
  * @Description: 社区首页
  */
-import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {
     ActivityIndicator,
@@ -40,7 +40,7 @@ import {
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {debounce, differenceBy, groupBy, isEqual} from 'lodash';
+import {debounce, groupBy, isEqual} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 import EmptyTip from '~/components/EmptyTip';
 
@@ -118,6 +118,10 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
 
+    const allFollowed = useMemo(() => {
+        return data.every((item) => item.status === 1);
+    }, [data]);
+
     const init = () => {
         getRecommendFollowUsers()
             .then((res) => {
@@ -169,6 +173,10 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     useEffect(() => {
         init();
     }, []);
+
+    useEffect(() => {
+        allFollowed && refresh?.();
+    }, [allFollowed]);
 
     return data?.length > 0 ? (
         <>
