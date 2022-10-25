@@ -233,12 +233,13 @@ const Index = ({navigation, route}) => {
             {route.params?.selections && keyword && searchList?.length > 0 ? (
                 <View style={styles.bottomWrap}>
                     <TouchableOpacity
-                        activeOpacity={0.8}
+                        activeOpacity={!selections?.length ? 0.3 : 0.8}
+                        disabled={!selections?.length}
                         onPress={() => {
                             DeviceEventEmitter.emit('searchToSelect', selections);
                             navigation.goBack();
                         }}
-                        style={styles.bottomBtn}>
+                        style={[styles.bottomBtn, {opacity: !selections?.length ? 0.3 : 1}]}>
                         <Text style={styles.bottomBtnText}>选好了</Text>
                     </TouchableOpacity>
                 </View>
