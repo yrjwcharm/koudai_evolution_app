@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 20:35:03
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-25 20:48:14
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -391,6 +391,7 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        flex: 1,
         backgroundColor: '#fff',
         paddingLeft: px(16),
         paddingRight: px(16),
