@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 17:28:49
+ * @LastEditTime: 2022-10-25 12:01:13
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -268,7 +268,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={{flex: 1}}>
                 <NavBar
                     title={isEdit ? '修改专题基础信息' : '创建专题'}
                     leftIcon="chevron-left"
@@ -309,7 +309,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     }
 
     return (
-        <SafeAreaView edges={['bottom']}>
+        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
             <NavBar
                 title={isEdit ? '修改专题基础信息' : '创建专题'}
                 leftIcon="chevron-left"

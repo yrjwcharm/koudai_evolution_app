@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 21:32:12
+ * @LastEditTime: 2022-10-25 15:00:01
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -353,12 +353,13 @@ export default function SpecailModifyComment({navigation, route}) {
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                 />
+                <TouchableOpacity style={styles.footer} onPress={handleShowComment}>
+                    <View style={styles.footer_textWrap}>
+                        <Text style={styles.footer_text}>我来聊两句…</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.footer} onPress={handleShowComment}>
-                <View style={styles.footer_textWrap}>
-                    <Text style={styles.footer_text}>我来聊两句…</Text>
-                </View>
-            </TouchableOpacity>
+
             <AddCommentModal ref={commentModalRef} onPublish={handlePublish} />
         </SafeAreaView>
     );
@@ -368,6 +369,7 @@ const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#fff',
         minHeight: '100%',
+        flex: 1,
     },
     listWrap: {
         flex: 1,
@@ -522,6 +524,7 @@ const styles = StyleSheet.create({
 
     footer: {
         paddingHorizontal: px(16),
+        marginBottom: 20,
         width: '100%',
     },
     footer_textWrap: {

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 15:42:01
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 18:50:16
+ * @LastEditTime: 2022-10-25 14:27:38
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/SpecialRecommend.js
  * @Description:  专题推荐样式
  * @Usage:  <RecommendItemWrap tabs={['推广位一', '推广位二']}><RecommendImage /><RecommendImage /></RecommendItemWrap>
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: px(12),
         borderRadius: px(6),
+        width: '100%',
     },
     tabItemsWrap: {
         flexDirection: 'row',
