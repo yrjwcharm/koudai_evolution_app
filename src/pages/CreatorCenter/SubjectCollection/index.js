@@ -14,7 +14,7 @@ import {isIphoneX, px} from '~/utils/appUtil';
 import ScrollableTabBar from '../components/ScrollableTabBar';
 import {getData, getList} from './serverces';
 
-const SubjectCollection = ({route}) => {
+const SubjectCollection = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState();
     const [listData, setListData] = useState();
@@ -34,6 +34,14 @@ const SubjectCollection = ({route}) => {
             });
         }, [route?.params?.tab])
     );
+
+    useEffect(() => {
+        let listener = navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            navigation.navigate('CreatorCenter');
+        });
+        return () => listener?.();
+    }, []);
 
     const getListData = (type) => {
         setListLoading(true);
