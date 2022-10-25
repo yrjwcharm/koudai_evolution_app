@@ -4,7 +4,7 @@
  * @Description:工具管理
  */
 import {ScrollView, StyleSheet, Text, View, Image} from 'react-native';
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useCallback} from 'react';
 import {getList, toolSave} from './service';
 import {Colors, Space, Style} from '~/common/commonStyle';
 import {deviceWidth, px} from '~/utils/appUtil';
@@ -15,6 +15,7 @@ import NavBar from '~/components/NavBar';
 import Toast from '~/components/Toast';
 import {Modal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const sortWidth = deviceWidth - px(48);
 const childrenWidth = sortWidth / 5;
 const ToolList = ({route}) => {
@@ -30,9 +31,11 @@ const ToolList = ({route}) => {
         initialToolIds.current = res.result?.my_tools?.tool_list?.map((item) => item.tool_id).join(',');
         setData(res.result);
     };
-    useEffect(() => {
-        getData();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+        }, [])
+    );
     //点击右上角的按钮
     const handelEditable = (action) => {
         let saveToolIds = data?.my_tools?.tool_list?.map((item) => item.tool_id)?.join(',');
