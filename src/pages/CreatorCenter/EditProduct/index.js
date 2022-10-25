@@ -53,13 +53,11 @@ const EditProduct = ({navigation, route}) => {
                         suppressHighlighting={true}
                         style={styles.topBtnText}
                         onPress={() => {
-                            if (route.params?.product_type == 1) {
-                                if (!activeModalStyle) {
-                                    return Toast.show('请选择展示样式');
-                                }
-                                if (!activeModalRange) {
-                                    return Toast.show('请选择展示区间');
-                                }
+                            if (!activeModalStyle && data?.styles?.[1]) {
+                                return Toast.show('请选择展示样式');
+                            }
+                            if (!activeModalRange && data?.range_list?.[1]) {
+                                return Toast.show('请选择展示区间');
                             }
                             DeviceEventEmitter.emit('editProduct', option);
                             navigation.goBack();
@@ -69,7 +67,7 @@ const EditProduct = ({navigation, route}) => {
                 );
             },
         });
-    }, [navigation, option, activeModalStyle, activeModalRange]);
+    }, [navigation, option, activeModalStyle, activeModalRange, data]);
 
     const onConfirm = useCallback(() => {
         setOption((val) => {
@@ -95,7 +93,7 @@ const EditProduct = ({navigation, route}) => {
     return (
         <>
             <ScrollView style={styles.container}>
-                {route.params?.product_type == 1 ? (
+                {data?.styles?.[1] ? (
                     <View style={styles.cardWrap}>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -151,7 +149,7 @@ const EditProduct = ({navigation, route}) => {
                         <Text style={styles.inputLength}>{option?.desc?.length || 0}/25</Text>
                     </View>
                 </View>
-                {route.params?.product_type == 1 ? (
+                {data?.range_list?.[1] ? (
                     <View style={[styles.cardWrap, {marginTop: px(12)}]}>
                         <TouchableOpacity
                             activeOpacity={0.8}
