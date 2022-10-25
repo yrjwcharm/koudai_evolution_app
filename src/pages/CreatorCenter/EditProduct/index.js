@@ -53,13 +53,14 @@ const EditProduct = ({navigation, route}) => {
                         suppressHighlighting={true}
                         style={styles.topBtnText}
                         onPress={() => {
-                            if (!activeModalStyle) {
-                                return Toast.show('请选择展示样式');
+                            if (route.params?.product_type == 1) {
+                                if (!activeModalStyle) {
+                                    return Toast.show('请选择展示样式');
+                                }
+                                if (!activeModalRange) {
+                                    return Toast.show('请选择展示区间');
+                                }
                             }
-                            if (!activeModalRange) {
-                                return Toast.show('请选择展示区间');
-                            }
-                            console.log(option);
                             DeviceEventEmitter.emit('editProduct', option);
                             navigation.goBack();
                         }}>
@@ -94,36 +95,38 @@ const EditProduct = ({navigation, route}) => {
     return (
         <>
             <ScrollView style={styles.container}>
-                <View style={styles.cardWrap}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.cardHeader}
-                        onPress={() => {
-                            setPageModalType(1);
-                            setActiveModalStyle(option.style_id);
-                            pageModalRef.current.show();
-                        }}>
-                        <View style={styles.cardHeaderLeft}>
-                            <Text style={styles.cardHeaderAsterisk}>*</Text>
-                            <Text style={styles.cardHeaderTitle}>产品展示样式</Text>
+                {route.params?.product_type == 1 ? (
+                    <View style={styles.cardWrap}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={styles.cardHeader}
+                            onPress={() => {
+                                setPageModalType(1);
+                                setActiveModalStyle(option.style_id);
+                                pageModalRef.current.show();
+                            }}>
+                            <View style={styles.cardHeaderLeft}>
+                                <Text style={styles.cardHeaderAsterisk}>*</Text>
+                                <Text style={styles.cardHeaderTitle}>产品展示样式</Text>
+                            </View>
+                            <View style={styles.cardHeaderRight}>
+                                <Icon color={Colors.descColor} name={'angle-down'} size={px(14)} />
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.cardHint}>
+                            <FastImage
+                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
+                                style={styles.hintIcon}
+                            />
+                            <Text style={styles.hintText}>同一个分类下基金或组合只能有一种样式</Text>
                         </View>
-                        <View style={styles.cardHeaderRight}>
-                            <Icon color={Colors.descColor} name={'angle-down'} size={px(14)} />
-                        </View>
-                    </TouchableOpacity>
-                    <View style={styles.cardHint}>
-                        <FastImage
-                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
-                            style={styles.hintIcon}
-                        />
-                        <Text style={styles.hintText}>同一个分类下基金或组合只能有一种样式</Text>
+                        {curCard ? (
+                            <View style={styles.styleWrap}>
+                                <ProductList data={curCard.style_data?.items} type={curCard.style_data?.style_type} />
+                            </View>
+                        ) : null}
                     </View>
-                    {curCard ? (
-                        <View style={styles.styleWrap}>
-                            <ProductList data={curCard.style_data?.items} type={curCard.style_data?.style_type} />
-                        </View>
-                    ) : null}
-                </View>
+                ) : null}
                 <View style={[styles.cardWrap, {marginTop: px(12)}]}>
                     <View style={styles.cardHeader}>
                         <View style={styles.cardHeaderLeft}>
@@ -148,25 +151,27 @@ const EditProduct = ({navigation, route}) => {
                         <Text style={styles.inputLength}>{option?.desc?.length || 0}/25</Text>
                     </View>
                 </View>
-                <View style={[styles.cardWrap, {marginTop: px(12)}]}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.cardHeader}
-                        onPress={() => {
-                            setPageModalType(2);
-                            setActiveModalRange(option.yield_range);
-                            pageModalRef.current.show();
-                        }}>
-                        <View style={styles.cardHeaderLeft}>
-                            <Text style={styles.cardHeaderAsterisk}>*</Text>
-                            <Text style={styles.cardHeaderTitle}>收益率展示区间</Text>
-                        </View>
-                        <View style={styles.cardHeaderRight}>
-                            <Text style={styles.cardHeaderDesc}>{curRange?.name || ''}</Text>
-                            <Icon color={Colors.descColor} name={true ? 'angle-up' : 'angle-down'} size={px(14)} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                {route.params?.product_type == 1 ? (
+                    <View style={[styles.cardWrap, {marginTop: px(12)}]}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={styles.cardHeader}
+                            onPress={() => {
+                                setPageModalType(2);
+                                setActiveModalRange(option.yield_range);
+                                pageModalRef.current.show();
+                            }}>
+                            <View style={styles.cardHeaderLeft}>
+                                <Text style={styles.cardHeaderAsterisk}>*</Text>
+                                <Text style={styles.cardHeaderTitle}>收益率展示区间</Text>
+                            </View>
+                            <View style={styles.cardHeaderRight}>
+                                <Text style={styles.cardHeaderDesc}>{curRange?.name || ''}</Text>
+                                <Icon color={Colors.descColor} name={true ? 'angle-up' : 'angle-down'} size={px(14)} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                ) : null}
             </ScrollView>
             <PageModal
                 ref={pageModalRef}
