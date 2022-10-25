@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: px(46),
         height: px(19),
+        borderBottomLeftRadius: px(4),
         borderTopRightRadius: px(6),
     },
     top: {
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderRadius: px(2),
         width: px(28),
-        height: px(13),
+        height: px(18),
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: '#BDC2CC',

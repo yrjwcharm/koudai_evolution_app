@@ -20,10 +20,11 @@ const RenderList = React.memo(({curDate}) => {
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const jump = useJump();
     useEffect(() => {
         (async () => {
+            setLoading(true);
             const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate});
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
