@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 22:03:13
+ * @LastEditTime: 2022-10-25 11:06:05
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -253,6 +253,8 @@ function EmptyLit(props) {
 
 /** 添加内容 */
 export default function SpecailModifyContent({navigation, route}) {
+    // 来源的场景 create 创建 edit 编辑（默认）
+    const {scene} = route.params || {};
     const [data, setData] = useState([]);
     const [pageData, setPageData] = useState([]);
     const subject_id = route?.params?.subject_id || 1022;
@@ -277,37 +279,42 @@ export default function SpecailModifyContent({navigation, route}) {
     }, [route.params]);
 
     const rightPress = () => {
+        saveContent();
+    };
+
+    const saveContent = () => {
         saveStashContentList({
             subject_id,
             article_ids: data.map((it) => it.id).join(','),
         }).then((res) => {
             if (res.code === '000000') {
                 navigation.goBack();
+            } else {
+                Toast.show(res.message);
             }
         });
     };
 
     const handleBack = () => {
-        // Modal.show({
-        //     content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-        //     cancelText: '不保存草稿',
-        //     confirmText: '保存草稿',
-        //     confirm: true,
-        //     backCloseCallbackExecute: true,
-        //     cancelCallBack: () => {
-        //         navigation.goBack();
-        //     },
-        //     confirmCallBack: () => {
-        //         saveStashContentList({
-        //             subject_id,
-        //             article_ids: data.map((it) => it.id),
-        //         }).then((res) => {
-        //             if (res.code === '000000') {
-        navigation.goBack();
-        //             }
-        //         });
-        //     },
-        // });
+        // 编辑场景，自动保存
+        if (scene !== 'create') {
+            saveContent();
+            return;
+        }
+
+        Modal.show({
+            content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+            cancelText: '不保存草稿',
+            confirmText: '保存草稿',
+            confirm: true,
+            backCloseCallbackExecute: true,
+            cancelCallBack: () => {
+                navigation.goBack();
+            },
+            confirmCallBack: () => {
+                saveContent();
+            },
+        });
     };
     const handleSort = () => {
         jump({
@@ -356,7 +363,7 @@ export default function SpecailModifyContent({navigation, route}) {
             <NavBar
                 title={pageData?.title ?? '精选内容'}
                 leftIcon="chevron-left"
-                rightText={pageData?.top_button?.text ?? '保存'}
+                rightText={scene === 'create' ? '保存' : '完成'}
                 rightPress={rightPress}
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
