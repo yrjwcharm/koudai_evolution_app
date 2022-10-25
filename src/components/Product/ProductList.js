@@ -727,8 +727,9 @@ const styles = StyleSheet.create({
     editBtn: {
         borderWidth: 0.5,
         borderColor: '#0051cc',
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingHorizontal: px(7),
-        paddingVertical: px(5),
         borderRadius: px(10),
     },
     editBtnFloat: {
@@ -750,7 +751,7 @@ const styles = StyleSheet.create({
     },
     editBtnText: {
         fontSize: px(10),
-        lineHeight: px(10),
+        lineHeight: px(20),
         color: '#0051CC',
     },
     mainRowWrap: {
