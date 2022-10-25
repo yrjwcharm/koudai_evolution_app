@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 21:37:22
+ * @LastEditTime: 2022-10-25 12:01:03
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 修改内容排序
  */
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         position: 'relative',
         height: deviceHeight,
+        flex: 1,
     },
     content: {
         paddingTop: px(12),
