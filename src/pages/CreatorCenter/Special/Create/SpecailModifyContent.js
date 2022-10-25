@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 19:36:10
+ * @LastEditTime: 2022-10-25 20:10:43
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -394,6 +394,7 @@ export default function SpecailModifyContent({navigation, route}) {
             <BottomModal
                 ref={bottomModal}
                 title="添加内容"
+                keyboardAvoiding={false}
                 showClose={true}
                 confirmText="确定"
                 children={
