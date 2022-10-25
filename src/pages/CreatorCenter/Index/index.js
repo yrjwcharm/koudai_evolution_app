@@ -262,7 +262,13 @@ const CreatorCenterIndex = () => {
                                                             //         subject_id: '1056',
                                                             //     },
                                                             // });
-                                                            jump(itm?.url);
+                                                            // jump({
+                                                            //     path: 'SubjectCollection',
+                                                            //     params: {
+                                                            //         ...itm?.url?.params,
+                                                            //         tab: 1,
+                                                            //     },
+                                                            // });
                                                             // jump({
                                                             //     path: 'SpecialDetail',
                                                             //     type: 1,
@@ -289,6 +295,7 @@ const CreatorCenterIndex = () => {
                                                             //         apply_id: 2,
                                                             //     },
                                                             // });
+                                                            jump(itm?.url);
                                                         }}>
                                                         <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
                                                         <Icon

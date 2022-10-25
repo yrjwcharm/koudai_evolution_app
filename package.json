@@ -26,7 +26,6 @@
     "@react-navigation/bottom-tabs": "^5.10.6",
     "@react-navigation/native": "^5.8.4",
     "@react-navigation/stack": "^5.12.1",
-    "add": "^2.0.6",
     "axios": "^0.21.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "dayjs": "^1.10.7",
@@ -101,8 +100,7 @@
     "redux-thunk": "^2.3.0",
     "rn-alioss": "^0.2.5",
     "rn-fetch-blob": "^0.12.0",
-    "urijs": "^1.19.7",
-    "yarn": "^1.22.19"
+    "urijs": "^1.19.7"
   },
   "resolutions": {
     "@react-native-community/viewpager": "^2.0.2",

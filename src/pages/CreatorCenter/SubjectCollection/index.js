@@ -14,24 +14,25 @@ import {isIphoneX, px} from '~/utils/appUtil';
 import ScrollableTabBar from '../components/ScrollableTabBar';
 import {getData, getList} from './serverces';
 
-const SubjectCollection = () => {
+const SubjectCollection = ({route}) => {
     const jump = useJump();
     const [data, setData] = useState();
     const [listData, setListData] = useState();
     const [listLoading, setListLoading] = useState(true);
-    const typeRef = useRef(null);
+    const tabRef = useRef();
+
     useFocusEffect(
         useCallback(() => {
             getData().then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    if (!typeRef.current) {
-                        typeRef.current = res.result?.header?.[0]?.type;
-                    }
-                    getListData(typeRef.current);
+                    let tab = route?.params?.tab || 0;
+                    setTimeout(() => {
+                        tabRef?.current?.goToPage(tab);
+                    });
                 }
             });
-        }, [typeRef])
+        }, [route?.params?.tab])
     );
 
     const getListData = (type) => {
@@ -49,7 +50,6 @@ const SubjectCollection = () => {
 
     const onChangeTab = useCallback(
         ({i}) => {
-            typeRef.current = data?.header?.[i]?.type;
             getListData(data?.header?.[i]?.type);
         },
         [data]
@@ -58,6 +58,7 @@ const SubjectCollection = () => {
     return data ? (
         <View style={styles.container}>
             <ScrollableTabView
+                ref={tabRef}
                 renderTabBar={() => (
                     <ScrollableTabBar
                         style={{paddingHorizontal: px(34), backgroundColor: '#fff', paddingTop: px(10)}}
