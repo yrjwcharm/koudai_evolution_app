@@ -7,7 +7,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import Eye from '../../../components/Eye';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Entypo';
 import {getData as _getData, getHold} from './service';
 import {useJump} from '~/components/hooks';
 import RenderAlert from '../components/RenderAlert';
@@ -115,7 +115,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     }}
                                 />
                             </View>
-                            <Icon name="right" color={Colors.lightBlackColor} />
+                            <Icon name="chevron-thin-right" color={Colors.lightBlackColor} />
                         </View>
                         {showEye === 'true' ? (
                             <Text style={styles.amount}>{summary?.asset_info?.value}</Text>
@@ -390,8 +390,8 @@ const styles = StyleSheet.create({
     },
     amountLightText: {fontSize: px(11), color: Colors.lightBlackColor, marginTop: px(5), fontFamily: Font.numRegular},
     sortImg: {
-        width: px(8),
-        height: px(12),
+        width: px(6),
+        height: px(10),
         marginLeft: px(1),
         marginBottom: px(-2),
     },

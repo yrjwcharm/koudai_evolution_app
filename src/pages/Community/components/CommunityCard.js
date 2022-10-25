@@ -139,6 +139,7 @@ export const CommunityFollowCard = ({
     live_status, // 直播状态 1 预约中 2 直播中 3 回放
     left_desc, // 直播状态或预约人数
     onDelete, //移除作品
+    can_delete, //是否显示移除
     play_mode, // 视频播放模式 1 竖屏 2 横屏
     relation_type,
     reserved, // 直播是否已预约
@@ -264,7 +265,7 @@ export const CommunityFollowCard = ({
     return (
         <>
             <View style={[isRecommend ? {} : styles.communityCard, style]}>
-                {onDelete && (
+                {can_delete && (
                     <TouchableOpacity
                         style={[styles.cardDelete, Style.flexRow]}
                         onPress={() => {

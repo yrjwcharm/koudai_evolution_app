@@ -96,10 +96,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     paused={paused}
                                     volume={7.0}
                                     onLoadStart={(e) => {
-                                        console.log('onLoadStart', e);
+                                        // console.log('onLoadStart', e);
                                     }}
                                     onBuffer={(isBuffering) => {
-                                        console.log('isBuffering', isBuffering);
+                                        // console.log('isBuffering', isBuffering);
                                     }}
                                     playInBackground={true}
                                     repeat={true}
@@ -139,13 +139,15 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                         />
                     )}
                     <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
-                    <TouchableWithoutFeedback onPress={handleFollow}>
-                        <View style={styles.button}>
-                            <Text style={{fontSize: px(12), color: '#fff'}}>
-                                {followStatus == 1 ? '已关注' : '+关注'}
-                            </Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+                    {!!data?.follow_btn && (
+                        <TouchableWithoutFeedback onPress={handleFollow}>
+                            <View style={styles.button}>
+                                <Text style={{fontSize: px(12), color: '#fff'}}>
+                                    {followStatus == 1 ? '已关注' : '+关注'}
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    )}
                 </View>
                 <Text style={{fontSize: px(13), color: '#fff', marginBottom: px(8), lineHeight: px(22)}}>
                     {data?.title}

@@ -59,6 +59,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.marginAlign,
         marginHorizontal: px(16),
+        marginTop: px(8),
+        marginBottom: px(4),
+        borderRadius: px(6),
     },
     systemMsgText: {
         fontSize: px(12),

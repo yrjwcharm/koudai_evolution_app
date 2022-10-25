@@ -128,8 +128,8 @@ const VideoFooter = ({data, handleComment}) => {
                         autoPlay
                         source={
                             collect_status
-                                ? require('~/assets/animation/videoCollect.json')
-                                : require('~/assets/animation/videoCollectActive.json')
+                                ? require('~/assets/animation/videoCollectActive.json')
+                                : require('~/assets/animation/videoCollect.json')
                         }
                         style={{height: px(36), width: px(36), marginBottom: px(-6)}}
                     />

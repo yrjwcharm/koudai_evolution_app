@@ -18,8 +18,7 @@ const Header = ({newMes}) => {
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
     return (
         <>
-            <View style={[styles.header, {height: inset.top + px(42)}]}>
-                <View style={{height: inset.top}} />
+            <View style={[styles.header, {paddingTop: inset.top}]}>
                 <View style={[Style.flexBetween, {height: px(42)}]}>
                     <TouchableOpacity
                         activeOpacity={0.9}
