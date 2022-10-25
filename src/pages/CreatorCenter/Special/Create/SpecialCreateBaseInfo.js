@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 20:16:59
+ * @LastEditTime: 2022-10-25 20:26:05
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -207,41 +207,37 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         });
     };
 
-    const handleBack = (back) => {
-        if (bgSource || title || desc || tags.length > 1) {
-            Modal.show({
-                content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-                cancelText: '不保存草稿',
-                confirmText: '保存草稿',
-                confirm: true,
-                backCloseCallbackExecute: true,
-                cancelCallBack: () => {
-                    back ? back() : navigation.goBack();
-                },
-                confirmCallBack: () => {
-                    saveStashBaseInfo({
-                        subject_id: subject_id || 0,
-                        name: title,
-                        bg_img: bgSource,
-                        desc: desc,
-                        tags,
-                    }).then((_) => {
-                        back ? back() : navigation.goBack();
-                    });
-                },
-            });
-        } else {
-            back ? back() : navigation.goBack();
-        }
-    };
-
     useEffect(() => {
         navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
-            handleBack(() => navigation.dispatch(e.data.action));
+            if (bgSource || title || desc || tags.length > 1) {
+                Modal.show({
+                    content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+                    cancelText: '不保存草稿',
+                    confirmText: '保存草稿',
+                    confirm: true,
+                    backCloseCallbackExecute: true,
+                    cancelCallBack: () => {
+                        navigation.dispatch(e.data.action);
+                    },
+                    confirmCallBack: () => {
+                        saveStashBaseInfo({
+                            subject_id: subject_id || 0,
+                            name: title,
+                            bg_img: bgSource,
+                            desc: desc,
+                            tags,
+                        }).then((_) => {
+                            navigation.dispatch(e.data.action);
+                        });
+                    },
+                });
+            } else {
+                navigation.dispatch(e.data.action);
+            }
         });
         return () => navigation.removeListener('beforeRemove');
-    }, [handleBack]);
+    }, [bgSource, title, desc, tags]);
 
     const handleChooseOld = () => {
         jump({
@@ -287,7 +283,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 <NavBar
                     title={isEdit ? '修改专题基础信息' : '创建专题'}
                     leftIcon="chevron-left"
-                    leftPress={handleBack}
+                    leftPress={() => navigation.goBack()}
                 />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -330,7 +326,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 leftIcon="chevron-left"
                 rightText={isEdit ? '保存' : data.next_button?.text ?? '下一步'}
                 rightPress={rightPress}
-                leftPress={handleBack}
+                leftPress={() => navigation.goBack()}
                 rightTextStyle={styles.right_sty}
             />
             <ScrollView style={styles.pageWrap}>
