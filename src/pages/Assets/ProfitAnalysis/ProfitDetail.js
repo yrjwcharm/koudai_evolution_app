@@ -39,7 +39,7 @@ const ProfitDetail = ({navigation, route}) => {
                 setDeclarePic(declare_pic);
                 setLoading(false);
                 navigation.setOptions({
-                    title: '更新说明',
+                    title: '收益明细',
                     headerRight: () => (
                         <>
                             <TouchableOpacity
