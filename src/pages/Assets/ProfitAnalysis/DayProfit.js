@@ -18,7 +18,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 const DayProfit = React.memo(() => {
-    const chartRef = useRef(null);
     const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
@@ -34,7 +33,8 @@ const DayProfit = React.memo(() => {
     const [dateArr, setDateArr] = useState([]);
     const [isNext, setIsNext] = useState(false);
     const [isPrev, setIsPrev] = useState(true);
-    const [minDate, setMinDate] = useState('');
+    const [xAxisData, setXAxisData] = useState([]);
+    const [yAxisData, setYAxisData] = useState([]);
     const [maxDate, setMaxDate] = useState('');
     const [isHasData, setIsHasData] = useState(true);
     /**
@@ -113,6 +113,8 @@ const DayProfit = React.memo(() => {
                         );
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        let xAxisData = arr.map((el) => el.day);
+                        let yAxisData = arr.map((el) => el.profit);
                         if (cur > max || cur < min) return;
                         cur == max && setIsNext(false);
                         cur == min && setIsPrev(false);
@@ -125,6 +127,8 @@ const DayProfit = React.memo(() => {
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
                         setSelCurDate(arr[zIndex].day);
+                        setXAxisData(xAxisData);
+                        setYAxisData(yAxisData);
                     } else {
                         setIsHasData(false);
                     }
@@ -222,6 +226,131 @@ const DayProfit = React.memo(() => {
                         <View style={{marginTop: px(12)}}>
                             <View style={styles.weekFlex}>{renderWeek}</View>
                             <View style={styles.dateWrap}>{renderCalendar}</View>
+                        </View>
+                    )}
+                    {isBarChart && (
+                        <View style={{position: 'relative', right: px(28)}}>
+                            <RNEChartsPro
+                                width={deviceWidth}
+                                height={px(220)}
+                                option={{
+                                    dataZoom: [
+                                        {
+                                            type: 'inside', // 内置于坐标系中
+                                            // start: 0,
+                                            // end: 30,
+                                            // endValue: 30, //x轴少于31个数据，则显示全部，超过31个数据则显示前31个。
+                                            // startValue: 0, // 从头开始。
+                                            // endValue: 30, // 最多六个
+                                            xAxisIndex: [0],
+                                            // start: 94,
+                                            // end: 100,
+                                            // handleSize: 8,
+
+                                            zoomOnMouseWheel: false, // 关闭滚轮缩放
+                                            moveOnMouseWheel: false, // 开启滚轮平移
+                                            moveOnMouseMove: true, // 鼠标移动能触发数据窗口平移
+                                        },
+                                    ],
+                                    // title: {
+                                    //     text: '产品一周销量情况',
+                                    // },
+                                    tooltip: {
+                                        formatter: '{b}<br>{a}：{c}',
+                                        // formatter:'{c}%'
+                                    },
+                                    toolbox: {
+                                        show: false,
+                                    },
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            nameLocation: 'right',
+                                            nameGap: 30,
+
+                                            data: xAxisData,
+                                            axisLabel: {
+                                                interval: xAxisData.length - 2,
+                                                // rotate: 45,
+                                                textStyle: {
+                                                    color: Colors.lightGrayColor, //坐标值得具体的颜色
+                                                    fontSize: px(9),
+                                                    fontFamily: Font.numMedium,
+                                                    fontWeight: 500,
+                                                },
+                                            },
+
+                                            // axisTick: {
+                                            //     length: 6,
+                                            //     lineStyle: {
+                                            //         type: 'dashed',
+                                            //         // ...
+                                            //     },
+                                            // },
+                                            axisTick: {
+                                                show: false,
+                                            },
+                                            axisLine: {
+                                                lineStyle: {
+                                                    color: '#BDC2CC',
+                                                    width: 1, //这里是为了突出显示加上的
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    yAxis: [
+                                        {
+                                            type: 'value',
+                                            show: true,
+                                            axisLine: {
+                                                show: false, // 不显示坐标轴刻度线
+                                            },
+                                            axisTick: {
+                                                //y轴刻度线
+                                                show: false,
+                                            },
+                                            max: 90,
+                                            min: -90,
+                                            splitLine: {
+                                                show: true,
+                                                lineStyle: {
+                                                    color: ['#E9EAEF'],
+                                                    width: 1,
+                                                    type: 'solid',
+                                                },
+                                            },
+                                            axisLabel: {
+                                                show: false, // 不显示坐标轴上的文字
+                                            },
+                                        },
+                                    ],
+                                    series: [
+                                        {
+                                            name: 'Evaporation',
+                                            type: 'bar',
+                                            barWidth: '40%',
+                                            barCategoryGap: '50%',
+                                            // label: {
+                                            //     show: true,
+                                            //     position: 'top',
+                                            // },
+                                            itemStyle: {
+                                                normal: {
+                                                    color: function (params) {
+                                                        //根据数值大小设置相关颜色
+                                                        if (params.value > 0) {
+                                                            return 'red';
+                                                        } else {
+                                                            return 'green';
+                                                        }
+                                                    },
+                                                },
+                                            },
+                                            data: yAxisData,
+                                        },
+                                    ],
+                                }}
+                            />
                         </View>
                     )}
                     <RenderList curDate={selCurDate} />

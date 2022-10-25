@@ -16,7 +16,7 @@ import EmptyTip from '../../../../components/EmptyTip';
 import {BottomModal} from '../../../../components/Modal';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const BarChartComponent = React.memo(({chartData}) => {
+const BarChartComponent = React.memo(({chartData, changeDate}) => {
     const insets = useSafeAreaInsets();
     const textTime = useRef(null);
     const textThisFund = useRef(null);
@@ -40,7 +40,6 @@ const BarChartComponent = React.memo(({chartData}) => {
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
-            // console.log(items);
             textTime.current?.setNativeProps({text: items[0]?.title});
             textThisFund.current?.setNativeProps({
                 text: `${items[0]?.value}`,
@@ -67,49 +66,49 @@ const BarChartComponent = React.memo(({chartData}) => {
             {chartData.chart ? (
                 <>
                     <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
-                        {/*<View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>*/}
-                        {/*    {chartData?.label?.map((item, index) => {*/}
-                        {/*        return (*/}
-                        {/*            <View key={item.val + index} style={styles.legendItem}>*/}
-                        {/*                <TextInput*/}
-                        {/*                    defaultValue={`${item.val}`}*/}
-                        {/*                    editable={false}*/}
-                        {/*                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}*/}
-                        {/*                    style={[*/}
-                        {/*                        styles.legendTitle,*/}
-                        {/*                        index !== 0 ? {color: getColor(`${item.val}`)} : {},*/}
-                        {/*                    ]}*/}
-                        {/*                />*/}
-                        {/*                <View style={Style.flexRow}>*/}
-                        {/*                    {index !== 0 && (*/}
-                        {/*                        <Dot*/}
-                        {/*                            bgColor={*/}
-                        {/*                                index === 1*/}
-                        {/*                                    ? 'rgba(231, 73, 73, 0.15)'*/}
-                        {/*                                    : 'rgba(84, 89, 104, 0.15)'*/}
-                        {/*                            }*/}
-                        {/*                            color={index === 1 ? Colors.red : Colors.descColor}*/}
-                        {/*                        />*/}
-                        {/*                    )}*/}
-                        {/*                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>*/}
-                        {/*                        {item.name}*/}
-                        {/*                    </Text>*/}
-                        {/*                    {chartData?.tips && index === 2 && (*/}
-                        {/*                        <TouchableOpacity*/}
-                        {/*                            activeOpacity={0.8}*/}
-                        {/*                            style={{position: 'absolute', right: text(-16)}}*/}
-                        {/*                            onPress={() => showTips(chartData.tips)}>*/}
-                        {/*                            <FastImage*/}
-                        {/*                                style={{width: text(12), height: text(12)}}*/}
-                        {/*                                source={require('../../../../assets/img/tip.png')}*/}
-                        {/*                            />*/}
-                        {/*                        </TouchableOpacity>*/}
-                        {/*                    )}*/}
-                        {/*                </View>*/}
-                        {/*            </View>*/}
-                        {/*        );*/}
-                        {/*    })}*/}
-                        {/*</View>*/}
+                        <View style={[Style.flexEvenly, {paddingTop: Space.padding}]}>
+                            {chartData?.label?.map((item, index) => {
+                                return (
+                                    <View key={item.val + index} style={styles.legendItem}>
+                                        <TextInput
+                                            defaultValue={`${item.val}`}
+                                            editable={false}
+                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                            style={[
+                                                styles.legendTitle,
+                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                            ]}
+                                        />
+                                        <View style={Style.flexRow}>
+                                            {index !== 0 && (
+                                                <Dot
+                                                    bgColor={
+                                                        index === 1
+                                                            ? 'rgba(231, 73, 73, 0.15)'
+                                                            : 'rgba(84, 89, 104, 0.15)'
+                                                    }
+                                                    color={index === 1 ? Colors.red : Colors.descColor}
+                                                />
+                                            )}
+                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                                {item.name}
+                                            </Text>
+                                            {chartData?.tips && index === 2 && (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={{position: 'absolute', right: text(-16)}}
+                                                    onPress={() => showTips(chartData.tips)}>
+                                                    <FastImage
+                                                        style={{width: text(12), height: text(12)}}
+                                                        source={require('../../../../assets/img/tip.png')}
+                                                    />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
                         <View style={{height: px(220)}}>
                             {chartData.chart && (
                                 <Chart

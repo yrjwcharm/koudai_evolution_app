@@ -33,15 +33,13 @@ const ProfitDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
-            const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
-            if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', header = {}} = res[0]?.result || {};
-                const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
-                setHeadData(header);
+            const res = await getEarningsUpdateNote({});
+            if (res.code == '000000') {
+                const {title: rightTitle = '', declare_pic = ''} = res.result || {};
                 setDeclarePic(declare_pic);
                 setLoading(false);
                 navigation.setOptions({
-                    title: navigationTitle,
+                    title: '更新说明',
                     headerRight: () => (
                         <>
                             <TouchableOpacity
@@ -57,7 +55,7 @@ const ProfitDetail = ({navigation, route}) => {
                 });
             }
         })();
-    }, [type]);
+    }, []);
     useEffect(() => {
         init();
         let listener = DeviceEventEmitter.addListener('sendChangeTrigger', (bool) => setLocked(bool));
@@ -81,20 +79,14 @@ const ProfitDetail = ({navigation, route}) => {
                             <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                         )}
                         initialPage={page}
+                        prerenderingSiblingsNumber={0}
                         locked={true}
                         onChangeTab={({i}) => {
                             setType(tabsRef.current[i].type);
                             dispatch({type: 'updateType', payload: tabsRef.current[i].type});
                         }}>
                         {tabsRef.current.map((el, index) => {
-                            return (
-                                <ProfitDistribution
-                                    type={type}
-                                    headData={headData}
-                                    tabLabel={el.text}
-                                    key={`${el + '' + index}`}
-                                />
-                            );
+                            return <ProfitDistribution tabLabel={el.text} key={`${el + '' + index}`} />;
                         })}
                     </ScrollableTabView>
                     <BottomModal title={'更新说明'} ref={bottomModal}>

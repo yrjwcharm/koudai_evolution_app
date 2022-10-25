@@ -144,6 +144,9 @@ const MonthProfit = React.memo(() => {
             }),
         [dateArr]
     );
+    const executeChangeDate = useCallback((data) => {
+        setSelCurDate(data);
+    }, []);
     return (
         <>
             {isHasData ? (
@@ -160,7 +163,7 @@ const MonthProfit = React.memo(() => {
                         isPrev={isPrev}
                     />
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
-                    {isBarChart && <BarChartComponent chartData={chartData} />}
+                    {isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}
                     {/*收益数据-根据实际情形选择map渲染*/}
                     <RenderList curDate={selCurDate} />
                 </View>

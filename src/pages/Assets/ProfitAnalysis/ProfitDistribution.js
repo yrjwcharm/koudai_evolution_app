@@ -7,7 +7,7 @@ import Tab from '../../../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
-import {getChartData} from './services';
+import {getChartData, getHeadData} from './services';
 import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -40,11 +40,12 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(({headData, type}) => {
+const ProfitDistribution = React.memo(() => {
     const [data, setData] = useState({});
+    const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();
     const jump = useJump();
-    const {profit_info, profit_acc_info, profit_all} = headData;
+    const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState([]);
     const tabsRef = useRef([
         {type: 'day', text: '日收益'},
         {type: 'month', text: '月收益'},
@@ -56,6 +57,15 @@ const ProfitDistribution = React.memo(({headData, type}) => {
         let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
         return () => listener && listener.remove();
     }, []);
+    useEffect(() => {
+        (async () => {
+            const res = await getHeadData({type});
+            if (res.code === '000000') {
+                const {title: navigationTitle = '', header = {}} = res.result || {};
+                setHeadData(header);
+            }
+        })();
+    }, [type]);
     return (
         <>
             <View style={{flex: 1, position: 'relative'}}>
