@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 17:09:31
+ * @LastEditTime: 2022-10-25 17:32:40
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
 
-import React, {useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -42,7 +42,6 @@ export default function CreatorAuthHome(props) {
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
     const [criticalState, setScrollCriticalState] = useState(false);
-    const [scrollY, setScrollY] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const listRef = useRef([]); // 解决连续加载两页导致的list被覆盖的问题
@@ -61,10 +60,7 @@ export default function CreatorAuthHome(props) {
                 .then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
-
                         setTabs(res.result.items.map((it) => it.title));
-                        const item = res.result.items[activeTab];
-                        getListData(item, 1);
                     }
                 })
                 .finally((_) => {
@@ -72,6 +68,12 @@ export default function CreatorAuthHome(props) {
                 });
         }, [])
     );
+
+    useEffect(() => {
+        if (!data) return;
+        let item = data?.items[activeTab];
+        getListData(item, 1);
+    }, [data]);
 
     const getListData = (item, nextPage) => {
         if (nextPage === 1) {
@@ -84,8 +86,6 @@ export default function CreatorAuthHome(props) {
         getList({type: item.type, page: nextPage})
             .then((res) => {
                 if (res.code === '000000' && oldActiveTab === activeTab) {
-                    console.log('nextPage:', nextPage, listRef.current);
-
                     if (nextPage >= 2) {
                         listRef.current = (listRef.current || []).concat(res.result.items);
                         setList(listRef.current);
