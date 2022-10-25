@@ -37,7 +37,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
     const renderModalCategoryItem = useCallback(
         ({item, index, drag, isActive}) => {
             const isCurrent = modalTabActive === item.id;
-
+            // onLongPress={item.id !== -1 ? drag : null}
             return (
                 <ScaleDecorator>
                     <TouchableOpacity
@@ -77,7 +77,6 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                                 }
                             });
                         }}
-                        onLongPress={item.id !== -1 ? drag : null}
                         style={[
                             styles.groupTab,
                             {
@@ -217,8 +216,8 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                     activeOpacity={1}
                     style={styles.modalWrap}
                     onPress={() => {
-                        setModalVisible(false);
-                        setModalTabActive();
+                        // setModalVisible(false);
+                        // setModalTabActive();
                     }}>
                     <TouchableOpacity
                         activeOpacity={1}
