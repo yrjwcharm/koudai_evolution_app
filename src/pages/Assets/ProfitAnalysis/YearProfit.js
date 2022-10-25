@@ -15,9 +15,7 @@ import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 const YearProfit = (callback) => {
-    const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
-    const unitType = useSelector((state) => state.profitDetail.unitType);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -40,29 +38,35 @@ const YearProfit = (callback) => {
                 const res = await getChartData({type, unit_type: 'year'});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res?.result ?? {};
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            if (arr[i].day == profit_data_list[j].unit_key) {
-                                arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (arr[i].day == profit_data_list[j].unit_key) {
+                                    arr[i].profit = profit_data_list[j].value;
+                                }
                             }
                         }
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                        );
+                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        let barCharData = arr.map((el) => {
+                            return {date: el.day + '年', value: parseFloat(el.profit)};
+                        });
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[index]?.unit_key},
+                                {name: '收益', val: profit_data_list[index]?.value},
+                            ],
+                            chart: barCharData,
+                        });
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurYear(arr[zIndex].day);
+                    } else {
+                        setIsHasData(false);
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                    let barCharData = arr.map((el) => {
-                        return {date: el.day + '年', value: parseFloat(el.profit)};
-                    });
-                    setChart({
-                        label: [
-                            {name: '时间', val: profit_data_list[index]?.unit_key},
-                            {name: '收益', val: profit_data_list[index]?.value},
-                        ],
-                        chart: barCharData,
-                    });
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setSelCurYear(arr[zIndex].day);
                 }
             })();
         },

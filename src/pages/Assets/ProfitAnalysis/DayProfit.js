@@ -90,43 +90,44 @@ const DayProfit = React.memo(() => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    let minDate = unit_list[unit_list.length - 1].value;
-                    let maxDate = unit_list[0].value;
-                    let cur = dayjs_.format('YYYY-MM');
-                    let max = dayjs(maxDate).format('YYYY-MM');
-                    let min = dayjs(minDate).format('YYYY-MM');
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            //小于当前日期的情况
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                if (arr[i].day == profit_data_list[j].unit_key) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        let minDate = unit_list[unit_list.length - 1].value;
+                        let maxDate = unit_list[0].value;
+                        let cur = dayjs_.format('YYYY-MM');
+                        let max = dayjs(maxDate).format('YYYY-MM');
+                        let min = dayjs(minDate).format('YYYY-MM');
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                //小于当前日期的情况
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    if (arr[i].day == profit_data_list[j].unit_key) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                        );
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        if (cur > max || cur < min) return;
+                        cur == max && setIsNext(false);
+                        cur == min && setIsPrev(false);
+                        if (cur > min && cur < max) {
+                            setIsPrev(true);
+                            setIsNext(true);
+                        }
+                        setDate(dayjs_);
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurDate(arr[zIndex].day);
+                    } else {
+                        setIsHasData(false);
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                    if (cur > max || cur < min) return;
-                    cur == max && setIsNext(false);
-                    cur == min && setIsPrev(false);
-                    if (cur > min && cur < max) {
-                        setIsPrev(true);
-                        setIsNext(true);
-                    }
-                    setDate(dayjs_);
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setSelCurDate(arr[zIndex].day);
-                    // let num = Math.floor(that.echartsData.length / 30);
-                    // let startVal = 0;
-                    // if (that.echartsData.length > 15) {
-                    //     startVal = (num - 2) * 6;
-                    // }
                 }
             })();
         },
