@@ -194,9 +194,9 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                                       onPress={() => handlerPress(itm)}>
                                       <View style={styles.cellItemLeft}>
                                           <Text style={styles.cellItemTitle}>{itm.name}</Text>
-                                          {itm.desc ? (
+                                          {itm.type === 'desc' ? (
                                               <Text style={styles.cellItemDesc} numberOfLines={3}>
-                                                  {itm.desc}
+                                                  {itm.value}
                                               </Text>
                                           ) : null}
                                       </View>
