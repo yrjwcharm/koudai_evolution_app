@@ -125,7 +125,7 @@ const Index = ({
                     </TouchableOpacity>
                 ) : null}
                 {groups?.length > 0 && (
-                    <View style={{paddingTop: header.bg_img ? px(12) : 0}}>
+                    <View style={{paddingTop: px(12)}}>
                         <View style={Style.flexRow}>
                             {groups.map?.((group, index) => {
                                 const {name} = group;

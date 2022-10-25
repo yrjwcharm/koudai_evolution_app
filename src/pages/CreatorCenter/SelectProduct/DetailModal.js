@@ -48,7 +48,7 @@ const DetailModal = ({bottom, onClose, selections, handlerSelections}) => {
                 />
             </View>
             <View>
-                <ScrollView contentContainerStyle={styles.content} scrollIndicatorInsets={{right: 1}}>
+                <View style={styles.content}>
                     {data ? (
                         list.current.map((item, idx) => (
                             <TouchableOpacity
@@ -82,7 +82,7 @@ const DetailModal = ({bottom, onClose, selections, handlerSelections}) => {
                             <ActivityIndicator />
                         </View>
                     )}
-                </ScrollView>
+                </View>
             </View>
         </View>
     );
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingVertical: px(12),
         paddingHorizontal: px(16),
-        maxHeight: px(255),
     },
     item: {
         flexDirection: 'row',
