@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 15:35:03
+ * @LastEditTime: 2022-10-25 17:15:29
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -129,7 +129,7 @@ export default function EditSortFund({navigation, route}) {
     const handleAllDelete = () => {
         Modal.show({
             title: '温馨提示',
-            content: '将会从关注区删除已选',
+            content: '将会从自选区删除已选',
             confirm: true,
             confirmText: '确认删除',
             confirmCallBack: async () => {
