@@ -9,13 +9,13 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
-import {deviceWidth, px as text, px} from '../../../utils/appUtil';
+import {deviceWidth, isEmpty, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
+    const {poid = '', fund_code = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(false);
     const bottomModal = useRef(null);
@@ -67,7 +67,7 @@ const ProfitDetail = ({navigation, route}) => {
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
-            ) : (
+            ) : isEmpty(poid) ? (
                 <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
                     <ScrollableTabView
                         ref={scrollTab}
@@ -96,6 +96,8 @@ const ProfitDetail = ({navigation, route}) => {
                         </View>
                     </BottomModal>
                 </View>
+            ) : (
+                <ProfitDistribution poid={poid} fund_code={fund_code} />
             )}
         </>
     );

@@ -40,7 +40,7 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(() => {
+const ProfitDistribution = React.memo((poid, fund_code) => {
     const [data, setData] = useState({});
     const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();

@@ -14,7 +14,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const YearProfit = (callback) => {
+const YearProfit = ({poid, fund_code}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
@@ -26,44 +26,34 @@ const YearProfit = (callback) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
-                let startYear = dayjs().year() - 5;
-                let endYear = dayjs().year();
                 let arr = [];
-                for (let i = startYear; i < endYear; i++) {
-                    arr.push({
-                        day: i + 1,
-                        profit: '0.00',
-                    });
-                }
                 const res = await getChartData({type, unit_type: 'year'});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res?.result ?? {};
                     if (profit_data_list.length > 0) {
-                        for (let i = 0; i < arr.length; i++) {
-                            for (let j = 0; j < profit_data_list.length; j++) {
-                                if (arr[i].day == profit_data_list[j].unit_key) {
-                                    arr[i].profit = profit_data_list[j].value;
-                                }
-                            }
+                        for (let i = 0; i < profit_data_list.length; i++) {
+                            arr.push({
+                                day: parseFloat(profit_data_list[i].unit_key),
+                                profit: profit_data_list[i].value,
+                            });
                         }
-                        let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
-                        );
-                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                        let barCharData = arr.map((el) => {
-                            return {date: el.day + '年', value: parseFloat(el.profit)};
-                        });
-                        setChart({
-                            label: [
-                                {name: '时间', val: profit_data_list[index]?.unit_key},
-                                {name: '收益', val: profit_data_list[index]?.value},
-                            ],
-                            chart: barCharData,
-                        });
+                        let index = profit_data_list.findIndex((el) => el.value >= 0 || el.value <= 0);
+                        let newArr = arr.sort((a, b) => a.day - b.day);
+                        let zIndex = newArr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        // let barCharData = arr.map((el) => {
+                        //     return {date: el.day + '年', value: parseFloat(el.profit)};
+                        // });
+                        // setChart({
+                        //     label: [
+                        //         {name: '时间', val: profit_data_list[index]?.unit_key},
+                        //         {name: '收益', val: profit_data_list[index]?.value},
+                        //     ],
+                        //     chart: barCharData,
+                        // });
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        arr[zIndex] && (arr[zIndex].checked = true);
-                        setDateArr([...arr]);
-                        setSelCurYear(arr[zIndex].day);
+                        newArr[zIndex] && (newArr[zIndex].checked = true);
+                        setDateArr([...newArr]);
+                        setSelCurYear(newArr[zIndex].day);
                     } else {
                         setIsHasData(false);
                     }
@@ -98,7 +88,7 @@ const YearProfit = (callback) => {
             dateArr.map((el, index) => {
                 const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
                 return (
-                    <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
+                    <TouchableOpacity key={`${el + '' + index}`} onPress={() => getProfitBySelDate(el)}>
                         <View style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
                             <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
                             <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
@@ -159,7 +149,7 @@ const YearProfit = (callback) => {
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
-                    <RenderList curDate={selCurYear} />
+                    <RenderList curDate={selCurYear} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />

@@ -15,7 +15,7 @@ import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 import {useJump} from '../../../../components/hooks';
 let listener = null;
-const RenderList = React.memo(({curDate = ''}) => {
+const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const [[left, right], setHeaderList] = useState([]);
@@ -25,7 +25,7 @@ const RenderList = React.memo(({curDate = ''}) => {
     useEffect(() => {
         (async () => {
             setLoading(true);
-            const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate});
+            const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate, poid, fund_code});
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);

@@ -21,12 +21,13 @@ const ToolWebView = ({navigation, route}) => {
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
     const [listData, setListData] = useState(null);
     const [topButton, setTopButton] = useState(null);
-
+    const [reminder, setReminder] = useState('');
     const httpFlag = useRef(true);
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
 
     useEffect(() => {
+        console.log(222, URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf());
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 setToken(result?.access_token ? result?.access_token : 'null');
@@ -38,11 +39,11 @@ const ToolWebView = ({navigation, route}) => {
     useEffect(() => {
         if (res.tool_id) {
             getRelation();
+            getShareHoldings();
         }
         if (res.top_button) {
             setTopButton(res.top_button);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [res]);
 
     const renderRight = () => {
@@ -88,6 +89,21 @@ const ToolWebView = ({navigation, route}) => {
                 StatusBar.setBarStyle('light-content');
             });
     };
+    /**
+     * 获取持仓份额
+     */
+    const getShareHoldings = () => {
+        http.get('/tool/signal/chart/20220711', {tool_id: res.tool_id})
+            .then((res) => {
+                if (res.code === '000000') {
+                    const {reminder = ''} = res?.result?.compare_table;
+                    setReminder(reminder);
+                }
+            })
+            .finally(() => {
+                StatusBar.setBarStyle('light-content');
+            });
+    };
 
     useEffect(() => {
         const {title, title_icon, type} = res;
@@ -123,7 +139,6 @@ const ToolWebView = ({navigation, route}) => {
                 ),
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [res, topButton]);
 
     useFocusEffect(

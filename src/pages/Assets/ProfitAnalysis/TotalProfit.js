@@ -17,7 +17,7 @@ const TotalProfit = React.memo(() => {
                 style={{
                     paddingHorizontal: px(12),
                 }}>
-                <RenderList />
+                <RenderList curDate={''} />
             </View>
         </View>
     );
