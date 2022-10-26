@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:01:05
+ * @LastEditTime: 2022-10-26 11:07:31
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -119,7 +119,7 @@ const Questionnaire = () => {
                         fr,
                         fund_code,
                         append,
-                });
+                    });
                 }
             }
         });
