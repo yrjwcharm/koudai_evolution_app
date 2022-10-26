@@ -31,7 +31,11 @@ const Index = ({navigation, route}) => {
 
     //获取搜索页数据
     const getSearchIndexInfo = async () => {
-        let info = await getSearchInfo();
+        const params = {};
+        if (route.params.selections) {
+            params.scene = 'subject_product';
+        }
+        let info = await getSearchInfo(params);
         setData(info.result);
     };
     // 搜索监听
