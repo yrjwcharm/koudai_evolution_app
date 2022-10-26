@@ -21,3 +21,5 @@ export const liveReserve = (params) => http.post('/live/reserve/202202015', para
 export const postFavor = (params) => http.post('/community/favor/20210101', params);
 
 export const postCollect = (params) => http.post('/community/collect/20210101', params);
+
+export const postShare = (params) => http.post('/community/doshare/202209', params);

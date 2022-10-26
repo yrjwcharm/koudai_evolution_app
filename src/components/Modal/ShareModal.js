@@ -29,6 +29,7 @@ const ShareModal = React.forwardRef((props, ref) => {
         shareContent = {}, // 分享内容
         likeCallback = () => {},
         collectCallback = () => {},
+        shareCallback = () => {},
         needLogin = false,
         otherList = [],
     } = props;
@@ -109,6 +110,11 @@ const ShareModal = React.forwardRef((props, ref) => {
                                 WeChat.shareImage({
                                     imageUrl: shareContent?.image,
                                     scene: item.type === 'ShareAppMessage' ? 0 : 1, //0好友 1朋友圈
+                                }).then((res) => {
+                                    hide();
+                                    Toast.show('分享成功');
+                                    shareCallback?.(item.type === 'ShareAppMessage' ? 1 : 2);
+                                    global.LogTool('shareSuccess', props.ctrl);
                                 });
                             }
                         } else {
@@ -121,6 +127,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                             }).then((res) => {
                                 hide();
                                 Toast.show('分享成功');
+                                shareCallback?.(item.type === 'ShareAppMessage' ? 1 : 2);
                                 global.LogTool('shareSuccess', props.ctrl);
                             });
                         }
@@ -163,6 +170,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             Clipboard.setString(shareContent.link);
             hide();
             setTimeout(() => {
+                shareCallback?.(3);
                 Toast.show('复制成功');
             }, 500);
         } else if (item.type === 'QRCode') {
@@ -187,6 +195,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                     },
                     (success, method) => {
                         hide();
+                        shareCallback?.();
                         global.LogTool('shareSuccess', props.ctrl);
                     }
                 );

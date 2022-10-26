@@ -28,7 +28,7 @@ import LazyImage from '~/components/LazyImage';
 import {Modal, ShareModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import {deviceWidth, formaNum, px} from '~/utils/appUtil';
-import {liveReserve, postCollect, postFavor} from '../CommunityIndex/services';
+import {liveReserve, postCollect, postFavor, postShare} from '../CommunityIndex/services';
 import {debounce} from 'lodash';
 
 /** @name 社区卡片封面 */
@@ -169,30 +169,40 @@ export const CommunityFollowCard = ({
     const [leftDesc, setLeftDesc] = useState(left_desc);
     const [favorNum, setFavorNum] = useState(favor_num);
     const [collectNum, setCollectNum] = useState(collect_num);
+    const [shareNum, setShareNum] = useState(share_num);
     const shareModal = useRef();
 
     const onBottomOps = useCallback(
         debounce(
-            (opType) => {
-                (opType === 'collect' ? postCollect : postFavor)({
-                    action_type: Number(!(opType === 'collect' ? collected : favored)),
-                    resource_cate: 'article',
-                    resource_id: id,
-                }).then((res) => {
-                    if (res.code === '000000') {
-                        (opType === 'collect' ? setCollected : setFavored)((status) => {
-                            !status &&
-                                HapticFeedback.trigger('impactLight', {
-                                    enableVibrateFallback: true,
-                                    ignoreAndroidSystemSettings: false,
+            (opType, otherParams = {}) => {
+                const postParams = {resource_id: id};
+                if (opType === 'collect' || opType === 'favor') {
+                    postParams.action_type = Number(!(opType === 'collect' ? collected : favored));
+                    postParams.resource_cate = 'article';
+                } else {
+                    Object.assign(postParams, otherParams);
+                }
+                (opType === 'collect' ? postCollect : opType === 'favor' ? postFavor : postShare)(postParams).then(
+                    (res) => {
+                        if (res.code === '000000') {
+                            if (opType === 'collect' || opType === 'favor') {
+                                (opType === 'collect' ? setCollected : setFavored)((status) => {
+                                    !status &&
+                                        HapticFeedback.trigger('impactLight', {
+                                            enableVibrateFallback: true,
+                                            ignoreAndroidSystemSettings: false,
+                                        });
+                                    return Number(!status);
                                 });
-                            return Number(!status);
-                        });
-                        (opType === 'collect' ? setCollectNum : setFavorNum)((num) =>
-                            !(opType === 'collect' ? collected : favored) ? num + 1 : num - 1
-                        );
+                                (opType === 'collect' ? setCollectNum : setFavorNum)((num) =>
+                                    !(opType === 'collect' ? collected : favored) ? num + 1 : num - 1
+                                );
+                            } else {
+                                setShareNum((n) => n + 1);
+                            }
+                        }
                     }
-                });
+                );
             },
             300,
             {leading: true, trailing: false}
@@ -264,12 +274,13 @@ export const CommunityFollowCard = ({
             setCollectNum(collect_num);
             setFavored(favor_status);
             setFavorNum(favor_num);
+            setShareNum(share_num);
             setLeftDesc(left_desc);
             setIsReserved(reserved);
             return () => {
                 AppState.removeEventListener('change', handleAppStateChange);
             };
-        }, [collect_num, collect_status, favor_num, favor_status, left_desc, reserved])
+        }, [collect_num, collect_status, favor_num, favor_status, left_desc, reserved, share_num])
     );
 
     return (
@@ -386,11 +397,13 @@ export const CommunityFollowCard = ({
                         {author?.nickname ? (
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                 <View style={Style.flexRow}>
-                                    {type === 9 && live_status === 2 ? (
-                                        <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
-                                    ) : (
-                                        <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
-                                    )}
+                                    {author.avatar ? (
+                                        type === 9 && live_status === 2 ? (
+                                            <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
+                                        ) : (
+                                            <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
+                                        )
+                                    ) : null}
                                     <Text numberOfLines={1} style={[styles.smText, {maxWidth: px(88)}]}>
                                         {author.nickname}
                                     </Text>
@@ -447,7 +460,7 @@ export const CommunityFollowCard = ({
                             onPress={() => shareModal.current?.show()}
                             style={Style.flexRow}>
                             <Image source={share} style={styles.operationIcon} />
-                            <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{share_num}</Text>
+                            <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{shareNum}</Text>
                         </TouchableOpacity>
                         <View style={Style.flexRow}>
                             <TouchableOpacity
@@ -476,7 +489,12 @@ export const CommunityFollowCard = ({
                 )}
             </View>
             {share_info && !isRecommend ? (
-                <ShareModal ref={shareModal} shareContent={share_info} title={share_info.title || ''} />
+                <ShareModal
+                    ref={shareModal}
+                    shareCallback={(share_to) => onBottomOps('share', {share_to})}
+                    shareContent={share_info}
+                    title={share_info.title || ''}
+                />
             ) : null}
         </>
     );
