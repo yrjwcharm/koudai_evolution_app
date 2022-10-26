@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 20:10:43
+ * @LastEditTime: 2022-10-26 15:03:38
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -21,15 +21,16 @@ import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
 
 function Item({item, index}) {
-    const {title, source, view_num, favor_num} = item;
-    const uri = item.cover || item.media_cover;
+    const {title, view_num, favor_num} = item;
+    const source = item.author?.nickname || item.album_name || item.cate_name;
+    const uri = item.cover;
     return (
         <View style={[styles.itemWrap, index === 0 ? styles.itemWrapFirst : {}]}>
             <View style={styles.item_ContentWrap}>
                 <Text style={styles.item_title}>{title}</Text>
                 <Text style={styles.item_desc}>{`${source || ''} ${view_num}阅读 ${favor_num}点赞`}</Text>
             </View>
-            <FastImage style={styles.item_image} resizeMode="cover" source={{uri}} />
+            {uri ? <FastImage style={styles.item_image} resizeMode="cover" source={{uri}} /> : null}
             <View style={styles.line} />
         </View>
     );
@@ -436,7 +437,7 @@ const styles = StyleSheet.create({
         left: 16,
         right: 16,
         height: StyleSheet.hairlineWidth,
-        backgroundColor: '#BDC2CC',
+        backgroundColor: '#e9eaef',
     },
     itemWrap: {
         height: 102,
@@ -481,9 +482,9 @@ const styles = StyleSheet.create({
     },
     item_image: {
         flexShrink: 0,
-        width: 110,
+        width: 100,
         height: 70,
-        borderRadius: 4,
+        borderRadius: 6,
         marginLeft: 12,
         backgroundColor: 'lightgray',
     },
