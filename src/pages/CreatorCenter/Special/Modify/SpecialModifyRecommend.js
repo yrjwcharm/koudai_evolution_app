@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 20:51:29
+ * @LastEditTime: 2022-10-26 15:57:45
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -57,6 +57,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
         getRecommendInfo({subject_id})
             .then((res) => {
                 if (res.code === '000000') {
+                    setLoading(false);
                     setData(res.result);
                     setIndex(res.result.selected);
                     oldIndex.current = res.result.selected;
@@ -189,10 +190,10 @@ export default function SpecialModifyRecommend({route, navigation}) {
         });
     };
 
-    if (loading || !data) {
+    if (loading) {
         return (
             <SafeAreaView edges={['bottom']}>
-                <NavBar title={'推广位样式设置'} leftIcon="chevron-left" leftPress={handleBack} />
+                <NavBar title={'推广位样式设置'} leftIcon="chevron-left" />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
                 </View>
@@ -214,18 +215,18 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 <RecommendCell
                     title="选择推广该专题"
                     curType={index}
-                    type={data.rec_subject.rec_type}
+                    type={data?.rec_subject?.rec_type}
                     onSelect={handleSelect}>
-                    <FastImage source={{uri: data.rec_subject.bg_img}} style={styles.cardImg} />
+                    <FastImage source={{uri: data?.rec_subject?.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
                 <RecommendCell
                     title="选择推广专题中的产品"
                     curType={index}
-                    type={data.rec_product.rec_type}
+                    type={data?.rec_product?.rec_type}
                     onSelect={handleSelect}>
-                    <FastImage source={{uri: data.rec_product.bg_img}} style={styles.cardImg} />
+                    <FastImage source={{uri: data?.rec_product?.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
-                <Text style={styles.tip}>{data.tip}</Text>
+                <Text style={styles.tip}>{data?.tip}</Text>
             </View>
         </SafeAreaView>
     );
