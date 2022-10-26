@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 15:03:38
+ * @LastEditTime: 2022-10-26 18:43:36
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 精选内容
  */
@@ -260,11 +260,28 @@ export default function SpecailModifyContent({navigation, route}) {
     const [data, setData] = useState([]);
     const [pageData, setPageData] = useState([]);
     const subject_id = route?.params?.subject_id || 1022;
+    console.log('subject_id:', subject_id);
 
     const [loading, setLoading] = useState(false);
     const jump = useJump();
 
     const bottomModal = useRef(null);
+
+    const canGoBack = useRef(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                if (canGoBack.current) {
+                    navigation.dispatch(e.data.action);
+                    return;
+                }
+                handleBack();
+            });
+            return () => listener?.();
+        }, [])
+    );
 
     useEffect(() => {
         setLoading(true);
@@ -290,6 +307,7 @@ export default function SpecailModifyContent({navigation, route}) {
             article_ids: data.map((it) => it.id).join(','),
         }).then((res) => {
             if (res.code === '000000') {
+                canGoBack.current = true;
                 navigation.goBack();
             } else {
                 Toast.show(res.message);
@@ -300,6 +318,7 @@ export default function SpecailModifyContent({navigation, route}) {
     const handleBack = () => {
         // 编辑场景，自动保存
         if (scene !== 'create') {
+            canGoBack.current = true;
             saveContent();
             return;
         }
@@ -311,6 +330,7 @@ export default function SpecailModifyContent({navigation, route}) {
             confirm: true,
             backCloseCallbackExecute: true,
             cancelCallBack: () => {
+                canGoBack.current = true;
                 navigation.goBack();
             },
             confirmCallBack: () => {

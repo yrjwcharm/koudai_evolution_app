@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 15:57:45
+ * @LastEditTime: 2022-10-26 18:33:02
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -51,7 +51,21 @@ export default function SpecialModifyRecommend({route, navigation}) {
     const items = useRef([]);
     const oldIndex = useRef(0);
     const tmpItems = useRef([]); // 修改之后的产品信息，可能不保存
+    const canGoBack = useRef(false);
 
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                if (canGoBack.current) {
+                    navigation.dispatch(e.data.action);
+                    return;
+                }
+                handleBack();
+            });
+            return () => listener?.();
+        }, [])
+    );
     useEffect(() => {
         setLoading(true);
         getRecommendInfo({subject_id})
@@ -129,6 +143,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
     };
     const handleBack = () => {
         if (!tmpItems.current) {
+            canGoBack.current = true;
             navigation.goBack();
         }
 
@@ -139,10 +154,12 @@ export default function SpecialModifyRecommend({route, navigation}) {
             confirm: true,
             backCloseCallbackExecute: true,
             cancelCallBack: () => {
+                canGoBack.current = true;
                 navigation.goBack();
             },
             confirmCallBack: () => {
                 handleSaveBaseInfo().then(() => {
+                    canGoBack.current = true;
                     navigation.goBack();
                 });
             },
@@ -158,6 +175,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     uri: url,
                     ...(route?.params ?? {}),
                     onSave: () => {
+                        canGoBack.current = true;
                         navigation.goBack(-2);
                     },
                 },

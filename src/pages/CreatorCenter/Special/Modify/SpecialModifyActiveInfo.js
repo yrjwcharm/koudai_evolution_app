@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-22 14:15:13
+ * @LastEditTime: 2022-10-26 18:41:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
  * @Description: 修改专题 - 活动信息
  */
@@ -19,12 +19,29 @@ import {Style, Colors, Space} from '~/common/commonStyle';
 import {getStashSpeical, saveStashSpeical} from '../services';
 
 import pickerUploadImg from '~/utils/pickerUploadImg';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function SpecialModifyActiveInfo({navigation, route}) {
     const subject_id = route?.params?.subject_id || 1022;
     const [bgSource, setBgSource] = useState();
 
     const [link, setLink] = useState('');
+
+    const canGoBack = useRef(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                if (canGoBack.current) {
+                    navigation.dispatch(e.data.action);
+                    return;
+                }
+                handleBack();
+            });
+            return () => listener?.();
+        }, [])
+    );
 
     const showSelectImg = () => {
         pickerUploadImg(({url}) => {
@@ -40,6 +57,7 @@ export default function SpecialModifyActiveInfo({navigation, route}) {
         // saveStashSpeical
 
         // TODO: save active info
+        canGoBack.current = true;
         navigation.goBack();
     };
     const handleBack = () => {
@@ -51,15 +69,17 @@ export default function SpecialModifyActiveInfo({navigation, route}) {
                 confirm: true,
                 backCloseCallbackExecute: true,
                 cancelCallBack: () => {
+                    canGoBack.current = true;
                     navigation.goBack();
                 },
                 confirmCallBack: () => {
                     // TODO: save stack
-
+                    canGoBack.current = true;
                     navigation.goBack();
                 },
             });
         } else {
+            canGoBack.current = true;
             navigation.goBack();
         }
     };
