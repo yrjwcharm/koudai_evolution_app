@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 20:37:30
+ * @LastEditTime: 2022-10-26 16:29:38
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -332,13 +332,12 @@ const Product = ({navigation}) => {
             </LinearGradient>
             <ScrollableTabView
                 ref={tabRef}
-                style={{flex: 1, marginTop: Platform.OS === 'ios' ? px(-83) : px(-95)}}
+                style={{flex: 1, marginTop: insets.top - px(128)}}
                 initialPage={1}
                 renderTabBar={false}
                 locked={true}
                 onChangeTab={onChangeTab}>
                 <ScrollView
-                    tabLabel="自选"
                     ref={scrollViewRef}
                     showsHorizontalScrollIndicator={false}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getFollowTabs(0)} />}
@@ -380,7 +379,6 @@ const Product = ({navigation}) => {
                     </View>
                 </ScrollView>
                 <LogView.Wrapper
-                    tabLabel="产品"
                     ref={scrollViewRef}
                     style={{flex: 1}}
                     showsHorizontalScrollIndicator={false}

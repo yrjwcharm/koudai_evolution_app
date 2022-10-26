@@ -28,7 +28,6 @@ const CreatorCenterIndex = () => {
     const jump = useJump();
 
     const [loading, setLoading] = useState(true);
-    const [listLoading, setListLoading] = useState(true);
     const [{system}, setUnreadData] = useState({});
     const [data, setData] = useState();
     const [list, setList] = useState([]);
@@ -60,17 +59,12 @@ const CreatorCenterIndex = () => {
     );
 
     const getListData = (items) => {
-        setListLoading(true);
         const index = scrollableRef.current?.state?.currentPage || 0;
-        getList(items?.[index]?.params)
-            .then((res) => {
-                if (res.code === '000000') {
-                    setList(res.result);
-                }
-            })
-            .finally((_) => {
-                setListLoading(false);
-            });
+        getList(items?.[index]?.params).then((res) => {
+            if (res.code === '000000') {
+                setList(res.result);
+            }
+        });
     };
 
     const getUnReadData = useCallback(() => {
@@ -215,115 +209,105 @@ const CreatorCenterIndex = () => {
                         {data?.items?.map?.((item, idx) => {
                             return (
                                 <View style={styles.cardWrap} key={idx} tabLabel={item.title}>
-                                    {listLoading ? (
-                                        <View style={{paddingVertical: px(20)}}>
-                                            <ActivityIndicator />
-                                        </View>
-                                    ) : (
-                                        <>
-                                            {list?.list?.map((itm, index) => (
-                                                <View style={styles.cardItem} key={index}>
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.7}
-                                                        style={styles.cardItemHeader}
-                                                        onPress={() => {
-                                                            // jump({
-                                                            //     path: 'EditProduct',
-                                                            //     params: {
-                                                            //         id: 179,
-                                                            //         product_type: 1,
-                                                            //         product_id: '000001',
-                                                            //         desc: '',
-                                                            //         yield_range: '',
-                                                            //         style_id: 0,
-                                                            //         category_id: '',
-                                                            //     },
-                                                            // });
-                                                            // jump({path: 'AddProductStep1', params: {subject_id: 111}});
-                                                            // jump({
-                                                            //     path: 'EditSpecialCardInfo',
-                                                            //     params: {
-                                                            //         maxNum: 6,
-                                                            //         selectType: 1,
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'SpecialDetailDraft',
-                                                            //     type: 1,
-                                                            //     params: {
-                                                            //         link:
-                                                            //             'http://192.168.190.43:3000/specialDetailDraft',
-                                                            //         params: {
-                                                            //             subject_id: 1026,
-                                                            //             scene: 'creating',
-                                                            //         },
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'AddProductStep2',
-                                                            //     type: 1,
-                                                            //     params: {
-                                                            //         subject_id: '1030',
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'SubjectCollection',
-                                                            //     params: {
-                                                            //         ...itm?.url?.params,
-                                                            //         tab: 1,
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'SpecialDetail',
-                                                            //     type: 1,
-                                                            //     params: {
-                                                            //         link: 'http://192.168.2.9:3000/specialDetail',
-                                                            //         params: {
-                                                            //             subject_id: 1011,
-                                                            //             is_preview: 0,
-                                                            //         },
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'SpecialCardStylePreview',
-                                                            //     params: {
-                                                            //         subject_id: 134,
-                                                            //         img:
-                                                            //             'https://lcmf.oss-cn-hangzhou.aliyuncs.com/upload/identity/1000000002/2022102016002449805_png_?OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1977292824&Signature=yJ3jQzDLx8OKSE7eDkCNLvYlwJU%3D',
-                                                            //         desc: '123123123',
-                                                            //     },
-                                                            // });
-                                                            // jump({
-                                                            //     path: 'SpecialExamine',
-                                                            //     params: {
-                                                            //         apply_id: 2,
-                                                            //     },
-                                                            // });
-                                                            jump(itm?.url);
-                                                        }}>
-                                                        <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
-                                                        <Icon
-                                                            color={Colors.descColor}
-                                                            name="angle-right"
-                                                            size={px(14)}
-                                                        />
-                                                    </TouchableOpacity>
-                                                    <View style={styles.cardItemPanel}>
-                                                        {itm.items?.map?.((obj, i) => (
-                                                            <View style={styles.cardItemPanelSubItem} key={i}>
-                                                                <Text style={styles.cardItemPanelSubItemNum}>
-                                                                    {obj.val}
-                                                                </Text>
-                                                                <Text style={styles.cardItemPanelSubItemDesc}>
-                                                                    {obj.key}
-                                                                </Text>
-                                                            </View>
-                                                        ))}
-                                                    </View>
+                                    <>
+                                        {list?.list?.map((itm, index) => (
+                                            <View style={styles.cardItem} key={index}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.7}
+                                                    style={styles.cardItemHeader}
+                                                    onPress={() => {
+                                                        // jump({
+                                                        //     path: 'EditProduct',
+                                                        //     params: {
+                                                        //         id: 179,
+                                                        //         product_type: 1,
+                                                        //         product_id: '000001',
+                                                        //         desc: '',
+                                                        //         yield_range: '',
+                                                        //         style_id: 0,
+                                                        //         category_id: '',
+                                                        //     },
+                                                        // });
+                                                        // jump({path: 'AddProductStep1', params: {subject_id: 111}});
+                                                        // jump({
+                                                        //     path: 'EditSpecialCardInfo',
+                                                        //     params: {
+                                                        //         maxNum: 6,
+                                                        //         selectType: 1,
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'SpecialDetailDraft',
+                                                        //     type: 1,
+                                                        //     params: {
+                                                        //         link:
+                                                        //             'http://192.168.190.43:3000/specialDetailDraft',
+                                                        //         params: {
+                                                        //             subject_id: 1026,
+                                                        //             scene: 'creating',
+                                                        //         },
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'AddProductStep2',
+                                                        //     type: 1,
+                                                        //     params: {
+                                                        //         subject_id: '1030',
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'SubjectCollection',
+                                                        //     params: {
+                                                        //         ...itm?.url?.params,
+                                                        //         tab: 1,
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'SpecialDetail',
+                                                        //     type: 1,
+                                                        //     params: {
+                                                        //         link: 'http://192.168.2.9:3000/specialDetail',
+                                                        //         params: {
+                                                        //             subject_id: 1011,
+                                                        //             is_preview: 0,
+                                                        //         },
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'SpecialCardStylePreview',
+                                                        //     params: {
+                                                        //         subject_id: 134,
+                                                        //         img:
+                                                        //             'https://lcmf.oss-cn-hangzhou.aliyuncs.com/upload/identity/1000000002/2022102016002449805_png_?OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1977292824&Signature=yJ3jQzDLx8OKSE7eDkCNLvYlwJU%3D',
+                                                        //         desc: '123123123',
+                                                        //     },
+                                                        // });
+                                                        // jump({
+                                                        //     path: 'SpecialExamine',
+                                                        //     params: {
+                                                        //         apply_id: 2,
+                                                        //     },
+                                                        // });
+                                                        jump(itm?.url);
+                                                    }}>
+                                                    <Text style={styles.cardItemHeaderTitle}>{itm.title}</Text>
+                                                    <Icon color={Colors.descColor} name="angle-right" size={px(14)} />
+                                                </TouchableOpacity>
+                                                <View style={styles.cardItemPanel}>
+                                                    {itm.items?.map?.((obj, i) => (
+                                                        <View style={styles.cardItemPanelSubItem} key={i}>
+                                                            <Text style={styles.cardItemPanelSubItemNum}>
+                                                                {obj.val}
+                                                            </Text>
+                                                            <Text style={styles.cardItemPanelSubItemDesc}>
+                                                                {obj.key}
+                                                            </Text>
+                                                        </View>
+                                                    ))}
                                                 </View>
-                                            ))}
-                                        </>
-                                    )}
+                                            </View>
+                                        ))}
+                                    </>
                                 </View>
                             );
                         })}
