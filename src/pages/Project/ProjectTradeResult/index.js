@@ -176,6 +176,10 @@ const Index = ({route, navigation}) => {
                 title={data?.btn?.text}
                 containerStyle={{position: 'relative'}}
                 onPress={() => {
+                    if (data?.btn?.url) {
+                        jump(data?.btn?.url);
+                        return;
+                    }
                     //升级的返回两层
                     if (route?.params?.upgrade_id) {
                         navigation.pop(2);
