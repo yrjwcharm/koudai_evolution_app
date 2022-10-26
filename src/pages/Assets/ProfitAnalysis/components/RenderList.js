@@ -25,7 +25,15 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     useEffect(() => {
         (async () => {
             setLoading(true);
-            const res = await getProfitDetail({type, unit_type: unitType, unit_key: curDate, poid, fund_code});
+            let params = {
+                type,
+                unit_type: unitType,
+                poid,
+                unit_key: curDate,
+                fund_code,
+            };
+            unitType == 'all' && delete params.unit_key;
+            const res = await getProfitDetail(params);
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
