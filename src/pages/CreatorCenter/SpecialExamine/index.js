@@ -7,7 +7,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Platform} from 'react-native';
 import WebView from 'react-native-webview';
 import URI from 'urijs';
-import {Colors} from '~/common/commonStyle';
+import {Colors, Space} from '~/common/commonStyle';
 import {AlbumCard, ProductList} from '~/components/Product';
 import RenderHtml from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
@@ -67,7 +67,11 @@ const SpecialExamine = ({navigation, route}) => {
         return (
             <View style={styles.itemWrap} key={item.type}>
                 <Text style={styles.itemWrapTitle}>{item.name}</Text>
-                <View style={styles.itemCard}>
+                <View
+                    style={[
+                        styles.itemCard,
+                        {backgroundColor: '#fff', borderRadius: Space.borderRadius, overflow: 'hidden'},
+                    ]}>
                     <ProductList data={item?.preview_data?.items} type={item?.preview_data.type} />
                 </View>
             </View>
