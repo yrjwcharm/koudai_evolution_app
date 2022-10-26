@@ -249,7 +249,7 @@ const RecommendCard = ({data = {}, onDelete, isPking}) => {
                 <TouchableOpacity
                     style={[styles.cardDelete, Style.flexRow]}
                     onPress={() => {
-                        onDelete(relation_type, code);
+                        onDelete(relation_type, code || plan_id);
                     }}>
                     <AntdIcon name="close" color={Colors.lightGrayColor} />
                     <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
