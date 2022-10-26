@@ -234,6 +234,7 @@ const RecommendCard = ({data = {}, onDelete, isPking}) => {
         yield_info,
         icon_url,
         relation_type,
+        can_delete,
     } = data;
     const btnText = isPking ? 'PK中' : button?.text;
     const [showChart, setShowChart] = useState(false);
@@ -244,7 +245,7 @@ const RecommendCard = ({data = {}, onDelete, isPking}) => {
     }, [chart]);
     return (
         <View>
-            {onDelete && (
+            {can_delete && (
                 <TouchableOpacity
                     style={[styles.cardDelete, Style.flexRow]}
                     onPress={() => {
@@ -937,5 +938,5 @@ const styles = StyleSheet.create({
         height: px(102),
         marginTop: px(12),
     },
-    cardDelete: {position: 'absolute', right: px(-12), top: px(-12), padding: px(12), zIndex: 10},
+    cardDelete: {position: 'absolute', right: px(-16), top: px(-8), padding: px(12), zIndex: 10},
 });
