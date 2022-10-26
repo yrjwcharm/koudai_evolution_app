@@ -45,7 +45,7 @@ import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
-const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
+const Header = ({active, isLogin, message_url, search_url, setActive, tabs, userInfo = {}}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const {url, user: {avatar} = {}} = userInfo;
@@ -90,21 +90,18 @@ const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
                 })}
             </View>
             <View style={Style.flexRow}>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => jump({path: 'SearchHome', type: 1})}
-                    style={{marginRight: px(12)}}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(search_url)} style={{marginRight: px(12)}}>
                     <Image
                         source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/header-right.png'}}
                         style={styles.headerRightIcon}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => jump({path: 'RemindMessage', type: 1})}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(message_url)}>
                     <Image
                         source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'}}
                         style={styles.headerRightIcon}
                     />
-                    {allMsg ? (
+                    {allMsg && isLogin ? (
                         <View style={[styles.allMsg, Style.flexCenter, {left: allMsg > 99 ? px(11) : px(15)}]}>
                             <Text style={styles.msgNum}>{allMsg > 99 ? '99+' : allMsg}</Text>
                         </View>
@@ -378,7 +375,7 @@ const Follow = forwardRef(({list = []}, ref) => {
 });
 
 /** @name 推荐瀑布流列表 */
-export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...rest}, ref) => {
+export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrapper, ...rest}, ref) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -455,8 +452,9 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
     useEffect(() => {
         init();
     }, [page]);
+
     return data?.length > 0 ? (
-        <LinearGradient colors={['#fff', Colors.bgColor]} style={{flex: 1}}>
+        <LinearGradient colors={[wrapper === 'Recommend' ? Colors.bgColor : '#fff', Colors.bgColor]} style={{flex: 1}}>
             <WaterfallFlow
                 data={data}
                 initialNumToRender={20}
@@ -474,8 +472,15 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, ...res
             />
         </LinearGradient>
     ) : (
-        <View style={{paddingTop: px(280)}}>
-            {loading ? <ActivityIndicator color={'#ddd'} /> : <EmptyTip text={resource_private_tip || '暂无数据'} />}
+        <View style={wrapper === 'Recommend' ? [Style.flexCenter, {flex: 1}] : {paddingTop: px(280)}}>
+            {loading ? (
+                <ActivityIndicator color={'#ddd'} />
+            ) : (
+                <EmptyTip
+                    style={wrapper === 'Recommend' ? {paddingTop: 0} : {}}
+                    text={resource_private_tip || '暂无数据'}
+                />
+            )}
         </View>
     );
 });
@@ -542,6 +547,7 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
                                 getData={getRecommendData}
                                 params={{type}}
                                 ref={(list) => (recommendList.current[i] = list)}
+                                wrapper="Recommend"
                             />
                         </View>
                     );
@@ -624,7 +630,7 @@ const Index = ({navigation, setLoading}) => {
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
-    const {follow, recommend, tabs, user_info} = data;
+    const {follow, message_url, recommend, search_url, tabs, user_info} = data;
     const followRef = useRef();
     const recommendRef = useRef();
     const publishRef = useRef();
@@ -680,6 +686,8 @@ const Index = ({navigation, setLoading}) => {
             <Header
                 active={active}
                 isLogin={userInfo.is_login}
+                message_url={message_url}
+                search_url={search_url}
                 setActive={(i) => scrollTab.current?.goToPage(i)}
                 tabs={tabs}
                 userInfo={user_info}
@@ -837,7 +845,6 @@ const styles = StyleSheet.create({
     waterfallFlowItem: {
         borderRadius: Space.borderRadius,
         overflow: 'hidden',
-        flex: 1,
         backgroundColor: '#fff',
     },
     contentBg: {
