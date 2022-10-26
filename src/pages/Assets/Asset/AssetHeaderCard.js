@@ -15,7 +15,7 @@ import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
 import {Chart, chartOptions} from '~/components/Chart';
 import {useDispatch} from 'react-redux';
-const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
+const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart}) => {
     const dispatch = useDispatch();
     const jump = useJump();
     const [chart, setChart] = useState([]);
@@ -24,8 +24,10 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children}) => {
         setChart(res.result);
     };
     useEffect(() => {
-        setChart([]);
-        getChartData();
+        if (showChart) {
+            setChart([]);
+            getChartData();
+        }
     }, [summary?.asset_info?.value]);
 
     return (

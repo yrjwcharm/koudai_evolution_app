@@ -86,7 +86,11 @@ const Index = ({navigation}) => {
                     {/* 系统通知 */}
                     {data?.system_notices?.length > 0 && <YellowNotice data={data?.system_notices} />}
                     {/* 资产卡片 */}
-                    <AssetHeaderCard summary={holding?.summary} showEye={showEye} tradeMes={holding?.trade_notice}>
+                    <AssetHeaderCard
+                        summary={holding?.summary}
+                        showEye={showEye}
+                        tradeMes={holding?.trade_notice}
+                        showChart={holding?.show_chart}>
                         <Eye onChange={(_data) => setShowEye(_data)} />
                     </AssetHeaderCard>
                     {/* 运营位 */}
