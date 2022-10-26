@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 20:48:14
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-26 11:30:18
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -211,7 +211,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     };
 
     useEffect(() => {
-        navigation.addListener('beforeRemove', (e) => {
+        let listener = navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
             if (canGoBack.current) {
                 navigation.dispatch(e.data.action);
@@ -243,7 +243,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 navigation.dispatch(e.data.action);
             }
         });
-        return () => navigation.removeListener('beforeRemove');
+        return () => listener?.();
     }, [bgSource, title, desc, tags]);
 
     const handleChooseOld = () => {

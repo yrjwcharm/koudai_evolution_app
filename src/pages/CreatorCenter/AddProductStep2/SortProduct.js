@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 21:36:59
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-26 11:29:03
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -30,7 +30,7 @@ const SortProduct = ({navigation, route}) => {
     }, [data]);
 
     useEffect(() => {
-        let listener = navigation.addListener('beforeRemove', (e) => {
+        let lister = navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
             DeviceEventEmitter.emit(
                 'sortProduct',
@@ -38,7 +38,7 @@ const SortProduct = ({navigation, route}) => {
             );
             navigation.dispatch(e.data.action);
         });
-        return () => listener?.();
+        return () => lister?.();
     }, [data]);
 
     const renderItem = ({item, drag, isActive, index}) => {

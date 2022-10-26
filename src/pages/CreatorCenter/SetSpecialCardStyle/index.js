@@ -25,6 +25,7 @@ const SetSpecialCardStyle = ({navigation, route}) => {
     }, [styleCheck]);
 
     useEffect(() => {
+        let lister = null;
         getData(route.params).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
@@ -51,7 +52,7 @@ const SetSpecialCardStyle = ({navigation, route}) => {
                     initStyleCheckRef.current = checkedObj.value;
                 }
                 // 监听返回
-                navigation.addListener('beforeRemove', (e) => {
+                lister = navigation.addListener('beforeRemove', (e) => {
                     e.preventDefault();
                     if (styleCheckRef.current !== initStyleCheckRef.current) {
                         Modal.show({
@@ -77,6 +78,7 @@ const SetSpecialCardStyle = ({navigation, route}) => {
                 });
             }
         });
+        return () => lister?.();
     }, [route, navigation, handlerTopButton]);
 
     const handlerTopButton = useCallback(
