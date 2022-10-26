@@ -264,6 +264,7 @@ export default EditSpecialCardInfo;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#F5F6F8',
     },
     topBtnText: {
         fontSize: px(14),
