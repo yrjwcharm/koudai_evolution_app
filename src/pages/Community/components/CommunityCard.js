@@ -139,6 +139,7 @@ export const CommunityFollowCard = ({
     collect_status, // 收藏状态 0 未收藏 1 已收藏
     comment_info, //评论
     comment_num, // 评论数
+    comment_url, // 评论页地址
     cover, // 封面
     cover_aspect_ratio, // 封面宽高比
     desc, // 文章内容摘要
@@ -473,7 +474,10 @@ export const CommunityFollowCard = ({
                                 />
                                 <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{collectNum}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, {marginRight: px(16)}]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(comment_url)}
+                                style={[Style.flexRow, {marginRight: px(16)}]}>
                                 <Image source={comment} style={styles.operationIcon} />
                                 <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{comment_num}</Text>
                             </TouchableOpacity>
