@@ -1,12 +1,10 @@
 /*
  * @Date: 2021-08-09 11:45:50
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 18:08:53
  * @Description:图片懒加载
  */
 import React, {Component} from 'react';
-import {Image, Animated, Easing, StyleSheet, View} from 'react-native';
+import {Animated, Easing, StyleSheet, View} from 'react-native';
+import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {px} from '../utils/appUtil';
 import {Style} from '../common/commonStyle';

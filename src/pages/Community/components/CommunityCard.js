@@ -7,6 +7,7 @@ import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import HapticFeedback from 'react-native-haptic-feedback';
+import LinearGradient from 'react-native-linear-gradient';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,6 +24,7 @@ import zanActive from '~/assets/img/icon/zanActive.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
+import LazyImage from '~/components/LazyImage';
 import {Modal, ShareModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import {deviceWidth, formaNum, px} from '~/utils/appUtil';
@@ -31,8 +33,8 @@ import {debounce} from 'lodash';
 
 /** @name 社区卡片封面 */
 export const CommunityCardCover = ({
-    attention_num,
-    attention_user,
+    attention_num, // 社区关注人数
+    attention_user, // 社区关注头像
     cover, // 封面
     cover_aspect_ratio, // 封面宽高比
     left_desc, // 直播状态或预约人数
@@ -53,7 +55,7 @@ export const CommunityCardCover = ({
 
     return (
         <View style={[styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
-            <Image
+            <LazyImage
                 onLoad={({nativeEvent: {width, height}}) => !cover_aspect_ratio && setAspectRatio(width / height)}
                 source={{uri: cover}}
                 style={styles.cover}
@@ -100,21 +102,27 @@ export const CommunityCardCover = ({
             {type === 3 ? <Image source={videoPlay} style={styles.videoPlay} /> : null}
             {/* 社区关注人数 */}
             {attention_num && attention_user ? (
-                <View style={[Style.flexRow, styles.communityFollowNum]}>
-                    {attention_user.map?.((img, i) => {
-                        return (
-                            <Image
-                                key={img + i}
-                                source={{uri: img}}
-                                style={[styles.smAvatar, {marginLeft: i === 0 ? 0 : -px(4)}]}
-                            />
-                        );
-                    })}
-                    <Text style={[styles.smText, {marginLeft: px(4), color: '#fff'}]}>
-                        <Text style={{fontFamily: Font.numRegular}}>{formaNum(attention_num, 'nozero')}</Text>
-                        人关注
-                    </Text>
-                </View>
+                <LinearGradient
+                    colors={['#000', 'rgba(0, 0, 0, 0)']}
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 1}}
+                    style={styles.communityFollowNumBg}>
+                    <View style={[Style.flexRow, styles.communityFollowNum]}>
+                        {attention_user.map?.((img, i) => {
+                            return (
+                                <Image
+                                    key={img + i}
+                                    source={{uri: img}}
+                                    style={[styles.smAvatar, {marginLeft: i === 0 ? 0 : -px(4)}]}
+                                />
+                            );
+                        })}
+                        <Text style={[styles.smText, {marginLeft: px(4), color: '#fff'}]}>
+                            <Text style={{fontFamily: Font.numRegular}}>{formaNum(attention_num, 'nozero')}</Text>
+                            人关注
+                        </Text>
+                    </View>
+                </LinearGradient>
             ) : null}
         </View>
     );
@@ -122,6 +130,8 @@ export const CommunityCardCover = ({
 
 /** @name 社区关注卡片 */
 export const CommunityFollowCard = ({
+    attention_num, // 社区关注人数
+    attention_user, // 社区关注头像
     author, // 作者信息
     author_desc,
     button,
@@ -298,6 +308,8 @@ export const CommunityFollowCard = ({
                     )}
                     {cover ? (
                         <CommunityCardCover
+                            attention_num={attention_num}
+                            attention_user={attention_user}
                             cover={cover}
                             cover_aspect_ratio={cover_aspect_ratio}
                             live_status={live_status}
@@ -305,7 +317,7 @@ export const CommunityFollowCard = ({
                             right_desc={right_desc}
                             style={
                                 isRecommend
-                                    ? {width: '100%'}
+                                    ? {width: (deviceWidth - 3 * px(5)) / 2}
                                     : {...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}
                             }
                             type={type}
@@ -552,6 +564,13 @@ const styles = StyleSheet.create({
         transform: [{translateX: -px(24)}, {translateY: -px(24)}],
         width: px(48),
         height: px(48),
+    },
+    communityFollowNumBg: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: px(40),
     },
     communityFollowNum: {
         position: 'absolute',

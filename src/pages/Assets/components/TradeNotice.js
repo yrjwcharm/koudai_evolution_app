@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
         backgroundColor: 'rgba(157, 187, 255, 0.68)',
         borderRadius: px(4),
+        width: '100%',
     },
     noticeText: {
         fontSize: Font.textH3,
