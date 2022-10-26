@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
     videoPlay: {
         position: 'absolute',
         top: '50%',
-        right: '50%',
+        left: '50%',
         transform: [{translateX: -px(24)}, {translateY: -px(24)}],
         width: px(48),
         height: px(48),
