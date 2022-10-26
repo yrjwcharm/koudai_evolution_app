@@ -8,12 +8,14 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille, isEmpty} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {DeviceEventEmitter, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DeviceEventEmitter, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 import {useJump} from '../../../../components/hooks';
+import EmptyData from '../../FixedInvestment/components/EmptyData';
+import RenderItem from '../../FixedInvestment/components/RenderItem';
 let listener = null;
 const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const type = useSelector((state) => state.profitDetail.type);
@@ -32,7 +34,6 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 unit_key: curDate,
                 fund_code,
             };
-            unitType == 'all' && delete params.unit_key;
             const res = await getProfitDetail(params);
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
@@ -58,6 +59,35 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 setProfitList(data_list);
             }
         }
+    };
+    const renderItem = ({item, index}) => {
+        let color =
+            delMille(item.profit) > 0 ? Colors.red : delMille(item.profit) < 0 ? Colors.green : Colors.lightGrayColor;
+        return (
+            <View style={styles.listRow} key={item + '' + index}>
+                <View style={styles.typeView}>
+                    <View style={styles.typeWrap}>
+                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
+                            {item.type}
+                        </Text>
+                    </View>
+                    <TouchableOpacity onPress={() => jump(item?.url)}>
+                        <Text style={styles.title}>{item.text}</Text>
+                    </TouchableOpacity>
+                    {item.tag ? (
+                        <View
+                            style={{
+                                borderRadius: text(2),
+                                backgroundColor: '#EFF5FF',
+                                marginLeft: text(6),
+                            }}>
+                            <Text style={styles.tag}>{item.tag}</Text>
+                        </View>
+                    ) : null}
+                </View>
+                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+            </View>
+        );
     };
     return (
         <>
@@ -87,39 +117,15 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                             </TouchableOpacity>
                         </View>
                     )}
-                    {profitList.map((item, index) => {
-                        let color =
-                            delMille(item.profit) > 0
-                                ? Colors.red
-                                : delMille(item.profit) < 0
-                                ? Colors.green
-                                : Colors.lightGrayColor;
-                        return (
-                            <View style={styles.listRow} key={item + '' + index}>
-                                <View style={styles.typeView}>
-                                    <View style={styles.typeWrap}>
-                                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
-                                            {item.type}
-                                        </Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => jump(item?.url)}>
-                                        <Text style={styles.title}>{item.text}</Text>
-                                    </TouchableOpacity>
-                                    {item.tag ? (
-                                        <View
-                                            style={{
-                                                borderRadius: text(2),
-                                                backgroundColor: '#EFF5FF',
-                                                marginLeft: text(6),
-                                            }}>
-                                            <Text style={styles.tag}>{item.tag}</Text>
-                                        </View>
-                                    ) : null}
-                                </View>
-                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
-                            </View>
-                        );
-                    })}
+                    <FlatList
+                        windowSize={300}
+                        data={profitList || []}
+                        keyExtractor={(item, index) => item + index}
+                        ListEmptyComponent={<EmptyData />}
+                        onEndReachedThreshold={0.5}
+                        refreshing={false}
+                        renderItem={renderItem}
+                    />
                 </>
             )}
         </>

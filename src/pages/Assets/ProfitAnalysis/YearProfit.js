@@ -26,42 +26,44 @@ const YearProfit = ({poid, fund_code}) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
+                let startYear = dayjs().year() - 5;
+                let endYear = dayjs().year();
                 let arr = [];
+                for (let i = startYear; i < endYear; i++) {
+                    arr.push({
+                        day: i + 1,
+                        profit: '0.00',
+                    });
+                }
                 const res = await getChartData({type, unit_type: 'year'});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res?.result ?? {};
                     if (profit_data_list.length > 0) {
-                        if (profit_data_list.length > 5) {
-                            for (let i = 0; i < profit_data_list.length; i++) {
-                                arr.push({
-                                    day: parseFloat(profit_data_list[i].unit_key),
-                                    profit: profit_data_list[i].value,
-                                });
-                            }
-                        } else {
-                            let startYear = dayjs().year() - 5;
-                            let endYear = dayjs().year();
-                            for (let i = startYear; i < endYear; i++) {
-                                arr.push({
-                                    day: i + 1,
-                                    profit: '0.00',
-                                });
-                            }
-                            for (let i = 0; i < arr.length; i++) {
-                                for (let j = 0; j < profit_data_list.length; j++) {
-                                    if (arr[i].day == profit_data_list[j].unit_key) {
-                                        arr[i].profit = profit_data_list[j].value;
-                                    }
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                if (arr[i].day == profit_data_list[j].unit_key) {
+                                    arr[i].profit = profit_data_list[j].value;
                                 }
                             }
                         }
-                        let index = profit_data_list.findIndex((el) => el.value >= 0 || el.value <= 0);
-                        let newArr = arr.sort((a, b) => a.day - b.day);
-                        let zIndex = newArr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
+                        );
+                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+                        let barCharData = arr.map((el) => {
+                            return {date: el.day + '年', value: parseFloat(el.profit)};
+                        });
+                        setChart({
+                            label: [
+                                {name: '时间', val: profit_data_list[index]?.unit_key},
+                                {name: '收益', val: profit_data_list[index]?.value},
+                            ],
+                            chart: barCharData,
+                        });
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        newArr[zIndex] && (newArr[zIndex].checked = true);
-                        setDateArr([...newArr]);
-                        setSelCurYear(newArr[zIndex].day);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurYear(arr[zIndex].day);
                     } else {
                         setIsHasData(false);
                     }
