@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 16:29:38
+ * @LastEditTime: 2022-10-26 18:14:56
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -68,6 +68,8 @@ const Product = ({navigation}) => {
 
     const subjectLoadingRef = useRef(false); // 为了流程控制
 
+    const viewReportTimesMap = useRef({popular_subject: 1});
+
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
@@ -98,6 +100,13 @@ const Product = ({navigation}) => {
         });
         return () => unsubscribe();
     }, [isFocused, navigation]);
+
+    useEffect(() => {
+        for (let subject of subjectList) {
+            const sId = subject.subject_id;
+            if (!viewReportTimesMap.current[sId]) viewReportTimesMap.current[sId] = 1;
+        }
+    }, [subjectList]);
 
     const getProData = (type) => {
         type === 0 && setRefreshing(true);
@@ -485,12 +494,15 @@ const Product = ({navigation}) => {
                                         <LogView.Item
                                             logKey={proData?.popular_subject.type}
                                             handler={() => {
-                                                global.LogTool({
-                                                    event: 'rec_show',
-                                                    ctrl: proData?.popular_subject.subject_id,
-                                                    plateid: proData?.popular_subject.plateid,
-                                                    rec_json: proData?.popular_subject.rec_json,
-                                                });
+                                                if (viewReportTimesMap.current.popular_subject === 1) {
+                                                    global.LogTool({
+                                                        event: 'rec_show',
+                                                        ctrl: proData?.popular_subject.subject_id,
+                                                        plateid: proData?.popular_subject.plateid,
+                                                        rec_json: proData?.popular_subject.rec_json,
+                                                    });
+                                                    viewReportTimesMap.current.popular_subject++;
+                                                }
                                             }}
                                             style={{
                                                 backgroundColor: '#fff',
@@ -551,12 +563,16 @@ const Product = ({navigation}) => {
                                                     logKey={subject.subject_id}
                                                     handler={() => {
                                                         let subject = subjectList?.[index];
-                                                        global.LogTool({
-                                                            event: 'rec_show',
-                                                            ctrl: subject.subject_id,
-                                                            plateid: subject.plateid,
-                                                            rec_json: subject.rec_json,
-                                                        });
+
+                                                        if (viewReportTimesMap.current[subject.subject_id] === 1) {
+                                                            global.LogTool({
+                                                                event: 'rec_show',
+                                                                ctrl: subject.subject_id,
+                                                                plateid: subject.plateid,
+                                                                rec_json: subject.rec_json,
+                                                            });
+                                                            viewReportTimesMap.current[subject.subject_id]++;
+                                                        }
                                                     }}
                                                     key={subject.subject_id + index}
                                                     style={{marginTop: px(12)}}>

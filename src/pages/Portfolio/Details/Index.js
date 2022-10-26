@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 14:44:45
+ * @LastEditTime: 2022-10-26 18:20:23
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -149,7 +149,7 @@ const PortFolioDetail = ({navigation, route}) => {
         if (!clickRef.current) {
             return false;
         }
-        global.LogTool({event: btn.event_id});
+        global.LogTool({event: btn.event_id, ctrl: route?.params?.params?.plan_id});
 
         const {event_id, is_follow, url, plan_id, item_type} = btn;
 
@@ -271,7 +271,7 @@ const PortFolioDetail = ({navigation, route}) => {
                                 disabled={avail === 0}
                                 key={title + i}
                                 onPress={() => {
-                                    global.LogTool({event: btn.event_id});
+                                    global.LogTool({event: btn.event_id, ctrl: route?.params?.params?.plan_id});
                                     jump(url);
                                 }}
                                 style={[
