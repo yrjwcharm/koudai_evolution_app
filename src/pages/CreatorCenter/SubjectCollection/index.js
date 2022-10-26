@@ -68,6 +68,7 @@ const SubjectCollection = ({navigation, route}) => {
     return data ? (
         <View style={styles.container}>
             <ScrollableTabView
+                locked={true}
                 ref={tabRef}
                 renderTabBar={() => (
                     <ScrollableTabBar
