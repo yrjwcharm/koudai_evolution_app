@@ -140,6 +140,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                             style={{flex: 1}}
                             horizontal={true}
                             ref={scrollViewRef}
+                            showsHorizontalScrollIndicator={false}
                             onLayout={(e) => {
                                 scrollViewRef?.current.measureInWindow((x, y, width, height) => {
                                     setCateLayout({y, height});
@@ -190,7 +191,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                                         ])
                                     );
                                 }}
-                                style={styles.editBtn}>
+                                style={[styles.editBtn, {marginLeft: px(8)}]}>
                                 <Text style={styles.editBtnText}>{data?.group_edit_button.name}</Text>
                             </TouchableOpacity>
                         ) : null}
@@ -252,6 +253,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
+                                    setModalTabActive();
                                     originDataChange(modalData.filter((item) => item.id !== -1));
                                     onTabChange(0);
                                     setModalVisible(false);
