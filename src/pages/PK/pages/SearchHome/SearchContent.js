@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 20:20:41
+ * @LastEditTime: 2022-10-26 16:09:22
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -76,13 +76,15 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                 style={[styles.con, Style.flexBetween]}
                 onPress={() => jump(data.url)}
                 activeOpacity={0.9}>
-                <View style={{maxWidth: '60%'}}>
-                    <Text html={data?.name} style={styles.title} numberOfLines={1}>
+                <View style={{maxWidth: '100%', flex: 1}}>
+                    <Text style={styles.title} numberOfLines={1}>
                         {data?.title}
                     </Text>
-                    <Text style={styles.rateDesc}>{data?.desc}</Text>
+                    <Text style={styles.rateDesc} numberOfLines={1}>
+                        {data?.desc}
+                    </Text>
                 </View>
-                <View style={Style.flexRow}>
+                <View style={[Style.flexRow, {marginLeft: px(10)}]}>
                     {selections ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
