@@ -32,6 +32,7 @@ const ProfitDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
+            console.log(333, page);
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
