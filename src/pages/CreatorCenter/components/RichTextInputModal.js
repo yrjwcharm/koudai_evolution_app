@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 19:38:51
+ * @LastEditTime: 2022-10-26 18:26:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
@@ -25,83 +25,164 @@ import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import {WebView as RNWebView} from 'react-native-webview';
 
+// const html = Platform.select({
+//     ios: require('~/assets/html/richTextInput.html'),
+//     android: 'file:///android_asset/richTextInput.html',
+// });
+
 const html = `
 <!DOCTYPE html>
-<html  lang="zh" class="focus-outline-visible" lazy-loaded="true">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-      <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-      <title>标题</title>
-      <style>
-        body {
-          margin: 0;
-        }
-      .con{
-          width: 100%;
-          height: 243px;
-          outline: none;
-          font-size: 14px;
-          padding: 20px 16px;
-      }
-      .placeholder {
-        color: '#BDC2CC';
-        font-size: 14px;
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-      .con:empty:before{ 
-          /* content: "请产\u8bf7\u586b\u5199\u4ea7\u54c1\u63a8\u8350\u8bed\uff0c\u6700\u591a\u0031\u0035\u4e2a\u5b57\u7b26";  */
-          content: '请填写产品推荐语，最多15个字符';
-          color: gray; 
-      } 
-      .con:focus:before{
-          content:none;
-      }
-      </style>
+<html lang="zh" class="focus-outline-visible" lazy-loaded="true">
 
-    </head>
-  <body>
-  <div class="con" id="input" contenteditable="true"  ></div>
-    <script>
-      const cntMaxLength = 15;// 最大长度为15
-      const input = document.getElementById('input')
-      input.addEventListener('input', (e) => {
-        console.log('input:',e)
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-          type: 'input',
-          html: e.target.innerHTML,
-          text: e.target.innerText,
-        }))
-      })
-      input.addEventListener('keydown', handleMaxLength)
-      input.addEventListener('paste', handleMaxLength)
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+  <title>标题</title>
+  <style>
+    body {
+      margin: 0;
+    }
 
-      function handleMaxLength(event) {
-        if (this.innerText.length === cntMaxLength && event.keyCode != 8) {
-         event.preventDefault();
+    .con {
+      width: 100%;
+      height: 150px;
+      outline: none;
+      font-size: 14px;
+      padding: 20px 16px;
+
+    }
+
+    .placeholder {
+      color: '#BDC2CC';
+      font-size: 14px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .con:empty:before {
+      /* content: "请产\u8bf7\u586b\u5199\u4ea7\u54c1\u63a8\u8350\u8bed\uff0c\u6700\u591a\u0031\u0035\u4e2a\u5b57\u7b26";  */
+      content: '请填写产品推荐语，最多15个字符';
+      color: gray;
+    }
+
+    .con:focus:before {
+      content: none;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="con" id="input" contenteditable="true"></div>
+  <script>
+    const cntMaxLength = 15; // 最大长度为15
+    const input = document.getElementById('input')
+
+    var savedRange, isInFocus;
+
+    function saveSelection() {
+      if (window.getSelection) //non IE Browsers
+      {
+        savedRange = window.getSelection().getRangeAt(0);
+      } else if (document.selection) //IE
+      {
+        savedRange = document.selection.createRange();
+      }
+    }
+
+    function restoreSelection() {
+      isInFocus = true;
+      document.getElementById("input").focus();
+      if (savedRange != null) {
+        if (window.getSelection) //non IE and there is already a selection
+        {
+          var s = window.getSelection();
+          if (s.rangeCount > 0)
+            s.removeAllRanges();
+          s.addRange(savedRange);
+        } else if (document.createRange) //non IE and no selection
+        {
+          window.getSelection().addRange(savedRange);
+        } else if (document.selection) //IE
+        {
+          savedRange.select();
         }
       }
- 
-       
-      function toggleRed(flag) {
-        console.log('toggleRed:', flag ? 'red': null)
-        document.execCommand('styleWithCSS', false, flag);
-        document.execCommand('foreColor', false,  flag? 'rgb(255, 0, 0)':'rgb(0, 0, 0)');
+    }
+
+    const tag1 = "<span style='color: rgb(255, 0, 0);'>"
+    const tag2 = "</span>"
+    const flag1 = '☞'
+    const flag2 = '☜'
+
+    input.addEventListener('input', (e) => {
+      let html = e.target.innerHTML
+      let text = e.target.innerText
+      if (text.length > cntMaxLength) {
+
+        let resultText = text.substr(0, 15)
+
+        let grayHtml = html.replace(tag1, flag1.repeat(tag1.length)).replace(tag2, flag2.repeat(tag2.length))
+        let len = 0
+        let endInScope = false
+        for (let i = 0; i < cntMaxLength; i++) {
+          let c = grayHtml.charAt(i)
+          if (c === flag1) {
+            endInScope = true
+          }
+          if (c === flag2) {
+            endInScope = false
+          }
+
+          while (c === flag1 || c === flag2) {
+            len++
+          }
+          len++
+        }
+
+        html = html.substr(0, len) + (endInScope ? tag2 : '')
+
+        e.target.innerHTML = html
+        input.blur()       
       }
-      function setInputValue(str) {
-        input.innerHTML = str
+
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'input',
+        html: e.target.innerHTML,
+        text: e.target.innerText,
+      }))
+    })
+    input.addEventListener('keydown', handleMaxLength)
+    input.addEventListener('paste', handleMaxLength)
+
+    function handleMaxLength(event) {
+      console.log('event:', event)
+      if (this.innerText.length >= cntMaxLength && event.keyCode != 8) {
+        event.preventDefault();
       }
-      // 获取当前颜色，需要点击输入时才有用
-      // function getRangeRed() {
-      //   let str = document.queryCommandValue('foreColor')
-      //   console.log('getRangeRed:',str)
-      // }
-      
-    </script>
-    </body>
-  </html>
+    }
+
+
+    function toggleRed(flag) {
+      console.log('toggleRed:', flag ? 'red' : null)
+      document.execCommand('styleWithCSS', false, flag);
+      document.execCommand('foreColor', false, flag ? 'rgb(255, 0, 0)' : 'rgb(0, 0, 0)');
+    }
+
+    function setInputValue(str) {
+      input.innerHTML = str
+    }
+    // 获取当前颜色，需要点击输入时才有用
+    // function getRangeRed() {
+    //   let str = document.queryCommandValue('foreColor')
+    //   console.log('getRangeRed:',str)
+    // }
+  </script>
+</body>
+
+</html>
 `;
 
 function RichTextModal(props, ref) {
