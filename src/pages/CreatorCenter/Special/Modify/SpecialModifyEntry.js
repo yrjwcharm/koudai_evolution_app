@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 20:21:44
+ * @LastEditTime: 2022-10-26 20:01:51
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -24,7 +24,7 @@ import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
     console.log('SpecialModifyEntry:', route?.params);
-    const fix_id = route?.params?.fix_id || 1043;
+    const fix_id = route?.params?.fix_id || 1001;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
@@ -178,6 +178,9 @@ const styles = StyleSheet.create({
     cell_descWrap: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'flex-end',
+        flex: 1,
+        marginLeft: px(10),
     },
     cell_desc: {
         fontSize: px(12),

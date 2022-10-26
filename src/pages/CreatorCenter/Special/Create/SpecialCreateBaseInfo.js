@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 15:47:26
+ * @LastEditTime: 2022-10-26 19:57:59
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -45,7 +45,11 @@ function Tag(props) {
                 <Text style={styles.tagItem_text}>{text}</Text>
             </Pressable>
             <TouchableOpacity style={styles.tagItem_closeWrap} onPress={onClose}>
-                <Icon style={styles.tagItem_closeIcon} name={'close'} size={12} />
+                {/* <Icon style={styles.tagItem_closeIcon} name={'close'} size={12} /> */}
+                <FastImage
+                    source={require('~/assets/img/special/clear_tag.png')}
+                    style={{width: px(8), height: px(8)}}
+                />
             </TouchableOpacity>
         </View>
     );
@@ -310,10 +314,11 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
             <TouchableOpacity style={[styles.uload_btn, Style.flexCenter]} activeOpacity={0.9} onPress={showSelectImg}>
                 <ImageBackground
                     resizeMode="cover"
+                    imageStyle={{borderRadius: 6}}
                     source={{uri: bgPreview ? bgPreview : bgSource}}
                     style={[styles.bg_image]}>
                     <FastImage
-                        source={require('~/components/IM/app/source/image/camera.png')}
+                        source={require('~/assets/img/special/camera.png')}
                         style={[styles.upload_centerCamera]}
                     />
                 </ImageBackground>
@@ -345,27 +350,39 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 <View style={[styles.space1, styles.upload_imageWrap]}>{uploadImgSection}</View>
                 <View style={[styles.space2, styles.inputWrap]}>
                     <TextInput
-                        style={styles.title}
+                        style={styles.titleInput}
                         onChangeText={setTitle}
                         placeholder="请输入专题名称，最多13个字符"
                         value={title}
                         maxLength={13}
-                        clearButtonMode="while-editing"
+                        clearButtonMode="never"
                     />
+                    <TouchableOpacity style={styles.titleInput_clearBtn} onPress={() => setTitle('')}>
+                        <FastImage
+                            style={{width: px(14), height: px(14)}}
+                            source={require('~/assets/img/special/clear_input.png')}
+                        />
+                    </TouchableOpacity>
                     <View style={[styles.line, styles.space1]} />
                 </View>
-                <View style={[styles.space2, styles.descInputWrap]}>
+                <View style={[styles.space2, styles.inputWrap]}>
                     <TextInput
                         style={styles.descInput}
                         placeholder="请输入专题简介，最少50个字，最多150个字"
                         onChangeText={setDesc}
                         maxLength={150}
-                        numberOfLines={4}
+                        numberOfLines={0}
                         multiline={true}
                         editable
                         value={desc}
-                        clearButtonMode="while-editing"
+                        clearButtonMode="never"
                     />
+                    <TouchableOpacity style={styles.titleInput_clearBtn} onPress={() => setDesc('')}>
+                        <FastImage
+                            style={{width: px(14), height: px(14)}}
+                            source={require('~/assets/img/special/clear_input.png')}
+                        />
+                    </TouchableOpacity>
                     <View style={[styles.line, styles.space1]} />
                 </View>
                 <TagWrap tags={tags} setTags={setTags} />
@@ -412,9 +429,13 @@ const styles = StyleSheet.create({
         width: '100%',
         height: StyleSheet.hairlineWidth,
         backgroundColor: '#BDC2CC',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
     },
     upload_label: {
         fontSize: px(16),
+        fontWeight: 'bold',
         color: '#121D3A',
     },
     upload_imageWrap: {
@@ -423,6 +444,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        borderRadius: px(6),
     },
 
     uload_btn: {
@@ -443,24 +465,38 @@ const styles = StyleSheet.create({
         width: 24,
     },
     upload_centerCamera: {
-        width: 40,
-        height: 40,
+        width: px(40),
+        height: px(40),
     },
 
     bg_image: {
         width: '100%',
         height: '100%',
         minHeight: 100,
+        borderRadius: px(6),
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    title: {
+    inputWrap: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: px(12),
+    },
+    titleInput: {
         fontSize: px(16),
         color: '#121D3A',
+        // width: '100%',
+        flex: 1,
+    },
+    titleInput_clearBtn: {
+        width: px(20),
+        height: px(20),
     },
     descInput: {
         fontSize: px(13),
+        flex: 1,
         color: '#545968',
     },
     descInputWrap: {},
@@ -503,8 +539,9 @@ const styles = StyleSheet.create({
         height: px(25),
         backgroundColor: '#F1F6FF',
         paddingLeft: px(12),
-        marginRight: px(10),
-        marginBottom: px(10),
+        paddingRight: px(8),
+        marginRight: px(8),
+        marginBottom: px(8),
     },
     tagItem_text: {
         color: '#0051CC',
@@ -512,20 +549,14 @@ const styles = StyleSheet.create({
     },
     tagItem_closeWrap: {
         height: '100%',
-        width: px(30),
+        width: px(16),
         justifyContent: 'center',
         alignItems: 'center',
     },
-    tagItem_closeIcon: {
-        color: 'red',
-        height: px(10),
-        width: px(10),
-        lineHeight: px(10),
-        fontSize: px(10),
-    },
+
     tagItemAdd: {
         backgroundColor: '#F5F6F8',
-        paddingRight: px(12),
+        paddingRight: px(8),
     },
     tagItemAdd_text: {
         color: '#9AA0B1',
