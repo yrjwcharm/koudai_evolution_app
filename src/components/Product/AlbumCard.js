@@ -3,7 +3,7 @@
  * @Description: v7专题卡片
  */
 import React, {useMemo, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -126,7 +126,7 @@ const Index = ({
                 ) : null}
                 {groups?.length > 0 && (
                     <View style={{paddingTop: px(12)}}>
-                        <View style={Style.flexRow}>
+                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                             {groups.map?.((group, index) => {
                                 const {name} = group;
                                 const isCurrent = active === index;
@@ -156,7 +156,7 @@ const Index = ({
                                     </TouchableOpacity>
                                 );
                             })}
-                        </View>
+                        </ScrollView>
                         {groupDesc ? (
                             <Text style={[styles.desc, {marginTop: px(12), color: Colors.red}]}>{groupDesc}</Text>
                         ) : null}
