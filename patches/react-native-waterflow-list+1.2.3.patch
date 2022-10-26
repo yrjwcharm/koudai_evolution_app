@@ -1,0 +1,171 @@
+diff --git a/node_modules/react-native-waterflow-list/build/Column.d.ts b/node_modules/react-native-waterflow-list/build/Column.d.ts
+index 3859997..772e021 100644
+--- a/node_modules/react-native-waterflow-list/build/Column.d.ts
++++ b/node_modules/react-native-waterflow-list/build/Column.d.ts
+@@ -1,2 +1 @@
+-/// <reference types="react" />
+-export declare function Colunm({ columnFlatListProps, renderItem, ...props }: any): JSX.Element;
++export declare function Colunm({ columnFlatListProps, renderItem, ...props }: any): any;
+diff --git a/node_modules/react-native-waterflow-list/build/Column.js b/node_modules/react-native-waterflow-list/build/Column.js
+index f551d09..a48b1e3 100644
+--- a/node_modules/react-native-waterflow-list/build/Column.js
++++ b/node_modules/react-native-waterflow-list/build/Column.js
+@@ -28,11 +28,11 @@ var react_native_1 = require("react-native");
+ function Colunm(_a) {
+     var columnFlatListProps = _a.columnFlatListProps, renderItem = _a.renderItem, props = __rest(_a, ["columnFlatListProps", "renderItem"]);
+     return (<react_native_1.FlatList removeClippedSubviews={true} {...props} {...columnFlatListProps} style={[{ flex: 1, }, __assign({}, columnFlatListProps === null || columnFlatListProps === void 0 ? void 0 : columnFlatListProps.style)]} renderItem={function (_a) {
+-        var item = _a.item, index = _a.index;
+-        return <react_native_1.View key={item._keyForItem_} onLayout={item.onLayout}>
++            var item = _a.item, index = _a.index;
++            return <react_native_1.View key={item._keyForItem_} onLayout={item.onLayout}>
+           {renderItem({ item: item, index: index })}
+         </react_native_1.View>;
+-    }}/>);
++        }}/>);
+ }
+ exports.Colunm = Colunm;
+ //# sourceMappingURL=Column.js.map
+\ No newline at end of file
+diff --git a/node_modules/react-native-waterflow-list/build/Column.js.map b/node_modules/react-native-waterflow-list/build/Column.js.map
+index 66fda11..3544bfe 100644
+--- a/node_modules/react-native-waterflow-list/build/Column.js.map
++++ b/node_modules/react-native-waterflow-list/build/Column.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"Column.js","sourceRoot":"","sources":["../src/Column.tsx"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;AAAA,6BAA8B;AAC9B,6CAA+C;AAE/C,SAAgB,MAAM,CAAC,EAAkD;IAAhD,IAAA,mBAAmB,yBAAA,EAAE,UAAU,gBAAA,EAAK,KAAK,cAA3C,qCAA6C,CAAF;IAChE,OAAO,CACL,CAAC,uBAAQ,CACP,qBAAqB,CAAC,CAAC,IAAI,CAAC,CAC5B,IAAI,KAAK,CAAC,CACV,IAAI,mBAAmB,CAAC,CACxB,KAAK,CAAC,CAAC,CAAC,EAAE,IAAI,EAAE,CAAC,GAAG,eAAO,mBAAmB,aAAnB,mBAAmB,uBAAnB,mBAAmB,CAAE,KAAK,EAAG,CAAC,CACzD,UAAU,CAAC,CAAC,UAAC,EAGZ;YAHc,IAAI,UAAA,EAAE,KAAK,WAAA;QAIxB,OAAO,CAAC,mBAAI,CACV,GAAG,CAAC,CAAC,IAAI,CAAC,YAAY,CAAC,CACvB,QAAQ,CAAC,CAAC,IAAI,CAAC,QAAQ,CAAC,CACxB;UAAA,CAAC,UAAU,CAAC,EAAE,IAAI,MAAA,EAAE,KAAK,OAAA,EAAE,CAAC,CAC9B;QAAA,EAAE,mBAAI,CAAC,CAAA;IACT,CAAC,CAAC,EACF,CACH,CAAC;AACJ,CAAC;AAnBD,wBAmBC"}
+\ No newline at end of file
++{"version":3,"file":"Column.js","sourceRoot":"","sources":["../src/Column.tsx"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;AAAA,6BAA8B;AAC9B,6CAA+C;AAE/C,SAAgB,MAAM,CAAC,EAAkD;IAAhD,IAAA,mBAAmB,yBAAA,EAAE,UAAU,gBAAA,EAAK,KAAK,cAA3C,qCAA6C,CAAF;IAChE,OAAO,CACL,CAAC,uBAAQ,CACP,qBAAqB,CAAC,CAAC,IAAI,CAAC,CAC5B,IAAI,KAAK,CAAC,CACV,IAAI,mBAAmB,CAAC,CACxB,KAAK,CAAC,CAAC,CAAC,EAAE,IAAI,EAAE,CAAC,GAAG,eAAO,mBAAmB,aAAnB,mBAAmB,uBAAnB,mBAAmB,CAAE,KAAK,EAAG,CAAC,CACzD,UAAU,CAAC,CAAC,UAAC,EAGZ;gBAHc,IAAI,UAAA,EAAE,KAAK,WAAA;YAIxB,OAAO,CAAC,mBAAI,CACV,GAAG,CAAC,CAAC,IAAI,CAAC,YAAY,CAAC,CACvB,QAAQ,CAAC,CAAC,IAAI,CAAC,QAAQ,CAAC,CACxB;UAAA,CAAC,UAAU,CAAC,EAAE,IAAI,MAAA,EAAE,KAAK,OAAA,EAAE,CAAC,CAC9B;QAAA,EAAE,mBAAI,CAAC,CAAA;QACT,CAAC,CAAC,EACF,CACH,CAAC;AACJ,CAAC;AAnBD,wBAmBC"}
+\ No newline at end of file
+diff --git a/node_modules/react-native-waterflow-list/build/Columns.js b/node_modules/react-native-waterflow-list/build/Columns.js
+index 80cdcca..5f0b646 100644
+--- a/node_modules/react-native-waterflow-list/build/Columns.js
++++ b/node_modules/react-native-waterflow-list/build/Columns.js
+@@ -46,16 +46,14 @@ var __rest = (this && this.__rest) || function (s, e) {
+         }
+     return t;
+ };
+-var __spreadArrays = (this && this.__spreadArrays) || function () {
+-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+-            r[k] = a[j];
+-    return r;
++var __spreadArray = (this && this.__spreadArray) || function (to, from) {
++    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
++        to[j] = from[i];
++    return to;
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ var React = require("react");
+-var react_native_1 = require("react-native");
++var react_native_scroll_head_tab_view_1 = require("react-native-scroll-head-tab-view");
+ var Column_1 = require("./Column");
+ var Columns = function (_a, ref) {
+     var columnsFlatListProps = _a.columnsFlatListProps, props = __rest(_a, ["columnsFlatListProps"]);
+@@ -102,9 +100,9 @@ var Columns = function (_a, ref) {
+     };
+     var addItem = function (item, cb, isSyncHeightForItem) {
+         if (isSyncHeightForItem === void 0) { isSyncHeightForItem = false; }
+-        var tempColumns = __spreadArrays(columns);
++        var tempColumns = __spreadArray([], columns);
+         // 获取总高度最小列
+-        var minColumnsIndex = __spreadArrays(columnsHeight).indexOf(Math.min.apply(Math, __spreadArrays(columnsHeight)));
++        var minColumnsIndex = __spreadArray([], columnsHeight).indexOf(Math.min.apply(Math, __spreadArray([], columnsHeight)));
+         // 获取当前renderItem高度,获取后渲染下一个renderItem,直到全部渲染完毕
+         if (typeof cb === 'function') {
+             item.onLayout = function (e) { return __awaiter(void 0, void 0, void 0, function () {
+@@ -173,13 +171,10 @@ var Columns = function (_a, ref) {
+         clear: clear,
+         addIteming: addIteming,
+     }); });
+-    return (<react_native_1.FlatList data={props.data.length ? columns : null} keyExtractor={function (columnItem) { return "item-" + columnItem._keyForItem_; }} onScroll={function (e) {
+-        props.onEndReached(e);
+-        props.onScroll && props.onScroll(e);
+-    }} removeClippedSubviews={true} {...columnsFlatListProps} numColumns={props.numColumns} renderItem={function (_a) {
+-        var item = _a.item, index = _a.index;
+-        return <Column_1.Colunm columnFlatListProps={props.columnFlatListProps} key={"column-" + index} listKey={"column-" + index} keyExtractor={function (columnItem) { return "item-" + columnItem._keyForItem_; }} data={item} renderItem={props.renderItem}/>;
+-    }}/>);
++    return (<react_native_scroll_head_tab_view_1.FlatList data={props.data.length ? columns : null} keyExtractor={function (columnItem) { return "item-" + columnItem._keyForItem_; }} removeClippedSubviews={true} {...columnsFlatListProps} numColumns={props.numColumns} renderItem={function (_a) {
++            var item = _a.item, index = _a.index;
++            return <Column_1.Colunm columnFlatListProps={props.columnFlatListProps} key={"column-" + index} listKey={"column-" + index} keyExtractor={function (columnItem) { return "item-" + columnItem._keyForItem_; }} data={item} renderItem={props.renderItem}/>;
++        }}/>);
+ };
+ exports.default = React.forwardRef(Columns);
+ //# sourceMappingURL=Columns.js.map
+\ No newline at end of file
+diff --git a/node_modules/react-native-waterflow-list/build/Columns.js.map b/node_modules/react-native-waterflow-list/build/Columns.js.map
+index dcf9ff8..e435b0c 100644
+--- a/node_modules/react-native-waterflow-list/build/Columns.js.map
++++ b/node_modules/react-native-waterflow-list/build/Columns.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"Columns.js","sourceRoot":"","sources":["../src/Columns.tsx"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"Columns.js","sourceRoot":"","sources":["../src/Columns.tsx"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/react-native-waterflow-list/build/index.d.ts b/node_modules/react-native-waterflow-list/build/index.d.ts
+index 6e246c5..de2c8de 100644
+--- a/node_modules/react-native-waterflow-list/build/index.d.ts
++++ b/node_modules/react-native-waterflow-list/build/index.d.ts
+@@ -1,5 +1,4 @@
+-import * as React from 'react';
+-import { IColumnsHandles, IColumnsProps } from './Columns';
++import { IColumnsProps } from './Columns';
+ export interface IWaterflowProps<T> {
+     data: T[];
+     numColumns: number;
+@@ -10,5 +9,5 @@ export interface IWaterflowProps<T> {
+     columnFlatListProps: IColumnsProps<T>['columnFlatListProps'];
+     onEndReached: () => Promise<any>;
+ }
+-declare const _default: React.ForwardRefExoticComponent<IColumnsProps<any> & React.RefAttributes<IColumnsHandles>>;
++declare const _default: any;
+ export default _default;
+diff --git a/node_modules/react-native-waterflow-list/build/index.js.map b/node_modules/react-native-waterflow-list/build/index.js.map
+index 9943a84..1bea06c 100644
+--- a/node_modules/react-native-waterflow-list/build/index.js.map
++++ b/node_modules/react-native-waterflow-list/build/index.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.tsx"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,6BAA+B;AAK/B,qCAAqE;AACrE,iCAAoD;AAepD,IAAM,SAAS,GAAG,UAAe,KAAyB,EAAE,GAAwB;IAClF,IAAM,IAAI,GAAG,KAAK,CAAC,IAAI,IAAI,EAAE,CAAC;IAE9B,IAAM,YAAY,GAAG,KAAK,CAAC,MAAM,CAAC,EAAqB,CAAC,CAAC;IAEzD;;;OAGG;IACH,IAAM,YAAY,GAAG,KAAK,CAAC,WAAW,CACpC,CAAC;QACC,IAAI,OAAO,GAAG,KAAK,CAAC;QACpB,4CAA4C;QAC5C,OAAO,UAAO,KAA8C,EAAE,EAAsB;;;;;;wBAClF,iCAAiC;wBACjC,IAAI,OAAO,WAAI,YAAY,CAAC,OAAO,0CAAE,UAAU,CAAA,EAAE;4BAAE,sBAAM;yBAAE;wBAAA,CAAC;6BACxD,sBAAc,CAAC,KAAK,CAAC,EAArB,wBAAqB;wBACvB,OAAO,GAAG,IAAI,CAAC;6BACX,CAAA,OAAO,EAAE,KAAK,UAAU,CAAA,EAAxB,wBAAwB;wBACpB,MAAM,GAAG,EAAE,EAAE,CAAC;6BAChB,iBAAS,CAAC,MAAM,CAAC,EAAjB,wBAAiB;;;;wBAEb,qBAAM,MAAM,EAAA;;wBAAZ,SAAY,CAAA;;;;wBAAiB,OAAO,CAAC,KAAK,CAAC,KAAG,CAAC,CAAA;;;wBACrD,OAAO,GAAG,KAAK,CAAC;;;wBAEhB,OAAO,GAAG,KAAK,CAAC;;;;;aAIvB,CAAC;IACJ,CAAC,CAAC,EAAE,EAAE,EAAE,CAAC,CAAC;IAGZ,KAAK,CAAC,mBAAmB,CAAC,GAAG,EAAE;;QAAM,OAAA,CAAC;YACpC,KAAK,QAAE,YAAY,CAAC,OAAO,0CAAE,KAAK;YAClC,UAAU,QAAE,YAAY,CAAC,OAAO,0CAAE,UAAU;SAC7C,CAAC,CAAA;KAAA,CAAC,CAAC;IAEJ,OAAO,CACL,CAAC,iBAAO,CACN,IAAI,KAAK,CAAC,CACV,GAAG,CAAC,CAAC,YAAY,CAAC,CAClB,IAAI,CAAC,CAAC,IAAI,CAAC,CACX,YAAY,CAAC,CAAC,UAAC,CAA0C,IAAK,OAAA,YAAY,CAAC,CAAC,EAAE,KAAK,CAAC,YAAY,CAAC,EAAnC,CAAmC,CAAC,EAClG,CACH,CAAC;AACJ,CAAC,CAAC;AAEF,kBAAe,KAAK,CAAC,UAAU,CAAC,SAAyF,CAAC,CAAA"}
+\ No newline at end of file
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.tsx"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,6BAA+B;AAK/B,qCAAqE;AACrE,iCAAoD;AAepD,IAAM,SAAS,GAAG,UAAe,KAAyB,EAAE,GAAwB;IAClF,IAAM,IAAI,GAAG,KAAK,CAAC,IAAI,IAAI,EAAE,CAAC;IAE9B,IAAM,YAAY,GAAG,KAAK,CAAC,MAAM,CAAC,EAAqB,CAAC,CAAC;IAEzD;;;OAGG;IACH,IAAM,YAAY,GAAG,KAAK,CAAC,WAAW,CACpC,CAAC;QACC,IAAI,OAAO,GAAG,KAAK,CAAC;QACpB,4CAA4C;QAC5C,OAAO,UAAO,KAA8C,EAAE,EAAsB;;;;;;wBAClF,iCAAiC;wBACjC,IAAI,OAAO,KAAI,MAAA,YAAY,CAAC,OAAO,0CAAE,UAAU,CAAA,EAAE;4BAAE,sBAAM;yBAAE;wBAAA,CAAC;6BACxD,sBAAc,CAAC,KAAK,CAAC,EAArB,wBAAqB;wBACvB,OAAO,GAAG,IAAI,CAAC;6BACX,CAAA,OAAO,EAAE,KAAK,UAAU,CAAA,EAAxB,wBAAwB;wBACpB,MAAM,GAAG,EAAE,EAAE,CAAC;6BAChB,iBAAS,CAAC,MAAM,CAAC,EAAjB,wBAAiB;;;;wBAEb,qBAAM,MAAM,EAAA;;wBAAZ,SAAY,CAAA;;;;wBAAiB,OAAO,CAAC,KAAK,CAAC,KAAG,CAAC,CAAA;;;wBACrD,OAAO,GAAG,KAAK,CAAC;;;wBAEhB,OAAO,GAAG,KAAK,CAAC;;;;;aAIvB,CAAC;IACJ,CAAC,CAAC,EAAE,EAAE,EAAE,CAAC,CAAC;IAGZ,KAAK,CAAC,mBAAmB,CAAC,GAAG,EAAE;;QAAM,OAAA,CAAC;YACpC,KAAK,EAAE,MAAA,YAAY,CAAC,OAAO,0CAAE,KAAK;YAClC,UAAU,EAAE,MAAA,YAAY,CAAC,OAAO,0CAAE,UAAU;SAC7C,CAAC,CAAA;KAAA,CAAC,CAAC;IAEJ,OAAO,CACL,CAAC,iBAAO,CACN,IAAI,KAAK,CAAC,CACV,GAAG,CAAC,CAAC,YAAY,CAAC,CAClB,IAAI,CAAC,CAAC,IAAI,CAAC,CACX,YAAY,CAAC,CAAC,UAAC,CAA0C,IAAK,OAAA,YAAY,CAAC,CAAC,EAAE,KAAK,CAAC,YAAY,CAAC,EAAnC,CAAmC,CAAC,EAClG,CACH,CAAC;AACJ,CAAC,CAAC;AAEF,kBAAe,KAAK,CAAC,UAAU,CAAC,SAAyF,CAAC,CAAA"}
+\ No newline at end of file
+diff --git a/node_modules/react-native-waterflow-list/src/Columns.tsx b/node_modules/react-native-waterflow-list/src/Columns.tsx
+index bc5a24f..b5849b0 100644
+--- a/node_modules/react-native-waterflow-list/src/Columns.tsx
++++ b/node_modules/react-native-waterflow-list/src/Columns.tsx
+@@ -1,11 +1,11 @@
+ import * as React from 'react';
+ import {
+-  FlatList,
+   FlatListProps,
+   LayoutChangeEvent,
+   NativeScrollEvent,
+   NativeSyntheticEvent,
+ } from 'react-native';
++import {FlatList} from 'react-native-scroll-head-tab-view'
+ import { Colunm } from './Column';
+ interface IFlatListProps<T> extends FlatListProps<T> {
+   data?: any
+@@ -153,15 +153,10 @@ const Columns = <T extends {
+     clear,
+     addIteming,
+   }));
+-
+   return (
+     <FlatList
+       data={props.data.length ? columns as any : null}
+       keyExtractor={(columnItem: T) => `item-${columnItem._keyForItem_}`}
+-      onScroll={(e: any) => {
+-        props.onEndReached(e);
+-        props.onScroll && props.onScroll(e)
+-      }}
+       removeClippedSubviews={true}
+       {...columnsFlatListProps}
+       numColumns={props.numColumns}
+@@ -175,6 +170,7 @@ const Columns = <T extends {
+           renderItem={props.renderItem}
+         />
+       }}
++     
+     />
+   )
+ }

@@ -461,6 +461,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     ref: waterfallFlow,
                     refreshing,
                     style: {paddingHorizontal: px(5) / 2, top: -px(5)},
+                    ...rest,
                 }}
                 data={data}
                 keyForItem={(item) => item.title + item.id}

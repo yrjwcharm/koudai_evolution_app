@@ -58,7 +58,7 @@ index c993477..4d92cc0 100644
      updateSceneKeys = ({ page, children = this.props.children, callback = () => {} }) => {
          let newKeys = this.newSceneKeys({ previousKeys: this.state.sceneKeys, currentPage: page, children });
 diff --git a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
-index 4dcd6de..b569bd4 100644
+index 4dcd6de..f1ecdaf 100644
 --- a/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
 +++ b/node_modules/react-native-scroll-head-tab-view/components/TabView.tsx
 @@ -26,13 +26,19 @@ const compose = (WrappedComponent) => {
@@ -99,3 +99,23 @@ index 4dcd6de..b569bd4 100644
                  }
              }
          };
+@@ -104,9 +110,9 @@ const compose = (WrappedComponent) => {
+         });
+ 
+         onScroll = (e) => {
++            this.props._onScroll && this.props._onScroll(e);
+             this.scrollOffsetY = e.nativeEvent.contentOffset.y;
+         };
+-
+         render() {
+             const { isActive, children, headerHeight, forwardedRef, contentContainerStyle, ...restProps } = this.props;
+             const { bottomPadding } = this.state;
+@@ -128,7 +134,7 @@ const compose = (WrappedComponent) => {
+                     contentContainerStyle={{
+                         ...contentContainerStyle,
+                         paddingTop: headerHeight,
+-                        paddingBottom: bottomPadding,
++                        paddingBottom: bottomPadding||0,
+                     }}
+                     overScrollMode="never"
+                     scrollEventThrottle={16}
