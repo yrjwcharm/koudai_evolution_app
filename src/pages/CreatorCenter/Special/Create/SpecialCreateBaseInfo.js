@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 11:35:21
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-26 15:47:26
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -30,11 +30,12 @@ import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
 import {Style, Colors, Space} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {getStashBaseInfo, saveStashBaseInfo, uploadImage} from './services';
 import LoadingTips from '~/components/LoadingTips';
 import pickerUploadImg from '~/utils/pickerUploadImg';
 import {useFocusEffect} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/AntDesign';
+import style from '~/pages/Assets/ProfitAnalysis/styles/style';
 
 function Tag(props) {
     let {text, onPress, onClose} = props;
@@ -43,10 +44,9 @@ function Tag(props) {
             <Pressable onPress={onPress}>
                 <Text style={styles.tagItem_text}>{text}</Text>
             </Pressable>
-            <Pressable onPress={onClose}>
-                <Text style={styles.tagItem_closeIcon}>X</Text>
-            </Pressable>
-            {/* <FastImage style={styles.tagItem_closeIcon}>X</FastImage> */}
+            <TouchableOpacity style={styles.tagItem_closeWrap} onPress={onClose}>
+                <Icon style={styles.tagItem_closeIcon} name={'close'} size={12} />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -102,14 +102,14 @@ function TagWrap(props) {
     return (
         <>
             <View style={[styles.space2, styles.tagsWrap]}>
-                {tags.length < 3 && <AddTag onPress={() => handleTagChange(-1)} />}
                 {(tags || []).map((tag, i) => (
                     <Tag key={tag + i} text={tag} onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
                 ))}
+                {tags.length < 3 && <AddTag onPress={() => handleTagChange(-1)} />}
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
-                <Text style={styles.tip} numberOfLines={0}>
+                <Text style={styles.tip} numberOfLines={2} textBreakStrategy="simple">
                     专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字
                 </Text>
             </View>
@@ -118,6 +118,7 @@ function TagWrap(props) {
                 title="标签内容编辑"
                 showClose={true}
                 confirmText="确定"
+                keyboardAvoiding={false}
                 onDone={handleTagEdit}>
                 <View style={styles.tagItem_inputWrap}>
                     <TextInput
@@ -468,6 +469,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        flexWrap: 'wrap',
+        width: '100%',
     },
     tip_icon: {
         height: 12,
@@ -478,12 +481,15 @@ const styles = StyleSheet.create({
     tip: {
         marginLeft: 4,
         fontSize: px(11),
+        alignSelf: 'flex-start',
         color: '#9AA0B1',
+        flex: 1,
     },
 
     tagsWrap: {
         display: 'flex',
         flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
@@ -497,15 +503,21 @@ const styles = StyleSheet.create({
         height: px(25),
         backgroundColor: '#F1F6FF',
         paddingLeft: px(12),
-        paddingRight: px(12),
+        marginRight: px(10),
+        marginBottom: px(10),
     },
     tagItem_text: {
         color: '#0051CC',
         fontSize: px(12),
     },
+    tagItem_closeWrap: {
+        height: '100%',
+        width: px(30),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     tagItem_closeIcon: {
         color: 'red',
-        marginLeft: 10,
         height: px(10),
         width: px(10),
         lineHeight: px(10),
@@ -513,6 +525,7 @@ const styles = StyleSheet.create({
     },
     tagItemAdd: {
         backgroundColor: '#F5F6F8',
+        paddingRight: px(12),
     },
     tagItemAdd_text: {
         color: '#9AA0B1',
