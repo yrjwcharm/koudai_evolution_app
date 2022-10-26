@@ -68,6 +68,7 @@ const DayProfit = React.memo(({poid, fund_code}) => {
                             style: {
                                 opacity: 0,
                             },
+                            isDisabled: true,
                             day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
                         });
                     }
@@ -190,9 +191,9 @@ const DayProfit = React.memo(({poid, fund_code}) => {
                 const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                 return (
                     <TouchableOpacity
-                        disabled={el.day >= currentDay}
+                        disabled={el.day >= currentDay || el?.isDisabled}
                         onPress={() => getProfitBySelDate(el)}
-                        key={`${el?.id + '' + index}`}>
+                        key={`${el + '' + index}`}>
                         <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
                             <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
                             {el.day !== currentDay && el?.profit && (
