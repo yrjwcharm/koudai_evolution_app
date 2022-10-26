@@ -3,7 +3,7 @@
  * @Description: 社区首页
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useSelector, useStore} from 'react-redux';
 import {
     ActivityIndicator,
     FlatList,
@@ -17,7 +17,7 @@ import {
 import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import WaterfallFlow from 'react-native-waterfall-flow';
+import WaterFlow from 'react-native-waterflow-list';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import close from '~/assets/img/icon/close.png';
 import live from '~/assets/img/vision/live.gif';
@@ -41,7 +41,7 @@ import {
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {debounce, groupBy, isEqual, sortBy} from 'lodash';
+import {cloneDeep, debounce, groupBy, isEqual, sortBy} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
@@ -416,27 +416,23 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     const renderItem = ({item = {}, index, columnIndex}) => {
         const {url} = item;
         return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => jump(url)}
-                style={[
-                    styles.waterfallFlowItem,
-                    {
-                        marginTop: index < 2 ? 0 : px(5),
-                        marginRight: columnIndex === 1 ? px(5) : px(5) / 2,
-                        marginLeft: columnIndex === 0 ? px(5) : px(5) / 2,
-                    },
-                ]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={styles.waterfallFlowItem}>
                 <CommunityFollowCard {...item} isRecommend />
             </TouchableOpacity>
         );
     };
 
     /** @name 上拉加载 */
-    const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) return false;
-        if (hasMore) setPage((p) => p + 1);
-    };
+    const onEndReached = useCallback(
+        debounce(
+            () => {
+                if (hasMore) setPage((p) => p + 1);
+            },
+            100,
+            {leading: true, trailing: false}
+        ),
+        [hasMore]
+    );
 
     /** @name 渲染底部 */
     const renderFooter = () => {
@@ -455,20 +451,23 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
     return data?.length > 0 ? (
         <LinearGradient colors={[wrapper === 'Recommend' ? Colors.bgColor : '#fff', Colors.bgColor]} style={{flex: 1}}>
-            <WaterfallFlow
+            <WaterFlow
+                columnFlatListProps={{
+                    style: {marginHorizontal: px(5) / 2},
+                }}
+                columnsFlatListProps={{
+                    ListFooterComponent: renderFooter,
+                    onRefresh: () => (page > 1 ? setPage(1) : init()),
+                    ref: waterfallFlow,
+                    refreshing,
+                    style: {paddingHorizontal: px(5) / 2, top: -px(5)},
+                    ...rest,
+                }}
                 data={data}
-                initialNumToRender={20}
-                keyExtractor={(item, index) => item.title + item.id + index}
-                ListFooterComponent={renderFooter}
+                keyForItem={(item) => item.title + item.id}
+                numColumns={2}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
-                onRefresh={() => (page > 1 ? setPage(1) : init())}
-                ref={waterfallFlow}
-                refreshing={refreshing}
                 renderItem={renderItem}
-                scrollIndicatorInsets={{right: 1}}
-                scrollEventThrottle={1}
-                {...rest}
             />
         </LinearGradient>
     ) : (
@@ -487,15 +486,26 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
 /** @name 推荐 */
 const Recommend = forwardRef(({tabs = []}, ref) => {
+    const store = useStore();
     const [current, setCurrent] = useState(0);
     const scrollTab = useRef();
     const recommendList = useRef([]);
+    const userInfo = useRef();
 
     const refresh = () => {
         recommendList.current[current]?.refresh?.();
     };
 
     useImperativeHandle(ref, () => ({refresh}));
+
+    useEffect(() => {
+        store.subscribe(() => {
+            const next = store.getState().userInfo.toJS();
+            const prev = userInfo.current;
+            if (!prev?.is_login && next?.is_login) refresh();
+            userInfo.current = cloneDeep(next);
+        });
+    }, []);
 
     return (
         <>
@@ -677,7 +687,9 @@ const Index = ({navigation, setLoading}) => {
     useEffect(() => {
         if (Object.keys(data).length > 0 && firstIn.current) {
             firstIn.current = false;
-            scrollTab.current?.goToPage?.(scrollTab.current?.state?.currentPage);
+            setTimeout(() => {
+                scrollTab.current?.goToPage?.(scrollTab.current?.state?.currentPage);
+            });
         }
     }, [data]);
 
@@ -843,6 +855,7 @@ const styles = StyleSheet.create({
         borderRadius: px(20),
     },
     waterfallFlowItem: {
+        marginTop: px(5),
         borderRadius: Space.borderRadius,
         overflow: 'hidden',
         backgroundColor: '#fff',

@@ -27,7 +27,7 @@ const Index = ({navigation, route}) => {
     const [historyCancle, setHistoryCancle] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
     const input = useRef();
-    const {max_products_num, product_type} = route?.params;
+    const {fr = '', max_products_num, product_type} = route?.params;
 
     //获取搜索页数据
     const getSearchIndexInfo = async () => {
@@ -48,7 +48,7 @@ const Index = ({navigation, route}) => {
     const getSerachList = async (content) => {
         if (!content) return;
         setSearchLoading(true);
-        let params = {keyword: content};
+        let params = {fr, keyword: content};
         if (route.params.selections) {
             params.scene = 'subject_product';
         }
