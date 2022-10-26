@@ -81,7 +81,9 @@ const AddProductStep1 = ({navigation, route}) => {
                 });
             }
         });
-        return () => lister?.();
+        return () => {
+            lister?.();
+        };
     }, [route, navigation, handlerTopButton]);
 
     const handlerTopButton = useCallback(

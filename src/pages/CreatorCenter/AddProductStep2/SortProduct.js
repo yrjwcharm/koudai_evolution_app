@@ -2,10 +2,10 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 11:29:03
+ * @LastEditTime: 2022-10-26 11:39:44
  * @Description:基金编辑
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import {Colors, Style} from '~/common/commonStyle';
@@ -13,6 +13,7 @@ import {isIphoneX, px} from '~/utils/appUtil';
 import {Modal} from '~/components/Modal';
 import FastImage from 'react-native-fast-image';
 import {cloneDeep} from 'lodash';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SortProduct = ({navigation, route}) => {
     const [data, setData] = useState(cloneDeep(route.params.data));
@@ -29,17 +30,19 @@ const SortProduct = ({navigation, route}) => {
         }
     }, [data]);
 
-    useEffect(() => {
-        let lister = navigation.addListener('beforeRemove', (e) => {
-            e.preventDefault();
-            DeviceEventEmitter.emit(
-                'sortProduct',
-                data.map((obj) => delete obj.check && obj)
-            );
-            navigation.dispatch(e.data.action);
-        });
-        return () => lister?.();
-    }, [data]);
+    useFocusEffect(
+        useCallback(() => {
+            let lister = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                DeviceEventEmitter.emit(
+                    'sortProduct',
+                    data.map((obj) => delete obj.check && obj)
+                );
+                navigation.dispatch(e.data.action);
+            });
+            return () => lister?.();
+        }, [data])
+    );
 
     const renderItem = ({item, drag, isActive, index}) => {
         return (

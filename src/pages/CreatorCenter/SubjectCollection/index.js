@@ -35,13 +35,15 @@ const SubjectCollection = ({navigation, route}) => {
         }, [route?.params?.tab])
     );
 
-    useEffect(() => {
-        let listener = navigation.addListener('beforeRemove', (e) => {
-            e.preventDefault();
-            navigation.navigate('CreatorCenter');
-        });
-        return () => listener?.();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                navigation.navigate('CreatorCenter');
+            });
+            return () => listener?.();
+        }, [])
+    );
 
     const getListData = (type) => {
         setListLoading(true);

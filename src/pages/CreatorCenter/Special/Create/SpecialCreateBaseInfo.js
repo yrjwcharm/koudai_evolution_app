@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 11:30:18
+ * @LastEditTime: 2022-10-26 11:35:21
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -34,6 +34,7 @@ import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {getStashBaseInfo, saveStashBaseInfo, uploadImage} from './services';
 import LoadingTips from '~/components/LoadingTips';
 import pickerUploadImg from '~/utils/pickerUploadImg';
+import {useFocusEffect} from '@react-navigation/native';
 
 function Tag(props) {
     let {text, onPress, onClose} = props;
@@ -210,41 +211,43 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
         });
     };
 
-    useEffect(() => {
-        let listener = navigation.addListener('beforeRemove', (e) => {
-            e.preventDefault();
-            if (canGoBack.current) {
-                navigation.dispatch(e.data.action);
-                return;
-            }
-            if (bgSource || title || desc || tags.length > 1) {
-                Modal.show({
-                    content: '已编辑内容是否要保存草稿？下次可继续编辑。',
-                    cancelText: '不保存草稿',
-                    confirmText: '保存草稿',
-                    confirm: true,
-                    backCloseCallbackExecute: true,
-                    cancelCallBack: () => {
-                        navigation.dispatch(e.data.action);
-                    },
-                    confirmCallBack: () => {
-                        saveStashBaseInfo({
-                            subject_id: subject_id || 0,
-                            name: title,
-                            bg_img: bgSource,
-                            desc: desc,
-                            tags,
-                        }).then((_) => {
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                e.preventDefault();
+                if (canGoBack.current) {
+                    navigation.dispatch(e.data.action);
+                    return;
+                }
+                if (bgSource || title || desc || tags.length > 1) {
+                    Modal.show({
+                        content: '已编辑内容是否要保存草稿？下次可继续编辑。',
+                        cancelText: '不保存草稿',
+                        confirmText: '保存草稿',
+                        confirm: true,
+                        backCloseCallbackExecute: true,
+                        cancelCallBack: () => {
                             navigation.dispatch(e.data.action);
-                        });
-                    },
-                });
-            } else {
-                navigation.dispatch(e.data.action);
-            }
-        });
-        return () => listener?.();
-    }, [bgSource, title, desc, tags]);
+                        },
+                        confirmCallBack: () => {
+                            saveStashBaseInfo({
+                                subject_id: subject_id || 0,
+                                name: title,
+                                bg_img: bgSource,
+                                desc: desc,
+                                tags,
+                            }).then((_) => {
+                                navigation.dispatch(e.data.action);
+                            });
+                        },
+                    });
+                } else {
+                    navigation.dispatch(e.data.action);
+                }
+            });
+            return () => listener?.();
+        }, [bgSource, title, desc, tags])
+    );
 
     const handleChooseOld = () => {
         jump({
