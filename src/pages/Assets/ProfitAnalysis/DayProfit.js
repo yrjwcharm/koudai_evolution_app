@@ -18,7 +18,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 const DayProfit = React.memo(({poid, fund_code}) => {
-    const dispatch = useDispatch();
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);

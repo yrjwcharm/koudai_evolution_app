@@ -19,25 +19,20 @@ const ProfitDetail = ({navigation, route}) => {
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(true);
     const bottomModal = useRef(null);
-    const tabsRef = useRef([
-        // {text: '全部', type: 200},
-        // {text: '公募基金', type: 10},
-        // {text: '投顾组合', type: 30},
-        // {text: '理财计划', type: 40},
-        // {text: '私募基金', type: 20},
-    ]);
+    const tabsRef = useRef([]);
     const [declarePic, setDeclarePic] = useState('');
     const [type, setType] = useState(initType);
     const [title, setTitle] = useState('');
+    const [initPage, setInitPage] = useState(page);
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
-            console.log(333, page);
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
                 const {title = '', tabs = [], header = {}} = res[0].result || {};
                 navigation.setOptions({title});
                 tabsRef.current = tabs;
+                setInitPage(page);
                 const {title: rightTitle = '', declare_pic = ''} = res[1].result || {};
                 navigation.setOptions({
                     headerRight: () => (
@@ -80,7 +75,7 @@ const ProfitDetail = ({navigation, route}) => {
                             renderTabBar={() => (
                                 <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                             )}
-                            initialPage={page}
+                            initialPage={initPage}
                             // prerenderingSiblingsNumber={0}
                             locked={false}
                             onChangeTab={({i}) => {

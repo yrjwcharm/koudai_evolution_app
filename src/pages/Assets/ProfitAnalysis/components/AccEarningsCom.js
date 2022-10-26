@@ -19,7 +19,7 @@ import {useIsMounted} from '../../../../components/hooks/useIsMounted';
 
 const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
     const insets = useSafeAreaInsets();
-    const [period, setPeriod] = useState('this_year');
+    const [period, setPeriod] = useState('all');
     const [chartData, setChartData] = useState({});
     const [onlyAll, setOnlyAll] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
