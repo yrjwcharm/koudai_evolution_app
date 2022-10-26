@@ -3,18 +3,17 @@
  * @Date: 2022-09-28 14:44:03
  * @Description:
  */
-import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions, Animated} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions, Animated, StatusBar} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import Slider from 'react-native-slider';
 import _ from 'lodash';
-
 import VideoFooter from './VideoFooter';
 import http from '../../../services';
-const HEIGHT = Dimensions.get('screen').height;
-const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid}) => {
+const HEIGHT = Dimensions.get('window').height;
+const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid, height}) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
@@ -71,9 +70,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     return (
         <>
             <TouchableWithoutFeedback onPress={onPlayPausePress}>
-                <View style={[{backgroundColor: '#000'}]}>
+                <View style={{flex: 1}}>
                     <Animated.View
                         style={{
+                            height: '100%',
                             transform: [
                                 {
                                     scale: animated.interpolate({inputRange: [0, 1], outputRange: [1, 0.8]}),
@@ -96,10 +96,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     paused={paused}
                                     volume={7.0}
                                     onLoadStart={(e) => {
-                                        // console.log('onLoadStart', e);
+                                        console.log('onLoadStart', e);
                                     }}
                                     onBuffer={(isBuffering) => {
-                                        // console.log('isBuffering', isBuffering);
+                                        console.log('isBuffering', isBuffering);
                                     }}
                                     playInBackground={true}
                                     repeat={true}
@@ -111,7 +111,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     onProgress={customerOnprogress}
                                     resizeMode="contain"
                                     style={{
-                                        height: HEIGHT,
+                                        height: height,
                                         width: WIDTH,
                                     }}
                                 />
@@ -175,6 +175,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                 </View>
                 <VideoFooter
                     data={{
+                        id: data?.id,
                         favor_num: data?.favor_num,
                         favor_status: data?.favor_status,
                         collect_num: data?.collect_num,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     sliderBox: {},
     bottomCon: {
         position: 'absolute',
-        bottom: isIphoneX() ? 34 : 0,
+        bottom: isIphoneX() ? 34 : px(14),
         marginHorizontal: px(16),
         width: WIDTH - px(32),
     },

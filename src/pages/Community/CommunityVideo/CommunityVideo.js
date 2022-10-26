@@ -32,7 +32,7 @@ const viewabilityConfig = {
     viewAreaCoveragePercentThreshold: 95,
 };
 const inputMaxLength = 500;
-const HEIGHT = Dimensions.get('screen').height;
+const HEIGHT = Dimensions.get('window').height;
 const CommunityVideo = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const [currentItem, setCurrentItem] = useState(0);
@@ -47,10 +47,17 @@ const CommunityVideo = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
+    const [height, setHeight] = useState(0);
     const getData = async () => {
         let res = await getVideoList({muid, type, community_id, video_id});
         setVideoData(res.result);
     };
+    const data = [
+        {
+            media_url: 'https://static.licaimofang.com/wp-content/uploads/2020/10/第十二节.mp4',
+            id: 1,
+        },
+    ];
     const getCommentData = async (_page) => {
         let res = await getCommentList({article_id: videoData?.items[currentItem].id, page: _page});
         setTotalCount(res.result.total_count);
@@ -76,13 +83,14 @@ const CommunityVideo = ({navigation, route}) => {
         getData();
     }, []);
     const getItemLayout = useCallback((data, index) => {
-        return {length: HEIGHT, offset: HEIGHT * index, index};
+        return {length: height, offset: height * index, index};
     }, []);
     const _onViewableItemsChanged = useCallback(({viewableItems}) => {
         if (viewableItems.length === 1) {
             setCurrentItem(viewableItems[0].index);
         }
     }, []);
+    const layout = useCallback((e) => setHeight(e.nativeEvent.layout.height), []);
     //发布评论
     const publish = () => {
         http.post('/community/article/comment/add/20210101', {
@@ -110,28 +118,28 @@ const CommunityVideo = ({navigation, route}) => {
 
     const renderItem = ({item, index}) => {
         return (
-            <View style={{height: HEIGHT}}>
-                <Video
-                    data={item}
-                    index={index}
-                    pause={index != currentItem}
-                    currentIndex={currentItem}
-                    animated={animated}
-                    handleComment={handleComment}
-                    community_id={community_id}
-                    muid={muid}
-                />
-            </View>
+            <Video
+                data={item}
+                index={index}
+                pause={index != currentItem}
+                currentIndex={currentItem}
+                animated={animated}
+                handleComment={handleComment}
+                community_id={community_id}
+                muid={muid}
+                height={height}
+            />
         );
     };
     return (
-        <View style={{height: HEIGHT, backgroundColor: '#000'}}>
+        <View style={{flex: 1}} onLayout={layout}>
             <View style={[styles.header, Style.flexBetween, {top: inset.top}]}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{width: px(40), height: px(40)}}>
                     <Icon name="left" color="#fff" size={px(18)} />
                 </TouchableOpacity>
             </View>
             <FlatList
+                style={{flex: 1, backgroundColor: '#000'}}
                 data={videoData?.items}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => item.id.toString()}
