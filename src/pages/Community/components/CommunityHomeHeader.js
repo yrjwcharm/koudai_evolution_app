@@ -36,9 +36,9 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
                 ...style,
             }}>
             <View style={Style.flexBetween}>
-                <View style={Style.flexRow}>
+                <View style={[Style.flexRow, {flex: 1}]}>
                     <Image source={{uri: data?.avatar}} style={[styles.headerAvatar]} />
-                    <View>
+                    <View style={{flex: 1}}>
                         <Text style={styles.vName}>{data?.name}</Text>
                         {!!data?.creator_name && (
                             <View style={Style.flexRow}>
