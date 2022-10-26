@@ -230,7 +230,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                                 source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
                                 style={{width: px(16), height: px(16)}}
                             />
-                            <Text style={styles.cateEditingHint}>点击分类编辑名称，按住分类拖动修改顺序</Text>
+                            <Text style={styles.cateEditingHint}>点击分类编辑名称</Text>
                         </View>
                         <View style={[Style.flexRow, {marginTop: px(12)}]}>
                             <View style={{flex: 1}}>
