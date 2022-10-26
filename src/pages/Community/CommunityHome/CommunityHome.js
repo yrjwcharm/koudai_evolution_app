@@ -16,7 +16,7 @@ import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
 import {CommunityFollowCard} from '../components/CommunityCard';
 import ProductCards from '../../../components/Portfolios/ProductCards';
-import {ShareModal} from '../../../components/Modal';
+import {Modal, ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
 import {Button} from '../../../components/Button';
 import {ChooseModal} from '../CommunityVodCreate';
@@ -42,14 +42,16 @@ const CommunityHome = ({navigation, route}) => {
     const bottomModal = useRef();
     const getData = async (type) => {
         let res = await getCommunityHomeData({community_id});
-        if (res.result?.bottom_pop) {
-            bottomModal?.current?.open();
-        }
         getProductList({community_id, type: type || res.result?.tabs[0]?.type});
         if (!currentTab.current) {
             currentTab.current = type || res.result?.tabs[0]?.type;
         }
         setData(res.result);
+        if (res.result?.bottom_pop) {
+            setTimeout(() => {
+                bottomModal?.current?.open();
+            }, 200);
+        }
     };
     const getProductList = async (params) => {
         let res = await getCommunityProductList(params);
@@ -63,18 +65,24 @@ const CommunityHome = ({navigation, route}) => {
     );
 
     //移除产品
-    const onDelete = async (type, item_id) => {
-        let res = await removeProduct({type, community_id, item_id});
-        if (res.code == '000000') {
-            setProduct((prev) => {
-                let tmp = [...prev];
-                let index = product.findIndex((item) => {
-                    return item.id == item_id || item.code == item_id;
-                });
-                tmp.splice(index, 1);
-                return tmp;
-            });
-        }
+    const onDelete = (type, item_id) => {
+        Modal.show({
+            content: '您确定要删除吗?',
+            confirm: true,
+            confirmCallBack: async () => {
+                let res = await removeProduct({type, community_id, item_id});
+                if (res.code == '000000') {
+                    setProduct((prev) => {
+                        let tmp = [...prev];
+                        let index = product.findIndex((item) => {
+                            return item.id == item_id || item.code == item_id;
+                        });
+                        tmp.splice(index, 1);
+                        return tmp;
+                    });
+                }
+            },
+        });
     };
     //添加
     const handleAddProduct = async (_data) => {
