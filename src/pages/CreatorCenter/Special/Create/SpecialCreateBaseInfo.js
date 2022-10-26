@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 19:57:59
+ * @LastEditTime: 2022-10-26 20:12:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description:
  */
@@ -112,7 +112,7 @@ function TagWrap(props) {
                 {tags.length < 3 && <AddTag onPress={() => handleTagChange(-1)} />}
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
-                <FastImage style={styles.tip_icon} source={require('~/assets/img/fof/warning.png')} />
+                <FastImage style={styles.tip_icon} source={require('~/assets/img/special/warning_tip.png')} />
                 <Text style={styles.tip} numberOfLines={2} textBreakStrategy="simple">
                     专题标签用于流量投放，至少1个至多3个，每个标签不超过6个字
                 </Text>
@@ -509,14 +509,15 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     tip_icon: {
-        height: 12,
-        width: 12,
+        height: px(16),
+        width: px(16),
         alignSelf: 'flex-start',
-        marginTop: px(2),
+        // marginTop: px(2),
     },
     tip: {
         marginLeft: 4,
         fontSize: px(11),
+        lineHeight: px(16),
         alignSelf: 'flex-start',
         color: '#9AA0B1',
         flex: 1,
