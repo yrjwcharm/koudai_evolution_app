@@ -15,7 +15,7 @@ import {useSelector} from 'react-redux';
 import Loading from '../../../Portfolio/components/PageLoading';
 import {useJump} from '../../../../components/hooks';
 let listener = null;
-const RenderList = React.memo(({curDate}) => {
+const RenderList = React.memo(({curDate = ''}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const [[left, right], setHeaderList] = useState([]);

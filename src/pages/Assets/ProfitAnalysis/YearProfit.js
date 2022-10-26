@@ -47,7 +47,7 @@ const YearProfit = (callback) => {
                             }
                         }
                         let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
                         );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
                         let barCharData = arr.map((el) => {
@@ -158,7 +158,7 @@ const YearProfit = (callback) => {
                         </TouchableOpacity>
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
-                    {isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}
+                    {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
                     <RenderList curDate={selCurYear} />
                 </View>
             ) : (

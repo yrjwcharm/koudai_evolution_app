@@ -73,7 +73,7 @@ const MonthProfit = React.memo(() => {
                             }
                         }
                         let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
+                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
                         );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
                         let barCharData = arr.map((el, index) => {
@@ -99,9 +99,9 @@ const MonthProfit = React.memo(() => {
                         setDateArr([...arr]);
                         setDate(dayjs_);
                         setSelCurDate(arr[zIndex].day);
+                    } else {
+                        setIsHasData(false);
                     }
-                } else {
-                    setIsHasData(false);
                 }
             })();
         },
@@ -163,7 +163,7 @@ const MonthProfit = React.memo(() => {
                         isPrev={isPrev}
                     />
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
-                    {isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}
+                    {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
                     {/*收益数据-根据实际情形选择map渲染*/}
                     <RenderList curDate={selCurDate} />
                 </View>
