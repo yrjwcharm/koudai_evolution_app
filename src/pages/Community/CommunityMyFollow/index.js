@@ -106,10 +106,12 @@ const List = withPageLoading(
                             }}
                             style={styles.authorAvatar}
                         />
-                        <View>
-                            <Text style={styles.subTitle}>{name}</Text>
+                        <View style={{maxWidth: px(180)}}>
+                            <Text numberOfLines={1} style={styles.subTitle}>
+                                {name}
+                            </Text>
                             <View style={{marginTop: px(2)}}>
-                                <HTML html={count_str} style={styles.smText} />
+                                <HTML numberOfLines={1} html={count_str} style={styles.smText} />
                             </View>
                         </View>
                     </View>

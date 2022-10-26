@@ -52,7 +52,7 @@ export const CommunityCardCover = ({
     });
 
     return (
-        <View style={[Style.flexCenter, styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
+        <View style={[styles.coverContainer, {height: coverWidth / aspectRatio}, style]}>
             <Image
                 onLoad={({nativeEvent: {width, height}}) => !cover_aspect_ratio && setAspectRatio(width / height)}
                 source={{uri: cover}}
@@ -495,9 +495,6 @@ const styles = StyleSheet.create({
     cover: {
         width: '100%',
         height: '100%',
-        position: 'absolute',
-        top: 0,
-        left: 0,
     },
     liveInfo: {
         borderBottomRightRadius: Space.borderRadius,
@@ -549,6 +546,10 @@ const styles = StyleSheet.create({
         bottom: px(8),
     },
     videoPlay: {
+        position: 'absolute',
+        top: '50%',
+        right: '50%',
+        transform: [{translateX: -px(24)}, {translateY: -px(24)}],
         width: px(48),
         height: px(48),
     },

@@ -24,6 +24,7 @@ import live from '~/assets/img/vision/live.gif';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {Button} from '~/components/Button';
+import EmptyTip from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
 import {BottomModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
@@ -40,9 +41,8 @@ import {
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {debounce, groupBy, isEqual} from 'lodash';
+import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
-import EmptyTip from '~/components/EmptyTip';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
@@ -79,7 +79,10 @@ const Header = ({active, isLogin, setActive, tabs, userInfo = {}}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             key={type}
-                            onPress={() => setActive(i)}
+                            onPress={() => {
+                                if (type === 'follow' && !isLogin) jump({path: 'Login', type: 1});
+                                else setActive(i);
+                            }}
                             style={{marginLeft: i === 0 ? px(30) : px(20)}}>
                             <Text style={[styles.headerTabText, active === i ? styles.activeTabText : {}]}>{name}</Text>
                         </TouchableOpacity>
@@ -335,7 +338,9 @@ const Follow = forwardRef(({list = []}, ref) => {
 
     useEffect(() => {
         if (followedList.current?.length > 0) {
-            if (!isEqual(followedList.current, list)) {
+            const prev = sortBy(followedList.current, ['item_id']).map((item) => item.item_id);
+            const next = sortBy(list, ['item_id']).map((item) => item.item_id);
+            if (!isEqual(prev, next)) {
                 init();
                 followedList.current = list;
             }
@@ -353,6 +358,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             data={data}
             initialNumToRender={20}
             keyExtractor={(item, index) => item.title + item.id + index}
+            ListEmptyComponent={() => <EmptyTip />}
             ListFooterComponent={renderFooter}
             ListHeaderComponent={renderHeader}
             onEndReached={onEndReached}
@@ -623,11 +629,16 @@ const Index = ({navigation, setLoading}) => {
     const recommendRef = useRef();
     const publishRef = useRef();
     const firstIn = useRef(true);
+    const scrollTab = useRef();
 
     const init = () => {
         getPageData()
             .then((res) => {
                 if (res.code === '000000') {
+                    if (firstIn.current) {
+                        const page = res.result.tabs?.findIndex((tab) => tab.is_selected);
+                        setActive(page);
+                    }
                     setData(res.result);
                 }
             })
@@ -659,11 +670,8 @@ const Index = ({navigation, setLoading}) => {
 
     useEffect(() => {
         if (Object.keys(data).length > 0 && firstIn.current) {
-            const page = data.tabs?.findIndex((tab) => tab.is_selected);
-            setTimeout(() => {
-                firstIn.current = false;
-                setActive(page);
-            }, 300);
+            firstIn.current = false;
+            scrollTab.current?.goToPage?.(scrollTab.current?.state?.currentPage);
         }
     }, [data]);
 
@@ -672,11 +680,17 @@ const Index = ({navigation, setLoading}) => {
             <Header
                 active={active}
                 isLogin={userInfo.is_login}
-                setActive={setActive}
+                setActive={(i) => scrollTab.current?.goToPage(i)}
                 tabs={tabs}
                 userInfo={user_info}
             />
-            <ScrollableTabView locked page={active} renderTabBar={false} style={{flex: 1}}>
+            <ScrollableTabView
+                initialPage={active}
+                locked
+                onChangeTab={({i}) => setActive(i)}
+                ref={scrollTab}
+                renderTabBar={false}
+                style={{flex: 1}}>
                 {tabs?.map((tab) => {
                     const {name, type} = tab;
                     return (
@@ -693,7 +707,7 @@ const Index = ({navigation, setLoading}) => {
                     );
                 })}
             </ScrollableTabView>
-            <PublishContent ref={publishRef} />
+            {userInfo.is_login && <PublishContent ref={publishRef} />}
         </View>
     ) : null;
 };
