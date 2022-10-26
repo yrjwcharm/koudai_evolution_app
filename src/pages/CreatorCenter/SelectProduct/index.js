@@ -29,7 +29,6 @@ const SelectProduct = ({route}) => {
     const jump = useJump();
     const [selections, setSelections] = useState(route?.params?.selections);
     const [list, setList] = useState([]);
-    const [listLoading, setListLoading] = useState(false);
     const [bottomHeight, setBottomHeight] = useState(0);
     const [detailModalVisible, setDetailModalVisible] = useState(false);
 
@@ -47,19 +46,14 @@ const SelectProduct = ({route}) => {
     }, []);
 
     const getListData = (sortOption = {}) => {
-        setListLoading(true);
         getList({
             type: list?.tabs?.[scrollableRef.current?.state?.currentPage]?.value,
             ...sortOption,
-        })
-            .then((res) => {
-                if (res.code === '000000') {
-                    setList(res.result);
-                }
-            })
-            .finally((_) => {
-                setListLoading(false);
-            });
+        }).then((res) => {
+            if (res.code === '000000') {
+                setList(res.result);
+            }
+        });
     };
 
     const onChangeOptionalTab = () => {
@@ -141,18 +135,12 @@ const SelectProduct = ({route}) => {
                                 tabLabel={item.name}
                                 style={{flex: 1}}
                                 scrollEventThrottle={6}>
-                                {listLoading ? (
-                                    <View style={{paddingVertical: px(20)}}>
-                                        <ActivityIndicator />
-                                    </View>
-                                ) : (
-                                    <FollowTable
-                                        data={list}
-                                        handleSort={handleSort}
-                                        selections={selections}
-                                        handlerSelections={handlerSelections}
-                                    />
-                                )}
+                                <FollowTable
+                                    data={list}
+                                    handleSort={handleSort}
+                                    selections={selections}
+                                    handlerSelections={handlerSelections}
+                                />
                             </ScrollView>
                         ))}
                     </ScrollableTabView>
