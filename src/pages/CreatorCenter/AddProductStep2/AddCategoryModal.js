@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {PageModal} from '~/components/Modal';
+import {InputModal} from '~/components/Modal';
 import {px} from '~/utils/appUtil';
 
 const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
@@ -43,12 +43,12 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
     }, []);
 
     return (
-        <PageModal
+        <InputModal
             ref={modalRef}
             title={'请编辑分类名称与描述'}
             confirmText="确定"
             confirmClick={onConfirm}
-            beforeClose={beforeClose}
+            onClose={beforeClose}
             style={{height: px(243)}}>
             <View style={styles.addCategoryModalContent}>
                 <TouchableOpacity
@@ -158,7 +158,7 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                     *为保证展示效果一致，需保证所有已添加的分类都有或都没有分类描述，若已创建的部分分类缺少描述，则所有分类不展示描述
                 </Text>
             </View>
-        </PageModal>
+        </InputModal>
     );
 };
 

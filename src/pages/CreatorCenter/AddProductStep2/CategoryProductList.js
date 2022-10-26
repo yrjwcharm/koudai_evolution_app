@@ -126,7 +126,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                 }
                 return newVal;
             });
-            addCategoryModal.current.cancel();
+            addCategoryModal.current.hide();
         },
         [modalCurTab]
     );

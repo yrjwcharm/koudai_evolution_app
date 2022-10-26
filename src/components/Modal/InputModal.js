@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-09 17:09:23
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:12:06
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-26 15:39:10
  * @Description: 带输入框的弹窗
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
@@ -29,6 +29,7 @@ const InputModal = forwardRef((props, ref) => {
         header,
         isTouchMaskToClose,
         title,
+        onClose,
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -40,6 +41,7 @@ const InputModal = forwardRef((props, ref) => {
     };
     const hide = () => {
         setVisible(false);
+        onClose?.();
     };
     const toastShow = (t, duration = 2000, {onHidden} = {}) => {
         setToastText(t);
