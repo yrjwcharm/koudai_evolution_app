@@ -96,6 +96,7 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
             red_tag,
             tags,
             url,
+            customHandlerClick,
             edit_button,
             style_id,
             drawback,
@@ -123,6 +124,7 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                     activeOpacity={0.8}
                     onPress={() => {
                         logParams && global.LogTool({...logParams, oid: product_id});
+                        customHandlerClick?.();
                         jump(url);
                     }}
                     style={Style.flexRow}>

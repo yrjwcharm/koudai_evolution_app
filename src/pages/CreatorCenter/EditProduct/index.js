@@ -182,30 +182,36 @@ const EditProduct = ({navigation, route}) => {
                     scrollIndicatorInsets={{right: 1}}
                     contentContainerStyle={{padding: px(16), paddingBottom: px(30)}}>
                     {pageModalType === 1
-                        ? data?.styles?.map((style) => (
-                              <TouchableOpacity
-                                  style={styles.modalStyleWrap}
-                                  key={style.style_id}
-                                  activeOpacity={0.8}
-                                  onPress={() => {
-                                      setActiveModalStyle(style.style_id);
-                                  }}>
-                                  <View style={styles.modalStyleHeader}>
-                                      <FastImage
-                                          source={{
-                                              uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
-                                                  activeModalStyle === style.style_id ? 'check' : 'uncheck'
-                                              }.png`,
-                                          }}
-                                          style={{width: px(16), height: px(16)}}
-                                      />
-                                      <Text style={styles.modalStyleTitle}>{style.name}</Text>
-                                  </View>
-                                  <View style={styles.styleWrap}>
-                                      <ProductList data={style.style_data?.items} type={style.style_data?.style_type} />
-                                  </View>
-                              </TouchableOpacity>
-                          ))
+                        ? data?.styles?.map((style) => {
+                              let items = [...style.style_data.items];
+                              items[0].customHandlerClick = () => {
+                                  setActiveModalStyle(style.style_id);
+                              };
+                              return (
+                                  <TouchableOpacity
+                                      style={styles.modalStyleWrap}
+                                      key={style.style_id}
+                                      activeOpacity={0.8}
+                                      onPress={() => {
+                                          setActiveModalStyle(style.style_id);
+                                      }}>
+                                      <View style={styles.modalStyleHeader}>
+                                          <FastImage
+                                              source={{
+                                                  uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                                      activeModalStyle === style.style_id ? 'check' : 'uncheck'
+                                                  }.png`,
+                                              }}
+                                              style={{width: px(16), height: px(16)}}
+                                          />
+                                          <Text style={styles.modalStyleTitle}>{style.name}</Text>
+                                      </View>
+                                      <View style={styles.styleWrap}>
+                                          <ProductList data={items} type={style.style_data?.style_type} />
+                                      </View>
+                                  </TouchableOpacity>
+                              );
+                          })
                         : data?.range_list?.map((range) => (
                               <TouchableOpacity
                                   style={styles.rangeItem}
