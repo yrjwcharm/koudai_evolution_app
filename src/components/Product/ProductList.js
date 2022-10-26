@@ -340,12 +340,17 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                     })()}
                 </TouchableOpacity>
                 {reason ? (
-                    <View style={styles.reasonBox}>
+                    <TouchableOpacity
+                        activeOpacity={edit_button ? 0.8 : 1}
+                        style={styles.reasonBox}
+                        onPress={() => {
+                            edit_button && jump(edit_button.url);
+                        }}>
                         {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
                         <View style={{flexShrink: 1}}>
                             <HTML numberOfLines={2} html={reason} style={{...styles.label, color: Colors.descColor}} />
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 ) : null}
             </View>
         );
