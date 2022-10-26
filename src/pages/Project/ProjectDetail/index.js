@@ -6,11 +6,10 @@ import React, {useCallback, useRef, useState} from 'react';
 import {Linking, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {WebView} from 'react-native-webview';
-import shareFund from '~/assets/img/icon/shareFund.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
-import {BottomModal, Modal, ShareModal} from '~/components/Modal';
+import {BottomModal, Modal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
@@ -27,35 +26,20 @@ export default ({navigation, route}) => {
     const headerHeight = useHeaderHeight();
     const {project_id = 1} = route.params;
     const bottomModal = useRef();
-    const shareModal = useRef();
     const webview = useRef();
     const clickRef = useRef(true);
     const timeStamp = useRef(Date.now());
     const playTime = useRef();
     const [data, setData] = useState({});
-    const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, notice, share_button: {share_info} = {}} = data;
+    const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, notice} = data;
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
 
     const init = () => {
         getPageData({project_id}).then((res) => {
             if (res.code === '000000') {
                 StatusBar.setBarStyle('light-content');
-                const {share_button, title} = res.result;
-                navigation.setOptions({
-                    headerRight: () =>
-                        share_button.show ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    global.LogTool({ctrl: project_id, event: 'share_click'});
-                                    shareModal.current?.show();
-                                }}
-                                style={{marginRight: px(12)}}>
-                                <Image source={shareFund} style={styles.shareFund} />
-                            </TouchableOpacity>
-                        ) : null,
-                    title: title || '计划详情',
-                });
+                const {title = '计划详情'} = res.result;
+                navigation.setOptions({title});
                 setData(res.result);
             }
         });
@@ -205,7 +189,6 @@ export default ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <ShareModal ref={shareModal} title={share_info?.title} shareContent={share_info || {}} />
             <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
                 <View style={{height: webviewHeight}}>
                     <WebView
