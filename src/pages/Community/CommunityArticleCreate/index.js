@@ -158,7 +158,7 @@ const WriteArticle = ({article, setArticle}) => {
                 break;
             case 'fund':
             case 'portfolio':
-                chooseModal.current.show('fund');
+                chooseModal.current.show(action);
                 break;
             default:
                 break;

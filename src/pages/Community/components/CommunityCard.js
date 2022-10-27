@@ -129,40 +129,41 @@ export const CommunityCardCover = ({
 };
 
 /** @name 社区关注卡片 */
-export const CommunityFollowCard = ({
-    attention_num, // 社区关注人数
-    attention_user, // 社区关注头像
-    author, // 作者信息
-    author_desc,
-    button,
-    collect_num, // 收藏数
-    collect_status, // 收藏状态 0 未收藏 1 已收藏
-    comment_info, //评论
-    comment_num, // 评论数
-    comment_url, // 评论页地址
-    cover, // 封面
-    cover_aspect_ratio, // 封面宽高比
-    desc, // 文章内容摘要
-    favor_num, // 点赞数
-    favor_status, // 点赞状态 0 未点赞 1 已点赞
-    id,
-    isRecommend = false,
-    live_status, // 直播状态 1 预约中 2 直播中 3 回放
-    left_desc, // 直播状态或预约人数
-    onDelete, //移除作品
-    can_delete, //是否显示移除
-    play_mode, // 视频播放模式 1 竖屏 2 横屏
-    relation_type,
-    reserved, // 直播是否已预约
-    right_desc, // 直播时间或观看人数
-    share_num, // 分享数
-    share_info, // 分享相关信息
-    style, // 自定义样式
-    title, // 卡片标题
-    type, // 卡片类型 1文章 2音频 3视频 9直播
-    type_str, // 类型文案
-    url, // 跳转地址
-}) => {
+export const CommunityFollowCard = (props) => {
+    const {
+        attention_num, // 社区关注人数
+        attention_user, // 社区关注头像
+        author, // 作者信息
+        author_desc,
+        button,
+        collect_num, // 收藏数
+        collect_status, // 收藏状态 0 未收藏 1 已收藏
+        comment_info, //评论
+        comment_num, // 评论数
+        comment_url, // 评论页地址
+        cover, // 封面
+        cover_aspect_ratio, // 封面宽高比
+        desc, // 文章内容摘要
+        favor_num, // 点赞数
+        favor_status, // 点赞状态 0 未点赞 1 已点赞
+        id,
+        isRecommend = false,
+        live_status, // 直播状态 1 预约中 2 直播中 3 回放
+        left_desc, // 直播状态或预约人数
+        onDelete, //移除作品
+        can_delete, //是否显示移除
+        play_mode, // 视频播放模式 1 竖屏 2 横屏
+        relation_type,
+        reserved, // 直播是否已预约
+        right_desc, // 直播时间或观看人数
+        share_num, // 分享数
+        share_info, // 分享相关信息
+        style, // 自定义样式
+        title, // 卡片标题
+        type, // 卡片类型 1文章 2音频 3视频 9直播
+        type_str, // 类型文案
+        url, // 跳转地址
+    } = props;
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
     const [favored, setFavored] = useState(favor_status); // 是否点赞
@@ -281,7 +282,7 @@ export const CommunityFollowCard = ({
             return () => {
                 AppState.removeEventListener('change', handleAppStateChange);
             };
-        }, [collect_num, collect_status, favor_num, favor_status, left_desc, reserved, share_num])
+        }, [props])
     );
 
     return (

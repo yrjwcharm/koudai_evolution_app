@@ -42,8 +42,10 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
     const timer = useRef();
     const type = useRef(defaultType);
     const titleObj = useRef({
+        all: {placeholder: '搜索基金/组合', title: '添加产品'},
         article: {placeholder: '搜索作品名称', title: '添加作品'},
-        fund: {placeholder: '搜索基金/组合', title: '添加产品'},
+        fund: {placeholder: '搜索基金', title: '添加基金'},
+        portfolio: {placeholder: '搜索组合', title: '添加组合'},
         tag: {placeholder: '搜索标签', title: '添加标签'},
     });
 
