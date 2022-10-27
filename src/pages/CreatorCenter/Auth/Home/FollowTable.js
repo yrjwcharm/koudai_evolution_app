@@ -5,9 +5,7 @@
 import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 import React, {useMemo, useState} from 'react';
 import {deviceWidth, px} from '~/utils/appUtil';
-import {Colors, Font, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
-import LoadingTips from '~/components/LoadingTips';
 import style from '~/pages/Assets/ProfitAnalysis/styles/style';
 
 function HeaderCell({text, isFisrt, maxLen}) {
@@ -67,25 +65,27 @@ const FollowTable = ({data = [], headerData, isLoading, columns, stickyHeaderY, 
         max = Math.max(str.length, max);
         maxLen[key] = Math.max(px(max * 9) + 30, 40);
     });
+    const lastIndex = data.length - 1;
+    // stickyHeaderY={stickyHeaderY + px(42) + px(75 + 9)} // 把头部高度传入
+    // stickyScrollY={scrollY} // 把滑动距离传入
     return (
         <View style={{flex: 1, backgroundColor: '#fff', borderRadius: px(6), ...other.style}}>
             <View style={{flexDirection: 'row'}}>
                 {/* 处理第一列固定 */}
                 {/* 分割线 */}
                 <View
-                    style={{
-                        borderRightColor: '#E9EAEF',
-                        borderRightWidth: isScroll ? 0.5 : 0,
-                    }}>
-                    <View
-                        stickyHeaderY={stickyHeaderY + px(42) + px(75 + 9)} // 把头部高度传入
-                        stickyScrollY={scrollY} // 把滑动距离传入
-                    >
+                    style={[
+                        {
+                            borderRightColor: '#E9EAEF',
+                            borderRightWidth: isScroll ? 0.5 : 0,
+                        },
+                    ]}>
+                    <View style={styles.tr}>
                         <HeaderCell isFisrt={true} text={headerData[columns[0]]} />
                     </View>
                     {data.map((row, index) => (
                         <TouchableOpacity
-                            style={styles.tr}
+                            style={[index !== lastIndex ? styles.tr : {}]}
                             activeOpacity={0.9}
                             key={index}
                             onPress={() => {
@@ -122,7 +122,7 @@ const FollowTable = ({data = [], headerData, isLoading, columns, stickyHeaderY, 
                         {/* tr */}
                         {data.map((tr, index) => (
                             <TouchableOpacity
-                                style={[styles.tr, styles.header]}
+                                style={[index !== lastIndex ? styles.tr : {}, styles.header]}
                                 key={index}
                                 activeOpacity={0.9}
                                 onPress={() => {
