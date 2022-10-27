@@ -4,7 +4,7 @@
  * @Description:列表渲染封装
  */
 
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille, isEmpty, isIphoneX} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
@@ -12,18 +12,15 @@ import {DeviceEventEmitter, FlatList, Image, StyleSheet, Text, TouchableOpacity,
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useSelector} from 'react-redux';
-import Loading from '../../../Portfolio/components/PageLoading';
 import {useJump} from '../../../../components/hooks';
 import EmptyData from '../../FixedInvestment/components/EmptyData';
-import RenderItem from '../../FixedInvestment/components/RenderItem';
-let listener = null;
 const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [bool, setBool] = useState(false);
+    const [bool, setBool] = useState(true);
     const jump = useJump();
     useEffect(() => {
         (async () => {
@@ -39,6 +36,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
+
                 setProfitList(data_list);
                 let bool = data_list.every((el) => el?.profit == 0);
                 setBool(bool);
@@ -57,7 +55,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             });
             if (res.code === '000000') {
-                const {head_list = [], data_list = []} = res.result || {};
+                const {head_list, data_list} = res.result || {};
                 setHeaderList(head_list);
                 setProfitList(data_list);
             }
@@ -91,49 +89,49 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
         );
     };
     return (
-        <>
-            {loading ? (
-                <Loading color={Colors.btnColor} />
-            ) : bool ? (
-                <></>
-            ) : (
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={profitList || []}
-                    keyExtractor={(item, index) => item + index}
-                    ListHeaderComponent={
-                        <>
-                            {left && right && profitList.length != 0 && (
-                                <View style={styles.profitHeader}>
-                                    <View style={styles.profitHeaderLeft}>
-                                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => executeSort(right)}>
-                                        <View style={styles.profitHeaderRight}>
-                                            <Text style={styles.moneyText}>{right?.text}</Text>
-                                            <Image
-                                                source={
-                                                    isEmpty(right?.sort_type)
-                                                        ? require('../assets/sort.png')
-                                                        : right?.sort_type == 'desc'
-                                                        ? require('../assets/desc.png')
-                                                        : require('../assets/asc.png')
-                                                }
-                                            />
-                                        </View>
-                                    </TouchableOpacity>
+        // <>
+        //     {loading ? (
+        //         <Loading color={Colors.btnColor} />
+        //     ) : bool ? (
+        //         <React.Fragment />
+        //     ) : (
+        <FlatList
+            showsVerticalScrollIndicator={false}
+            data={profitList}
+            keyExtractor={(item, index) => item + index}
+            ListHeaderComponent={
+                <>
+                    {left && right && profitList.length != 0 && (
+                        <View style={styles.profitHeader}>
+                            <View style={styles.profitHeaderLeft}>
+                                <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                                <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => executeSort(right)}>
+                                <View style={styles.profitHeaderRight}>
+                                    <Text style={styles.moneyText}>{right?.text}</Text>
+                                    <Image
+                                        source={
+                                            isEmpty(right?.sort_type)
+                                                ? require('../assets/sort.png')
+                                                : right?.sort_type == 'desc'
+                                                ? require('../assets/desc.png')
+                                                : require('../assets/asc.png')
+                                        }
+                                    />
                                 </View>
-                            )}
-                        </>
-                    }
-                    ListEmptyComponent={<EmptyData />}
-                    onEndReachedThreshold={0.5}
-                    refreshing={false}
-                    renderItem={renderItem}
-                />
-            )}
-        </>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </>
+            }
+            ListEmptyComponent={<EmptyData />}
+            onEndReachedThreshold={0.5}
+            refreshing={false}
+            renderItem={renderItem}
+        />
+        // )}
+        // </>
     );
 });
 
