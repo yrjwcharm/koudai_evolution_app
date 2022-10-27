@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:14:53
+ * @LastEditTime: 2022-10-27 16:58:03
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -556,7 +556,7 @@ const Product = ({navigation}) => {
                                     <>
                                         <View style={{backgroundColor: Colors.bgColor}}>
                                             {subjectList?.map?.((subject, index, ar) => (
-                                                <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
+                                                <View key={index} style={{marginTop: px(12)}}>
                                                     <AlbumCard {...subject} />
                                                 </View>
                                             ))}
