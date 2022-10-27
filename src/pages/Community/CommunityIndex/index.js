@@ -250,14 +250,9 @@ const Follow = forwardRef(({list = []}, ref) => {
         getFollowedData({page})
             .then((res) => {
                 if (res.code === '000000') {
-                    setData((prev) => {
-                        if (page === 1) {
-                            return res.result.list;
-                        } else {
-                            return prev.concat(res.result.list);
-                        }
-                    });
-                    setHasMore(res.result.has_more);
+                    const {has_more, list: _list} = res.result;
+                    setHasMore(has_more);
+                    setData((prev) => (page === 1 ? _list : prev.concat(_list)));
                 }
             })
             .finally(() => {
@@ -384,25 +379,19 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     const waterfallFlow = useRef();
     const [resource_private_tip, setTip] = useState('');
     const [loading, setLoading] = useState(true);
+
     const init = () => {
         getData({...params, page})
             .then((res) => {
                 if (res.code === '000000') {
-                    setLoading(false);
-                    setData((prev) => {
-                        if (page === 1) {
-                            return res.result.items || [];
-                        } else {
-                            return prev.concat(res.result.items || []);
-                        }
-                    });
-                    if (res.result?.resource_private_tip) {
-                        setTip(res.result?.resource_private_tip);
-                    }
-                    setHasMore(res.result.has_more);
+                    const {has_more, items = [], resource_private_tip: tip} = res.result;
+                    setHasMore(has_more);
+                    setData((prev) => (page === 1 ? items : prev.concat(items)));
+                    tip && setTip(tip);
                 }
             })
             .finally(() => {
+                setLoading(false);
                 setRefreshing(false);
             });
     };
@@ -497,7 +486,7 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
         store.subscribe(() => {
             const next = store.getState().userInfo.toJS();
             const prev = userInfo.current;
-            if (!prev?.is_login && next?.is_login) refresh();
+            if (prev?.is_login !== next?.is_login) refresh();
             userInfo.current = cloneDeep(next);
         });
     }, []);
