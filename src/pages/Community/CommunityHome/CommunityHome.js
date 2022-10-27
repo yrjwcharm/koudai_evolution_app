@@ -247,7 +247,7 @@ const CommunityHome = ({navigation, route}) => {
                                                     imageStyle={{marginBottom: px(-30)}}>
                                                     {data?.show_add_btn && (
                                                         <Button
-                                                            onPress={() => chooseModal?.current?.show('fund', product)}
+                                                            onPress={() => chooseModal?.current?.show('all', product)}
                                                             title="添加产品"
                                                             style={{
                                                                 width: px(180),
