@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 20:41:36
+ * @LastEditTime: 2022-10-27 10:59:03
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
@@ -15,12 +15,21 @@ import {getProductList} from './services';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import LoadingTips from '~/components/LoadingTips';
 import {useFocusEffect} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 function Item(props) {
     const {item, isSelected, onPress} = props;
     return (
         <TouchableOpacity onPress={onPress} style={styles.cell}>
-            <AntDesign name="checkcircle" size={16} color={isSelected ? '#0051CC' : '#BDC2CC'} />
+            <FastImage
+                style={styles.cell_select}
+                source={
+                    isSelected
+                        ? require('~/assets/img/special/select-1.png')
+                        : require('~/assets/img/special/select.png')
+                }
+            />
+            {/* <AntDesign name="checkcircle" size={16} color={isSelected ? '#0051CC' : '#BDC2CC'} /> */}
             <View style={styles.cellContent}>
                 <Text style={styles.cell_title}>{item.product_name}</Text>
                 <View style={styles.cell_descWrap}>
@@ -126,6 +135,10 @@ const styles = StyleSheet.create({
     cellContent: {
         marginLeft: px(12),
         flex: 1,
+    },
+    cell_select: {
+        width: px(16),
+        height: px(16),
     },
     cell_title: {
         color: '#121D3A',
