@@ -25,6 +25,8 @@ import AdInfo from '../components/AdInfo';
 import StickyHeader from '~/components/Sticky';
 import LoadingTips from '~/components/LoadingTips';
 import RenderHtml from '~/components/RenderHtml';
+import EmptyTip from '~/components/EmptyTip';
+import {FixedButton} from '~/components/Button';
 // type = 公墓 10;私募 20;投顾组合 30;计划 40;
 const PortfolioAssetList = ({route, navigation}) => {
     const jump = useJump();
@@ -212,123 +214,138 @@ const PortfolioAssetList = ({route, navigation}) => {
                         ))}
                     </View>
                 </StickyHeader>
-                {hold?.holding_info?.product?.map((product, index) => {
-                    const {
-                        log_id,
-                        adviser,
-                        company_name,
-                        holding_days,
-                        profit_acc,
-                        remind_info,
-                        tag_info,
-                        url,
-                        name,
-                        anno,
-                        amount,
-                        share,
-                        nav,
-                        cost_nav,
-                        profit,
-                        code,
-                        signal_icons, //工具icon
-                        open_tip, //私募下期开放时间
-                    } = product;
-                    return (
-                        <TouchableOpacity
-                            style={styles.portCard}
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                if (tag_info) {
-                                    global.LogTool('guide_click', '卡片标签 ', log_id);
-                                }
-                                jump(url);
-                            }}
-                            key={log_id}>
-                            {type != 10 && (
-                                <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
-                                        {!!anno && <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>}
-                                        {!!tag_info && <TagInfo data={tag_info} />}
-                                    </View>
-                                    {!!open_tip && (
-                                        <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{open_tip}</Text>
-                                    )}
-                                </View>
-                            )}
-
-                            <View style={Style.flexRow}>
-                                {/* 基金 */}
-                                {type == 10 ? (
-                                    <View style={{flex: 1.4}}>
-                                        <Text style={[styles.name]} numberOfLines={1}>
-                                            {name}
-                                        </Text>
-                                        <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
-                                    </View>
-                                ) : (
-                                    <View style={{flex: 1.4}}>
-                                        <Text style={styles.holdingDays}>{holding_days}</Text>
-                                        {/* 计划工具icon */}
-
-                                        {signal_icons ? (
-                                            <View style={Style.flexRow}>
-                                                {signal_icons?.map((_icon, _index) => (
-                                                    <Image
-                                                        source={{uri: _icon}}
-                                                        key={_index}
-                                                        style={{width: px(14), height: px(14), marginRight: px(6)}}
-                                                    />
-                                                ))}
-                                            </View>
-                                        ) : company_name || adviser ? (
-                                            <Text
-                                                style={{
-                                                    fontSize: px(10),
-                                                    color: Colors.lightGrayColor,
-                                                }}>
-                                                {company_name || adviser}
+                {hold?.holding_info?.product ? (
+                    hold?.holding_info?.product?.map((product, index) => {
+                        const {
+                            log_id,
+                            adviser,
+                            company_name,
+                            holding_days,
+                            profit_acc,
+                            remind_info,
+                            tag_info,
+                            url,
+                            name,
+                            anno,
+                            amount,
+                            share,
+                            nav,
+                            cost_nav,
+                            profit,
+                            code,
+                            signal_icons, //工具icon
+                            open_tip, //私募下期开放时间
+                        } = product;
+                        return (
+                            <TouchableOpacity
+                                style={styles.portCard}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    if (tag_info) {
+                                        global.LogTool('guide_click', '卡片标签 ', log_id);
+                                    }
+                                    jump(url);
+                                }}
+                                key={log_id}>
+                                {type != 10 && (
+                                    <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
+                                            {!!anno && (
+                                                <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>
+                                            )}
+                                            {!!tag_info && <TagInfo data={tag_info} />}
+                                        </View>
+                                        {!!open_tip && (
+                                            <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>
+                                                {open_tip}
                                             </Text>
-                                        ) : null}
+                                        )}
                                     </View>
                                 )}
-                                {/* 资产份额 */}
-                                <View style={{alignItems: 'flex-end', flex: 1}}>
-                                    <Text style={styles.card_amount}>{showEye === 'true' ? amount : '****'}</Text>
-                                    <Text style={styles.amountLightText}>{showEye === 'true' ? share : '****'}</Text>
-                                </View>
-                                {/* 净值/成本 */}
-                                <View style={{alignItems: 'flex-end', flex: 1}}>
-                                    <Text style={styles.card_amount}>{showEye === 'true' ? nav : '****'}</Text>
-                                    <Text style={styles.amountLightText}>{showEye === 'true' ? cost_nav : '****'}</Text>
-                                </View>
-                                {/* 收益 */}
-                                <View style={{alignItems: 'flex-end', flex: 1}}>
+
+                                <View style={Style.flexRow}>
+                                    {/* 基金 */}
                                     {type == 10 ? (
-                                        <Text style={styles.card_amount}>
-                                            {showEye === 'true' ? (
-                                                <RenderHtml html={profit} style={styles.card_amount} />
-                                            ) : (
-                                                '****'
-                                            )}
-                                        </Text>
+                                        <View style={{flex: 1.4}}>
+                                            <Text style={[styles.name]} numberOfLines={1}>
+                                                {name}
+                                            </Text>
+                                            <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
+                                        </View>
                                     ) : (
-                                        <Text style={styles.card_amount}>
-                                            {showEye === 'true' ? (
-                                                <RenderHtml html={profit_acc} style={styles.card_amount} />
-                                            ) : (
-                                                '****'
-                                            )}
-                                        </Text>
+                                        <View style={{flex: 1.4}}>
+                                            <Text style={styles.holdingDays}>{holding_days}</Text>
+                                            {/* 计划工具icon */}
+
+                                            {signal_icons ? (
+                                                <View style={Style.flexRow}>
+                                                    {signal_icons?.map((_icon, _index) => (
+                                                        <Image
+                                                            source={{uri: _icon}}
+                                                            key={_index}
+                                                            style={{width: px(14), height: px(14), marginRight: px(6)}}
+                                                        />
+                                                    ))}
+                                                </View>
+                                            ) : company_name || adviser ? (
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(10),
+                                                        color: Colors.lightGrayColor,
+                                                    }}>
+                                                    {company_name || adviser}
+                                                </Text>
+                                            ) : null}
+                                        </View>
                                     )}
+                                    {/* 资产份额 */}
+                                    <View style={{alignItems: 'flex-end', flex: 1}}>
+                                        <Text style={styles.card_amount}>{showEye === 'true' ? amount : '****'}</Text>
+                                        <Text style={styles.amountLightText}>
+                                            {showEye === 'true' ? share : '****'}
+                                        </Text>
+                                    </View>
+                                    {/* 净值/成本 */}
+                                    <View style={{alignItems: 'flex-end', flex: 1}}>
+                                        <Text style={styles.card_amount}>{showEye === 'true' ? nav : '****'}</Text>
+                                        <Text style={styles.amountLightText}>
+                                            {showEye === 'true' ? cost_nav : '****'}
+                                        </Text>
+                                    </View>
+                                    {/* 收益 */}
+                                    <View style={{alignItems: 'flex-end', flex: 1}}>
+                                        {type == 10 ? (
+                                            <Text style={styles.card_amount}>
+                                                {showEye === 'true' ? (
+                                                    <RenderHtml html={profit} style={styles.card_amount} />
+                                                ) : (
+                                                    '****'
+                                                )}
+                                            </Text>
+                                        ) : (
+                                            <Text style={styles.card_amount}>
+                                                {showEye === 'true' ? (
+                                                    <RenderHtml html={profit_acc} style={styles.card_amount} />
+                                                ) : (
+                                                    '****'
+                                                )}
+                                            </Text>
+                                        )}
+                                    </View>
                                 </View>
-                            </View>
-                            {!!remind_info && <RenderAlert alert={remind_info} />}
-                        </TouchableOpacity>
-                    );
-                })}
+                                {!!remind_info && <RenderAlert alert={remind_info} />}
+                            </TouchableOpacity>
+                        );
+                    })
+                ) : (
+                    <EmptyTip style={{paddingTop: px(20)}} />
+                )}
                 <BottomDesc />
             </Animated.ScrollView>
+            {!!data?.bottom_button && (
+                <FixedButton title={data?.bottom_button?.text} onPress={() => jump(data?.bottom_button?.url)} />
+            )}
             {data?.bottom_notice && (
                 <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />
             )}

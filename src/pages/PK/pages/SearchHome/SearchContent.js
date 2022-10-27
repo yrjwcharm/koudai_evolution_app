@@ -1,8 +1,6 @@
 /*
  * @Date: 2022-06-13 12:19:36
  * @Author: yhc
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 16:09:22
  * @Description:
  */
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -13,7 +11,6 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {useJump} from '~/components/hooks';
 import {getColor} from './utils';
 import RenderHtml from '~/components/RenderHtml';
-
 import Toast from '~/components/Toast';
 import {debounce} from 'lodash';
 import FastImage from 'react-native-fast-image';
@@ -138,7 +135,11 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                     <RenderHtml html={data?.name} style={styles.title} numberOfLines={1} />
                     <Text style={styles.code}>{data?.code}</Text>
                 </View>
-                <Text style={[styles.rate, {color: getColor(parseFloat(data?.yield_info?.ratio))}]}>
+                <Text
+                    style={[
+                        styles.rate,
+                        {color: data?.yield_info?.color || getColor(parseFloat(data?.yield_info?.ratio))},
+                    ]}>
                     {data?.yield_info?.ratio}
                 </Text>
                 <Text style={styles.rateDesc}>{data?.yield_info?.title}</Text>
