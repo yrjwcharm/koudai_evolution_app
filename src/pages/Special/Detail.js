@@ -141,7 +141,7 @@ const SpecialDetail = ({navigation, route}) => {
                                 style={styles.rightIcon}
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/more-' +
+                                        'https://static.licaimofang.com/wp-content/uploads/2022/09/more-' +
                                         (scrolling ? 'black' : 'white') +
                                         '.png',
                                 }}
@@ -163,7 +163,7 @@ const SpecialDetail = ({navigation, route}) => {
                                 style={styles.rightIcon}
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/10/close-' +
+                                        'https://static.licaimofang.com/wp-content/uploads/2022/10/close-' +
                                         (scrolling ? 'black' : 'white') +
                                         '.png',
                                 }}
@@ -290,7 +290,7 @@ const SpecialDetail = ({navigation, route}) => {
                             <FastImage
                                 style={{width: px(24), height: px(24)}}
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/comment-close.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/comment-close.png',
                                 }}
                             />
                         </TouchableOpacity>

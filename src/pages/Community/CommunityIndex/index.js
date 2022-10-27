@@ -98,7 +98,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} onPress={() => jump(message_url)}>
                     <Image
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'}}
                         style={styles.headerRightIcon}
                     />
                     {allMsg && isLogin ? (

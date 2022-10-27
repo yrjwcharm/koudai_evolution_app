@@ -53,7 +53,9 @@ const SaleReminder = ({data, upgrade_id, onCardHeight, onCardRate, idx: componen
                 <RenderHtml style={{...styles.rateText, color: '#121D3A'}} html={now_value} />
                 <View style={styles.panelMiddle}>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                        }}
                         style={styles.panelIcon}
                     />
                     <Text style={styles.pannelDesc}>{data.name}</Text>

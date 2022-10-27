@@ -35,7 +35,7 @@ const BlackHint = ({weightsState, addHigh}) => {
                 }}>
                 <FastImage
                     style={styles.icon}
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/cha.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/cha.png'}}
                 />
             </TouchableOpacity>
             <Text style={styles.text}>根据您的权重设置，有新的基金向您推荐</Text>

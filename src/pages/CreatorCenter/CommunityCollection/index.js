@@ -40,7 +40,7 @@ const CommunityCollection = () => {
                                             style={styles.cardItemAvatar}
                                             source={{
                                                 uri:
-                                                    'http://static.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png',
+                                                    'https://static.licaimofang.com/wp-content/uploads/2022/09/manager_demo.png',
                                             }}
                                         />
                                         <View style={styles.cardItemMainCenter}>
@@ -60,7 +60,7 @@ const CommunityCollection = () => {
                                         <FastImage
                                             source={{
                                                 uri:
-                                                    'http://static.licaimofang.com/wp-content/uploads/2022/10/edit.png',
+                                                    'https://static.licaimofang.com/wp-content/uploads/2022/10/edit.png',
                                             }}
                                             style={styles.cardItemBottomIcon}
                                         />

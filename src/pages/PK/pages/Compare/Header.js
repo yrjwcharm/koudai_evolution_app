@@ -37,7 +37,7 @@ const Header = (props) => {
                         <FastImage
                             source={{
                                 uri:
-                                    'http://static.licaimofang.com/wp-content/uploads/2022/06/' +
+                                    'https://static.licaimofang.com/wp-content/uploads/2022/06/' +
                                     (key === -1 ? 'pinning' : 'pin') +
                                     '.png',
                             }}

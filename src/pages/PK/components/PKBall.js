@@ -175,7 +175,7 @@ const PKBall = ({style, copilot = {}, copilotEvents}, ref) => {
                 {...copilot}>
                 <View style={copilotStep === 2 ? styles.circlePadding : {}}>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/08/pkBall.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/08/pkBall.png'}}
                         resizeMode="cover"
                         style={{width: px(66), height: px(66)}}
                     />

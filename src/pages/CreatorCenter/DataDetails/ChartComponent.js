@@ -84,7 +84,7 @@ const ChartComponent = ({isActive, options}) => {
                                     <FastImage
                                         source={{
                                             uri:
-                                                'http://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
+                                                'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
                                         }}
                                         style={styles.panelItemHintIcon}
                                     />
@@ -105,7 +105,7 @@ const ChartComponent = ({isActive, options}) => {
                                     <FastImage
                                         source={{
                                             uri:
-                                                'http://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
+                                                'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
                                         }}
                                         style={styles.panelItemHintIcon}
                                     />

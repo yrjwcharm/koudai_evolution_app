@@ -92,7 +92,7 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                             activeOpacity={0.8}>
                             <FastImage
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/input-close2.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/input-close2.png',
                                 }}
                                 style={[styles.inputClose, {opacity: obj?.name?.length ? 1 : 0}]}
                             />
@@ -144,7 +144,7 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                             activeOpacity={0.8}>
                             <FastImage
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/input-close2.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/input-close2.png',
                                 }}
                                 style={[styles.inputClose, {opacity: obj?.desc?.length ? 1 : 0}]}
                                 onPress={() => {

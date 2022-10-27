@@ -191,7 +191,7 @@ const SpecialDetailDraft = ({navigation, route}) => {
                             <FastImage
                                 style={{width: px(24), height: px(24)}}
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/comment-close.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/comment-close.png',
                                 }}
                             />
                         </TouchableOpacity>
@@ -235,7 +235,7 @@ const SpecialDetailDraft = ({navigation, route}) => {
                                 <FastImage
                                     source={{
                                         uri:
-                                            'http://static.licaimofang.com/wp-content/uploads/2022/10/right-blue-icon.png',
+                                            'https://static.licaimofang.com/wp-content/uploads/2022/10/right-blue-icon.png',
                                     }}
                                     style={{width: px(10), height: px(10), marginLeft: px(4)}}
                                 />

@@ -138,7 +138,7 @@ export default function SpecialCreateDetail({navigation, route}) {
                                 style={styles.rightIcon}
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/more-' +
+                                        'https://static.licaimofang.com/wp-content/uploads/2022/09/more-' +
                                         (scrolling ? 'black' : 'white') +
                                         '.png',
                                 }}
@@ -160,7 +160,7 @@ export default function SpecialCreateDetail({navigation, route}) {
                                 style={styles.rightIcon}
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/09/close-' +
+                                        'https://static.licaimofang.com/wp-content/uploads/2022/09/close-' +
                                         (scrolling ? 'black' : 'white') +
                                         '.png',
                                 }}

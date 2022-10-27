@@ -113,7 +113,7 @@ const EditProduct = ({navigation, route}) => {
                         </TouchableOpacity>
                         <View style={styles.cardHint}>
                             <FastImage
-                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
+                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
                                 style={styles.hintIcon}
                             />
                             <Text style={styles.hintText}>同一个分类下基金或组合只能有一种样式</Text>
@@ -198,7 +198,7 @@ const EditProduct = ({navigation, route}) => {
                                       <View style={styles.modalStyleHeader}>
                                           <FastImage
                                               source={{
-                                                  uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                                  uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                                       activeModalStyle === style.style_id ? 'check' : 'uncheck'
                                                   }.png`,
                                               }}
@@ -222,7 +222,7 @@ const EditProduct = ({navigation, route}) => {
                                   }}>
                                   <FastImage
                                       source={{
-                                          uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                          uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                               activeModalRange === range.key ? 'check' : 'uncheck'
                                           }.png`,
                                       }}

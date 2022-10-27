@@ -65,7 +65,7 @@ const Header = ({data = {}}) => {
                 ) : null}
             </View>
             <FastImage
-                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
+                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
                 style={{width: px(36), height: px(18)}}
             />
             <View>

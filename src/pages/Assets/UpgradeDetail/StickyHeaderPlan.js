@@ -20,7 +20,7 @@ const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight, ca
                         <RenderHtml style={styles.rate} html={cardsRate?.[0]?.now_value || detail?.[0]?.now_value} />
                         <FastImage
                             source={{
-                                uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                                uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
                             }}
                             style={styles.panelIcon}
                         />
@@ -57,7 +57,7 @@ const StickyHeaderPlan = ({scrollY, detail, curtainNum, handlerCurtainHeight, ca
                                 <FastImage
                                     source={{
                                         uri:
-                                            'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                                            'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
                                     }}
                                     style={styles.panelIcon}
                                 />

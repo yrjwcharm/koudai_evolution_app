@@ -188,7 +188,7 @@ const CreatorCenterIndex = () => {
                                 <FastImage
                                     style={styles.editIcon}
                                     source={{
-                                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-icon.png',
+                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/edit-icon.png',
                                     }}
                                 />
                             </TouchableOpacity>

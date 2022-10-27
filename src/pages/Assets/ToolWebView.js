@@ -70,7 +70,7 @@ const ToolWebView = ({navigation, route}) => {
                 activeOpacity={0.8}
                 onPress={onPress}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/08/subscribe.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/08/subscribe.png'}}
                     style={{width: px(16), height: px(16), marginRight: px(2)}}
                 />
                 <Text style={styles.rightText}>{topButton.text}</Text>

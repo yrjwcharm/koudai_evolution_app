@@ -28,7 +28,7 @@ function RecommendCell(props) {
             <View style={[styles.cellWrap_header]}>
                 <FastImage
                     source={{
-                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                        uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                             curType === type ? 'check' : 'uncheck'
                         }.png`,
                     }}

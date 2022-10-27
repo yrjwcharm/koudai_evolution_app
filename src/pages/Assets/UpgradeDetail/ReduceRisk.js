@@ -56,7 +56,9 @@ const ReduceRisk = ({data = {}, upgrade_id, onCardHeight, onCardRate, idx: compo
                 <RenderHtml style={{...styles.rateText, color: '#4BA471'}} html={now_value} />
                 <View style={styles.panelMiddle}>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                        }}
                         style={styles.panelIcon}
                     />
                     <Text style={styles.pannelDesc}>{name}</Text>

@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 17:15:29
+ * @LastEditTime: 2022-10-27 18:28:54
  * @Description:基金编辑
  */
 import React, {useEffect, useState} from 'react';
@@ -51,7 +51,7 @@ export default function EditSortFund({navigation, route}) {
                     <TouchableOpacity style={Style.flexRow} onPress={() => toggle(index)}>
                         <FastImage
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                     item.check ? 'check' : 'uncheck'
                                 }.png`,
                             }}
@@ -75,7 +75,7 @@ export default function EditSortFund({navigation, route}) {
                         </View>
                     </TouchableOpacity>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
                         style={{width: px(24), height: px(24)}}
                     />
                 </TouchableOpacity>
@@ -162,7 +162,7 @@ export default function EditSortFund({navigation, route}) {
                 <TouchableOpacity onPress={toggleAll} style={[Style.flexRow]}>
                     <FastImage
                         source={{
-                            uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                            uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                 check == 2 ? 'check' : 'uncheck'
                             }.png`,
                         }}

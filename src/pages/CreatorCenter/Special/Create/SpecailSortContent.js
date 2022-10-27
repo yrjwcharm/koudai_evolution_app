@@ -52,7 +52,7 @@ export default function SpecailSortContent({navigation, route}) {
                     <TouchableOpacity style={styles.titleWrap} onPress={() => toggle(index)}>
                         <FastImage
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                     item.check ? 'check' : 'uncheck'
                                 }.png`,
                             }}
@@ -63,7 +63,7 @@ export default function SpecailSortContent({navigation, route}) {
                         </Text>
                     </TouchableOpacity>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
                         style={{width: px(24), height: px(24), marginLeft: px(20)}}
                     />
                 </TouchableOpacity>

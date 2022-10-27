@@ -233,7 +233,7 @@ const Product = ({navigation}) => {
                             <FastImage
                                 style={{width: px(10), height: px(10)}}
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
                                 }}
                             />
                         </TouchableOpacity>
@@ -309,7 +309,7 @@ const Product = ({navigation}) => {
                             jump(proData?.search?.url);
                         }}>
                         <FastImage
-                            source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
                             style={{width: px(18), height: px(18), marginLeft: px(2), marginRight: px(4)}}
                         />
                         <Text style={styles.searchPlaceHolder}>{proData?.search?.placeholder}</Text>
@@ -329,8 +329,8 @@ const Product = ({navigation}) => {
                             style={{width: px(24), height: px(24), marginRight: px(12)}}
                             source={{
                                 uri: bgType
-                                    ? 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'
-                                    : 'http://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
+                                    ? 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'
+                                    : 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
                             }}
                         />
                     </TouchableOpacity>
@@ -824,7 +824,7 @@ const SpecialList = ({data, tabButton}) => {
                                 <FastImage
                                     style={{width: px(16), height: px(16)}}
                                     source={{
-                                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
+                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
                                     }}
                                 />
                             )}

@@ -68,7 +68,7 @@ const AlbumHeader = ({
                 <FastImage
                     style={{width: px(10), height: px(10)}}
                     source={{
-                        uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
+                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
                     }}
                 />
             </View>

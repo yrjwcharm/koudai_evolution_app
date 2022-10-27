@@ -84,7 +84,7 @@ const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stic
                                             }}>
                                             <FastImage
                                                 source={{
-                                                    uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                                    uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                                         checkeds.includes(genKey(tr[0]?.product_info))
                                                             ? 'check'
                                                             : 'uncheck'

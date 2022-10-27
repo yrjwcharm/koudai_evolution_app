@@ -165,7 +165,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                     });
                 }}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/exchange-dollar-fill.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/exchange-dollar-fill.png'}}
                     style={{width: px(12), height: px(12), marginRight: px(3)}}
                 />
                 <Text style={{fontSize: px(12), lineHeight: px(17), color: '#545968'}}>换一换</Text>
@@ -189,7 +189,7 @@ const PKHome = ({navigation, start, copilotEvents}) => {
                         }}>
                         <View style={Style.flexRowCenter}>
                             <FastImage
-                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
                                 style={{width: px(18), height: px(18), marginRight: px(4)}}
                             />
                             <Text style={styles.searchPlaceHolder}>{data?.search_box_content}</Text>

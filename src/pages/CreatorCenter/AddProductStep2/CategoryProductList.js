@@ -228,7 +228,7 @@ const CategoryProductList = ({data, tabActive, onTabChange, originData, originDa
                         }}>
                         <View style={Style.flexRow}>
                             <FastImage
-                                source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
+                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/gth@3x.png'}}
                                 style={{width: px(16), height: px(16)}}
                             />
                             <Text style={styles.cateEditingHint}>点击分类编辑名称</Text>

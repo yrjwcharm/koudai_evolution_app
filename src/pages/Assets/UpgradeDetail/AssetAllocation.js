@@ -1,3 +1,8 @@
+/*
+ * @Description:
+ * @Autor: wxp
+ * @Date: 2022-09-13 11:15:15
+ */
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -18,7 +23,9 @@ const AssetAllocation = ({data = {}, onCardHeight, idx: componentIdx}) => {
                 <Text style={[styles.rateText, {color: '#121D3A'}]}>{now_value}</Text>
                 <View style={styles.panelMiddle}>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png'}}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                        }}
                         style={styles.panelIcon}
                     />
                     <Text style={styles.pannelDesc}>{name}</Text>

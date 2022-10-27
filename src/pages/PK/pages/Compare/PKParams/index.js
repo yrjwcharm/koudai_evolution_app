@@ -122,7 +122,7 @@ const PKParams = ({result, data, pkPinning, weightsState, setWeightsState, refre
                         <View style={[styles.highStamp]}>
                             <FastImage
                                 source={{
-                                    uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png',
                                 }}
                                 style={{width: px(10), height: px(10), marginRight: 2}}
                             />

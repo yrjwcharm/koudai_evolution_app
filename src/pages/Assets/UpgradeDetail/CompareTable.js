@@ -48,7 +48,7 @@ const CompareTable = ({data = []}) => {
                                     <FastImage
                                         source={{
                                             uri:
-                                                'http://static.licaimofang.com/wp-content/uploads/2022/07/recom-icon.png',
+                                                'https://static.licaimofang.com/wp-content/uploads/2022/07/recom-icon.png',
                                         }}
                                         style={styles.recomIcon}
                                     />

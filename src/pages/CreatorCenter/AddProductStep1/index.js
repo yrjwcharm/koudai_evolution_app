@@ -147,7 +147,7 @@ const AddProductStep1 = ({navigation, route}) => {
                         }}>
                         <FastImage
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                     styleCheck === item.value ? 'check' : 'uncheck'
                                 }.png`,
                             }}

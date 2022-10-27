@@ -66,7 +66,7 @@ const DetailModal = ({bottom, onClose, selections, handlerSelections}) => {
                                 }}>
                                 <FastImage
                                     source={{
-                                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                        uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                             selections.find((itm) => genKey(itm) === genKey(item)) ? 'check' : 'uncheck'
                                         }.png`,
                                     }}

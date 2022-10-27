@@ -199,7 +199,7 @@ function ContentSearchModal(props) {
         <View style={styles.searchModal}>
             <View style={[styles.searchWrap]}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
                     style={styles.searchWrap_searchIcon}
                 />
                 <TextInput

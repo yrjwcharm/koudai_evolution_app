@@ -2,7 +2,7 @@
  * @Date: 2022-06-24 10:48:10
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 11:39:44
+ * @LastEditTime: 2022-10-27 18:32:40
  * @Description:基金编辑
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -55,7 +55,7 @@ const SortProduct = ({navigation, route}) => {
                     <TouchableOpacity style={Style.flexRow} onPress={() => toggle(index)}>
                         <FastImage
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                     item.check ? 'check' : 'uncheck'
                                 }.png`,
                             }}
@@ -66,7 +66,7 @@ const SortProduct = ({navigation, route}) => {
                         </View>
                     </TouchableOpacity>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
                         style={{width: px(24), height: px(24)}}
                     />
                 </TouchableOpacity>
@@ -138,7 +138,7 @@ const SortProduct = ({navigation, route}) => {
                 <TouchableOpacity onPress={toggleAll} style={[Style.flexRow]}>
                     <FastImage
                         source={{
-                            uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                            uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                 check == 2 ? 'check' : 'uncheck'
                             }.png`,
                         }}

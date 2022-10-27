@@ -1,3 +1,8 @@
+/*
+ * @Description:
+ * @Autor: wxp
+ * @Date: 2022-09-13 11:15:15
+ */
 import React, {useMemo} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {px} from '~/utils/appUtil';
@@ -25,7 +30,7 @@ const StickyHeaderPortFolio = ({scrollY, curtainNum, handlerCurtainHeight, detai
                             <FastImage
                                 source={{
                                     uri:
-                                        'http://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
+                                        'https://static.licaimofang.com/wp-content/uploads/2022/07/91657595187_.pic_.png',
                                 }}
                                 style={styles.panelIcon}
                             />

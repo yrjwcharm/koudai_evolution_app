@@ -59,7 +59,7 @@ const Introduce = ({route}) => {
 
             <ScrollView style={{flex: 1, backgroundColor: '#f5f6f8'}} scrollIndicatorInsets={{right: 1}}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-bg.png'}}
+                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-bg.png'}}
                     style={{width: '100%', height: px(272), position: 'absolute', top: 0}}
                     resizeMode="contain"
                 />
@@ -68,7 +68,7 @@ const Introduce = ({route}) => {
                     <ImageBackground
                         imageStyle={{width: px(343), height: px(136)}}
                         source={{
-                            uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-bg.png',
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-introduce-card-bg.png',
                         }}
                         style={styles.card}>
                         <Text style={styles.questionTitle}>{data.introduce?.title}</Text>
@@ -401,7 +401,7 @@ const ParamsCellWrapOfSum = ({children, style, data}) => {
             {data?.tip ? (
                 <View style={[styles.highStamp]}>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png'}}
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/06/pk-table-good.png'}}
                         style={{width: px(10), height: px(10), marginRight: px(2)}}
                     />
                     <Text style={styles.highStampText}>{data?.tip}</Text>

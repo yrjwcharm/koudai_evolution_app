@@ -99,7 +99,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                             }}>
                             <FastImage
                                 source={{
-                                    uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                    uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                         selections.find((item) => genKey(item) === genKey(data?.product_info))
                                             ? 'check'
                                             : 'uncheck'
@@ -158,7 +158,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                         }}>
                         <FastImage
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
                                     selections.find((item) => genKey(item) === genKey(data?.product_info))
                                         ? 'check'
                                         : 'uncheck'

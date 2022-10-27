@@ -340,7 +340,7 @@ const AddProductStep2 = ({navigation, route}) => {
                         <FastImage
                             style={{width: px(16), height: px(16)}}
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort${
                                     listLength ? '' : '-disable'
                                 }.png`,
                             }}
@@ -371,7 +371,7 @@ const AddProductStep2 = ({navigation, route}) => {
                         <FastImage
                             style={{width: px(16), height: px(16)}}
                             source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/add-prd${
+                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/add-prd${
                                     listLength < cateNumInfo?.max_products_num ? '' : '-disable'
                                 }.png`,
                             }}

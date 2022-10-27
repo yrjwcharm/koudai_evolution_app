@@ -282,7 +282,7 @@ const FollowTable = ({data = {}, activeTab, handleSort, tabButton, notStickyHead
                                             style={{width: px(16), height: px(16)}}
                                             source={{
                                                 uri:
-                                                    'http://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
+                                                    'https://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
                                             }}
                                         />
                                     )}
