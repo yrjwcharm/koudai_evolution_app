@@ -86,9 +86,12 @@ const CommunityHome = ({navigation, route}) => {
     };
     //添加
     const handleAddProduct = async (_data) => {
-        let res = await addProduct({community_id, item_id: _data.item_id, type: _data.relation_type});
-        if (res.code == '000000') {
-            getProductList({community_id, type: currentTab.current});
+        if (_data?.length > 0) {
+            let item_id = _data?.map((item) => item.id).join(',');
+            let res = await addProduct({community_id, item_id, type: _data[0]?.relation_type});
+            if (res.code == '000000') {
+                getProductList({community_id, type: currentTab.current});
+            }
         }
     };
     const Header = () => {
@@ -265,7 +268,7 @@ const CommunityHome = ({navigation, route}) => {
                     </ScrollTabView>
                 )}
             </View>
-            <ChooseModal ref={chooseModal} onDone={handleAddProduct} maxCount={1} />
+            <ChooseModal ref={chooseModal} onDone={handleAddProduct} />
             {data?.share_info ? (
                 <ShareModal
                     ref={shareModal}
