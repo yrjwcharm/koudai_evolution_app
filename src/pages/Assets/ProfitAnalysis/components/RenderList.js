@@ -67,9 +67,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
             <View style={styles.listRow} key={item + '' + index}>
                 <View style={styles.typeView}>
                     <View style={styles.typeWrap}>
-                        <Text style={[styles.type, {fontSize: item.type?.length > 2 ? px(6) : px(10)}]}>
-                            {item.type}
-                        </Text>
+                        <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
                     </View>
                     <TouchableOpacity onPress={() => jump(item?.url)}>
                         <Text style={styles.title}>{item.text}</Text>
@@ -184,8 +182,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     typeWrap: {
-        width: px(28),
-        height: px(18),
+        // width: px(28),
+        // height: px(18),
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
         borderRadius: px(2),
         borderStyle: 'solid',
         borderWidth: StyleSheet.hairlineWidth,
