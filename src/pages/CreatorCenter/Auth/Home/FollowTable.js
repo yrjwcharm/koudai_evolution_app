@@ -2,8 +2,8 @@
  * @Author: yhc
  * @Description:
  */
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
-import React, {useMemo, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
 import style from '~/pages/Assets/ProfitAnalysis/styles/style';

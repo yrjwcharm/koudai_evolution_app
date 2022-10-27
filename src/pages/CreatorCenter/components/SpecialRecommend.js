@@ -1,17 +1,17 @@
 /*
  * @Date: 2022-10-14 15:42:01
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 20:16:28
+ * @LastEditTime: 2022-10-27 17:53:11
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/SpecialRecommend.js
  * @Description:  专题推荐样式
  * @Usage:  <RecommendItemWrap tabs={['推广位一', '推广位二']}><RecommendImage /><RecommendImage /></RecommendItemWrap>
  * @Usage:  <RecommendItemWrap tabs={['推广位一', '推广位二']}><RecommendProduct /><RecommendProduct /></RecommendItemWrap>
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
+import {px} from '~/utils/appUtil';
 import Html from '~/components/RenderHtml';
 
 export function RecommendImage(props) {

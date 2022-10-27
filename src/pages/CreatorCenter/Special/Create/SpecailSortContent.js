@@ -1,22 +1,21 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 12:01:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-27 18:35:55
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
- * @Description: 修改内容排序
+ * @Description: 创建专题-内容编辑-修改内容排序
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import NavBar from '~/components/NavBar';
 import {Colors, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
+import {deviceHeight, px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {Modal} from '~/components/Modal';
 
 export default function SpecailSortContent({navigation, route}) {
     const {items = [], changeCallBack} = route.params || {};
@@ -51,11 +50,11 @@ export default function SpecailSortContent({navigation, route}) {
                     style={[styles.rowItem, Style.flexBetween, {backgroundColor: isActive ? '#ddd' : '#fff'}]}>
                     <TouchableOpacity style={styles.titleWrap} onPress={() => toggle(index)}>
                         <FastImage
-                            source={{
-                                uri: `https://static.licaimofang.com/wp-content/uploads/2022/10/${
-                                    item.check ? 'check' : 'uncheck'
-                                }.png`,
-                            }}
+                            source={
+                                item.check
+                                    ? require('~/assets/img/special/select-1.png')
+                                    : require('~/assets/img/special/select.png')
+                            }
                             style={{width: px(16), height: px(16)}}
                         />
                         <Text style={styles.title} numberOfLines={1}>
@@ -63,7 +62,7 @@ export default function SpecailSortContent({navigation, route}) {
                         </Text>
                     </TouchableOpacity>
                     <FastImage
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        source={require('~/assets/img/special/menu-line.png')}
                         style={{width: px(24), height: px(24), marginLeft: px(20)}}
                     />
                 </TouchableOpacity>

@@ -1,23 +1,18 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 16:21:19
+ * @LastEditTime: 2022-10-27 17:57:07
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import NavBar from '~/components/NavBar';
-import {Colors, Style} from '~/common/commonStyle';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, deviceWidth, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
+import {Style} from '~/common/commonStyle';
+import {deviceHeight, deviceWidth, px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useJump} from '~/components/hooks';
-import {FixedButton} from '~/components/Button';
 import {useFocusEffect} from '@react-navigation/native';
 import http from '~/services';
 import LoadingTips from '~/components/LoadingTips';

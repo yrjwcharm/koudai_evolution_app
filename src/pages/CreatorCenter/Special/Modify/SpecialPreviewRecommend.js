@@ -1,16 +1,16 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 14:34:09
+ * @LastEditTime: 2022-10-27 18:04:37
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ImageBackground, PermissionsAndroid, Platform} from 'react-native';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import NavBar from '~/components/NavBar';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useJump} from '~/components/hooks';
 

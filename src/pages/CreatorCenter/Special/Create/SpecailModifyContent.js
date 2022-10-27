@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-11 13:03:31
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 18:43:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-27 18:35:36
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
- * @Description: 精选内容
+ * @Description: 创建专题-精选内容编辑
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -199,7 +199,7 @@ function ContentSearchModal(props) {
         <View style={styles.searchModal}>
             <View style={[styles.searchWrap]}>
                 <FastImage
-                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                    source={require('~/assets/img/special/pk-search.png')}
                     style={styles.searchWrap_searchIcon}
                 />
                 <TextInput

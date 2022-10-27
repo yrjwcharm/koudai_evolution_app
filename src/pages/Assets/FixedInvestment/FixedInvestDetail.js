@@ -239,29 +239,36 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                             {state.records?.data_list?.map((item, index) => {
                                 return (
-                                    <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
-                                        <View style={{width: '38.5%'}}>
-                                            <Text style={styles.date}>{item.date}</Text>
-                                        </View>
-                                        <View style={{width: '38.5%'}}>
-                                            <Text style={styles.money}>{item.value}</Text>
-                                        </View>
-                                        <View style={{width: '23%', flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                            <View style={Style.flexRow}>
-                                                <View>
-                                                    {/*<Text style={styles.investStatus}>定投成功</Text>*/}
-                                                    <Text style={[styles.investFail, {textAlign: 'right'}]}>
-                                                        {item.status}
-                                                    </Text>
-                                                    {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                                    <TouchableOpacity onPress={() => jump(item?.url)}>
+                                        <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
+                                            <View style={{width: '38.5%'}}>
+                                                <Text style={styles.date}>{item.date}</Text>
+                                            </View>
+                                            <View style={{width: '38.5%'}}>
+                                                <Text style={styles.money}>{item.value}</Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: '23%',
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'flex-end',
+                                                }}>
+                                                <View style={Style.flexRow}>
+                                                    <View>
+                                                        {/*<Text style={styles.investStatus}>定投成功</Text>*/}
+                                                        <Text style={[styles.investFail, {textAlign: 'right'}]}>
+                                                            {item.status}
+                                                        </Text>
+                                                        {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                                                    </View>
+                                                    <Image
+                                                        source={require('./assets/more.png')}
+                                                        style={{marginLeft: px(4)}}
+                                                    />
                                                 </View>
-                                                <Image
-                                                    source={require('./assets/more.png')}
-                                                    style={{marginLeft: px(4)}}
-                                                />
                                             </View>
                                         </View>
-                                    </View>
+                                    </TouchableOpacity>
                                 );
                             })}
                         </View>

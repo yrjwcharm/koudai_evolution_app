@@ -1,18 +1,17 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 10:59:03
+ * @LastEditTime: 2022-10-27 18:03:58
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
 import NavBar from '~/components/NavBar';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {deviceHeight, px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {getProductList} from './services';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Font} from '~/common/commonStyle';
 import LoadingTips from '~/components/LoadingTips';
 import {useFocusEffect} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';

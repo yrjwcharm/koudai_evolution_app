@@ -1,21 +1,19 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 20:21:59
+ * @LastEditTime: 2022-10-27 18:02:00
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, StyleSheet, SectionList, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
-import FastImage from 'react-native-fast-image';
-import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import NavBar from '~/components/NavBar';
-import {Colors, Style} from '~/common/commonStyle';
+import {Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
+import {deviceHeight, px} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
+import {BottomModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import LoadingTips from '~/components/LoadingTips';
 import {getModifyList, submitModify} from './services';

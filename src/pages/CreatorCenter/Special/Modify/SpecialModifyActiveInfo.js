@@ -1,22 +1,22 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 18:41:19
+ * @LastEditTime: 2022-10-27 18:10:02
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyActiveInfo.js
- * @Description: 修改专题 - 活动信息
+ * @Description: 修改专题 - 活动信息（未启用）
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, ImageBackground} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
-import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {Style, Colors, Space} from '~/common/commonStyle';
+import {Modal} from '~/components/Modal';
+import {Style} from '~/common/commonStyle';
 
-import {getStashSpeical, saveStashSpeical} from '../services';
+import {getStashSpeical} from './services';
 
 import pickerUploadImg from '~/utils/pickerUploadImg';
 import {useFocusEffect} from '@react-navigation/native';

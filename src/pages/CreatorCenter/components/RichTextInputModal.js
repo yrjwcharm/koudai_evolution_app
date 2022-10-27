@@ -1,34 +1,18 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 18:26:46
+ * @LastEditTime: 2022-10-27 17:51:45
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-    View,
-    StyleSheet,
-    SectionList,
-    Text,
-    TouchableOpacity,
-    TextInput,
-    FlatList,
-    Platform,
-    TouchableHighlight,
-} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
-import {deviceHeight, deviceWidth, px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
+import {BottomModal} from '~/components/Modal';
 import {WebView as RNWebView} from 'react-native-webview';
-
-// const html = Platform.select({
-//     ios: require('~/assets/html/richTextInput.html'),
-//     android: 'file:///android_asset/richTextInput.html',
-// });
 
 const html = `
 <!DOCTYPE html>
@@ -80,36 +64,23 @@ const html = `
     const cntMaxLength = 15; // 最大长度为15
     const input = document.getElementById('input')
 
-    var savedRange, isInFocus;
-
-    function saveSelection() {
-      if (window.getSelection) //non IE Browsers
-      {
-        savedRange = window.getSelection().getRangeAt(0);
-      } else if (document.selection) //IE
-      {
-        savedRange = document.selection.createRange();
-      }
+    function log(msg) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'log',
+        msg: msg,
+      }))
     }
 
-    function restoreSelection() {
-      isInFocus = true;
-      document.getElementById("input").focus();
-      if (savedRange != null) {
-        if (window.getSelection) //non IE and there is already a selection
-        {
-          var s = window.getSelection();
-          if (s.rangeCount > 0)
-            s.removeAllRanges();
-          s.addRange(savedRange);
-        } else if (document.createRange) //non IE and no selection
-        {
-          window.getSelection().addRange(savedRange);
-        } else if (document.selection) //IE
-        {
-          savedRange.select();
-        }
-      }
+    // 获取焦点
+    function focusInput() {
+      input.focus()
+      const s = window.getSelection();
+      s.removeAllRanges();
+      const range = document.createRange()
+      let len = input.innerText.length
+      range.setStart(input.firstChild,len)
+      range.setEnd(input.firstChild,len)
+      s.addRange(range);
     }
 
     const tag1 = "<span style='color: rgb(255, 0, 0);'>"
@@ -120,6 +91,8 @@ const html = `
     input.addEventListener('input', (e) => {
       let html = e.target.innerHTML
       let text = e.target.innerText
+
+      // 富文本限制字数处理
       if (text.length > cntMaxLength) {
 
         let resultText = text.substr(0, 15)
@@ -145,7 +118,7 @@ const html = `
         html = html.substr(0, len) + (endInScope ? tag2 : '')
 
         e.target.innerHTML = html
-        input.blur()       
+        focusInput()      
       }
 
       window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -158,7 +131,7 @@ const html = `
     input.addEventListener('paste', handleMaxLength)
 
     function handleMaxLength(event) {
-      console.log('event:', event)
+      log('event:'+ JSON.string(event))
       if (this.innerText.length >= cntMaxLength && event.keyCode != 8) {
         event.preventDefault();
       }
@@ -166,7 +139,7 @@ const html = `
 
 
     function toggleRed(flag) {
-      console.log('toggleRed:', flag ? 'red' : null)
+      log('toggleRed:' + flag ? 'red' : null)
       document.execCommand('styleWithCSS', false, flag);
       document.execCommand('foreColor', false, flag ? 'rgb(255, 0, 0)' : 'rgb(0, 0, 0)');
     }
@@ -245,12 +218,17 @@ function RichTextModal(props, ref) {
                     source={{html: html}}
                     originWhitelist={['*']}
                     startInLoadingState
+                    keyboardDisplayRequiresUserAction={false}
                     scalesPageToFit
                     bounces={false}
                     ref={webviewRef}
                     onLoad={() => {
                         console.log('onLoad');
                         webviewRef.current?.injectJavaScript(`setInputValue('${richText.html}')`);
+                        webviewRef.current?.requestFocus?.();
+                        setTimeout(() => {
+                            webviewRef.current?.injectJavaScript(`focusInput()`);
+                        }, 200);
                     }}
                     onMessage={(event) => {
                         const data = event.nativeEvent.data;
