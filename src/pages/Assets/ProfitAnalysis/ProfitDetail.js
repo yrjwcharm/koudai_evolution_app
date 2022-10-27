@@ -43,7 +43,7 @@ const ProfitDetail = ({navigation, route}) => {
                                 onPress={() => {
                                     bottomModal.current.show();
                                 }}>
-                                <Text style={styles.title}>{title}</Text>
+                                <Text style={styles.title}>{rightTitle}</Text>
                             </TouchableOpacity>
                         </>
                     ),

@@ -15,8 +15,6 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useIsMounted} from '../../../../components/hooks/useIsMounted';
-
 const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [period, setPeriod] = useState('all');
