@@ -91,7 +91,14 @@ const ProfitDetail = ({navigation, route}) => {
                                 dispatch({type: 'updateType', payload: tabs[i].type});
                             }}>
                             {tabs.map((el, index) => {
-                                return <ProfitDistribution tabLabel={el.text} key={`${el + '' + index}`} />;
+                                return (
+                                    <ProfitDistribution
+                                        poid={poid}
+                                        fund_code={fund_code}
+                                        tabLabel={el.text}
+                                        key={`${el + '' + index}`}
+                                    />
+                                );
                             })}
                         </ScrollableTabView>
                     )}
