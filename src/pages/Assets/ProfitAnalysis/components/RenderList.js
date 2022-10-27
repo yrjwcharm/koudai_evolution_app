@@ -14,6 +14,7 @@ import {getProfitDetail} from '../services';
 import {useSelector} from 'react-redux';
 import {useJump} from '../../../../components/hooks';
 import EmptyData from '../../FixedInvestment/components/EmptyData';
+import Loading from '../../../Portfolio/components/PageLoading';
 const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const unitType = useSelector((state) => state.profitDetail.unitType);
@@ -90,44 +91,50 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     };
     return (
         <>
-            {bool ? (
-                <React.Fragment />
+            {loading ? (
+                <Loading color={Colors.btnColor} />
             ) : (
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={profitList}
-                    keyExtractor={(item, index) => item + index}
-                    ListHeaderComponent={
-                        <>
-                            {left && right && profitList.length != 0 && (
-                                <View style={styles.profitHeader}>
-                                    <View style={styles.profitHeaderLeft}>
-                                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => executeSort(right)}>
-                                        <View style={styles.profitHeaderRight}>
-                                            <Text style={styles.moneyText}>{right?.text}</Text>
-                                            <Image
-                                                source={
-                                                    isEmpty(right?.sort_type)
-                                                        ? require('../assets/sort.png')
-                                                        : right?.sort_type == 'desc'
-                                                        ? require('../assets/desc.png')
-                                                        : require('../assets/asc.png')
-                                                }
-                                            />
+                <>
+                    {bool ? (
+                        <React.Fragment />
+                    ) : (
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            data={profitList}
+                            keyExtractor={(item, index) => item + index}
+                            ListHeaderComponent={
+                                <>
+                                    {left && right && profitList.length != 0 && (
+                                        <View style={styles.profitHeader}>
+                                            <View style={styles.profitHeaderLeft}>
+                                                <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                                                <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => executeSort(right)}>
+                                                <View style={styles.profitHeaderRight}>
+                                                    <Text style={styles.moneyText}>{right?.text}</Text>
+                                                    <Image
+                                                        source={
+                                                            isEmpty(right?.sort_type)
+                                                                ? require('../assets/sort.png')
+                                                                : right?.sort_type == 'desc'
+                                                                ? require('../assets/desc.png')
+                                                                : require('../assets/asc.png')
+                                                        }
+                                                    />
+                                                </View>
+                                            </TouchableOpacity>
                                         </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                        </>
-                    }
-                    ListEmptyComponent={<EmptyData />}
-                    onEndReachedThreshold={0.5}
-                    refreshing={false}
-                    renderItem={renderItem}
-                />
+                                    )}
+                                </>
+                            }
+                            ListEmptyComponent={<EmptyData />}
+                            onEndReachedThreshold={0.5}
+                            refreshing={false}
+                            renderItem={renderItem}
+                        />
+                    )}
+                </>
             )}
         </>
     );
