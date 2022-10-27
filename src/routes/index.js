@@ -930,7 +930,11 @@ export default function AppStack() {
                 <Stack.Screen
                     name="ArticleCommentList"
                     component={ArticleCommentList}
-                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                    options={{
+                        headerShown: false,
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                        gestureDirection: 'horizontal',
+                    }}
                 />
                 <Stack.Screen name="VerifyCodeQA" component={VerifyCodeQA} options={{title: ''}} />
                 <Stack.Screen name="UserCommunication" component={UserCommunication} options={{title: ''}} />
@@ -1082,12 +1086,20 @@ export default function AppStack() {
                 <Stack.Screen
                     name="SpecialDetail"
                     component={SpecialDetail}
-                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                    options={{
+                        headerShown: false,
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                        gestureDirection: 'horizontal',
+                    }}
                 />
                 <Stack.Screen
                     name="CommonCommentList"
                     component={CommonCommentList}
-                    options={{headerShown: false, ...TransitionPresets.ModalSlideFromBottomIOS}}
+                    options={{
+                        headerShown: false,
+                        ...TransitionPresets.ModalSlideFromBottomIOS,
+                        gestureDirection: 'horizontal',
+                    }}
                 />
                 <Stack.Screen name="ToolListManage" component={ToolListManage} options={{headerShown: false}} />
                 <Stack.Screen name="PortfolioAssetList" component={PortfolioAssetList} options={{title: ''}} />
