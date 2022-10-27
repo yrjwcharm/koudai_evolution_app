@@ -599,7 +599,7 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
                                         if (type == 'addArticle') {
                                             handleClick('article');
                                         } else if (type == 'addProduct') {
-                                            handleClick('fund');
+                                            handleClick('all');
                                         } else {
                                             jump(url);
                                         }
