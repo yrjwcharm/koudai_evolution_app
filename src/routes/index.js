@@ -270,7 +270,6 @@ import AddProductStep1 from '~/pages/CreatorCenter/AddProductStep1'; // 添加�
 import AddProductStep2 from '~/pages/CreatorCenter/AddProductStep2'; // 添加产品步骤2
 
 // 专题创建
-import SpecialCreateEntry from '~/pages/CreatorCenter/Special/Create/SpecialCreateEntry'; // 专题创建入口
 import SpecialModifyBgImage from '~/pages/CreatorCenter/Special/Create/SpecialModifyBgImage.js'; // 专题创建-选择之前的图片
 
 import SpecialCreateBaseInfo from '~/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js'; // 专题创建-基础信息
@@ -1141,7 +1140,6 @@ export default function AppStack() {
                 <Stack.Screen name="AddProductStep1" component={AddProductStep1} options={{title: ''}} />
                 <Stack.Screen name="AddProductStep2" component={AddProductStep2} options={{title: ''}} />
                 {/* 专题创建编辑相关页面 */}
-                <Stack.Screen name="SpecialCreateEntry" component={SpecialCreateEntry} options={{headerShown: false}} />
                 <Stack.Screen
                     name="SpecailModifyContent"
                     component={SpecailModifyContent}
