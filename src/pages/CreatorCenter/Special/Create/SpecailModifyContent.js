@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 18:43:36
+ * @LastEditTime: 2022-10-27 17:58:16
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
- * @Description: 精选内容
+ * @Description: 创建专题-精选内容编辑
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';

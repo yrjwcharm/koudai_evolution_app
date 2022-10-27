@@ -1,9 +1,9 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 20:12:04
+ * @LastEditTime: 2022-10-27 17:57:42
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
- * @Description:
+ * @Description: 创建专题 - 基础信息
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,31 +11,24 @@ import {
     View,
     StyleSheet,
     Text,
-    Platform,
     TouchableOpacity,
     TextInput,
     ScrollView,
     ImageBackground,
     Pressable,
-    PermissionsAndroid,
-    DeviceEventEmitter,
-    BackHandler,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
 import NavBar from '~/components/NavBar';
-import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {Style, Colors, Space} from '~/common/commonStyle';
+import {Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
-import {getStashBaseInfo, saveStashBaseInfo, uploadImage} from './services';
+import {getStashBaseInfo, saveStashBaseInfo} from './services';
 import LoadingTips from '~/components/LoadingTips';
 import pickerUploadImg from '~/utils/pickerUploadImg';
 import {useFocusEffect} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/AntDesign';
-import style from '~/pages/Assets/ProfitAnalysis/styles/style';
 
 function Tag(props) {
     let {text, onPress, onClose} = props;

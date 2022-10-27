@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 15:23:06
+ * @LastEditTime: 2022-10-27 17:52:38
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -10,7 +10,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {deviceHeight, px} from '~/utils/appUtil';
+import {px} from '~/utils/appUtil';
 
 import bellWhite from '~/assets/img/creatorCenter/bell-white.png';
 import bellBlack from '~/assets/img/creatorCenter/bell-black.png';

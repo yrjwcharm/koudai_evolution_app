@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-19 17:45:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 18:38:43
+ * @LastEditTime: 2022-10-27 18:09:54
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/services.js
  * @Description:
  */
@@ -30,3 +30,6 @@ export const saveRecommendInfo = (params = {}) => http.post('/ss_manage/rec/save
 
 /** 推广卡片-产品选择 */
 export const getProductList = (params = {}) => http.get('/ss_manage/rec/products/20221010', params, false);
+
+/** 专题详情 */
+export const getStashSpeical = (params = {}) => http.get('/products/fund/index/20220901', params);

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 14:40:42
+ * @LastEditTime: 2022-10-27 18:00:57
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -10,11 +10,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Platform, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Modal, PageModal, BottomModal, SelectModal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
-import {Style, Colors, Space, Font} from '~/common/commonStyle';
+import {px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Modal, PageModal} from '~/components/Modal';
+import {Style, Colors, Font} from '~/common/commonStyle';
 import {getCommentList, addComment} from './services';
 import {Button} from '~/components/Button';
 import http from '~/services';
@@ -172,7 +171,6 @@ export default function SpecailModifyComment({navigation, route}) {
     const [loading, setLoading] = useState(true);
 
     const commentModalRef = useRef(null);
-    const inputRef = useRef(null);
 
     const [activeTab, setActiveTab] = useState(0);
     const [page, setPage] = useState(1);

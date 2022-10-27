@@ -1,19 +1,18 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 11:08:24
+ * @LastEditTime: 2022-10-27 18:04:09
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ImageBackground, PermissionsAndroid, Platform} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
-import {isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useJump} from '~/components/hooks';
-import Radio from '~/components/Radio.js';
 
 import {getRecommendInfo, getRecommendProductInfo, saveRecommendInfo} from './services';
 import pickerUploadImg from '~/utils/pickerUploadImg';

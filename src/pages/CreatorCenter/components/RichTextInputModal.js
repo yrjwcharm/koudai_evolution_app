@@ -1,34 +1,18 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:48:57
+ * @LastEditTime: 2022-10-27 17:51:45
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-    View,
-    StyleSheet,
-    SectionList,
-    Text,
-    TouchableOpacity,
-    TextInput,
-    FlatList,
-    Platform,
-    TouchableHighlight,
-} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
-import {deviceHeight, deviceWidth, px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
+import {BottomModal} from '~/components/Modal';
 import {WebView as RNWebView} from 'react-native-webview';
-
-// const html = Platform.select({
-//     ios: require('~/assets/html/richTextInput.html'),
-//     android: 'file:///android_asset/richTextInput.html',
-// });
 
 const html = `
 <!DOCTYPE html>

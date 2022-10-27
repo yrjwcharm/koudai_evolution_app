@@ -1,22 +1,21 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 12:01:03
+ * @LastEditTime: 2022-10-27 17:58:03
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
- * @Description: 修改内容排序
+ * @Description: 创建专题-内容编辑-修改内容排序
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import NavBar from '~/components/NavBar';
 import {Colors, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
+import {deviceHeight, px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {Modal} from '~/components/Modal';
 
 export default function SpecailSortContent({navigation, route}) {
     const {items = [], changeCallBack} = route.params || {};
