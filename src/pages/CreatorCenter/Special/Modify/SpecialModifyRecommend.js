@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-26 20:24:33
+ * @LastEditTime: 2022-10-27 11:08:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -43,7 +43,7 @@ function RecommendCell(props) {
 
 export default function SpecialModifyRecommend({route, navigation}) {
     const jump = useJump();
-    const subject_id = route?.params?.subject_id || 1043;
+    const subject_id = route?.params?.subject_id || 1045;
     console.log('SpecialModifyRecommend:', route?.params);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState();
@@ -111,7 +111,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     onBack: (its) => {
                         tmpItems.current = its;
                     },
-                    ...(route?.params ?? {}),
+                    ...(route?.params ?? {subject_id}),
                     type: 2,
                     items: !withOld ? [] : items,
                 },

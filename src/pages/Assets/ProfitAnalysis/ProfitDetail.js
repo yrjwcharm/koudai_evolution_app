@@ -55,6 +55,7 @@ const ProfitDetail = ({navigation, route}) => {
         })();
     }, []);
     useEffect(() => {
+        dispatch({type: 'updateType', payload: initType});
         init();
     }, [init]);
     const setLoadingFn = useCallback((loading) => {
@@ -82,7 +83,14 @@ const ProfitDetail = ({navigation, route}) => {
                                 dispatch({type: 'updateType', payload: tabsRef.current[i].type});
                             }}>
                             {tabsRef.current.map((el, index) => {
-                                return <ProfitDistribution tabLabel={el.text} key={`${el + '' + index}`} />;
+                                return (
+                                    <ProfitDistribution
+                                        poid={poid}
+                                        fund_code={fund_code}
+                                        tabLabel={el.text}
+                                        key={`${el + '' + index}`}
+                                    />
+                                );
                             })}
                         </ScrollableTabView>
                     )}

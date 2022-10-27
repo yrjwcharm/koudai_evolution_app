@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 17:32:40
+ * @LastEditTime: 2022-10-27 15:23:06
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
 
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -15,10 +15,7 @@ import {deviceHeight, px} from '~/utils/appUtil';
 import bellWhite from '~/assets/img/creatorCenter/bell-white.png';
 import bellBlack from '~/assets/img/creatorCenter/bell-black.png';
 import {useFocusEffect} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 import {Colors, Font, Style} from '~/common/commonStyle';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '~/components/hooks';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {getData, getList, getUnRead} from './services.js';
@@ -152,6 +149,8 @@ export default function CreatorAuthHome(props) {
         (idx) => {
             if (activeTab === idx) return;
             setHasMore(true);
+            setList([]);
+            setListHeader({});
             setActiveTab(idx);
             let item = data.items[idx];
             getListData(item, 1);
@@ -251,14 +250,16 @@ export default function CreatorAuthHome(props) {
                             <LoadingTips color="#ddd" />
                         </View>
                     ) : (
-                        <FollowTable
-                            style={[styles.table, {}]}
-                            data={list}
-                            headerData={listHeader}
-                            columns={columns}
-                            scrollY={px(100)}
-                            stickyHeaderY={px(41)}
-                        />
+                        <View style={styles.tableWrap}>
+                            <FollowTable
+                                style={[styles.table, {}]}
+                                data={list}
+                                headerData={listHeader}
+                                columns={columns}
+                                scrollY={px(100)}
+                                stickyHeaderY={px(41)}
+                            />
+                        </View>
                     )}
 
                     {listLoadingMore && (
@@ -355,10 +356,13 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: '#fff',
     },
-    table: {
-        marginTop: px(20),
+    tableWrap: {
+        paddingLeft: px(16),
+
         flex: 1,
-        paddingBottom: px(30),
+    },
+    table: {
+        flex: 1,
     },
 
     tabWrap: {

@@ -40,7 +40,7 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo((poid, fund_code) => {
+const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
     const [data, setData] = useState({});
     const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();
@@ -152,7 +152,14 @@ const ProfitDistribution = React.memo((poid, fund_code) => {
                                 }}>
                                 {tabsRef.current.map((tab, index) => {
                                     const Com = comObj[tab.text];
-                                    return <Com tabLabel={tab.text} key={`tab${index}`} />;
+                                    return (
+                                        <Com
+                                            poid={poid}
+                                            fund_code={fund_code}
+                                            tabLabel={tab.text}
+                                            key={`tab${index}`}
+                                        />
+                                    );
                                 })}
                             </ScrollableTabView>
                         </View>

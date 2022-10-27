@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 15:00:01
+ * @LastEditTime: 2022-10-27 14:40:42
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -99,7 +99,7 @@ const IconMap = {
     like: require('~/assets/img/special/like.png'),
     like2: require('~/assets/img/special/like-1.png'),
     comment: require('~/assets/img/special/comment.png'),
-    del: require('~/components/IM/app/source/image/delete.png'),
+    del: require('~/assets/img/special/trash.png'),
     recommend: require('~/assets/img/special/recommend.png'),
     recommend2: require('~/assets/img/special/recommend-1.png'),
 };
@@ -301,7 +301,7 @@ export default function SpecailModifyComment({navigation, route}) {
     const Footer = () => {
         if (!data || data.length === 0 || refreshing || hasMore) return null;
         return (
-            <View style={{width: '100%', height: px(40), ...Style.flexCenter}}>
+            <View style={{width: '100%', paddingVertical: px(20), ...Style.flexCenter}}>
                 <Text style={{color: Colors.lightGrayColor}}>没有更多了</Text>
             </View>
         );
@@ -490,8 +490,8 @@ const styles = StyleSheet.create({
         paddingVertical: px(1),
     },
     commentItem_actionImg: {
-        height: px(8),
-        width: px(8),
+        height: px(16),
+        width: px(16),
     },
     commentItem_actionImg_recommend: {
         height: px(16),
@@ -524,7 +524,6 @@ const styles = StyleSheet.create({
 
     footer: {
         paddingHorizontal: px(16),
-        marginBottom: 20,
         width: '100%',
     },
     footer_textWrap: {
