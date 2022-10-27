@@ -50,16 +50,6 @@ const YearProfit = ({poid, fund_code}) => {
                             (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
                         );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                        let barCharData = arr.map((el) => {
-                            return {date: el.day + '年', value: parseFloat(el.profit)};
-                        });
-                        setChart({
-                            label: [
-                                {name: '时间', val: profit_data_list[index]?.unit_key},
-                                {name: '收益', val: profit_data_list[index]?.value},
-                            ],
-                            chart: barCharData,
-                        });
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
