@@ -119,6 +119,7 @@ const WriteArticle = ({article, setArticle}) => {
         },
         // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
+    const [height, setHeight] = useState(px(300));
     const scrollView = useRef();
     const chooseModal = useRef();
 
@@ -135,7 +136,10 @@ const WriteArticle = ({article, setArticle}) => {
     };
 
     const onCursorPosition = (y) => {
-        scrollView.current?.scrollTo({animated: false, y});
+        scrollView.current?.scrollTo({
+            animated: false,
+            y: y < Platform.select({android: px(280), ios: px(300)}) ? 0 : y + px(100),
+        });
     };
 
     const handleFirstLevelOps = ({action, index}) => {
@@ -241,6 +245,7 @@ const WriteArticle = ({article, setArticle}) => {
             <ScrollView
                 bounces={false}
                 keyboardShouldPersistTaps="handled"
+                nestedScrollEnabled
                 ref={scrollView}
                 scrollIndicatorInsets={{right: 1}}
                 style={{paddingHorizontal: Space.padding}}>
@@ -287,7 +292,7 @@ const WriteArticle = ({article, setArticle}) => {
                         editorStyle={{
                             caretColor: Colors.brandColor,
                             color: Colors.defaultColor,
-                            contentCSSText: `padding: 0;`,
+                            contentCSSText: `padding: 0; min-height: ${px(300)}px;`,
                             initialCSSText: `
                                 h2 {
                                     font-size: 18px;
@@ -330,12 +335,17 @@ const WriteArticle = ({article, setArticle}) => {
                         }}
                         onCursorPosition={onCursorPosition}
                         onFocus={() => setEditorIsFocused(true)}
+                        onHeightChange={(h) => {
+                            setHeight(h + px(40));
+                        }}
                         placeholder="请输入正文"
                         ref={editor}
                         showsVerticalScrollIndicator={false}
-                        style={{minHeight: px(300), marginBottom: px(100)}}
+                        style={{flex: 1, minHeight: height}}
+                        useContainer
                     />
                 </TouchableWithoutFeedback>
+                <View style={{height: px(100)}} />
             </ScrollView>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 {fontActive && (
