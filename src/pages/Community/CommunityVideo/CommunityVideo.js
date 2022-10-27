@@ -49,7 +49,7 @@ const CommunityVideo = ({navigation, route}) => {
     const [totalCount, setTotalCount] = useState(0);
     const [height, setHeight] = useState(0);
     const getData = async () => {
-        let res = await getVideoList({muid, type, community_id, video_id});
+        let res = await getVideoList(route?.params);
         setVideoData(res.result);
     };
     const data = [
