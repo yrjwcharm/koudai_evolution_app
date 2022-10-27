@@ -6,7 +6,7 @@
 
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
-import {delMille, isEmpty} from '../../../../utils/appUtil';
+import {delMille, isEmpty, isIphoneX} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {DeviceEventEmitter, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
@@ -92,39 +92,41 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
-                <>
-                    {left && right && profitList.length != 0 && (
-                        <View style={styles.profitHeader}>
-                            <View style={styles.profitHeaderLeft}>
-                                <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                                <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                            </View>
-                            <TouchableOpacity onPress={() => executeSort(right)}>
-                                <View style={styles.profitHeaderRight}>
-                                    <Text style={styles.moneyText}>{right?.text}</Text>
-                                    <Image
-                                        source={
-                                            isEmpty(right?.sort_type)
-                                                ? require('../assets/sort.png')
-                                                : right?.sort_type == 'desc'
-                                                ? require('../assets/desc.png')
-                                                : require('../assets/asc.png')
-                                        }
-                                    />
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={profitList || []}
+                    keyExtractor={(item, index) => item + index}
+                    ListHeaderComponent={
+                        <>
+                            {left && right && profitList.length != 0 && (
+                                <View style={styles.profitHeader}>
+                                    <View style={styles.profitHeaderLeft}>
+                                        <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
+                                        <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => executeSort(right)}>
+                                        <View style={styles.profitHeaderRight}>
+                                            <Text style={styles.moneyText}>{right?.text}</Text>
+                                            <Image
+                                                source={
+                                                    isEmpty(right?.sort_type)
+                                                        ? require('../assets/sort.png')
+                                                        : right?.sort_type == 'desc'
+                                                        ? require('../assets/desc.png')
+                                                        : require('../assets/asc.png')
+                                                }
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    <FlatList
-                        windowSize={300}
-                        data={profitList || []}
-                        keyExtractor={(item, index) => item + index}
-                        ListEmptyComponent={<EmptyData />}
-                        onEndReachedThreshold={0.5}
-                        refreshing={false}
-                        renderItem={renderItem}
-                    />
-                </>
+                            )}
+                        </>
+                    }
+                    ListEmptyComponent={<EmptyData />}
+                    onEndReachedThreshold={0.5}
+                    refreshing={false}
+                    renderItem={renderItem}
+                />
             )}
         </>
     );
