@@ -23,6 +23,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [bool, setBool] = useState(false);
     const jump = useJump();
     useEffect(() => {
         (async () => {
@@ -39,6 +40,8 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
                 setProfitList(data_list);
+                let bool = data_list.every((el) => el?.profit == 0);
+                setBool(bool);
                 setLoading(false);
                 DeviceEventEmitter.emit('sendTrigger', button);
             }
@@ -91,6 +94,8 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
+            ) : bool ? (
+                <></>
             ) : (
                 <FlatList
                     showsVerticalScrollIndicator={false}
