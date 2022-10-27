@@ -4,7 +4,7 @@
  * @Description: 基金首页
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {ActivityIndicator, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,6 +15,8 @@ import {AlbumCard, ProductList} from '~/components/Product';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {getPageData} from './services';
+import http from '~/services';
+import LogView from '~/components/LogView';
 
 /** @name 顶部菜单 */
 const TopMenu = ({data = []}) => {
@@ -42,12 +44,18 @@ const TopMenu = ({data = []}) => {
 };
 
 const Index = ({navigation}) => {
-    const dimensions = useWindowDimensions();
     const jump = useJump();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
-    const {nav, popular_subjects, subjects = []} = data;
-    const listLayout = useRef([]);
+    const {nav, popular_subjects} = data;
+    const [subjectLoading, setSubjectLoading] = useState(false); // 显示加载动画
+    const [subjectData, setSubjectsData] = useState({});
+    const [subjectList, setSubjectList] = useState([]);
+
+    const pageRef = useRef(1);
+    const subjectToBottomHeight = useRef(0);
+
+    const subjectLoadingRef = useRef(false); // 为了流程控制
 
     const getData = () => {
         getPageData()
@@ -75,7 +83,13 @@ const Index = ({navigation}) => {
                             ) : null,
                         title,
                     });
+                    setData({});
                     setData(res.result);
+
+                    // 获取专题
+                    setSubjectList([]);
+                    pageRef.current = 1;
+                    getSubjects(res.result?.page_type);
                 }
             })
             .finally(() => {
@@ -83,15 +97,41 @@ const Index = ({navigation}) => {
             });
     };
 
-    const handlerShowLog = (y) => {
-        listLayout.current.forEach((item, index) => {
-            const {id, plateid, rec_json, start, status} = item;
-            if (status && y >= start) {
-                item.status = false;
-                global.LogTool({ctrl: id, event: 'rec_show', plateid, rec_json});
+    const getSubjects = (page_type) => {
+        if (subjectLoadingRef.current) return;
+        setSubjectLoading(true);
+        subjectLoadingRef.current = true;
+        http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++}).then((res) => {
+            if (res.code === '000000') {
+                setSubjectLoading(false);
+                subjectLoadingRef.current = false;
+                setSubjectsData(res.result);
+                setSubjectList((val) => val.concat(res.result.items || []));
+                global.LogTool({
+                    event: 'rec_show',
+                    plateid: res.result.plateid,
+                    rec_json: res.result.rec_json,
+                });
             }
         });
     };
+
+    const proScroll = useCallback(
+        (e, cHeight, cScrollHeight) => {
+            let resetHeight = cScrollHeight - cHeight;
+            let y = e.nativeEvent.contentOffset.y;
+
+            if (
+                !subjectLoading &&
+                subjectList?.[0] &&
+                subjectData?.has_more &&
+                resetHeight - y <= subjectToBottomHeight.current + 20
+            ) {
+                getSubjects(data.page_type);
+            }
+        },
+        [subjectLoading, subjectList, subjectData, data]
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -102,12 +142,8 @@ const Index = ({navigation}) => {
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
-            <ScrollView
-                onScroll={({
-                    nativeEvent: {
-                        contentOffset: {y},
-                    },
-                }) => handlerShowLog(y + dimensions.height)}
+            <LogView.Wrapper
+                onScroll={proScroll}
                 refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
                 scrollEventThrottle={16}
                 scrollIndicatorInsets={{right: 1}}
@@ -118,44 +154,62 @@ const Index = ({navigation}) => {
                     </LinearGradient>
                 ) : null}
                 {popular_subjects ? (
-                    <View style={styles.swiperContainer}>
-                        <View
-                            onLayout={() =>
-                                global.LogTool({
-                                    event: 'rec_show',
-                                    oid: popular_subjects.items?.[0]?.product_id,
+                    <LogView.Item
+                        style={styles.swiperContainer}
+                        logKey={popular_subjects?.type}
+                        handler={() => {
+                            global.LogTool({
+                                event: 'rec_show',
+                                plateid: popular_subjects.plateid,
+                                rec_json: popular_subjects.rec_json,
+                            });
+                        }}>
+                        <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
+                            <ProductList
+                                data={popular_subjects.items}
+                                type={popular_subjects?.type}
+                                logParams={{
+                                    event: 'rec_click',
                                     plateid: popular_subjects.plateid,
                                     rec_json: popular_subjects.rec_json,
-                                })
-                            }
-                            style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
-                            <ProductList data={popular_subjects.items} type={popular_subjects.type} />
+                                }}
+                                slideLogParams={{
+                                    event: 'rec_slide',
+                                    plateid: popular_subjects.plateid,
+                                    rec_json: popular_subjects.rec_json,
+                                }}
+                            />
                         </View>
-                    </View>
+                    </LogView.Item>
                 ) : null}
-                {subjects?.map?.((subject, index) => (
-                    <View
-                        onLayout={({
-                            nativeEvent: {
-                                layout: {x, y, width, height},
-                            },
-                        }) => {
-                            listLayout.current[index] = {
-                                id: subject.subject_id,
-                                plateid: subject.plateid,
-                                rec_json: subject.rec_json,
-                                start: y + height / 2,
-                                status: true,
-                            };
-                            handlerShowLog(dimensions.height);
-                        }}
-                        key={subject.subject_id}
-                        style={styles.bottomContainer}>
-                        <AlbumCard {...subject} />
-                    </View>
-                ))}
-                <BottomDesc />
-            </ScrollView>
+                {subjectList?.[0] ? (
+                    <>
+                        <View style={{backgroundColor: Colors.bgColor}}>
+                            {subjectList?.map?.((subject, index, ar) => (
+                                <View
+                                    key={subject.id + index}
+                                    style={{marginTop: px(12), paddingHorizontal: Space.padding}}>
+                                    <AlbumCard {...subject} />
+                                </View>
+                            ))}
+                        </View>
+                        {subjectLoading ? (
+                            <View style={{paddingVertical: px(20)}}>
+                                <ActivityIndicator />
+                            </View>
+                        ) : null}
+                        {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
+                    </>
+                ) : null}
+                {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
+                <View
+                    style={{backgroundColor: '#f5f6f8'}}
+                    onLayout={(e) => {
+                        subjectToBottomHeight.current = e.nativeEvent.layout.height;
+                    }}>
+                    <BottomDesc />
+                </View>
+            </LogView.Wrapper>
         </View>
     ) : (
         <Loading />
@@ -191,10 +245,6 @@ const styles = StyleSheet.create({
     },
     swiperContainer: {
         paddingHorizontal: Space.marginAlign,
-    },
-    bottomContainer: {
-        paddingTop: px(12),
-        paddingHorizontal: Space.padding,
     },
     dotStyle: {
         borderRadius: px(5),

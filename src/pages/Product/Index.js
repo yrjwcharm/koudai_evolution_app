@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 15:03:09
+ * @LastEditTime: 2022-10-27 16:14:53
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -146,6 +146,11 @@ const Product = ({navigation}) => {
                 setSubjectsData(res.result);
                 const newList = res.result.items || [];
                 setSubjectList((val) => (type === 'init' ? newList : val.concat(newList)));
+                global.LogTool({
+                    event: 'rec_show',
+                    plateid: res.result.plateid,
+                    rec_json: res.result.rec_json,
+                });
             }
         });
     };
@@ -488,7 +493,6 @@ const Product = ({navigation}) => {
                                             handler={() => {
                                                 global.LogTool({
                                                     event: 'rec_show',
-                                                    ctrl: proData?.popular_subject.subject_id,
                                                     plateid: proData?.popular_subject.plateid,
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 });
@@ -503,7 +507,11 @@ const Product = ({navigation}) => {
                                                 type={proData?.popular_subject.type}
                                                 logParams={{
                                                     event: 'rec_click',
-                                                    ctrl: proData?.popular_subject.subject_id,
+                                                    plateid: proData?.popular_subject.plateid,
+                                                    rec_json: proData?.popular_subject.rec_json,
+                                                }}
+                                                slideLogParams={{
+                                                    event: 'rec_slide',
                                                     plateid: proData?.popular_subject.plateid,
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 }}
@@ -548,21 +556,9 @@ const Product = ({navigation}) => {
                                     <>
                                         <View style={{backgroundColor: Colors.bgColor}}>
                                             {subjectList?.map?.((subject, index, ar) => (
-                                                <LogView.Item
-                                                    logKey={subject.subject_id}
-                                                    handler={() => {
-                                                        let subject = subjectList?.[index];
-                                                        global.LogTool({
-                                                            event: 'rec_show',
-                                                            ctrl: subject.subject_id,
-                                                            plateid: subject.plateid,
-                                                            rec_json: subject.rec_json,
-                                                        });
-                                                    }}
-                                                    key={subject.subject_id + index}
-                                                    style={{marginTop: px(12)}}>
+                                                <View key={subject.subject_id + index} style={{marginTop: px(12)}}>
                                                     <AlbumCard {...subject} />
-                                                </LogView.Item>
+                                                </View>
                                             ))}
                                         </View>
                                         {subjectLoading ? (

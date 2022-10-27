@@ -76,7 +76,7 @@ const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_pr
     }
 };
 
-const ProductList = ({data = [], logParams, type = 'default'}) => {
+const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) => {
     const jump = useJump();
 
     /** @name 默认卡片 */
@@ -499,7 +499,13 @@ const ProductList = ({data = [], logParams, type = 'default'}) => {
                             underlineWidth={px(12)}
                             underlineStyle={{bottom: px(8)}}
                         />
-                    )}>
+                    )}
+                    onChangeTab={({i}) => {
+                        if (i > 0) {
+                            slideLogParams &&
+                                global.LogTool({...slideLogParams, oid: data[i].product_id, ctrl: data[i].tab_name});
+                        }
+                    }}>
                     {data.map(renderTabItem)}
                 </ScrollableTabView>
             );
