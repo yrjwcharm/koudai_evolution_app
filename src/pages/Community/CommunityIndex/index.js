@@ -377,6 +377,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const waterfallFlow = useRef();
+    const waterfallWrapper = useRef();
     const [resource_private_tip, setTip] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -397,7 +398,8 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     };
 
     const refresh = () => {
-        waterfallFlow.current?.scrollToOffset({animated: false, offset: 0});
+        waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
+        waterfallWrapper.current?.clear?.();
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
@@ -419,7 +421,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
     /** @name 渲染底部 */
     const renderFooter = () => {
-        return data?.length > 0 ? (
+        return data?.length > 0 && !refreshing ? (
             <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
                 {hasMore ? '正在加载...' : '我们是有底线的...'}
             </Text>
@@ -433,27 +435,26 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     }, [page]);
 
     return data?.length > 0 ? (
-        <LinearGradient colors={[wrapper === 'Recommend' ? Colors.bgColor : '#fff', Colors.bgColor]} style={{flex: 1}}>
-            <WaterFlow
-                columnFlatListProps={{
-                    style: {marginHorizontal: px(5) / 2},
-                }}
-                columnsFlatListProps={{
-                    ListFooterComponent: renderFooter,
-                    onEndReached,
-                    onEndReachedThreshold: 0.99,
-                    onRefresh: () => (page > 1 ? setPage(1) : init()),
-                    ref: waterfallFlow,
-                    refreshing,
-                    style: {paddingHorizontal: px(5) / 2, top: -px(5)},
-                    ...rest,
-                }}
-                data={data}
-                keyForItem={(item) => item.title + item.id}
-                numColumns={2}
-                renderItem={renderItem}
-            />
-        </LinearGradient>
+        <WaterFlow
+            columnFlatListProps={{
+                style: {marginHorizontal: px(5) / 2, top: -px(5)},
+            }}
+            columnsFlatListProps={{
+                ListFooterComponent: renderFooter,
+                onEndReached,
+                onEndReachedThreshold: 0.1,
+                onRefresh: () => (page > 1 ? setPage(1) : init()),
+                ref: waterfallFlow,
+                refreshing,
+                style: {paddingHorizontal: px(5) / 2},
+                ...rest,
+            }}
+            data={data}
+            keyForItem={(item) => item.title + item.id}
+            numColumns={2}
+            ref={waterfallWrapper}
+            renderItem={renderItem}
+        />
     ) : (
         <View style={wrapper === 'Recommend' ? [Style.flexCenter, {flex: 1}] : {paddingTop: px(280)}}>
             {loading ? (

@@ -3,7 +3,7 @@ import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'rea
 import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';
 import Picker from 'react-native-picker';
-import Feather from 'react-native-vector-icons/Feather';
+import arrowRight from '~/assets/personal/arrowRight.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
@@ -107,7 +107,7 @@ const FormItem = ({data, onChange, setShowMask}) => {
                                 <>
                                     {_label || value ? <HTML html={_label || value} style={styles.itemLabel} /> : null}
                                     {type === 'text' ? null : (
-                                        <Feather color={Colors.defaultColor} name="chevron-right" size={18} />
+                                        <Image source={arrowRight} style={{width: px(12), height: px(12)}} />
                                     )}
                                 </>
                             );
@@ -207,8 +207,8 @@ const FormItem = ({data, onChange, setShowMask}) => {
 
 const styles = StyleSheet.create({
     itemLabel: {
-        fontSize: Font.textH2,
-        lineHeight: px(20),
+        fontSize: Font.textH3,
+        lineHeight: px(17),
         color: Colors.descColor,
     },
     tipsIcon: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
         height: px(14),
     },
     inputStyle: {
-        fontSize: Font.textH2,
+        fontSize: Font.textH3,
         lineHeight: px(16),
         color: Colors.defaultColor,
         minWidth: px(100),

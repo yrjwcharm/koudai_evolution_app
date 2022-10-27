@@ -57,10 +57,9 @@ export default YellowNotice;
 const styles = StyleSheet.create({
     systemMsgContainer: {
         backgroundColor: '#FFF5E5',
-        paddingHorizontal: Space.marginAlign,
-        marginHorizontal: px(16),
-        marginTop: px(8),
-        marginBottom: px(4),
+        paddingHorizontal: px(12),
+        marginHorizontal: Space.marginAlign,
+        marginTop: px(12),
         borderRadius: px(6),
     },
     systemMsgText: {

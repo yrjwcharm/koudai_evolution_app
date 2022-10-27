@@ -25,7 +25,7 @@ import GuideTips from '~/components/GuideTips';
 import {useJump} from '~/components/hooks';
 import Mask from '~/components/Mask';
 import {Modal} from '~/components/Modal';
-import Notice from '~/components/Notice';
+import Notice from '~/components/YellowNotice';
 import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import ScrollTabbar from '~/components/ScrollTabbar';
@@ -550,11 +550,8 @@ const RenderChart = ({data = {}}) => {
                                         )}
                                     </TouchableOpacity>
                                     {tips ? (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            onPress={() => showTips(tips)}
-                                            style={{marginLeft: px(4)}}>
-                                            <Image source={tip} style={{width: px(12), height: px(12)}} />
+                                        <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(tips)}>
+                                            <Image source={tip} style={{width: px(16), height: px(16)}} />
                                         </TouchableOpacity>
                                     ) : null}
                                 </View>
@@ -652,8 +649,11 @@ const BuyMode = ({data = {}}) => {
                 </View>
                 {button?.text ? (
                     <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={Style.flexRow}>
-                        <Text style={[styles.desc, {color: Colors.descColor}]}>{button.text}</Text>
-                        <AntDesign color={Colors.descColor} name="right" size={px(12)} />
+                        <Text style={[styles.desc, {marginRight: px(2), color: Colors.descColor}]}>{button.text}</Text>
+                        <Image
+                            source={require('~/assets/personal/arrowRight.png')}
+                            style={{width: px(12), height: px(12)}}
+                        />
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -1032,7 +1032,7 @@ const Index = ({navigation, route, setLoading}) => {
                                                 {index === 0 ? null : (
                                                     <View style={[styles.divider, {marginVertical: 0}]} />
                                                 )}
-                                                <View style={{height: px(60)}}>
+                                                <View style={{height: px(50)}}>
                                                     <FormItem
                                                         data={item}
                                                         onChange={(val) => {
