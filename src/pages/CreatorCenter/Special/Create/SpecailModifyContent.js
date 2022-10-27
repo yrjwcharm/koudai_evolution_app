@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:58:16
+ * @LastEditTime: 2022-10-27 18:29:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -199,7 +199,7 @@ function ContentSearchModal(props) {
         <View style={styles.searchModal}>
             <View style={[styles.searchWrap]}>
                 <FastImage
-                    source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/pk-search.png'}}
+                    source={require('~/assets/img/special/pk-search.png')}
                     style={styles.searchWrap_searchIcon}
                 />
                 <TextInput

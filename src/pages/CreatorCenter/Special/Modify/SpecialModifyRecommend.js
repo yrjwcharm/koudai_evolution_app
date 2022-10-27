@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:04:09
+ * @LastEditTime: 2022-10-27 18:26:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -26,11 +26,11 @@ function RecommendCell(props) {
         <TouchableOpacity style={styles.cellWrap} onPress={() => onSelect(type)}>
             <View style={[styles.cellWrap_header]}>
                 <FastImage
-                    source={{
-                        uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
-                            curType === type ? 'check' : 'uncheck'
-                        }.png`,
-                    }}
+                    source={
+                        curType === type
+                            ? require('~/assets/img/special/select-1.png')
+                            : require('~/assets/img/special/select.png')
+                    }
                     style={{width: px(16), height: px(16)}}
                 />
                 <Text style={styles.cellWrap_title}>{title}</Text>

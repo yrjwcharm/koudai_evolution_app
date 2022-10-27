@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:58:03
+ * @LastEditTime: 2022-10-27 18:27:32
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 创建专题-内容编辑-修改内容排序
  */
@@ -50,11 +50,11 @@ export default function SpecailSortContent({navigation, route}) {
                     style={[styles.rowItem, Style.flexBetween, {backgroundColor: isActive ? '#ddd' : '#fff'}]}>
                     <TouchableOpacity style={styles.titleWrap} onPress={() => toggle(index)}>
                         <FastImage
-                            source={{
-                                uri: `http://static.licaimofang.com/wp-content/uploads/2022/10/${
-                                    item.check ? 'check' : 'uncheck'
-                                }.png`,
-                            }}
+                            source={
+                                item.check
+                                    ? require('~/assets/img/special/select-1.png')
+                                    : require('~/assets/img/special/select.png')
+                            }
                             style={{width: px(16), height: px(16)}}
                         />
                         <Text style={styles.title} numberOfLines={1}>
@@ -62,7 +62,7 @@ export default function SpecailSortContent({navigation, route}) {
                         </Text>
                     </TouchableOpacity>
                     <FastImage
-                        source={{uri: 'http://static.licaimofang.com/wp-content/uploads/2022/10/menu-line.png'}}
+                        source={require('~/assets/img/special/menu-line.png')}
                         style={{width: px(24), height: px(24), marginLeft: px(20)}}
                     />
                 </TouchableOpacity>
