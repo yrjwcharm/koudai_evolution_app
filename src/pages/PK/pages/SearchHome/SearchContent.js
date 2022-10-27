@@ -74,9 +74,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                 onPress={() => jump(data.url)}
                 activeOpacity={0.9}>
                 <View style={{maxWidth: '100%', flex: 1}}>
-                    <Text style={styles.title} numberOfLines={1}>
-                        {data?.title}
-                    </Text>
+                    {data?.title && <RenderHtml style={styles.title} numberOfLines={1} html={data?.title} />}
                     <Text style={styles.rateDesc} numberOfLines={1}>
                         {data?.desc}
                     </Text>
