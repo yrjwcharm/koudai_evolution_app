@@ -304,11 +304,13 @@ export const CommunityFollowCard = ({
                                 activeOpacity={0.8}
                                 onPress={() => jump(author.url)}
                                 style={Style.flexRow}>
-                                {type === 9 && live_status === 2 ? (
-                                    <AnimateAvatar source={author?.avatar} style={styles.avatar} />
-                                ) : (
-                                    <Image source={{uri: author?.avatar}} style={styles.avatar} />
-                                )}
+                                {author?.avatar ? (
+                                    type === 9 && live_status === 2 ? (
+                                        <AnimateAvatar source={author.avatar} style={styles.avatar} />
+                                    ) : (
+                                        <Image source={{uri: author.avatar}} style={styles.avatar} />
+                                    )
+                                ) : null}
                                 <View>
                                     <Text style={styles.subTitle}>{author?.nickname}</Text>
                                     <Text style={[styles.smText, {marginTop: px(2)}]}>{author_desc}</Text>
@@ -398,7 +400,7 @@ export const CommunityFollowCard = ({
                         {author?.nickname ? (
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                 <View style={Style.flexRow}>
-                                    {author.avatar ? (
+                                    {author?.avatar ? (
                                         type === 9 && live_status === 2 ? (
                                             <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
                                         ) : (
