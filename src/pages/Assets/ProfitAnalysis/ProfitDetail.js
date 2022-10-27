@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View, Platform} from 'react-native';
+import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -15,26 +15,33 @@ import {getEarningsUpdateNote, getHeadData} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {poid = '', fund_code = '', page = 0, type: initType = 200} = route.params || {};
+    const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [locked, setLocked] = useState(false);
     const bottomModal = useRef(null);
-    const tabsRef = useRef([]);
+    const [tabs, setTabs] = useState([
+        {text: '全部', type: 200},
+        {text: '公募基金', type: 10},
+        {text: '投顾组合', type: 30},
+        {text: '理财计划', type: 40},
+        {text: '私募基金', type: 20},
+        {text: '理财计划', type: 60},
+    ]);
     const [declarePic, setDeclarePic] = useState('');
     const [type, setType] = useState(initType);
-    const [title, setTitle] = useState('');
-    const [initPage, setInitPage] = useState(page);
     const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title = '', tabs = [], header = {}} = res[0].result || {};
-                navigation.setOptions({title});
-                tabsRef.current = tabs;
-                setInitPage(page);
-                const {title: rightTitle = '', declare_pic = ''} = res[1].result || {};
+                const {title: navigationTitle = '', tabs = []} = res[0]?.result || {};
+                const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
+                setDeclarePic(declare_pic);
+                setTabs(tabs);
+                setLoading(false);
                 navigation.setOptions({
+                    title: navigationTitle,
                     headerRight: () => (
                         <>
                             <TouchableOpacity
@@ -48,49 +55,43 @@ const ProfitDetail = ({navigation, route}) => {
                         </>
                     ),
                 });
-                setDeclarePic(declare_pic);
-                setTitle(title);
-                setLoading(false);
             }
         })();
-    }, []);
+    }, [type]);
     useEffect(() => {
-        dispatch({type: 'updateType', payload: initType});
         init();
+        dispatch({type: 'updateType', payload: initType});
     }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
     useEffect(() => {
-        Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
-    }, [page]);
+        let newTab = tabs.map((el, index) => {
+            return {...el, page: index};
+        });
+        let obj = newTab.find((el) => el.type == type);
+        Platform.OS === 'android' && scrollTab.current?.goToPage(obj.page);
+    }, [tabs]);
     return (
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : isEmpty(poid) ? (
                 <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-                    {tabsRef.current.length > 1 && (
+                    {tabs.length > 1 && (
                         <ScrollableTabView
                             ref={scrollTab}
                             renderTabBar={() => (
                                 <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
                             )}
-                            initialPage={initPage}
+                            initialPage={page}
                             // prerenderingSiblingsNumber={0}
                             locked={false}
                             onChangeTab={({i}) => {
-                                dispatch({type: 'updateType', payload: tabsRef.current[i].type});
+                                dispatch({type: 'updateType', payload: tabs[i].type});
                             }}>
-                            {tabsRef.current.map((el, index) => {
-                                return (
-                                    <ProfitDistribution
-                                        poid={poid}
-                                        fund_code={fund_code}
-                                        tabLabel={el.text}
-                                        key={`${el + '' + index}`}
-                                    />
-                                );
+                            {tabs.map((el, index) => {
+                                return <ProfitDistribution tabLabel={el.text} key={`${el + '' + index}`} />;
                             })}
                         </ScrollableTabView>
                     )}
