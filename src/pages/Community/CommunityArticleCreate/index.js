@@ -82,12 +82,12 @@ const WriteArticle = ({article, setArticle}) => {
         //     enabledIcon: toolbarIcons.enabled.audio,
         //     name: '音频',
         // },
-        {
-            action: 'video',
-            disabledIcon: toolbarIcons.disabled.video,
-            enabledIcon: toolbarIcons.enabled.video,
-            name: '视频',
-        },
+        // {
+        //     action: 'video',
+        //     disabledIcon: toolbarIcons.disabled.video,
+        //     enabledIcon: toolbarIcons.enabled.video,
+        //     name: '视频',
+        // },
         {
             action: 'fund',
             disabledIcon: toolbarIcons.disabled.fund,
@@ -101,12 +101,22 @@ const WriteArticle = ({article, setArticle}) => {
             name: '组合',
         },
     ]);
-    const [secondLevelOps] = useState([
-        {action: 'heading2', name: '一级标题', style: {...styles.headingText, fontWeight: Font.weightMedium}},
-        {action: 'heading3', name: '二级标题', style: styles.headingText},
-        {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}},
-        {action: 'setItalic', name: 'I', style: {...styles.fontStyleText, fontStyle: 'italic'}},
-        {action: 'setUnderline', name: 'U', style: {...styles.fontStyleText, textDecorationLine: 'underline'}},
+    const [secondLevelOps, setSecondLevelOps] = useState([
+        {
+            action: 'heading2',
+            name: '一级标题',
+            style: {...styles.headingText, fontWeight: Font.weightMedium},
+            type: 'heading2',
+        },
+        {action: 'heading3', name: '二级标题', style: styles.headingText, type: 'heading3'},
+        {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}, type: 'bold'},
+        {action: 'setItalic', name: 'I', style: {...styles.fontStyleText, fontStyle: 'italic'}, type: 'italic'},
+        {
+            action: 'setUnderline',
+            name: 'U',
+            style: {...styles.fontStyleText, textDecorationLine: 'underline'},
+            type: 'underline',
+        },
         // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
     const scrollView = useRef();
@@ -254,6 +264,26 @@ const WriteArticle = ({article, setArticle}) => {
                     }}>
                     <RichEditor
                         containerStyle={{marginTop: px(20)}}
+                        editorInitializedCallback={() => {
+                            editor.current.registerToolbar((items) => {
+                                setFirstLevelOps((prev) => {
+                                    const next = [...prev];
+                                    next[0].active = secondLevelOps.some((op) =>
+                                        items.some((item) => item === op.type)
+                                    );
+                                    return next;
+                                });
+                                setSecondLevelOps((prev) => {
+                                    const next = [...prev];
+                                    next.forEach((op) => (op.active = false));
+                                    items.forEach((item) => {
+                                        const index = next.findIndex((op) => op.type === item);
+                                        if (index > -1) next[index].active = true;
+                                    });
+                                    return next;
+                                });
+                            });
+                        }}
                         editorStyle={{
                             caretColor: Colors.brandColor,
                             color: Colors.defaultColor,

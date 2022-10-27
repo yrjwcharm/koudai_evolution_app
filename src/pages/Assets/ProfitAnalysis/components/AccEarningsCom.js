@@ -15,33 +15,29 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useIsMounted} from '../../../../components/hooks/useIsMounted';
-
 const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
-    const isMounted = useIsMounted();
     const insets = useSafeAreaInsets();
-    const [period, setPeriod] = useState('this_year');
+    const [period, setPeriod] = useState('all');
     const [chartData, setChartData] = useState({});
     const [onlyAll, setOnlyAll] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        if (isMounted.current) {
-            const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
-            http.get(url, {
-                fund_code,
-                period,
-                poid,
-            }).then((res) => {
-                setShowEmpty(true);
-                if (res.code === '000000') {
-                    if (res.result.subtabs?.length === 1) {
-                        setOnlyAll(true);
-                    }
-                    setChartData(res.result);
+        const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
+        http.get(url, {
+            fund_code,
+            period,
+            poid,
+            fr: 'profit_tool',
+        }).then((res) => {
+            setShowEmpty(true);
+            if (res.code === '000000') {
+                if (res.result.subtabs?.length === 1) {
+                    setOnlyAll(true);
                 }
-            });
-        }
+                setChartData(res.result);
+            }
+        });
     }, [period]);
     useEffect(() => {
         getChart();

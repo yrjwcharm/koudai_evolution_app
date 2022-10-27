@@ -423,16 +423,10 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     };
 
     /** @name 上拉加载 */
-    const onEndReached = useCallback(
-        debounce(
-            () => {
-                if (hasMore) setPage((p) => p + 1);
-            },
-            100,
-            {leading: true, trailing: false}
-        ),
-        [hasMore]
-    );
+    const onEndReached = ({distanceFromEnd}) => {
+        if (distanceFromEnd < 0) return false;
+        if (hasMore) setPage((p) => p + 1);
+    };
 
     /** @name 渲染底部 */
     const renderFooter = () => {
@@ -457,6 +451,8 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 }}
                 columnsFlatListProps={{
                     ListFooterComponent: renderFooter,
+                    onEndReached,
+                    onEndReachedThreshold: 0.99,
                     onRefresh: () => (page > 1 ? setPage(1) : init()),
                     ref: waterfallFlow,
                     refreshing,
@@ -466,7 +462,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 data={data}
                 keyForItem={(item) => item.title + item.id}
                 numColumns={2}
-                onEndReached={onEndReached}
                 renderItem={renderItem}
             />
         </LinearGradient>

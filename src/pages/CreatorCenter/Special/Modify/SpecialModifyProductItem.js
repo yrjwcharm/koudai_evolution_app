@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-21 18:11:27
+ * @LastEditTime: 2022-10-26 20:41:36
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
@@ -12,6 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getProductList} from './services';
+import {Colors, Font, Style} from '~/common/commonStyle';
 import LoadingTips from '~/components/LoadingTips';
 import {useFocusEffect} from '@react-navigation/native';
 
@@ -129,10 +130,11 @@ const styles = StyleSheet.create({
     cell_title: {
         color: '#121D3A',
         fontWeight: 'bold',
-        fontSize: px(12),
+        fontSize: px(13),
         lineHeight: px(18),
     },
     cell_descWrap: {
+        marginTop: 4,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -140,11 +142,13 @@ const styles = StyleSheet.create({
     cell_ratio: {
         color: '#E74949',
         fontSize: px(14),
+        fontFamily: Font.numFontFamily,
         lineHeight: px(16),
     },
     cell_desc: {
         color: '#9AA0B1',
         fontSize: px(12),
         lineHeight: px(17),
+        marginLeft: 4,
     },
 });

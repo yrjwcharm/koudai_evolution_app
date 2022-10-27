@@ -40,11 +40,12 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(() => {
+const ProfitDistribution = React.memo((poid, fund_code) => {
     const [data, setData] = useState({});
     const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();
     const jump = useJump();
+    const [loading, setLoading] = useState(true);
     const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState([]);
     const tabsRef = useRef([
         {type: 'day', text: '日收益'},
@@ -63,96 +64,105 @@ const ProfitDistribution = React.memo(() => {
             if (res.code === '000000') {
                 const {title: navigationTitle = '', header = {}} = res.result || {};
                 setHeadData(header);
+                setLoading(false);
             }
         })();
     }, [type]);
     return (
         <>
-            <View style={{flex: 1, position: 'relative'}}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <BoxShadow setting={{...shadow}}>
-                        <View style={styles.header}>
-                            <View style={Style.flexEvenly}>
-                                <View style={styles.headerItem}>
-                                    <Text
-                                        style={[
-                                            styles.profitLabel,
-                                            {
-                                                color:
-                                                    delMille(profit_info?.value) > 0
-                                                        ? Colors.red
-                                                        : delMille(profit_info?.value) < 0
-                                                        ? Colors.green
-                                                        : Colors.lightBlackColor,
-                                            },
-                                        ]}>
-                                        {profit_info?.value}
-                                    </Text>
-                                    <Text style={styles.profitValue}>{profit_info?.text}</Text>
-                                </View>
-                                <View style={styles.headerItem}>
-                                    <Text
-                                        style={[
-                                            styles.profitLabel,
-                                            {
-                                                color:
-                                                    delMille(profit_acc_info?.value) > 0
-                                                        ? Colors.red
-                                                        : delMille(profit_acc_info?.value) < 0
-                                                        ? Colors.green
-                                                        : Colors.lightBlackColor,
-                                            },
-                                        ]}>
-                                        {profit_acc_info?.value}
-                                    </Text>
-                                    <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
-                                </View>
-                                <View style={styles.headerItem}>
-                                    <Text
-                                        style={[
-                                            styles.profitLabel,
-                                            {
-                                                color:
-                                                    delMille(profit_all?.value) > 0
-                                                        ? Colors.red
-                                                        : delMille(profit_all?.value) < 0
-                                                        ? Colors.green
-                                                        : Colors.lightBlackColor,
-                                            },
-                                        ]}>
-                                        {profit_all?.value}
-                                    </Text>
-                                    <Text style={styles.profitValue}>{profit_all?.text}</Text>
+            {loading ? (
+                <Loading color={Colors.btnColor} />
+            ) : (
+                <>
+                    <View style={{flex: 1, position: 'relative'}}>
+                        {/*<ScrollView showsVerticalScrollIndicator={false}>*/}
+                        <BoxShadow setting={{...shadow}}>
+                            <View style={styles.header}>
+                                <View style={Style.flexEvenly}>
+                                    <View style={styles.headerItem}>
+                                        <Text
+                                            style={[
+                                                styles.profitLabel,
+                                                {
+                                                    color:
+                                                        delMille(profit_info?.value) > 0
+                                                            ? Colors.red
+                                                            : delMille(profit_info?.value) < 0
+                                                            ? Colors.green
+                                                            : Colors.lightBlackColor,
+                                                },
+                                            ]}>
+                                            {profit_info?.value}
+                                        </Text>
+                                        <Text style={styles.profitValue}>{profit_info?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerItem}>
+                                        <Text
+                                            style={[
+                                                styles.profitLabel,
+                                                {
+                                                    color:
+                                                        delMille(profit_acc_info?.value) > 0
+                                                            ? Colors.red
+                                                            : delMille(profit_acc_info?.value) < 0
+                                                            ? Colors.green
+                                                            : Colors.lightBlackColor,
+                                                },
+                                            ]}>
+                                            {profit_acc_info?.value}
+                                        </Text>
+                                        <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerItem}>
+                                        <Text
+                                            style={[
+                                                styles.profitLabel,
+                                                {
+                                                    color:
+                                                        delMille(profit_all?.value) > 0
+                                                            ? Colors.red
+                                                            : delMille(profit_all?.value) < 0
+                                                            ? Colors.green
+                                                            : Colors.lightBlackColor,
+                                                },
+                                            ]}>
+                                            {profit_all?.value}
+                                        </Text>
+                                        <Text style={styles.profitValue}>{profit_all?.text}</Text>
+                                    </View>
                                 </View>
                             </View>
+                        </BoxShadow>
+                        <View style={{marginTop: px(26)}} />
+                        <View style={styles.section}>
+                            <ScrollableTabView
+                                renderTabBar={() => (
+                                    //解决key unique
+                                    <Tab
+                                        style={styles.borderStyle}
+                                        btnColor={Colors.defaultColor}
+                                        inActiveColor={Colors.lightBlackColor}
+                                    />
+                                )}
+                                initialPage={0}
+                                locked={true}
+                                prerenderingSiblingsNumber={0}
+                                onChangeTab={({i}) => {
+                                    dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
+                                }}>
+                                {tabsRef.current.map((tab, index) => {
+                                    const Com = comObj[tab.text];
+                                    return <Com tabLabel={tab.text} key={`tab${index}`} />;
+                                })}
+                            </ScrollableTabView>
                         </View>
-                    </BoxShadow>
-                    <View style={{marginTop: px(26)}} />
-                    <View style={styles.section}>
-                        <ScrollableTabView
-                            renderTabBar={() => (
-                                //解决key unique
-                                <Tab
-                                    style={styles.borderStyle}
-                                    btnColor={Colors.defaultColor}
-                                    inActiveColor={Colors.lightBlackColor}
-                                />
-                            )}
-                            initialPage={0}
-                            locked={true}
-                            prerenderingSiblingsNumber={0}
-                            onChangeTab={({i}) => {
-                                dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
-                            }}>
-                            {tabsRef.current.map((tab, index) => {
-                                const Com = comObj[tab.text];
-                                return <Com tabLabel={tab.text} key={`tab${index}`} />;
-                            })}
-                        </ScrollableTabView>
+                        {/*</ScrollView>*/}
+                        {Object.keys(data).length > 0 && (
+                            <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
+                        )}
                     </View>
-                </ScrollView>
-                {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}
-            </View>
+                </>
+            )}
         </>
     );
 });

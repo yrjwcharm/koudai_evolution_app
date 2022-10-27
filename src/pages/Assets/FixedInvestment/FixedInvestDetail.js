@@ -4,12 +4,12 @@
  * @Description: 定投详情新页面
  */
 
-import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
-import {Text, TouchableOpacity, StyleSheet, View, Image} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Text, TouchableOpacity, Modal, StyleSheet, View, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import {Modal, SelectModal} from '../../../components/Modal';
+import {SelectModal} from '../../../components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {callFixedInvestDetailApi, executeStopFixedInvestApi} from './services';
 import {useJump} from '../../../components/hooks';
@@ -17,6 +17,7 @@ import Loading from '../../Portfolio/components/PageLoading';
 import {PasswordModal} from '../../../components/Password';
 import Http from '../../../services';
 import Toast from '../../../components/Toast';
+import Mask from '../../../components/Mask';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -28,6 +29,7 @@ const shadow = {
 
 const FixedInvestDetail = ({navigation, route}) => {
     const {invest_plan_id: plan_id = '', fund_code = '', poid = '', avail} = route?.params;
+    const [modalVisible, setModalVisible] = useState(false);
     const jump = useJump();
     const passwordModal = useRef(null);
     const [state, setState] = useState({
@@ -40,6 +42,7 @@ const FixedInvestDetail = ({navigation, route}) => {
     const [visible, setVisible] = useState(false);
     const [selectData, setSelectData] = useState([]);
     const handleClick = () => {
+        setModalVisible(false);
         passwordModal?.current?.show();
     };
     const init = async () => {
@@ -107,6 +110,9 @@ const FixedInvestDetail = ({navigation, route}) => {
             });
         }
         init();
+    };
+    const handleModal = () => {
+        setModalVisible(true);
     };
     return (
         <>
@@ -261,7 +267,35 @@ const FixedInvestDetail = ({navigation, route}) => {
                         </View>
                     )}
                     <PasswordModal ref={passwordModal} onDone={submit} />
-
+                    <Modal
+                        animationType="fade"
+                        statusBarTranslucent={true}
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}>
+                        <View style={styles.modal}>
+                            <View style={styles.centeredView}>
+                                <Text style={styles.terminatedConfirm}>{state.btn_list[2]?.popup?.title ?? ''}</Text>
+                                <Text style={styles.content}>{state.btn_list[2]?.popup?.content ?? ''}</Text>
+                                <View style={styles.bottomWrap}>
+                                    <TouchableOpacity onPress={handleClick}>
+                                        <Text style={styles.confirmTerminated}>
+                                            {state.btn_list[2]?.popup?.confirm.text ?? ''}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                        <View style={styles.keepOnView}>
+                                            <Text style={styles.keepOnText}>
+                                                {state.btn_list[2]?.popup?.cancel.text ?? ''}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                     <SelectModal
                         style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
                         callback={(index) => {
@@ -271,21 +305,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 setType(state.pay_info?.btn_type);
                                 handleClick();
                             } else if (index === 2) {
-                                const {
-                                    popup: {title, content, confirm, cancel, back_close, touch_close},
-                                } = state.btn_list[index];
-                                Modal.show({
-                                    title,
-                                    confirm: true,
-                                    isTouchMaskToClose: back_close,
-                                    backButtonClose: touch_close,
-                                    cancelText: cancel.text,
-                                    confirmCallBack: () => {
-                                        handleClick();
-                                    },
-                                    confirmText: confirm.text,
-                                    content,
-                                });
+                                handleModal();
                             }
                         }}
                         avail={avail}
@@ -301,10 +321,66 @@ const FixedInvestDetail = ({navigation, route}) => {
 
 export default FixedInvestDetail;
 const styles = StyleSheet.create({
+    bottomWrap: {
+        marginTop: px(24),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    modal: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
+    confirmTerminated: {
+        fontSize: px(15),
+        fontFamily: Font.pingFangRegular,
+        fontWeight: 'normal',
+        color: Colors.lightBlackColor,
+    },
+    keepOnView: {
+        width: px(172),
+        height: px(42),
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.brandColor,
+        borderRadius: px(8),
+    },
+    keepOnText: {
+        fontSize: px(15),
+        fontFamily: Font.pingFangMedium,
+        fontWeight: 'normal',
+        color: Colors.white,
+    },
     failReason: {
         fontSize: px(11),
         fontFamily: Font.pingFangRegular,
         color: Colors.lightGrayColor,
+    },
+    terminatedConfirm: {
+        fontSize: px(18),
+        textAlign: 'center',
+        fontFamily: Font.pingFangMedium,
+        fontWeight: 'normal',
+        color: Colors.defaultColor,
+    },
+    content: {
+        fontSize: px(14),
+        textAlign: 'justify',
+        marginTop: px(12),
+        fontFamily: Font.pingFangRegular,
+        fontWeight: 'normal',
+        color: Colors.lightBlackColor,
+    },
+    centeredView: {
+        paddingHorizontal: px(18),
+        paddingTop: px(24),
+        paddingBottom: px(8),
+        borderRadius: px(8),
+        backgroundColor: Colors.white,
+        width: px(280),
+        height: px(198),
     },
     investFail: {
         fontSize: px(12),

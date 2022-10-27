@@ -2,14 +2,10 @@ import {compareDate, delMille} from '../../../../utils/appUtil';
 import {Colors} from '../../../../common/commonStyle';
 
 export const getStyles = (el, currentDay) => {
-    let wrapStyle = {},
+    let wrapStyle = {backgroundColor: Colors.transparent},
         dayStyle = {},
         profitStyle = {};
-    if (compareDate(el?.day, currentDay)) {
-        wrapStyle = {
-            backgroundColor: Colors.transparent,
-        };
-    }
+
     if (compareDate(currentDay, el?.day)) {
         if (delMille(el?.profit) < 0) {
             wrapStyle = {

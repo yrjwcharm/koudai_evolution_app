@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-25 20:21:44
+ * @LastEditTime: 2022-10-26 20:21:59
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -24,7 +24,7 @@ import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
     console.log('SpecialModifyEntry:', route?.params);
-    const fix_id = route?.params?.fix_id || 1043;
+    const fix_id = route?.params?.fix_id || 1001;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
@@ -67,7 +67,11 @@ export default function SpecialModifyEntry({navigation, route}) {
     };
 
     const itemSeparatorComponent = () => {
-        return <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />;
+        return (
+            <View style={{width: '100%', paddingHorizontal: px(16)}}>
+                <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />
+            </View>
+        );
     };
     const renderSectionHeader = () => {
         return <View style={styles.sectionHeader} />;
@@ -88,7 +92,7 @@ export default function SpecialModifyEntry({navigation, route}) {
                 <Text style={styles.cell_title}>{item.name}</Text>
                 <View style={styles.cell_descWrap}>
                     <Html style={styles.cell_desc} html={item.status_desc} numberOfLines={1} />
-                    <AntDesign name="right" size={12} />
+                    <AntDesign name="right" color={'#545968'} size={12} />
                 </View>
             </TouchableOpacity>
         );
@@ -172,12 +176,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
     },
     cell_title: {
-        fontSize: px(12),
+        fontSize: px(13),
         color: '#121D3A',
     },
     cell_descWrap: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'flex-end',
+        flex: 1,
+        marginLeft: px(10),
     },
     cell_desc: {
         fontSize: px(12),
@@ -207,8 +214,8 @@ const styles = StyleSheet.create({
         paddingTop: px(10),
     },
     btn: {
-        borderColor: Colors.btnColor,
-        borderWidth: 0.5,
+        borderColor: '#545968',
+        borderWidth: StyleSheet.hairlineWidth,
         borderRadius: px(6),
         height: px(44),
         paddingHorizontal: px(20),
@@ -233,8 +240,10 @@ const styles = StyleSheet.create({
     },
     submitBtn_title: {
         color: '#fff',
+        fontSize: px(15),
     },
     submitBtn_desc: {
         color: '#fff',
+        fontSize: px(15),
     },
 });

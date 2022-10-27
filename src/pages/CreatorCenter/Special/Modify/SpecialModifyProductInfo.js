@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 19:34:23
+ * @LastEditTime: 2022-10-26 20:36:51
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -40,7 +40,7 @@ function SelectInput(props) {
             </View>
             <TouchableOpacity style={styles.inputWrap_end} onPress={props.onPress}>
                 <RenderHtml style={styles.input_value} html={props.product?.product_name || props.value || ' '} />
-                <AntDesign name="right" size={12} />
+                <AntDesign name="right" color={'#545968'} size={12} />
             </TouchableOpacity>
         </View>
     );
@@ -52,7 +52,7 @@ function TagInput(props) {
         <View style={[styles.inputWrap, styles.tagInput]}>
             <View style={[styles.inputWrap_start, styles.tagInputWrap_header]}>
                 <Text style={styles.require}>*</Text>
-                <Text>{props.title}</Text>
+                <Text style={styles.inputTitle}>{props.title}</Text>
             </View>
             <View style={styles.tagInputWrap_end}>
                 <TextInput
@@ -223,8 +223,8 @@ export default function SpecialModifyProductInfo({navigation, route}) {
             <>
                 <View style={{height: px(12), backgroundColor: '#F5F6F8'}} />
                 <TouchableOpacity style={styles.sectionHeader} onPress={() => handleSectionToggle(section)}>
-                    <Text>{title}</Text>
-                    <AntDesign name={isOpen ? 'up' : 'down'} size={12} />
+                    <Text style={{fontSize: px(13)}}>{title}</Text>
+                    <AntDesign name={isOpen ? 'up' : 'down'} color={'#545968'} size={12} />
                 </TouchableOpacity>
             </>
         );
@@ -244,8 +244,12 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         );
     };
 
+    const renderListFooter = () => {
+        return <View style={{width: '100%', height: 20 + insets.bottom}} />;
+    };
+
     return (
-        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
+        <View style={styles.pageWrap}>
             <NavBar
                 title={'产品信息填写'}
                 leftIcon="chevron-left"
@@ -255,21 +259,20 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 rightTextStyle={styles.right_sty}
             />
             <View style={styles.content}>
-                <View style={styles.listWrap}>
-                    <SectionList
-                        sections={list}
-                        initialNumToRender={20}
-                        keyExtractor={(item, index) => item + index}
-                        onEndReachedThreshold={0.2}
-                        renderSectionHeader={renderSectionHeader}
-                        renderItem={renderItem}
-                        style={[styles.sectionList, {paddingBottom: insets.bottom}]}
-                        stickySectionHeadersEnabled={false}
-                    />
-                </View>
+                <SectionList
+                    sections={list}
+                    initialNumToRender={20}
+                    keyExtractor={(item, index) => item + index}
+                    onEndReachedThreshold={0.2}
+                    renderSectionHeader={renderSectionHeader}
+                    ListFooterComponent={renderListFooter}
+                    renderItem={renderItem}
+                    style={[styles.sectionList, {paddingBottom: insets.bottom}]}
+                    stickySectionHeadersEnabled={false}
+                />
             </View>
             <RichTextInputModal ref={richTextModalRef} onChangeText={handleRichTextChange} />
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -277,7 +280,7 @@ const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#fff',
         position: 'relative',
-        height: deviceHeight,
+        flex: 1,
     },
     content: {
         flex: 1,
@@ -357,6 +360,6 @@ const styles = StyleSheet.create({
     },
 
     listWrap: {
-        flexGrow: 1,
+        flex: 1,
     },
 });

@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px, delMille} from '../../../utils/appUtil';
+import {px, delMille, compareDate} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
@@ -14,7 +14,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const YearProfit = (callback) => {
+const YearProfit = ({poid, fund_code}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
@@ -98,7 +98,10 @@ const YearProfit = (callback) => {
             dateArr.map((el, index) => {
                 const {wrapStyle, dayStyle: yearStyle, profitStyle} = getStyles(el, currentYear);
                 return (
-                    <TouchableOpacity key={`${el?.id + '' + index}`} onPress={() => getProfitBySelDate(el)}>
+                    <TouchableOpacity
+                        disabled={el.day > currentYear}
+                        key={`${el + '' + index}`}
+                        onPress={() => getProfitBySelDate(el)}>
                         <View style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : 0}]}>
                             <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
                             <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
@@ -159,7 +162,7 @@ const YearProfit = (callback) => {
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
-                    <RenderList curDate={selCurYear} />
+                    <RenderList curDate={selCurYear} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />

@@ -17,8 +17,7 @@ import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-const DayProfit = React.memo(() => {
-    const dispatch = useDispatch();
+const DayProfit = React.memo(({poid, fund_code}) => {
     const type = useSelector((state) => state.profitDetail.type);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
@@ -69,6 +68,7 @@ const DayProfit = React.memo(() => {
                             style: {
                                 opacity: 0,
                             },
+                            isDisabled: true,
                             day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
                         });
                     }
@@ -84,7 +84,13 @@ const DayProfit = React.memo(() => {
                         profit: '0.00',
                     });
                 }
-                const res = await getChartData({type, unit_type: 'day', unit_value: dayjs_.format('YYYY-MM')});
+                const res = await getChartData({
+                    type,
+                    unit_type: 'day',
+                    unit_value: dayjs_.format('YYYY-MM'),
+                    poid,
+                    fund_code,
+                });
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
@@ -184,7 +190,10 @@ const DayProfit = React.memo(() => {
                 const date = dayjs(el?.day).date();
                 const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
                 return (
-                    <TouchableOpacity onPress={() => getProfitBySelDate(el)} key={`${el?.id + '' + index}`}>
+                    <TouchableOpacity
+                        disabled={el.day >= currentDay || el?.isDisabled}
+                        onPress={() => getProfitBySelDate(el)}
+                        key={`${el + '' + index}`}>
                         <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
                             <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
                             {el.day !== currentDay && el?.profit && (
@@ -222,7 +231,7 @@ const DayProfit = React.memo(() => {
                             <View style={styles.dateWrap}>{renderCalendar}</View>
                         </View>
                     )}
-                    <RenderList curDate={selCurDate} />
+                    <RenderList curDate={selCurDate} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />
