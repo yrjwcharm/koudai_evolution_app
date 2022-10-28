@@ -4,10 +4,10 @@
  * @Date: 2022-10-09 15:37:08
  */
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import EmptyTip from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
 import {AlbumCard} from '~/components/Product';
 import {isIphoneX, px} from '~/utils/appUtil';
@@ -93,12 +93,28 @@ const SubjectCollection = ({navigation, route}) => {
                                         ))}
                                     </View>
                                 ) : (
-                                    <View style={{backgroundColor: '#fff', margin: px(16), borderRadius: px(6)}}>
-                                        <EmptyTip
-                                            style={{paddingVertical: px(60)}}
-                                            text="暂无内容"
-                                            textStyle={{marginTop: px(8)}}
+                                    <View
+                                        style={{
+                                            backgroundColor: '#fff',
+                                            margin: px(16),
+                                            marginBottom: 0,
+                                            borderRadius: px(6),
+                                            paddingVertical: px(60),
+                                            alignItems: 'center',
+                                        }}>
+                                        <FastImage
+                                            style={{width: px(120), height: px(64)}}
+                                            source={require('~/assets/img/emptyTip/empty.png')}
                                         />
+                                        <Text
+                                            style={{
+                                                fontSize: px(13),
+                                                lineHeight: px(18),
+                                                color: '#121D3A',
+                                                textAlign: 'center',
+                                            }}>
+                                            暂无内容
+                                        </Text>
                                     </View>
                                 )}
                                 {listData?.tip ? <Text style={styles.hint}>{listData?.tip}</Text> : null}
