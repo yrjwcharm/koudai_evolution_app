@@ -12,3 +12,7 @@ export const getData = (data) => {
 export const getList = (data) => {
     return http.get('/community/list/20220928', data);
 };
+
+export const audit = (data) => {
+    return http.post('/community/audit/info/20220928', data);
+};
