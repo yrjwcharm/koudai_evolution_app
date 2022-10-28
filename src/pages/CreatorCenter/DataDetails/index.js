@@ -20,10 +20,6 @@ const DataDetails = () => {
     const [listData, setListData] = useState();
     const [listLoading, setListLoading] = useState(true);
 
-    const disabledTabs = useMemo(() => {
-        return [1];
-    }, []);
-
     useEffect(() => {
         getData().then((res) => {
             if (res.code === '000000') {
@@ -110,7 +106,6 @@ const DataDetails = () => {
                             paddingTop: px(10),
                             justifyContent: 'space-around',
                         }}
-                        disabledTabs={disabledTabs}
                     />
                 )}
                 onChangeTab={onChangeTab}>
