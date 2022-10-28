@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 12:01:08
+ * @LastEditTime: 2022-10-28 16:47:36
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -496,6 +496,7 @@ const Product = ({navigation}) => {
                                             handler={() => {
                                                 global.LogTool({
                                                     event: 'rec_show',
+                                                    oid: proData?.popular_subject?.items?.[0]?.product_id,
                                                     plateid: proData?.popular_subject.plateid,
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 });

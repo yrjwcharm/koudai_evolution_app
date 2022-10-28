@@ -160,6 +160,7 @@ const Index = ({navigation}) => {
                         handler={() => {
                             global.LogTool({
                                 event: 'rec_show',
+                                oid: popular_subjects?.items?.[0]?.product_id,
                                 plateid: popular_subjects.plateid,
                                 rec_json: popular_subjects.rec_json,
                             });

@@ -145,6 +145,7 @@ const PortfolioIndex = ({navigation, route}) => {
                             handler={() => {
                                 global.LogTool({
                                     event: 'rec_show',
+                                    oid: data?.popular_subjects?.items?.[0]?.product_id,
                                     plateid: data?.popular_subjects.plateid,
                                     rec_json: data?.popular_subjects.rec_json,
                                 });
