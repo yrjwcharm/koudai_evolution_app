@@ -14,7 +14,7 @@ import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 
 const AlbumHeader = ({
-    data: {bg_img, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
+    data: {bg_img, title_tag, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
     logParams,
 }) => {
     const jump = useJump();
@@ -64,11 +64,11 @@ const AlbumHeader = ({
                     {icon ? <Image source={{uri: icon}} style={styles.icon} /> : null}
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
-                    {/* {true ? (
-                        <View style={[styles.tagWrap, {backgroundColor: 'red'}]}>
-                            <Text style={[styles.tagText, {color: 'blue'}]}>123123</Text>
+                    {title_tag ? (
+                        <View style={[styles.tagWrap, {backgroundColor: title_tag.bg}]}>
+                            <Text style={[styles.tagText, {color: title_tag.color}]}>{title_tag?.text}</Text>
                         </View>
-                    ) : null} */}
+                    ) : null}
                 </View>
                 <FastImage
                     style={{width: px(10), height: px(10)}}
