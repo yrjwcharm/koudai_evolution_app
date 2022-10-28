@@ -196,10 +196,24 @@ const DayProfit = React.memo(({poid, fund_code, type}) => {
                         <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
                             <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
                             {el.day !== currentDay && el?.profit && (
-                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                                <Text
+                                    style={[
+                                        styles.profit,
+                                        profitStyle,
+                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                    ]}>
+                                    {el?.profit}
+                                </Text>
                             )}
                             {el.day == currentDay && (el?.profit > 0 || el?.profit < 0) && (
-                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                                <Text
+                                    style={[
+                                        styles.profit,
+                                        profitStyle,
+                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                    ]}>
+                                    {el?.profit}
+                                </Text>
                             )}
                         </View>
                     </TouchableOpacity>
