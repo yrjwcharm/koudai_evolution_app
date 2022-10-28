@@ -13,12 +13,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import Toast from '~/components/Toast';
-import {Modal} from '~/components/Modal';
-import {useJump} from '~/components/hooks';
 const Index = ({navigation, route}) => {
     const {popNum = 0} = route.params || {};
     const dispatch = useDispatch();
-    const jump = useJump();
     const [data, setData] = useState({});
     const inset = useSafeAreaInsets();
     const [current, setCurrent] = useState(0);
@@ -74,20 +71,8 @@ const Index = ({navigation, route}) => {
         if (current == data.length - 1) {
             //答完题目
             const toast = Toast.showLoading();
-            let res = await handleDone();
+            await handleDone();
             dispatch(getUserInfo());
-            if (res.result?.recommend) {
-                Modal.show({
-                    type: 'image',
-                    confirmCallBack: () => {
-                        jump(res.result?.recommend?.url);
-                    },
-                    cancelCallBack: () => {},
-                    imageUrl: res.result.recommend.img,
-                    imgWidth: res.result.recommend.width,
-                    imgHeight: res.result.recommend.height,
-                });
-            }
             setTimeout(() => {
                 Toast.hide(toast);
                 if (popNum) navigation.pop(popNum);
