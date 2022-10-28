@@ -164,7 +164,7 @@ const YearProfit = ({poid, fund_code}) => {
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
-                    <RenderList curDate={selCurYear} poid={poid} fund_code={fund_code} />
+                    <RenderList curDate={selCurYear} type={type} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />

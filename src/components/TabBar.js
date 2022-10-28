@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
 import {Colors, Font, Space} from '../common/commonStyle';
-import {px} from '../utils/appUtil';
+import {deviceWidth, px} from '../utils/appUtil';
 const Button = (props) => {
     return (
         <TouchableOpacity {...props} activeOpacity={0.95}>

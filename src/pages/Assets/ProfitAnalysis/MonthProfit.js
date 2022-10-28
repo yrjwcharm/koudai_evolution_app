@@ -16,8 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const MonthProfit = React.memo(({poid, fund_code}) => {
-    const type = useSelector((state) => state.profitDetail.type);
+const MonthProfit = React.memo(({poid, fund_code, type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -168,7 +167,7 @@ const MonthProfit = React.memo(({poid, fund_code}) => {
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
                     {/*收益数据-根据实际情形选择map渲染*/}
-                    <RenderList curDate={selCurDate} poid={poid} fund_code={fund_code} />
+                    <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />
