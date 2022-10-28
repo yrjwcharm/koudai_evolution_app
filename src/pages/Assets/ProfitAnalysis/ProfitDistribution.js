@@ -40,9 +40,8 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
+const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
     const [data, setData] = useState({});
-    const type = useSelector((state) => state.profitDetail.type);
     const dispatch = useDispatch();
     const jump = useJump();
     const [loading, setLoading] = useState(true);
@@ -157,6 +156,7 @@ const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
                                         const Com = comObj[tab.text];
                                         return (
                                             <Com
+                                                type={type}
                                                 poid={poid}
                                                 fund_code={fund_code}
                                                 tabLabel={tab.text}

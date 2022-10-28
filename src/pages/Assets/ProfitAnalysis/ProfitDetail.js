@@ -15,7 +15,7 @@ import {getEarningsUpdateNote, getHeadData} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', page = 0, type: initType = 200} = route.params || {};
+    const {fund_code = '', poid = '', page = 0, type: initType} = route.params || {};
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(false);
     const [locked, setLocked] = useState(false);
@@ -60,17 +60,12 @@ const ProfitDetail = ({navigation, route}) => {
     }, [type]);
     useEffect(() => {
         init();
-        dispatch({type: 'updateType', payload: initType});
     }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
     useEffect(() => {
-        let newTab = tabs.map((el, index) => {
-            return {...el, page: index};
-        });
-        let obj = newTab.find((el) => el.type == type);
-        Platform.OS === 'android' && scrollTab.current?.goToPage(obj.page);
+        Platform.OS === 'android' && scrollTab.current?.goToPage(page);
     }, [tabs]);
     return (
         <>
@@ -88,12 +83,13 @@ const ProfitDetail = ({navigation, route}) => {
                             // prerenderingSiblingsNumber={0}
                             locked={false}
                             onChangeTab={({i}) => {
-                                dispatch({type: 'updateType', payload: tabs[i].type});
+                                setType(tabs[i].type);
                             }}>
                             {tabs.map((el, index) => {
                                 return (
                                     <ProfitDistribution
                                         poid={poid}
+                                        type={type}
                                         fund_code={fund_code}
                                         tabLabel={el.text}
                                         key={`${el + '' + index}`}
@@ -115,7 +111,7 @@ const ProfitDetail = ({navigation, route}) => {
                     </BottomModal>
                 </View>
             ) : (
-                <ProfitDistribution poid={poid} fund_code={fund_code} />
+                <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
             )}
         </>
     );

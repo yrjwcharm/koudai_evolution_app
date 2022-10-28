@@ -17,8 +17,7 @@ import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-const DayProfit = React.memo(({poid, fund_code}) => {
-    const type = useSelector((state) => state.profitDetail.type);
+const DayProfit = React.memo(({poid, fund_code, type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -197,10 +196,24 @@ const DayProfit = React.memo(({poid, fund_code}) => {
                         <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
                             <Text style={[styles.day, dayStyle]}>{el.day == currentDay ? '今' : date}</Text>
                             {el.day !== currentDay && el?.profit && (
-                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                                <Text
+                                    style={[
+                                        styles.profit,
+                                        profitStyle,
+                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                    ]}>
+                                    {el?.profit}
+                                </Text>
                             )}
                             {el.day == currentDay && (el?.profit > 0 || el?.profit < 0) && (
-                                <Text style={[styles.profit, profitStyle]}>{el?.profit}</Text>
+                                <Text
+                                    style={[
+                                        styles.profit,
+                                        profitStyle,
+                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                    ]}>
+                                    {el?.profit}
+                                </Text>
                             )}
                         </View>
                     </TouchableOpacity>
@@ -231,7 +244,7 @@ const DayProfit = React.memo(({poid, fund_code}) => {
                             <View style={styles.dateWrap}>{renderCalendar}</View>
                         </View>
                     )}
-                    <RenderList curDate={selCurDate} poid={poid} fund_code={fund_code} />
+                    <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} />
                 </View>
             ) : (
                 <EmptyData />
