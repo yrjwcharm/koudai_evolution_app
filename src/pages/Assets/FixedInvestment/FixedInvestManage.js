@@ -163,7 +163,27 @@ const FixedInvestManage = ({navigation, route}) => {
                                 <View style={styles.scrollTab}>
                                     {tabList.map((el, index) => {
                                         return (
-                                            <TouchableOpacity key={el + ' ' + index} onPress={() => selTab(el)}>
+                                            <TouchableOpacity
+                                                key={el + ' ' + index}
+                                                onPress={() => {
+                                                    global.LogTool(
+                                                        'click',
+                                                        index == 0
+                                                            ? 'autoinvestment_manegement_all'
+                                                            : index == 1
+                                                            ? 'autoinvestment_manegement_fund'
+                                                            : index == 2
+                                                            ? 'autoinvestment_manegement_portfolio'
+                                                            : index == 3
+                                                            ? 'Financial_planning'
+                                                            : index == 4
+                                                            ? 'Private_equity_funds'
+                                                            : index == 5
+                                                            ? 'Bank_financing'
+                                                            : ''
+                                                    );
+                                                    selTab(el);
+                                                }}>
                                                 <View
                                                     style={[
                                                         styles.defaultTab,
@@ -208,7 +228,10 @@ const FixedInvestManage = ({navigation, route}) => {
                                 {Object.keys(terminateUrl).length > 0 && (
                                     <TouchableOpacity
                                         style={{marginTop: px(20)}}
-                                        onPress={() => jump(terminateUrl.url)}>
+                                        onPress={() => {
+                                            global.LogTool('click', 'terminatedFixedInvest');
+                                            jump(terminateUrl.url);
+                                        }}>
                                         <View style={{alignItems: 'center'}}>
                                             <View style={Style.flexRow}>
                                                 <Text style={styles.termintal}>{terminateUrl.text}</Text>

@@ -41,14 +41,22 @@ const InvestHeader = React.memo(({headList, handleSort, style}) => {
                 <View style={styles.sortChoiceView}>
                     <View style={styles.sortChoiceWrap}>
                         <Text style={styles.sortText}>{left?.text}</Text>
-                        <TouchableOpacity onPress={() => handleSort(center)}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                global.LogTool('click', 'investment_periods_order');
+                                handleSort(center);
+                            }}>
                             <View style={styles.investIssue}>
                                 <Text style={styles.sortText}>{center?.text}</Text>
 
                                 <Image source={icon1} />
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleSort(right)}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                global.LogTool('click', 'accumlated_investment_order');
+                                handleSort(right);
+                            }}>
                             <View style={styles.totalSort}>
                                 <Text style={styles.sortText}>{right?.text}</Text>
                                 <Image source={icon2} />

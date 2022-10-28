@@ -42,6 +42,7 @@ const FixedInvestDetail = ({navigation, route}) => {
     const [visible, setVisible] = useState(false);
     const [selectData, setSelectData] = useState([]);
     const handleClick = () => {
+        global.LogTool('click', 'accumlated_investment_end');
         setModalVisible(false);
         passwordModal?.current?.show();
     };
@@ -62,6 +63,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                         activeOpacity={0.8}
                         style={[styles.topRightBtn, Style.flexCenter]}
                         onPress={() => {
+                            global.LogTool('click', 'accumlated_investment_manegement');
                             setVisible(true);
                         }}>
                         <Text style={styles.title}>{text}</Text>
@@ -239,7 +241,11 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                             {state.records?.data_list?.map((item, index) => {
                                 return (
-                                    <TouchableOpacity onPress={() => jump(item?.url)}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            global.LogTool('click', 'accumlated_investment_record');
+                                            jump(item?.url);
+                                        }}>
                                         <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
                                             <View style={{width: '38.5%'}}>
                                                 <Text style={styles.date}>{item.date}</Text>
@@ -307,8 +313,10 @@ const FixedInvestDetail = ({navigation, route}) => {
                         style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
                         callback={(index) => {
                             if (index === 0) {
+                                global.LogTool('click', 'accumlated_investment_modify');
                                 jump(state.btn_list[index]?.url);
                             } else if (index === 1) {
+                                global.LogTool('click', 'accumlated_investment_pause');
                                 setType(state.pay_info?.btn_type);
                                 handleClick();
                             } else if (index === 2) {
