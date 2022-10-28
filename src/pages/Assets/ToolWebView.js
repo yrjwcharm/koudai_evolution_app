@@ -127,7 +127,7 @@ const ToolWebView = ({navigation, route}) => {
                     shadowOffset: {
                         height: 0,
                     },
-                    elevation: 0,
+                    elevation: 0.1,
                 },
                 headerTitle: ({allowFontScaling}) => (
                     <View style={Style.flexRow}>
