@@ -85,7 +85,7 @@ const VideoFooter = ({data, handleComment}) => {
                     onPress={() => {
                         handleComment(true);
                     }}>
-                    <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
+                    <Text style={{fontSize: px(12), color: '#fff'}}>我来聊两句...</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}
@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
         paddingTop: px(8),
     },
     footer_content: {
-        height: px(31),
-        backgroundColor: 'rgba(255, 255, 255, 0.1000)',
+        height: px(36),
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: px(16),
         width: px(151),
         justifyContent: 'center',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     iconText: {
         fontSize: Font.textSm,
         lineHeight: px(15),
-        color: Colors.lightBlackColor,
+        color: '#fff',
         fontFamily: Font.numMedium,
     },
 

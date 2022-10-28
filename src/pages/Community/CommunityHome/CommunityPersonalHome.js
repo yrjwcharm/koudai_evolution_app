@@ -79,7 +79,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                     <ScrollTabView
                         headerHeight={parallaxHeaderHeight + introHeight - px(30)}
                         insetValue={headerHeight}
-                        style={{backgroundColor: '#fff'}}
+                        style={{backgroundColor: Colors.bgColor}}
                         onChangeTab={() => {
                             // waterFallRef?.current?.scrollTop();
                         }}
@@ -92,12 +92,13 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                             }
                         }}
                         renderTabBar={(_props) => (
-                            <ScrollTabbar {..._props} container="View" boxStyle={{backgroundColor: '#fff'}} />
+                            <ScrollTabbar {..._props} container="View" boxStyle={{backgroundColor: Colors.bgColor}} />
                         )}
                         renderScrollHeaderBg={{
                             uri: data?.user_info?.bg_img || data?.user_info?.avatar,
                             style: {
                                 height: parallaxHeaderHeight,
+                                backgroundColor: 'rgba(18, 29, 58, 0.5)',
                             },
                         }}
                         renderScrollHeader={() => {
@@ -182,6 +183,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(20),
         marginTop: px(-30),
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
     },
 });

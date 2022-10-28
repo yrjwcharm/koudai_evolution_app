@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         paddingBottom: px(8) + (isIphoneX() ? 34 : 0),
     },
     footer_content: {
-        height: px(31),
+        height: px(36),
         backgroundColor: '#F3F5F8',
         borderRadius: px(16),
         justifyContent: 'center',
