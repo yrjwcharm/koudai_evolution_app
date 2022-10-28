@@ -103,7 +103,13 @@ const DataDetails = () => {
             <ScrollableTabView
                 renderTabBar={() => (
                     <ScrollableTabBar
-                        style={{paddingLeft: px(34), paddingRight: px(26), backgroundColor: '#fff', paddingTop: px(10)}}
+                        style={{
+                            paddingLeft: px(34),
+                            paddingRight: px(26),
+                            backgroundColor: '#fff',
+                            paddingTop: px(10),
+                            justifyContent: 'space-around',
+                        }}
                         disabledTabs={disabledTabs}
                     />
                 )}
