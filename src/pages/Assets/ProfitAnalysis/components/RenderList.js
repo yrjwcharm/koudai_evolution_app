@@ -74,6 +74,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                     <TouchableOpacity onPress={() => jump(item?.url)}>
                         <Text style={styles.title}>{item.text}</Text>
                     </TouchableOpacity>
+                    {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
                     {item.tag ? (
                         <View
                             style={{
