@@ -45,7 +45,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
     const dispatch = useDispatch();
     const jump = useJump();
     const [loading, setLoading] = useState(true);
-    const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState([]);
+    const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState({});
     const [enabled, setEnabled] = useState(true);
     const tabsRef = useRef([
         {type: 'day', text: '日收益'},

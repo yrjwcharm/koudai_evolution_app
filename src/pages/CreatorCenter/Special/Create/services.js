@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-18 22:32:23
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:33:21
+ * @LastEditTime: 2022-10-28 10:54:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/services.js
  * @Description:
  */
@@ -17,9 +17,9 @@ export const saveStashBaseInfo = (params = {}) => http.post('/subject/manage/bas
 /** 图片上传 */
 export const uploadImage = (params = {}) => http.uploadFiles('/common/image/upload', params, true);
 
-/** 专题 内容 - 已保存 */
-export const getContentList = (params = {}) => http.get('/subject/manage/articles/all/20220901', params, false);
 /** 专题 内容 - 文章库 */
+export const getContentList = (params = {}) => http.get('/subject/manage/articles/all/20220901', params, false);
+/** 专题 内容 - 已保存 */
 export const getStashContentList = (params = {}) => http.get('/subject/manage/articles/20220901', params, false);
 /** 专题 内容 - 保存 */
 export const saveStashContentList = (params = {}) =>

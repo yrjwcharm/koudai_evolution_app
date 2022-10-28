@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 18:35:36
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-28 16:48:01
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -67,10 +67,10 @@ function FooterItem({onAdd, onSort, cansort = false, data}) {
     );
 }
 
-function SearchItem({item, onToggle, isAdded}) {
+function SearchItem({item, onToggle, isAdded, index}) {
     return (
         <Pressable>
-            <View style={styles.searchItem}>
+            <View style={[styles.searchItem, index === 0 ? styles.searchItem_first : {}]}>
                 <View style={styles.searchItem_content}>
                     <Text style={styles.searchItem_title} numberOfLines={1}>
                         {item.title}
@@ -197,17 +197,19 @@ function ContentSearchModal(props) {
 
     return (
         <View style={styles.searchModal}>
-            <View style={[styles.searchWrap]}>
-                <FastImage
-                    source={require('~/assets/img/special/pk-search.png')}
-                    style={styles.searchWrap_searchIcon}
-                />
-                <TextInput
-                    style={styles.searchWrap_input}
-                    clearButtonMode="always"
-                    onChangeText={handleSearch}
-                    placeholder="搜索作品名称"
-                />
+            <View style={{paddingBottom: 12}}>
+                <View style={[styles.searchWrap]}>
+                    <FastImage
+                        source={require('~/assets/img/special/pk-search.png')}
+                        style={styles.searchWrap_searchIcon}
+                    />
+                    <TextInput
+                        style={styles.searchWrap_input}
+                        clearButtonMode="always"
+                        onChangeText={handleSearch}
+                        placeholder="搜索作品名称"
+                    />
+                </View>
             </View>
             <View style={{flex: 1}}>
                 <FlatList
@@ -581,16 +583,20 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: 24,
     },
+    searchItem_first: {
+        marginTop: 12,
+    },
     searchItem_content: {
-        flexGrow: 1,
-        flexShrink: 1,
+        flex: 1,
     },
     searchItem_title: {
         fontSize: px(13),
         lineHeight: px(17),
+        fontWeight: 'bold',
         color: '#121D3A',
     },
     SearchItem_desc: {
+        marginTop: px(4),
         fontSize: px(12),
         lineHeight: px(15),
         color: '#9AA0B1',
@@ -635,8 +641,8 @@ const styles = StyleSheet.create({
     },
     searchEmpty_image: {
         // flex: 1,
-        width: 258,
-        height: 144,
+        width: 120,
+        height: 64,
     },
     searchEmpty_text: {
         color: '#121D3A',
