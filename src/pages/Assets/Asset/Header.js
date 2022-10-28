@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         backgroundColor: '#ECF5FF',
     },
-    avatar: {width: px(32), height: px(32), borderRadius: px(16), marginRight: px(10)},
+    avatar: {width: px(30), height: px(30), borderRadius: px(16), marginRight: px(10)},
     name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
     header_icon: {
         width: px(32),

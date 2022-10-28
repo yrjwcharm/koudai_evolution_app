@@ -656,7 +656,7 @@ const styles = StyleSheet.create({
         marginTop: px(12),
         borderRadius: Space.borderRadius,
         width: px(300),
-        height: px(400),
+        height: px(225),
         overflow: 'hidden',
     },
     uploadBtn: {

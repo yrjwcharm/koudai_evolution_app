@@ -84,7 +84,7 @@ export const CommunityCardCover = ({
             {/* 媒体时长或类型文案 */}
             {media_duration || type_str ? (
                 <View style={[Style.flexRow, styles.durationBox]}>
-                    {media_duration ? (
+                    {type === 2 || type === 3 ? (
                         <View style={{marginRight: px(4)}}>
                             {type === 2 ? (
                                 <Feather color="#fff" name="headphones" size={px(8)} />
@@ -93,8 +93,11 @@ export const CommunityCardCover = ({
                             )}
                         </View>
                     ) : null}
-                    <Text style={media_duration ? [styles.numDesc, {fontFamily: Font.numRegular}] : styles.numDesc}>
-                        {media_duration || type_str}
+                    <Text
+                        style={
+                            type === 2 || type === 3 ? [styles.numDesc, {fontFamily: Font.numRegular}] : styles.numDesc
+                        }>
+                        {type === 2 || type === 3 ? media_duration : type_str}
                     </Text>
                 </View>
             ) : null}
@@ -103,7 +106,7 @@ export const CommunityCardCover = ({
             {/* 社区关注人数 */}
             {attention_num && attention_user ? (
                 <LinearGradient
-                    colors={['#000', 'rgba(0, 0, 0, 0)']}
+                    colors={['rgba(0, 0, 0, 0.7)', 'rgba(0, 0, 0, 0)']}
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 1}}
                     style={styles.communityFollowNumBg}>
@@ -392,7 +395,7 @@ export const CommunityFollowCard = (props) => {
                     <View style={{padding: px(10), paddingBottom: px(12)}}>
                         {title ? (
                             <View>
-                                <HTML html={title} numberOfLines={desc ? 2 : 4} style={styles.subTitle} />
+                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
                             </View>
                         ) : null}
                         {desc ? (

@@ -194,7 +194,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
                                 <>
                                     <Text style={[styles.desc, {marginTop: px(12)}]}>至少添加一个标签</Text>
                                     {selectedItems?.length > 0 && (
-                                        <View style={[styles.tagsContainer, {marginTop: px(8)}]}>
+                                        <View style={styles.tagsContainer}>
                                             {selectedItems.map?.((itm, i) => {
                                                 const {id, name} = itm;
                                                 return (
@@ -208,14 +208,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
                                                                 return next;
                                                             })
                                                         }
-                                                        style={[
-                                                            Style.flexRow,
-                                                            styles.tagBox,
-                                                            {
-                                                                marginTop: i < 3 ? 0 : px(8),
-                                                                marginLeft: i % 3 === 0 ? 0 : px(8),
-                                                            },
-                                                        ]}>
+                                                        style={[Style.flexRow, styles.tagBox, {marginLeft: px(8)}]}>
                                                         <Text style={[styles.desc, {color: Colors.brandColor}]}>
                                                             {name}
                                                         </Text>
@@ -257,7 +250,7 @@ export const ChooseTag = ({setTags, tags}) => {
                     onPress={() => {
                         chooseModal.current.show('tag', tags);
                     }}
-                    style={[styles.tagBox, {backgroundColor: Colors.bgColor}]}>
+                    style={[Style.flexRow, styles.tagBox, {backgroundColor: Colors.bgColor}]}>
                     <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '标签(至少添加一个)'}</Text>
                 </TouchableOpacity>
                 {tags?.map?.((tag, i) => {
@@ -271,11 +264,7 @@ export const ChooseTag = ({setTags, tags}) => {
                                 next.splice(i, 1);
                                 setTags(next);
                             }}
-                            style={[
-                                Style.flexRow,
-                                styles.tagBox,
-                                {marginTop: i < 3 ? 0 : px(8), marginLeft: i !== 0 && i % 3 === 0 ? 0 : px(8)},
-                            ]}>
+                            style={[Style.flexRow, styles.tagBox]}>
                             <Text style={[styles.desc, {color: Colors.brandColor}]}>{name}</Text>
                             <AntDesign color={Colors.brandColor} name="close" size={px(12)} />
                         </TouchableOpacity>
@@ -629,14 +618,17 @@ const styles = StyleSheet.create({
         fontWeight: Font.weightMedium,
     },
     tagsContainer: {
-        marginTop: Space.marginVertical,
+        marginTop: px(8),
         flexDirection: 'row',
         flexWrap: 'wrap',
+        right: px(8),
     },
     tagBox: {
-        paddingVertical: px(4),
+        marginTop: px(8),
+        marginLeft: px(8),
         paddingHorizontal: px(12),
         borderRadius: px(40),
+        height: px(25),
         backgroundColor: '#F1F6FF',
     },
     modalHeader: {
