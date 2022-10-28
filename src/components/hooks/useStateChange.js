@@ -250,6 +250,7 @@ function useStateChange({homeShowModal, store}) {
                             (!prev.is_login && next.is_login) ||
                             (!prev.has_account && next.has_account) ||
                             (!prev.buy_status && next.buy_status) ||
+                            (!prev.show_subject_recommend && next.show_subject_recommend) ||
                             (!prev.buy_status_for_vision && next.buy_status_for_vision) ||
                             (!prev.hide_preference && next.hide_preference)
                         ) {
