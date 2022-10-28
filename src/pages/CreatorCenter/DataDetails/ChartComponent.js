@@ -39,7 +39,6 @@ const ChartComponent = ({isActive, options}) => {
 
     const onChartChange = useCallback((obj) => {
         const {items} = obj;
-
         const filterText = (text = '') => {
             return +text.slice(0, -1);
         };
@@ -47,9 +46,9 @@ const ChartComponent = ({isActive, options}) => {
             const next = cloneDeep(prev);
             next[0].val = items[0].title;
             next[1].val = items[0].value || '0%';
-            next[2].val = items[1].value || '0%';
+            if (next[2]) next[2].val = items[1].value || '0%';
             next[1].color = filterText(items[0].value) > 0 ? '#E74949' : '#4BA471';
-            next[2].color = filterText(items[1].value) > 0 ? '#E74949' : '#4BA471';
+            if (next[2]) next[2].color = filterText(items[1].value) > 0 ? '#E74949' : '#4BA471';
             return next;
         });
     }, []);
