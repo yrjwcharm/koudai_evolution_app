@@ -39,7 +39,7 @@ const CommunityCollection = ({route}) => {
 
     const getListData = (type) => {
         setListLoading(true);
-        getList({type})
+        getList({type, page: 1, page_size: 999999})
             .then((res) => {
                 if (res.code === '000000') {
                     setListData(res.result);
@@ -52,12 +52,12 @@ const CommunityCollection = ({route}) => {
 
     const onChangeTab = useCallback(
         ({i}) => {
-            getListData(data?.header?.[i]?.type);
+            getListData(data?.list?.[i]?.type);
         },
         [data]
     );
 
-    return (
+    return data ? (
         <View style={styles.container}>
             <ScrollableTabView
                 renderTabBar={() => (
@@ -65,17 +65,19 @@ const CommunityCollection = ({route}) => {
                         style={{paddingHorizontal: px(34), backgroundColor: '#fff', paddingTop: px(10)}}
                     />
                 )}
-                onChangeTab={onChangeTab}>
-                {['已发布', '审核未通过', '审核中'].map((item, idx) => (
-                    <ScrollView tabLabel={item} key={idx} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
+                onChangeTab={onChangeTab}
+                ref={tabRef}>
+                {data?.list?.map((item, idx) => (
+                    <ScrollView tabLabel={item.key} key={idx} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                         {listLoading ? (
                             <View style={{paddingVertical: px(20)}}>
                                 <ActivityIndicator />
                             </View>
                         ) : listData?.items?.[0] ? (
                             <View style={styles.cardsWrap}>
-                                {listData?.items?.[0].map((itm, index) => (
+                                {listData?.items?.map((itm, index) => (
                                     <View style={styles.cardItem} key={index}>
+                                        {false ? <View style={styles.mask} /> : null}
                                         <TouchableOpacity
                                             activeOpacity={0.8}
                                             onPress={() => {
@@ -144,7 +146,7 @@ const CommunityCollection = ({route}) => {
                 ))}
             </ScrollableTabView>
         </View>
-    );
+    ) : null;
 };
 
 export default CommunityCollection;
@@ -175,6 +177,7 @@ const styles = StyleSheet.create({
     cardItemMainCenter: {
         marginLeft: px(12),
         flex: 1,
+        height: '100%',
     },
     cardItemMainTitle: {
         fontSize: px(13),
@@ -206,5 +209,15 @@ const styles = StyleSheet.create({
         width: px(16),
         height: px(16),
         marginRight: px(4),
+    },
+    mask: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: px(343),
+        height: '100%',
+        backgroundColor: '#fff',
+        zIndex: 2,
+        opacity: 0.8,
     },
 });

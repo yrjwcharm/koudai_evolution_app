@@ -6,7 +6,7 @@
 import http from '~/services';
 
 export const getData = (data) => {
-    return http.get('/manage_center/ss_collect/index/20221010', data);
+    return http.get('/community/types/20220928', data);
 };
 
 export const getList = (data) => {
