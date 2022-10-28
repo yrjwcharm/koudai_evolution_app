@@ -77,6 +77,7 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => 
                             />
                         </TouchableOpacity>
                     </View>
+
                     <View style={[styles.chart]}>
                         {Object.keys(chartData).length > 0 && (
                             <Chart
