@@ -17,7 +17,6 @@ import {useDispatch} from 'react-redux';
 import ScrollTabbar from '../../../components/ScrollTabbar';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType} = route.params || {};
-    console.log(333, poid);
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(false);
     const [locked, setLocked] = useState(false);
@@ -82,6 +81,7 @@ const ProfitDetail = ({navigation, route}) => {
                             initialPage={page}
                             locked={false}
                             onChangeTab={({i}) => {
+                                global.LogTool('changeTab', tabs[i]);
                                 setType(tabs[i].type);
                             }}>
                             {tabs.map((el, index) => {
@@ -91,7 +91,7 @@ const ProfitDetail = ({navigation, route}) => {
                                         type={type}
                                         fund_code={fund_code}
                                         tabLabel={el.text}
-                                        key={`${el + '' + index}`}
+                                        key={`${el + index}`}
                                     />
                                 );
                             })}

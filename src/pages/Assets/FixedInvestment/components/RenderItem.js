@@ -25,7 +25,13 @@ const RenderItem = ({item, index, avail}) => {
     const jump = useJump();
     item.url.params.avail = avail;
     return (
-        <TouchableOpacity style={{marginTop: px(8)}} key={item + `` + index} onPress={() => jump(item.url)}>
+        <TouchableOpacity
+            style={{marginTop: px(8)}}
+            key={item + `` + index}
+            onPress={() => {
+                global.LogTool('click', 'fixedInvestDetail');
+                jump(item.url);
+            }}>
             <View>
                 <BoxShadow
                     setting={{

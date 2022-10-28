@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px, delMille, compareDate} from '../../../utils/appUtil';
+import {px, delMille, compareDate, deviceWidth} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     },
     year: {
         marginBottom: px(4),
-        width: px(103),
+        width: deviceWidth / 3.63,
         height: px(46),
         backgroundColor: '#f5f6f8',
         borderRadius: px(4),

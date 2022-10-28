@@ -152,6 +152,16 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                                     locked={true}
                                     prerenderingSiblingsNumber={0}
                                     onChangeTab={({i}) => {
+                                        global.LogTool(
+                                            'click',
+                                            i == 0
+                                                ? 'day_earnings'
+                                                : i == 1
+                                                ? 'month_earnings'
+                                                : i == 2
+                                                ? 'year_earnings'
+                                                : 'accumlated_earnings'
+                                        );
                                         dispatch({type: 'updateUnitType', payload: tabsRef.current[i].type});
                                     }}>
                                     {tabsRef.current.map((tab, index) => {
