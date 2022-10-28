@@ -12,7 +12,7 @@ import {useJump} from '~/components/hooks';
 import {AlbumCard} from '~/components/Product';
 import {isIphoneX, px} from '~/utils/appUtil';
 import ScrollableTabBar from '../components/ScrollableTabBar';
-import {getData, getList} from './serverces';
+import {getData, getList} from './services';
 
 const SubjectCollection = ({navigation, route}) => {
     const jump = useJump();
