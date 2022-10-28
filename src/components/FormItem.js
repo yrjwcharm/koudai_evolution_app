@@ -10,7 +10,7 @@ import HTML from '~/components/RenderHtml';
 import {BankCardModal, Modal} from '~/components/Modal';
 import {px} from '~/utils/appUtil';
 
-const FormItem = ({data, onChange, setShowMask}) => {
+const FormItem = ({data, logParams, onChange, setShowMask}) => {
     const jump = useJump();
     const {
         input_type,
@@ -31,6 +31,7 @@ const FormItem = ({data, onChange, setShowMask}) => {
     const bankcardModal = useRef();
 
     const onPress = () => {
+        logParams && global.LogTool(logParams);
         if (type === 'bankcard') {
             bankcardModal.current?.show?.();
         } else if (type === 'date') {

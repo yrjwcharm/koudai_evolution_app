@@ -66,7 +66,12 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
             <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
                 <Text style={styles.title}>{name}</Text>
                 {top_button?.text ? (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(top_button.url)}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool({event: 'details'});
+                            jump(top_button.url);
+                        }}>
                         <Text style={styles.linkText}>{top_button.text}</Text>
                     </TouchableOpacity>
                 ) : null}
@@ -114,7 +119,10 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
             {trade_notice?.desc ? (
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => jump(trade_notice.url)}
+                    onPress={() => {
+                        global.LogTool({event: 'trade_details'});
+                        jump(trade_notice.url);
+                    }}
                     style={[Style.flexRow, styles.tradeMsgBox]}>
                     <Text style={styles.smallText}>{trade_notice.desc}</Text>
                     <Feather color={Colors.descColor} name="chevron-right" size={px(10)} />
@@ -124,7 +132,10 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
                 <>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => setExpand((prev) => !prev)}
+                        onPress={() => {
+                            global.LogTool({event: 'more_details'});
+                            setExpand((prev) => !prev);
+                        }}
                         style={[Style.flexCenter, {paddingTop: px(8), paddingBottom: expand ? 0 : px(8)}]}>
                         <Feather
                             color={Colors.lightGrayColor}
@@ -290,7 +301,10 @@ const ChartTabs = ({tabs = []}) => {
             <ScrollableTabView
                 initialPage={0}
                 locked
-                onChangeTab={({i}) => setCurrent(i)}
+                onChangeTab={({i}) => {
+                    global.LogTool({ctrl: tabs[i].key, event: 'trend_chart_tab'});
+                    setCurrent(i);
+                }}
                 prerenderingSiblingsNumber={Infinity}
                 renderTabBar={() => (
                     <ScrollTabbar
@@ -602,6 +616,7 @@ const RenderChart = ({data = {}}) => {
                                 disabled={loading || period === val}
                                 key={val + i}
                                 onPress={() => {
+                                    global.LogTool({ctrl: key, event: 'chart_timeinterval', oid: val});
                                     setLoading(true);
                                     setPeriod(val);
                                 }}
@@ -649,7 +664,13 @@ const BuyMode = ({data = {}}) => {
                     })}
                 </View>
                 {button?.text ? (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => jump(button.url)} style={Style.flexRow}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool({event: 'Adjust_pattern'});
+                            jump(button.url);
+                        }}
+                        style={Style.flexRow}>
                         <Text style={[styles.desc, {marginRight: px(2), color: Colors.descColor}]}>{button.text}</Text>
                         <Image
                             source={require('~/assets/personal/arrowRight.png')}
@@ -662,7 +683,10 @@ const BuyMode = ({data = {}}) => {
                 <ScrollableTabView
                     initialPage={0}
                     locked
-                    onChangeTab={({i}) => setCurrent(i)}
+                    onChangeTab={({i}) => {
+                        global.LogTool({event: 'signal', oid: i});
+                        setCurrent(i);
+                    }}
                     prerenderingSiblingsNumber={Infinity}
                     renderTabBar={() => (
                         <ScrollTabbar
@@ -1036,6 +1060,11 @@ const Index = ({navigation, route, setLoading}) => {
                                                 <View style={{height: px(50)}}>
                                                     <FormItem
                                                         data={item}
+                                                        logParams={
+                                                            item.log_id
+                                                                ? {event: 'trade_need', oid: item.log_id}
+                                                                : undefined
+                                                        }
                                                         onChange={(val) => {
                                                             // console.log(val);
                                                             item.label === '分红方式' &&
@@ -1058,13 +1087,16 @@ const Index = ({navigation, route, setLoading}) => {
                     {button_list?.length > 0 && (
                         <View style={[Style.flexRow, styles.bottomBtns]}>
                             {button_list.map((btn, i, arr) => {
-                                const {avail, text, url} = btn;
+                                const {avail, log_id, text, url} = btn;
                                 if (i === 0) {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
                                             disabled={avail === 0}
-                                            onPress={() => jump(url)}
+                                            onPress={() => {
+                                                log_id && global.LogTool({event: log_id});
+                                                jump(url);
+                                            }}
                                             key={text + i}
                                             style={[Style.flexCenter, {paddingHorizontal: px(26)}]}>
                                             <Text
@@ -1081,7 +1113,10 @@ const Index = ({navigation, route, setLoading}) => {
                                         <TouchableOpacity
                                             activeOpacity={0.8}
                                             disabled={avail === 0}
-                                            onPress={() => jump(url)}
+                                            onPress={() => {
+                                                log_id && global.LogTool({event: log_id});
+                                                jump(url);
+                                            }}
                                             key={text + i}
                                             style={[
                                                 Style.flexCenter,

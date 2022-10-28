@@ -63,7 +63,7 @@ export const Space = {
     // 左右边距
     marginAlign: text(16),
     // 内边距
-    padding: text(12),
+    padding: text(16),
     cardPadding: text(16),
     /** width **/
     //圆角

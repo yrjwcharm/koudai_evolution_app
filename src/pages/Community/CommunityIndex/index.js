@@ -448,7 +448,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 },
                 ref: waterfallFlow,
                 refreshing,
-                style: {paddingHorizontal: px(5) / 2},
+                style: {paddingHorizontal: px(5) / 2, backgroundColor: Colors.bgColor},
                 ...rest,
             }}
             data={data}
@@ -863,7 +863,7 @@ const styles = StyleSheet.create({
     addContent: {
         position: 'absolute',
         right: px(5),
-        bottom: px(77),
+        bottom: px(38),
     },
     addIcon: {
         width: px(60),
