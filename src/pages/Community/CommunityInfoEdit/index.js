@@ -110,7 +110,9 @@ const Index = ({navigation, route, setLoading}) => {
                     <ImageBackground source={{uri: avatar}} style={[Style.flexCenter, styles.avatar]}>
                         <Image source={camera} style={{width: px(16), height: px(16)}} />
                     </ImageBackground>
-                    <Text style={[styles.bigTitle, {maxWidth: px(224)}]}>{name}</Text>
+                    <Text numberOfLines={1} style={[styles.bigTitle, {maxWidth: px(224)}]}>
+                        {name}
+                    </Text>
                 </View>
                 <AntDesign color={Colors.descColor} name="right" size={px(12)} />
             </TouchableOpacity>
