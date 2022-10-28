@@ -42,7 +42,6 @@ import {
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {cloneDeep, debounce, groupBy, isEqual, sortBy} from 'lodash';
-import LinearGradient from 'react-native-linear-gradient';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, message_url, search_url, setActive, tabs, userInfo = {}}) => {
@@ -399,7 +398,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
     const refresh = () => {
         waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
-        waterfallWrapper.current?.clear?.();
+        // waterfallWrapper.current?.clear?.();
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
@@ -443,7 +442,10 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 ListFooterComponent: renderFooter,
                 onEndReached,
                 onEndReachedThreshold: 0.1,
-                onRefresh: () => (page > 1 ? setPage(1) : init()),
+                onRefresh: () => {
+                    // waterfallWrapper.current?.clear?.();
+                    page > 1 ? setPage(1) : init();
+                },
                 ref: waterfallFlow,
                 refreshing,
                 style: {paddingHorizontal: px(5) / 2},

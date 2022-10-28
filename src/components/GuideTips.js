@@ -2,17 +2,26 @@
  * @Date: 2021-06-09 11:37:24
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 15:18:08
+ * @LastEditTime: 2022-10-28 12:03:50
  * @Description:引导提示tips
  */
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import Image from 'react-native-fast-image';
 import {px, deviceWidth} from '../utils/appUtil';
 import {useJump} from './hooks';
+import http from '~/services';
 
 const GuideTips = ({data, style}) => {
     const jump = useJump();
-    return (
+    const [show, setShow] = useState(true);
+
+    const onClose = () => {
+        http.post('/asset/notice/close/20220915', {id: data?.log_id});
+        setShow(false);
+    };
+
+    return show ? (
         <TouchableOpacity
             style={[styles.con, style]}
             activeOpacity={0.9}
@@ -28,7 +37,12 @@ const GuideTips = ({data, style}) => {
                     <Text style={[styles.text]}>{data?.button?.text}</Text>
                 </View>
             ) : null}
+            <TouchableOpacity activeOpacity={0.8} onPress={onClose} style={styles.closeBtn}>
+                <Image source={require('~/assets/personal/tipClose.png')} style={{width: '100%', height: '100%'}} />
+            </TouchableOpacity>
         </TouchableOpacity>
+    ) : (
+        false
     );
 };
 
@@ -52,5 +66,13 @@ const styles = StyleSheet.create({
         paddingVertical: px(5),
         backgroundColor: 'rgba(255, 125, 65, 1)',
         borderRadius: px(14),
+    },
+    closeBtn: {
+        position: 'absolute',
+        top: -px(7),
+        left: -px(7),
+        width: px(14),
+        height: px(14),
+        zIndex: 1,
     },
 });

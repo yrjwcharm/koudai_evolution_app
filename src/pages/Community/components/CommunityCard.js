@@ -150,6 +150,7 @@ export const CommunityFollowCard = (props) => {
         isRecommend = false,
         live_status, // 直播状态 1 预约中 2 直播中 3 回放
         left_desc, // 直播状态或预约人数
+        media_duration, // 媒体时长
         onDelete, //移除作品
         can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
@@ -329,6 +330,7 @@ export const CommunityFollowCard = (props) => {
                             cover_aspect_ratio={cover_aspect_ratio}
                             live_status={live_status}
                             left_desc={leftDesc}
+                            media_duration={media_duration}
                             right_desc={right_desc}
                             style={
                                 isRecommend
