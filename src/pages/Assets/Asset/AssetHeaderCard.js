@@ -41,7 +41,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                 colors={['#ECF5FF', Colors.bgColor]}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
-                style={{marginBottom: px(12), paddingTop: px(8)}}>
+                style={{marginBottom: px(12), paddingTop: px(12)}}>
                 <LinearGradient
                     colors={['#1C58E7', '#528AED']}
                     start={{x: 0, y: 0}}

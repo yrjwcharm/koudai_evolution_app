@@ -295,6 +295,7 @@ const ChartTabs = ({tabs = []}) => {
                 renderTabBar={() => (
                     <ScrollTabbar
                         activeFontSize={px(13)}
+                        bottomLineStyle={{right: px(16), left: px(8), bottom: 5}}
                         boxStyle={styles.chartTabs}
                         btnColor={Colors.defaultColor}
                         inActiveFontSize={px(12)}
@@ -981,7 +982,7 @@ const Index = ({navigation, route, setLoading}) => {
                         refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}
                         scrollIndicatorInsets={{right: 1}}
                         style={{flex: 1}}>
-                        {system_notices?.length > 0 && <Notice content={system_notices} />}
+                        {system_notices?.length > 0 && <Notice data={system_notices} />}
                         <TopPart
                             setShowEye={setShowEye}
                             showEye={showEye}
@@ -1106,7 +1107,10 @@ const Index = ({navigation, route, setLoading}) => {
                         </View>
                     )}
                     {bottom_notice ? (
-                        <GuideTips data={bottom_notice} style={{position: 'absolute', bottom: px(106)}} />
+                        <GuideTips
+                            data={bottom_notice}
+                            style={{position: 'absolute', bottom: px(12) * 2 + px(44) + (isIphoneX() ? 34 : px(12))}}
+                        />
                     ) : null}
                 </>
             ) : null}

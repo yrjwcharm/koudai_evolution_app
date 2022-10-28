@@ -339,7 +339,9 @@ const PortfolioAssetList = ({route, navigation}) => {
                         );
                     })
                 ) : (
-                    <EmptyTip style={{paddingTop: px(20)}} />
+                    <View style={styles.portCard}>
+                        <EmptyTip style={{paddingTop: px(20)}} />
+                    </View>
                 )}
                 <BottomDesc />
             </Animated.ScrollView>

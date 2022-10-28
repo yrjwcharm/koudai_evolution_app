@@ -19,7 +19,6 @@ const shadow = {
     y: 1,
     style: {
         position: 'relative',
-        // left: px(16),
     },
 };
 const EmptyData = () => {

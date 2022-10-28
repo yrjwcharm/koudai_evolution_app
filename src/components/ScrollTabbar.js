@@ -144,6 +144,7 @@ class ScrollTabbar extends Component {
         let Con = this.props.container == 'View' ? View : ScrollView;
         return (
             <View style={[styles.tabBarBox, this.props.boxStyle]}>
+                <View style={[styles.bottomLine, this.props.bottomLineStyle]} />
                 <Con
                     bounces={false}
                     ref={(ref) => (this._scrollTabBarView = ref)}
@@ -195,5 +196,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: px(-4),
         top: px(8),
+    },
+    bottomLine: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        left: 0,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: Colors.borderColor,
     },
 });

@@ -2,11 +2,11 @@
  * @Date: 2022-09-22 21:30:06
  * @Description:投顾观点 重要观点
  */
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import Image from 'react-native-fast-image';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Style} from '~/common/commonStyle';
-import Icon from 'react-native-vector-icons/Entypo';
 import {useJump} from '~/components/hooks';
 const PointCard = ({data, style}) => {
     const {icon, list, number, url} = data;
@@ -14,7 +14,14 @@ const PointCard = ({data, style}) => {
     return (
         <View style={[styles.card, style]}>
             <TouchableOpacity
-                style={[Style.flexBetween, {height: px(40), borderBottomColor: '#E9EAEF', borderBottomWidth: px(0.5)}]}
+                style={[
+                    Style.flexBetween,
+                    {
+                        height: px(40),
+                        borderBottomColor: Colors.borderColor,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                    },
+                ]}
                 onPress={() => {
                     global.LogTool('guide_click', '重要观点-标题', data?.log_id);
                     jump(url);
@@ -26,7 +33,7 @@ const PointCard = ({data, style}) => {
                         {''} ({number})
                     </Text>
                 </View>
-                <Icon name="chevron-thin-right" color={Colors.lightGrayColor} />
+                <Image source={require('~/assets/personal/arrowRight.png')} style={{width: px(12), height: px(12)}} />
             </TouchableOpacity>
             <View style={{paddingBottom: px(6), paddingTop: px(12)}}>
                 {list?.map((item, index) => (

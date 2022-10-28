@@ -24,7 +24,7 @@ const YellowNotice = ({data}) => {
               <TouchableOpacity
                   key={index}
                   activeOpacity={0.9}
-                  style={[styles.systemMsgContainer, arr.length > 1 && {marginBottom: px(12)}]}
+                  style={[styles.systemMsgContainer]}
                   onPress={() => {
                       global.LogTool('guide_click', '顶部小黄条', system?.log_id);
                       jump(system?.url);
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
         marginHorizontal: Space.marginAlign,
         marginTop: px(12),
         borderRadius: px(6),
+        overflow: 'hidden',
     },
     systemMsgText: {
         fontSize: px(12),

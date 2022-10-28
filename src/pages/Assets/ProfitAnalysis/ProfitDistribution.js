@@ -29,7 +29,7 @@ const shadow = {
     style: {
         position: 'relative',
         top: px(12),
-        left: Space.padding,
+        left: px(16),
         zIndex: 0,
     },
 };
@@ -47,6 +47,7 @@ const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState([]);
+    const [enabled, setEnabled] = useState(true);
     const tabsRef = useRef([
         {type: 'day', text: '日收益'},
         {type: 'month', text: '月收益'},
@@ -55,8 +56,10 @@ const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
     ]);
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: 'day'});
-        let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
-        return () => listener && listener.remove();
+        let scrollListener = DeviceEventEmitter.addListener('changeScrollViewEnable', (enabled) => setEnabled(enabled));
+        return () => {
+            scrollListener && scrollListener.remove();
+        };
     }, []);
     useEffect(() => {
         (async () => {
@@ -75,7 +78,7 @@ const ProfitDistribution = React.memo(({poid = '', fund_code = ''}) => {
             ) : (
                 <>
                     <View style={{flex: 1, position: 'relative'}}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView scrollEnabled={enabled} showsVerticalScrollIndicator={false}>
                             <BoxShadow setting={{...shadow}}>
                                 <View style={styles.header}>
                                     <View style={Style.flexEvenly}>
