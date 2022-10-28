@@ -2,7 +2,7 @@
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 16:21:39
+ * @LastEditTime: 2022-10-28 17:51:21
  * @Description:
  */
 import {applyMiddleware, createStore, compose} from 'redux';
@@ -30,9 +30,9 @@ const persistConfig = {
 
 //中间件
 const middlewares = [thunkMiddleware];
-// if (__DEV__) {
-//     middlewares.push(require('redux-logger').createLogger());
-// }
+if (__DEV__) {
+    middlewares.push(require('redux-logger').createLogger());
+}
 
 const reducer = combineReducers({
     userInfo: UserReducer,

@@ -347,8 +347,8 @@ const PortfolioAssetList = ({route, navigation}) => {
                         );
                     })
                 ) : (
-                    <View style={styles.portCard}>
-                        <EmptyTip style={{paddingTop: px(20)}} />
+                    <View style={[styles.portCard, {paddingBottom: px(32)}]}>
+                        <EmptyTip style={{paddingTop: px(20)}} type="part" />
                     </View>
                 )}
                 <BottomDesc />

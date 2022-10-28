@@ -13,34 +13,16 @@ export const ProgressCon = ({cover}) => {
     const {duration, position} = useProgress();
     return (
         !!duration && (
-            <>
-                <View>
-                    <Progress.Circle
-                        size={px(30)}
-                        indeterminate={false}
-                        progress={position / duration}
-                        color={Colors.brandColor}
-                        borderWidth={0}>
-                        <Image source={{uri: cover}} style={styles.avatar} />
-                    </Progress.Circle>
-                </View>
-                {/* <Slider
-                    style={styles.container}
-                    value={position}
-                    minimumValue={0}
-                    maximumValue={duration}
-                    thumbTintColor="#FFD479"
-                    minimumTrackTintColor="#FFD479"
-                    maximumTrackTintColor="#FFFFFF"
-                    onSlidingComplete={TrackPlayer.seekTo}
-                />
-                <View style={styles.labelContainer}>
-                    <Text style={styles.labelText}>{new Date(position * 1000).toISOString().slice(14, 19)}</Text>
-                    <Text style={styles.labelText}>
-                        {new Date((duration - position) * 1000).toISOString().slice(14, 19)}
-                    </Text>
-                </View> */}
-            </>
+            <View>
+                <Progress.Circle
+                    size={px(30)}
+                    indeterminate={false}
+                    progress={position / duration}
+                    color={Colors.brandColor}
+                    borderWidth={0}>
+                    <Image source={{uri: cover}} style={styles.avatar} />
+                </Progress.Circle>
+            </View>
         )
     );
 };
