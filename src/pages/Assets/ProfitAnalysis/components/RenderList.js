@@ -42,7 +42,6 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 let bool = data_list.every((el) => el?.profit == 0);
                 setBool(bool);
                 setLoading(false);
-                DeviceEventEmitter.emit('sendTrigger', button);
             }
         })();
     }, [type, unitType, curDate]);
@@ -100,6 +99,15 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                         <React.Fragment />
                     ) : (
                         <FlatList
+                            onTouchStart={(ev) => {
+                                DeviceEventEmitter.emit('changeScrollViewEnable', false);
+                            }}
+                            onMomentumScrollEnd={(e) => {
+                                DeviceEventEmitter.emit('changeScrollViewEnable', true);
+                            }}
+                            onScrollEndDrag={(e) => {
+                                DeviceEventEmitter.emit('changeScrollViewEnable', true);
+                            }}
                             showsVerticalScrollIndicator={false}
                             data={profitList}
                             keyExtractor={(item, index) => item + index}
