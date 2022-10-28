@@ -14,5 +14,5 @@ export const getList = (data) => {
 };
 
 export const getChartData = (data) => {
-    return http.get('/portfolio/yield_chart/20210101', data);
+    return http.get('/manage_center/data_detail/chart/20221010', data);
 };

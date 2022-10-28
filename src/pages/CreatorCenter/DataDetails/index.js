@@ -15,7 +15,7 @@ import ChartComponent from './ChartComponent';
 import {getData, getList} from './services';
 
 const DataDetails = () => {
-    const [activeSections, setActiveSections] = useState([]);
+    const [activeSections, setActiveSections] = useState([0]);
     const [data, setData] = useState();
     const [listData, setListData] = useState();
     const [listLoading, setListLoading] = useState(true);

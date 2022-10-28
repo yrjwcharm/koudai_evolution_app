@@ -17,11 +17,10 @@ import {cloneDeep} from 'lodash';
 
 const ChartComponent = ({isActive, options}) => {
     const [data, setData] = useState();
-    const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(options.period);
     const [chartLabel, setChartLabel] = useState(null);
     const [tip, setTip] = useState({});
 
-    const chartLabelDefaultRef = useRef({});
     const bottomModal = useRef();
 
     useEffect(() => {
@@ -29,12 +28,11 @@ const ChartComponent = ({isActive, options}) => {
     }, [isActive, activeTab]);
 
     const getData = () => {
-        getChartData(options).then((res) => {
+        getChartData({...options.params, period: activeTab}).then((res) => {
             if (res.code === '000000') {
                 setData();
                 setData(res.result);
-                setChartLabel(res.result?.yield_info?.label);
-                chartLabelDefaultRef.current = res.result?.yield_info?.label;
+                setChartLabel(res.result?.summary);
             }
         });
     };
@@ -55,74 +53,78 @@ const ChartComponent = ({isActive, options}) => {
             return next;
         });
     }, []);
-    const onChartHide = useCallback(() => {
-        setChartLabel(chartLabelDefaultRef.current);
-    }, []);
+    const onChartHide = useCallback(() => {}, []);
 
     return (
         <View style={styles.container}>
             <View style={styles.panelWrap}>
                 {chartLabel?.length ? (
                     <>
-                        <View style={styles.panelItem}>
-                            <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>2022-03-22</Text>
-                            <View style={styles.panelItemDesc}>
-                                <Text style={styles.panelItemDescText}>时间</Text>
+                        {chartLabel?.[0] ? (
+                            <View style={styles.panelItem}>
+                                <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>{chartLabel?.[0]?.val}</Text>
+                                <View style={styles.panelItemDesc}>
+                                    <Text style={styles.panelItemDescText}>{chartLabel?.[0]?.key}</Text>
+                                </View>
                             </View>
-                        </View>
-                        <View style={styles.panelItem}>
-                            <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>124,727,804</Text>
-                            <View style={styles.panelItemDesc}>
-                                <View style={[styles.panelItemLegend, {backgroundColor: '#E74949'}]} />
-                                <Text style={styles.panelItemDescText}>单日新增销量</Text>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        // setTip({});
-                                        // bottomModal.current.show();
-                                    }}>
-                                    <FastImage
-                                        source={{
-                                            uri:
-                                                'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
-                                        }}
-                                        style={styles.panelItemHintIcon}
-                                    />
-                                </TouchableOpacity>
+                        ) : null}
+                        {chartLabel?.[1] ? (
+                            <View style={styles.panelItem}>
+                                <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>{chartLabel?.[1]?.val}</Text>
+                                <View style={styles.panelItemDesc}>
+                                    <View style={[styles.panelItemLegend, {backgroundColor: '#E74949'}]} />
+                                    <Text style={styles.panelItemDescText}>{chartLabel?.[1]?.key}</Text>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            setTip(chartLabel?.[1].tip);
+                                            bottomModal.current.show();
+                                        }}>
+                                        <FastImage
+                                            source={{
+                                                uri:
+                                                    'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
+                                            }}
+                                            style={styles.panelItemHintIcon}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </View>
-                        <View style={styles.panelItem}>
-                            <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>462,628,05</Text>
-                            <View style={styles.panelItemDesc}>
-                                <View style={[styles.panelItemLegend, {backgroundColor: '#E74949'}]} />
-                                <Text style={styles.panelItemDescText}>单日新增赎回</Text>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        // setTip({});
-                                        // bottomModal.current.show();
-                                    }}>
-                                    <FastImage
-                                        source={{
-                                            uri:
-                                                'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
-                                        }}
-                                        style={styles.panelItemHintIcon}
-                                    />
-                                </TouchableOpacity>
+                        ) : null}
+                        {chartLabel?.[2] ? (
+                            <View style={styles.panelItem}>
+                                <Text style={[styles.panelItemNumer, {color: '#121D3A'}]}>{chartLabel?.[2]?.val}</Text>
+                                <View style={styles.panelItemDesc}>
+                                    <View style={[styles.panelItemLegend, {backgroundColor: '#E74949'}]} />
+                                    <Text style={styles.panelItemDescText}>{chartLabel?.[2]?.key}</Text>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            setTip(chartLabel?.[2].tip);
+                                            bottomModal.current.show();
+                                        }}>
+                                        <FastImage
+                                            source={{
+                                                uri:
+                                                    'https://static.licaimofang.com/wp-content/uploads/2022/10/question.png',
+                                            }}
+                                            style={styles.panelItemHintIcon}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </View>
+                        ) : null}
                     </>
                 ) : null}
             </View>
             <View style={styles.chartWrap}>
-                {data?.yield_info?.chart?.length ? (
+                {data?.chart?.length ? (
                     <Chart
                         initScript={baseAreaChart(
-                            data.yield_info.chart,
+                            data.chart,
                             [Colors.red, Colors.lightBlackColor, 'transparent'],
                             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            true,
+                            false,
                             2,
                             px(318),
                             [10, 10, 10, 15],
@@ -138,17 +140,18 @@ const ChartComponent = ({isActive, options}) => {
                 ) : null}
             </View>
             <View style={styles.tabsWrap}>
-                {data?.yield_info?.sub_tabs?.length
-                    ? [1, 2, 3, 4, 5].map((item, idx) => (
+                {data?.chart_tabs?.length
+                    ? data?.chart_tabs.map((item, idx) => (
                           <TouchableOpacity
                               activeOpacity={0.8}
                               onPress={() => {
-                                  setActiveTab(idx);
+                                  setActiveTab(item.val);
                               }}
-                              style={[styles.tabItem, {backgroundColor: activeTab === idx ? '#DEE8FF' : '#fff'}]}
+                              style={[styles.tabItem, {backgroundColor: activeTab === item.val ? '#DEE8FF' : '#fff'}]}
                               key={idx}>
-                              <Text style={[styles.tabItemText, {color: activeTab === idx ? '#0051CC' : '#545968'}]}>
-                                  近1月
+                              <Text
+                                  style={[styles.tabItemText, {color: activeTab === item.val ? '#0051CC' : '#545968'}]}>
+                                  {item.key}
                               </Text>
                           </TouchableOpacity>
                       ))
@@ -156,14 +159,10 @@ const ChartComponent = ({isActive, options}) => {
             </View>
             <BottomModal ref={bottomModal} title={tip?.title}>
                 <View style={[{padding: px(16)}]}>
-                    {tip?.content?.map?.((item, index) => {
-                        return (
-                            <View key={item + index} style={{marginTop: index === 0 ? 0 : px(16)}}>
-                                {item.key ? <Text style={styles.tipTitle}>{item.key}:</Text> : null}
-                                <Html style={{lineHeight: px(18), fontSize: px(13)}} html={item.val} />
-                            </View>
-                        );
-                    })}
+                    <View>
+                        {tip?.content?.key ? <Text style={styles.tipTitle}>{tip?.content.key}:</Text> : null}
+                        <Html style={{lineHeight: px(18), fontSize: px(13)}} html={tip?.content?.val} />
+                    </View>
                 </View>
             </BottomModal>
         </View>
@@ -212,6 +211,7 @@ const styles = StyleSheet.create({
     },
     chartWrap: {
         height: px(170),
+        backgroundColor: '#fff',
     },
     tabsWrap: {
         paddingBottom: px(12),
@@ -230,5 +230,11 @@ const styles = StyleSheet.create({
     tabItemText: {
         fontSize: px(11),
         lineHeight: px(15),
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: px(20),
+        fontSize: Font.textH2,
+        marginBottom: px(4),
     },
 });
