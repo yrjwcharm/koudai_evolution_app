@@ -131,7 +131,7 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                                 )}
                             </>
                         }
-                        ListEmptyComponent={<EmptyData />}
+                        // ListEmptyComponent={<EmptyData />}
                         onEndReachedThreshold={0.5}
                         refreshing={false}
                         renderItem={renderItem}
