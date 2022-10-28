@@ -90,7 +90,8 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => 
                                     {value: '累计收益(元)'},
                                     false,
                                     0,
-                                    [0, 45, 12, 12]
+                                    [0, 45, 12, 12],
+                                    12
                                 )}
                                 updateScript={(data) => `
                                     chart.clear();
