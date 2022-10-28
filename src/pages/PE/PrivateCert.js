@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-19 12:19:22
- * @LastEditors: dx
+ * @LastEditors: Please set LastEditors
  * @Desc:私募合格投资者认证
- * @LastEditTime: 2021-04-20 19:42:39
+ * @LastEditTime: 2022-10-28 16:04:19
  */
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
@@ -53,7 +53,7 @@ class PrivateCert extends Component {
     }
     clickBtn = () => {
         const {data, check, fund_code} = this.state;
-        if (check[0] && check[1]) {
+        if (check[0] && (data?.items[1] ? check[1] : true)) {
             if (data.tip) {
                 Modal.show({
                     title: data.tip.title,
@@ -80,6 +80,7 @@ class PrivateCert extends Component {
         Http.get('/pe/validate/20210101', {
             fund_code: this.state.fund_code,
         }).then((res) => {
+            this.props.navigation.setOptions({title: res.result?.title});
             this.setState({
                 data: res.result,
             });
@@ -118,15 +119,17 @@ class PrivateCert extends Component {
                                 />
                                 <Html style={styles.check_text} html={data?.items[0]?.text} />
                             </View>
-                            <View style={[Style.flexRow, styles.check_nd]}>
-                                <CheckBox
-                                    checked={check[1]}
-                                    onChange={() => this.onChange(check[1], 1)}
-                                    color={'#CEA26B'}
-                                    style={{marginRight: text(5)}}
-                                />
-                                <Text style={{lineHeight: text(18)}}>{data?.items[1]?.text}</Text>
-                            </View>
+                            {!!data?.items[1] && (
+                                <View style={[Style.flexRow, styles.check_nd]}>
+                                    <CheckBox
+                                        checked={check[1]}
+                                        onChange={() => this.onChange(check[1], 1)}
+                                        color={'#CEA26B'}
+                                        style={{marginRight: text(5)}}
+                                    />
+                                    <Text style={{lineHeight: text(18)}}>{data?.items[1]?.text}</Text>
+                                </View>
+                            )}
                         </View>
                     </View>
                 )}
