@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 18:35:55
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-10-28 10:23:54
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 创建专题-内容编辑-修改内容排序
  */
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import NavBar from '~/components/NavBar';
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     listWrap: {
-        flexGrow: 1,
+        flex: 1,
     },
     footer: {
         position: 'absolute',
