@@ -56,7 +56,9 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: 'day'});
         let scrollListener = DeviceEventEmitter.addListener('changeScrollViewEnable', (enabled) => setEnabled(enabled));
+        let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
         return () => {
+            listener && listener.remove();
             scrollListener && scrollListener.remove();
         };
     }, []);

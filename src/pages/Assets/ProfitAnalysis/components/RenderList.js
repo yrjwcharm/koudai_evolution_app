@@ -35,8 +35,8 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = ''}) 
             if (res.code === '000000') {
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
-
                 setProfitList(data_list);
+                DeviceEventEmitter.emit('sendTrigger', button);
                 setLoading(false);
             }
         })();
