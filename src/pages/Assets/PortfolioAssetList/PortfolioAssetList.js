@@ -54,6 +54,7 @@ const PortfolioAssetList = ({route, navigation}) => {
         setHold(res.result);
     };
     const handleSort = (_data) => {
+        global.LogTool('order', _data.sort_key);
         if (_data.sort_key) {
             getHoldData({
                 type,
@@ -105,7 +106,13 @@ const PortfolioAssetList = ({route, navigation}) => {
                     {/* 系统通知 */}
                     {data?.system_notices?.length > 0 && <YellowNotice data={data?.system_notices} />}
                     {/* header */}
-                    <TouchableOpacity style={styles.headerCard} activeOpacity={0.8} onPress={() => jump(summary?.url)}>
+                    <TouchableOpacity
+                        style={styles.headerCard}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool('assets_card');
+                            jump(summary?.url);
+                        }}>
                         <View style={[styles.summaryTitle, Style.flexBetween]}>
                             <View style={Style.flexRow}>
                                 <Text style={styles.summaryKey}>总资产(元)</Text>
@@ -244,6 +251,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     if (tag_info) {
                                         global.LogTool('guide_click', '卡片标签 ', log_id);
                                     }
+                                    global.LogTool('single_card', log_id);
                                     jump(url);
                                 }}
                                 key={log_id}>
@@ -346,7 +354,13 @@ const PortfolioAssetList = ({route, navigation}) => {
                 <BottomDesc />
             </Animated.ScrollView>
             {!!data?.bottom_button && (
-                <FixedButton title={data?.bottom_button?.text} onPress={() => jump(data?.bottom_button?.url)} />
+                <FixedButton
+                    title={data?.bottom_button?.text}
+                    onPress={() => {
+                        global.LogTool('go_financing_market');
+                        jump(data?.bottom_button?.url);
+                    }}
+                />
             )}
             {data?.bottom_notice && (
                 <GuideTips data={data?.bottom_notice} style={{position: 'absolute', bottom: px(17)}} />

@@ -2,10 +2,10 @@
  * @Date: 2021-01-29 18:52:23
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 11:50:03
+ * @LastEditTime: 2022-10-28 11:08:51
  * @Description: 数据空的时候提示组件
  */
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {Text, View, Image, StyleSheet} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Font} from '../../common/commonStyle';
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         paddingTop: px(80),
     },
     image: {
-        height: px(96),
+        height: px(64),
         width: px(120),
     },
     text: {
@@ -39,16 +39,15 @@ const styles = StyleSheet.create({
     },
     title: {
         marginTop: px(30),
-        fontSize: Font.textH1,
+        fontSize: px(13),
         lineHeight: px(22),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: '700',
         textAlign: 'center',
     },
     desc: {
-        marginTop: px(6),
-        fontSize: Font.textH2,
-        lineHeight: px(20),
+        marginTop: px(2),
+        fontSize: px(11),
         color: Colors.descColor,
     },
 });

@@ -9,7 +9,6 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '~/common/commonStyle';
-import LinearGradient from 'react-native-linear-gradient';
 import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
@@ -150,12 +149,13 @@ const CommunityHome = ({navigation, route}) => {
                             }
                         }}
                         renderTabBar={(_props) => (
-                            <ScrollTabbar {..._props} container="View" boxStyle={{backgroundColor: '#fff'}} />
+                            <ScrollTabbar {..._props} container="View" boxStyle={{backgroundColor: Colors.bgColor}} />
                         )}
                         renderScrollHeaderBg={{
                             uri: data?.community_info?.bg_img || data?.community_info?.avatar,
                             style: {
                                 height: parallaxHeaderHeight,
+                                backgroundColor: 'rgba(18, 29, 58, 0.5)',
                             },
                         }}
                         renderScrollHeader={() => {
@@ -184,84 +184,60 @@ const CommunityHome = ({navigation, route}) => {
                             tab.type == 1 ? (
                                 <ScrollView
                                     key={index}
-                                    style={{flex: 1, backgroundColor: Colors.bgColor}}
+                                    style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
                                     tabLabel={tab?.name}>
-                                    <LinearGradient
-                                        style={{paddingHorizontal: px(16)}}
-                                        colors={['#fff', Colors.bgColor]}
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 0, y: 0.3}}>
-                                        {!loading ? (
-                                            product?.length ? (
-                                                product?.map((_data) => (
-                                                    <CommunityFollowCard
-                                                        key={_data.id}
-                                                        {..._data}
-                                                        onDelete={onDelete}
-                                                    />
-                                                ))
-                                            ) : (
-                                                <EmptyTip
-                                                    desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
-                                                    text={'暂无相关作品'}
-                                                    imageStyle={{marginBottom: px(-30)}}>
-                                                    {data?.show_add_btn && (
-                                                        <Button
-                                                            onPress={() =>
-                                                                chooseModal?.current?.show('article', product)
-                                                            }
-                                                            title="添加作品"
-                                                            style={{
-                                                                width: px(180),
-                                                                borderRadius: px(100),
-                                                                marginTop: px(10),
-                                                            }}
-                                                        />
-                                                    )}
-                                                </EmptyTip>
-                                            )
+                                    {!loading ? (
+                                        product?.length ? (
+                                            product?.map((_data) => (
+                                                <CommunityFollowCard key={_data.id} {..._data} onDelete={onDelete} />
+                                            ))
                                         ) : (
-                                            <ActivityIndicator />
-                                        )}
-                                    </LinearGradient>
+                                            <EmptyTip
+                                                desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                                text={'暂无相关作品'}
+                                                imageStyle={{marginBottom: px(-30)}}>
+                                                {data?.show_add_btn && (
+                                                    <Button
+                                                        onPress={() => chooseModal?.current?.show('article', product)}
+                                                        title="添加作品"
+                                                        style={styles.addBtn}
+                                                        textStyle={{fontSize: px(13)}}
+                                                    />
+                                                )}
+                                            </EmptyTip>
+                                        )
+                                    ) : (
+                                        <ActivityIndicator />
+                                    )}
                                 </ScrollView>
                             ) : (
                                 <ScrollView
                                     key={index}
-                                    style={{flex: 1, backgroundColor: Colors.bgColor}}
+                                    style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
                                     tabLabel={tab?.name}>
-                                    <LinearGradient
-                                        style={{paddingHorizontal: px(16)}}
-                                        colors={['#fff', Colors.bgColor]}
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 0, y: 0.3}}>
-                                        {!loading ? (
-                                            product?.length ? (
-                                                product?.map((_data) => (
-                                                    <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
-                                                ))
-                                            ) : (
-                                                <EmptyTip
-                                                    desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
-                                                    text={'暂无相关产品'}
-                                                    imageStyle={{marginBottom: px(-30)}}>
-                                                    {data?.show_add_btn && (
-                                                        <Button
-                                                            onPress={() => chooseModal?.current?.show('all', product)}
-                                                            title="添加产品"
-                                                            style={{
-                                                                width: px(180),
-                                                                borderRadius: px(100),
-                                                                marginTop: px(10),
-                                                            }}
-                                                        />
-                                                    )}
-                                                </EmptyTip>
-                                            )
+                                    {!loading ? (
+                                        product?.length ? (
+                                            product?.map((_data) => (
+                                                <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
+                                            ))
                                         ) : (
-                                            <ActivityIndicator />
-                                        )}
-                                    </LinearGradient>
+                                            <EmptyTip
+                                                desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                                text={'暂无相关产品'}
+                                                imageStyle={{marginBottom: px(-30)}}>
+                                                {data?.show_add_btn && (
+                                                    <Button
+                                                        onPress={() => chooseModal?.current?.show('all', product)}
+                                                        title="添加产品"
+                                                        style={styles.addBtn}
+                                                        textStyle={{fontSize: px(13)}}
+                                                    />
+                                                )}
+                                            </EmptyTip>
+                                        )
+                                    ) : (
+                                        <ActivityIndicator />
+                                    )}
                                 </ScrollView>
                             )
                         )}
@@ -322,7 +298,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: px(20),
         marginTop: px(-30),
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
     },
     vName: {
         fontSize: px(18),
@@ -337,5 +313,11 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(19),
         textAlign: 'center',
+    },
+    addBtn: {
+        width: px(180),
+        height: px(36),
+        borderRadius: px(100),
+        marginTop: px(16),
     },
 });

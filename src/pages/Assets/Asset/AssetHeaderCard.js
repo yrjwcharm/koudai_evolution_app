@@ -35,6 +35,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
             onPress={() => {
                 //type获取
                 dispatch({type: 'updateType', payload: 200});
+                global.LogTool('assets_card');
                 jump(summary?.url);
             }}>
             <LinearGradient

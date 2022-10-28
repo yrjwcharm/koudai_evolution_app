@@ -33,6 +33,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
             style={{
                 height: px(220),
                 paddingHorizontal: px(20),
+
                 ...style,
             }}>
             <View style={Style.flexBetween}>

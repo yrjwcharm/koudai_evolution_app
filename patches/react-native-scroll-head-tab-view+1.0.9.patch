@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
-index c993477..4d92cc0 100644
+index c993477..2e48230 100644
 --- a/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
 +++ b/node_modules/react-native-scroll-head-tab-view/ScrollTabView.tsx
 @@ -25,6 +25,7 @@ interface Props {
@@ -10,7 +10,7 @@ index c993477..4d92cc0 100644
      insetValue?: number; // 状态栏的高度，也就是TabBar距离顶部状态栏的距离
      headerHeight?: number;
      tabBarStyle?: ViewStyle;
-@@ -224,10 +225,46 @@ export default class ScrollableTabView extends Component<Props> {
+@@ -224,10 +225,73 @@ export default class ScrollableTabView extends Component<Props> {
                          },
                      ],
                  }}>
@@ -26,6 +26,31 @@ index c993477..4d92cc0 100644
 +        if (!renderScrollHeader) return null;
 +
 +        return (
++            <View>
++                <Animated.View style={{
++                    position: 'absolute',
++                    zIndex: 1,
++                    top: 0,
++                    width: containerWidth,
++                    height: headerHeight,
++                    transform: [
++                        {
++                            translateY: containerOffsetY.interpolate({
++                                inputRange: [-200, 0, 255],
++                                outputRange: [-255 / 2, 0, 0],
++                            }),
++                        },
++                        {
++                            scale: containerOffsetY.interpolate({
++                                inputRange: [-255, 0, 255],
++                                outputRange: [2, 1, 1],
++                            }),
++                        },
++                    ],
++                    ...renderScrollHeaderBg?.style
++              }}>
++
++                </Animated.View>
 +            <Animated.Image
 +                source={{ uri: renderScrollHeaderBg?.uri}}
 +                style={{
@@ -49,9 +74,11 @@ index c993477..4d92cc0 100644
 +                        },
 +                    ],
 +                    ...renderScrollHeaderBg?.style
++                
 +                }}>
 +              
 +            </Animated.Image>
++            </View>
 +        );
 +    };
  

@@ -691,14 +691,12 @@ const ArticleDetail = ({navigation, route}) => {
                             onPress={() => {
                                 handelComment(false);
                             }}
-                            style={[Style.flexCenter, {flex: 1, left: px(2)}]}>
+                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-7), left: px(4)}]}>
                             <FastImage
-                                style={{height: px(22), width: px(22), marginBottom: px(-4)}}
+                                style={{height: px(22), width: px(22)}}
                                 source={require('../../assets/img/vision/commentIcon.png')}
                             />
-                            {data.comment_num > 0 ? (
-                                <Text style={[styles.iconText, {top: px(-8), left: px(34)}]}>{data.comment_num}</Text>
-                            ) : null}
+                            {data.comment_num > 0 ? <Text style={styles.iconText}>{data.comment_num}</Text> : null}
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -742,11 +740,12 @@ const ArticleDetail = ({navigation, route}) => {
                                 setMore(false);
                                 shareModal.current.show();
                             }}
-                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
+                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-7)}]}>
                             <Image
                                 source={require('~/assets/img/article/share.png')}
-                                style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
+                                style={[styles.actionIcon, {width: px(22), height: px(22), marginBottom: px(2)}]}
                             />
+                            <Text style={[styles.iconText, {marginTop: px(2)}]}>分享</Text>
                         </TouchableOpacity>
                     </View>
                     {!userInfo.is_login && <LoginMask />}
@@ -791,12 +790,8 @@ const styles = StyleSheet.create({
     },
     iconText: {
         fontSize: Font.textSm,
-        lineHeight: text(17),
+        // lineHeight: text(17),
         color: Colors.lightBlackColor,
-        position: 'absolute',
-        textAlign: 'left',
-        left: px(31),
-        top: 0,
     },
     finishText: {
         fontSize: Font.textH3,
@@ -829,7 +824,7 @@ const styles = StyleSheet.create({
         paddingBottom: px(20),
     },
     footer_content: {
-        height: px(31),
+        height: px(36),
         backgroundColor: '#F3F5F8',
         borderRadius: px(16),
         width: px(151),

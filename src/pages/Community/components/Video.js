@@ -68,7 +68,11 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         });
     };
     return (
-        <>
+        <View
+            style={{
+                height: height,
+                width: WIDTH,
+            }}>
             <TouchableWithoutFeedback onPress={onPlayPausePress}>
                 <View style={{flex: 1}}>
                     <Animated.View
@@ -185,7 +189,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                     handleComment={handleComment}
                 />
             </View>
-        </>
+        </View>
     );
 };
 

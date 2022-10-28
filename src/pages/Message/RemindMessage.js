@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 13:58:01
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-28 14:30:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -101,7 +101,10 @@ export default function RemindMessage({navigation}) {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
-                            onPress={() => jump(data?.service?.url)}>
+                            onPress={() => {
+                                global.LogTool('investment_adviser');
+                                jump(data?.service?.url);
+                            }}>
                             <View>
                                 <Image
                                     source={{
@@ -140,7 +143,10 @@ export default function RemindMessage({navigation}) {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
-                            onPress={() => jump(data?.point?.url)}>
+                            onPress={() => {
+                                global.LogTool('investment_viewpoint');
+                                jump(data?.point?.url);
+                            }}>
                             <View>
                                 <Image
                                     source={{
@@ -193,7 +199,10 @@ export default function RemindMessage({navigation}) {
                                             {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},
                                         ]}
                                         key={_index + '_item'}
-                                        onPress={() => jump(_item.url)}>
+                                        onPress={() => {
+                                            global.LogTool(_item.type);
+                                            jump(_item.url);
+                                        }}>
                                         <View>
                                             <Image
                                                 source={{
