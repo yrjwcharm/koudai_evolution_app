@@ -64,6 +64,11 @@ const AlbumHeader = ({
                     {icon ? <Image source={{uri: icon}} style={styles.icon} /> : null}
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
+                    {/* {true ? (
+                        <View style={[styles.tagWrap, {backgroundColor: 'red'}]}>
+                            <Text style={[styles.tagText, {color: 'blue'}]}>123123</Text>
+                        </View>
+                    ) : null} */}
                 </View>
                 <FastImage
                     style={{width: px(10), height: px(10)}}
@@ -273,6 +278,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         zIndex: 2,
         opacity: 0.8,
+    },
+    tagWrap: {
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
+        paddingVertical: px(2),
+        marginLeft: px(8),
+    },
+    tagText: {
+        fontSize: px(10),
+        lineHeight: px(14),
     },
 });
 
