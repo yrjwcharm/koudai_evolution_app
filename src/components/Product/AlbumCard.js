@@ -65,8 +65,20 @@ const AlbumHeader = ({
                     <Text style={styles.title}>{title}</Text>
                     {title_desc ? <Text style={styles.desc}>{title_desc}</Text> : null}
                     {title_tag ? (
-                        <View style={[styles.tagWrap, {backgroundColor: title_tag.bg}]}>
-                            <Text style={[styles.tagText, {color: title_tag.color}]}>{title_tag?.text}</Text>
+                        <View
+                            style={[
+                                styles.tagWrap,
+                                title_tag.type === 1
+                                    ? {backgroundColor: '#F1F6FF', borderColor: '#CEDDF5'}
+                                    : {backgroundColor: '#FFF2F2', borderColor: '#FFD3D3'},
+                            ]}>
+                            <Text
+                                style={[
+                                    styles.tagText,
+                                    title_tag.type === 1 ? {color: '#0051CC'} : {color: '#E74949'},
+                                ]}>
+                                {title_tag?.text}
+                            </Text>
                         </View>
                     ) : null}
                 </View>
@@ -284,6 +296,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(4),
         paddingVertical: px(2),
         marginLeft: px(8),
+        borderWidth: 0.5,
     },
     tagText: {
         fontSize: px(10),
