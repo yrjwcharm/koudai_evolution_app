@@ -14,8 +14,10 @@ import {BottomModal} from '../../../components/Modal';
 import {getEarningsUpdateNote, getHeadData} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
+import ScrollTabbar from '../../../components/ScrollTabbar';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type: initType} = route.params || {};
+    console.log(333, poid);
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(false);
     const [locked, setLocked] = useState(false);
@@ -76,11 +78,8 @@ const ProfitDetail = ({navigation, route}) => {
                     {tabs.length > 1 && (
                         <ScrollableTabView
                             ref={scrollTab}
-                            renderTabBar={() => (
-                                <Tab btnColor={Colors.defaultColor} inActiveColor={Colors.lightBlackColor} />
-                            )}
+                            renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
                             initialPage={page}
-                            // prerenderingSiblingsNumber={0}
                             locked={false}
                             onChangeTab={({i}) => {
                                 setType(tabs[i].type);
