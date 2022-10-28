@@ -93,7 +93,13 @@ const SubjectCollection = ({navigation, route}) => {
                                         ))}
                                     </View>
                                 ) : (
-                                    <EmptyTip />
+                                    <View style={{backgroundColor: '#fff', margin: px(16), borderRadius: px(6)}}>
+                                        <EmptyTip
+                                            style={{paddingVertical: px(60)}}
+                                            text="暂无内容"
+                                            textStyle={{marginTop: px(8)}}
+                                        />
+                                    </View>
                                 )}
                                 {listData?.tip ? <Text style={styles.hint}>{listData?.tip}</Text> : null}
                             </>

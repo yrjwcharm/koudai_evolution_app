@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         lineHeight: px(17),
         color: '#545968',
-        fontWeight: 'bold',
     },
     tabTextActive: {
         fontSize: px(14),

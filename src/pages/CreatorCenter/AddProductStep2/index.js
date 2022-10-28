@@ -418,6 +418,7 @@ const styles = StyleSheet.create({
     },
     mainCardBottom: {
         flexDirection: 'row',
+        alignItems: 'center',
     },
     bottomBtn: {
         flexDirection: 'row',

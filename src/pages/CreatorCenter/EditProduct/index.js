@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        paddingVertical: px(14),
+        paddingVertical: px(8),
         paddingHorizontal: px(16),
     },
     cardWrap: {
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     modalStyleWrap: {
-        marginBottom: px(12),
+        marginBottom: px(16),
     },
     modalStyleHeader: {
         flexDirection: 'row',

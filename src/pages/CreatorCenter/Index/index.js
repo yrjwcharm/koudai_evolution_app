@@ -110,6 +110,7 @@ const CreatorCenterIndex = () => {
         <View style={styles.container}>
             <View style={{width: '100%', height: px(265)}}>
                 <FastImage source={{uri: data?.head?.bg_img}} style={styles.topBgImg} />
+                <View style={styles.topBgImgMask} />
                 <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>
                     {criticalState && <Text style={styles.navTitle}>管理中心</Text>}
                     <TouchableOpacity
@@ -346,6 +347,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F6F8',
     },
     topBgImg: {width: '100%', height: '100%', position: 'absolute', top: 0, left: 0},
+    topBgImgMask: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        backgroundColor: '#121D3A',
+        opacity: 0.5,
+    },
     navBar: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -466,6 +476,7 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(14),
         color: '#121D3A',
+        fontWeight: 'bold',
     },
     cardItemPanel: {
         marginTop: px(12),

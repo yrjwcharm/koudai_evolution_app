@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:58:03
+ * @LastEditTime: 2022-10-28 12:01:08
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -314,26 +314,29 @@ const Product = ({navigation}) => {
                         />
                         <Text style={styles.searchPlaceHolder}>{proData?.search?.placeholder}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => {
-                            global.LogTool('indexNotificationCenter');
-                            jump({path: 'RemindMessage'});
-                        }}>
-                        {allMsg ? (
-                            <View style={[styles.point_sty, Style.flexCenter, {left: allMsg > 99 ? px(11) : px(15)}]}>
-                                <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
-                            </View>
-                        ) : null}
-                        <FastImage
-                            style={{width: px(24), height: px(24), marginRight: px(12)}}
-                            source={{
-                                uri: bgType
-                                    ? 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'
-                                    : 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
-                            }}
-                        />
-                    </TouchableOpacity>
+                    {proData?.message ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                global.LogTool('indexNotificationCenter');
+                                jump(proData?.message?.url);
+                            }}>
+                            {allMsg ? (
+                                <View
+                                    style={[styles.point_sty, Style.flexCenter, {left: allMsg > 99 ? px(11) : px(15)}]}>
+                                    <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
+                                </View>
+                            ) : null}
+                            <FastImage
+                                style={{width: px(24), height: px(24), marginRight: px(12)}}
+                                source={{
+                                    uri: bgType
+                                        ? 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'
+                                        : 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png',
+                                }}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
             </LinearGradient>
             <ScrollableTabView
