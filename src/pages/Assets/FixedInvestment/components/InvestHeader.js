@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
     sortChoiceView: {
         backgroundColor: '#fff',
         paddingHorizontal: px(12),
-        // marginHorizontal: px(16),
         borderRadius: px(6),
         height: px(37),
         justifyContent: 'center',

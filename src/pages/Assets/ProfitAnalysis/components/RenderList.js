@@ -21,7 +21,6 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [bool, setBool] = useState(true);
     const jump = useJump();
     useEffect(() => {
         (async () => {
@@ -39,8 +38,6 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 setHeaderList(head_list);
 
                 setProfitList(data_list);
-                let bool = data_list.every((el) => el?.profit == 0);
-                setBool(bool);
                 setLoading(false);
             }
         })();
@@ -95,54 +92,50 @@ const RenderList = React.memo(({curDate = '', poid = '', fund_code = ''}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <>
-                    {bool ? (
-                        <React.Fragment />
-                    ) : (
-                        <FlatList
-                            onTouchStart={(ev) => {
-                                DeviceEventEmitter.emit('changeScrollViewEnable', false);
-                            }}
-                            onMomentumScrollEnd={(e) => {
-                                DeviceEventEmitter.emit('changeScrollViewEnable', true);
-                            }}
-                            onScrollEndDrag={(e) => {
-                                DeviceEventEmitter.emit('changeScrollViewEnable', true);
-                            }}
-                            showsVerticalScrollIndicator={false}
-                            data={profitList}
-                            keyExtractor={(item, index) => item + index}
-                            ListHeaderComponent={
-                                <>
-                                    {left && right && profitList.length != 0 && (
-                                        <View style={styles.profitHeader}>
-                                            <View style={styles.profitHeaderLeft}>
-                                                <Text style={styles.profitLabel}>{left?.text?.substring(0, 4)}</Text>
-                                                <Text style={styles.profitDate}>{left?.text.substring(4)}</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => executeSort(right)}>
-                                                <View style={styles.profitHeaderRight}>
-                                                    <Text style={styles.moneyText}>{right?.text}</Text>
-                                                    <Image
-                                                        source={
-                                                            isEmpty(right?.sort_type)
-                                                                ? require('../assets/sort.png')
-                                                                : right?.sort_type == 'desc'
-                                                                ? require('../assets/desc.png')
-                                                                : require('../assets/asc.png')
-                                                        }
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
+                    <FlatList
+                        onTouchStart={(ev) => {
+                            DeviceEventEmitter.emit('changeScrollViewEnable', false);
+                        }}
+                        onMomentumScrollEnd={(e) => {
+                            DeviceEventEmitter.emit('changeScrollViewEnable', true);
+                        }}
+                        onScrollEndDrag={(e) => {
+                            DeviceEventEmitter.emit('changeScrollViewEnable', true);
+                        }}
+                        showsVerticalScrollIndicator={false}
+                        data={profitList}
+                        keyExtractor={(item, index) => item + index}
+                        ListHeaderComponent={
+                            <>
+                                {left && right && (
+                                    <View style={styles.profitHeader}>
+                                        <View style={styles.profitHeaderLeft}>
+                                            <Text style={styles.profitLabel}>{left?.text}</Text>
+                                            <Text style={styles.profitDate}>{left?.time}</Text>
                                         </View>
-                                    )}
-                                </>
-                            }
-                            ListEmptyComponent={<EmptyData />}
-                            onEndReachedThreshold={0.5}
-                            refreshing={false}
-                            renderItem={renderItem}
-                        />
-                    )}
+                                        <TouchableOpacity onPress={() => executeSort(right)}>
+                                            <View style={styles.profitHeaderRight}>
+                                                <Text style={styles.moneyText}>{right?.text}</Text>
+                                                <Image
+                                                    source={
+                                                        isEmpty(right?.sort_type)
+                                                            ? require('../assets/sort.png')
+                                                            : right?.sort_type == 'desc'
+                                                            ? require('../assets/desc.png')
+                                                            : require('../assets/asc.png')
+                                                    }
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            </>
+                        }
+                        ListEmptyComponent={<EmptyData />}
+                        onEndReachedThreshold={0.5}
+                        refreshing={false}
+                        renderItem={renderItem}
+                    />
                 </>
             )}
         </>

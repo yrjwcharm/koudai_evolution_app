@@ -29,7 +29,7 @@ const shadow = {
     style: {
         position: 'relative',
         top: px(12),
-        left: Space.padding,
+        left: px(16),
         zIndex: 0,
     },
 };
