@@ -2,10 +2,9 @@
  * @Date: 2022-10-10 20:44:41
  * @Description:音频
  */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
-import {View, StyleSheet, Text, TouchableOpacity, Image, TouchableWithoutFeedback} from 'react-native';
-import TrackPlayer from 'react-native-track-player';
+import {StyleSheet, Text, TouchableOpacity, Image, TouchableWithoutFeedback} from 'react-native';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import {resetAudio} from './audioService/SetUpService';
 import {useCurrentTrack} from './audioService/useCurrentTrack';
@@ -14,13 +13,20 @@ import {Style} from '~/common/commonStyle';
 import {useOnTogglePlayback} from './audioService/useOnTogglePlayback';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useSelector} from 'react-redux';
+import {navigationRef} from '~/components/hooks/RootNavigation';
 // The player is ready to be used
 const Audio = () => {
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const {isPlaying, tooglePlay} = useOnTogglePlayback();
     const track = useCurrentTrack();
     return track && userInfo?.showAudioModal ? (
-        <View style={[Style.flexRow, styles.con]}>
+        <TouchableOpacity
+            style={[Style.flexRow, styles.con]}
+            activeOpacity={1}
+            onPress={() => {
+                console.log(userInfo?.showAudioModal);
+                navigationRef.current.navigate(userInfo?.showAudioModal?.path, userInfo?.showAudioModal?.params);
+            }}>
             {/* 进度 */}
             <ProgressCon cover={track?.artwork} />
             {/* title */}
@@ -43,7 +49,7 @@ const Audio = () => {
                 }}>
                 <Icon name="closecircle" size={px(18)} color="#9ba1b0" />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     ) : null;
 };
 const styles = StyleSheet.create({

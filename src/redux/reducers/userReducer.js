@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:36:52
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 16:38:10
+ * @LastEditTime: 2022-10-28 17:41:04
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -17,7 +17,7 @@ const defaultState = fromJS({
     anti_pop: '', //上传身份证弹窗
     show_vision_tab: true,
     show_find_tab: true,
-    showAudioModal: true,
+    showAudioModal: '',
 });
 
 export default function userInfo(state = defaultState, action) {

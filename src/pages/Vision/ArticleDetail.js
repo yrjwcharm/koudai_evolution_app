@@ -39,6 +39,7 @@ import {startAudio} from '../Community/components/audioService/StartAudioService
 import {updateUserInfo} from '~/redux/actions/userInfo.js';
 import ProductCards from '~/components/Portfolios/ProductCards.js';
 import Storage from '~/utils/storage.js';
+import {useIsFocused} from '@react-navigation/native';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -84,13 +85,14 @@ const ArticleDetail = ({navigation, route}) => {
     const isCurrentArticleAudio = useRef(false);
     const audioMedia = useRef([]);
     const timeStamp = useRef(Date.now());
-
+    const current_artic_url = useRef();
+    const focus = useIsFocused();
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
         let tmp = audioList.filter((audio) => audio.url == current_track.url);
         if (tmp.length > 0) {
             isCurrentArticleAudio.current = true;
-            dispatch(updateUserInfo({showAudioModal: false}));
+            dispatch(updateUserInfo({showAudioModal: ''}));
         } else {
             isCurrentArticleAudio.current = false;
         }
@@ -129,7 +131,8 @@ const ArticleDetail = ({navigation, route}) => {
                 fr,
             }).then((res) => {
                 if (res.code === '000000') {
-                    const {media_list = []} = res?.result;
+                    const {media_list = [], current_article_url} = res?.result;
+                    current_artic_url.current = current_article_url;
                     audioMedia.current = media_list.filter((audio) => audio.media_type == 'audio');
                     setAudio(audioMedia.current);
                 }
@@ -149,12 +152,15 @@ const ArticleDetail = ({navigation, route}) => {
     );
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
-        if (eventData.indexOf('audioPlay' > -1) && audioMedia.current.length > 0) {
+        if (eventData.indexOf('audioPlay') > -1 && audioMedia.current.length > 0 && focus) {
             let media_id = eventData.split('+')[1];
-            let currentAudioMedia = audioMedia.current.find((audio) => audio.media_id == media_id);
+            let currentAudioMedia =
+                audioMedia.current.find((audio) => audio.media_id == media_id) || audioMedia.current[0];
             if (currentAudioMedia) {
                 startAudio(currentAudioMedia);
-                dispatch(updateUserInfo({showAudioModal: false}));
+                if (userInfo?.showAudioModal) {
+                    dispatch(updateUserInfo({showAudioModal: ''}));
+                }
             }
         } else if (eventData == 'audioPause') {
             TrackPlayer.pause();
@@ -303,7 +309,7 @@ const ArticleDetail = ({navigation, route}) => {
     }, []);
     const back = useCallback(() => {
         if (audioMedia.current) {
-            dispatch(updateUserInfo({showAudioModal: true}));
+            dispatch(updateUserInfo({showAudioModal: current_artic_url.current}));
         }
 
         Picker.isPickerShow((res) => {
