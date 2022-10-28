@@ -400,7 +400,7 @@ function useStateChange({homeShowModal, store}) {
                         if (modal.page.includes(navigation?.getCurrentRoute?.()?.name)) {
                             showModal(modal);
                         }
-                    } else if (navigation?.getCurrentRoute?.()?.name === 'Vision') {
+                    } else if (navigation?.getCurrentRoute?.()?.name === 'Product') {
                         showModal(modal);
                     }
                 }
@@ -634,7 +634,7 @@ function useStateChange({homeShowModal, store}) {
                         showModal(modal);
                     }
                 }
-            } else if (currentRouteName === 'Vision') {
+            } else if (currentRouteName === 'Product') {
                 showModal(modal);
             }
         }
