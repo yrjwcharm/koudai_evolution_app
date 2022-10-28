@@ -35,7 +35,7 @@ export default class TabBar extends Component {
             : this.props.inActiveFontSize || px(14);
         return (
             <Button
-                style={{flex: 1, height}}
+                style={{flex: 1, height, width: deviceWidth / this.props.tabs.length}}
                 key={name}
                 accessible={true}
                 accessibilityLabel={name}
