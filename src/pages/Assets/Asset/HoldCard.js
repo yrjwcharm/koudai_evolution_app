@@ -24,8 +24,9 @@ const ClassCard = ({data = {}, showEye}) => {
             activeOpacity={0.9}
             onPress={() => {
                 if (tag_info) {
-                    global.LogTool('guide_click', '卡片标签', data?.log_id);
+                    global.LogTool('guide_click', '卡片标签', tag_info?.log_id);
                 }
+                global.LogTool('product_type', data?.log_id);
                 jump(url);
             }}>
             {name && (
@@ -80,6 +81,8 @@ const ListTitle = ({title, pop_info, reload}) => {
         setList(fromJS(pop_info?.list || []));
     }, [pop_info]);
     const modal = () => {
+        global.LogTool('total_assets_card');
+
         bottomModal.current.show();
     };
     const onChange = (index) => {
