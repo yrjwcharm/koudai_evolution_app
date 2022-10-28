@@ -13,6 +13,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import Toast from '~/components/Toast';
+import http from '~/services';
 const Index = ({navigation, route}) => {
     const {popNum = 0} = route.params || {};
     const dispatch = useDispatch();
@@ -82,6 +83,11 @@ const Index = ({navigation, route}) => {
             setCurrent((pre) => ++pre);
         }
     };
+    const onSkip = () => {
+        http.post('/preference/doskip/20220928').then((res) => {
+            res.code === '000000' && (popNum ? navigation.pop(popNum) : navigation.goBack());
+        });
+    };
     useEffect(() => {
         let currentTotalQuesitions = 0;
         for (let i = 0; i < data.length; i++) {
@@ -93,50 +99,60 @@ const Index = ({navigation, route}) => {
     return (
         <View style={[styles.con, {paddingTop: inset.top}]}>
             {current == 0 ? ( //处理第一题
-                <ScrollView bounces={false} style={{marginTop: px(56)}}>
-                    <Text style={styles.title}>{data[current]?.tag_name}</Text>
-                    <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
-                    <View style={[Style.flexRow, {flexWrap: 'wrap', paddingHorizontal: deviceWidth / 8}]}>
-                        {data[current]?.sub_list?.map((item, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                activeOpacity={0.9}
-                                onPress={() =>
-                                    handlePost(
-                                        data[current]?.desc,
-                                        item.tag_name,
-                                        data[current]?.question_id,
-                                        item.tag_id
-                                    )
-                                }
-                                style={{
-                                    width: (deviceWidth * 3) / 8 - 0.5,
-                                    alignItems: 'center',
-                                    marginBottom: px(40),
-                                }}>
-                                <ImageBackground
-                                    source={{uri: item.tag_icon}}
-                                    style={[
-                                        styles.tag_icon,
-                                        {
-                                            backgroundColor:
-                                                answer[data[current].question_id] == item.tag_id
-                                                    ? '#E5EDFF'
-                                                    : '#F5F6F8',
-                                        },
-                                    ]}>
-                                    {answer[data[current].question_id] == item.tag_id ? (
-                                        <Image
-                                            source={require('~/assets/img/attention/tag_check.png')}
-                                            style={styles.tag_check_img}
-                                        />
-                                    ) : null}
-                                </ImageBackground>
-                                <Text style={[styles.title_desc, {color: Colors.defaultColor}]}>{item.tag_name}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </ScrollView>
+                <>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={onSkip}
+                        style={[Style.flexRow, styles.skip, {top: inset.top}]}>
+                        <Text>跳过</Text>
+                    </TouchableOpacity>
+                    <ScrollView bounces={false} style={{marginTop: px(56)}}>
+                        <Text style={styles.title}>{data[current]?.tag_name}</Text>
+                        <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
+                        <View style={[Style.flexRow, {flexWrap: 'wrap', paddingHorizontal: deviceWidth / 8}]}>
+                            {data[current]?.sub_list?.map((item, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    activeOpacity={0.9}
+                                    onPress={() =>
+                                        handlePost(
+                                            data[current]?.desc,
+                                            item.tag_name,
+                                            data[current]?.question_id,
+                                            item.tag_id
+                                        )
+                                    }
+                                    style={{
+                                        width: (deviceWidth * 3) / 8 - 0.5,
+                                        alignItems: 'center',
+                                        marginBottom: px(40),
+                                    }}>
+                                    <ImageBackground
+                                        source={{uri: item.tag_icon}}
+                                        style={[
+                                            styles.tag_icon,
+                                            {
+                                                backgroundColor:
+                                                    answer[data[current].question_id] == item.tag_id
+                                                        ? '#E5EDFF'
+                                                        : '#F5F6F8',
+                                            },
+                                        ]}>
+                                        {answer[data[current].question_id] == item.tag_id ? (
+                                            <Image
+                                                source={require('~/assets/img/attention/tag_check.png')}
+                                                style={styles.tag_check_img}
+                                            />
+                                        ) : null}
+                                    </ImageBackground>
+                                    <Text style={[styles.title_desc, {color: Colors.defaultColor}]}>
+                                        {item.tag_name}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </ScrollView>
+                </>
             ) : (
                 <View style={{paddingHorizontal: px(28), flex: 1}}>
                     <View style={styles.header}>
@@ -274,6 +290,11 @@ const styles = StyleSheet.create({
         marginBottom: px(14),
         justifyContent: 'center',
         marginLeft: px(-12),
+    },
+    skip: {
+        position: 'absolute',
+        right: px(16),
+        height: px(44),
     },
     // button: {
     //     position: 'absolute',
