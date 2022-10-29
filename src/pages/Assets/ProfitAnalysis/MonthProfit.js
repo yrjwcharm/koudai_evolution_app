@@ -16,7 +16,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const MonthProfit = React.memo(({poid, fund_code, type}) => {
+const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -51,7 +51,7 @@ const MonthProfit = React.memo(({poid, fund_code, type}) => {
                     };
                     arr.push(item);
                 }
-                const res = await getChartData({type, unit_type: 'month', unit_value: dayjs_.year(), poid, fund_code});
+                const res = await getChartData({type, unit_type, unit_value: dayjs_.year(), poid, fund_code});
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
@@ -167,7 +167,13 @@ const MonthProfit = React.memo(({poid, fund_code, type}) => {
                     {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
                     {/*收益数据-根据实际情形选择map渲染*/}
-                    <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} />
+                    <RenderList
+                        curDate={selCurDate}
+                        type={type}
+                        poid={poid}
+                        fund_code={fund_code}
+                        unitType={unit_type}
+                    />
                 </View>
             ) : (
                 <EmptyData />

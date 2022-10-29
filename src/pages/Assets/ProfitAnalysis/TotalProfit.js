@@ -9,7 +9,7 @@ import {isIphoneX, px} from '../../../utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
 import AccEarningsCom from './components/AccEarningsCom';
-const TotalProfit = React.memo(({type}) => {
+const TotalProfit = React.memo(({type, unit_type}) => {
     return (
         <View style={styles.container}>
             <AccEarningsCom />
@@ -17,7 +17,7 @@ const TotalProfit = React.memo(({type}) => {
                 style={{
                     paddingHorizontal: px(12),
                 }}>
-                <RenderList curDate={''} type={type} />
+                <RenderList curDate={''} type={type} unitType={unit_type} />
             </View>
         </View>
     );

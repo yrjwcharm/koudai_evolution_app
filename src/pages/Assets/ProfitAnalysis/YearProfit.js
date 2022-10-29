@@ -14,8 +14,7 @@ import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
 import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-const YearProfit = ({poid, fund_code}) => {
-    const type = useSelector((state) => state.profitDetail.type);
+const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [chartData, setChart] = useState({});
@@ -29,7 +28,7 @@ const YearProfit = ({poid, fund_code}) => {
                 let startYear = dayjs().year() - 5;
                 let endYear = dayjs().year();
                 let arr = [];
-                const res = await getChartData({type, unit_type: 'year'});
+                const res = await getChartData({type, unit_type});
                 if (res.code === '000000') {
                     const {profit_data_list = []} = res?.result ?? {};
                     let zIndex;
@@ -164,7 +163,13 @@ const YearProfit = ({poid, fund_code}) => {
                     </View>
                     {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
                     {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
-                    <RenderList curDate={selCurYear} type={type} poid={poid} fund_code={fund_code} />
+                    <RenderList
+                        curDate={selCurYear}
+                        type={type}
+                        poid={poid}
+                        fund_code={fund_code}
+                        unitType={unit_type}
+                    />
                 </View>
             ) : (
                 <EmptyData />

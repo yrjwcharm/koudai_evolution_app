@@ -15,8 +15,7 @@ import {useSelector} from 'react-redux';
 import {useJump} from '../../../../components/hooks';
 import EmptyData from '../../FixedInvestment/components/EmptyData';
 import Loading from '../../../Portfolio/components/PageLoading';
-const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = ''}) => {
-    const unitType = useSelector((state) => state.profitDetail.unitType);
+const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', unitType}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(false);

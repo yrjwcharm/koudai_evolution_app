@@ -170,6 +170,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                                             <Com
                                                 type={type}
                                                 poid={poid}
+                                                unit_type={tab.type}
                                                 fund_code={fund_code}
                                                 tabLabel={tab.text}
                                                 key={`tab${index}`}

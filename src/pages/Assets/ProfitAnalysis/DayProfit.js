@@ -14,7 +14,7 @@ import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
-const DayProfit = React.memo(({poid, fund_code, type}) => {
+const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [diff, setDiff] = useState(0);
@@ -81,7 +81,7 @@ const DayProfit = React.memo(({poid, fund_code, type}) => {
                 }
                 const res = await getChartData({
                     type,
-                    unit_type: 'day',
+                    unit_type,
                     unit_value: dayjs_.format('YYYY-MM'),
                     poid,
                     fund_code,
@@ -241,7 +241,13 @@ const DayProfit = React.memo(({poid, fund_code, type}) => {
                             <View style={styles.dateWrap}>{renderCalendar}</View>
                         </View>
                     )}
-                    <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} />
+                    <RenderList
+                        curDate={selCurDate}
+                        type={type}
+                        poid={poid}
+                        fund_code={fund_code}
+                        unitType={unit_type}
+                    />
                 </View>
             ) : (
                 <EmptyData />
