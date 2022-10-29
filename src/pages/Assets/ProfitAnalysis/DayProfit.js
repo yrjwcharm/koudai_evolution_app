@@ -12,15 +12,11 @@ import {compareDate, delMille} from '../../../utils/appUtil';
 import RenderList from './components/RenderList';
 import {getStyles} from './styles/getStyle';
 import ChartHeader from './components/ChartHeader';
-import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
-import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
-import RNEChartsPro from 'react-native-echarts-pro';
 const DayProfit = React.memo(({poid, fund_code, type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
-    const [chartData, setChart] = useState({});
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
@@ -126,6 +122,7 @@ const DayProfit = React.memo(({poid, fund_code, type}) => {
                         setDate(dayjs_);
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
+                        console.log('附加数据++++++', arr);
                         setDateArr([...arr]);
                         setSelCurDate(arr[zIndex].day);
                     } else {

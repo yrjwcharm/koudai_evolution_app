@@ -16,7 +16,7 @@ import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 import ScrollTabbar from '../../../components/ScrollTabbar';
 const ProfitDetail = ({navigation, route}) => {
-    const {fund_code = '', poid = '', page = 0, type: initType} = route.params || {};
+    const {fund_code = '', poid = '', page = 0, type = 200} = route.params || {};
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(false);
     const [locked, setLocked] = useState(false);
@@ -27,11 +27,8 @@ const ProfitDetail = ({navigation, route}) => {
         {text: '投顾组合', type: 30},
         {text: '理财计划', type: 40},
         {text: '私募基金', type: 20},
-        {text: '理财计划', type: 60},
     ]);
     const [declarePic, setDeclarePic] = useState('');
-    const [type, setType] = useState(initType);
-    const dispatch = useDispatch();
     const init = useCallback(() => {
         (async () => {
             const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
@@ -58,7 +55,7 @@ const ProfitDetail = ({navigation, route}) => {
                 });
             }
         })();
-    }, [type]);
+    }, []);
     useEffect(() => {
         init();
     }, [init]);
@@ -66,7 +63,7 @@ const ProfitDetail = ({navigation, route}) => {
         setLoadingFn(loading);
     });
     useEffect(() => {
-        Platform.OS === 'android' && scrollTab.current?.goToPage(page);
+        Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
     }, [tabs]);
     return (
         <>
@@ -82,13 +79,12 @@ const ProfitDetail = ({navigation, route}) => {
                             locked={false}
                             onChangeTab={({i}) => {
                                 global.LogTool('changeTab', tabs[i]);
-                                setType(tabs[i].type);
                             }}>
                             {tabs.map((el, index) => {
                                 return (
                                     <ProfitDistribution
                                         poid={poid}
-                                        type={type}
+                                        type={el.type}
                                         fund_code={fund_code}
                                         tabLabel={el.text}
                                         key={`${el + index}`}
