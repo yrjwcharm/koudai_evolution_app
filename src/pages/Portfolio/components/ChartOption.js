@@ -322,13 +322,14 @@ export const areaChart = (
     alias = {},
     percent = false,
     tofixed = 2,
-    appendPadding = []
+    appendPadding = [],
+    padding = 56
 ) => `
 (function(){
 chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
-  padding: [56, 'auto', 'auto'],
+  padding: [${padding}, 'auto', 'auto'],
   width: ${width},
   appendPadding: ${JSON.stringify(appendPadding)},
   height: ${height}
