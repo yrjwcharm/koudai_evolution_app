@@ -15,6 +15,7 @@ import LogView from '~/components/LogView';
 import {AlbumCard, ProductList} from '~/components/Product';
 import http from '~/services';
 import {px} from '~/utils/appUtil';
+// import ConfirmPurpose from './ConfirmPurpose';
 
 const PortfolioIndex = ({navigation, route}) => {
     const jump = useJump();
@@ -195,6 +196,7 @@ const PortfolioIndex = ({navigation, route}) => {
                     <BottomDesc />
                 </View>
             </LogView.Wrapper>
+            {/* <ConfirmPurpose /> */}
         </View>
     ) : null;
 };
