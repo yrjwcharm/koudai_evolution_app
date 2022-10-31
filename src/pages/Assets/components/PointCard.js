@@ -43,7 +43,7 @@ const PointCard = ({data, style}) => {
                         style={[Style.flexRow, {marginBottom: px(12)}]}
                         onPress={() => {
                             global.LogTool('guide_click', `重要观点${index + 1}`, data?.log_id);
-                            jump(url);
+                            jump(item.url);
                         }}>
                         <View style={styles.circle} />
                         <Text numberOfLines={1} style={{flex: 1, lineHeight: px(17), fontSize: px(12)}}>
