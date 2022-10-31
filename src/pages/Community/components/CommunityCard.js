@@ -361,13 +361,16 @@ export const CommunityFollowCard = (props) => {
                 {comment_info && !isRecommend && (
                     <View style={{padding: px(8), backgroundColor: '#F5F6F8', borderRadius: px(6), marginTop: px(9)}}>
                         <View style={Style.flexBetween}>
-                            <View style={Style.flexRow}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(comment_info?.url)}
+                                style={Style.flexRow}>
                                 <Image
                                     source={{uri: comment_info?.avatar}}
                                     style={{width: px(16), height: px(16), marginRight: px(4), borderRadius: px(8)}}
                                 />
                                 <Text>{comment_info?.nickname}</Text>
-                            </View>
+                            </TouchableOpacity>
                             <View style={Style.flexRow}>
                                 <Text
                                     style={{
