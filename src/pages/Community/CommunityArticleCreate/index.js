@@ -537,6 +537,7 @@ const Index = ({navigation, route, setLoading}) => {
             title,
         })
             .then((res) => {
+                global.LogTool({event: 'content_release', oid: res.result.article_id});
                 Toast.hide(loading);
                 Toast.show(res.message);
                 if (res.code === '000000') {
@@ -565,7 +566,10 @@ const Index = ({navigation, route, setLoading}) => {
                         content: '<span style="text-align: center">保存后再次进入页面可继续编辑</span>',
                         confirm: true,
                         confirmCallBack: () => {
-                            saveDraft(() => navigation.dispatch(action));
+                            saveDraft(() => {
+                                global.LogTool({event: 'save_draft'});
+                                navigation.dispatch(action);
+                            });
                         },
                     });
                 }

@@ -73,6 +73,7 @@ const ArticleCommentList = ({navigation, route}) => {
     const publish = () => {
         http.post('/community/article/comment/add/20210101', {article_id, content}).then((res) => {
             if (res.code == '000000') {
+                global.LogTool({event: 'content_comment', oid: article_id});
                 inputModal.current.cancel();
                 setContent('');
                 Modal.show({

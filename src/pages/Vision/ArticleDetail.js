@@ -237,6 +237,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
+            global.LogTool({event: favor_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
             !favor_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setFavorNum((preNum) => {
                 return favor_status ? --preNum : ++preNum;
@@ -272,6 +273,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
+            global.LogTool({event: collect_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
             !collect_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;
@@ -451,6 +453,7 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/comment/add/20210101', {article_id: route.params?.article_id, content}).then(
             (res) => {
                 if (res.code == '000000') {
+                    global.LogTool({event: 'content_comment', oid: route.params?.article_id});
                     inputModal.current.cancel();
                     setContent('');
                     Modal.show({
@@ -490,6 +493,9 @@ const ArticleDetail = ({navigation, route}) => {
                             collectCallback={onCollect}
                             ref={shareModal}
                             more={more}
+                            shareCallback={(share_to) =>
+                                global.LogTool({ctrl: share_to, event: 'content_share', oid: data?.id})
+                            }
                             shareContent={{
                                 favor_status: favor_status,
                                 collect_status: collect_status,
@@ -592,7 +598,20 @@ const ArticleDetail = ({navigation, route}) => {
                                             <RenderTitle title={recommendData?.portfolios?.title} />
                                         )}
                                         {recommendData?.portfolios?.list?.map((item, index) => {
-                                            return <ProductCards data={item} key={index} style={styles.cardStye} />;
+                                            return (
+                                                <ProductCards
+                                                    data={{
+                                                        ...item,
+                                                        LogTool: () =>
+                                                            global.LogTool({
+                                                                event: 'suggested_products',
+                                                                oid: item.code || item.plan_id,
+                                                            }),
+                                                    }}
+                                                    key={index}
+                                                    style={styles.cardStye}
+                                                />
+                                            );
                                         })}
                                         <RenderTitle title={recommendData?.articles?.title} />
                                         {recommendData?.articles?.list?.map((item, index) => {

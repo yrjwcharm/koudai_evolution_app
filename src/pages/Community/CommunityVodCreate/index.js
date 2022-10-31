@@ -352,6 +352,7 @@ const Index = ({route, setLoading}) => {
             title: video.intro,
         })
             .then((res) => {
+                global.LogTool({event: 'content_release'});
                 Toast.hide(loading);
                 Toast.show(res.message);
                 if (res.code === '000000') {

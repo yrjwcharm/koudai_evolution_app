@@ -79,6 +79,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
                             activeOpacity={0.8}
                             key={type}
                             onPress={() => {
+                                global.LogTool({event: `${type}_click`});
                                 if (type === 'follow' && !isLogin) jump({path: 'Login', type: 1});
                                 else setActive(i);
                             }}
@@ -137,6 +138,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     const onFollow = useCallback(
         debounce(
             ({isFollowed, item_id, item_type}) => {
+                global.LogTool({event: isFollowed ? 'cancel_follow' : 'follow_user', oid: item_id});
                 (isFollowed ? followCancel : followAdd)({item_id, item_type}).then((res) => {
                     res.message && Toast.show(res.message);
                     if (res.code === '000000') init();
@@ -149,18 +151,27 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     );
 
     /** @name 一键关注 */
-    const allFollow = async () => {
-        const _data = groupBy(data, (item) => item.item_type);
-        const responses = await Promise.all(
-            Object.entries(_data).map((item) =>
-                followAdd({item_id: item[1].map((v) => v.item_id).join(','), item_type: item[0]})
-            )
-        );
-        if (responses.every((res) => res.code === '000000')) {
-            Toast.show(responses[0].message);
-            refresh?.();
-        }
-    };
+    const allFollow = useCallback(
+        debounce(
+            () => {
+                global.LogTool({event: 'follow_button'});
+                const _data = groupBy(data, (item) => item.item_type);
+                Promise.all(
+                    Object.entries(_data).map((item) =>
+                        followAdd({item_id: item[1].map((v) => v.item_id).join(','), item_type: item[0]})
+                    )
+                ).then((responses) => {
+                    if (responses.every((res) => res.code === '000000')) {
+                        Toast.show(responses[0].message);
+                        refresh?.();
+                    }
+                });
+            },
+            500,
+            {leading: true, trailing: false}
+        ),
+        []
+    );
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
@@ -170,6 +181,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     }));
 
     useEffect(() => {
+        global.LogTool({event: 'follow_recommend'});
         init();
     }, []);
 
@@ -267,12 +279,12 @@ const Follow = forwardRef(({list = []}, ref) => {
 
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) {
-            return false;
-        }
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
+        if (distanceFromEnd < 0) return false;
+        if (hasMore)
+            setPage((p) => {
+                global.LogTool({event: 'community_browsing', oid: p + 1});
+                return p + 1;
+            });
     };
 
     /** @name 渲染头部 */
@@ -281,12 +293,15 @@ const Follow = forwardRef(({list = []}, ref) => {
             <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false}>
                 <View style={[Style.flexRow, styles.followedList]}>
                     {list.map((item, index) => {
-                        const {avatar, live_status, name, url} = item;
+                        const {avatar, item_id, live_status, name, url} = item;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 key={name + index}
-                                onPress={() => jump(url)}
+                                onPress={() => {
+                                    item_id === 0 && global.LogTool({event: 'follow_whole'});
+                                    jump(url);
+                                }}
                                 style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(28)}]}>
                                 <View>
                                     {live_status === 2 ? (
@@ -343,6 +358,10 @@ const Follow = forwardRef(({list = []}, ref) => {
     useEffect(() => {
         init();
     }, [page]);
+
+    useEffect(() => {
+        global.LogTool({event: 'follow'});
+    }, []);
 
     return (
         <FlatList
@@ -404,9 +423,15 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     };
 
     const renderItem = ({item = {}, index, columnIndex}) => {
-        const {url} = item;
+        const {id, url} = item;
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)} style={styles.waterfallFlowItem}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                    global.LogTool({event: 'content', oid: id});
+                    jump(url);
+                }}
+                style={styles.waterfallFlowItem}>
                 <CommunityFollowCard {...item} isRecommend />
             </TouchableOpacity>
         );
@@ -415,7 +440,11 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
         if (distanceFromEnd < 0) return false;
-        if (hasMore) setPage((p) => p + 1);
+        if (hasMore)
+            setPage((p) => {
+                wrapper === 'Recommend' && global.LogTool({event: 'community_browsing', oid: p + 1});
+                return p + 1;
+            });
     };
 
     /** @name 渲染底部 */
@@ -492,6 +521,7 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
             if (prev?.is_login !== next?.is_login) refresh();
             userInfo.current = cloneDeep(next);
         });
+        global.LogTool({event: 'recommend'});
     }, []);
 
     return (
@@ -506,6 +536,7 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
                             disabled={isActive}
                             key={name + type}
                             onPress={() => {
+                                global.LogTool({event: 'recommend_content', oid: type});
                                 setCurrent(i);
                                 scrollTab.current.goToPage(i);
                             }}
@@ -592,12 +623,13 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
                     </TouchableOpacity>
                     <View style={[Style.flexEvenly, {paddingTop: px(64)}]}>
                         {btn_list?.map((item, index) => {
-                            const {icon, name, url, type} = item;
+                            const {event_id, icon, name, url, type} = item;
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     key={name + index}
                                     onPress={() => {
+                                        global.LogTool({event: '', oid: event_id});
                                         bottomModal.current.hide();
                                         if (type == 'addArticle') {
                                             handleClick('article');

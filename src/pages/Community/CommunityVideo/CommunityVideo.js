@@ -98,6 +98,7 @@ const CommunityVideo = ({navigation, route}) => {
             content,
         }).then((res) => {
             if (res.code == '000000') {
+                global.LogTool({event: 'content_comment', oid: videoData?.items[currentItem].id});
                 inputModal.current.hide();
                 setContent('');
                 Modal.show({

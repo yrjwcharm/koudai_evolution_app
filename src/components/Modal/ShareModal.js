@@ -195,7 +195,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                     },
                     (success, method) => {
                         hide();
-                        shareCallback?.();
+                        shareCallback?.(4);
                         global.LogTool('shareSuccess', props.ctrl);
                     }
                 );

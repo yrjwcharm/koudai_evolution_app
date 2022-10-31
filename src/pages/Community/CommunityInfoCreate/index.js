@@ -63,7 +63,8 @@ const Index = ({navigation, route, setLoading}) => {
                 Toast.hide(loading);
                 Toast.show(res.message);
                 if (res.code === '000000') {
-                    const {url} = res.result;
+                    const {community_id: id, url} = res.result;
+                    !isEdit && global.LogTool({event: 'content_release', oid: id});
                     if (url) jump(url, 'replace');
                     else navigation.goBack();
                 }

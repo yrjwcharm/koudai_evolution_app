@@ -181,6 +181,11 @@ export const CommunityFollowCard = (props) => {
     const onBottomOps = useCallback(
         debounce(
             (opType, otherParams = {}) => {
+                if (opType === 'collect')
+                    global.LogTool({event: collected ? 'cancel_collection' : 'content_collection', oid: id});
+                else if (opType === 'favor')
+                    global.LogTool({event: favored ? 'cancel_like' : 'content_thumbs', oid: id});
+                else global.LogTool({ctrl: otherParams.share_to, event: 'content_share', oid: id});
                 const postParams = {resource_id: id};
                 if (opType === 'collect' || opType === 'favor') {
                     postParams.action_type = Number(!(opType === 'collect' ? collected : favored));
@@ -302,7 +307,12 @@ export const CommunityFollowCard = (props) => {
                         <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        global.LogTool({event: 'content', oid: id});
+                        jump(url);
+                    }}>
                     {isRecommend ? null : (
                         <>
                             <TouchableOpacity
@@ -372,12 +382,7 @@ export const CommunityFollowCard = (props) => {
                                 <Text>{comment_info?.nickname}</Text>
                             </TouchableOpacity>
                             <View style={Style.flexRow}>
-                                <Text
-                                    style={{
-                                        color: Colors.lightBlackColor,
-                                        fontSize: px(11),
-                                        fontFamily: Font.numRegular,
-                                    }}>
+                                <Text style={[styles.smText, {fontFamily: Font.numRegular}]}>
                                     {comment_info?.favor_num}
                                 </Text>
                                 <Image source={zan} style={{width: px(16), height: px(16), marginLeft: px(4)}} />
