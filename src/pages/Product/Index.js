@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 16:47:36
+ * @LastEditTime: 2022-10-28 19:36:11
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -583,7 +583,11 @@ const Product = ({navigation}) => {
                                             </Text>
                                         ) : null} */}
                                     </>
-                                ) : null}
+                                ) : (
+                                    <View style={{paddingVertical: px(20)}}>
+                                        <ActivityIndicator />
+                                    </View>
+                                )}
                             </View>
                             {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
                             <View
