@@ -8,9 +8,8 @@ buildscript {
         targetSdkVersion = 31
     }
     repositories {
-        google()
-        jcenter()
         mavenCentral()
+        google()
         maven {url 'http://developer.huawei.com/repo/'}
     }
     dependencies {
@@ -23,6 +22,8 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
+
         mavenLocal()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -34,8 +35,6 @@ allprojects {
         }
 
         google()
-        mavenCentral()
-        jcenter()
         maven { url 'https://www.jitpack.io' }
         //签署
         maven {url "http://peys.totodi.com:18081/nexus/content/repositories/android/"}

@@ -346,14 +346,19 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 alignWithLabel: true,
             },
             axisLabel: {
+                // rotate: 70,
+                boundaryGap: false,
                 show: true, // 不显示坐标轴上的文字
                 color: Colors.lightGrayColor,
                 fontFamily: Font.numMedium,
                 fontWeight: '500',
                 fontSize: 9,
+                align: 'left',
                 margin: 8,
-                align: 'right',
                 interval: 29,
+                formatter: function (value, index) {
+                    return '\t' + value;
+                },
             },
             axisLine: {
                 lineStyle: {
