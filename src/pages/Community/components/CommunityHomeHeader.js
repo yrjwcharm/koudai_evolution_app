@@ -24,6 +24,7 @@ const CommunityHomeHeader = ({data, style, item_id, item_type}) => {
         if (data?.follow_status == 1) return;
         http.post('/follow/add/202206', {item_id, item_type}).then((res) => {
             if (res.code == '000000') {
+                global.LogTool({event: item_type === 10 ? 'follow_user' : 'follow_community', oid: item_id});
                 setFollowStatus(1);
             }
         });

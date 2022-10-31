@@ -29,6 +29,7 @@ const VideoFooter = ({data, handleComment}) => {
             if (!btnClick.current) {
                 return false;
             }
+            global.LogTool({event: favor_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
             !favor_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setFavorNum((preNum) => {
                 return favor_status ? --preNum : ++preNum;
@@ -56,6 +57,7 @@ const VideoFooter = ({data, handleComment}) => {
             if (!btnClick.current) {
                 return false;
             }
+            global.LogTool({event: collect_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
             !collect_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;

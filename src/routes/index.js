@@ -662,7 +662,7 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
                 <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
-                <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
+                <Stack.Screen name="Profile" component={Profile} options={{title: ''}} />
                 <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
                 <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
                 <Stack.Screen name="MessageNotice" component={MessageNotice} options={{title: ''}} />

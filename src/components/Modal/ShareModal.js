@@ -201,6 +201,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 );
             }
         } else if (item?.url) {
+            item.type === 'Edit' && global.LogTool({event: 'community_editor', oid: item.url.params.community_id});
             hide();
             navigation.navigate(item?.url?.path, item?.url?.params);
         }
