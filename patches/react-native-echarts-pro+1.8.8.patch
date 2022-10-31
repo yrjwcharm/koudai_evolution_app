@@ -1,0 +1,59 @@
+diff --git a/node_modules/react-native-echarts-pro/index.d.ts b/node_modules/react-native-echarts-pro/index.d.ts
+index 8b14787..6b800c0 100644
+--- a/node_modules/react-native-echarts-pro/index.d.ts
++++ b/node_modules/react-native-echarts-pro/index.d.ts
+@@ -13,6 +13,9 @@ declare function RNEChartsPro(props: {
+   legendSelectChanged?(result: string);
+   onDataZoom?(result: string);
+   onPress?(result: string);
++  onFinished?(result:string);
++  onRendered?(result:string)
++  onMousemove?(result:string)
+ }): JSX.Element;
+ 
+ export default RNEChartsPro;
+diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
+index 5ab341e..cf5eb28 100644
+--- a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
++++ b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
+@@ -83,7 +83,14 @@ function Echarts(props, ref) {
+     const echartsData = JSON.parse(event.nativeEvent.data);
+     // 判断监听类型
+     if (echartsData.type === "datazoom") {
+-      props.onDataZoom?.();
++      props.onDataZoom?.(echartsData.params);
++    } else if(echartsData.type==='finished'){
++      props.onFinished?.(echartsData.type);
++    }else if(echartsData.type==='rendered'){
++      props.onRendered?.(echartsData.type);
++
++    }else if(echartsData.type==='mousemove'){
++      props.onMousemove?.(echartsData.type);
+     } else if (echartsData.type === "legendselectchanged") {
+       props.legendSelectChanged?.(echartsData.name);
+     } else if (echartsData.type === "tooltipEvent") {
+diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
+index d232268..436f003 100644
+--- a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
++++ b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
+@@ -50,8 +50,19 @@ export default function renderChart(props) {
+       window.ReactNativeWebView.postMessage(JSON.stringify(clickParams));
+     });
+     myChart.on('dataZoom', (params)=>{
+-        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type}));
++        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type,params}));
+     });
++    myChart.on('rendered',function (){
++        window.ReactNativeWebView.postMessage(JSON.stringify({type:'rendered'}));
++    })
++    myChart.on('finished', function () {
++            window.ReactNativeWebView.postMessage(JSON.stringify({type:'finished'}));
++
++   });
++     myChart.on('mousemove', function () {
++            window.ReactNativeWebView.postMessage(JSON.stringify({type:'mousemove'}));
++
++   });
+     myChart.on('legendselectchanged', (params)=>{
+         window.ReactNativeWebView.postMessage(JSON.stringify({type: params.type,name:params.name}));
+     });

@@ -58,6 +58,11 @@ const ProfitDetail = ({navigation, route}) => {
     }, []);
     useEffect(() => {
         init();
+        let listener = DeviceEventEmitter.addListener('sendChartTrigger', (bool) => {
+            console.log(bool);
+            setLocked(bool);
+        });
+        return () => listener && listener.remove();
     }, [init]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
@@ -76,7 +81,7 @@ const ProfitDetail = ({navigation, route}) => {
                             ref={scrollTab}
                             renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
                             initialPage={page}
-                            locked={false}
+                            locked={locked}
                             onChangeTab={({i}) => {
                                 global.LogTool('changeTab', tabs[i]);
                             }}>
