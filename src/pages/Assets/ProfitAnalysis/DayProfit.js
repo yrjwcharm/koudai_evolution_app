@@ -258,17 +258,20 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, []);
     useEffect(() => {
         if (isBarChart && latestProfitDay) {
-            // const startDate = dayjs(latestProfitDay).add(-12, 'month').format('YYYY-MM-DD'); // 起始时间（当前年1号的00:00:00点）
-            // const endDate = dayjs(latestProfitDay).add(15, 'day').format('YYYY-MM-DD');
-            // let diffDay = dayjs(endDate).diff(startDate, 'day');
-            // let dates = [];
-            // for (let i = 0; i <= diffDay; i++) {
-            //     let day = dayjs(startDate).add(i, 'day').format('YYYY-MM-DD');
-            //     dates.push(day);
-            // }
-            // myChart.current.setNewOption(barOption);
+            (async () => {
+                let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+                const res = await getChartData({
+                    type,
+                    unit_type,
+                    unit_value: dayjs_.format('YYYY-MM'),
+                    poid,
+                    fund_code,
+                    chart_type: 'square',
+                });
+                // myChart.current.setNewOption(barOption);
+            })();
         }
-    }, [isBarChart, latestProfitDay]);
+    }, [isBarChart, type, diff]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -356,9 +359,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 align: 'left',
                 margin: 8,
                 interval: 29,
-                formatter: function (value, index) {
-                    return '\t' + value;
-                },
             },
             axisLine: {
                 lineStyle: {

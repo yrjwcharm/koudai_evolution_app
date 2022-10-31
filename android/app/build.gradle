@@ -138,7 +138,7 @@ def appVersionCode = getAppVersionCode()
 android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -153,7 +153,7 @@ packagingOptions {
         pickFirst 'lib/arm64-v8a/libc++_shared.so'
         pickFirst 'lib/armeabi-v7a/libc++_shared.so'
         pickFirst 'lib/x86_64/libc++_shared.so'
-    }    
+    }
     defaultConfig {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -170,12 +170,12 @@ packagingOptions {
                   JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "developer-default",       //在此替换你的channel，也可使用默认的
                   JPUSH_PKGNAME:"com.licaimofang.app",
-                  XIAOMI_APPKEY:"MI-5931731298226",//小米平台注册的appkey 
+                  XIAOMI_APPKEY:"MI-5931731298226",//小米平台注册的appkey
                   XIAOMI_APPID:"MI-2882303761517312226", //小米平台注册的appid
-                //   VIVO_APPKEY: "e1407bc6eabff464e02a2e23c896cfbb", 
+                //   VIVO_APPKEY: "e1407bc6eabff464e02a2e23c896cfbb",
                 //   VIVO_APPID: "103789828",
-                //   OPPO_APPKEY: "OP-74Ie42tnouKo888gswCkscSsw", 
-                //   OPPO_APPID: "OP-2328483", 
+                //   OPPO_APPKEY: "OP-74Ie42tnouKo888gswCkscSsw",
+                //   OPPO_APPID: "OP-2328483",
                 //   OPPO_APPSECRET: "OP-10413A7D632631Af41c37FeB09986831",
           ]
         //   "x86_64","x86" 是支持模拟器架构 release可以去掉
@@ -213,7 +213,7 @@ packagingOptions {
                 keyPassword = "asdjkl" // And these must be set to non-empty in order to have the signing step added to the task graph.
                 storeFile = file("mofang-release-enimo.keystore")
                 storePassword = "asdjkl"
-                v2SigningEnabled true 
+                v2SigningEnabled true
             }
     }
     buildTypes {
@@ -294,7 +294,6 @@ dependencies {
     implementation project(':react-native-splash-screen') //启动页
     implementation project(':react-native-fs') //文件读写
     implementation project(path: ':react-native-community_viewpager')
-    implementation 'com.facebook.fresco:animated-gif:2.0.0'
     implementation project(':react-native-exit-app')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
@@ -345,7 +344,7 @@ dependencies {
     implementation 'com.ttd.tools:qarecord:1.1.0'
     implementation files('libs\\codec.jar')
 
-    
+
 }
 apply plugin: 'com.huawei.agconnect'
 // Run this once to be able to run the application with BUCK
