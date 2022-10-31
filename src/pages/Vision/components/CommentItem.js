@@ -2,20 +2,25 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 15:14:50
+ * @LastEditTime: 2022-10-31 14:51:10
  * @Description:评论内容体
  */
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {px} from '../../../utils/appUtil';
-import {Colors, Font, Style} from '../../../common/commonStyle';
+import {px} from '~/utils/appUtil';
+import {Colors, Font, Style} from '~/common/commonStyle';
+import {useJump} from '~/components/hooks';
 import Like from './Like';
+
 const CommentItem = ({data, style, key}) => {
+    const jump = useJump();
     const renderContent = (_data, _style, _key) => {
         return (
             <View key={_data.id} style={[Style.flexRow, {alignItems: 'flex-start'}, _style]}>
-                <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
+                <TouchableOpacity activeOpacity={0.8} onPress={() => jump(_data?.user_info?.url)}>
+                    <FastImage source={{uri: _data?.user_info?.avatar}} style={styles.avatar} />
+                </TouchableOpacity>
                 <View style={[{flex: 1, top: -px(2)}]}>
                     <View style={[Style.flexBetween, {marginBottom: px(-8)}]}>
                         <Text style={styles.name}>{_data?.user_info?.nickname}</Text>

@@ -1,8 +1,5 @@
 /*
  * @Date: 2022-04-06 17:26:18
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-05-06 18:40:54
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
@@ -26,9 +23,7 @@ const ArticleCommentList = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
-    const article_id = route?.params?.article_id;
-    const comment_id = route?.params?.comment_id;
-    const show_modal = route?.params?.show_modal == undefined ? true : route?.params?.show_modal;
+    const {article_id, comment_id, show_modal = true} = route.params || {};
     const getData = useCallback(() => {
         http.get('/community/article/comment/list/20210101', {
             article_id,

@@ -278,7 +278,7 @@ export const ChooseTag = ({setTags, tags}) => {
 
 const Index = ({route, setLoading}) => {
     const jump = useJump();
-    const {fr = ''} = route.params || {};
+    const {community_id = 0, fr = ''} = route.params || {};
     const [video, setVideo] = useState();
     const [paused, setPaused] = useState(true);
     const [showDuration, setShowDuration] = useState(true);
@@ -345,6 +345,7 @@ const Index = ({route, setLoading}) => {
     const onPublish = () => {
         const loading = Toast.showLoading('提交审核中...');
         publishVideo({
+            community_id,
             fr,
             media_ids: video.id,
             tag_ids: video.tags.map?.((tag) => tag.id)?.join(','),
