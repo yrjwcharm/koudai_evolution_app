@@ -25,7 +25,7 @@ import {getCommentList, getVideoList} from './service';
 import CommentItem from '~/pages/Vision/components/CommentItem';
 import {Button} from '~/components/Button';
 import http from '~/services';
-import {BottomModal, Modal, PageModal} from '~/components/Modal';
+import {BottomModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
 const viewabilityConfig = {
     waitForInteraction: true,
@@ -83,7 +83,7 @@ const CommunityVideo = ({navigation, route}) => {
         getData();
     }, []);
     const getItemLayout = useCallback((data, index) => {
-        return {length: height, offset: height * index, index};
+        return {length: HEIGHT, offset: HEIGHT * index, index};
     }, []);
     const _onViewableItemsChanged = useCallback(({viewableItems}) => {
         if (viewableItems.length === 1) {
@@ -139,7 +139,7 @@ const CommunityVideo = ({navigation, route}) => {
                 </TouchableOpacity>
             </View>
             <FlatList
-                style={{flex: 1, backgroundColor: '#000'}}
+                style={{backgroundColor: '#000', flex: 1}}
                 data={videoData?.items}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => item.id.toString()}

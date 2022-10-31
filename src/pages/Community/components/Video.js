@@ -3,7 +3,17 @@
  * @Date: 2022-09-28 14:44:03
  * @Description:
  */
-import {StyleSheet, TouchableWithoutFeedback, View, Text, Image, Dimensions, Animated, StatusBar} from 'react-native';
+import {
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
+    Text,
+    Image,
+    Dimensions,
+    Animated,
+    StatusBar,
+    ActivityIndicator,
+} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -21,6 +31,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const video = useRef();
     const [followStatus, setFollowStatus] = useState();
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         setPaused(index != currentIndex);
         customerSliderValue(0);
@@ -42,6 +53,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const onCustomerEnd = () => {};
     //加载视频调用，主要是拿到 “总时间”，并格式化
     const customerOnload = (e) => {
+        setLoading(false);
         let time = e.duration;
         setDuration(time);
     };
@@ -91,7 +103,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                 },
                             ],
                         }}>
-                        {index == currentIndex && (
+                        {index == currentIndex ? (
                             <>
                                 <Video
                                     source={{uri: data.media_url}}
@@ -100,9 +112,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     paused={paused}
                                     volume={7.0}
                                     onLoadStart={(e) => {
-                                        console.log('onLoadStart', e);
+                                        setLoading(true);
                                     }}
                                     onBuffer={(isBuffering) => {
+                                        setLoading(isBuffering.isBuffering);
                                         console.log('isBuffering', isBuffering);
                                     }}
                                     playInBackground={true}
@@ -128,7 +141,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                         />
                                     </TouchableWithoutFeedback>
                                 )}
+                                {loading && <ActivityIndicator style={styles.play} />}
                             </>
+                        ) : (
+                            <ActivityIndicator style={styles.play} />
                         )}
                     </Animated.View>
                 </View>

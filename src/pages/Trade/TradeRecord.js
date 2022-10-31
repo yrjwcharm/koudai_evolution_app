@@ -19,7 +19,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {debounce} from 'lodash';
 
 const TradeRecord = ({route, navigation}) => {
-    const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active = 0} = route.params || {};
+    const {adjust_name, fr = '', fund_code = '', poid = '', prod_code = '', tabActive: active = 0, platform_class = 0} =
+        route.params || {};
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [data, setData] = useState([]);
@@ -31,7 +32,6 @@ const TradeRecord = ({route, navigation}) => {
     const isMfb = fr == 'mfb';
     const scrollTab = useRef();
     const tradeType = useRef([0, -35, 4, -2, -1, 6, 7]);
-    const assetClassType = useRef(route.params.platform_class);
     const mfbType = useRef([0, 1, 2]);
     const getData = useCallback(
         (_page, toast) => {
@@ -39,7 +39,7 @@ const TradeRecord = ({route, navigation}) => {
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
                 type: isMfb ? mfbType.current[tabActive] : tradeType.current[tabActive],
-                platform_class: assetClassType.current,
+                platform_class,
                 page: Page,
                 poid,
                 prod_code,
@@ -79,7 +79,12 @@ const TradeRecord = ({route, navigation}) => {
         getData();
     }, [getData]);
     useEffect(() => {
-        http.get('/order/others/20210101', {fr: fr === 'mfb' ? 'wallet' : fr || '', fund_code, poid}).then((res) => {
+        http.get('/order/others/20210101', {
+            fr: fr === 'mfb' ? 'wallet' : fr || '',
+            fund_code,
+            poid,
+            platform_class,
+        }).then((res) => {
             if (res.code === '000000') {
                 res.result.adviser_fee &&
                     navigation.setOptions({
@@ -304,15 +309,17 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="赎回" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="升级" style={styles.container}>
-                        {renderContent()}
-                    </View>
-                    {!fund_code ? (
+                    {platform_class != 20 && (
+                        <View tabLabel="升级" style={styles.container}>
+                            {renderContent()}
+                        </View>
+                    )}
+                    {!fund_code && platform_class != 20 ? (
                         <View tabLabel="投顾服务" style={styles.container}>
                             {renderContent()}
                         </View>
                     ) : null}
-                    {!fund_code ? (
+                    {!fund_code && platform_class != 20 ? (
                         <View tabLabel={adjust_name || '调仓'} style={styles.container}>
                             {renderContent()}
                         </View>
