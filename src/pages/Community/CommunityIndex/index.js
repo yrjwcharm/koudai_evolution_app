@@ -162,7 +162,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                     )
                 ).then((responses) => {
                     if (responses.every((res) => res.code === '000000')) {
-                        Toast.show(responses[0].message);
+                        responses?.[0]?.message && Toast.show(responses[0].message);
                         refresh?.();
                     }
                 });

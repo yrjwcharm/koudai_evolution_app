@@ -120,7 +120,6 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
             if (_type) {
                 type.current = _type;
             }
-            setVal('');
             setList([]);
             setSelectedItems(items || []);
             getSearchData();
@@ -229,6 +228,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
                 );
             }}
             modalHeight={deviceHeight - px(92)}
+            onClose={() => setVal('')}
             overlayStyle={{backgroundColor: 'rgba(30, 30, 32, 0.8)'}}
             // panGestureEnabled={false}
             ref={bottomModal}
