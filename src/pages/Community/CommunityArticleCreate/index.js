@@ -13,7 +13,6 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     View,
 } from 'react-native';
 import Image from 'react-native-fast-image';
@@ -119,7 +118,7 @@ const WriteArticle = ({article, setArticle}) => {
         },
         // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
-    const [height, setHeight] = useState(px(300));
+    const [height, setHeight] = useState(px(500));
     const scrollView = useRef();
     const chooseModal = useRef();
 
@@ -262,38 +261,31 @@ const WriteArticle = ({article, setArticle}) => {
                     value={article?.title || ''}
                 />
                 <ChooseTag setTags={(tags) => setArticle((prev) => ({...prev, tags}))} tags={article.tags} />
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        if (editor.current?.isKeyboardOpen) return false;
-                        else editor.current?.focusContentEditor?.();
-                    }}>
-                    <RichEditor
-                        containerStyle={{marginTop: px(20)}}
-                        editorInitializedCallback={() => {
-                            editor.current.registerToolbar((items) => {
-                                setFirstLevelOps((prev) => {
-                                    const next = [...prev];
-                                    next[0].active = secondLevelOps.some((op) =>
-                                        items.some((item) => item === op.type)
-                                    );
-                                    return next;
-                                });
-                                setSecondLevelOps((prev) => {
-                                    const next = [...prev];
-                                    next.forEach((op) => (op.active = false));
-                                    items.forEach((item) => {
-                                        const index = next.findIndex((op) => op.type === item);
-                                        if (index > -1) next[index].active = true;
-                                    });
-                                    return next;
-                                });
+                <RichEditor
+                    containerStyle={{marginTop: px(20)}}
+                    editorInitializedCallback={() => {
+                        editor.current.registerToolbar((items) => {
+                            setFirstLevelOps((prev) => {
+                                const next = [...prev];
+                                next[0].active = secondLevelOps.some((op) => items.some((item) => item === op.type));
+                                return next;
                             });
-                        }}
-                        editorStyle={{
-                            caretColor: Colors.brandColor,
-                            color: Colors.defaultColor,
-                            contentCSSText: `padding: 0; min-height: ${px(300)}px;`,
-                            initialCSSText: `
+                            setSecondLevelOps((prev) => {
+                                const next = [...prev];
+                                next.forEach((op) => (op.active = false));
+                                items.forEach((item) => {
+                                    const index = next.findIndex((op) => op.type === item);
+                                    if (index > -1) next[index].active = true;
+                                });
+                                return next;
+                            });
+                        });
+                    }}
+                    editorStyle={{
+                        caretColor: Colors.brandColor,
+                        color: Colors.defaultColor,
+                        contentCSSText: `padding: 0; min-height: ${px(300)}px;`,
+                        initialCSSText: `
                                 h2 {
                                     font-size: 18px;
                                     line-height: 25px;
@@ -318,33 +310,32 @@ const WriteArticle = ({article, setArticle}) => {
                                     text-decoration: none;
                                 }
                             `,
-                            placeholderColor: Colors.placeholderColor,
-                        }}
-                        initialContentHTML={article?.content || ''}
-                        onBlur={() => {
-                            setEditorIsFocused(false);
-                            setFirstLevelOps((prev) => {
-                                const next = [...prev];
-                                next.forEach((op) => (op.active = false));
-                                return next;
-                            });
-                        }}
-                        onChange={(data) => {
-                            // console.log(data);
-                            setArticle((prev) => ({...prev, content: data}));
-                        }}
-                        onCursorPosition={onCursorPosition}
-                        onFocus={() => setEditorIsFocused(true)}
-                        onHeightChange={(h) => {
-                            setHeight(h + px(40));
-                        }}
-                        placeholder="请输入正文"
-                        ref={editor}
-                        showsVerticalScrollIndicator={false}
-                        style={{flex: 1, minHeight: height}}
-                        useContainer
-                    />
-                </TouchableWithoutFeedback>
+                        placeholderColor: Colors.placeholderColor,
+                    }}
+                    initialContentHTML={article?.content || ''}
+                    initialFocus
+                    onBlur={() => {
+                        setEditorIsFocused(false);
+                        setFirstLevelOps((prev) => {
+                            const next = [...prev];
+                            next.forEach((op) => (op.active = false));
+                            return next;
+                        });
+                    }}
+                    onChange={(data) => {
+                        // console.log(data);
+                        setArticle((prev) => ({...prev, content: data}));
+                    }}
+                    onCursorPosition={onCursorPosition}
+                    onFocus={() => setEditorIsFocused(true)}
+                    onHeightChange={(h) => {
+                        setHeight(h + px(40));
+                    }}
+                    placeholder="请输入正文"
+                    ref={editor}
+                    showsVerticalScrollIndicator={false}
+                    style={{flex: 1, minHeight: height}}
+                />
                 <View style={{height: px(100)}} />
             </ScrollView>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

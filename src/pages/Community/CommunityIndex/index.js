@@ -256,6 +256,7 @@ const Follow = forwardRef(({list = []}, ref) => {
     const [hasMore, setHasMore] = useState(true);
     const flatList = useRef();
     const followedList = useRef(list);
+    const logedPage = useRef([]);
 
     const init = () => {
         getFollowedData({page})
@@ -280,11 +281,7 @@ const Follow = forwardRef(({list = []}, ref) => {
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
         if (distanceFromEnd < 0) return false;
-        if (hasMore)
-            setPage((p) => {
-                global.LogTool({event: 'community_browsing', oid: p + 1});
-                return p + 1;
-            });
+        if (hasMore) setPage((p) => p + 1);
     };
 
     /** @name 渲染头部 */
@@ -373,7 +370,23 @@ const Follow = forwardRef(({list = []}, ref) => {
             ListHeaderComponent={renderHeader}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.99}
+            onLayout={() => {
+                global.LogTool({event: 'community_browsing', oid: 1});
+                logedPage.current.push(1);
+            }}
             onRefresh={() => (page > 1 ? setPage(1) : init())}
+            onScroll={({
+                nativeEvent: {
+                    contentOffset: {y},
+                    layoutMeasurement: {height},
+                },
+            }) => {
+                const screen = Math.floor(y / height) + 1;
+                if (screen > 1 && !logedPage.current.includes(screen)) {
+                    global.LogTool({event: 'community_browsing', oid: screen});
+                    logedPage.current.push(screen);
+                }
+            }}
             ref={flatList}
             refreshing={refreshing}
             renderItem={({item, index}) => (
@@ -398,6 +411,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     const waterfallWrapper = useRef();
     const [resource_private_tip, setTip] = useState('');
     const [loading, setLoading] = useState(true);
+    const logedPage = useRef([]);
 
     const init = () => {
         getData({...params, page})
@@ -422,7 +436,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
         page > 1 ? setPage(1) : init();
     };
 
-    const renderItem = ({item = {}, index, columnIndex}) => {
+    const renderItem = ({item = {}}) => {
         const {id, url} = item;
         return (
             <TouchableOpacity
@@ -440,11 +454,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
         if (distanceFromEnd < 0) return false;
-        if (hasMore)
-            setPage((p) => {
-                wrapper === 'Recommend' && global.LogTool({event: 'community_browsing', oid: p + 1});
-                return p + 1;
-            });
+        if (hasMore) setPage((p) => p + 1);
     };
 
     /** @name 渲染底部 */
@@ -471,9 +481,26 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 ListFooterComponent: renderFooter,
                 onEndReached,
                 onEndReachedThreshold: 0.1,
+                onLayout: () => {
+                    wrapper === 'Recommend' && global.LogTool({event: 'community_browsing', oid: 1});
+                    logedPage.current.push(1);
+                },
                 onRefresh: () => {
                     // waterfallWrapper.current?.clear?.();
                     page > 1 ? setPage(1) : init();
+                },
+                onScroll: (e) => {
+                    if (wrapper === 'Recommend') {
+                        const {
+                            contentOffset: {y},
+                            layoutMeasurement: {height},
+                        } = e.nativeEvent;
+                        const screen = Math.floor(y / height) + 1;
+                        if (screen > 1 && !logedPage.current.includes(screen)) {
+                            global.LogTool({event: 'community_browsing', oid: screen});
+                            logedPage.current.push(screen);
+                        }
+                    }
                 },
                 ref: waterfallFlow,
                 refreshing,
