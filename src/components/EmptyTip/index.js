@@ -14,7 +14,7 @@ const EmptyTip = (props) => {
     const {children, text = '暂无数据', img = image, style, textStyle, imageStyle, type = 'page', desc = ''} = props;
     return (
         <View style={[styles.con, style]}>
-            <Image style={[styles.image, imageStyle]} source={img} />
+            <Image style={[styles.image, type === 'page' ? {height: px(96)} : {}, imageStyle]} source={img} />
             <Text style={[styles.text, type === 'page' ? styles.title : {}, textStyle]}> {text} </Text>
             {desc ? <Text style={styles.desc}>{desc}</Text> : null}
             {children}

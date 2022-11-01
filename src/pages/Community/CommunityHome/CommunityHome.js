@@ -198,7 +198,9 @@ const CommunityHome = ({navigation, route}) => {
                                                 imageStyle={{marginBottom: px(-30)}}>
                                                 {data?.show_add_btn && (
                                                     <Button
-                                                        onPress={() => chooseModal?.current?.show('article', product)}
+                                                        onPress={() => {
+                                                            chooseModal?.current?.show('article', product);
+                                                        }}
                                                         title="添加作品"
                                                         style={styles.addBtn}
                                                         textStyle={{fontSize: px(13)}}
@@ -227,7 +229,9 @@ const CommunityHome = ({navigation, route}) => {
                                                 imageStyle={{marginBottom: px(-30)}}>
                                                 {data?.show_add_btn && (
                                                     <Button
-                                                        onPress={() => chooseModal?.current?.show('all', product)}
+                                                        onPress={() => {
+                                                            chooseModal?.current?.show('all', product);
+                                                        }}
                                                         title="添加产品"
                                                         style={styles.addBtn}
                                                         textStyle={{fontSize: px(13)}}
