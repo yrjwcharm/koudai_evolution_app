@@ -3,7 +3,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 14:27:34
+ * @LastEditTime: 2022-11-01 18:23:11
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -17,15 +17,18 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import Image from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {Modal, SelectModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
+import {getUserInfo} from '~/redux/actions/userInfo';
 import http from '../../services';
 import upload from '../../services/upload';
 import {px, requestAuth} from '../../utils/appUtil';
@@ -46,6 +49,7 @@ function reducer(state, action) {
 }
 
 export default ({navigation}) => {
+    const reduxDispatch = useDispatch();
     const inputRef = useRef();
     const [visible, setVisible] = useState(false);
     const [type, setType] = useState();
@@ -96,24 +100,29 @@ export default ({navigation}) => {
     const openPicker = (action) => {
         setTimeout(() => {
             if (action === 'gallery') {
-                ImagePicker.openPicker({
-                    width: px(320),
-                    height: px(320),
-                    cropping: true,
-                    cropperChooseText: '选择',
-                    cropperCancelText: '取消',
-                    loadingLabelText: '加载中',
-                })
-                    .then((image) => {
-                        uploadImage({
-                            fileName: image.filename,
-                            type: image.mime,
-                            uri: image.path,
-                        });
-                    })
-                    .catch((err) => {
-                        console.warn(err);
-                    });
+                launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (res) => {
+                    const {assets: [file] = []} = res;
+                    file &&
+                        ImagePicker.openCropper({
+                            path: file.uri,
+                            width: px(320),
+                            height: px(320),
+                            cropping: true,
+                            cropperChooseText: '选择',
+                            cropperCancelText: '取消',
+                            loadingLabelText: '加载中',
+                        })
+                            .then((image) => {
+                                uploadImage({
+                                    fileName: image.filename,
+                                    type: image.mime,
+                                    uri: image.path,
+                                });
+                            })
+                            .catch((err) => {
+                                console.warn(err);
+                            });
+                });
             } else if (action === 'camera') {
                 ImagePicker.openCamera({
                     width: px(320),
@@ -178,6 +187,7 @@ export default ({navigation}) => {
         http.post('/vision/set_user_info/20220216', {img, name, show_type: type === 'real' ? 0 : 1}).then((res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
+                reduxDispatch(getUserInfo());
                 Toast.show('设置成功');
                 navigation.goBack();
             } else {
@@ -212,7 +222,7 @@ export default ({navigation}) => {
     }, [avatar, nickname, type]);
 
     return Object.keys(data || {}).length > 0 ? (
-        <ScrollView bounces={false} style={styles.container}>
+        <ScrollView bounces={false} keyboardShouldPersistTaps="handled" style={styles.container}>
             <Text style={styles.info}>{desc || ''}</Text>
             <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
                 <View style={[styles.identityCon, type === 'real' ? {borderColor: Colors.brandColor} : {}]}>
