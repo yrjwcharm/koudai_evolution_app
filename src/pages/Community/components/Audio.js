@@ -12,13 +12,15 @@ import {ProgressCon} from './audioService/ProgressCom';
 import {Style} from '~/common/commonStyle';
 import {useOnTogglePlayback} from './audioService/useOnTogglePlayback';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {navigationRef} from '~/components/hooks/RootNavigation';
+import {updateUserInfo} from '~/redux/actions/userInfo';
 // The player is ready to be used
 const Audio = () => {
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const {isPlaying, tooglePlay} = useOnTogglePlayback();
     const track = useCurrentTrack();
+    const dispatch = useDispatch();
     return track && userInfo?.showAudioModal ? (
         <TouchableOpacity
             style={[Style.flexRow, styles.con]}
@@ -46,6 +48,7 @@ const Audio = () => {
                 style={{position: 'absolute', right: 0, top: -px(8)}}
                 onPress={() => {
                     resetAudio();
+                    dispatch(updateUserInfo({showAudioModal: ''}));
                 }}>
                 <Icon name="closecircle" size={px(18)} color="#9ba1b0" />
             </TouchableOpacity>
