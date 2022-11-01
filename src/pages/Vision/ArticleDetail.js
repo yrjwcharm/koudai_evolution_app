@@ -613,7 +613,9 @@ const ArticleDetail = ({navigation, route}) => {
                                                 />
                                             );
                                         })}
-                                        <RenderTitle title={recommendData?.articles?.title} />
+                                        {recommendData?.articles?.list?.length > 0 && (
+                                            <RenderTitle title={recommendData?.articles?.title} />
+                                        )}
                                         {recommendData?.articles?.list?.map((item, index) => {
                                             return RenderCate(item, styles.cardStye, 'article');
                                         })}
