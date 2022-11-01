@@ -66,7 +66,6 @@ public class MainApplication extends Application implements ReactApplication {
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
         //调用此方法：点击通知让应用从后台切到前台
         JPushModule.registerActivityLifecycle(this);
-        Fresco.initialize(this);
         //签署sdk初始化
         Base.initialize(this);
     }
