@@ -26,7 +26,7 @@ const EmptyData = () => {
         <BoxShadow
             setting={{
                 ...shadow,
-                width: deviceWidth - px(32),
+                width: deviceWidth - px(56),
                 height: px(211),
             }}>
             <View style={styles.emptyView}>
