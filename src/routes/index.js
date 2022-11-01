@@ -529,7 +529,35 @@ export default function AppStack() {
                 <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
                 <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
                 <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
-                <Stack.Screen name="PortfolioDetails" component={PortfolioDetails} options={{title: ''}} />
+                <Stack.Screen
+                    name="PortfolioDetails"
+                    component={PortfolioDetails}
+                    options={{
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    size={px(26)}
+                                    color="#fff"
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                        headerStyle: {
+                            backgroundColor: '#1E5AE7',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        title: '',
+                    }}
+                />
                 <Stack.Screen
                     name="TradeProcessing"
                     component={TradeProcessing}
@@ -632,7 +660,35 @@ export default function AppStack() {
                     }}
                 />
                 <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
-                <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
+                <Stack.Screen
+                    name="FundDetail"
+                    component={FundDetail}
+                    options={{
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    size={px(26)}
+                                    color="#fff"
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                        headerStyle: {
+                            backgroundColor: '#1E5AE7',
+                            shadowOpacity: 0,
+                            shadowOffset: {
+                                height: 0,
+                            },
+                            elevation: 0,
+                        },
+                        headerTitleStyle: {
+                            color: '#fff',
+                            fontSize: px(18),
+                        },
+                        title: '',
+                    }}
+                />
                 <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
                 <Stack.Screen
                     name="FindDetail"

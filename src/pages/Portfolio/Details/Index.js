@@ -3,13 +3,12 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 18:20:23
+ * @LastEditTime: 2022-11-01 18:42:22
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
-import Feather from 'react-native-vector-icons/Feather';
 import {WebView as RNWebView} from 'react-native-webview';
 import Loading from '../../Portfolio/components/PageLoading';
 import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
@@ -45,30 +44,6 @@ const PortFolioDetail = ({navigation, route}) => {
             });
         };
         getToken();
-        navigation.setOptions({
-            headerStyle: {
-                backgroundColor: '#1E5AE7',
-                shadowOpacity: 0,
-                shadowOffset: {
-                    height: 0,
-                },
-                elevation: 0,
-            },
-            headerTitleStyle: {
-                color: '#fff',
-                fontSize: px(18),
-            },
-            headerBackImage: () => {
-                return (
-                    <Feather
-                        name="chevron-left"
-                        color={'#fff'}
-                        size={px(26)}
-                        style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                    />
-                );
-            },
-        });
     }, []);
 
     const init = () => {
@@ -184,17 +159,17 @@ const PortFolioDetail = ({navigation, route}) => {
                         bounces={false}
                         ref={webview}
                         onMessage={(event) => {
-                            const data = event.nativeEvent.data;
-                            if (data?.indexOf('url=') > -1) {
-                                const url = JSON.parse(data.split('url=')[1]);
+                            const _data = event.nativeEvent.data;
+                            if (_data?.indexOf('url=') > -1) {
+                                const url = JSON.parse(_data.split('url=')[1]);
                                 jump(url);
-                            } else if (data?.indexOf('tip=') > -1) {
-                                const _tip = JSON.parse(data.split('tip=')[1]);
+                            } else if (_data?.indexOf('tip=') > -1) {
+                                const _tip = JSON.parse(_data.split('tip=')[1]);
                                 setTip(_tip);
                                 bottomModal2.current.show();
                             }
-                            if (data * 1) {
-                                setHeight((prev) => (data * 1 < deviceHeight / 2 ? prev : data * 1));
+                            if (_data * 1) {
+                                setHeight((prev) => (_data * 1 < deviceHeight / 2 ? prev : _data * 1));
                             }
                         }}
                         originWhitelist={['*']}

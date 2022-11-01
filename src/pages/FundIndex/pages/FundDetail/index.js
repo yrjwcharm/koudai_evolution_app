@@ -7,7 +7,6 @@ import {Linking, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpa
 import {useDispatch} from 'react-redux';
 import Image from 'react-native-fast-image';
 import {WebView} from 'react-native-webview';
-import Feather from 'react-native-vector-icons/Feather';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
@@ -44,32 +43,8 @@ const Index = ({navigation, route}) => {
         getPageData(route.params || {})
             .then((res) => {
                 if (res.code === '000000') {
-                    const {title} = res.result;
-                    navigation.setOptions({
-                        headerBackImage: () => {
-                            return (
-                                <Feather
-                                    name="chevron-left"
-                                    size={px(26)}
-                                    color="#fff"
-                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                                />
-                            );
-                        },
-                        headerStyle: {
-                            backgroundColor: '#1E5AE7',
-                            shadowOpacity: 0,
-                            shadowOffset: {
-                                height: 0,
-                            },
-                            elevation: 0,
-                        },
-                        headerTitleStyle: {
-                            color: '#fff',
-                            fontSize: px(18),
-                        },
-                        title: title || '基金详情',
-                    });
+                    const {title = '基金详情'} = res.result;
+                    navigation.setOptions({title});
                     setData(res.result);
                 }
             })
