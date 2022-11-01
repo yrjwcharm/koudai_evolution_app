@@ -40,7 +40,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                     profit: el.value,
                                 };
                             });
-                            zIndex = arr.findIndex((el) => delMille(el.profit) >= 0 || delMille(el.profit) <= 0);
+                            zIndex = arr.findIndex((el) => delMille(el.profit) > 0 || delMille(el.profit) < 0);
                         } else {
                             for (let i = startYear; i < endYear; i++) {
                                 arr.push({

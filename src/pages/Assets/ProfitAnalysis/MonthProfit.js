@@ -72,7 +72,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                         let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
+                            (el) => delMille(el.value) > 0 || delMille(el.value) < 0
                         );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
                         let barCharData = arr.map((el, index) => {
