@@ -431,7 +431,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
     const refresh = () => {
         waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
-        // waterfallWrapper.current?.clear?.();
+        waterfallWrapper.current?.clear?.();
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
@@ -480,13 +480,14 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
             columnsFlatListProps={{
                 ListFooterComponent: renderFooter,
                 onEndReached,
-                onEndReachedThreshold: 0.1,
+                onEndReachedThreshold: 0.05,
                 onLayout: () => {
                     wrapper === 'Recommend' && global.LogTool({event: 'community_browsing', oid: 1});
                     logedPage.current.push(1);
                 },
                 onRefresh: () => {
-                    // waterfallWrapper.current?.clear?.();
+                    waterfallWrapper.current?.clear?.();
+                    setRefreshing(true);
                     page > 1 ? setPage(1) : init();
                 },
                 onScroll: (e) => {
