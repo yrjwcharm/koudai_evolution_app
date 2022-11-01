@@ -56,88 +56,80 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
             }
         }
     };
-    const renderItem = ({item, index}) => {
-        let color =
-            delMille(item.profit) > 0 ? Colors.red : delMille(item.profit) < 0 ? Colors.green : Colors.lightGrayColor;
-        return (
-            <View style={styles.listRow} key={item + '' + index}>
-                <View style={styles.typeView}>
-                    <View style={styles.typeWrap}>
-                        <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => {
-                            global.LogTool('MfbIndex');
-                            jump(item?.url);
-                        }}>
-                        <Text style={styles.title}>{item.text}</Text>
-                    </TouchableOpacity>
-                    {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
-                    {item.tag ? (
-                        <View
-                            style={{
-                                borderRadius: text(2),
-                                backgroundColor: '#EFF5FF',
-                                marginLeft: text(6),
-                            }}>
-                            <Text style={styles.tag}>{item.tag}</Text>
+    const renderList = useMemo(
+        () => (
+            <>
+                {profitList.map((item, index) => {
+                    let color =
+                        delMille(item.profit) > 0
+                            ? Colors.red
+                            : delMille(item.profit) < 0
+                            ? Colors.green
+                            : Colors.lightGrayColor;
+
+                    return (
+                        <View style={styles.listRow} key={item + '' + index}>
+                            <View style={styles.typeView}>
+                                <View style={styles.typeWrap}>
+                                    <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        global.LogTool('MfbIndex');
+                                        jump(item?.url);
+                                    }}>
+                                    <Text style={styles.title}>{item.text}</Text>
+                                </TouchableOpacity>
+                                {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
+                                {item.tag ? (
+                                    <View
+                                        style={{
+                                            borderRadius: text(2),
+                                            backgroundColor: '#EFF5FF',
+                                            marginLeft: text(6),
+                                        }}>
+                                        <Text style={styles.tag}>{item.tag}</Text>
+                                    </View>
+                                ) : null}
+                            </View>
+                            <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
                         </View>
-                    ) : null}
-                </View>
-                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
-            </View>
-        );
-    };
+                    );
+                })}
+            </>
+        ),
+
+        [profitList]
+    );
     return (
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
             ) : (
                 <>
-                    <FlatList
-                        onTouchStart={(ev) => {
-                            DeviceEventEmitter.emit('changeScrollViewEnable', false);
-                        }}
-                        onMomentumScrollEnd={(e) => {
-                            DeviceEventEmitter.emit('changeScrollViewEnable', true);
-                        }}
-                        onScrollEndDrag={(e) => {
-                            DeviceEventEmitter.emit('changeScrollViewEnable', true);
-                        }}
-                        showsVerticalScrollIndicator={false}
-                        data={profitList}
-                        keyExtractor={(item, index) => item + index}
-                        ListHeaderComponent={
-                            <>
-                                {left && right && (
-                                    <View style={styles.profitHeader}>
-                                        <View style={styles.profitHeaderLeft}>
-                                            <Text style={styles.profitLabel}>{left?.text}</Text>
-                                            <Text style={styles.profitDate}>{left?.time}</Text>
-                                        </View>
-                                        <TouchableOpacity onPress={() => executeSort(right)}>
-                                            <View style={styles.profitHeaderRight}>
-                                                <Text style={styles.moneyText}>{right?.text}</Text>
-                                                <Image
-                                                    source={
-                                                        isEmpty(right?.sort_type)
-                                                            ? require('../assets/sort.png')
-                                                            : right?.sort_type == 'desc'
-                                                            ? require('../assets/desc.png')
-                                                            : require('../assets/asc.png')
-                                                    }
-                                                />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                            </>
-                        }
-                        // ListEmptyComponent={<EmptyData />}
-                        onEndReachedThreshold={0.5}
-                        refreshing={false}
-                        renderItem={renderItem}
-                    />
+                    {left && right && (
+                        <View style={styles.profitHeader}>
+                            <View style={styles.profitHeaderLeft}>
+                                <Text style={styles.profitLabel}>{left?.text}</Text>
+                                <Text style={styles.profitDate}>{left?.time}</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => executeSort(right)}>
+                                <View style={styles.profitHeaderRight}>
+                                    <Text style={styles.moneyText}>{right?.text}</Text>
+                                    <Image
+                                        source={
+                                            isEmpty(right?.sort_type)
+                                                ? require('../assets/sort.png')
+                                                : right?.sort_type == 'desc'
+                                                ? require('../assets/desc.png')
+                                                : require('../assets/asc.png')
+                                        }
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {renderList}
                 </>
             )}
         </>
