@@ -13,6 +13,7 @@ import {
     TouchableWithoutFeedback,
     Platform,
     TextInput,
+    ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useState, useRef, useEffect} from 'react';
 import Video from '../components/Video';
@@ -37,7 +38,7 @@ const CommunityVideo = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const [currentItem, setCurrentItem] = useState(0);
     const modalizeRef = useRef(null);
-    const {muid, type, community_id, video_id} = route?.params || {};
+    const {muid, community_id} = route?.params || {};
     const animated = useRef(new Animated.Value(0)).current;
     const [videoData, setVideoData] = useState({});
     const [commentData, setCommentData] = useState([]);
@@ -86,9 +87,10 @@ const CommunityVideo = ({navigation, route}) => {
         return {length: HEIGHT, offset: HEIGHT * index, index};
     }, []);
     const _onViewableItemsChanged = useCallback(({viewableItems}) => {
-        if (viewableItems.length === 1) {
-            setCurrentItem(viewableItems[0].index);
-        }
+        console.log(viewableItems);
+        // if (viewableItems.length === 1) {
+        setCurrentItem(viewableItems[0].index);
+        // }
     }, []);
     const layout = useCallback((e) => setHeight(e.nativeEvent.layout.height), []);
     //发布评论
@@ -98,7 +100,6 @@ const CommunityVideo = ({navigation, route}) => {
             content,
         }).then((res) => {
             if (res.code == '000000') {
-                global.LogTool({event: 'content_comment', oid: videoData?.items[currentItem].id});
                 inputModal.current.hide();
                 setContent('');
                 Modal.show({
@@ -133,25 +134,31 @@ const CommunityVideo = ({navigation, route}) => {
         );
     };
     return (
-        <View style={{flex: 1}} onLayout={layout}>
+        <View style={{flex: 1, backgroundColor: '#000'}} onLayout={layout}>
             <View style={[styles.header, Style.flexBetween, {top: inset.top}]}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{width: px(40), height: px(40)}}>
                     <Icon name="left" color="#fff" size={px(18)} />
                 </TouchableOpacity>
             </View>
-            <FlatList
-                style={{backgroundColor: '#000', flex: 1}}
-                data={videoData?.items}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => item.id.toString()}
-                getItemLayout={getItemLayout}
-                showsVerticalScrollIndicator={false}
-                pagingEnabled={true}
-                disableIntervalMomentum
-                initialNumToRender={10}
-                onViewableItemsChanged={_onViewableItemsChanged}
-                removeClippedSubviews={false}
-            />
+            {videoData?.items ? (
+                <FlatList
+                    style={{flex: 1}}
+                    data={videoData?.items}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => item.id.toString()}
+                    getItemLayout={getItemLayout}
+                    showsVerticalScrollIndicator={false}
+                    pagingEnabled={true}
+                    disableIntervalMomentum
+                    initialNumToRender={10}
+                    onViewableItemsChanged={_onViewableItemsChanged}
+                    removeClippedSubviews={false}
+                />
+            ) : (
+                <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+                    <ActivityIndicator color="#eee" />
+                </View>
+            )}
             <Modalize
                 ref={modalizeRef}
                 modalHeight={px(560)}

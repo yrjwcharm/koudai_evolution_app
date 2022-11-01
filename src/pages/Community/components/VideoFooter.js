@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     },
     footer_content: {
         height: px(36),
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
         borderRadius: px(16),
         width: px(151),
         justifyContent: 'center',

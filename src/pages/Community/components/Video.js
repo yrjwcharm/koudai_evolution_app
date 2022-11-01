@@ -11,7 +11,6 @@ import {
     Image,
     Dimensions,
     Animated,
-    StatusBar,
     ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -141,10 +140,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                         />
                                     </TouchableWithoutFeedback>
                                 )}
-                                {loading && <ActivityIndicator style={styles.play} />}
+                                {loading && <ActivityIndicator style={styles.play} color="#eee" />}
                             </>
                         ) : (
-                            <ActivityIndicator style={styles.play} />
+                            <ActivityIndicator style={styles.play} color="#eee" />
                         )}
                     </Animated.View>
                 </View>
