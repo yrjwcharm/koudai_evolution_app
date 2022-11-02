@@ -50,9 +50,19 @@ const CommunityVideo = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [height, setHeight] = useState(0);
+    const [videoPage, setVideoPage] = useState(1);
     const getData = async () => {
-        let res = await getVideoList(route?.params);
-        setVideoData(res.result);
+        let res = await getVideoList({...route?.params, page: videoPage});
+        if (videoPage == 1) {
+            setVideoData(res.result);
+        } else {
+            setVideoData((preData) => {
+                let tmp = {...preData};
+                tmp.has_more = res.result?.has_more;
+                tmp.items = tmp.items.concat(res.result?.items || []);
+                return tmp;
+            });
+        }
     };
     const data = [
         {
@@ -83,13 +93,14 @@ const CommunityVideo = ({navigation, route}) => {
     };
     useEffect(() => {
         resetAudio();
-        getData();
     }, []);
+    useEffect(() => {
+        getData();
+    }, [videoPage]);
     const getItemLayout = useCallback((data, index) => {
         return {length: HEIGHT, offset: HEIGHT * index, index};
     }, []);
     const _onViewableItemsChanged = useCallback(({viewableItems}) => {
-        console.log(viewableItems);
         // if (viewableItems.length === 1) {
         setCurrentItem(viewableItems[0].index);
         // }
@@ -155,6 +166,11 @@ const CommunityVideo = ({navigation, route}) => {
                     initialNumToRender={10}
                     onViewableItemsChanged={_onViewableItemsChanged}
                     removeClippedSubviews={false}
+                    onEndReached={() => {
+                        if (videoData?.has_more) {
+                            setVideoPage((pre) => pre + 1);
+                        }
+                    }}
                 />
             ) : (
                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
