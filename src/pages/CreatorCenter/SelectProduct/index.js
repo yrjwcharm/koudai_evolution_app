@@ -81,9 +81,9 @@ const SelectProduct = ({route}) => {
         }
     }, []);
 
-    const handleSort = useCallback((option) => {
+    const handleSort = (option) => {
         getListData(option);
-    }, []);
+    };
 
     const onDetailModalClose = useCallback(() => {
         setDetailModalVisible(false);
