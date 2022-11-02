@@ -25,6 +25,7 @@ const AddProductStep2 = ({navigation, route}) => {
     const handlerEditProductRef = useRef();
     const handlerSortProductRef = useRef();
     const handlerTopButtonRef = useRef();
+    const skipBackListener = useRef();
 
     const style_data = useMemo(() => listData?.style_data, [listData]);
     const listLength = useMemo(() => {
@@ -63,7 +64,7 @@ const AddProductStep2 = ({navigation, route}) => {
                                 suppressHighlighting={true}
                                 style={styles.topBtnText}
                                 onPress={() => {
-                                    handlerTopButtonRef.current(res.result.top_button);
+                                    handlerTopButtonRef.current();
                                 }}>
                                 {res.result?.top_button?.text}
                             </Text>
@@ -222,10 +223,33 @@ const AddProductStep2 = ({navigation, route}) => {
                 handlerSortProductRef.current(option);
             }, 500);
         });
+        // 监听返回
+        let lister = navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            if (skipBackListener.current) {
+                navigation.dispatch(e.data.action);
+                return;
+            }
+            Modal.show({
+                content: '已编辑内容是否要保存草稿？下次可继续编辑',
+                confirm: true,
+                confirmText: '保存草稿',
+                cancelText: '不保存草稿',
+                confirmCallBack: () => {
+                    handlerTopButtonRef.current(() => {
+                        navigation.dispatch(e.data.action);
+                    });
+                },
+                cancelCallBack: () => {
+                    navigation.dispatch(e.data.action);
+                },
+            });
+        });
         return () => {
             DeviceEventEmitter.removeAllListeners('selectToList');
             DeviceEventEmitter.removeAllListeners('editProduct');
             DeviceEventEmitter.removeAllListeners('sortProduct');
+            lister?.();
         };
     }, []);
 
@@ -237,7 +261,7 @@ const AddProductStep2 = ({navigation, route}) => {
     }, [handlerSelectToList, handlerEditProduct, handlerSortProduct, handlerTopButton]);
 
     const handlerTopButton = useCallback(
-        (button) => {
+        (afterCallback) => {
             let hasEmpty = false;
             if (data?.data?.category_mode === 2) {
                 hasEmpty = data.data.categories.find((item) => !item.products?.length);
@@ -262,8 +286,14 @@ const AddProductStep2 = ({navigation, route}) => {
                     .then((res) => {
                         if (res.code === '000000') {
                             Toast.show('保存成功');
+
                             setTimeout(() => {
-                                jump(button.url);
+                                if (afterCallback) {
+                                    afterCallback();
+                                } else {
+                                    skipBackListener.current = true;
+                                    jump(data.top_button.url);
+                                }
                             }, 1000);
                         }
                     })
