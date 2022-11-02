@@ -14,6 +14,7 @@ import {
     Image,
     Keyboard,
     Switch,
+    Platform,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '~/components/TabBar.js';
@@ -1240,6 +1241,10 @@ class TradeBuy extends Component {
     disableOfwalletErrorOverBtn = memoize((type, autoChargeStatus, pay_method) => {
         return !!(type === 1 && autoChargeStatus && pay_method == 'wallet');
     });
+    componentDidUpdate() {
+        Platform.OS === 'android' && this.tabView?.goToPage(this.state.type);
+    }
+
     render() {
         const {showMask, data, type, buyBtnCanClick, deltaHeight, autoChargeStatus, bankSelect} = this.state;
         const {button} = data;
