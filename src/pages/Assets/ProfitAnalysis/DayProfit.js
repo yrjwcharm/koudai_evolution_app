@@ -292,6 +292,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     useEffect(() => {
         (async () => {
             let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+            let dayNums = dayjs_.daysInMonth();
             const res = await getChartData({
                 type,
                 unit_type,
@@ -400,39 +401,41 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         return (
             <RNEChartsPro
                 onDataZoom={(result) => {
-                    Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
-                    const {start, end} = result?.batch[0];
-                    const count = xAxisData?.length;
-                    barOption.dataZoom[0].start = start;
-                    barOption.dataZoom[0].end = end;
-                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
-                    let index = round(center) - 1;
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                dataAxis[index] > 0
-                                    ? Colors.red
-                                    : dataAxis[index] < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[index],
-                        yAxis: dataAxis[index],
-                    };
-                    setSelCurDate(xAxisData[index]);
-                    setProfit(dataAxis[index]);
-                    dateArr.map((el) => {
-                        el.checked = false;
-                        if (el.day == xAxisData[index]) {
-                            el.checked = true;
-                        }
-                    });
-                    setDateArr([...dateArr]);
-                    myChart.current.setNewOption(barOption);
+                    if (isFinished) {
+                        Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
+                        const {start, end} = result?.batch[0];
+                        const count = xAxisData?.length;
+                        barOption.dataZoom[0].start = start;
+                        barOption.dataZoom[0].end = end;
+                        let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                        let index = round(center) - 1;
+                        barOption.series[0].markPoint.itemStyle = {
+                            normal: {
+                                color:
+                                    dataAxis[index] > 0
+                                        ? Colors.red
+                                        : dataAxis[index] < 0
+                                        ? Colors.green
+                                        : Colors.transparent,
+                                borderColor: Colors.white,
+                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                            },
+                        };
+                        barOption.series[0].markPoint.data[0] = {
+                            xAxis: xAxisData[index],
+                            yAxis: dataAxis[index],
+                        };
+                        setSelCurDate(xAxisData[index]);
+                        setProfit(dataAxis[index]);
+                        dateArr.map((el) => {
+                            el.checked = false;
+                            if (el.day == xAxisData[index]) {
+                                el.checked = true;
+                            }
+                        });
+                        setDateArr([...dateArr]);
+                        myChart.current.setNewOption(barOption);
+                    }
                 }}
                 legendSelectChanged={(result) => {}}
                 onPress={(result) => {}}

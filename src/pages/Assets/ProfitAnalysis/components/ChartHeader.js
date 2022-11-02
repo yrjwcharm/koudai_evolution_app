@@ -23,69 +23,71 @@ const ChartHeader = React.memo(
         isNext = true,
     }) => {
         return (
-            <View style={Style.flexBetween}>
-                <View style={[styles.chartLeft, {}]}>
-                    <TouchableOpacity onPress={selCalendarType}>
-                        <View
-                            style={[
-                                Style.flexCenter,
-                                styles.selChartType,
-                                isCalendar && {
-                                    backgroundColor: Colors.white,
-                                    width: px(60),
-                                },
-                            ]}>
-                            <Text
-                                style={{
-                                    color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                    fontSize: px(12),
-                                    fontFamily: Font.pingFangRegular,
-                                }}>
-                                日历图
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={selBarChartType}>
-                        <View
-                            style={[
-                                Style.flexCenter,
-                                styles.selChartType,
-                                isBarChart && {
-                                    backgroundColor: Colors.white,
-                                    width: px(60),
-                                },
-                            ]}>
-                            <Text
-                                style={{
-                                    color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                    fontSize: px(12),
-                                    fontFamily: Font.pingFangRegular,
-                                }}>
-                                柱状图
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.selMonth}>
-                    {isPrev && (
-                        <TouchableOpacity onPress={subMonth}>
-                            <Image
-                                style={{width: px(13), height: px(13)}}
-                                source={require('../../../../assets/img/icon/prev.png')}
-                            />
+            <>
+                <View style={Style.flexBetween}>
+                    <View style={[styles.chartLeft, {}]}>
+                        <TouchableOpacity onPress={selCalendarType}>
+                            <View
+                                style={[
+                                    Style.flexCenter,
+                                    styles.selChartType,
+                                    isCalendar && {
+                                        backgroundColor: Colors.white,
+                                        width: px(60),
+                                    },
+                                ]}>
+                                <Text
+                                    style={{
+                                        color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
+                                        fontSize: px(12),
+                                        fontFamily: Font.pingFangRegular,
+                                    }}>
+                                    日历图
+                                </Text>
+                            </View>
                         </TouchableOpacity>
-                    )}
-                    <Text style={styles.MMText}>{date}</Text>
-                    {isNext && (
-                        <TouchableOpacity onPress={addMonth}>
-                            <Image
-                                style={{width: px(13), height: px(13)}}
-                                source={require('../../../../assets/img/icon/next.png')}
-                            />
+                        <TouchableOpacity onPress={selBarChartType}>
+                            <View
+                                style={[
+                                    Style.flexCenter,
+                                    styles.selChartType,
+                                    isBarChart && {
+                                        backgroundColor: Colors.white,
+                                        width: px(60),
+                                    },
+                                ]}>
+                                <Text
+                                    style={{
+                                        color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
+                                        fontSize: px(12),
+                                        fontFamily: Font.pingFangRegular,
+                                    }}>
+                                    柱状图
+                                </Text>
+                            </View>
                         </TouchableOpacity>
-                    )}
+                    </View>
+                    <View style={styles.selMonth}>
+                        {isPrev && (
+                            <TouchableOpacity onPress={subMonth}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../../assets/img/icon/prev.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        <Text style={styles.MMText}>{date}</Text>
+                        {isNext && (
+                            <TouchableOpacity onPress={addMonth}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../../assets/img/icon/next.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
-            </View>
+            </>
         );
     }
 );
