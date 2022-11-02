@@ -314,12 +314,12 @@ const TradeRecord = ({route, navigation}) => {
                             {renderContent()}
                         </View>
                     )}
-                    {!fund_code && platform_class != 20 ? (
+                    {!fund_code && platform_class != 10 && platform_class != 20 ? (
                         <View tabLabel="投顾服务" style={styles.container}>
                             {renderContent()}
                         </View>
                     ) : null}
-                    {!fund_code && platform_class != 20 ? (
+                    {!fund_code && platform_class != 10 && platform_class != 20 ? (
                         <View tabLabel={adjust_name || '调仓'} style={styles.container}>
                             {renderContent()}
                         </View>
