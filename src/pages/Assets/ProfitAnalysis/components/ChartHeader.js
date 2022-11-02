@@ -67,25 +67,27 @@ const ChartHeader = React.memo(
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.selMonth}>
-                        {isPrev && (
-                            <TouchableOpacity onPress={subMonth}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../../assets/img/icon/prev.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                        <Text style={styles.MMText}>{date}</Text>
-                        {isNext && (
-                            <TouchableOpacity onPress={addMonth}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../../assets/img/icon/next.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    {!isBarChart && (
+                        <View style={styles.selMonth}>
+                            {isPrev && (
+                                <TouchableOpacity onPress={subMonth}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../../assets/img/icon/prev.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            <Text style={styles.MMText}>{date}</Text>
+                            {isNext && (
+                                <TouchableOpacity onPress={addMonth}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../../assets/img/icon/next.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
                 </View>
             </>
         );

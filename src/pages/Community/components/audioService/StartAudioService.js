@@ -9,8 +9,7 @@ export const startAudio = async (track) => {
         const isSetup = await SetupService();
         const current_track = await TrackPlayer.getTrack(0);
         if (isSetup) {
-            if (current_track && current_track?.title != track?.title) {
-                console.log('reset');
+            if (current_track && current_track?.media_id != track?.media_id) {
                 await TrackPlayer.reset();
             }
             await TrackPlayer.add(track);

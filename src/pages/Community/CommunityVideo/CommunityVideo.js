@@ -28,6 +28,7 @@ import {Button} from '~/components/Button';
 import http from '~/services';
 import {BottomModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
+import {resetAudio} from '../components/audioService/SetUpService';
 const viewabilityConfig = {
     waitForInteraction: true,
     viewAreaCoveragePercentThreshold: 95,
@@ -81,6 +82,7 @@ const CommunityVideo = ({navigation, route}) => {
         }
     };
     useEffect(() => {
+        resetAudio();
         getData();
     }, []);
     const getItemLayout = useCallback((data, index) => {

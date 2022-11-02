@@ -2,7 +2,7 @@
  * @Date: 2022-04-07 17:02:17
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 14:46:29
+ * @LastEditTime: 2022-11-02 16:07:03
  * @Description:评论内容体
  */
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
@@ -29,7 +29,7 @@ const CommentItem = ({data, style, key}) => {
                                 favor_status={_data.is_liked}
                                 favor_num={_data.like_num}
                                 comment_id={_data.id}
-                                style={{top: px(-4), right: px(2)}}
+                                style={{top: px(-2), right: px(2)}}
                             />
                         ) : null}
                     </View>

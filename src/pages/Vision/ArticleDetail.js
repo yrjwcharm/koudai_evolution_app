@@ -89,7 +89,7 @@ const ArticleDetail = ({navigation, route}) => {
     const focus = useIsFocused();
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
-        let tmp = audioList.filter((audio) => audio.url == current_track.url);
+        let tmp = audioList.filter((audio) => audio.media_id == current_track.media_id);
         if (tmp.length > 0) {
             isCurrentArticleAudio.current = true;
             dispatch(updateUserInfo({showAudioModal: ''}));

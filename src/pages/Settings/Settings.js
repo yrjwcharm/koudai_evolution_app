@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 18:17:28
+ * @LastEditTime: 2022-11-02 16:04:29
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -24,6 +24,7 @@ import {deleteModal} from '../../redux/actions/modalInfo';
 import {cleanProduct} from '../../redux/actions/pk/pkProducts';
 import {pinningProduct} from '../../redux/actions/pk/pkPinning';
 import http from '../../services/index.js';
+import {resetAudio} from '../Community/components/audioService/SetUpService.js';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -94,6 +95,7 @@ const Settings = ({navigation}) => {
                                         id_no: '',
                                     })
                                 );
+                                resetAudio();
                                 dispatch(deleteModal());
                                 global.layerOptions = null;
                                 Modal.hideLayer();

@@ -37,7 +37,7 @@ const Like = ({favor_num, favor_status, comment_id, style}) => {
                         ? require('../../../assets/animation/zanActive.json')
                         : require('../../../assets/animation/zan.json')
                 }
-                style={{height: px(27), width: px(27), right: -px(4)}}
+                style={{height: px(26), width: px(26), right: -px(2), top: px(0)}}
             />
         </TouchableOpacity>
     );
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numRegular,
         fontSize: px(12),
         color: Colors.lightBlackColor,
-        right: -px(14),
+        right: -px(6),
         top: px(2),
     },
 });

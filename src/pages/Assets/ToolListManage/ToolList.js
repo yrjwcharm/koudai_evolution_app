@@ -25,7 +25,7 @@ const ToolList = ({route}) => {
     const [isEditState, setIsEditState] = useState(false);
     const initialToolIds = useRef();
     const tempTooIds = useRef([]);
-    const {type = 50} = route.params || {};
+    const {type = 50, poid = '', fund_code = ''} = route.params || {};
     const getData = async () => {
         let res = await getList({type});
         initialToolIds.current = res.result?.my_tools?.tool_list?.map((item) => item.tool_id).join(',');
@@ -91,6 +91,8 @@ const ToolList = ({route}) => {
             } else {
                 global.LogTool('icon_click', item?.text, item.tool_id);
             }
+            item.url.params.fund_code = fund_code;
+            item.url.params.poid = poid;
             jump(item.url);
             return;
         }
