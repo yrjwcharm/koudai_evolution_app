@@ -316,7 +316,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     dataAxis = [];
                 if (profit_data_list.length > 0) {
                     let filterProfitDataList = profit_data_list.sort(
-                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key)
+                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
                     );
                     filterProfitDataList.map((el) => {
                         xAxisData.push(el.unit_key);
@@ -330,8 +330,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     barOption.dataZoom[0].end = end;
                     barOption.xAxis.data = xAxisData;
                     barOption.series[0].data = dataAxis;
-                    setXAxisData(xAxisData);
-                    setDataAxis(dataAxis);
+                    setSelCurDate(xAxisData[index]);
+                    setProfit(dataAxis[index]);
                     barOption.series[0].markPoint.itemStyle = {
                         normal: {
                             color:
@@ -348,6 +348,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         xAxis: xAxisData[index],
                         yAxis: dataAxis[index],
                     };
+                    setXAxisData(xAxisData);
+                    setDataAxis(dataAxis);
                     myChart.current?.setNewOption(barOption);
                 }
             }
