@@ -18,6 +18,7 @@ import {PasswordModal} from '../../../components/Password';
 import Http from '../../../services';
 import Toast from '../../../components/Toast';
 import Mask from '../../../components/Mask';
+import HTML from '../../../components/RenderHtml';
 const shadow = {
     color: '#aaa',
     border: 6,
@@ -208,21 +209,10 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 {!isEmpty(state.pay_info?.remind) && (
                                     <View style={styles.payInfo}>
                                         <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                            <Text style={styles.redText}>
-                                                {state.pay_info?.remind.substring(
-                                                    0,
-                                                    state.pay_info?.remind.indexOf('）') + 1
-                                                )}
-                                            </Text>
-                                            <Text style={styles.blackText}>将扣款</Text>
-                                            <Text style={styles.redText}>
-                                                {state.pay_info?.remind.substring(
-                                                    state.pay_info?.remind.indexOf('款') + 1,
-                                                    state.pay_info?.remind.lastIndexOf('元')
-                                                )}
-                                                元
-                                            </Text>
-                                            <Text style={styles.blackText}>,请保持账户资金充足</Text>
+                                            <HTML
+                                                html={state.pay_info?.remind}
+                                                style={{fontSize: px(13), lineHeight: px(20)}}
+                                            />
                                         </View>
                                     </View>
                                 )}

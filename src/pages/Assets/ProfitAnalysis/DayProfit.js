@@ -43,7 +43,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isPrev, setIsPrev] = useState(true);
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
-    const [proift, setProfit] = useState('');
+    const [profit, setProfit] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -65,7 +65,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             },
         ],
         xAxis: {
-            boundaryGap: false,
+            nameLocation: 'end',
+            boundaryGap: true,
             type: 'category',
             axisTick: {
                 show: false, // 不显示坐标轴刻度线
@@ -79,7 +80,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 fontFamily: Font.numMedium,
                 fontWeight: '500',
                 fontSize: 9,
-                align: 'center',
+                align: 'left',
                 margin: 8,
                 interval: 29,
             },
@@ -117,7 +118,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             {
                 type: 'bar',
                 barWidth: 6,
-                barGap: 0,
+                barGap: '90%',
                 itemStyle: {
                     normal: {
                         color: function (params) {
@@ -227,7 +228,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
                     if (cur > max || cur < min) return;
@@ -271,7 +272,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      */
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
-        // setProfit(item.profit);
+        setProfit(item.profit);
         dateArr.map((el) => {
             el.checked = false;
             if (el.day == item.day) {
@@ -304,7 +305,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 let xAxisData = [],
                     dataAxis = [];
                 if (profit_data_list.length > 0) {
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
                     let filterProfitDataList = profit_data_list
                         .filter(
                             (el) =>
@@ -321,18 +322,26 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     }
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
-                    barOption.dataZoom[0].startValue = xAxisData.length - 31;
-                    barOption.dataZoom[0].endValue = xAxisData.length - 1;
+                    barOption.dataZoom[0].start = ((xAxisData.length - 31) / xAxisData.length) * 100;
+                    barOption.dataZoom[0].end = 100;
                     barOption.xAxis.data = xAxisData;
                     barOption.series[0].data = dataAxis;
-                    // barOption.series[0].markPoint.itemStyle = {
-                    //     normal: {
-                    //         color: profit_data_list[index]?.value > 0 ? Colors.red : Colors.green,
-                    //         borderColor: Colors.white,
-                    //         borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                    //     },
-                    // };
-                    // barOption.series[0].markPoint.data[0] = {xAxis: selCurDate, yAxis: profit_data_list[index]?.value};
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color:
+                                profit_data_list[index]?.value > 0
+                                    ? Colors.red
+                                    : profit_data_list[index]?.value < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    };
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: selCurDate,
+                        yAxis: profit_data_list[index]?.value,
+                    };
                     myChart.current?.setNewOption(barOption);
                 }
             }
@@ -392,41 +401,43 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             <RNEChartsPro
                 onDataZoom={(result) => {
                     Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
-                    console.log(xAxisData.length);
                     const {start, end} = result?.batch[0];
                     const count = xAxisData?.length;
-                    let startLocation = round((start / 100) * count);
-                    let endLocation = round((end / 100) * count);
-                    let centerLocation = startLocation + 15;
-                    // barOption.dataZoom[0].startValue = count * start;
-                    // barOption.dataZoom[0].endValue = count * end;
-                    // barOption.series[0].markPoint.itemStyle = {
-                    //     normal: {
-                    //         color: dataAxis[centerLocation] > 0 ? Colors.red : Colors.green,
-                    //         borderColor: Colors.white,
-                    //         borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                    //     },
-                    // };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[centerLocation],
-                        yAxis: dataAxis[centerLocation],
+                    barOption.dataZoom[0].start = start;
+                    barOption.dataZoom[0].end = end;
+                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                    let index = round(center) - 1;
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color:
+                                dataAxis[index] > 0
+                                    ? Colors.red
+                                    : dataAxis[index] < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
                     };
-                    setSelCurDate(xAxisData[centerLocation]);
-                    setProfit(dataAxis[centerLocation]);
-                    console.log(dateArr);
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: xAxisData[index],
+                        yAxis: dataAxis[index],
+                    };
+                    setSelCurDate(xAxisData[index]);
+                    setProfit(dataAxis[index]);
                     dateArr.map((el) => {
                         el.checked = false;
-                        if (el.day == xAxisData[centerLocation]) {
+                        if (el.day == xAxisData[index]) {
                             el.checked = true;
                         }
                     });
                     setDateArr([...dateArr]);
-                    // myChart.current.setNewOption(barOption);
+                    myChart.current.setNewOption(barOption);
                 }}
                 legendSelectChanged={(result) => {}}
                 onPress={(result) => {}}
                 ref={myChart}
-                width={deviceWidth - px(64)}
+                width={deviceWidth - px(58)}
                 height={px(350)}
                 onMousemove={() => {}}
                 onFinished={() => {
@@ -472,16 +483,21 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                         styles.benefit,
                                         {
                                             textAlign: 'center',
-                                            color: delMille(proift) > 0 ? Colors.red : Colors.green,
+                                            color:
+                                                delMille(profit) > 0
+                                                    ? Colors.red
+                                                    : delMille(profit) < 0
+                                                    ? Colors.green
+                                                    : Colors.lightGrayColor,
                                         },
                                     ]}>
-                                    {proift}
+                                    {profit}
                                 </Text>
                                 <View style={styles.dateView}>
                                     <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
                             </View>
-                            <View style={{marginTop: px(12)}}>{renderBarChart}</View>
+                            <View style={{marginTop: px(13)}}>{renderBarChart}</View>
                             <View style={styles.separator} />
                         </View>
                     )}
@@ -534,8 +550,8 @@ const styles = StyleSheet.create({
     },
     separator: {
         position: 'absolute',
-        height: px(282),
-        top: px(55),
+        height: px(290),
+        top: px(52),
         zIndex: -9999,
         borderStyle: 'dashed',
         borderColor: '#9AA0B1',
