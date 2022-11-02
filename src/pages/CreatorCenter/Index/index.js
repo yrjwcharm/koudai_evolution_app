@@ -21,7 +21,7 @@ import {useJump} from '~/components/hooks';
 import LoginMask from '~/components/LoginMask';
 import Loading from '~/pages/Portfolio/components/PageLoading';
 import RenderHtml from '~/components/RenderHtml';
-import {CommunityFollowCard} from '~/pages/Community/components/CommunityCard';
+import {CommunityCard} from '~/pages/Community/components/CommunityCard';
 
 const CreatorCenterIndex = () => {
     const inset = useSafeAreaInsets();
@@ -213,7 +213,7 @@ const CreatorCenterIndex = () => {
                                 <View key={idx} tabLabel={item.title}>
                                     {item.type === 'product' ? (
                                         list?.list?.map((itm, index) => (
-                                            <CommunityFollowCard
+                                            <CommunityCard
                                                 data={itm}
                                                 key={index}
                                                 style={{

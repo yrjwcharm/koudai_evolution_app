@@ -131,7 +131,7 @@ export const CommunityCardCover = ({
 };
 
 /** @name 社区关注卡片 */
-export const CommunityFollowCard = (props) => {
+export const CommunityCard = (props) => {
     const {
         attention_num, // 社区关注人数
         attention_user, // 社区关注头像
@@ -149,7 +149,6 @@ export const CommunityFollowCard = (props) => {
         favor_num, // 点赞数
         favor_status, // 点赞状态 0 未点赞 1 已点赞
         id,
-        isRecommend = false,
         live_status, // 直播状态 1 预约中 2 直播中 3 回放
         left_desc, // 直播状态或预约人数
         media_duration, // 媒体时长
@@ -162,12 +161,15 @@ export const CommunityFollowCard = (props) => {
         right_desc, // 直播时间或观看人数
         share_num, // 分享数
         share_info, // 分享相关信息
-        style, // 自定义样式
         title, // 卡片标题
         type, // 卡片类型 1文章 2音频 3视频 9直播
         type_str, // 类型文案
         url, // 跳转地址
     } = props.data || {};
+    const {
+        isRecommend = false, // 是否推荐卡片
+        style, // 自定义样式
+    } = props;
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
     const [favored, setFavored] = useState(favor_status); // 是否点赞

@@ -13,7 +13,7 @@ import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct
 import CommunityHomeHeader from '../components/CommunityHomeHeader';
 import Intro from './Intro';
 import {PublishContent} from '../CommunityIndex';
-import {CommunityFollowCard} from '../components/CommunityCard';
+import {CommunityCard} from '../components/CommunityCard';
 import ProductCards from '../../../components/Portfolios/ProductCards';
 import {Modal, ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
@@ -189,7 +189,7 @@ const CommunityHome = ({navigation, route}) => {
                                     {!loading ? (
                                         product?.length ? (
                                             product?.map((_data) => (
-                                                <CommunityFollowCard key={_data.id} data={_data} onDelete={onDelete} />
+                                                <CommunityCard key={_data.id} data={_data} onDelete={onDelete} />
                                             ))
                                         ) : (
                                             <EmptyTip
