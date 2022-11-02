@@ -171,7 +171,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
             500,
             {leading: true, trailing: false}
         ),
-        []
+        [data]
     );
 
     useImperativeHandle(ref, () => ({
@@ -493,7 +493,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     setRefreshing(true);
                     page > 1 ? setPage(1) : init();
                 },
-                onScroll: (e) => {
+                _onScroll: (e) => {
                     if (wrapper === 'Recommend') {
                         const {
                             contentOffset: {y},

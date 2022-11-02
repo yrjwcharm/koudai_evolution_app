@@ -109,7 +109,7 @@ const BarChartComponent = React.memo(({chartData, changeDate}) => {
                                 );
                             })}
                         </View>
-                        <View style={{height: px(220)}}>
+                        <View style={{height: px(220), position: 'relative', zIndex: '9999'}}>
                             {chartData.chart && (
                                 <Chart
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.green], {

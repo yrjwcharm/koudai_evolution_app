@@ -81,7 +81,7 @@ const ProfitDetail = ({navigation, route}) => {
                             ref={scrollTab}
                             renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
                             initialPage={page}
-                            locked={locked}
+                            locked={true}
                             onChangeTab={({i}) => {
                                 global.LogTool('changeTab', tabs[i]);
                             }}>

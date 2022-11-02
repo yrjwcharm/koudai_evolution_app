@@ -309,56 +309,53 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         );
     }, [isBarChart]);
     return (
-        <>
-            <View style={styles.container}>
-                <CalendarHeader
-                    isCalendar={isCalendar}
-                    isBarChart={isBarChart}
-                    selCalendarType={selCalendarType}
-                    selBarChartType={selBarChartType}
-                    date={date.year()}
-                    subtract={subtract}
-                    add={add}
-                    isNext={isNext}
-                    isPrev={isPrev}
-                />
-                {isHasData ? (
-                    <>
-                        {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
-                        {isBarChart && (
-                            <View style={styles.chartContainer}>
-                                <View style={styles.separatorView}>
-                                    <Text
-                                        style={[
-                                            styles.benefit,
-                                            {
-                                                textAlign: 'center',
-                                                color:
-                                                    delMille(profit) > 0
-                                                        ? Colors.red
-                                                        : delMille(profit) < 0
-                                                        ? Colors.green
-                                                        : Colors.lightGrayColor,
-                                            },
-                                        ]}>
-                                        {profit}
-                                    </Text>
-                                    <View style={styles.dateView}>
-                                        <Text style={styles.date}>{selCurDate}</Text>
-                                    </View>
+        <View style={styles.container}>
+            <CalendarHeader
+                isCalendar={isCalendar}
+                isBarChart={isBarChart}
+                selCalendarType={selCalendarType}
+                selBarChartType={selBarChartType}
+                date={date.year()}
+                subtract={subtract}
+                add={add}
+                isNext={isNext}
+                isPrev={isPrev}
+            />
+            {isHasData ? (
+                <>
+                    {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
+                    {isBarChart && (
+                        <View style={styles.chartContainer}>
+                            <View style={styles.separatorView}>
+                                <Text
+                                    style={[
+                                        styles.benefit,
+                                        {
+                                            textAlign: 'center',
+                                            color:
+                                                delMille(profit) > 0
+                                                    ? Colors.red
+                                                    : delMille(profit) < 0
+                                                    ? Colors.green
+                                                    : Colors.lightGrayColor,
+                                        },
+                                    ]}>
+                                    {profit}
+                                </Text>
+                                <View style={styles.dateView}>
+                                    <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
-                                <View style={{marginTop: px(13)}}>{renderBarChart}</View>
-                                <View style={styles.separator} />
                             </View>
-                        )}
-                    </>
-                ) : (
-                    <EmptyData />
-                )}
-                <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} unitType={unit_type} />
-            </View>
-            )
-        </>
+                            <View style={{marginTop: px(13)}}>{renderBarChart}</View>
+                            <View style={styles.separator} />
+                        </View>
+                    )}
+                </>
+            ) : (
+                <EmptyData />
+            )}
+            <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} unitType={unit_type} />
+        </View>
     );
 });
 const CalendarHeader = React.memo(
