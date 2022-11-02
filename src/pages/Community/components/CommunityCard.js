@@ -2,9 +2,8 @@
  * @Date: 2022-10-09 14:51:26
  * @Description: 社区卡片
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import HapticFeedback from 'react-native-haptic-feedback';
 import LinearGradient from 'react-native-linear-gradient';
@@ -157,6 +156,7 @@ export const CommunityFollowCard = (props) => {
         onDelete, //移除作品
         can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
+        product_type, // "article_history" 不展示底部操作按钮
         relation_type,
         reserved, // 直播是否已预约
         right_desc, // 直播时间或观看人数
@@ -167,8 +167,7 @@ export const CommunityFollowCard = (props) => {
         type, // 卡片类型 1文章 2音频 3视频 9直播
         type_str, // 类型文案
         url, // 跳转地址
-        product_type, // "article_history" 不展示底部操作按钮
-    } = props;
+    } = props.data || {};
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
     const [favored, setFavored] = useState(favor_status); // 是否点赞
@@ -280,20 +279,18 @@ export const CommunityFollowCard = (props) => {
         );
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            setCollected(collect_status);
-            setCollectNum(collect_num);
-            setFavored(favor_status);
-            setFavorNum(favor_num);
-            setShareNum(share_num);
-            setLeftDesc(left_desc);
-            setIsReserved(reserved);
-            return () => {
-                AppState.removeEventListener('change', handleAppStateChange);
-            };
-        }, [props])
-    );
+    useEffect(() => {
+        setCollected(collect_status);
+        setCollectNum(collect_num);
+        setFavored(favor_status);
+        setFavorNum(favor_num);
+        setShareNum(share_num);
+        setLeftDesc(left_desc);
+        setIsReserved(reserved);
+        return () => {
+            AppState.removeEventListener('change', handleAppStateChange);
+        };
+    }, [props.data]);
 
     return (
         <>

@@ -391,7 +391,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             refreshing={refreshing}
             renderItem={({item, index}) => (
                 <CommunityFollowCard
-                    {...item}
+                    data={item}
                     style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
                 />
             )}
@@ -446,7 +446,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     jump(url);
                 }}
                 style={styles.waterfallFlowItem}>
-                <CommunityFollowCard {...item} isRecommend />
+                <CommunityFollowCard data={item} isRecommend />
             </TouchableOpacity>
         );
     };

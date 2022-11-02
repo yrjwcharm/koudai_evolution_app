@@ -60,12 +60,10 @@ const SingleFundRedeem = ({navigation, route}) => {
 
     useEffect(() => {
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         debounceGetFee(inputVal);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeRatio, bankSelectObj, inputVal]);
 
     const getFee = async (share) => {
@@ -436,6 +434,9 @@ export default SingleFundRedeem;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.bgColor,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: Colors.borderColor,
     },
     fundInfo: {
         paddingVertical: px(10),

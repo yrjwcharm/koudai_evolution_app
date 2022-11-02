@@ -189,7 +189,7 @@ const CommunityHome = ({navigation, route}) => {
                                     {!loading ? (
                                         product?.length ? (
                                             product?.map((_data) => (
-                                                <CommunityFollowCard key={_data.id} {..._data} onDelete={onDelete} />
+                                                <CommunityFollowCard key={_data.id} data={_data} onDelete={onDelete} />
                                             ))
                                         ) : (
                                             <EmptyTip

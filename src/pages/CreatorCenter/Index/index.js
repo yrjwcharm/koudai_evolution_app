@@ -214,7 +214,7 @@ const CreatorCenterIndex = () => {
                                     {item.type === 'product' ? (
                                         list?.list?.map((itm, index) => (
                                             <CommunityFollowCard
-                                                {...itm}
+                                                data={itm}
                                                 key={index}
                                                 style={{
                                                     marginTop: px(12),
