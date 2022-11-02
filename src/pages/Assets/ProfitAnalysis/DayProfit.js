@@ -30,6 +30,8 @@ let timer = null;
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
+    const [startDate, setStartDate] = useState('2022-10-17');
+    const [endDate, setEndDate] = useState('2022-11-19');
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
@@ -66,6 +68,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             },
         ],
         xAxis: {
+            show: false,
             nameLocation: 'end',
             boundaryGap: true,
             type: 'category',
@@ -84,6 +87,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 align: 'left',
                 margin: 8,
                 interval: 29,
+                showMaxLabel: true,
             },
             axisLine: {
                 lineStyle: {
@@ -508,6 +512,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             <View style={styles.separator} />
                         </View>
                     )}
+                    {isBarChart && (
+                        <View style={[Style.flexBetween, {marginTop: px(6)}]}>
+                            <Text style={styles.chartDate}>{startDate}</Text>
+                            <Text style={styles.chartDate}>{endDate}</Text>
+                        </View>
+                    )}
                     <RenderList
                         curDate={selCurDate}
                         type={type}
@@ -524,6 +534,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
 });
 export default DayProfit;
 const styles = StyleSheet.create({
+    chartDate: {
+        fontSize: px(9),
+        fontFamily: Font.numMedium,
+        fontWeight: '500',
+        color: Colors.lightGrayColor,
+    },
     benefit: {
         fontSize: px(16),
         fontFamily: Font.numFontFamily,
@@ -556,7 +572,6 @@ const styles = StyleSheet.create({
         top: px(12),
     },
     separator: {
-        position: 'absolute',
         height: px(290),
         top: px(52),
         zIndex: -9999,

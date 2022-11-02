@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     },
     desc: {
         fontSize: px(12),
-        fontFamily: Font.numRegular,
+        fontFamily: Font.pingFangRegular,
         fontWeight: '400',
         color: Colors.lightGrayColor,
     },
