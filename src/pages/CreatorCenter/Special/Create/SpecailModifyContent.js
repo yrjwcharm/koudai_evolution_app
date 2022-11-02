@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-28 16:48:01
+ * @LastEditTime: 2022-11-02 14:59:30
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -19,7 +19,7 @@ import {Colors, Font, Style} from '~/common/commonStyle';
 import {getContentList, getStashContentList, saveStashContentList} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import LoadingTips from '~/components/LoadingTips';
-
+import useSafeBottomHeight from '~/components/hooks/useSafeBottomHeight';
 function Item({item, index}) {
     const {title, view_num, favor_num} = item;
     const source = item.author?.nickname || item.album_name || item.cate_name;
@@ -38,9 +38,9 @@ function Item({item, index}) {
 
 // 列表最后的添加和排序按钮
 function FooterItem({onAdd, onSort, cansort = false, data}) {
-    const insets = useSafeAreaInsets();
+    const bottom = useSafeBottomHeight();
     return (
-        <View style={[styles.footerWrap, {marginBottom: insets.bottom}]}>
+        <View style={[styles.footerWrap, {paddingBottom: bottom + 20}]}>
             <View style={styles.footer_ActionWrap}>
                 {cansort ? (
                     <TouchableOpacity style={styles.footer_action} onPress={onSort}>
@@ -105,6 +105,7 @@ function ContentSearchModal(props) {
     const [page, setPage] = useState(1);
     const [query, setQuery] = useState('');
     const [hasMore, setHasMore] = useState(true);
+    const bottom = useSafeBottomHeight();
 
     useEffect(() => {
         loadListData();
@@ -179,21 +180,24 @@ function ContentSearchModal(props) {
         );
     });
 
-    const renderLoadingMore = useCallback(() => {
+    const renderLoadingMore = () => {
+        console.log('bottom:', bottom);
         if (loadingMore) {
             return (
-                <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
+                <View style={{...styles.searchFooterWrap, paddingBottom: bottom + 20}}>
                     <LoadingTips />
                 </View>
             );
         }
         if (!hasMore) {
-            <View style={{width: '100%', ...Style.flexCenter, height: px(40)}}>
-                <Text style={{fontSize: Font.textSm, color: Colors.lightGrayColor}}>没有更多了</Text>)
-            </View>;
+            return (
+                <View style={{...styles.searchFooterWrap, paddingBottom: bottom + 20}}>
+                    <Text style={{fontSize: Font.textSm, color: Colors.lightGrayColor}}>没有更多了</Text>
+                </View>
+            );
         }
-        return <View style={{width: '100%', ...Style.flexCenter, height: px(40)}} />;
-    }, [loadingMore, hasMore]);
+        return <View style={{...styles.searchFooterWrap, paddingBottom: bottom + 20}} />;
+    };
 
     return (
         <View style={styles.searchModal}>
@@ -261,7 +265,7 @@ export default function SpecailModifyContent({navigation, route}) {
     const {scene} = route.params || {};
     const [data, setData] = useState([]);
     const [pageData, setPageData] = useState([]);
-    const subject_id = route?.params?.subject_id || 1022;
+    const subject_id = route?.params?.subject_id || 1024;
     console.log('subject_id:', subject_id);
 
     const [loading, setLoading] = useState(false);
@@ -399,6 +403,8 @@ export default function SpecailModifyContent({navigation, route}) {
                 <FlatList
                     style={{flex: 1}}
                     data={data}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                     renderItem={renderItem}
                     ListEmptyComponent={renderEmpty()}
                     ListHeaderComponent={renderListHeader()}
@@ -416,6 +422,7 @@ export default function SpecailModifyContent({navigation, route}) {
             </View>
             <BottomModal
                 ref={bottomModal}
+                style={{paddingBottom: 0}}
                 title="添加内容"
                 keyboardAvoiding={false}
                 showClose={true}
@@ -514,7 +521,9 @@ const styles = StyleSheet.create({
         height: px(16),
         width: '100%',
     },
-    footerWrap: {},
+    footerWrap: {
+        width: '100%',
+    },
     footer_ActionWrap: {
         height: 41,
         width: '100%',
@@ -647,5 +656,10 @@ const styles = StyleSheet.create({
     searchEmpty_text: {
         color: '#121D3A',
         fontSize: px(13),
+    },
+    searchFooterWrap: {
+        width: '100%',
+        ...Style.flexCenter,
+        paddingTop: px(15),
     },
 });
