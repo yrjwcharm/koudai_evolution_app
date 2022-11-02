@@ -46,7 +46,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
-    const [profitDay, setProfitDay] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -280,15 +279,17 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      */
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
-        // setProfit(item.profit);
+        setProfit(item.profit);
+    };
+    useEffect(() => {
         dateArr.map((el) => {
             el.checked = false;
-            if (el.day == item.day) {
+            if (el.day == selCurDate) {
                 el.checked = true;
             }
         });
         setDateArr([...dateArr]);
-    };
+    }, [selCurDate]);
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);
@@ -350,13 +351,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     setEndDate(xAxisData[xAxisData.length - 1]);
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
-                    setProfitDay(xAxisData[i]);
                     setProfit(dataAxis[i]);
                     myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, diff, myChart.current]);
+    }, [type, myChart.current]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -436,16 +436,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         xAxis: xAxisData[index],
                         yAxis: dataAxis[index],
                     };
-                    setProfitDay(xAxisData[index]);
                     setProfit(dataAxis[index]);
-                    dateArr.map((el) => {
-                        el.checked = false;
-                        if (el.day == xAxisData[index]) {
-                            el.checked = true;
-                        }
-                    });
+                    let curMonth = dayjs(xAxisData[index]).month();
+                    let diffMonth = dayjs().month() - curMonth;
+                    setDiff(-diffMonth);
                     setSelCurDate(xAxisData[index]);
-                    setDateArr([...dateArr]);
                     myChart.current.setNewOption(barOption);
                 }}
                 legendSelectChanged={(result) => {}}
@@ -500,7 +495,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     {profit}
                                 </Text>
                                 <View style={styles.dateView}>
-                                    <Text style={styles.date}>{profitDay}</Text>
+                                    <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
                             </View>
                             <View style={{marginTop: px(13)}}>{renderBarChart}</View>
