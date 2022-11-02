@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-28 10:23:54
+ * @LastEditTime: 2022-11-02 11:06:27
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 创建专题-内容编辑-修改内容排序
  */
@@ -80,6 +80,9 @@ export default function SpecailSortContent({navigation, route}) {
     const itemSeparatorComponent = () => {
         return <View style={{height: 0.5, backgroundColor: '#E9EAEF'}} />;
     };
+    const renderFooter = () => {
+        return <View style={{width: '100%', height: 20}} />;
+    };
     const onDragEnd = ({data, from, to}) => {
         setData(data);
     };
@@ -124,6 +127,7 @@ export default function SpecailSortContent({navigation, route}) {
                         onDragEnd={onDragEnd}
                         keyExtractor={(item) => `${item.id}`}
                         renderItem={renderItem}
+                        ListFooterComponent={renderFooter}
                     />
                 </View>
                 <View style={{...Style.flexBetween, ...styles.footer}}>
@@ -183,9 +187,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     footer: {
-        position: 'absolute',
-        bottom: px(0),
-        left: 0,
         width: '100%',
         backgroundColor: '#fff',
         height: px(58),
