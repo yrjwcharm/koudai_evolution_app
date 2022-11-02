@@ -30,8 +30,8 @@ let timer = null;
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
-    const [startDate, setStartDate] = useState('2022-10-17');
-    const [endDate, setEndDate] = useState('2022-11-19');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
@@ -322,8 +322,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     });
                     for (let i = 0; i < 15; i++) {
                         xAxisData.push(
-                            dayjs(sortProfitDataList[sortProfitDataList.length - 1])
-                                .add(i, 'day')
+                            dayjs(sortProfitDataList[sortProfitDataList.length - 1].unit_key)
+                                .add(i + 1, 'day')
                                 .format('YYYY-MM-DD')
                         );
                         dataAxis.push('0.00');
@@ -346,6 +346,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         xAxis: xAxisData[i],
                         yAxis: dataAxis[i],
                     };
+                    setStartDate(xAxisData[xAxisData.length - 31]);
+                    setEndDate(xAxisData[xAxisData.length - 1]);
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
                     setProfitDay(xAxisData[i]);
@@ -409,13 +411,16 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             <RNEChartsPro
                 onDataZoom={(result) => {
                     if (isFinished) {
-                        Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
                         const {start, end} = result?.batch[0];
                         const count = xAxisData?.length;
                         barOption.dataZoom[0].start = start;
                         barOption.dataZoom[0].end = end;
                         let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
                         let index = round(center) - 1;
+                        let startIndex = round(count * (start / 100));
+                        let endIndex = round(count * (end / 100));
+                        setStartDate(xAxisData[startIndex]);
+                        setEndDate(xAxisData[endIndex]);
                         barOption.series[0].markPoint.itemStyle = {
                             normal: {
                                 color:
@@ -451,15 +456,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 width={deviceWidth - px(58)}
                 height={px(350)}
                 onMousemove={() => {}}
-                onFinished={() => {
-                    setIsFinished(true);
-                    if (timer == null) {
-                        timer = setTimeout(() => {
-                            DeviceEventEmitter.emit('sendChartTrigger', false);
-                            timer && clearTimeout(timer);
-                        }, 1500);
-                    }
-                }}
+                onFinished={() => {}}
                 onRendered={() => {}}
                 option={barOption}
             />
@@ -572,6 +569,7 @@ const styles = StyleSheet.create({
         top: px(12),
     },
     separator: {
+        position: 'absolute',
         height: px(290),
         top: px(52),
         zIndex: -9999,
