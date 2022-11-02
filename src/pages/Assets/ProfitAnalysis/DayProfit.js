@@ -44,6 +44,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
+    const [profitDay, setProfitDay] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -229,18 +230,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
 
-                        let beforeDay = dayjs().add(-1, 'day').format('YYYY-MM-DD');
-                        let index = -1;
-                        if (profit_data_list[index]?.unit_key == currentDay) {
-                            index = profit_data_list.findIndex((el) => el.unit_key == beforeDay);
-                        } else {
-                            index = profit_data_list.findIndex(
-                                (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
-                            );
-                        }
-
-                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        //let beforeDay = dayjs().add(-1, 'day').format('YYYY-MM-DD');
+                        let index = profit_data_list.findIndex(
+                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
+                        );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                         if (cur > max || cur < min) return;
                         cur == max && setIsNext(false);
                         cur == min && setIsPrev(false);
@@ -248,7 +243,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             setIsPrev(true);
                             setIsNext(true);
                         }
-                        setProfit(profit_data_list[index]?.value);
                         setDate(dayjs_);
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
@@ -282,7 +276,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      */
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
-        setProfit(item.profit);
+        // setProfit(item.profit);
         dateArr.map((el) => {
             el.checked = false;
             if (el.day == item.day) {
@@ -315,42 +309,47 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 let xAxisData = [],
                     dataAxis = [];
                 if (profit_data_list.length > 0) {
-                    let filterProfitDataList = profit_data_list.sort(
+                    let beforeDay = dayjs().add(-1, 'day').format('YYYY-MM-DD');
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
+                    let filterProfitDataList = profit_data_list.filter(
+                        (el) => new Date(el.unit_key).getTime() <= new Date(profit_data_list[index].unit_key).getTime()
+                    );
+                    let sortProfitDataList = filterProfitDataList.sort(
                         (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
                     );
                     filterProfitDataList.map((el) => {
                         xAxisData.push(el.unit_key);
                         dataAxis.push(el.value);
                     });
-                    let start = ((xAxisData.length - 31) / xAxisData.length) * 100;
-                    let end = 100;
-                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
-                    let index = round(center) - 1;
-                    barOption.dataZoom[0].start = start;
-                    barOption.dataZoom[0].end = end;
-                    barOption.xAxis.data = xAxisData;
-                    barOption.series[0].data = dataAxis;
-                    setSelCurDate(xAxisData[index]);
-                    setProfit(dataAxis[index]);
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                dataAxis[index] > 0
-                                    ? Colors.red
-                                    : dataAxis[index] < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[index],
-                        yAxis: dataAxis[index],
-                    };
-                    setXAxisData(xAxisData);
-                    setDataAxis(dataAxis);
-                    myChart.current?.setNewOption(barOption);
+                    // let start = ((xAxisData.length - 31) / xAxisData.length) * 100;
+                    // let end = 100;
+                    // let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                    // let index = round(center) - 1;
+                    // barOption.dataZoom[0].start = start;
+                    // barOption.dataZoom[0].end = end;
+                    // barOption.xAxis.data = xAxisData;
+                    // barOption.series[0].data = dataAxis;
+                    // barOption.series[0].markPoint.itemStyle = {
+                    //     normal: {
+                    //         color:
+                    //             dataAxis[index] > 0
+                    //                 ? Colors.red
+                    //                 : dataAxis[index] < 0
+                    //                 ? Colors.green
+                    //                 : Colors.transparent,
+                    //         borderColor: Colors.white,
+                    //         borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                    //     },
+                    // };
+                    // barOption.series[0].markPoint.data[0] = {
+                    //     xAxis: xAxisData[index],
+                    //     yAxis: dataAxis[index],
+                    // };
+                    // setXAxisData(xAxisData);
+                    // setDataAxis(dataAxis);
+                    // setProfitDay(xAxisData[index]);
+                    // setProfit(dataAxis[index]);
+                    // myChart.current?.setNewOption(barOption);
                 }
             }
         })();
@@ -432,15 +431,16 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             xAxis: xAxisData[index],
                             yAxis: dataAxis[index],
                         };
-                        setSelCurDate(xAxisData[index]);
+                        setProfitDay(xAxisData[index]);
                         setProfit(dataAxis[index]);
-                        // dateArr.map((el) => {
-                        //     el.checked = false;
-                        //     if (el.day == xAxisData[index]) {
-                        //         el.checked = true;
-                        //     }
-                        // });
-                        // setDateArr([...dateArr]);
+                        dateArr.map((el) => {
+                            el.checked = false;
+                            if (el.day == xAxisData[index]) {
+                                el.checked = true;
+                            }
+                        });
+                        setSelCurDate(xAxisData[index]);
+                        setDateArr([...dateArr]);
                         myChart.current.setNewOption(barOption);
                     }
                 }}
@@ -504,7 +504,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     {profit}
                                 </Text>
                                 <View style={styles.dateView}>
-                                    <Text style={styles.date}>{selCurDate}</Text>
+                                    <Text style={styles.date}>{profitDay}</Text>
                                 </View>
                             </View>
                             <View style={{marginTop: px(13)}}>{renderBarChart}</View>
