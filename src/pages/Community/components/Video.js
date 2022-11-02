@@ -72,7 +72,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     //关注
     const handleFollow = () => {
         if (data?.follow_status == 1) return;
-        http.post('/follow/add/202206', {item_id: 10, item_type: community_id || muid}).then((res) => {
+        http.post('/follow/add/202206', {item_id: data?.author?.author_id, item_type: 10}).then((res) => {
             if (res.code == '000000') {
                 setFollowStatus(1);
             }
