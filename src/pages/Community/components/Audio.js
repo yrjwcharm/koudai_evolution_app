@@ -26,7 +26,6 @@ const Audio = () => {
             style={[Style.flexRow, styles.con]}
             activeOpacity={1}
             onPress={() => {
-                console.log(userInfo?.showAudioModal);
                 navigationRef.current.navigate(userInfo?.showAudioModal?.path, userInfo?.showAudioModal?.params);
             }}>
             {/* 进度 */}
