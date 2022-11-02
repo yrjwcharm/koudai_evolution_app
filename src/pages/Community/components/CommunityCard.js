@@ -167,6 +167,7 @@ export const CommunityFollowCard = (props) => {
         type, // 卡片类型 1文章 2音频 3视频 9直播
         type_str, // 类型文案
         url, // 跳转地址
+        product_type, // "article_history" 不展示底部操作按钮
     } = props;
     const jump = useJump();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
@@ -469,8 +470,8 @@ export const CommunityFollowCard = (props) => {
                             </TouchableOpacity>
                         </View>
                     ) : null
-                ) : (
-                    // 卡片底部分享、收藏、评论和点赞
+                ) : // 卡片底部分享、收藏、评论和点赞
+                product_type === 'article_history' ? null : (
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                         <TouchableOpacity
                             activeOpacity={0.8}
