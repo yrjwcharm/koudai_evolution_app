@@ -17,7 +17,10 @@ import Toast from '~/components/Toast';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
 import {PasswordModal} from '~/components/Password';
+import {useJump} from '~/components/hooks';
+
 const ProjectSetTradeModel = ({route, navigation}) => {
+    const jump = useJump();
     const {fr = '', poid = '', upgrade_id = 0} = route?.params || {};
     const [data, setData] = useState({});
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
@@ -31,27 +34,52 @@ const ProjectSetTradeModel = ({route, navigation}) => {
     const passwordModal = useRef();
     const allToolClose = Object.values(toolStatus).every((i) => i == false); //工具是否全部关闭
     const getData = async () => {
-        let res = await getSetModel({fr, poid, upgrade_id});
-        if (res.result?.pop_tool_risk_reminder) {
+        const res = await getSetModel({fr, poid, upgrade_id});
+        const {agreement_bottom, pop_tool_risk_reminder, risk_pop, sale_model} = res.result;
+        if (pop_tool_risk_reminder) {
             Modal.show({
-                title: res.result?.pop_tool_risk_reminder?.title,
+                title: pop_tool_risk_reminder?.title,
                 children: () => (
                     <ScrollView style={{margin: px(16), height: px(300)}} showsVerticalScrollIndicator={false}>
-                        <RenderHtml style={styles.contentText} html={res.result?.pop_tool_risk_reminder?.content} />
+                        <RenderHtml style={styles.contentText} html={pop_tool_risk_reminder?.content} />
                     </ScrollView>
                 ),
                 confirmCallBack: () => {
                     postLeaveTrace({poid, tool_id: 0});
                 },
             });
+        } else if (risk_pop) {
+            Modal.show({
+                cancelCallBack: () => {
+                    global.LogTool('RiskWarningWindows_No');
+                    if (risk_pop.cancel?.act === 'back') {
+                        navigation.goBack();
+                    } else if (risk_pop.cancel?.act === 'jump') {
+                        jump(risk_pop.cancel?.url);
+                    }
+                },
+                cancelText: risk_pop.cancel?.text,
+                confirm: true,
+                confirmCallBack: () => {
+                    global.LogTool('RiskWarningWindows_Yes');
+                    if (risk_pop.confirm?.act === 'back') {
+                        navigation.goBack();
+                    } else if (risk_pop.confirm?.act === 'jump') {
+                        jump(risk_pop.confirm?.url);
+                    }
+                },
+                confirmText: risk_pop.confirm?.text,
+                content: risk_pop.content,
+                isTouchMaskToClose: false,
+                title: risk_pop.title,
+            });
         }
-        setPossible(res.result?.sale_model?.target_yeild?.possible);
-        setAgreement(res.result?.agreement_bottom);
+        setPossible(sale_model?.target_yeild?.possible);
+        setAgreement(agreement_bottom);
         setData(res.result);
     };
     useEffect(() => {
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // 止盈选择
     const onChooseProfit = (id) => {

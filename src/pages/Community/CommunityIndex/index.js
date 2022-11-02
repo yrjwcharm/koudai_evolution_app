@@ -213,7 +213,9 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                                     style={styles.authorAvatar}
                                 />
                                 <View>
-                                    <Text style={styles.subTitle}>{name}</Text>
+                                    <Text numberOfLines={1} style={[styles.subTitle, {maxWidth: px(200)}]}>
+                                        {name}
+                                    </Text>
                                     <View style={{marginTop: px(2)}}>
                                         <HTML html={count_str} style={styles.smText} />
                                     </View>
