@@ -31,7 +31,7 @@ import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
 import {px} from '~/utils/appUtil';
-import {CommunityFollowCard} from '../components/CommunityCard';
+import {CommunityCard} from '../components/CommunityCard';
 import {
     getAllMsg,
     getCanPublishContent,
@@ -393,7 +393,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             ref={flatList}
             refreshing={refreshing}
             renderItem={({item, index}) => (
-                <CommunityFollowCard
+                <CommunityCard
                     data={item}
                     style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
                 />
@@ -449,7 +449,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     jump(url);
                 }}
                 style={styles.waterfallFlowItem}>
-                <CommunityFollowCard data={item} isRecommend />
+                <CommunityCard data={item} isRecommend />
             </TouchableOpacity>
         );
     };
