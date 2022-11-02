@@ -15,7 +15,7 @@ import {deviceWidth, px} from '~/utils/appUtil';
 import {getPageData} from './services';
 
 const Index = ({navigation, route}) => {
-    const {fund_code, type} = route.params || {};
+    const {fund_code, type = 0} = route.params || {};
     const [data, setData] = useState({});
     const {type_list = []} = data;
     const scrollTab = useRef();
@@ -28,20 +28,19 @@ const Index = ({navigation, route}) => {
                 setData(res.result);
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fund_code]);
+    }, []);
 
     useEffect(() => {
         if (Object.keys(data).length > 0) {
-            type !== 0 && scrollTab.current?.goToPage?.(type);
+            setTimeout(() => type !== 0 && scrollTab.current?.goToPage?.(scrollTab.current?.state?.currentPage));
         }
-    }, [data, type]);
+    }, [data]);
 
     return (
         <View style={styles.container}>
             {Object.keys(data).length > 0 ? (
                 <ScrollableTabView
-                    initialPage={0}
+                    initialPage={type}
                     prerenderingSiblingsNumber={Infinity}
                     ref={scrollTab}
                     renderTabBar={() => <TabBar />}

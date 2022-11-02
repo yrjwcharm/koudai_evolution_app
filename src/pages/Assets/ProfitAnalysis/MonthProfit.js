@@ -3,23 +3,25 @@
  * @Author: yanruifeng
  * @Description:月收益
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {DeviceEventEmitter, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {isIphoneX, px} from '../../../utils/appUtil';
+import {deviceWidth, isIphoneX, px} from '../../../utils/appUtil';
 import commonStyle from './styles/style';
 import dayjs from 'dayjs';
 import {compareDate, delMille} from '../../../utils/appUtil';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
-import BarChartComponent from './components/BarChartComponent';
 import {getChartData} from './services';
-import {useDispatch, useSelector} from 'react-redux';
 import EmptyData from './components/EmptyData';
+import RNEChartsPro from 'react-native-echarts-pro';
+import {round} from 'mathjs';
+let timer = null;
 const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
+    const [xAxisData, setXAxisData] = useState([]);
+    const [dataAxis, setDataAxis] = useState([]);
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
-    const [chartData, setChart] = useState({});
     const [diff, setDiff] = useState(0);
     const [isNext, setIsNext] = useState(false);
     const [isPrev, setIsPrev] = useState(true);
@@ -28,6 +30,115 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM'));
     const [isHasData, setIsHasData] = useState(true);
+    const [profit, setProfit] = useState('');
+    const myChart = useRef(null);
+    const [isFinished, setIsFinished] = useState(false);
+    const barOption = {
+        // tooltip: {
+        //     trigger: 'axis',
+        //     axisPointer: {
+        //         type: 'shadow',
+        //     },
+        // },
+        grid: {left: 0, right: 0, bottom: 0, containLabel: true},
+
+        dataZoom: [
+            {
+                type: 'inside',
+                zoomLock: true,
+                // startValue: 0,
+                // endValue: 0,
+                // rangeMode: ['value', 'percent'], //rangeMode: ['value', 'percent']，表示 start 值取绝对数值，end 取百分比。
+                animation: true, //设置动画效果
+                // throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
+            },
+        ],
+        xAxis: {
+            nameLocation: 'end',
+            boundaryGap: true,
+            type: 'category',
+            axisTick: {
+                show: false, // 不显示坐标轴刻度线
+                alignWithLabel: true,
+            },
+            axisLabel: {
+                // rotate: 70,
+                boundaryGap: false,
+                show: true, // 不显示坐标轴上的文字
+                color: Colors.lightGrayColor,
+                fontFamily: Font.numMedium,
+                fontWeight: '500',
+                fontSize: 9,
+                align: 'left',
+                margin: 8,
+                interval: 29,
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#BDC2CC',
+                    width: 0.5,
+                },
+            },
+            data: [],
+        },
+        yAxis: {
+            boundaryGap: false,
+            type: 'value',
+            axisLabel: {
+                show: false, // 不显示坐标轴上的文字
+                // margin: 0,
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#E9EAEF',
+                    width: 0.5,
+                },
+                length: 200,
+                show: true,
+            },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                length: 5,
+            },
+        },
+        series: [
+            {
+                type: 'bar',
+                barWidth: 6,
+                // barGap: '8%',
+                itemStyle: {
+                    normal: {
+                        color: function (params) {
+                            //根据数值大小设置相关颜色
+                            if (params.value > 0) {
+                                return '#E74949';
+                            } else {
+                                return '#4BA471';
+                            }
+                        },
+                    },
+                },
+                markPoint: {
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    label: {
+                        show: false,
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: Colors.red,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    },
+                    data: [],
+                },
+                data: [],
+            },
+        ],
+    };
     const add = useCallback(() => {
         setDiff((diff) => diff + 1);
     }, []);
@@ -75,16 +186,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
                         );
                         let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                        let barCharData = arr.map((el, index) => {
-                            return {date: dayjs(el.day).month() + 1 + '月', value: parseFloat(el.profit) ?? '0.00'};
-                        });
-                        setChart({
-                            label: [
-                                {name: '时间', val: profit_data_list[index]?.unit_key},
-                                {name: '收益', val: profit_data_list[index]?.value},
-                            ],
-                            chart: barCharData,
-                        });
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                         if (cur > max || cur < min) return;
                         cur == max && setIsNext(false);
@@ -96,6 +197,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
+                        setProfit(profit_data_list[index]?.value);
                         setDate(dayjs_);
                         setSelCurDate(arr[zIndex].day);
                     } else {
@@ -146,38 +248,116 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             }),
         [dateArr]
     );
-    const executeChangeDate = useCallback((data) => {
-        setSelCurDate(data);
-    }, []);
+    const renderBarChart = useMemo(() => {
+        return (
+            <RNEChartsPro
+                onDataZoom={(result) => {
+                    if (isFinished) {
+                        Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
+                        const {start, end} = result?.batch[0];
+                        const count = xAxisData?.length;
+                        barOption.dataZoom[0].start = start;
+                        barOption.dataZoom[0].end = end;
+                        let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                        let index = round(center) - 1;
+                        barOption.series[0].markPoint.itemStyle = {
+                            normal: {
+                                color:
+                                    dataAxis[index] > 0
+                                        ? Colors.red
+                                        : dataAxis[index] < 0
+                                        ? Colors.green
+                                        : Colors.transparent,
+                                borderColor: Colors.white,
+                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                            },
+                        };
+                        barOption.series[0].markPoint.data[0] = {
+                            xAxis: xAxisData[index],
+                            yAxis: dataAxis[index],
+                        };
+                        setSelCurDate(xAxisData[index]);
+                        setProfit(dataAxis[index]);
+                        // dateArr.map((el) => {
+                        //     el.checked = false;
+                        //     if (el.day == xAxisData[index]) {
+                        //         el.checked = true;
+                        //     }
+                        // });
+                        // setDateArr([...dateArr]);
+                        myChart.current.setNewOption(barOption);
+                    }
+                }}
+                legendSelectChanged={(result) => {}}
+                onPress={(result) => {}}
+                ref={myChart}
+                width={deviceWidth - px(58)}
+                height={px(350)}
+                onMousemove={() => {}}
+                onFinished={() => {
+                    setIsFinished(true);
+                    if (timer == null) {
+                        timer = setTimeout(() => {
+                            DeviceEventEmitter.emit('sendChartTrigger', false);
+                            timer && clearTimeout(timer);
+                        }, 1500);
+                    }
+                }}
+                onRendered={() => {}}
+                option={barOption}
+            />
+        );
+    }, [isBarChart]);
     return (
         <>
-            {isHasData ? (
-                <View style={styles.container}>
-                    <CalendarHeader
-                        isCalendar={isCalendar}
-                        isBarChart={isBarChart}
-                        selCalendarType={selCalendarType}
-                        selBarChartType={selBarChartType}
-                        date={date.year()}
-                        subtract={subtract}
-                        add={add}
-                        isNext={isNext}
-                        isPrev={isPrev}
-                    />
-                    {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
-                    {/*{isBarChart && <BarChartComponent chartData={chartData} changeDate={executeChangeDate} />}*/}
-                    {/*收益数据-根据实际情形选择map渲染*/}
-                    <RenderList
-                        curDate={selCurDate}
-                        type={type}
-                        poid={poid}
-                        fund_code={fund_code}
-                        unitType={unit_type}
-                    />
-                </View>
-            ) : (
-                <EmptyData />
-            )}
+            <View style={styles.container}>
+                <CalendarHeader
+                    isCalendar={isCalendar}
+                    isBarChart={isBarChart}
+                    selCalendarType={selCalendarType}
+                    selBarChartType={selBarChartType}
+                    date={date.year()}
+                    subtract={subtract}
+                    add={add}
+                    isNext={isNext}
+                    isPrev={isPrev}
+                />
+                {isHasData ? (
+                    <>
+                        {isCalendar && <View style={commonStyle.monthFlex}>{renderCalendar}</View>}
+                        {isBarChart && (
+                            <View style={styles.chartContainer}>
+                                <View style={styles.separatorView}>
+                                    <Text
+                                        style={[
+                                            styles.benefit,
+                                            {
+                                                textAlign: 'center',
+                                                color:
+                                                    delMille(profit) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightGrayColor,
+                                            },
+                                        ]}>
+                                        {profit}
+                                    </Text>
+                                    <View style={styles.dateView}>
+                                        <Text style={styles.date}>{selCurDate}</Text>
+                                    </View>
+                                </View>
+                                <View style={{marginTop: px(13)}}>{renderBarChart}</View>
+                                <View style={styles.separator} />
+                            </View>
+                        )}
+                    </>
+                ) : (
+                    <EmptyData />
+                )}
+                <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} unitType={unit_type} />
+            </View>
+            )
         </>
     );
 });

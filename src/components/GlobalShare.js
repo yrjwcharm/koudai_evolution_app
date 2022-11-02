@@ -4,7 +4,7 @@
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {DeviceEventEmitter, TouchableOpacity} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useStore} from 'react-redux';
 import Image from 'react-native-fast-image';
 import share from '~/assets/img/icon/shareFund.png';
 import {navigationRef} from './hooks/RootNavigation';
@@ -15,8 +15,7 @@ import {px} from '~/utils/appUtil';
 export const currentNavigation = React.createRef();
 
 const Index = () => {
-    const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
-    const {share_route_info: route_list = []} = userInfo || {};
+    const store = useStore();
     const [data, setData] = useState({});
     const {icon, share_info = {}} = data;
     const shareModal = useRef();
@@ -32,12 +31,14 @@ const Index = () => {
     }, []);
 
     const onStateChange = (e) => {
+        const userInfo = store.getState()?.userInfo?.toJS?.();
+        const {share_route_info: route_list = []} = userInfo || {};
         const currentRoute = navigationRef.current.getCurrentRoute();
         if (!route_list.includes(currentRoute.name)) {
             setData({});
             return false;
         }
-        // console.log(currentRoute);
+        console.log(currentRoute);
         http.get('/share/common/info/20210101', {
             name: currentRoute.name,
             params: JSON.stringify(currentRoute.params),
@@ -58,8 +59,7 @@ const Index = () => {
         return () => {
             navigationRef.current?.removeListener('state', onStateChange);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [route_list]);
+    }, []);
 
     useEffect(() => {
         if (currentNavigation.current?.isFocused?.() && Object.keys(data).length > 0) {

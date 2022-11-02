@@ -77,6 +77,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
                     return (
                         <TouchableOpacity
                             activeOpacity={0.8}
+                            disabled={active === i}
                             key={type}
                             onPress={() => {
                                 global.LogTool({event: `${type}_click`});
@@ -213,7 +214,9 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                                     style={styles.authorAvatar}
                                 />
                                 <View>
-                                    <Text style={styles.subTitle}>{name}</Text>
+                                    <Text numberOfLines={1} style={[styles.subTitle, {maxWidth: px(200)}]}>
+                                        {name}
+                                    </Text>
                                     <View style={{marginTop: px(2)}}>
                                         <HTML html={count_str} style={styles.smText} />
                                     </View>
@@ -391,7 +394,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             refreshing={refreshing}
             renderItem={({item, index}) => (
                 <CommunityFollowCard
-                    {...item}
+                    data={item}
                     style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
                 />
             )}
@@ -446,7 +449,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     jump(url);
                 }}
                 style={styles.waterfallFlowItem}>
-                <CommunityFollowCard {...item} isRecommend />
+                <CommunityFollowCard data={item} isRecommend />
             </TouchableOpacity>
         );
     };
@@ -657,7 +660,7 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
                                     activeOpacity={0.8}
                                     key={name + index}
                                     onPress={() => {
-                                        global.LogTool({event: '', oid: event_id});
+                                        global.LogTool({event: 'publishing_content', oid: event_id});
                                         bottomModal.current.hide();
                                         if (type == 'addArticle') {
                                             handleClick('article');

@@ -85,7 +85,10 @@ const Index = ({navigation, route}) => {
     };
     const onSkip = () => {
         http.post('/preference/doskip/20220928').then((res) => {
-            res.code === '000000' && (popNum ? navigation.pop(popNum) : navigation.goBack());
+            if (res.code === '000000') {
+                dispatch(getUserInfo());
+                popNum ? navigation.pop(popNum) : navigation.goBack();
+            }
         });
     };
     useEffect(() => {
