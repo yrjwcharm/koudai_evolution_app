@@ -68,14 +68,15 @@ const AlbumHeader = ({
                         <View
                             style={[
                                 styles.tagWrap,
-                                title_tag.type === 1
-                                    ? {backgroundColor: '#F1F6FF', borderColor: '#CEDDF5'}
-                                    : {backgroundColor: '#FFF2F2', borderColor: '#FFD3D3'},
+                                {
+                                    backgroundColor: ['#F1F6FF', '#FFF2F2', '#F5F6F8'][title_tag.type - 1],
+                                    borderColor: ['#CEDDF5', '#FFD3D3', '#BDC2CC'][title_tag.type - 1],
+                                },
                             ]}>
                             <Text
                                 style={[
                                     styles.tagText,
-                                    title_tag.type === 1 ? {color: '#0051CC'} : {color: '#E74949'},
+                                    {color: ['#0051CC', '#E74949', '#9AA0B1'][title_tag.type - 1]},
                                 ]}>
                                 {title_tag?.text}
                             </Text>
