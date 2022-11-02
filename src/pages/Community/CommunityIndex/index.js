@@ -171,7 +171,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
             500,
             {leading: true, trailing: false}
         ),
-        []
+        [data]
     );
 
     useImperativeHandle(ref, () => ({
