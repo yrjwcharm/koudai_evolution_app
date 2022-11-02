@@ -118,7 +118,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             {
                 type: 'bar',
                 barWidth: 6,
-                barGap: '90%',
+                // barGap: '8%',
                 itemStyle: {
                     normal: {
                         color: function (params) {
@@ -228,7 +228,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
+                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
                     if (cur > max || cur < min) return;
@@ -427,13 +427,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         };
                         setSelCurDate(xAxisData[index]);
                         setProfit(dataAxis[index]);
-                        dateArr.map((el) => {
-                            el.checked = false;
-                            if (el.day == xAxisData[index]) {
-                                el.checked = true;
-                            }
-                        });
-                        setDateArr([...dateArr]);
+                        // dateArr.map((el) => {
+                        //     el.checked = false;
+                        //     if (el.day == xAxisData[index]) {
+                        //         el.checked = true;
+                        //     }
+                        // });
+                        // setDateArr([...dateArr]);
                         myChart.current.setNewOption(barOption);
                     }
                 }}
