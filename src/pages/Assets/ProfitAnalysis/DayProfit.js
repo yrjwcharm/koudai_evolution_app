@@ -210,44 +210,46 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    // if (profit_data_list.length > 0) {
-                    let minDate = unit_list[unit_list.length - 1].value;
-                    let maxDate = unit_list[0].value;
-                    let cur = dayjs_.format('YYYY-MM');
-                    let max = dayjs(maxDate).format('YYYY-MM');
-                    let min = dayjs(minDate).format('YYYY-MM');
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            //小于当前日期的情况
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                if (arr[i].day == profit_data_list[j].unit_key) {
-                                    arr[i].profit = profit_data_list[j].value;
+                    if (profit_data_list.length > 0) {
+                        let minDate = unit_list[unit_list.length - 1].value;
+                        let maxDate = unit_list[0].value;
+                        let cur = dayjs_.format('YYYY-MM');
+                        let max = dayjs(maxDate).format('YYYY-MM');
+                        let min = dayjs(minDate).format('YYYY-MM');
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                //小于当前日期的情况
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    if (arr[i].day == profit_data_list[j].unit_key) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
+
+                        let beforeDay = dayjs().add(-1, 'day').format('YYYY-MM-DD');
+                        let index = profit_data_list.findIndex((el) => el.unit_key == beforeDay);
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
+                        if (cur > max || cur < min) return;
+                        cur == max && setIsNext(false);
+                        cur == min && setIsPrev(false);
+                        if (cur > min && cur < max) {
+                            setIsPrev(true);
+                            setIsNext(true);
+                        }
+                        setProfit(profit_data_list[index]?.value);
+                        setDate(dayjs_);
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurDate(arr[zIndex]?.day);
+                    } else {
+                        setIsHasData(false);
                     }
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) > 0 || delMille(el.value) < 0);
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
-                    if (cur > max || cur < min) return;
-                    cur == max && setIsNext(false);
-                    cur == min && setIsPrev(false);
-                    if (cur > min && cur < max) {
-                        setIsPrev(true);
-                        setIsNext(true);
-                    }
-                    setProfit(profit_data_list[index]?.value);
-                    setDate(dayjs_);
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setSelCurDate(arr[zIndex]?.day);
-                } else {
-                    setIsHasData(false);
                 }
-                // }
             })();
         },
         [diff, type]
@@ -306,43 +308,36 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 let xAxisData = [],
                     dataAxis = [];
                 if (profit_data_list.length > 0) {
-                    let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
-                    let filterProfitDataList = profit_data_list
-                        .filter(
-                            (el) =>
-                                new Date(el.unit_key).getTime() <= new Date(profit_data_list[index].unit_key).getTime()
-                        )
-                        .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key));
+                    // let index = profit_data_list.findIndex((el) => delMille(el.value) >= 0 || delMille(el.value) <= 0);
+                    let filterProfitDataList = profit_data_list.sort(
+                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key)
+                    );
                     filterProfitDataList.map((el) => {
                         xAxisData.push(el.unit_key);
                         dataAxis.push(el.value);
                     });
-                    for (let i = 1; i <= 15; i++) {
-                        xAxisData.push(dayjs(profit_data_list[index].unit_key).add(i, 'day').format('YYYY-MM-DD'));
-                        dataAxis.push('0.00');
-                    }
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
                     barOption.dataZoom[0].start = ((xAxisData.length - 31) / xAxisData.length) * 100;
                     barOption.dataZoom[0].end = 100;
                     barOption.xAxis.data = xAxisData;
                     barOption.series[0].data = dataAxis;
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                profit_data_list[index]?.value > 0
-                                    ? Colors.red
-                                    : profit_data_list[index]?.value < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: selCurDate,
-                        yAxis: profit_data_list[index]?.value,
-                    };
+                    // barOption.series[0].markPoint.itemStyle = {
+                    //     normal: {
+                    //         color:
+                    //             profit_data_list[index]?.value > 0
+                    //                 ? Colors.red
+                    //                 : profit_data_list[index]?.value < 0
+                    //                 ? Colors.green
+                    //                 : Colors.transparent,
+                    //         borderColor: Colors.white,
+                    //         borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                    //     },
+                    // };
+                    // barOption.series[0].markPoint.data[0] = {
+                    //     xAxis: selCurDate,
+                    //     yAxis: profit_data_list[index]?.value,
+                    // };
                     myChart.current?.setNewOption(barOption);
                 }
             }
