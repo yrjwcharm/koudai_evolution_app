@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 11:22:05
+ * @LastEditTime: 2022-11-02 15:35:29
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -74,8 +74,9 @@ const Product = ({navigation}) => {
 
     useFocusEffect(
         useCallback(() => {
-            [(getFollowTabs, getProData)][tabRef.current?.state?.currentPage]?.(isFirst.current++);
-            tabRef.current?.goToPage?.(tabRef.current?.state?.currentPage);
+            let cPage = tabRef.current?.state?.currentPage;
+            [getFollowTabs, getProData][cPage]?.(isFirst.current++);
+            setTabActive(cPage);
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
@@ -126,6 +127,11 @@ const Product = ({navigation}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setFollowTabs(res.result);
+                    type &&
+                        getFollowData({
+                            item_type:
+                                res.result?.follow?.tabs?.[optionalTabRef.current?.state?.currentPage]?.item_type,
+                        });
                 }
             })
             .finally((_) => {
