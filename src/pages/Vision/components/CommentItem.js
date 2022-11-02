@@ -29,7 +29,7 @@ const CommentItem = ({data, style, key}) => {
                                 favor_status={_data.is_liked}
                                 favor_num={_data.like_num}
                                 comment_id={_data.id}
-                                style={{top: px(-2)}}
+                                style={{top: px(-2), right: px(2)}}
                             />
                         ) : null}
                     </View>
