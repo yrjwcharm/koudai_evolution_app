@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-01 18:42:22
+ * @LastEditTime: 2022-11-02 15:14:42
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -28,7 +28,7 @@ const PortFolioDetail = ({navigation, route}) => {
     const [token, setToken] = useState('');
     const [data, setData] = useState({});
     const [tip, setTip] = useState({});
-    const {bottom_btns: {icon_btns = [], simple_btns = []} = {}} = data;
+    const {bottom_btns} = data;
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
 
     const webview = useRef(null);
@@ -216,50 +216,52 @@ const PortFolioDetail = ({navigation, route}) => {
                 ) : null}
                 <BottomDesc />
             </ScrollView>
-            <View style={[Style.flexRow, styles.bottomBtns]}>
-                {icon_btns?.map((btn, i) => {
-                    const {icon, subs, title} = btn;
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            key={title + i}
-                            onPress={() => onPressLeftBtns(btn)}
-                            style={[styles.leftBtn]}>
-                            <FastImage source={{uri: icon}} style={styles.leftBtnIcon} />
-                            <Text style={styles.leftBtnText}>{title}</Text>
-                            {subs?.length > 0 && (
-                                <BottomModal
-                                    title={'选择咨询方式'}
-                                    ref={bottomModal}
-                                    children={renderContactContent(subs)}
-                                />
-                            )}
-                        </TouchableOpacity>
-                    );
-                })}
-                <View style={[Style.flexRow, styles.rightBtns]}>
-                    {simple_btns?.map((btn, i, arr) => {
-                        const {avail, title, url} = btn;
+            {bottom_btns ? (
+                <View style={[Style.flexRow, styles.bottomBtns]}>
+                    {bottom_btns.icon_btns?.map((btn, i) => {
+                        const {icon, subs, title} = btn;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                disabled={avail === 0}
                                 key={title + i}
-                                onPress={() => {
-                                    global.LogTool({event: btn.event_id, ctrl: route?.params?.params?.plan_id});
-                                    jump(url);
-                                }}
-                                style={[
-                                    Style.flexCenter,
-                                    styles.rightBtn,
-                                    {backgroundColor: avail === 0 ? '#ddd' : Colors.brandColor},
-                                ]}>
-                                <Text style={[styles.rightBtnText]}>{title}</Text>
+                                onPress={() => onPressLeftBtns(btn)}
+                                style={[styles.leftBtn]}>
+                                <FastImage source={{uri: icon}} style={styles.leftBtnIcon} />
+                                <Text style={styles.leftBtnText}>{title}</Text>
+                                {subs?.length > 0 && (
+                                    <BottomModal
+                                        title={'选择咨询方式'}
+                                        ref={bottomModal}
+                                        children={renderContactContent(subs)}
+                                    />
+                                )}
                             </TouchableOpacity>
                         );
                     })}
+                    <View style={[Style.flexRow, styles.rightBtns]}>
+                        {bottom_btns.simple_btns?.map((btn, i, arr) => {
+                            const {avail, title, url} = btn;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    disabled={avail === 0}
+                                    key={title + i}
+                                    onPress={() => {
+                                        global.LogTool({event: btn.event_id, ctrl: route?.params?.params?.plan_id});
+                                        jump(url);
+                                    }}
+                                    style={[
+                                        Style.flexCenter,
+                                        styles.rightBtn,
+                                        {backgroundColor: avail === 0 ? '#ddd' : Colors.brandColor},
+                                    ]}>
+                                    <Text style={[styles.rightBtnText]}>{title}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
                 </View>
-            </View>
+            ) : null}
             <BottomModal ref={bottomModal2} title={tip?.title}>
                 <View style={[{padding: px(16)}]}>
                     {tip?.content?.map?.((item, index) => {
