@@ -54,7 +54,6 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        setDescFocus(false);
                         nameRef.current.focus();
                     }}
                     style={[
@@ -74,12 +73,14 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                                 setErrText('');
                                 setObj({...obj, name});
                             }}
+                            autoFocus={true}
                             placeholder="请输入分类名称,最多6个字"
                             style={styles.input}
                             value={obj.name}
                             ref={nameRef}
                             onFocus={() => {
                                 setNameFocus(true);
+                                setDescFocus(false);
                             }}
                             onBlur={() => {
                                 setNameFocus(false);
@@ -107,7 +108,6 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        setNameFocus(false);
                         descRef.current.focus();
                     }}
                     style={[
@@ -132,6 +132,7 @@ const AddCategoryModal = ({data, modalData, confirmClick, modalRef}) => {
                             ref={descRef}
                             onFocus={() => {
                                 setDescFocus(true);
+                                setNameFocus(false);
                             }}
                             onBlur={() => {
                                 setDescFocus(false);
