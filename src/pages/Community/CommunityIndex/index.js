@@ -77,6 +77,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
                     return (
                         <TouchableOpacity
                             activeOpacity={0.8}
+                            disabled={active === i}
                             key={type}
                             onPress={() => {
                                 global.LogTool({event: `${type}_click`});
@@ -659,7 +660,7 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
                                     activeOpacity={0.8}
                                     key={name + index}
                                     onPress={() => {
-                                        global.LogTool({event: '', oid: event_id});
+                                        global.LogTool({event: 'publishing_content', oid: event_id});
                                         bottomModal.current.hide();
                                         if (type == 'addArticle') {
                                             handleClick('article');

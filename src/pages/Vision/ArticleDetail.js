@@ -273,7 +273,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
-            global.LogTool({event: collect_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
+            global.LogTool({event: collect_status ? 'cancel_collection' : 'content_collection', oid: data?.id});
             !collect_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;
