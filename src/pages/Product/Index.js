@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 19:36:11
+ * @LastEditTime: 2022-11-02 11:22:05
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -125,7 +125,6 @@ const Product = ({navigation}) => {
         http.get('/follow/index/202206')
             .then((res) => {
                 if (res.code === '000000') {
-                    optionalTabRef.current?.goToPage(0);
                     setFollowTabs(res.result);
                 }
             })
