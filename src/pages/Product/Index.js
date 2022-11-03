@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-03 11:53:19
+ * @LastEditTime: 2022-11-03 12:06:49
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -35,21 +35,21 @@ const Product = ({navigation}) => {
 
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const [proData, setProData] = useState(null);
-    const [followTabs, setFollowTabs] = useState();
-    const [followData, setFollowData] = useState();
     const [tabActive, setTabActive] = useState(1);
-    const [subjectLoading, setSubjectLoading] = useState(false); // 显示加载动画
+    const [proData, setProData] = useState(null);
+    const [subjectLoading, setSubjectLoading] = useState(false);
     const [subjectData, setSubjectsData] = useState({});
     const [subjectList, setSubjectList] = useState([]);
+    const [followTabs, setFollowTabs] = useState();
+    const [followData, setFollowData] = useState();
 
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
-    const isFirst = useRef(1);
     const scrollViewRef = useRef();
+    const isFirst = useRef(1);
     const pageRef = useRef(1);
     const subjectToBottomHeight = useRef(0);
-    const subjectLoadingRef = useRef(false); // 为了流程控制
+    const subjectLoadingRef = useRef(false);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
@@ -185,6 +185,7 @@ const Product = ({navigation}) => {
             ]}>
             {/* 渐变头 */}
             {proData ? <LinearHeader bgType={bgType} proData={proData} tabActive={tabActive} tabRef={tabRef} /> : null}
+            {/* tab 内容 */}
             <ScrollableTabView
                 ref={tabRef}
                 style={{flex: 1, marginTop: insets.top - px(128)}}
