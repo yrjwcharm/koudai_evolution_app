@@ -20,6 +20,8 @@ let timer = null;
 const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [diff, setDiff] = useState(0);
@@ -210,17 +212,82 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     );
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
+        setProfit(item.profit);
+    };
+    useEffect(() => {
         dateArr.map((el) => {
             el.checked = false;
-            if (el.day == item.day) {
+            if (el.day == selCurDate) {
                 el.checked = true;
             }
         });
         setDateArr([...dateArr]);
-    };
+    }, [selCurDate]);
     useEffect(() => {
         init(selCurDate);
     }, [init]);
+    useEffect(() => {
+        (async () => {
+            myChart.current?.showLoading();
+
+            let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+            const res = await getChartData({
+                type,
+                unit_type,
+                unit_value: dayjs_.year(),
+                poid,
+                fund_code,
+                chart_type: 'square',
+            });
+            if (res.code === '000000') {
+                const {profit_data_list = []} = res.result;
+                let xAxisData = [],
+                    dataAxis = [];
+                if (profit_data_list.length > 0) {
+                    let sortProfitDataList = profit_data_list.sort(
+                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
+                    );
+                    sortProfitDataList.map((el) => {
+                        xAxisData.push(el.unit_key);
+                        dataAxis.push(el.value);
+                    });
+                    for (let i = 0; i < 15; i++) {
+                        xAxisData.push(
+                            dayjs(sortProfitDataList[sortProfitDataList.length - 1].unit_key)
+                                .add(i + 1, 'day')
+                                .format('YYYY-MM-DD')
+                        );
+                        dataAxis.push('0.00');
+                    }
+                    let start = ((xAxisData.length - 11) / xAxisData.length) * 100;
+                    let center = (xAxisData.length * (start + (100 - start) / 2)) / 100;
+                    let i = round(center) - 1;
+                    barOption.dataZoom[0].start = start;
+                    barOption.dataZoom[0].end = 100;
+                    barOption.xAxis.data = xAxisData;
+                    barOption.series[0].data = dataAxis;
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color: dataAxis[i] > 0 ? Colors.red : dataAxis[i] < 0 ? Colors.green : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    };
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: xAxisData[i],
+                        yAxis: dataAxis[i],
+                    };
+                    setStartDate(xAxisData[xAxisData.length - 12]);
+                    setEndDate(xAxisData[xAxisData.length - 1]);
+                    setXAxisData(xAxisData);
+                    setDataAxis(dataAxis);
+                    setProfit(dataAxis[i]);
+                    myChart.current?.hideLoading();
+                    myChart.current?.setNewOption(barOption);
+                }
+            }
+        })();
+    }, [type, isBarChart, myChart.current]);
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);
@@ -252,41 +319,38 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         return (
             <RNEChartsPro
                 onDataZoom={(result) => {
-                    if (isFinished) {
-                        Platform.OS === 'android' && DeviceEventEmitter.emit('sendChartTrigger', true);
-                        const {start, end} = result?.batch[0];
-                        const count = xAxisData?.length;
-                        barOption.dataZoom[0].start = start;
-                        barOption.dataZoom[0].end = end;
-                        let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
-                        let index = round(center) - 1;
-                        barOption.series[0].markPoint.itemStyle = {
-                            normal: {
-                                color:
-                                    dataAxis[index] > 0
-                                        ? Colors.red
-                                        : dataAxis[index] < 0
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                borderColor: Colors.white,
-                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                            },
-                        };
-                        barOption.series[0].markPoint.data[0] = {
-                            xAxis: xAxisData[index],
-                            yAxis: dataAxis[index],
-                        };
-                        setSelCurDate(xAxisData[index]);
-                        setProfit(dataAxis[index]);
-                        // dateArr.map((el) => {
-                        //     el.checked = false;
-                        //     if (el.day == xAxisData[index]) {
-                        //         el.checked = true;
-                        //     }
-                        // });
-                        // setDateArr([...dateArr]);
-                        myChart.current.setNewOption(barOption);
-                    }
+                    const {start, end} = result?.batch[0];
+                    const count = xAxisData?.length;
+                    barOption.dataZoom[0].start = start;
+                    barOption.dataZoom[0].end = end;
+                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                    let index = round(center) - 1;
+                    let startIndex = round(count * (start / 100));
+                    let endIndex = round(count * (end / 100));
+                    setStartDate(xAxisData[startIndex]);
+                    setEndDate(xAxisData[endIndex]);
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color:
+                                dataAxis[index] > 0
+                                    ? Colors.red
+                                    : dataAxis[index] < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    };
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: xAxisData[index],
+                        yAxis: dataAxis[index],
+                    };
+                    setProfit(dataAxis[index]);
+                    let curMonth = dayjs(xAxisData[index]).month();
+                    let diffMonth = dayjs().month() - curMonth;
+                    setDiff(-diffMonth);
+                    setSelCurDate(xAxisData[index]);
+                    myChart.current.setNewOption(barOption);
                 }}
                 legendSelectChanged={(result) => {}}
                 onPress={(result) => {}}
@@ -296,12 +360,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 onMousemove={() => {}}
                 onFinished={() => {
                     setIsFinished(true);
-                    if (timer == null) {
-                        timer = setTimeout(() => {
-                            DeviceEventEmitter.emit('sendChartTrigger', false);
-                            timer && clearTimeout(timer);
-                        }, 1500);
-                    }
                 }}
                 onRendered={() => {}}
                 option={barOption}
@@ -348,6 +406,12 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             </View>
                             <View style={{marginTop: px(13)}}>{renderBarChart}</View>
                             <View style={styles.separator} />
+                        </View>
+                    )}
+                    {isBarChart && (
+                        <View style={[Style.flexBetween, {marginTop: px(6)}]}>
+                            <Text style={styles.chartDate}>{startDate}</Text>
+                            <Text style={styles.chartDate}>{endDate}</Text>
                         </View>
                     )}
                 </>
@@ -434,6 +498,33 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
         marginBottom: isIphoneX() ? px(58) : px(24),
+    },
+    chartContainer: {
+        position: 'relative',
+        width: '100%',
+        height: px(350),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    separatorView: {
+        position: 'absolute',
+        top: px(12),
+    },
+    separator: {
+        position: 'absolute',
+        height: px(290),
+        top: px(52),
+        zIndex: -9999,
+        borderStyle: 'dashed',
+        borderColor: '#9AA0B1',
+        borderWidth: 0.5,
+        borderRadius: Platform.select({android: 0.5, ios: 0}),
+    },
+    chartDate: {
+        fontSize: px(9),
+        fontFamily: Font.numMedium,
+        fontWeight: '500',
+        color: Colors.lightGrayColor,
     },
     chartHeader: {},
     selMonth: {
