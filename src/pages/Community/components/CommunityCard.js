@@ -152,7 +152,7 @@ export const CommunityCard = (props) => {
         live_status, // 直播状态 1 预约中 2 直播中 3 回放
         left_desc, // 直播状态或预约人数
         media_duration, // 媒体时长
-        onDelete, //移除作品
+
         can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
         product_type, // "article_history" 不展示底部操作按钮
@@ -167,6 +167,7 @@ export const CommunityCard = (props) => {
         url, // 跳转地址
     } = props.data || {};
     const {
+        onDelete, //移除作品
         isRecommend = false, // 是否推荐卡片
         style, // 自定义样式
     } = props;
