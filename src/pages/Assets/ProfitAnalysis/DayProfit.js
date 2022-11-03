@@ -370,7 +370,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 }
             }
         })();
-    }, [type, isBarChart]);
+    }, [type, myChart.current, isBarChart]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {

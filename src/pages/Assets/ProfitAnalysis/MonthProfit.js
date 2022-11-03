@@ -56,6 +56,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             },
         ],
         xAxis: {
+            show: false,
             nameLocation: 'end',
             boundaryGap: true,
             type: 'category',
@@ -229,7 +230,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     useEffect(() => {
         (async () => {
             myChart.current?.showLoading();
-
             let dayjs_ = dayjs().add(diff, 'month').startOf('month');
             const res = await getChartData({
                 type,
@@ -247,47 +247,59 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     let sortProfitDataList = profit_data_list.sort(
                         (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
                     );
+
+                    let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurDate);
                     sortProfitDataList.map((el) => {
                         xAxisData.push(el.unit_key);
                         dataAxis.push(el.value);
                     });
-                    for (let i = 0; i < 15; i++) {
-                        xAxisData.push(
-                            dayjs(sortProfitDataList[sortProfitDataList.length - 1].unit_key)
-                                .add(i + 1, 'day')
-                                .format('YYYY-MM-DD')
-                        );
-                        dataAxis.push('0.00');
+                    let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
+                    let curDay = dayjs().format('YYYY-MM');
+                    if (lastDate === curDay) {
+                        for (let i = 0; i < 6; i++) {
+                            xAxisData.push(
+                                dayjs(sortProfitDataList[index].unit_key)
+                                    .add(i + 1, 'day')
+                                    .format('YYYY-MM')
+                            );
+                            dataAxis.push('0.00');
+                        }
                     }
-                    let start = ((xAxisData.length - 11) / xAxisData.length) * 100;
-                    let center = (xAxisData.length * (start + (100 - start) / 2)) / 100;
-                    let i = round(center) - 1;
+                    let [left, mid, right] = [index - 6, index, index + 6];
+                    let start = ((left + 1) / xAxisData.length) * 100;
+                    let center = mid;
+                    let end = ((right + 1) / xAxisData.length) * 100;
                     barOption.dataZoom[0].start = start;
-                    barOption.dataZoom[0].end = 100;
+                    barOption.dataZoom[0].end = end;
                     barOption.xAxis.data = xAxisData;
                     barOption.series[0].data = dataAxis;
                     barOption.series[0].markPoint.itemStyle = {
                         normal: {
-                            color: dataAxis[i] > 0 ? Colors.red : dataAxis[i] < 0 ? Colors.green : Colors.transparent,
+                            color:
+                                dataAxis[center] > 0
+                                    ? Colors.red
+                                    : dataAxis[center] < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
                             borderColor: Colors.white,
                             borderWidth: 1, // 标注边线线宽，单位px，默认为1
                         },
                     };
                     barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[i],
-                        yAxis: dataAxis[i],
+                        xAxis: xAxisData[center],
+                        yAxis: dataAxis[center],
                     };
-                    setStartDate(xAxisData[xAxisData.length - 12]);
-                    setEndDate(xAxisData[xAxisData.length - 1]);
+                    setStartDate(xAxisData[left]);
+                    setEndDate(xAxisData[right]);
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
-                    setProfit(dataAxis[i]);
+                    setProfit(dataAxis[center]);
                     myChart.current?.hideLoading();
                     myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, isBarChart, myChart.current]);
+    }, [type, myChart.current, isBarChart]);
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);
@@ -325,8 +337,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     barOption.dataZoom[0].end = end;
                     let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
                     let index = round(center) - 1;
-                    let startIndex = round(count * (start / 100));
-                    let endIndex = round(count * (end / 100));
+                    let startIndex = round(count * (start / 100)) - 1;
+                    let endIndex = round(count * (end / 100)) - 1;
                     setStartDate(xAxisData[startIndex]);
                     setEndDate(xAxisData[endIndex]);
                     barOption.series[0].markPoint.itemStyle = {
@@ -346,9 +358,9 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         yAxis: dataAxis[index],
                     };
                     setProfit(dataAxis[index]);
-                    let curMonth = dayjs(xAxisData[index]).month();
-                    let diffMonth = dayjs().month() - curMonth;
-                    setDiff(-diffMonth);
+                    let curYear = dayjs(xAxisData[index]).year();
+                    let diffYear = dayjs().year() - curYear;
+                    setDiff(-diffYear);
                     setSelCurDate(xAxisData[index]);
                     myChart.current.setNewOption(barOption);
                 }}
@@ -414,11 +426,17 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             <Text style={styles.chartDate}>{endDate}</Text>
                         </View>
                     )}
+                    <RenderList
+                        curDate={selCurDate}
+                        type={type}
+                        poid={poid}
+                        fund_code={fund_code}
+                        unitType={unit_type}
+                    />
                 </>
             ) : (
                 <EmptyData />
             )}
-            <RenderList curDate={selCurDate} type={type} poid={poid} fund_code={fund_code} unitType={unit_type} />
         </View>
     );
 });
@@ -506,6 +524,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    benefit: {
+        fontSize: px(16),
+        fontFamily: Font.numFontFamily,
+        color: Colors.green,
+    },
+    dateView: {
+        marginTop: px(4),
+        width: px(74),
+        height: px(18),
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(20),
+    },
+    date: {
+        fontSize: px(10),
+        fontFamily: Font.numMedium,
+        fontWeight: '500',
+        color: Colors.lightGrayColor,
+    },
     separatorView: {
         position: 'absolute',
         top: px(12),
@@ -526,7 +564,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: Colors.lightGrayColor,
     },
-    chartHeader: {},
     selMonth: {
         flexDirection: 'row',
         alignItems: 'center',
