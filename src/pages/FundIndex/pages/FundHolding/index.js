@@ -64,6 +64,7 @@ const Index = ({navigation, route}) => {
     const [data, setData] = useState({});
     const {asset_group, stock_group} = data;
     const [loading, setLoading] = useState(true);
+    const [showChart, setShowChart] = useState(false);
 
     useEffect(() => {
         getPageData({fund_code})
@@ -76,6 +77,7 @@ const Index = ({navigation, route}) => {
             })
             .finally(() => {
                 setLoading(false);
+                setTimeout(() => setShowChart(true));
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -94,7 +96,7 @@ const Index = ({navigation, route}) => {
                             </View>
                             <View style={[Style.flexRow, {minHeight: px(150)}]}>
                                 <View style={{flex: 5}}>
-                                    <Chart initScript={pieChart(asset_group.items)} />
+                                    {showChart && <Chart initScript={pieChart(asset_group.items)} />}
                                 </View>
                                 <View style={{flex: 4, paddingVertical: px(20)}}>
                                     {asset_group.items?.map?.((item, index) => {
