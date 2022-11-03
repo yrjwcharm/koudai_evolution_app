@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 11:37:19
+ * @LastEditTime: 2022-11-03 17:59:44
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
@@ -110,14 +110,14 @@ const html = `
     // 获取焦点
     function focusInput() {
       input.focus()
-      const s = window.getSelection();
-      s.removeAllRanges();
-      let el = insertEl()
-      const range = document.createRange()
-      range.setStart(el, 0)
-      range.setEnd(el, 0)
-      s.addRange(range);
-      input.removeChild(el)
+      // const s = window.getSelection();
+      // s.removeAllRanges();
+      // let el = insertEl()
+      // const range = document.createRange()
+      // range.setStart(el, 0)
+      // range.setEnd(el, 0)
+      // s.addRange(range);
+      // input.removeChild(el)
     }
 
     function focusLastInput() {
@@ -278,10 +278,10 @@ function RichTextModal(props, ref) {
                     onLoad={() => {
                         console.log('onLoad');
                         webviewRef.current?.injectJavaScript(`setInputValue('${richText.html}')`);
-                        webviewRef.current?.requestFocus?.();
-                        setTimeout(() => {
-                            webviewRef.current?.injectJavaScript(`focusInput()`);
-                        }, 200);
+                        // webviewRef.current?.requestFocus?.();
+                        // setTimeout(() => {
+                        //     webviewRef.current?.injectJavaScript(`focusInput()`);
+                        // }, 200);
                     }}
                     onMessage={(event) => {
                         const data = event.nativeEvent.data;

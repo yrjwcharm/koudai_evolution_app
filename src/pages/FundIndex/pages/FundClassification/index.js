@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 14:42:41
+ * @LastEditTime: 2022-11-03 19:28:59
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -39,14 +39,12 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
     const clickRef = useRef(true);
     const listRef = useRef();
 
+    const isMonetary = useMemo(() => activeTab === 160401, [activeTab]);
+
     /** @name 上拉加载 */
     const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) {
-            return false;
-        }
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
+        if (distanceFromEnd < 0) return false;
+        if (hasMore) setPage((p) => p + 1);
     };
 
     /** @name 渲染头部 */
@@ -79,14 +77,14 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                     activeOpacity={0.8}
                     onPress={() => changeSort('nav')}
                     style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={styles.headerText}>{'净值'}</Text>
+                    <Text style={styles.headerText}>{isMonetary ? '万分收益' : '净值'}</Text>
                     <Image source={icon1} style={styles.sortIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => changeSort('inc')}
                     style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={styles.headerText}>{periodsObj[activePeriod]}</Text>
+                    <Text style={styles.headerText}>{isMonetary ? '七日年化' : periodsObj[activePeriod]}</Text>
                     <Image source={icon2} style={styles.sortIcon} />
                 </TouchableOpacity>
             </View>
@@ -191,7 +189,6 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
 
     useEffect(() => {
         getList();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, page, period, sortBy, sortType]);
 
     return (
@@ -204,7 +201,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
             ListEmptyComponent={renderEmpty}
             ListHeaderComponent={renderHeader}
             onEndReached={onEndReached}
-            onEndReachedThreshold={0.99}
+            onEndReachedThreshold={0.2}
             onRefresh={() => (page > 1 ? setPage(1) : getList())}
             ref={listRef}
             refreshing={refreshing}
@@ -221,6 +218,11 @@ const Index = ({navigation, route}) => {
     const [activeTab, setActiveTab] = useState(0);
     const [periods, setPeriods] = useState([]);
     const [activePeriod, setActivePeriod] = useState();
+    const scrollTab = useRef();
+
+    const isMonetary = useMemo(() => {
+        return tabs?.[activeTab]?.cate_type === 160401;
+    }, [activeTab, tabs]);
 
     const periodsObj = useMemo(() => {
         return periods.reduce((prev, curr) => {
@@ -252,42 +254,54 @@ const Index = ({navigation, route}) => {
                 setTabs(navigations.items);
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            tabs.length > 0 && scrollTab.current?.goToPage?.(activeTab);
+        });
+    }, [tabs]);
 
     return tabs?.length > 0 ? (
         <View style={styles.container}>
             <ScrollableTabView
-                initialPage={activeTab}
-                onChangeTab={({i}) => global.LogTool({ctrl: i + 1, event: 'fund_classification'})}
-                // prerenderingSiblingsNumber={1}
+                initialPage={0}
+                onChangeTab={({i}) => {
+                    setActiveTab(i);
+                    global.LogTool({ctrl: i + 1, event: 'fund_classification'});
+                }}
+                ref={scrollTab}
                 renderTabBar={() => <TabBar boxStyle={{backgroundColor: '#fff'}} btnColor={Colors.defaultColor} />}
                 style={{flex: 1}}>
-                {tabs.map((tab, index) => (
+                {tabs.map((tab) => (
                     <View key={tab.cate_type} style={{flex: 1}} tabLabel={tab.cate_name}>
                         <FundList activePeriod={activePeriod} activeTab={tab.cate_type} periodsObj={periodsObj} />
                     </View>
                 ))}
             </ScrollableTabView>
-            <View style={[Style.flexRowCenter, styles.barContainer]}>
-                {periods.map((period, index) => {
-                    const isActive = activePeriod === period.period_inc;
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            disabled={isActive}
-                            key={period.period_inc}
-                            onPress={() => changePeriod(period.period_inc)}
-                            style={[
-                                styles.barBox,
-                                index === 0 ? {marginLeft: 0} : {},
-                                isActive ? styles.activeBarBox : {},
-                            ]}>
-                            <Text style={[styles.barText, isActive ? styles.activeBarText : {}]}>{period.name}</Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            {!isMonetary && (
+                <View style={[Style.flexRowCenter, styles.barContainer]}>
+                    {periods.map((period, index) => {
+                        const isActive = activePeriod === period.period_inc;
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                disabled={isActive}
+                                key={period.period_inc}
+                                onPress={() => changePeriod(period.period_inc)}
+                                style={[
+                                    styles.barBox,
+                                    index === 0 ? {marginLeft: 0} : {},
+                                    isActive ? styles.activeBarBox : {},
+                                ]}>
+                                <Text style={[styles.barText, isActive ? styles.activeBarText : {}]}>
+                                    {period.name}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            )}
         </View>
     ) : (
         <Loading />

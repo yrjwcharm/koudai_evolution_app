@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 18:36:11
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-11-03 18:49:17
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -42,7 +42,7 @@ function RecommendCell(props) {
 
 export default function SpecialModifyRecommend({route, navigation}) {
     const jump = useJump();
-    const subject_id = route?.params?.subject_id || 1045;
+    const subject_id = route?.params?.subject_id || 1024;
     console.log('SpecialModifyRecommend:', route?.params);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState();
@@ -88,9 +88,9 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     item.desc = it.desc.val;
                     item.tags = (it.tags || []).map((t) => t.val);
                     item.product = {
-                        product_id: it?.id,
-                        product_type: it?.type,
-                        product_name: it?.val,
+                        product_id: it?.product?.id,
+                        product_type: it?.product?.type,
+                        product_name: it?.product?.val,
                     };
                     its.push(item);
                 });
@@ -112,14 +112,14 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     },
                     ...(route?.params ?? {subject_id}),
                     type: 2,
-                    items: !withOld ? [] : items,
+                    items: !withOld ? [] : items.current,
                 },
             });
         }
     };
 
     const rightPress = () => {
-        const isChanged = oldIndex.current !== index;
+        const isChanged = oldIndex.current !== index && oldIndex.current !== 0;
 
         if (isChanged) {
             Modal.show({
@@ -133,7 +133,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                     toNextBtn(oldIndex.current, true);
                 },
                 confirmCallBack: () => {
-                    toNextBtn(false);
+                    toNextBtn(index, false);
                 },
             });
         } else {
@@ -141,9 +141,12 @@ export default function SpecialModifyRecommend({route, navigation}) {
         }
     };
     const handleBack = () => {
-        if (!tmpItems.current) {
+        // 用户没有选择产品或者没有选择样式
+        let info = tmpItems.current;
+        if (!info || info.length === 0) {
             canGoBack.current = true;
             navigation.goBack();
+            return;
         }
 
         Modal.show({
@@ -157,7 +160,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 navigation.goBack();
             },
             confirmCallBack: () => {
-                handleSaveBaseInfo().then(() => {
+                handleSaveRecommendInfo().then(() => {
                     canGoBack.current = true;
                     navigation.goBack();
                 });
@@ -186,7 +189,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
         setIndex(type);
     };
 
-    const handleSaveBaseInfo = () => {
+    const handleSaveRecommendInfo = () => {
         const params = {sid: subject_id, save_status: 1, rec_type: 2};
         console.log('tmpItems.current:', tmpItems.current);
 

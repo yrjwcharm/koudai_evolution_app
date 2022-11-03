@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:52:38
+ * @LastEditTime: 2022-11-03 18:56:06
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -73,6 +73,8 @@ export default function CreatorAuthHome(props) {
     }, [data]);
 
     const getListData = (item, nextPage) => {
+        if (!item) return;
+
         if (nextPage === 1) {
             setListLoading(true);
         } else {
@@ -84,11 +86,11 @@ export default function CreatorAuthHome(props) {
             .then((res) => {
                 if (res.code === '000000' && oldActiveTab === activeTab) {
                     if (nextPage >= 2) {
-                        listRef.current = (listRef.current || []).concat(res.result.items);
-                        setList(listRef.current);
+                        listRef.current = (listRef.current || []).concat(res.result.items || []);
+                        setList(listRef.current || []);
                     } else {
-                        listRef.current = res.result.items;
-                        setList(res.result.items);
+                        listRef.current = res.result.items || [];
+                        setList(res.result.items || []);
                     }
 
                     setListHeader(res.result.header);

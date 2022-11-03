@@ -129,46 +129,23 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
-                let startYear = dayjs().year() - 5;
-                let endYear = dayjs().year();
-                let arr = [];
                 const res = await getChartData({type, unit_type});
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
-                    let zIndex;
+
                     if (profit_data_list.length > 0) {
-                        if (profit_data_list <= 5) {
-                            arr = profit_data_list.map((el) => {
+                        let arr = profit_data_list
+                            .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
+                            .map((el) => {
                                 return {
-                                    day: el.unit_key,
+                                    day: parseFloat(el.unit_key),
                                     profit: el.value,
                                 };
                             });
-                            zIndex = arr.findIndex((el) => delMille(el.profit) > 0 || delMille(el.profit) < 0);
-                        } else {
-                            for (let i = startYear; i < endYear; i++) {
-                                arr.push({
-                                    day: i + 1,
-                                    profit: '0.00',
-                                });
-                            }
-                            for (let i = 0; i < arr.length; i++) {
-                                for (let j = 0; j < profit_data_list.length; j++) {
-                                    if (arr[i].day == profit_data_list[j].unit_key) {
-                                        arr[i].profit = profit_data_list[j].value;
-                                    }
-                                }
-                            }
-                            let index = profit_data_list.findIndex(
-                                (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
-                            );
-                            zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
-                        }
-
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        arr[zIndex] && (arr[zIndex].checked = true);
+                        arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                         setDateArr([...arr]);
-                        setSelCurYear(arr[zIndex].day);
+                        setSelCurYear(arr[arr.length - 1].day);
                     } else {
                         setIsHasData(false);
                     }
@@ -265,6 +242,79 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             />
         );
     }, [isBarChart]);
+    useEffect(() => {
+        (async () => {
+            myChart.current?.showLoading();
+            const res = await getChartData({
+                type,
+                unit_type,
+                unit_value: dayjs().year(),
+                poid,
+                fund_code,
+                chart_type: 'square',
+            });
+            if (res.code === '000000') {
+                const {profit_data_list = []} = res.result;
+                let xAxisData = [],
+                    dataAxis = [];
+                if (profit_data_list.length > 0) {
+                    let sortProfitDataList = profit_data_list.sort(
+                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
+                    );
+
+                    let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurYear);
+                    sortProfitDataList.map((el) => {
+                        xAxisData.push(el.unit_key);
+                        dataAxis.push(el.value);
+                    });
+                    let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
+                    let curDay = dayjs().year();
+                    if (lastDate == curDay) {
+                        for (let i = 0; i < 3; i++) {
+                            xAxisData.push(
+                                dayjs(sortProfitDataList[index].unit_key)
+                                    .add(i + 1, 'year')
+                                    .format('YYYY')
+                            );
+                            dataAxis.push('0.00');
+                        }
+                    }
+                    console.log(xAxisData);
+                    let [left, mid, right] = [index - 3, index, index + 3];
+                    let start = ((left + 1) / xAxisData.length) * 100;
+                    let center = mid;
+                    let end = ((right + 1) / xAxisData.length) * 100;
+                    barOption.dataZoom[0].start = start;
+                    barOption.dataZoom[0].end = end;
+                    barOption.xAxis.data = xAxisData;
+                    barOption.series[0].data = dataAxis;
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color:
+                                dataAxis[center] > 0
+                                    ? Colors.red
+                                    : dataAxis[center] < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    };
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: xAxisData[center],
+                        yAxis: dataAxis[center],
+                    };
+                    setStartDate(xAxisData[left]);
+                    setEndDate(xAxisData[right]);
+                    setXAxisData(xAxisData);
+                    setDataAxis(dataAxis);
+                    setProfit(dataAxis[center]);
+                    myChart.current?.hideLoading();
+                    myChart.current?.setNewOption(barOption);
+                }
+            }
+        })();
+    }, [type, myChart.current, isBarChart]);
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft]}>

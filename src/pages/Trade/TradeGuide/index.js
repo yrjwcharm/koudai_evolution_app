@@ -157,7 +157,6 @@ const Index = ({navigation, route, setLoading}) => {
     useFocusEffect(
         useCallback(() => {
             init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -193,7 +192,6 @@ const Index = ({navigation, route, setLoading}) => {
             return () => {
                 listener();
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [data])
     );
 
@@ -209,7 +207,7 @@ const Index = ({navigation, route, setLoading}) => {
                 ) : null}
                 {user_bag ? (
                     <View style={styles.recommendBox}>
-                        <Text style={styles.title}>{user_bag.title}</Text>
+                        {user_bag.title ? <Text style={styles.title}>{user_bag.title}</Text> : null}
                         {user_bag.notice ? (
                             <View style={[Style.flexRow, styles.rewardBox]}>
                                 <FastImage

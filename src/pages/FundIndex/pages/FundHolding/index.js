@@ -79,7 +79,6 @@ const Index = ({navigation, route}) => {
                 setLoading(false);
                 setTimeout(() => setShowChart(true));
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
