@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2022-04-22 11:02:59
- * @LastEditors: yhc
+ * @LastEditTime: 2022-11-03 17:14:03
+ * @LastEditors: Please set LastEditors
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -78,6 +78,15 @@ const BottomDesc = (props) => {
                     />
                 </View>
             )}
+            {data?.img_list?.map?.((img, i, arr) => (
+                <View key={img + i} style={styles.item}>
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={{uri: img}}
+                        style={[styles.img, {marginBottom: i === arr.length - 1 ? text(12) : text(8)}]}
+                    />
+                </View>
+            ))}
             {data?.sale_service ? (
                 <View style={{alignItems: 'center'}}>
                     <FastImage

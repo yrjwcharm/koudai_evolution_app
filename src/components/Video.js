@@ -3,7 +3,7 @@
  * @Description:
  */
 import React from 'react';
-import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
 import Video from 'react-native-video';
 import Slider from 'react-native-slider';
@@ -11,7 +11,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 // import Octicons from 'react-native-vector-icons/Octicons';
 import play from '~/assets/img/icon/videoPlay.png';
 import {px} from '../utils/appUtil';
-import {Font} from '~/common/commonStyle';
+import {Colors, Font, Style} from '~/common/commonStyle';
 
 export default class App extends React.Component {
     static defaultProps = {
@@ -31,6 +31,7 @@ export default class App extends React.Component {
             isFullScreen: false,
             volume: 1,
             isVisiblePausedSliderFullScreen: false,
+            loading: true,
         };
     }
     //格式化音乐播放的时间为0：00。借助onProgress的定时器调用，更新当前时间
@@ -141,8 +142,13 @@ export default class App extends React.Component {
                         allowsExternalPlayback={false} // 不允许导出 或 其他播放器播放
                         paused={this.state.isPaused} // 控制视频是否播放
                         resizeMode="cover"
-                        // controls
+                        onBuffer={(e) => this.setState({loading: e.isBuffering})}
+                        onError={() => this.setState({loading: false})}
                         onLoad={(e) => this.customerOnload(e)}
+                        // controls
+                        onLoadStart={() => {
+                            console.log('start');
+                        }}
                         onProgress={(e) => this.customerOnprogress(e)}
                         onFullscreenPlayerWillDismiss={() => this.setState({isFullScreen: false})}
                         fullscreen={this.state.isFullScreen}
@@ -152,6 +158,11 @@ export default class App extends React.Component {
                 {pausedBtn}
                 {/* 暂停按钮，进度条，全屏按钮 */}
                 {pausedSliderFull}
+                {this.state.loading && (
+                    <View style={[Style.flexCenter, styles.loadingBox]}>
+                        <ActivityIndicator color={Colors.lightGrayColor} />
+                    </View>
+                )}
             </View>
         );
     }
@@ -187,5 +198,14 @@ var styles = StyleSheet.create({
         paddingVertical: px(7),
         paddingHorizontal: px(2),
         marginHorizontal: px(10),
+    },
+    loadingBox: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: '#000',
+        zIndex: 100,
     },
 });

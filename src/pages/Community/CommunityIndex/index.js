@@ -18,7 +18,7 @@ import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import WaterFlow from 'react-native-waterflow-list';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native';
 import close from '~/assets/img/icon/close.png';
 import live from '~/assets/img/vision/live.gif';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -533,8 +533,10 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
 /** @name 推荐 */
 const Recommend = forwardRef(({tabs = []}, ref) => {
+    const route = useRoute();
+    const {init_type = 0} = route.params || {};
     const store = useStore();
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(init_type);
     const scrollTab = useRef();
     const recommendList = useRef([]);
     const userInfo = useRef();
@@ -555,6 +557,12 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
         global.LogTool({event: 'recommend'});
     }, []);
 
+    useEffect(() => {
+        const index = tabs?.findIndex((tab) => tab.type === init_type);
+        if (scrollTab.current) scrollTab.current.goToPage(index);
+        else setTimeout(() => scrollTab.current?.goToPage?.(index));
+    }, [route.params]);
+
     return (
         <>
             <View style={[Style.flexRow, {paddingTop: px(8), paddingHorizontal: Space.padding}]}>
@@ -568,7 +576,6 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
                             key={name + type}
                             onPress={() => {
                                 global.LogTool({event: 'recommend_content', oid: type});
-                                setCurrent(i);
                                 scrollTab.current.goToPage(i);
                             }}
                             style={[
