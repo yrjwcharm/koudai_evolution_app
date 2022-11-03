@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-02 19:33:11
+ * @LastEditTime: 2022-11-03 11:05:36
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
@@ -22,19 +22,21 @@ const html = `
   <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-  <title>标题</title>
+  <title>富文本编辑框</title>
   <style>
     body {
       margin: 0;
+      height:100vh;
     }
 
     .con {
       width: 100%;
-      height: 150px;
+      height:100%;
+      min-height: 150px;
       outline: none;
       font-size: 14px;
       padding: 20px 16px;
-
+      box-sizing: border-box;
     }
 
     .placeholder {
@@ -60,11 +62,16 @@ const html = `
 
 <body>
   <div class="con" id="input" contenteditable="true"></div>
-  <!-- <button onclick="toggleRed(true)" >red</button> -->
+  <!-- <button id="btn" onclick="toggleRedInner()" >red</button> -->
   <script>
+    let isRed = false
     const cntMaxLength = 15; // 最大长度为15
     const input = document.getElementById('input')
 
+    // function toggleRedInner() {
+    //   isRed = !isRed
+    //   document.getElementById('btn').innerHTML = isRed ? 'Red':'nRed'
+    // }
     function log(msg) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'log',
@@ -79,10 +86,7 @@ const html = `
         span = document.createElement('span')
         span.id = 'last'
         input.appendChild(span)
-      } else {
-        
       }
-      
       
       return span
     }
@@ -97,7 +101,7 @@ const html = `
       range.setStart(el ,0)
       range.setEnd(el,0)
       s.addRange(range);
-
+      input.removeChild(el)
     }
 
     function focusLastInput() {
@@ -122,14 +126,14 @@ const html = `
     input.addEventListener('input', (e) => {
       let html = e.target.innerHTML
       let text = e.target.innerText
-
+      log('input: '+ e.target.innerHTML)
+      
       // 富文本限制字数处理
       if (text.length > cntMaxLength) {
-        // debugger
 
         let resultText = text.substr(0, 15)
 
-        let grayHtml = html.replace(tag1, flag1.repeat(tag1.length)).replace(tag2, flag2.repeat(tag2.length))
+        let grayHtml = html.replaceAll(tag1, flag1.repeat(tag1.length)).replaceAll(tag2, flag2.repeat(tag2.length))
         let endIndex = 0
         let endInScope = false
         for (let i = 0; i < cntMaxLength; i++) {
@@ -153,6 +157,12 @@ const html = `
       }
 
       window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'red',
+        // 获取当前颜色是不是红色，需要点击输入时才有用
+        value: document.queryCommandValue('foreColor').indexOf('255') !== -1
+      }))
+
+      window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'input',
         html: e.target.innerHTML,
         text: e.target.innerText,
@@ -161,19 +171,12 @@ const html = `
     input.addEventListener('keydown', handleMaxLength)
     input.addEventListener('paste', handleMaxLength)
 
-    // window.ReactNativeWebView = {
-    //   postMessage: function(str) {
-    //     console.log(JSON.parse(str))
-    //   }
-    // }
-
     function handleMaxLength(event) {
-      log('event:'+ JSON.stringify(event))
+      log('event handleMaxLength :'+ JSON.stringify(event))
       if (this.innerText.length >= cntMaxLength && event.keyCode != 8) {
         event.preventDefault();
       }
     }
-
 
     function toggleRed(flag) {
       log('toggleRed:' + flag ? 'red' : null)
@@ -184,11 +187,6 @@ const html = `
     function setInputValue(str) {
       input.innerHTML = str
     }
-    // 获取当前颜色，需要点击输入时才有用
-    // function getRangeRed() {
-    //   let str = document.queryCommandValue('foreColor')
-    //   console.log('getRangeRed:',str)
-    // }
   </script>
 </body>
 
@@ -215,6 +213,7 @@ function RichTextModal(props, ref) {
             html: '',
             text: '',
         });
+        setRed(false);
         webviewRef.current.injectJavaScript(`setInputValue(null);`);
     };
 
@@ -274,7 +273,7 @@ function RichTextModal(props, ref) {
                         const {type} = msgObj;
                         if (type === 'input') {
                             setRichText(msgObj);
-                        } else if (type === 'range') {
+                        } else if (type === 'red') {
                             setRed(msgObj.value);
                         } else if (type === 'log') {
                             console.log('webview msg:', msgObj.msg);
