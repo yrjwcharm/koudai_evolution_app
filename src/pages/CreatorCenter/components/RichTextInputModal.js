@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:51:45
+ * @LastEditTime: 2022-11-02 19:33:11
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
@@ -60,6 +60,7 @@ const html = `
 
 <body>
   <div class="con" id="input" contenteditable="true"></div>
+  <!-- <button onclick="toggleRed(true)" >red</button> -->
   <script>
     const cntMaxLength = 15; // 最大长度为15
     const input = document.getElementById('input')
@@ -71,20 +72,50 @@ const html = `
       }))
     }
 
+    function insertEl() {
+      
+      let span = document.getElementById('last')
+      if (!span) {
+        span = document.createElement('span')
+        span.id = 'last'
+        input.appendChild(span)
+      } else {
+        
+      }
+      
+      
+      return span
+    }
+
     // 获取焦点
     function focusInput() {
       input.focus()
       const s = window.getSelection();
       s.removeAllRanges();
+      let el = insertEl()
       const range = document.createRange()
-      let len = input.innerText.length
-      range.setStart(input.firstChild,len)
-      range.setEnd(input.firstChild,len)
+      range.setStart(el ,0)
+      range.setEnd(el,0)
       s.addRange(range);
+
     }
 
-    const tag1 = "<span style='color: rgb(255, 0, 0);'>"
+    function focusLastInput() {
+      input.focus()
+      const s = window.getSelection();
+      s.removeAllRanges();
+      const el = insertEl()
+      const range = document.createRange()
+      range.setStart(el ,0)
+      range.setEnd(el,0)
+      s.addRange(range);
+      input.removeChild(el)
+    }
+
+    const tag1 = '<span style="color: rgb(255, 0, 0);">'
     const tag2 = "</span>"
+    const tag3 = '<span>'
+    
     const flag1 = '☞'
     const flag2 = '☜'
 
@@ -94,31 +125,31 @@ const html = `
 
       // 富文本限制字数处理
       if (text.length > cntMaxLength) {
+        // debugger
 
         let resultText = text.substr(0, 15)
 
         let grayHtml = html.replace(tag1, flag1.repeat(tag1.length)).replace(tag2, flag2.repeat(tag2.length))
-        let len = 0
+        let endIndex = 0
         let endInScope = false
         for (let i = 0; i < cntMaxLength; i++) {
-          let c = grayHtml.charAt(i)
-          if (c === flag1) {
-            endInScope = true
+          let c
+          while (c = grayHtml.charAt(endIndex),c === flag1 || c === flag2) {
+            if (c === flag1) {
+              endInScope = true
+            }
+            if (c === flag2) {
+              endInScope = false
+            }
+            endIndex++
           }
-          if (c === flag2) {
-            endInScope = false
-          }
-
-          while (c === flag1 || c === flag2) {
-            len++
-          }
-          len++
+          endIndex++
         }
 
-        html = html.substr(0, len) + (endInScope ? tag2 : '')
+        html = html.substr(0, endIndex) + (endInScope ? tag2 : '')
 
         e.target.innerHTML = html
-        focusInput()      
+        focusLastInput()      
       }
 
       window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -130,8 +161,14 @@ const html = `
     input.addEventListener('keydown', handleMaxLength)
     input.addEventListener('paste', handleMaxLength)
 
+    // window.ReactNativeWebView = {
+    //   postMessage: function(str) {
+    //     console.log(JSON.parse(str))
+    //   }
+    // }
+
     function handleMaxLength(event) {
-      log('event:'+ JSON.string(event))
+      log('event:'+ JSON.stringify(event))
       if (this.innerText.length >= cntMaxLength && event.keyCode != 8) {
         event.preventDefault();
       }
@@ -216,6 +253,7 @@ function RichTextModal(props, ref) {
                     allowUniversalAccessFromFileURLs
                     javaScriptEnabled
                     source={{html: html}}
+                    // source={{uri: 'http://localhost:3000/public/index.html'}}
                     originWhitelist={['*']}
                     startInLoadingState
                     keyboardDisplayRequiresUserAction={false}
@@ -238,6 +276,8 @@ function RichTextModal(props, ref) {
                             setRichText(msgObj);
                         } else if (type === 'range') {
                             setRed(msgObj.value);
+                        } else if (type === 'log') {
+                            console.log('webview msg:', msgObj.msg);
                         }
                         console.log('event:', data);
                     }}

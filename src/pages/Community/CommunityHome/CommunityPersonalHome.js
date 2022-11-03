@@ -127,6 +127,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                             <WaterfallFlowList
                                 key={index}
                                 tabLabel={name}
+                                contentContainerStyle={{marginTop: px(12)}}
                                 ref={waterFallRef}
                                 getData={getProductList}
                                 params={{muid, type: type}}

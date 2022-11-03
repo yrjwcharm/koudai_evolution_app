@@ -46,7 +46,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
-    const [profitDay, setProfitDay] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -280,15 +279,17 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      */
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
-        // setProfit(item.profit);
+        setProfit(item.profit);
+    };
+    useEffect(() => {
         dateArr.map((el) => {
             el.checked = false;
-            if (el.day == item.day) {
+            if (el.day == selCurDate) {
                 el.checked = true;
             }
         });
         setDateArr([...dateArr]);
-    };
+    }, [selCurDate]);
     const selCalendarType = useCallback(() => {
         setIsCalendar(true);
         setIsBarChart(false);
@@ -350,13 +351,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     setEndDate(xAxisData[xAxisData.length - 1]);
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
-                    setProfitDay(xAxisData[i]);
                     setProfit(dataAxis[i]);
                     myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, diff, myChart.current]);
+    }, [type, myChart.current]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -410,45 +410,38 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         return (
             <RNEChartsPro
                 onDataZoom={(result) => {
-                    if (isFinished) {
-                        const {start, end} = result?.batch[0];
-                        const count = xAxisData?.length;
-                        barOption.dataZoom[0].start = start;
-                        barOption.dataZoom[0].end = end;
-                        let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
-                        let index = round(center) - 1;
-                        let startIndex = round(count * (start / 100));
-                        let endIndex = round(count * (end / 100));
-                        setStartDate(xAxisData[startIndex]);
-                        setEndDate(xAxisData[endIndex]);
-                        barOption.series[0].markPoint.itemStyle = {
-                            normal: {
-                                color:
-                                    dataAxis[index] > 0
-                                        ? Colors.red
-                                        : dataAxis[index] < 0
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                borderColor: Colors.white,
-                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                            },
-                        };
-                        barOption.series[0].markPoint.data[0] = {
-                            xAxis: xAxisData[index],
-                            yAxis: dataAxis[index],
-                        };
-                        setProfitDay(xAxisData[index]);
-                        setProfit(dataAxis[index]);
-                        dateArr.map((el) => {
-                            el.checked = false;
-                            if (el.day == xAxisData[index]) {
-                                el.checked = true;
-                            }
-                        });
-                        setSelCurDate(xAxisData[index]);
-                        setDateArr([...dateArr]);
-                        myChart.current.setNewOption(barOption);
-                    }
+                    const {start, end} = result?.batch[0];
+                    const count = xAxisData?.length;
+                    barOption.dataZoom[0].start = start;
+                    barOption.dataZoom[0].end = end;
+                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
+                    let index = round(center) - 1;
+                    let startIndex = round(count * (start / 100));
+                    let endIndex = round(count * (end / 100));
+                    setStartDate(xAxisData[startIndex]);
+                    setEndDate(xAxisData[endIndex]);
+                    barOption.series[0].markPoint.itemStyle = {
+                        normal: {
+                            color:
+                                dataAxis[index] > 0
+                                    ? Colors.red
+                                    : dataAxis[index] < 0
+                                    ? Colors.green
+                                    : Colors.transparent,
+                            borderColor: Colors.white,
+                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                        },
+                    };
+                    barOption.series[0].markPoint.data[0] = {
+                        xAxis: xAxisData[index],
+                        yAxis: dataAxis[index],
+                    };
+                    setProfit(dataAxis[index]);
+                    let curMonth = dayjs(xAxisData[index]).month();
+                    let diffMonth = dayjs().month() - curMonth;
+                    setDiff(-diffMonth);
+                    setSelCurDate(xAxisData[index]);
+                    myChart.current.setNewOption(barOption);
                 }}
                 legendSelectChanged={(result) => {}}
                 onPress={(result) => {}}
@@ -456,7 +449,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 width={deviceWidth - px(58)}
                 height={px(350)}
                 onMousemove={() => {}}
-                onFinished={() => {}}
+                onFinished={() => {
+                    setIsFinished(true);
+                }}
                 onRendered={() => {}}
                 option={barOption}
             />
@@ -502,7 +497,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     {profit}
                                 </Text>
                                 <View style={styles.dateView}>
-                                    <Text style={styles.date}>{profitDay}</Text>
+                                    <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
                             </View>
                             <View style={{marginTop: px(13)}}>{renderBarChart}</View>

@@ -224,31 +224,33 @@ const CommunityVideo = ({navigation, route}) => {
                                     modalHeight={px(360)}
                                     withHandle={false}
                                     keyboardAvoidingBehavior={'padding'}>
-                                    <TextInput
-                                        ref={inputRef}
-                                        value={content}
-                                        multiline={true}
-                                        style={styles.input}
-                                        onChangeText={(value) => {
-                                            setContent(value);
-                                        }}
-                                        maxLength={inputMaxLength}
-                                        textAlignVertical="top"
-                                        placeholder="我来聊两句..."
-                                    />
-                                    <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                                                {content.length}/{inputMaxLength}
-                                            </Text>
-                                            <Button
-                                                title="发布"
-                                                disabled={content.length <= 0}
-                                                style={styles.button}
-                                                onPress={publish}
-                                            />
+                                    <>
+                                        <TextInput
+                                            ref={inputRef}
+                                            value={content}
+                                            multiline={true}
+                                            style={styles.input}
+                                            onChangeText={(value) => {
+                                                setContent(value);
+                                            }}
+                                            maxLength={inputMaxLength}
+                                            textAlignVertical="top"
+                                            placeholder="我来聊两句..."
+                                        />
+                                        <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                                            <View style={Style.flexRow}>
+                                                <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                                                    {content.length}/{inputMaxLength}
+                                                </Text>
+                                                <Button
+                                                    title="发布"
+                                                    disabled={content.length <= 0}
+                                                    style={styles.button}
+                                                    onPress={publish}
+                                                />
+                                            </View>
                                         </View>
-                                    </View>
+                                    </>
                                 </BottomModal>
                             </TouchableOpacity>
                         </>
