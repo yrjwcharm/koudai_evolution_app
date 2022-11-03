@@ -50,7 +50,7 @@ const LinearHeader = ({bgType, proData, tabActive, tabRef}) => {
                         ]}
                         suppressHighlighting={true}
                         onPress={() => {
-                            tabRef.current.goToPage(0);
+                            proData?.follow_url ? jump(proData.follow_url) : tabRef.current.goToPage(0);
                         }}>
                         自选
                     </Text>
