@@ -51,8 +51,11 @@ const ClassCard = ({data = {}, showEye}) => {
                         <Text
                             style={[
                                 styles.amount_text,
-                                showEye == 'true' && color ? {color: color} : {color: Colors.lightBlackColor},
-                                {fontSize: index == 0 ? px(14) : px(12)},
+
+                                {
+                                    fontSize: index == 0 ? px(14) : px(12),
+                                    color: showEye == 'true' && color ? color : Colors.lightBlackColor,
+                                },
                             ]}>
                             {showEye == 'true' ? value : '****'}
                         </Text>
