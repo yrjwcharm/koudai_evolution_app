@@ -18,7 +18,6 @@ const SubjectCollection = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState();
     const [listData, setListData] = useState();
-    const [listLoading, setListLoading] = useState(true);
     const tabRef = useRef();
 
     useFocusEffect(
@@ -46,16 +45,11 @@ const SubjectCollection = ({navigation, route}) => {
     );
 
     const getListData = (type) => {
-        setListLoading(true);
-        getList({type})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setListData(res.result);
-                }
-            })
-            .finally((_) => {
-                setListLoading(false);
-            });
+        getList({type}).then((res) => {
+            if (res.code === '000000') {
+                setListData(res.result);
+            }
+        });
     };
 
     const onChangeTab = useCallback(
@@ -78,48 +72,42 @@ const SubjectCollection = ({navigation, route}) => {
                 onChangeTab={onChangeTab}>
                 {data?.header?.map?.((item, idx) => (
                     <ScrollView tabLabel={item?.val} key={idx} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
-                        {listLoading ? (
-                            <View style={{paddingVertical: px(20)}}>
-                                <ActivityIndicator />
-                            </View>
-                        ) : (
-                            <>
-                                {listData?.items?.[0] ? (
-                                    <View style={styles.cardsWrap}>
-                                        {listData?.items?.map?.((subject, index) => (
-                                            <View style={styles.cardItem} key={index}>
-                                                <AlbumCard {...subject} />
-                                            </View>
-                                        ))}
-                                    </View>
-                                ) : (
-                                    <View
+                        <>
+                            {listData?.items?.[0] ? (
+                                <View style={styles.cardsWrap}>
+                                    {listData?.items?.map?.((subject, index) => (
+                                        <View style={styles.cardItem} key={index}>
+                                            <AlbumCard {...subject} />
+                                        </View>
+                                    ))}
+                                </View>
+                            ) : (
+                                <View
+                                    style={{
+                                        backgroundColor: '#fff',
+                                        margin: px(16),
+                                        marginBottom: 0,
+                                        borderRadius: px(6),
+                                        paddingVertical: px(60),
+                                        alignItems: 'center',
+                                    }}>
+                                    <FastImage
+                                        style={{width: px(120), height: px(64)}}
+                                        source={require('~/assets/img/emptyTip/empty.png')}
+                                    />
+                                    <Text
                                         style={{
-                                            backgroundColor: '#fff',
-                                            margin: px(16),
-                                            marginBottom: 0,
-                                            borderRadius: px(6),
-                                            paddingVertical: px(60),
-                                            alignItems: 'center',
+                                            fontSize: px(13),
+                                            lineHeight: px(18),
+                                            color: '#121D3A',
+                                            textAlign: 'center',
                                         }}>
-                                        <FastImage
-                                            style={{width: px(120), height: px(64)}}
-                                            source={require('~/assets/img/emptyTip/empty.png')}
-                                        />
-                                        <Text
-                                            style={{
-                                                fontSize: px(13),
-                                                lineHeight: px(18),
-                                                color: '#121D3A',
-                                                textAlign: 'center',
-                                            }}>
-                                            暂无内容
-                                        </Text>
-                                    </View>
-                                )}
-                                {listData?.tip ? <Text style={styles.hint}>{listData?.tip}</Text> : null}
-                            </>
-                        )}
+                                        暂无内容
+                                    </Text>
+                                </View>
+                            )}
+                            {listData?.tip ? <Text style={styles.hint}>{listData?.tip}</Text> : null}
+                        </>
                         <View style={{height: 50}} />
                     </ScrollView>
                 ))}
