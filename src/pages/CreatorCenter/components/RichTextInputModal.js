@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 11:05:36
+ * @LastEditTime: 2022-11-03 11:37:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/components/RichTextInputModal.js
  * @Description: 富文本编辑器
  */
@@ -26,12 +26,12 @@ const html = `
   <style>
     body {
       margin: 0;
-      height:100vh;
+      height: 100vh;
     }
 
     .con {
       width: 100%;
-      height:100%;
+      height: 100%;
       min-height: 150px;
       outline: none;
       font-size: 14px;
@@ -64,6 +64,22 @@ const html = `
   <div class="con" id="input" contenteditable="true"></div>
   <!-- <button id="btn" onclick="toggleRedInner()" >red</button> -->
   <script>
+    // from  https://gomakethings.com/how-to-replace-a-section-of-a-string-with-another-one-with-vanilla-js/
+    if (!String.prototype.replaceAll) {
+      String.prototype.replaceAll = function (str, newStr) {
+        if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+          return this.replace(str, newStr);
+        }
+
+        let copy = '' + this
+        while (copy && copy.indexOf(str) !== -1) {
+          copy = copy.replace(str, newStr)
+        }
+        return copy
+      }
+    }
+
+
     let isRed = false
     const cntMaxLength = 15; // 最大长度为15
     const input = document.getElementById('input')
@@ -80,14 +96,14 @@ const html = `
     }
 
     function insertEl() {
-      
+
       let span = document.getElementById('last')
       if (!span) {
         span = document.createElement('span')
         span.id = 'last'
         input.appendChild(span)
       }
-      
+
       return span
     }
 
@@ -98,8 +114,8 @@ const html = `
       s.removeAllRanges();
       let el = insertEl()
       const range = document.createRange()
-      range.setStart(el ,0)
-      range.setEnd(el,0)
+      range.setStart(el, 0)
+      range.setEnd(el, 0)
       s.addRange(range);
       input.removeChild(el)
     }
@@ -110,8 +126,8 @@ const html = `
       s.removeAllRanges();
       const el = insertEl()
       const range = document.createRange()
-      range.setStart(el ,0)
-      range.setEnd(el,0)
+      range.setStart(el, 0)
+      range.setEnd(el, 0)
       s.addRange(range);
       input.removeChild(el)
     }
@@ -119,15 +135,15 @@ const html = `
     const tag1 = '<span style="color: rgb(255, 0, 0);">'
     const tag2 = "</span>"
     const tag3 = '<span>'
-    
+
     const flag1 = '☞'
     const flag2 = '☜'
 
     input.addEventListener('input', (e) => {
       let html = e.target.innerHTML
       let text = e.target.innerText
-      log('input: '+ e.target.innerHTML)
-      
+      log('input: ' + e.target.innerHTML)
+
       // 富文本限制字数处理
       if (text.length > cntMaxLength) {
 
@@ -138,7 +154,7 @@ const html = `
         let endInScope = false
         for (let i = 0; i < cntMaxLength; i++) {
           let c
-          while (c = grayHtml.charAt(endIndex),c === flag1 || c === flag2) {
+          while (c = grayHtml.charAt(endIndex), c === flag1 || c === flag2) {
             if (c === flag1) {
               endInScope = true
             }
@@ -153,7 +169,7 @@ const html = `
         html = html.substr(0, endIndex) + (endInScope ? tag2 : '')
 
         e.target.innerHTML = html
-        focusLastInput()      
+        focusLastInput()
       }
 
       window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -172,7 +188,7 @@ const html = `
     input.addEventListener('paste', handleMaxLength)
 
     function handleMaxLength(event) {
-      log('event handleMaxLength :'+ JSON.stringify(event))
+      log('event handleMaxLength :' + JSON.stringify(event))
       if (this.innerText.length >= cntMaxLength && event.keyCode != 8) {
         event.preventDefault();
       }
