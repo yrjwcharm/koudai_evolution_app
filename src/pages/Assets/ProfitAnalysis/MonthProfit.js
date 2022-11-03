@@ -259,7 +259,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         for (let i = 0; i < 6; i++) {
                             xAxisData.push(
                                 dayjs(sortProfitDataList[index].unit_key)
-                                    .add(i + 1, 'day')
+                                    .add(i + 1, 'month')
                                     .format('YYYY-MM')
                             );
                             dataAxis.push('0.00');

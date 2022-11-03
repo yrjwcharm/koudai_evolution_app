@@ -399,7 +399,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     style={[
                                         styles.profit,
                                         profitStyle,
-                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                        {
+                                            fontSize:
+                                                delMille(el.profit) >= 10000 || delMille(el.profit) <= -10000
+                                                    ? px(8)
+                                                    : px(10),
+                                        },
                                     ]}>
                                     {el?.profit}
                                 </Text>
@@ -409,7 +414,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     style={[
                                         styles.profit,
                                         profitStyle,
-                                        {fontSize: el.profit >= 10000 ? px(8) : px(10)},
+                                        {
+                                            fontSize:
+                                                delMille(el.profit) >= 10000 || delMille(el.profit) <= -10000
+                                                    ? px(8)
+                                                    : px(10),
+                                        },
                                     ]}>
                                     {el?.profit}
                                 </Text>
