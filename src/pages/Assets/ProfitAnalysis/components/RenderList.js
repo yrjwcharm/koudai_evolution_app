@@ -78,7 +78,9 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                                         global.LogTool('MfbIndex');
                                         jump(item?.url);
                                     }}>
-                                    <Text style={styles.title}>{item.text}</Text>
+                                    <Text style={[styles.title, {fontSize: item.text.length > 10 ? px(8) : px(10)}]}>
+                                        {item.text}
+                                    </Text>
                                 </TouchableOpacity>
                                 {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
                                 {item.tag ? (
