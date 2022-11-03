@@ -1115,7 +1115,6 @@ const Index = ({navigation, route, setLoading}) => {
                                             disabled={avail === 0}
                                             onPress={() => {
                                                 log_id && global.LogTool({event: log_id});
-                                                console.log(url);
                                                 jump(url);
                                             }}
                                             key={text + i}

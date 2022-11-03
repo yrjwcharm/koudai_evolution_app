@@ -15,7 +15,7 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => {
+const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type}) => {
     const insets = useSafeAreaInsets();
     const [period, setPeriod] = useState('all');
     const [chartData, setChartData] = useState({});
@@ -23,11 +23,12 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = ''}) => 
     const [showEmpty, setShowEmpty] = useState(false);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
+        const url = '/profit/user_acc/20210101';
         http.get(url, {
             fund_code,
             period,
             poid,
+            type,
             fr: 'profit_tool',
         }).then((res) => {
             setShowEmpty(true);

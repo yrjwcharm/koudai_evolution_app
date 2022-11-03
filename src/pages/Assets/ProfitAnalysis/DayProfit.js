@@ -449,7 +449,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 width={deviceWidth - px(58)}
                 height={px(350)}
                 onMousemove={() => {}}
-                onFinished={() => {}}
+                onFinished={() => {
+                    setIsFinished(true);
+                }}
                 onRendered={() => {}}
                 option={barOption}
             />
