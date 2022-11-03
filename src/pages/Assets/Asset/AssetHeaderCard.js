@@ -5,9 +5,7 @@
 import {StyleSheet, Text, View, TouchableWithoutFeedback, Image} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {px} from '~/utils/appUtil';
-
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-
 import Icon from 'react-native-vector-icons/Entypo';
 import {useJump} from '~/components/hooks';
 import LinearGradient from 'react-native-linear-gradient';
