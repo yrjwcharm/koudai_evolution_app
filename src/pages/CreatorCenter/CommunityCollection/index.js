@@ -3,17 +3,8 @@
  * @Autor: wxp
  * @Date: 2022-10-10 14:04:29
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    ActivityIndicator,
-    TouchableOpacity,
-    TextInput,
-    Platform,
-} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors} from '~/common/commonStyle';
@@ -31,7 +22,6 @@ const CommunityCollection = ({route}) => {
 
     const [data, setData] = useState();
     const [listData, setListData] = useState();
-    const [listLoading, setListLoading] = useState(true);
     const [reason, setReason] = useState('');
 
     const tabRef = useRef();
@@ -43,7 +33,7 @@ const CommunityCollection = ({route}) => {
             getData().then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    let tab = route?.params?.tab || 0;
+                    let tab = route?.params?.tab || tabRef?.current?.state?.currentPage || 0;
                     setTimeout(() => {
                         tabRef?.current?.goToPage(tab);
                     });
@@ -53,16 +43,11 @@ const CommunityCollection = ({route}) => {
     );
 
     const getListData = (type) => {
-        setListLoading(true);
-        getList({type, page: 1, page_size: 999999})
-            .then((res) => {
-                if (res.code === '000000') {
-                    setListData(res.result);
-                }
-            })
-            .finally((_) => {
-                setListLoading(false);
-            });
+        getList({type, page: 1, page_size: 999999}).then((res) => {
+            if (res.code === '000000') {
+                setListData(res.result);
+            }
+        });
     };
 
     const onChangeTab = useCallback(
@@ -83,7 +68,7 @@ const CommunityCollection = ({route}) => {
                     .then((res) => {
                         Toast.show(res.message);
                         if (res.code === '000000') {
-                            tabRef?.current?.goToPage(tabRef?.current.state.currentPage);
+                            tabRef?.current?.goToPage(tabRef?.current?.state.currentPage);
                         }
                     })
                     .finally((_) => {
@@ -106,7 +91,7 @@ const CommunityCollection = ({route}) => {
             .then((res) => {
                 Toast.show(res.message);
                 if (res.code === '000000') {
-                    tabRef?.current?.goToPage(tabRef?.current.state.currentPage);
+                    tabRef?.current?.goToPage(tabRef?.current?.state.currentPage);
                 }
             })
             .finally((_) => {
@@ -131,11 +116,7 @@ const CommunityCollection = ({route}) => {
                         showsHorizontalScrollIndicator={false}
                         style={{flex: 1}}
                         keyboardShouldPersistTaps="handled">
-                        {listLoading ? (
-                            <View style={{paddingVertical: px(20)}}>
-                                <ActivityIndicator />
-                            </View>
-                        ) : listData?.items?.[0] ? (
+                        {listData?.items?.[0] ? (
                             <View style={styles.cardsWrap}>
                                 {listData?.items?.map((itm, index) => (
                                     <View style={styles.cardItem} key={index}>

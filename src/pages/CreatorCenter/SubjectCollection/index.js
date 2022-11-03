@@ -25,7 +25,7 @@ const SubjectCollection = ({navigation, route}) => {
             getData().then((res) => {
                 if (res.code === '000000') {
                     setData(res.result);
-                    let tab = route?.params?.tab || 0;
+                    let tab = route?.params?.tab || tabRef?.current?.state?.currentPage || 0;
                     setTimeout(() => {
                         tabRef?.current?.goToPage(tab);
                     });
