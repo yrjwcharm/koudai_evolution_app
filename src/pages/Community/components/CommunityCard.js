@@ -440,7 +440,7 @@ export const CommunityCard = (props) => {
                                                 styles.desc,
                                                 {color: isReserved ? Colors.lightGrayColor : Colors.brandColor},
                                             ]}>
-                                            {button.text}
+                                            {isReserved ? '已预约' : button.text}
                                         </Text>
                                     </TouchableOpacity>
                                 ) : null}
