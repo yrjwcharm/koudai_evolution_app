@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-03 11:50:24
+ * @LastEditTime: 2022-11-03 11:53:19
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -184,7 +184,7 @@ const Product = ({navigation}) => {
                 {backgroundColor: bgType ? proData?.bg_colors?.[1] : proData?.popular_banner_list?.bg_colors?.[1]},
             ]}>
             {/* 渐变头 */}
-            <LinearHeader bgType={bgType} proData={proData} tabActive={tabActive} tabRef={tabRef} />
+            {proData ? <LinearHeader bgType={bgType} proData={proData} tabActive={tabActive} tabRef={tabRef} /> : null}
             <ScrollableTabView
                 ref={tabRef}
                 style={{flex: 1, marginTop: insets.top - px(128)}}
