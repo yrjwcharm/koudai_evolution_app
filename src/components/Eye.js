@@ -27,7 +27,10 @@ const Eye = ({storageKey, onChange, color}) => {
         });
     };
     return (
-        <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
+        <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={toggleEye}
+            style={{width: px(40), height: px(40), justifyContent: 'center'}}>
             <Feather
                 name={showEye === 'true' ? 'eye' : 'eye-off'}
                 size={px(16)}
