@@ -64,7 +64,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
     }, []);
     useEffect(() => {
         (async () => {
-            const res = await getHeadData({type});
+            const res = await getHeadData({type, poid, fund_code});
             if (res.code === '000000') {
                 const {title: navigationTitle = '', header = {}} = res.result || {};
                 setHeadData(header);

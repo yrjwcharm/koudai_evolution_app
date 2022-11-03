@@ -31,7 +31,7 @@ const ProfitDetail = ({navigation, route}) => {
     const [declarePic, setDeclarePic] = useState('');
     const init = useCallback(() => {
         (async () => {
-            const res = await Promise.all([getHeadData({type}), getEarningsUpdateNote({})]);
+            const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
                 const {title: navigationTitle = '', tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
