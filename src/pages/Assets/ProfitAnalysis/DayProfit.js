@@ -300,7 +300,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, []);
     useEffect(() => {
         (async () => {
-            console.log(myChart.current);
             myChart.current?.showLoading();
             let dayjs_ = dayjs().add(diff, 'month').startOf('month');
             const res = await getChartData({
