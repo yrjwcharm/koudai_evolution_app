@@ -300,6 +300,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, []);
     useEffect(() => {
         (async () => {
+            console.log(myChart.current);
+            myChart.current?.showLoading();
             let dayjs_ = dayjs().add(diff, 'month').startOf('month');
             const res = await getChartData({
                 type,
@@ -352,11 +354,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     setXAxisData(xAxisData);
                     setDataAxis(dataAxis);
                     setProfit(dataAxis[i]);
+                    myChart.current?.hideLoading();
                     myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, myChart.current]);
+    }, [type, isBarChart, myChart.current]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
