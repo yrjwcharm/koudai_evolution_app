@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 15:35:29
+ * @LastEditTime: 2022-11-03 10:16:48
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -127,11 +127,9 @@ const Product = ({navigation}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     setFollowTabs(res.result);
-                    type &&
-                        getFollowData({
-                            item_type:
-                                res.result?.follow?.tabs?.[optionalTabRef.current?.state?.currentPage]?.item_type,
-                        });
+                    getFollowData({
+                        item_type: res.result?.follow?.tabs?.[optionalTabRef.current?.state?.currentPage]?.item_type,
+                    });
                 }
             })
             .finally((_) => {
