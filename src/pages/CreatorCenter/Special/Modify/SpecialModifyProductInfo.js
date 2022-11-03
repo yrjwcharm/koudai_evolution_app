@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:02:19
+ * @LastEditTime: 2022-11-03 18:43:23
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -68,7 +68,7 @@ const getProductTemplate = (item) => [
         title: '选择推广产品',
         require: true,
         key: ListKeys.Product,
-        product: item ?? null,
+        product: item?.product ?? null,
         value: null,
         component: SelectInput,
     },
@@ -109,6 +109,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
     const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
     const jump = useJump();
+    console.log('items from before page:', items);
     const [list, setList] = useState([
         {
             title: '推广产品1(必填)',
