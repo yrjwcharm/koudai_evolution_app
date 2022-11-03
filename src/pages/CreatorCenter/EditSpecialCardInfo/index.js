@@ -161,17 +161,28 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                                         uri: image.path,
                                         fileName: image.filename || '123.png',
                                     };
-                                    upload('/common/image/upload', params, [], (result) => {
-                                        console.log(result);
-                                        goSave({img: result.result.url, subject_id: route.params.subject_id}).then(
-                                            (res) => {
-                                                getList();
-                                                if (res.code === '000000') {
-                                                    Toast.show('上传成功');
-                                                }
-                                            }
-                                        );
-                                    });
+                                    const loading3 = Toast.showLoading();
+                                    upload(
+                                        '/common/image/upload',
+                                        params,
+                                        [],
+                                        (result) => {
+                                            console.log(result);
+                                            goSave({img: result.result.url, subject_id: route.params.subject_id})
+                                                .then((res) => {
+                                                    getList();
+                                                    if (res.code === '000000') {
+                                                        Toast.show('上传成功');
+                                                    }
+                                                })
+                                                .finally((_) => {
+                                                    Toast.hide(loading3);
+                                                });
+                                        },
+                                        () => {
+                                            Toast.hide(loading3);
+                                        }
+                                    );
                                 }
                             })
                             .finally((_) => {
