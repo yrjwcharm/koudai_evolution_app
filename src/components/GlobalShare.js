@@ -38,7 +38,6 @@ const Index = () => {
             setData({});
             return false;
         }
-        console.log(currentRoute);
         http.get('/share/common/info/20210101', {
             name: currentRoute.name,
             params: JSON.stringify(currentRoute.params),

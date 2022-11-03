@@ -37,6 +37,7 @@ import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
 import {getChartData, getCommonData, getDsData, getPageData, setDividend} from './services';
 import CenterControl from './CenterControl';
+import PointCard from '../components/PointCard';
 import RenderAlert from '../components/RenderAlert';
 import ToolMenusCard from '../components/ToolMenusCard';
 
@@ -920,7 +921,7 @@ const Index = ({navigation, route, setLoading}) => {
     const {desc: serviceDesc, icon: serviceIcon, title: serviceTitle, url: serviceUrl} = service_info || {};
     const [commonData, setCommonData] = useState({});
     const [dsList, setDsList] = useState([]);
-    const {ad_info, bottom_notice, gather_list, system_notices, tool_list} = commonData;
+    const {ad_info, bottom_notice, gather_list, point_info, system_notices, tool_list} = commonData;
     const [showMask, setShowMask] = useState(false);
     const [showEye, setShowEye] = useState('true');
     const centerControl = useRef();
@@ -1027,6 +1028,7 @@ const Index = ({navigation, route, setLoading}) => {
                             {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
                             {dsList?.length > 0 && <DsList data={dsList} showEye={showEye} />}
                             {group_bulletin ? <GroupBulletIn data={group_bulletin} /> : null}
+                            {point_info ? <PointCard data={point_info} /> : null}
                             {mode_info ? <BuyMode data={mode_info} refresh={init} /> : null}
                             {chart_tabs ? <ChartTabs tabs={chart_tabs} /> : null}
                             {service_info ? (

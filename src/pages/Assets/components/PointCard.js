@@ -29,9 +29,11 @@ const PointCard = ({data, style}) => {
                 activeOpacity={0.8}>
                 <View style={Style.flexRow}>
                     <Image source={{uri: icon}} style={{width: px(56), height: px(20)}} />
-                    <Text style={{fontWeight: '600'}}>
-                        {''} ({number})
-                    </Text>
+                    {number !== undefined && (
+                        <Text style={{fontWeight: '600'}}>
+                            {''} ({number})
+                        </Text>
+                    )}
                 </View>
                 <Image source={require('~/assets/personal/arrowRight.png')} style={{width: px(12), height: px(12)}} />
             </TouchableOpacity>
