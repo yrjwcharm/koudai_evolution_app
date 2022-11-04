@@ -181,10 +181,12 @@ const FollowInvestSetting = ({navigation, route}) => {
                             style={[
                                 Style.flexBetween,
                                 {paddingVertical: px(15)},
-                                !autoChargeStatus && {
-                                    borderBottomWidth: Space.borderWidth,
-                                    borderBottomColor: Colors.borderColor,
-                                },
+                                !autoChargeStatus && data?.auto_charge_show
+                                    ? {
+                                          borderBottomWidth: Space.borderWidth,
+                                          borderBottomColor: Colors.borderColor,
+                                      }
+                                    : {},
                             ]}>
                             <Text style={{fontSize: px(14), color: '#4e556c', lineHeight: px(20)}}>魔方宝自动充值</Text>
                             <Switch
@@ -197,7 +199,7 @@ const FollowInvestSetting = ({navigation, route}) => {
                                 value={autoChargeStatus}
                             />
                         </View>
-                        {autoChargeStatus && (
+                        {autoChargeStatus && data?.auto_charge_show && (
                             <View
                                 style={styles.progressWrapper}
                                 onLayout={(e) => {
