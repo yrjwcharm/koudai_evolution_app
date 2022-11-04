@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-04 16:10:09
+ * @LastEditTime: 2022-11-04 19:02:28
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -109,22 +109,25 @@ const Product = ({navigation}) => {
         if (subjectLoadingRef.current) return;
         setSubjectLoading(true);
         subjectLoadingRef.current = true;
-        http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++}).then((res) => {
-            if (res.code === '000000') {
+        http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++})
+            .then((res) => {
+                if (res.code === '000000') {
+                    setSubjectsData(res.result);
+                    // 分页
+                    const newList = res.result.items || [];
+                    setSubjectList((val) => (type === 'init' ? newList : val.concat(newList)));
+
+                    global.LogTool({
+                        event: 'rec_show',
+                        plateid: res.result.plateid,
+                        rec_json: res.result.rec_json,
+                    });
+                }
+            })
+            .finally((_) => {
                 setSubjectLoading(false);
                 subjectLoadingRef.current = false;
-                setSubjectsData(res.result);
-                // 分页
-                const newList = res.result.items || [];
-                setSubjectList((val) => (type === 'init' ? newList : val.concat(newList)));
-
-                global.LogTool({
-                    event: 'rec_show',
-                    plateid: res.result.plateid,
-                    rec_json: res.result.rec_json,
-                });
-            }
-        });
+            });
     };
 
     const getFollowTabs = (type) => {
