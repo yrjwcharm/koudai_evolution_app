@@ -3,7 +3,7 @@
  * @Description:资产页金额卡片
  */
 import {StyleSheet, Text, View, TouchableWithoutFeedback, Image} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -13,7 +13,6 @@ import TradeNotice from '../components/TradeNotice';
 import {getChart} from './service';
 import {Chart, chartOptions} from '~/components/Chart';
 import {useDispatch} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
 const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart}) => {
     const dispatch = useDispatch();
     const jump = useJump();
@@ -22,16 +21,24 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
         let res = await getChart();
         setChart(res.result);
     };
-    useFocusEffect(
-        useCallback(() => {
-            if (showChart) {
-                getChartData();
-            } else {
-                setChart([]);
-            }
-        }, [summary?.asset_info?.value])
-    );
-
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (showChart) {
+    //             setChart([]);
+    //             getChartData();
+    //         } else {
+    //             setChart([]);
+    //         }
+    //     }, [summary?.asset_info?.value])
+    // );
+    useEffect(() => {
+        if (showChart) {
+            setChart([]);
+            getChartData();
+        } else {
+            setChart([]);
+        }
+    }, [summary?.asset_info?.value]);
     return (
         <TouchableWithoutFeedback
             onPress={() => {
