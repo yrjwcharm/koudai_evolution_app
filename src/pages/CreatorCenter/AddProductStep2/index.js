@@ -270,7 +270,9 @@ const AddProductStep2 = ({navigation, route}) => {
             }
             if (hasEmpty) {
                 Modal.show({
-                    content: '尚有分类未添加产品，请调整后再提交',
+                    content: ['需要添加产品后才能保存', '尚有分类未添加产品，请调整后再提交'][
+                        data?.data?.category_mode - 1
+                    ],
                     confirmText: '我知道了',
                 });
             } else {
