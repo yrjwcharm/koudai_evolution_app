@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 18:43:23
+ * @LastEditTime: 2022-11-04 18:47:27
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -190,7 +190,15 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         // TODOL
         console.log('handleCellPress:', item);
         if (item.key === ListKeys.Recommend) {
-            richTextModalRef.current?.show(item.value, item);
+            // richTextModalRef.current?.show(item.value, item);
+            jump({
+                path: 'RichTextInputPage',
+                params: {
+                    val: item.value,
+                    extra: item,
+                    onChangeText: handleRichTextChange,
+                },
+            });
         } else if (item.key === ListKeys.Product) {
             jump({
                 path: 'SpecialModifyProductItem',
