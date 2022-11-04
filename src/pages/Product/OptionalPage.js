@@ -161,6 +161,7 @@ const SpecialList = ({data, tabButton}) => {
                             key={dex}
                             activeOpacity={0.9}
                             onPress={() => {
+                                if (!data?.items?.[0] && btn.icon == 'EditSortFund') return;
                                 global.LogTool({event: btn.event_id});
                                 jump(btn.url);
                             }}
@@ -171,12 +172,22 @@ const SpecialList = ({data, tabButton}) => {
                                 <FastImage
                                     style={{width: px(16), height: px(16)}}
                                     source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png',
+                                        uri: data?.items?.[0]
+                                            ? 'https://static.licaimofang.com/wp-content/uploads/2022/10/edit-sort.png'
+                                            : 'https://static.licaimofang.com/wp-content/uploads/2022/11/edit-sort-gray.png',
                                     }}
                                 />
                             )}
                             <View style={{width: px(6)}} />
-                            <Text style={{color: Colors.btnColor, fontSize: px(12), lineHeight: px(17)}}>
+                            <Text
+                                style={{
+                                    color:
+                                        !data?.items?.[0] && btn.icon == 'EditSortFund'
+                                            ? Colors.lightGrayColor
+                                            : Colors.btnColor,
+                                    fontSize: px(12),
+                                    lineHeight: px(17),
+                                }}>
                                 {btn.text}
                             </Text>
                         </TouchableOpacity>
