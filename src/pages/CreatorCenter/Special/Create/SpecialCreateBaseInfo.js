@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:57:42
+ * @LastEditTime: 2022-11-04 10:41:27
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description: 创建专题 - 基础信息
  */
@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
-import {px} from '~/utils/appUtil';
+import {deviceHeight, px} from '~/utils/appUtil';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {Modal, BottomModal, SelectModal} from '~/components/Modal';
@@ -558,7 +558,8 @@ const styles = StyleSheet.create({
     },
     tagItem_inputWrap: {
         width: '100%',
-        height: 300,
+        height: 200,
+        maxHeight: deviceHeight / 2,
         paddingTop: 20,
         paddingLeft: 16,
         paddingRight: 16,
