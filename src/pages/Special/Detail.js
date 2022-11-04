@@ -174,7 +174,7 @@ const SpecialDetail = ({navigation, route}) => {
                 style={{
                     backgroundColor: scrolling ? '#fff' : 'transparent',
                     position: 'absolute',
-                    zIndex: 20,
+                    zIndex: 9,
                 }}
             />
             {token ? (
