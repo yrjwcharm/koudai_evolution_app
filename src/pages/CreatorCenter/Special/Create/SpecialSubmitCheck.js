@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 17:57:07
+ * @LastEditTime: 2022-11-04 14:59:50
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -14,8 +14,8 @@ import {deviceHeight, deviceWidth, px} from '~/utils/appUtil';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useJump} from '~/components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
-import http from '~/services';
 import LoadingTips from '~/components/LoadingTips';
+import {getSpeicalResult} from './services';
 
 export default function SpecialSubmitCheck({navigation, route}) {
     const [data, setData] = useState(null);
@@ -32,7 +32,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            http.get('/subject/manage/audit/submit_result/20220901', route.params || {})
+            getSpeicalResult(route.params || {})
                 .then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
