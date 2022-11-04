@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 18:56:06
+ * @LastEditTime: 2022-11-04 13:39:08
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js
  * @Description: 修改专题的入口
  */
@@ -47,8 +47,6 @@ export default function CreatorAuthHome(props) {
 
     useFocusEffect(
         useCallback(() => {
-            setLoading(true);
-
             getUnRead().then((res) => {
                 setUnreadData(res.result);
             });
@@ -76,7 +74,7 @@ export default function CreatorAuthHome(props) {
         if (!item) return;
 
         if (nextPage === 1) {
-            setListLoading(true);
+            setHasMore(true);
         } else {
             setListLoadingMore(true);
         }
@@ -153,6 +151,7 @@ export default function CreatorAuthHome(props) {
             setHasMore(true);
             setList([]);
             setListHeader({});
+            setListLoading(true);
             setActiveTab(idx);
             let item = data.items[idx];
             getListData(item, 1);
@@ -360,7 +359,7 @@ const styles = StyleSheet.create({
     },
     tableWrap: {
         paddingLeft: px(16),
-
+        minHeight: 100,
         flex: 1,
     },
     table: {

@@ -138,7 +138,7 @@ const VideoFooter = ({data, handleComment}) => {
 
                     <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
                         shareModal.current.show();
@@ -149,7 +149,7 @@ const VideoFooter = ({data, handleComment}) => {
                         style={[styles.actionIcon, {width: px(20), height: px(20), marginBottom: px(4)}]}
                     />
                     <Text style={{fontSize: px(11), color: '#fff'}}>分享</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <ShareModal
                 likeCallback={onFavor}

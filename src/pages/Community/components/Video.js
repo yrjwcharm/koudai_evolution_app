@@ -21,6 +21,8 @@ import Slider from 'react-native-slider';
 import _ from 'lodash';
 import VideoFooter from './VideoFooter';
 import http from '../../../services';
+import {useJump} from '~/components/hooks';
+import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 const HEIGHT = Dimensions.get('window').height;
 const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid, height}) => {
     const [paused, setPaused] = useState(true);
@@ -31,6 +33,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [followStatus, setFollowStatus] = useState();
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const [loading, setLoading] = useState(false);
+    const jump = useJump();
     useEffect(() => {
         setPaused(index != currentIndex);
         customerSliderValue(0);
@@ -70,13 +73,14 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         []
     );
     //关注
-    const handleFollow = () => {
-        if (data?.follow_status == 1) return;
-        http.post('/follow/add/202206', {item_id: data?.author?.author_id, item_type: 10}).then((res) => {
-            if (res.code == '000000') {
-                setFollowStatus(1);
-            }
-        });
+    const handleFollow = async () => {
+        let res =
+            followStatus == 1
+                ? await followCancel({item_id: data?.author?.author_id, item_type: 10})
+                : await followAdd({item_id: data?.author?.author_id, item_type: 10});
+        if (res.code == '000000') {
+            setFollowStatus(followStatus == 1 ? 2 : 1);
+        }
     };
     return (
         <View
@@ -152,10 +156,12 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
             <View style={styles.bottomCon}>
                 <View style={[Style.flexRow, {marginBottom: px(8)}]}>
                     {!!data?.author?.avatar && (
-                        <Image
-                            source={{uri: data?.author?.avatar}}
-                            style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}
-                        />
+                        <TouchableWithoutFeedback onPress={() => jump(data?.author?.url)}>
+                            <Image
+                                source={{uri: data?.author?.avatar}}
+                                style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}
+                            />
+                        </TouchableWithoutFeedback>
                     )}
                     <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
                     {!!data?.follow_btn && (
