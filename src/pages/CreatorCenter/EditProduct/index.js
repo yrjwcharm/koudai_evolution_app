@@ -18,7 +18,7 @@ import Toast from '~/components/Toast';
 const EditProduct = ({navigation, route}) => {
     const [option, setOption] = useState(route.params);
     const [data, setData] = useState();
-    const [pageModalType, setPageModalType] = useState(1);
+    const [pageModalType, setPageModalType] = useState(0);
 
     const [activeModalStyle, setActiveModalStyle] = useState(route.params.style_id);
     const [activeModalRange, setActiveModalRange] = useState(route.params.yield_range);
@@ -90,6 +90,11 @@ const EditProduct = ({navigation, route}) => {
         pageModalRef.current.cancel();
     }, [activeModalRange, activeModalStyle, pageModalType]);
 
+    const beforeClose = useCallback(async () => {
+        setPageModalType(0);
+        return true;
+    }, []);
+
     return (
         <>
             <ScrollView style={styles.container}>
@@ -108,7 +113,11 @@ const EditProduct = ({navigation, route}) => {
                                 <Text style={styles.cardHeaderTitle}>产品展示样式</Text>
                             </View>
                             <View style={styles.cardHeaderRight}>
-                                <Icon color={Colors.descColor} name={'angle-down'} size={px(14)} />
+                                <Icon
+                                    color={Colors.descColor}
+                                    name={pageModalType === 1 ? 'angle-down' : 'angle-up'}
+                                    size={px(14)}
+                                />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.cardHint}>
@@ -165,7 +174,11 @@ const EditProduct = ({navigation, route}) => {
                             </View>
                             <View style={styles.cardHeaderRight}>
                                 <Text style={styles.cardHeaderDesc}>{curRange?.name || ''}</Text>
-                                <Icon color={Colors.descColor} name={true ? 'angle-up' : 'angle-down'} size={px(14)} />
+                                <Icon
+                                    color={Colors.descColor}
+                                    name={pageModalType === 2 ? 'angle-down' : 'angle-up'}
+                                    size={px(14)}
+                                />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -176,7 +189,8 @@ const EditProduct = ({navigation, route}) => {
                 title={pageModalType === 1 ? '请选择产品展示样式' : '请选择产品收益率展示区间'}
                 style={{height: px(pageModalType === 1 ? 545 : 234)}}
                 confirmText="确定"
-                confirmClick={onConfirm}>
+                confirmClick={onConfirm}
+                beforeClose={beforeClose}>
                 <ScrollView
                     style={styles.modalContent}
                     scrollIndicatorInsets={{right: 1}}
