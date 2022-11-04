@@ -12,6 +12,7 @@ import {debounce, px} from '../../../../utils/appUtil';
 
 const ChartHeader = React.memo(
     ({selCalendarType, selBarChartType, isCalendar, isBarChart, subMonth, addMonth, date, startMonth, endMonth}) => {
+        let curSelMonth = date.format('YYYY-MM');
         return (
             <>
                 <View style={Style.flexBetween}>
@@ -59,7 +60,7 @@ const ChartHeader = React.memo(
                     </View>
                     {!isBarChart && (
                         <View style={styles.selMonth}>
-                            {date > startMonth && date <= endMonth && (
+                            {curSelMonth > startMonth && curSelMonth <= endMonth && (
                                 <TouchableOpacity onPress={subMonth}>
                                     <Image
                                         style={{width: px(13), height: px(13)}}
@@ -67,8 +68,8 @@ const ChartHeader = React.memo(
                                     />
                                 </TouchableOpacity>
                             )}
-                            <Text style={styles.MMText}>{date + '月'}</Text>
-                            {date >= startMonth && date < endMonth && (
+                            <Text style={styles.MMText}>{date.month() + 1 + '月'}</Text>
+                            {curSelMonth >= startMonth && curSelMonth < endMonth && (
                                 <TouchableOpacity onPress={addMonth}>
                                     <Image
                                         style={{width: px(13), height: px(13)}}

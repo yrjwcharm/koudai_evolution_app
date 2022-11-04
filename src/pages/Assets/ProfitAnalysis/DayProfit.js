@@ -26,7 +26,6 @@ import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 import {round} from 'mathjs';
-let timer = null;
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -40,8 +39,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
-    const [startMonth, setStartMonth] = useState(false);
-    const [endMonth, setEndMonth] = useState(true);
+    const [startMonth, setStartMonth] = useState('');
+    const [endMonth, setEndMonth] = useState(dayjs().format('YYYY-MM'));
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
@@ -492,7 +491,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 addMonth={addMonth}
                 startMonth={startMonth}
                 endMonth={endMonth}
-                date={date.month() + 1}
+                date={date}
             />
             {isHasData ? (
                 <>

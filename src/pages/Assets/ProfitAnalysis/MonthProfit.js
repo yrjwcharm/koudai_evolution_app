@@ -34,7 +34,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [profit, setProfit] = useState('');
     const myChart = useRef(null);
     const [startYear, setStartYear] = useState('');
-    const [endYear, setEndYear] = useState('');
+    const [endYear, setEndYear] = useState(dayjs().year());
     const barOption = {
         tooltip: {
             trigger: 'axis',
