@@ -3,14 +3,13 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-03 12:06:49
+ * @LastEditTime: 2022-11-04 11:04:16
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Space} from '~/common/commonStyle';
-import Loading from '~/pages/Portfolio/components/PageLoading';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
@@ -33,7 +32,6 @@ const Product = ({navigation}) => {
     const insets = useSafeAreaInsets();
     const isFocused = useIsFocused();
 
-    const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [tabActive, setTabActive] = useState(1);
     const [proData, setProData] = useState(null);
@@ -46,7 +44,6 @@ const Product = ({navigation}) => {
     const tabRef = useRef(null);
     const optionalTabRef = useRef(null);
     const scrollViewRef = useRef();
-    const isFirst = useRef(1);
     const pageRef = useRef(1);
     const subjectToBottomHeight = useRef(0);
     const subjectLoadingRef = useRef(false);
@@ -58,8 +55,8 @@ const Product = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             let cPage = tabRef.current?.state?.currentPage;
-            [getFollowTabs, getProData][cPage]?.(isFirst.current++);
             setTabActive(cPage);
+            tabRef.current.goToPage(cPage);
         }, [])
     );
 
@@ -82,8 +79,9 @@ const Product = ({navigation}) => {
     }, []);
 
     const getProData = (type) => {
-        type === 0 && setRefreshing(true);
-        type === 1 && setLoading(true);
+        if (type === 0) {
+            setRefreshing(true);
+        }
         http.get('/products/index/20220901')
             .then((res) => {
                 if (res.code === '000000') {
@@ -97,7 +95,6 @@ const Product = ({navigation}) => {
             })
             .finally((_) => {
                 setRefreshing(false);
-                setLoading(false);
             });
     };
 
@@ -124,8 +121,9 @@ const Product = ({navigation}) => {
     };
 
     const getFollowTabs = (type) => {
-        type === 0 && setRefreshing(true);
-        type === 1 && setLoading(true);
+        if (type === 0) {
+            setRefreshing(true);
+        }
         http.get('/follow/index/202206')
             .then((res) => {
                 if (res.code === '000000') {
@@ -137,7 +135,6 @@ const Product = ({navigation}) => {
             })
             .finally((_) => {
                 setRefreshing(false);
-                setLoading(false);
             });
     };
 
@@ -175,9 +172,7 @@ const Product = ({navigation}) => {
         [subjectLoading, subjectList, subjectData, proData]
     );
 
-    return loading ? (
-        <Loading color={Colors.btnColor} />
-    ) : (
+    return (
         <View
             style={[
                 styles.container,
