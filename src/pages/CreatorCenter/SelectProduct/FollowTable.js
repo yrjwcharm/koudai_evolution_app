@@ -15,9 +15,7 @@ import FastImage from 'react-native-fast-image';
 import {genKey} from './utils';
 
 const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stickyHeaderY, scrollY}) => {
-    const firstLineWidth = px(130); //第一列宽度
     const otherLineWidth = px(80);
-    const jump = useJump();
     const [isScroll, setIsScroll] = useState(false);
     const {header, body} = data;
 
@@ -43,9 +41,9 @@ const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stic
                         {/* 分割线 */}
                         <View
                             style={{
-                                width: firstLineWidth,
                                 borderRightColor: '#E9EAEF',
                                 borderRightWidth: isScroll ? 0.5 : 0,
+                                paddingRight: px(3),
                             }}>
                             <View style={[styles.tr, {height: px(47)}]}>
                                 <View style={[Style.flexRow, {paddingHorizontal: px(9)}]}>
@@ -99,6 +97,7 @@ const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stic
                                                         color: tr[0]?.line1?.color || Colors.lightBlackColor,
                                                         fontSize: px(13),
                                                         marginLeft: px(9),
+                                                        flex: 1,
                                                     },
                                                 ]}>
                                                 {tr[0]?.line1?.value}
@@ -143,7 +142,7 @@ const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stic
                                 >
                                     {/* 表头 */}
                                     <View style={[styles.tr, {height: px(47)}]}>
-                                        <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
+                                        <View style={[Style.flexRow, {paddingHorizontal: px(1)}]}>
                                             {body?.th &&
                                                 body?.th?.map((_item, index) =>
                                                     index == 0 ? null : (
@@ -204,7 +203,7 @@ const FollowTable = ({data = {}, selections, handlerSelections, handleSort, stic
                                         key={index}
                                         activeOpacity={0.9}
                                         onPress={() => {}}>
-                                        <View style={[Style.flexRow, {paddingHorizontal: px(16)}]}>
+                                        <View style={[Style.flexRow, {paddingHorizontal: px(1)}]}>
                                             {tr.map((item, _index) =>
                                                 _index == 0 ? null : (
                                                     <View
