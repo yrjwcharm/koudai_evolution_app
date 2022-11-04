@@ -54,7 +54,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         //     },
         // },
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
-
+        animation: true, //设置动画效果
+        animationEasing: 'linear',
         dataZoom: [
             {
                 type: 'inside',
@@ -62,13 +63,14 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 // startValue: 0,
                 // endValue: 0,
                 // rangeMode: ['value', 'percent'], //rangeMode: ['value', 'percent']，表示 start 值取绝对数值，end 取百分比。
-                animation: true, //设置动画效果
-                // throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
+                throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
         xAxis: {
-            show: false,
+            // show: false,
             nameLocation: 'end',
+            show: false,
+            inside: true, //刻度内置
             boundaryGap: true,
             type: 'category',
             axisTick: {
@@ -120,6 +122,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         },
         series: [
             {
+                large: true,
+                largeThreshold: 1000,
                 type: 'bar',
                 barWidth: 6,
                 // barGap: '8%',
@@ -435,13 +439,14 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             <RNEChartsPro
                 onDataZoom={(result) => {
                     const {start, end} = result?.batch[0];
+                    console.log('中线测试+++++', start, end, (start + end) / 2);
                     const count = xAxisData?.length;
                     barOption.dataZoom[0].start = start;
                     barOption.dataZoom[0].end = end;
-                    let center = (xAxisData.length * (start + (end - start) / 2)) / 100;
-                    let index = round(center) - 1;
-                    let startIndex = round(count * (start / 100)) - 1;
-                    let endIndex = round(count * (end / 100)) - 1;
+                    let center = (xAxisData.length * ((start + end) / 2)) / 100;
+                    let index = round(center - 1);
+                    let startIndex = round(count * (start / 100) - 1);
+                    let endIndex = round(count * (end / 100) - 1);
                     setStartDate(xAxisData[startIndex]);
                     setEndDate(xAxisData[endIndex]);
                     barOption.series[0].markPoint.itemStyle = {
@@ -471,7 +476,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 onPress={(result) => {}}
                 ref={myChart}
                 width={deviceWidth - px(58)}
-                height={px(350)}
+                height={px(300)}
                 onMousemove={() => {}}
                 onFinished={() => {
                     setIsFinished(true);
@@ -524,12 +529,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
                             </View>
-                            <View style={{marginTop: px(13)}}>{renderBarChart}</View>
+                            <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart}</View>
                             <View style={styles.separator} />
                         </View>
                     )}
                     {isBarChart && (
-                        <View style={[Style.flexBetween, {marginTop: px(6)}]}>
+                        <View style={[Style.flexBetween]}>
                             <Text style={styles.chartDate}>{startDate}</Text>
                             <Text style={styles.chartDate}>{endDate}</Text>
                         </View>
@@ -579,7 +584,7 @@ const styles = StyleSheet.create({
     chartContainer: {
         position: 'relative',
         width: '100%',
-        height: px(350),
+        height: px(300),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -589,7 +594,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         position: 'absolute',
-        height: px(290),
+        height: px(240),
         top: px(52),
         zIndex: -9999,
         borderStyle: 'dashed',

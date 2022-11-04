@@ -36,12 +36,14 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const myChart = useRef(null);
     const [isFinished, setIsFinished] = useState(false);
     const barOption = {
-        // tooltip: {
-        //     trigger: 'axis',
-        //     axisPointer: {
-        //         type: 'shadow',
-        //     },
-        // },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow',
+            },
+        },
+        animation: true, //设置动画效果
+        animationEasing: 'linear',
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
 
         dataZoom: [
@@ -51,8 +53,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 // startValue: 0,
                 // endValue: 0,
                 // rangeMode: ['value', 'percent'], //rangeMode: ['value', 'percent']，表示 start 值取绝对数值，end 取百分比。
-                animation: true, //设置动画效果
-                // throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
+                throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
         xAxis: {
@@ -85,7 +86,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             data: [],
         },
         yAxis: {
-            boundaryGap: false,
             type: 'value',
             axisLabel: {
                 show: false, // 不显示坐标轴上的文字
@@ -108,9 +108,10 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         },
         series: [
             {
+                large: true,
+                largeThreshold: 1000,
                 type: 'bar',
                 barWidth: 6,
-                // barGap: '8%',
                 itemStyle: {
                     normal: {
                         color: function (params) {
@@ -368,7 +369,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 onPress={(result) => {}}
                 ref={myChart}
                 width={deviceWidth - px(58)}
-                height={px(350)}
+                height={px(300)}
                 onMousemove={() => {}}
                 onFinished={() => {
                     setIsFinished(true);
@@ -416,12 +417,12 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     <Text style={styles.date}>{selCurDate}</Text>
                                 </View>
                             </View>
-                            <View style={{marginTop: px(13)}}>{renderBarChart}</View>
+                            <View style={{marginTop: px(15)}}>{renderBarChart}</View>
                             <View style={styles.separator} />
                         </View>
                     )}
                     {isBarChart && (
-                        <View style={[Style.flexBetween, {marginTop: px(6)}]}>
+                        <View style={[Style.flexBetween]}>
                             <Text style={styles.chartDate}>{startDate}</Text>
                             <Text style={styles.chartDate}>{endDate}</Text>
                         </View>
@@ -522,7 +523,7 @@ const styles = StyleSheet.create({
     chartContainer: {
         position: 'relative',
         width: '100%',
-        height: px(350),
+        height: px(300),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -552,7 +553,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         position: 'absolute',
-        height: px(290),
+        height: px(240),
         top: px(52),
         zIndex: -9999,
         borderStyle: 'dashed',

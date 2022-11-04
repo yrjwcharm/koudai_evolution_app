@@ -31,7 +31,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
-
+        animation: true, //设置动画效果
+        animationEasing: 'linear',
         dataZoom: [
             {
                 type: 'inside',
@@ -92,9 +93,10 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         },
         series: [
             {
+                large: true,
+                largeThreshold: 1000,
                 type: 'bar',
                 barWidth: 6,
-                // barGap: '8%',
                 itemStyle: {
                     normal: {
                         color: function (params) {
@@ -234,7 +236,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 onPress={(result) => {}}
                 ref={myChart}
                 width={deviceWidth - px(58)}
-                height={px(350)}
+                height={px(300)}
                 onMousemove={() => {}}
                 onFinished={() => {}}
                 onRendered={() => {}}
@@ -385,7 +387,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                         <Text style={styles.date}>{selCurYear}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(13)}}>{renderBarChart}</View>
+                                <View style={{marginTop: px(15)}}>{renderBarChart}</View>
                                 <View style={styles.separator} />
                             </View>
                         )}
@@ -445,7 +447,7 @@ const styles = StyleSheet.create({
     chartContainer: {
         position: 'relative',
         width: '100%',
-        height: px(350),
+        height: px(300),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -475,7 +477,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         position: 'absolute',
-        height: px(290),
+        height: px(240),
         top: px(52),
         zIndex: -9999,
         borderStyle: 'dashed',
