@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:00:57
+ * @LastEditTime: 2022-11-04 14:57:01
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -14,9 +14,8 @@ import {px} from '~/utils/appUtil';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Modal, PageModal} from '~/components/Modal';
 import {Style, Colors, Font} from '~/common/commonStyle';
-import {getCommentList, addComment} from './services';
+import {getCommentList, getManageComment, addComment, doCommentOP} from './services';
 import {Button} from '~/components/Button';
-import http from '~/services';
 import LoadingTips from '~/components/LoadingTips';
 import Toast from '~/components/Toast';
 
@@ -179,7 +178,7 @@ export default function SpecailModifyComment({navigation, route}) {
 
     useEffect(() => {
         setLoading(true);
-        http.get('/ss_manage/comment/index/20221010')
+        getManageComment()
             .then((res) => {
                 if (res.code === '000000') {
                     setPageData(res.result);
@@ -250,15 +249,11 @@ export default function SpecailModifyComment({navigation, route}) {
     };
     const handleCommentAction = (item, op) => {
         const doAction = () => {
-            http.post(
-                '/ss_manage/comment/op/20221010',
-                {
-                    op_type: op.op_type,
-                    comment_id: item.id,
-                    op_value: op.op_value === 0 ? 1 : 0,
-                },
-                true
-            ).then((res) => {
+            doCommentOP({
+                op_type: op.op_type,
+                comment_id: item.id,
+                op_value: op.op_value === 0 ? 1 : 0,
+            }).then((res) => {
                 if (res.code === '000000') {
                     refresh();
                 }
