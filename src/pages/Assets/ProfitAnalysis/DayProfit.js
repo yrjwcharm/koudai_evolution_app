@@ -217,7 +217,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 });
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
-                    const {profit_data_list = [], unit_list = []} = res?.result ?? {};
+                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
                     if (profit_data_list.length > 0) {
                         let minDate = unit_list[unit_list.length - 1].value;
                         let maxDate = unit_list[0].value;
@@ -236,12 +236,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 }
                             }
                         }
-
-                        //let beforeDay = dayjs().add(-1, 'day').format('YYYY-MM-DD');
-                        let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
-                        );
-                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index]?.unit_key);
+                        let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                         if (cur > max || cur < min) return;
                         cur == max && setIsNext(false);

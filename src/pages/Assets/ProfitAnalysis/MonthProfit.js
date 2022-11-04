@@ -186,10 +186,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 }
                             }
                         }
-                        let index = profit_data_list.findIndex(
-                            (el) => delMille(el.value) >= 0 || delMille(el.value) <= 0
-                        );
-                        let zIndex = arr.findIndex((el) => el.day == profit_data_list[index].unit_key);
+
+                        let zIndex = arr.findIndex((el) => el.day == currentDay);
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                         if (cur > max || cur < min) return;
                         cur == max && setIsNext(false);
@@ -201,7 +199,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
-                        setProfit(profit_data_list[index]?.value);
+                        setProfit(profit_data_list[zIndex]?.value);
                         setDate(dayjs_);
                         setSelCurDate(arr[zIndex].day);
                     } else {
