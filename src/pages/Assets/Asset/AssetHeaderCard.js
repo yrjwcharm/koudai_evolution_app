@@ -29,9 +29,8 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
             } else {
                 setChart([]);
             }
-        }, [summary?.asset_info?.value])
+        }, [showChart])
     );
-
     return (
         <TouchableWithoutFeedback
             onPress={() => {
@@ -85,6 +84,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                         {chart?.length > 0 ? (
                             <View style={{width: px(120), height: px(70)}}>
                                 <Chart
+                                    data={chart}
                                     style={{backgroundColor: 'transparent'}}
                                     initScript={chartOptions.smAssetChart(chart)}
                                     updateScript={chartOptions.smAssetChart}

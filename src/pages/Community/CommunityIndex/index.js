@@ -374,7 +374,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             onEndReached={onEndReached}
             onEndReachedThreshold={0.99}
             onLayout={() => {
-                global.LogTool({event: 'community_browsing', oid: 1});
+                global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: 1});
                 logedPage.current.push(1);
             }}
             onRefresh={() => (page > 1 ? setPage(1) : init())}
@@ -386,7 +386,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             }) => {
                 const screen = Math.floor(y / height) + 1;
                 if (screen > 1 && !logedPage.current.includes(screen)) {
-                    global.LogTool({event: 'community_browsing', oid: screen});
+                    global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: screen});
                     logedPage.current.push(screen);
                 }
             }}
@@ -485,7 +485,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 onEndReached,
                 onEndReachedThreshold: 0.05,
                 onLayout: () => {
-                    wrapper === 'Recommend' && global.LogTool({event: 'community_browsing', oid: 1});
+                    wrapper === 'Recommend' && global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: 1});
                     logedPage.current.push(1);
                 },
                 onRefresh: () => {
@@ -501,7 +501,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                         } = e.nativeEvent;
                         const screen = Math.floor(y / height) + 1;
                         if (screen > 1 && !logedPage.current.includes(screen)) {
-                            global.LogTool({event: 'community_browsing', oid: screen});
+                            global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: screen});
                             logedPage.current.push(screen);
                         }
                     }
