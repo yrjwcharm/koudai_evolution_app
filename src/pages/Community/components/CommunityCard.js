@@ -3,6 +3,7 @@
  * @Description: 社区卡片
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useSelector} from 'react-redux';
 import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import HapticFeedback from 'react-native-haptic-feedback';
@@ -152,7 +153,6 @@ export const CommunityCard = (props) => {
         live_status, // 直播状态 1 预约中 2 直播中 3 回放
         left_desc, // 直播状态或预约人数
         media_duration, // 媒体时长
-
         can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
         product_type, // "article_history" 不展示底部操作按钮
@@ -167,11 +167,12 @@ export const CommunityCard = (props) => {
         url, // 跳转地址
     } = props.data || {};
     const {
-        onDelete, //移除作品
         isRecommend = false, // 是否推荐卡片
+        onDelete, //移除作品
         style, // 自定义样式
     } = props;
     const jump = useJump();
+    const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
     const [collected, setCollected] = useState(collect_status); // 是否收藏
     const [favored, setFavored] = useState(favor_status); // 是否点赞
     const [isReserved, setIsReserved] = useState(reserved); // 直播是否已预约
@@ -259,27 +260,30 @@ export const CommunityCard = (props) => {
     };
 
     const onReserve = () => {
-        checkPermission(
-            () => postReserve(id),
-            () => {
-                requestNotifications(['alert', 'sound']).then(({status: _status}) => {
-                    if (_status === 'granted') {
-                        postReserve(id);
-                    } else {
-                        Modal.show({
-                            title: '权限申请',
-                            content: '我们将在直播前10分钟为您推送提醒，请开启通知权限',
-                            confirm: true,
-                            confirmText: '前往',
-                            confirmCallBack: () => {
-                                AppState.addEventListener('change', handleAppStateChange);
-                                openSettings().catch(() => console.warn('cannot open settings'));
-                            },
-                        });
-                    }
-                });
-            }
-        );
+        if (!userInfo.is_login) jump({path: 'Login'});
+        else {
+            checkPermission(
+                () => postReserve(id),
+                () => {
+                    requestNotifications(['alert', 'sound']).then(({status: _status}) => {
+                        if (_status === 'granted') {
+                            postReserve(id);
+                        } else {
+                            Modal.show({
+                                title: '权限申请',
+                                content: '我们将在直播前10分钟为您推送提醒，请开启通知权限',
+                                confirm: true,
+                                confirmText: '前往',
+                                confirmCallBack: () => {
+                                    AppState.addEventListener('change', handleAppStateChange);
+                                    openSettings().catch(() => console.warn('cannot open settings'));
+                                },
+                            });
+                        }
+                    });
+                }
+            );
+        }
     };
 
     useEffect(() => {

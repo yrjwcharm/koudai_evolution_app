@@ -189,7 +189,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         disabled={el.day > currentYear}
                         key={`${el + '' + index}`}
                         onPress={() => getProfitBySelDate(el)}>
-                        <View style={[styles.year, wrapStyle]}>
+                        <View style={[styles.year, wrapStyle, {marginRight: index % 3 == 2 ? px(0) : px(4)}]}>
                             <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
                             <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
                         </View>
@@ -421,13 +421,14 @@ const styles = StyleSheet.create({
         marginTop: px(12),
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         flexWrap: 'wrap',
     },
     year: {
         marginBottom: px(4),
         width: px(103),
         height: px(46),
+        marginRight: px(4),
         backgroundColor: '#f5f6f8',
         borderRadius: px(4),
         alignItems: 'center',
