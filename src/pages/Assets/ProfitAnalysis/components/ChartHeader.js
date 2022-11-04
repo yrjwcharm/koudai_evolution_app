@@ -11,17 +11,7 @@ import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {debounce, px} from '../../../../utils/appUtil';
 
 const ChartHeader = React.memo(
-    ({
-        selCalendarType,
-        selBarChartType,
-        isCalendar,
-        isBarChart,
-        subMonth,
-        addMonth,
-        date,
-        isPrev = false,
-        isNext = true,
-    }) => {
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, subMonth, addMonth, date, startMonth, endMonth}) => {
         return (
             <>
                 <View style={Style.flexBetween}>
@@ -69,7 +59,7 @@ const ChartHeader = React.memo(
                     </View>
                     {!isBarChart && (
                         <View style={styles.selMonth}>
-                            {isPrev && (
+                            {date > startMonth && date <= endMonth && (
                                 <TouchableOpacity onPress={subMonth}>
                                     <Image
                                         style={{width: px(13), height: px(13)}}
@@ -77,8 +67,8 @@ const ChartHeader = React.memo(
                                     />
                                 </TouchableOpacity>
                             )}
-                            <Text style={styles.MMText}>{date}</Text>
-                            {isNext && (
+                            <Text style={styles.MMText}>{date + '月'}</Text>
+                            {date >= startMonth && date < endMonth && (
                                 <TouchableOpacity onPress={addMonth}>
                                     <Image
                                         style={{width: px(13), height: px(13)}}

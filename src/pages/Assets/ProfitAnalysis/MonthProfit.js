@@ -16,6 +16,7 @@ import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 import {round} from 'mathjs';
+import moment from 'moment';
 let timer = null;
 const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
@@ -25,8 +26,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
     const [diff, setDiff] = useState(0);
-    const [isNext, setIsNext] = useState(false);
-    const [isPrev, setIsPrev] = useState(true);
     const [date, setDate] = useState(dayjs());
     const [dateArr, setDateArr] = useState([]);
     const [currentDay] = useState(dayjs().format('YYYY-MM'));
@@ -34,7 +33,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const [profit, setProfit] = useState('');
     const myChart = useRef(null);
-    const [isFinished, setIsFinished] = useState(false);
+    const [startYear, setStartYear] = useState('');
+    const [endYear, setEndYear] = useState('');
     const barOption = {
         tooltip: {
             trigger: 'axis',
@@ -168,12 +168,11 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 }
                 const res = await getChartData({type, unit_type, unit_value: dayjs_.year(), poid, fund_code});
                 if (res.code === '000000') {
-                    const {profit_data_list = [], unit_list = []} = res?.result ?? {};
+                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
                     if (profit_data_list.length > 0) {
-                        let min = unit_list[unit_list.length - 1].value;
-                        let max = unit_list[0].value;
-                        let cur = dayjs_.year();
+                        let startYear = unit_list[unit_list.length - 1].value;
+                        let endYear = unit_list[0].value;
                         for (let i = 0; i < arr.length; i++) {
                             for (let j = 0; j < profit_data_list.length; j++) {
                                 if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
@@ -186,16 +185,10 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 }
                             }
                         }
-
-                        let zIndex = arr.findIndex((el) => el.day == currentDay);
+                        setStartYear(startYear);
+                        setEndYear(endYear);
+                        let zIndex = arr.findIndex((el) => el.day == dayjs(latest_profit_date).format('YYYY-MM'));
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                        if (cur > max || cur < min) return;
-                        cur == max && setIsNext(false);
-                        cur == min && setIsPrev(false);
-                        if (cur > min && cur < max) {
-                            setIsPrev(true);
-                            setIsNext(true);
-                        }
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
@@ -239,10 +232,10 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 chart_type: 'square',
             });
             if (res.code === '000000') {
-                const {profit_data_list = []} = res.result;
-                let xAxisData = [],
-                    dataAxis = [];
+                const {profit_data_list = [], unit_list = []} = res.result;
                 if (profit_data_list.length > 0) {
+                    let xAxisData = [],
+                        dataAxis = [];
                     let sortProfitDataList = profit_data_list.sort(
                         (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
                     );
@@ -369,9 +362,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 width={deviceWidth - px(58)}
                 height={px(300)}
                 onMousemove={() => {}}
-                onFinished={() => {
-                    setIsFinished(true);
-                }}
+                onFinished={() => {}}
                 onRendered={() => {}}
                 option={barOption}
             />
@@ -387,8 +378,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 date={date.year()}
                 subtract={subtract}
                 add={add}
-                isNext={isNext}
-                isPrev={isPrev}
+                startYear={startYear}
+                endYear={endYear}
             />
             {isHasData ? (
                 <>
@@ -440,7 +431,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     );
 });
 const CalendarHeader = React.memo(
-    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, isNext, isPrev, add}) => {
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, startYear, endYear, add}) => {
         return (
             <View style={Style.flexBetween}>
                 <View style={[styles.chartLeft]}>
@@ -487,13 +478,13 @@ const CalendarHeader = React.memo(
                 </View>
                 {!isBarChart && (
                     <View style={styles.selMonth}>
-                        {isPrev && (
+                        {date > startYear && date <= endYear && (
                             <TouchableOpacity onPress={subtract}>
                                 <Image source={require('../../../assets/img/icon/prev.png')} />
                             </TouchableOpacity>
                         )}
                         <Text style={styles.MMText}>{date}</Text>
-                        {isNext && (
+                        {date >= startYear && date < endYear && (
                             <TouchableOpacity onPress={add}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}

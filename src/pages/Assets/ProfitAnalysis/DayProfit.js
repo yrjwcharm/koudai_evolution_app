@@ -34,15 +34,14 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [endDate, setEndDate] = useState('');
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
-    const [isFinished, setIsFinished] = useState(false);
     const [diff, setDiff] = useState(0);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
-    const [isNext, setIsNext] = useState(false);
-    const [isPrev, setIsPrev] = useState(true);
+    const [startMonth, setStartMonth] = useState(false);
+    const [endMonth, setEndMonth] = useState(true);
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
@@ -221,9 +220,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     if (profit_data_list.length > 0) {
                         let minDate = unit_list[unit_list.length - 1].value;
                         let maxDate = unit_list[0].value;
-                        let cur = dayjs_.format('YYYY-MM');
-                        let max = dayjs(maxDate).format('YYYY-MM');
-                        let min = dayjs(minDate).format('YYYY-MM');
+                        let endMonth = dayjs(maxDate).format('YYYY-MM');
+                        let startMonth = dayjs(minDate).format('YYYY-MM');
+                        setStartMonth(startMonth);
+                        setEndMonth(endMonth);
                         for (let i = 0; i < arr.length; i++) {
                             for (let j = 0; j < profit_data_list.length; j++) {
                                 //小于当前日期的情况
@@ -238,13 +238,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         }
                         let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                        if (cur > max || cur < min) return;
-                        cur == max && setIsNext(false);
-                        cur == min && setIsPrev(false);
-                        if (cur > min && cur < max) {
-                            setIsPrev(true);
-                            setIsNext(true);
-                        }
+                        // if (cur > max || cur < min) return;
+                        // cur == max && setIsNext(false);
+                        // cur == min && setIsPrev(false);
+                        // if (cur > min && cur < max) {
+                        //     setIsPrev(true);
+                        //     setIsNext(true);
+                        // }
                         setDate(dayjs_);
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
@@ -432,9 +432,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const renderBarChart = useMemo(() => {
         return (
             <RNEChartsPro
-                onDataZoom={(result) => {
+                onDataZoom={(result, option) => {
                     const {start, end} = result?.batch[0];
-                    console.log('中线测试+++++', start, end, (start + end) / 2);
+                    console.log('中线测试+++++', start, end, option);
                     const count = xAxisData?.length;
                     barOption.dataZoom[0].start = start;
                     barOption.dataZoom[0].end = end;
@@ -490,9 +490,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 isBarChart={isBarChart}
                 subMonth={subMonth}
                 addMonth={addMonth}
-                isPrev={isPrev}
-                isNext={isNext}
-                date={date.month() + 1 + '月'}
+                startMonth={startMonth}
+                endMonth={endMonth}
+                date={date.month() + 1}
             />
             {isHasData ? (
                 <>
