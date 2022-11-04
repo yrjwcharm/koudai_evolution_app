@@ -226,7 +226,7 @@ const EditProduct = ({navigation, route}) => {
                                   </TouchableOpacity>
                               );
                           })
-                        : data?.range_list?.map((range) => (
+                        : data?.range_list?.map?.((range) => (
                               <TouchableOpacity
                                   style={styles.rangeItem}
                                   key={range.key}
