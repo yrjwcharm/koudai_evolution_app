@@ -252,6 +252,7 @@ const CommunityHome = ({navigation, route}) => {
             {data?.share_info ? (
                 <ShareModal
                     ref={shareModal}
+                    noShare={true}
                     shareContent={data?.share_info}
                     otherList={data?.share_button}
                     title={'更多'}

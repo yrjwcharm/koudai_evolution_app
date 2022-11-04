@@ -31,7 +31,8 @@ const ShareModal = React.forwardRef((props, ref) => {
         collectCallback = () => {},
         shareCallback = () => {},
         needLogin = false,
-        otherList = [],
+        otherList = [], //除分享外的其他
+        noShare = false, //不能分享点赞
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -214,6 +215,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             toastShow: toastShow,
         };
     });
+    const listData = noShare ? otherList : list;
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             {backdrop && <Mask />}
@@ -239,7 +241,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                             </View>
                         ) : null)}
                     <View style={[Style.flexRow, styles.optionBox]}>
-                        {list.map((item, index) => {
+                        {listData.map((item, index) => {
                             if (item.type === 'Like') {
                                 item.title = shareContent?.favor_status ? '取消点赞' : '点赞';
                                 item.img = shareContent?.favor_status
@@ -261,6 +263,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                                 return null;
                             }
                             if (item.type === 'QRCode' && !shareContent.show_qr_code) return null;
+
                             return (
                                 <TouchableOpacity
                                     key={index}

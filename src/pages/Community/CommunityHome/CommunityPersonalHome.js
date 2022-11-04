@@ -63,11 +63,11 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                         {data?.user_info?.name}
                     </Text>
                 </Animated.View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{width: px(40), position: 'absolute', right: px(16), top: inset.top}}
                     onPress={() => shareModal?.current?.show()}>
                     <Icon name="ellipsis1" size={px(30)} color={parallTitle ? Colors.defaultColor : '#fff'} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         );
     };
