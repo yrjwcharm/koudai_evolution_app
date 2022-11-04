@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-04 11:04:16
+ * @LastEditTime: 2022-11-04 16:10:09
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -86,8 +86,15 @@ const Product = ({navigation}) => {
             .then((res) => {
                 if (res.code === '000000') {
                     res?.result?.app_tag_url && jump(res?.result?.app_tag_url);
-                    setProData(null);
                     setProData(res.result);
+                    if (res.result?.popular_subject) {
+                        global.LogTool({
+                            event: 'rec_show',
+                            oid: res.result?.popular_subject?.items?.[0]?.product_id,
+                            plateid: res.result?.popular_subject.plateid,
+                            rec_json: res.result?.popular_subject.rec_json,
+                        });
+                    }
                     // 获取专题
                     pageRef.current = 1;
                     getSubjects(res.result?.page_type, 'init');
@@ -227,16 +234,7 @@ const Product = ({navigation}) => {
                                         start={{x: 0, y: 0}}
                                         end={{x: 0, y: 1}}
                                         style={{marginTop: px(12), borderRadius: px(6)}}>
-                                        <LogView.Item
-                                            logKey={proData?.popular_subject.type}
-                                            handler={() => {
-                                                global.LogTool({
-                                                    event: 'rec_show',
-                                                    oid: proData?.popular_subject?.items?.[0]?.product_id,
-                                                    plateid: proData?.popular_subject.plateid,
-                                                    rec_json: proData?.popular_subject.rec_json,
-                                                });
-                                            }}
+                                        <View
                                             style={{
                                                 backgroundColor: '#fff',
                                                 borderRadius: Space.borderRadius,
@@ -256,7 +254,7 @@ const Product = ({navigation}) => {
                                                     rec_json: proData?.popular_subject.rec_json,
                                                 }}
                                             />
-                                        </LogView.Item>
+                                        </View>
                                     </LinearGradient>
                                 ) : null}
                                 {/* 直播列表 */}

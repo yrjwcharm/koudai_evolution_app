@@ -8,7 +8,7 @@ import {ScrollView} from 'react-native';
 import Context from './context';
 import _ from 'lodash';
 
-const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProps}, ref) => {
+const LogViewWrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProps}, ref) => {
     const containerHeight = useRef();
     const containerScrollHeight = useRef();
     const scrollRef = useRef();
@@ -101,4 +101,4 @@ const Wrapper = ({onScroll, onLayout, onContentSizeChange, children, ...restProp
     );
 };
 
-export default forwardRef(Wrapper);
+export default forwardRef(LogViewWrapper);

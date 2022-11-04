@@ -7,7 +7,7 @@ import React, {forwardRef, useContext, useEffect, useRef} from 'react';
 import {View} from 'react-native';
 import context from './context';
 
-const Item = ({logKey, handler, onLayout, children = null, ...resetProps}, ref) => {
+const LogViewItem = ({logKey, handler, onLayout, children = null, ...resetProps}, ref) => {
     const {register, unregister} = useContext(context);
 
     const viewRef = useRef();
@@ -36,4 +36,4 @@ const Item = ({logKey, handler, onLayout, children = null, ...resetProps}, ref) 
     );
 };
 
-export default forwardRef(Item);
+export default forwardRef(LogViewItem);
