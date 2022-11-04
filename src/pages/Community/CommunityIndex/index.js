@@ -692,8 +692,9 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleCli
     ) : null;
 });
 
-const Index = ({navigation, setLoading}) => {
+const Index = ({navigation, route, setLoading}) => {
     const isFocused = useIsFocused();
+    const {init_type} = route.params || {};
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
@@ -749,6 +750,10 @@ const Index = ({navigation, setLoading}) => {
             });
         }
     }, [data]);
+
+    useEffect(() => {
+        init_type !== undefined && setTimeout(() => scrollTab.current?.goToPage?.(1));
+    }, [route.params]);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
