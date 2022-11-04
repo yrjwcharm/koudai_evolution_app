@@ -129,7 +129,6 @@ export default function FixedUpdate({navigation, route}) {
                     confirmText: anti_pop.confirm_action?.text,
                 });
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
     useFocusEffect(
@@ -161,7 +160,6 @@ export default function FixedUpdate({navigation, route}) {
                 .catch(() => {
                     setLoading(false);
                 });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
     const selectTime = () => {
@@ -205,7 +203,7 @@ export default function FixedUpdate({navigation, route}) {
         }
         return list;
     };
-    const submit = (password) => {
+    const submit = (password, btn) => {
         if (type == 'redeem') {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: data.invest_id,
@@ -214,7 +212,7 @@ export default function FixedUpdate({navigation, route}) {
                 Toast.show(res.message);
                 if (res.code == '000000') {
                     setTimeout(() => {
-                        jump(data.button[0].url);
+                        jump(btn?.url);
                     }, 1000);
                 }
             });
@@ -234,15 +232,15 @@ export default function FixedUpdate({navigation, route}) {
                 }
                 if (res.code == '000000') {
                     setTimeout(() => {
-                        jump(data.button[1].url);
+                        jump(btn?.url);
                     }, 1000);
                 }
             });
         }
     };
-    const handleClick = (t) => {
+    const handleClick = (t, btn) => {
         setType(t);
-        passwordModal?.current?.show();
+        passwordModal?.current?.show(btn);
     };
     const showInputModal = () => {
         setIptVal(`${num}`);
@@ -489,7 +487,9 @@ export default function FixedUpdate({navigation, route}) {
                                             avail === 0
                                         }
                                         key={btnText + i}
-                                        onPress={() => handleClick(i === 0 && arr.length > 1 ? 'redeem' : 'update')}
+                                        onPress={() =>
+                                            handleClick(i === 0 && arr.length > 1 ? 'redeem' : 'update', btn)
+                                        }
                                         style={{flex: 1, marginLeft: i > 0 ? text(12) : 0}}
                                         textStyle={{fontSize: Font.textH2}}
                                         title={btnText}

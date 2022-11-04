@@ -595,30 +595,34 @@ const ArticleDetail = ({navigation, route}) => {
                                 {Object.keys(recommendData).length > 0 ? (
                                     <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
                                         {recommendData?.portfolios?.list?.length > 0 && (
-                                            <RenderTitle title={recommendData?.portfolios?.title} />
+                                            <>
+                                                <RenderTitle title={recommendData.portfolios.title} />
+                                                {recommendData.portfolios.list.map?.((item, index) => {
+                                                    return (
+                                                        <ProductCards
+                                                            data={{
+                                                                ...item,
+                                                                LogTool: () =>
+                                                                    global.LogTool({
+                                                                        event: 'suggested_products',
+                                                                        oid: item.code || item.plan_id,
+                                                                    }),
+                                                            }}
+                                                            key={index}
+                                                            style={styles.cardStye}
+                                                        />
+                                                    );
+                                                })}
+                                            </>
                                         )}
-                                        {recommendData?.portfolios?.list?.map((item, index) => {
-                                            return (
-                                                <ProductCards
-                                                    data={{
-                                                        ...item,
-                                                        LogTool: () =>
-                                                            global.LogTool({
-                                                                event: 'suggested_products',
-                                                                oid: item.code || item.plan_id,
-                                                            }),
-                                                    }}
-                                                    key={index}
-                                                    style={styles.cardStye}
-                                                />
-                                            );
-                                        })}
                                         {recommendData?.articles?.list?.length > 0 && (
-                                            <RenderTitle title={recommendData?.articles?.title} />
+                                            <>
+                                                <RenderTitle title={recommendData.articles.title} />
+                                                {recommendData.articles.list.map?.((item, index) => {
+                                                    return RenderCate(item, styles.cardStye, 'article');
+                                                })}
+                                            </>
                                         )}
-                                        {recommendData?.articles?.list?.map((item, index) => {
-                                            return RenderCate(item, styles.cardStye, 'article');
-                                        })}
                                     </View>
                                 ) : null}
                                 {/* 问答 */}
