@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 15:14:42
+ * @LastEditTime: 2022-11-04 18:28:37
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
@@ -202,7 +202,7 @@ const PortFolioDetail = ({navigation, route}) => {
                         }}
                         renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                         startInLoadingState={true}
-                        style={{height: webviewHeight, opacity: 0.99}}
+                        style={{height: webviewHeight, opacity: 0.9999}}
                         source={{
                             uri: URI(route.params.link)
                                 .addQuery({
