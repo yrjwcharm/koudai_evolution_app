@@ -36,7 +36,7 @@ const saveBase64Img = (b64, successCallback, errorCallback) => {
                     const aB64 = b64.split(',')[1];
                     RNFS.writeFile(path, aB64, 'base64')
                         .then(() => {
-                            return save(path, 'photo');
+                            return save(path, {type: 'photo'});
                         })
                         .then((res) => {
                             Toast.show('保存成功');

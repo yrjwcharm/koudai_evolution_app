@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-20 10:44:07
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-01-04 17:30:55
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-04 17:56:00
  * @Description: 保存图片到手机
  */
 import {Platform} from 'react-native';
@@ -25,7 +25,6 @@ const saveImg = (url, successCallback = () => {}, errorCallback = () => {}) => {
         Toast.show('保存失败');
         return false;
     } else {
-        const name = url.split('/').pop();
         if (Platform.OS === 'ios') {
             CameraRoll.save(url, {type: 'photo'})
                 .then((res) => {
@@ -41,7 +40,7 @@ const saveImg = (url, successCallback = () => {}, errorCallback = () => {}) => {
                 PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
                 () => {
                     const storeLocation = RNFS.PicturesDirectoryPath;
-                    const pathName = Date.now() + name;
+                    const pathName = Date.now() + '.png';
                     const downloadPath = `${storeLocation}/${pathName}`;
                     RNFS.downloadFile({fromUrl: url, toFile: downloadPath})
                         .promise.then((ret) => {
