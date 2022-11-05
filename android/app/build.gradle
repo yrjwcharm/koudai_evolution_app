@@ -144,12 +144,17 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
-
         checkReleaseBuilds false
 
     }
     packagingOptions {
-        pickFirst '**/*.so'
+        pickFirst "lib/arm64-v8a/librealm-jni.so"
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+
+        pickFirst 'lib/armeabi-v7a/libfbjni.so'
     }
     defaultConfig {
         applicationId "com.licaimofang.app"
@@ -186,9 +191,6 @@ android {
         }
     }
 
-    packagingOptions {
-        pickFirst "lib/arm64-v8a/librealm-jni.so"
-    }
     splits {
         abi {
             reset()
@@ -313,7 +315,6 @@ dependencies {
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
     }
-
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
@@ -341,6 +342,7 @@ dependencies {
     implementation 'com.ttd.signstandardsdk:signSupport:2.0.10.8'
     implementation 'com.ttd.tools:qarecord:1.1.0'
     implementation files('libs\\codec.jar')
+
 
 
 }
