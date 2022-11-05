@@ -37,7 +37,7 @@ const RenderItem = ({item, index, avail}) => {
                     setting={{
                         ...shadow,
                         width: deviceWidth - px(32),
-                        height: !isEmpty(item.detail) ? px(111) : px(70),
+                        height: !isEmpty(item.detail) ? px(121) : px(80),
                     }}>
                     <View style={[styles.listRowWrap]}>
                         <View
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
         borderTopWidth: StyleSheet.hairlineWidth,
         borderTopColor: '#E9EAEF',
         borderStyle: 'solid',
-        height: px(40),
+        height: px(50),
         justifyContent: 'center',
     },
 });
