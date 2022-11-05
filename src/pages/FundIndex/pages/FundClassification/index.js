@@ -2,7 +2,7 @@
  * @Date: 2022-06-22 14:14:23
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-03 19:28:59
+ * @LastEditTime: 2022-11-05 18:29:02
  * @Description: 基金分类
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -77,7 +77,7 @@ const FundList = ({activePeriod, activeTab, periodsObj}) => {
                     activeOpacity={0.8}
                     onPress={() => changeSort('nav')}
                     style={[Style.flexRowCenter, {flex: 1}]}>
-                    <Text style={styles.headerText}>{isMonetary ? '万分收益' : '净值'}</Text>
+                    <Text style={styles.headerText}>{isMonetary ? '万份收益' : '净值'}</Text>
                     <Image source={icon1} style={styles.sortIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
