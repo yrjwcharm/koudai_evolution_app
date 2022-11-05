@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 18:43:23
+ * @LastEditTime: 2022-11-05 14:36:57
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
@@ -151,23 +151,23 @@ export default function SpecialModifyProductInfo({navigation, route}) {
     const rightPress = () => {
         const item = getValue()[0];
         if (!item.product || !item.product.product_id) {
-            Toast.show('请补充产品全部信息后再查看预览');
+            Toast.show('请补充产品1全部信息后再查看预览');
             return;
         }
         if (!item.desc || item.desc.length === 0) {
-            Toast.show('请补充产品全部信息后再查看预览');
+            Toast.show('请补充产品1全部信息后再查看预览');
             return;
         }
         if (!item.tags[0] || !item.tags[0].length === 0) {
-            Toast.show('请补充产品全部信息后再查看预览');
+            Toast.show('请补充产品1全部信息后再查看预览');
             return;
         }
         if (!item.tags[1] || !item.tags[1].length === 0) {
-            Toast.show('请补充产品全部信息后再查看预览');
+            Toast.show('请补充产品1全部信息后再查看预览');
             return;
         }
         if (!item.tags[2] || !item.tags[2].length === 0) {
-            Toast.show('请补充产品全部信息后再查看预览');
+            Toast.show('请补充产品1全部信息后再查看预览');
             return;
         }
 
@@ -190,7 +190,15 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         // TODOL
         console.log('handleCellPress:', item);
         if (item.key === ListKeys.Recommend) {
-            richTextModalRef.current?.show(item.value, item);
+            // richTextModalRef.current?.show(item.value, item);
+            jump({
+                path: 'RichTextInputPage',
+                params: {
+                    val: item.value,
+                    extra: item,
+                    onChangeText: handleRichTextChange,
+                },
+            });
         } else if (item.key === ListKeys.Product) {
             jump({
                 path: 'SpecialModifyProductItem',

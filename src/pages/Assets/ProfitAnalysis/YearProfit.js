@@ -281,7 +281,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             dataAxis.push('0.00');
                         }
                     }
-                    console.log(xAxisData);
                     let [left, mid, right] = [index - 3, index, index + 3];
                     let start = ((left + 1) / xAxisData.length) * 100;
                     let center = mid;

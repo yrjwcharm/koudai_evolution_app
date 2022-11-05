@@ -1,10 +1,13 @@
 diff --git a/node_modules/react-native-echarts-pro/index.d.ts b/node_modules/react-native-echarts-pro/index.d.ts
-index 8b14787..6b800c0 100644
+index 8b14787..541404a 100644
 --- a/node_modules/react-native-echarts-pro/index.d.ts
 +++ b/node_modules/react-native-echarts-pro/index.d.ts
-@@ -13,6 +13,9 @@ declare function RNEChartsPro(props: {
+@@ -11,8 +11,11 @@ declare function RNEChartsPro(props: {
+   formatterVariable?: object;
+   eventActions?:object;
    legendSelectChanged?(result: string);
-   onDataZoom?(result: string);
+-  onDataZoom?(result: string);
++  onDataZoom?(result: string,option:object);
    onPress?(result: string);
 +  onFinished?(result:string);
 +  onRendered?(result:string)
@@ -49,7 +52,7 @@ index e1e5f49..a32ebd8 100644
       * Get echarts instance support function.
       * @param {string} functionName
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
-index 5ab341e..70a952d 100644
+index 5ab341e..f7f90c3 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
 @@ -42,6 +42,16 @@ function Echarts(props, ref) {
@@ -74,7 +77,7 @@ index 5ab341e..70a952d 100644
      // 判断监听类型
      if (echartsData.type === "datazoom") {
 -      props.onDataZoom?.();
-+      props.onDataZoom?.(echartsData.params);
++      props.onDataZoom?.(echartsData.params,echartsData.option);
 +    } else if(echartsData.type==='finished'){
 +      props.onFinished?.(echartsData.type);
 +    }else if(echartsData.type==='rendered'){
@@ -86,7 +89,7 @@ index 5ab341e..70a952d 100644
        props.legendSelectChanged?.(echartsData.name);
      } else if (echartsData.type === "tooltipEvent") {
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-index d232268..3862699 100644
+index d232268..6e6034d 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
 @@ -50,8 +50,19 @@ export default function renderChart(props) {
@@ -94,7 +97,7 @@ index d232268..3862699 100644
      });
      myChart.on('dataZoom', (params)=>{
 -        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type}));
-+        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type,params}));
++        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type,params,option:myChart.getOption()}));
      });
 +    myChart.on('rendered',function (){
 +        window.ReactNativeWebView.postMessage(JSON.stringify({type:'rendered'}));

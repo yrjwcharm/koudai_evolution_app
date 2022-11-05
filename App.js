@@ -2,7 +2,7 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: Please set LastEditors
+ * @LastEditors: yanruifeng
  * @LastEditTime: 2022-10-28 15:48:02
  * @Description: app全局入口文件
  */
@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
     global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
     global.WebSocket = global.originalWebSocket || global.WebSocket;
 }
-//release环境下清除redux-logger日志及测试日志
+//release环境下清除redux-logger日志及console日志
 if (!__DEV__) {
     global.console = {
         info: () => {},
