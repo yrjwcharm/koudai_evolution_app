@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-02 14:59:30
+ * @LastEditTime: 2022-11-05 15:27:45
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -378,7 +378,7 @@ export default function SpecailModifyContent({navigation, route}) {
     };
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={'精选内容'} leftIcon="chevron-left" />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />

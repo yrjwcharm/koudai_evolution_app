@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-14 17:56:43
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:04:37
+ * @LastEditTime: 2022-11-05 15:35:19
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js
  * @Description: 修改专题 - 修改推广位 - 推广位预览
  */
@@ -70,7 +70,7 @@ export default function SpecialPreviewRecommend(props) {
         );
     };
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar
                 title={'样式预览'}
                 leftIcon="chevron-left"
@@ -79,7 +79,7 @@ export default function SpecialPreviewRecommend(props) {
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
             />
-            <View style={styles.pageWrap}>
+            <View style={styles.contentWrap}>
                 {type === 1 ? (
                     <View style={styles.imageCardWrap}>
                         <RecommendImage uri={uri} />
@@ -98,6 +98,10 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        flex: 1,
+        backgroundColor: '#F5F6F8',
+    },
+    contentWrap: {
         backgroundColor: '#F5F6F8',
         flex: 1,
         width: '100%',

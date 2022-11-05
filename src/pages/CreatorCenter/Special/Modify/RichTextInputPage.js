@@ -1,13 +1,13 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-04 19:07:28
+ * @LastEditTime: 2022-11-05 16:37:20
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/RichTextInputPage.js
  * @Description: 富文本编辑器
  */
 
 import React, {useRef, useState, useEffect} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Platform, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {deviceWidth, px, isIphoneX} from '~/utils/appUtil';
 import {WebView as RNWebView} from 'react-native-webview';
@@ -254,7 +254,7 @@ export default function RichTextInputPage({navigation, route}) {
 
     return (
         <View style={styles.pageWrap}>
-            <View style={styles.content}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
                 <View style={[styles.header]}>
                     <TouchableOpacity style={styles.close} onPress={handleBack}>
                         <Icon color={Colors.descColor} name={'close'} size={18} />
@@ -285,10 +285,12 @@ export default function RichTextInputPage({navigation, route}) {
                         onLoad={() => {
                             console.log('onLoad');
                             webviewRef.current?.injectJavaScript(`setInputValue('${richText.html}')`);
-                            // webviewRef.current?.requestFocus?.();
-                            // setTimeout(() => {
-                            //     webviewRef.current?.injectJavaScript(`focusInput()`);
-                            // }, 200);
+                            if (Platform.OS === 'android') {
+                                webviewRef.current?.requestFocus?.();
+                            }
+                            setTimeout(() => {
+                                webviewRef.current?.injectJavaScript(`focusInput()`);
+                            }, 200);
                         }}
                         onMessage={(event) => {
                             const data = event.nativeEvent.data;
@@ -326,7 +328,7 @@ export default function RichTextInputPage({navigation, route}) {
                         </View>
                     </View>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </View>
     );
 }

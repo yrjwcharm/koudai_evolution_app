@@ -64,7 +64,7 @@ export default function SpecialModifyBgImage(props) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={data?.title || '更换专题图片'} leftIcon="chevron-left" />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -73,7 +73,7 @@ export default function SpecialModifyBgImage(props) {
         );
     }
     return (
-        <SafeAreaView edges={['bottom']}>
+        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar
                 title={data?.title || '更换专题图片'}
                 leftIcon="chevron-left"
@@ -81,7 +81,7 @@ export default function SpecialModifyBgImage(props) {
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
             />
-            <View style={styles.pageWrap}>
+            <View style={styles.contentWrap}>
                 <FlatList
                     data={data.items}
                     renderItem={renderItem}
@@ -99,6 +99,11 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        flex: 1,
+        backgroundColor: '#F5F6F8',
+    },
+    contentWrap: {
+        flex: 1,
         backgroundColor: '#fff',
         paddingLeft: px(16),
         paddingRight: px(16),

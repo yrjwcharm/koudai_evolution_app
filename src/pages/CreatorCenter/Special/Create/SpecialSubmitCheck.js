@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-04 14:59:50
+ * @LastEditTime: 2022-11-05 15:31:26
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -46,7 +46,7 @@ export default function SpecialSubmitCheck({navigation, route}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={''} leftIcon="chevron-left" leftPress={handleBack} />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#F5F6F8',
         position: 'relative',
-        height: deviceHeight,
+        flex: 1,
     },
     content: {
         paddingTop: px(12),

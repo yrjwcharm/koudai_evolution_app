@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-03 18:49:17
+ * @LastEditTime: 2022-11-05 16:32:36
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyRecommend.js
  * @Description: 修改专题 - 选择推广位样式
  */
@@ -19,6 +19,7 @@ import pickerUploadImg from '~/utils/pickerUploadImg';
 import LoadingTips from '~/components/LoadingTips';
 import {Modal} from '~/components/Modal';
 import {useFocusEffect} from '@react-navigation/native';
+import Toast from '~/components/Toast';
 
 function RecommendCell(props) {
     const {type, curType, onSelect, title, children} = props;
@@ -119,6 +120,10 @@ export default function SpecialModifyRecommend({route, navigation}) {
     };
 
     const rightPress = () => {
+        if (index === 0) {
+            Toast.show('请选择推广位样式');
+            return;
+        }
         const isChanged = oldIndex.current !== index && oldIndex.current !== 0;
 
         if (isChanged) {
@@ -212,7 +217,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={'推广位样式设置'} leftIcon="chevron-left" />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -222,7 +227,7 @@ export default function SpecialModifyRecommend({route, navigation}) {
     }
 
     return (
-        <SafeAreaView edges={['bottom']}>
+        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar
                 title={'推广位样式设置'}
                 leftIcon="chevron-left"
@@ -231,18 +236,18 @@ export default function SpecialModifyRecommend({route, navigation}) {
                 leftPress={handleBack}
                 rightTextStyle={styles.right_sty}
             />
-            <View style={styles.pageWrap}>
+            <View style={styles.contentWrap}>
                 <RecommendCell
                     title="选择推广该专题"
                     curType={index}
-                    type={data?.rec_subject?.rec_type}
+                    type={data?.rec_subject?.rec_type ?? 1}
                     onSelect={handleSelect}>
                     <FastImage source={{uri: data?.rec_subject?.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
                 <RecommendCell
                     title="选择推广专题中的产品"
                     curType={index}
-                    type={data?.rec_product?.rec_type}
+                    type={data?.rec_product?.rec_type ?? 2}
                     onSelect={handleSelect}>
                     <FastImage source={{uri: data?.rec_product?.bg_img}} style={styles.cardImg} />
                 </RecommendCell>
@@ -258,10 +263,14 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        flex: 1,
+        backgroundColor: '#F5F6F8',
+    },
+    contentWrap: {
+        flex: 1,
         backgroundColor: '#F5F6F8',
         paddingLeft: px(16),
         paddingRight: px(16),
-        minHeight: '100%',
     },
     cellWrap: {
         marginTop: 16,
