@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:03:58
+ * @LastEditTime: 2022-11-05 15:32:14
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js
  * @Description: 修改专题推荐-产品推荐信息-选择产品
  */
@@ -83,7 +83,7 @@ export default function SpecialModifyProductItem({navigation, route}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={'选择推广产品'} leftIcon="chevron-left" leftPress={handleBack} />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#fff',
         position: 'relative',
-        height: deviceHeight,
+        flex: 1,
     },
     content: {
         flex: 1,

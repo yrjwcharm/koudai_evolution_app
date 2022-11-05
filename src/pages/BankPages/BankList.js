@@ -45,7 +45,7 @@ export default function BankList({navigation, route}) {
                                 key={_index + '_pro'}>
                                 {_pro.products.map((_p, _i) => {
                                     return (
-                                        <>
+                                        <View key={`${_p.share_id}${_i}`}>
                                             <TouchableOpacity
                                                 activeOpacity={1}
                                                 style={[
@@ -87,7 +87,7 @@ export default function BankList({navigation, route}) {
                                                     <View style={{paddingBottom: Space.padding}} />
                                                 </>
                                             ) : null}
-                                        </>
+                                        </View>
                                     );
                                 })}
                             </View>

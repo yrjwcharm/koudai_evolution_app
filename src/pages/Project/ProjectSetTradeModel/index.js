@@ -26,7 +26,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
     const [toolStatus, setToolStatus] = useState({});
     const [possible, setPossible] = useState(0);
-    const [agreement, setAgreement] = useState([]);
+    const [agreement, setAgreement] = useState({});
     const autoTime = useRef({});
     const needBuy = useRef();
     const targetYeild = useRef('');
@@ -89,13 +89,13 @@ const ProjectSetTradeModel = ({route, navigation}) => {
     // 工具选择
     const onToolChange = (id, value) => {
         setAgreement((prev) => {
-            let tmp = [...prev];
-            let index = tmp.findIndex((item) => id == item.tool_id);
-            (tmp[index || 0] || {}).show = value;
-            return tmp;
+            const next = {...prev};
+            const index = next?.list?.findIndex?.((item) => id == item.tool_id);
+            index > -1 && (next.list[index].show = value);
+            return next;
         });
         setToolStatus((prev) => {
-            let tmp = {...prev};
+            const tmp = {...prev};
             tmp[id] = value;
             return tmp;
         });
@@ -289,18 +289,20 @@ const ProjectSetTradeModel = ({route, navigation}) => {
                 </BottomModal>
             ) : null}
             <PasswordModal onDone={onSubmit} ref={passwordModal} />
-            <FixedButton
-                containerStyle={{position: 'relative'}}
-                title={data?.btn?.text}
-                disabled={data?.btn?.avail != 1}
-                onPress={jumpNext}
-                agreement={
-                    agreement?.filter((item) => item.show !== false)?.length > 0
-                        ? {list: agreement.filter((item) => item.show !== false)}
-                        : undefined
-                }
-                suffix={data?.agreement_after}
-            />
+            {Object.keys(agreement || {}).length > 0 && (
+                <FixedButton
+                    containerStyle={{position: 'relative'}}
+                    title={data?.btn?.text}
+                    disabled={data?.btn?.avail != 1}
+                    onPress={jumpNext}
+                    agreement={
+                        agreement?.list?.filter((item) => item.show !== false)?.length > 0
+                            ? {...agreement, list: agreement?.list?.filter?.((item) => item.show !== false)}
+                            : undefined
+                    }
+                    suffix={agreement?.agree_text}
+                />
+            )}
         </View>
     );
 };

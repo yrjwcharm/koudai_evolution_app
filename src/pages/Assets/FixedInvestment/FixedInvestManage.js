@@ -218,6 +218,8 @@ const FixedInvestManage = ({navigation, route}) => {
                     />
                     <FlatList
                         windowSize={300}
+                        showsVerticalScrollIndicator={false}
+                        style={{marginBottom: isIPhoneX() ? px(104) : px(78)}}
                         data={data?.data_list || []}
                         keyExtractor={(item, index) => item + index}
                         ListEmptyComponent={<EmptyData />}

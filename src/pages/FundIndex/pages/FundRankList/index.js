@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 15:13:37
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 14:45:42
+ * @LastEditTime: 2022-11-05 18:30:54
  * @Description: 基金榜单
  */
 import {useFocusEffect} from '@react-navigation/native';
@@ -51,7 +51,7 @@ const Index = ({route}) => {
                                 oid: item.code,
                             }),
                     }}
-                    style={index === 0 ? {marginTop: px(-80)} : {}}
+                    style={index === 0 ? {marginTop: 0} : {}}
                 />
             </View>
         );
@@ -82,7 +82,11 @@ const Index = ({route}) => {
                     data={list}
                     initialNumToRender={20}
                     keyExtractor={(item, index) => item + index}
-                    ListHeaderComponent={headImg ? <Image source={{uri: headImg}} style={styles.topBg} /> : null}
+                    ListHeaderComponent={
+                        headImg ? (
+                            <Image source={{uri: headImg}} style={[styles.topBg, {marginBottom: -px(80)}]} />
+                        ) : null
+                    }
                     ListFooterComponent={renderFooter}
                     ListEmptyComponent={renderEmpty}
                     onEndReached={onEndReached}
@@ -168,7 +172,6 @@ const Index = ({route}) => {
 
     useEffect(() => {
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     return (

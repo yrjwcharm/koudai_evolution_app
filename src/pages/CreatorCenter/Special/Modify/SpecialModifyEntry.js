@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-27 18:02:00
+ * @LastEditTime: 2022-11-05 16:10:29
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -33,7 +33,7 @@ export default function SpecialModifyEntry({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            setLoading(true);
+            // setLoading(true);
             getModifyList({fix_id: fix_id})
                 .then((res) => {
                     console.log('res:', res);
@@ -98,7 +98,7 @@ export default function SpecialModifyEntry({navigation, route}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={'修改专题'} leftIcon="chevron-left" />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
@@ -155,8 +155,6 @@ export default function SpecialModifyEntry({navigation, route}) {
 const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#fff',
-        position: 'relative',
-        height: deviceHeight,
         flex: 1,
     },
     content: {

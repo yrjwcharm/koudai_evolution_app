@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-21 11:55:57
+ * @LastEditTime: 2022-11-05 15:51:24
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -20,6 +20,12 @@ export default class FixedButton extends Component {
     UNSAFE_componentWillMount() {
         Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
         Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+    }
+    UNSAFE_componentWillReceiveProps(next) {
+        if (!this.agreement && next.agreement) {
+            this.setState({check: next.agreement.default_agree, showCheckTag: !next.agreement.default_agree});
+        }
+        this.agreement = next.agreement;
     }
     keyboardWillShow = (e) => {
         const {keyboardHeight} = this.state;
@@ -84,7 +90,7 @@ export default class FixedButton extends Component {
                         />
                     </View>
                 ) : null}
-                <Button {...this.props} disabled={!check || disabled} />
+                <Button {...this.props} disabled={(agreement && !check) || disabled} />
             </Animated.View>
         );
     }

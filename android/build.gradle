@@ -48,3 +48,8 @@ allprojects {
 
     }
 }
+configurations.all {
+    resolutionStrategy {
+        force "com.facebook.soloader:soloader:0.9.0+"
+    }
+}

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-01-29 17:11:34
  * @Description:交易记录
@@ -309,11 +308,11 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="赎回" style={styles.container}>
                         {renderContent()}
                     </View>
-                    {platform_class != 20 && (
+                    {/* {platform_class != 20 && (
                         <View tabLabel="升级" style={styles.container}>
                             {renderContent()}
                         </View>
-                    )}
+                    )} */}
                     {!fund_code && platform_class != 10 && platform_class != 20 ? (
                         <View tabLabel="投顾服务" style={styles.container}>
                             {renderContent()}

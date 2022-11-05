@@ -377,9 +377,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             dateArr?.map((el, index) => {
                 const date = dayjs(el?.day).date();
                 const {wrapStyle, dayStyle, profitStyle} = getStyles(el, currentDay);
+                let todayProfit = el.day == currentDay && el.profit;
                 return (
                     <TouchableOpacity
-                        disabled={el.day >= currentDay || el?.isDisabled}
+                        disabled={el.day > currentDay || el?.isDisabled || delMille(todayProfit) == 0}
                         onPress={() => getProfitBySelDate(el)}
                         key={`${el + '' + index}`}>
                         <View style={[styles.dateItem, {...el?.style}, wrapStyle]}>
@@ -464,9 +465,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 width={deviceWidth - px(58)}
                 height={px(300)}
                 onMousemove={() => {}}
-                onFinished={() => {
-                    setIsFinished(true);
-                }}
+                onFinished={() => {}}
                 onRendered={() => {}}
                 option={barOption}
             />

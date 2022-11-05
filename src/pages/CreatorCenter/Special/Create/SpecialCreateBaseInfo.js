@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-04 10:41:27
+ * @LastEditTime: 2022-11-05 16:08:04
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description: 创建专题 - 基础信息
  */
@@ -287,7 +287,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar
                     title={isEdit ? '修改专题基础信息' : '创建专题'}
                     leftIcon="chevron-left"
@@ -329,7 +329,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
     }
 
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
             <NavBar
                 title={isEdit ? '修改专题基础信息' : '创建专题'}
                 leftIcon="chevron-left"
@@ -338,7 +338,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 leftPress={() => navigation.goBack()}
                 rightTextStyle={styles.right_sty}
             />
-            <ScrollView style={styles.pageWrap} keyboardShouldPersistTaps="handled">
+            <ScrollView style={styles.contentWrap} keyboardShouldPersistTaps="handled">
                 <Text style={styles.upload_label}>上传专题背景图片</Text>
                 <View style={[styles.space1, styles.upload_imageWrap]}>{uploadImgSection}</View>
                 <View style={[styles.space2, styles.inputWrap]}>
@@ -405,6 +405,10 @@ const styles = StyleSheet.create({
         color: '#121D3A',
     },
     pageWrap: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    contentWrap: {
         flex: 1,
         backgroundColor: '#fff',
         paddingLeft: px(16),

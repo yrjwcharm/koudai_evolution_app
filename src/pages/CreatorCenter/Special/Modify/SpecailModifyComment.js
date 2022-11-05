@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-04 14:57:01
+ * @LastEditTime: 2022-11-05 15:14:11
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -316,7 +316,7 @@ export default function SpecailModifyComment({navigation, route}) {
 
     if (loading) {
         return (
-            <SafeAreaView edges={['bottom']}>
+            <SafeAreaView edges={['bottom']} style={styles.pageWrap}>
                 <NavBar title={'评论'} leftIcon="chevron-left" leftPress={handleBack} />
                 <View style={{width: '100%', height: px(200)}}>
                     <LoadingTips />
