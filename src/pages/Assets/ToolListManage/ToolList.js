@@ -27,7 +27,7 @@ const ToolList = ({route}) => {
     const tempTooIds = useRef([]);
     const {type = 50, poid = '', fund_code = ''} = route.params || {};
     const getData = async () => {
-        let res = await getList({type});
+        let res = await getList({fund_code, poid, type});
         initialToolIds.current = res.result?.my_tools?.tool_list?.map((item) => item.tool_id).join(',');
         setData(res.result);
     };
