@@ -2,7 +2,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 15:42:47
+ * @LastEditTime: 2022-11-05 10:55:02
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -58,7 +58,19 @@ export default ({navigation}) => {
     // 选择图片或相册
     const onClickChoosePicture = () => {
         try {
-            openPicker('gallery');
+            if (Platform.OS == 'android') {
+                requestAuth(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    () => openPicker('gallery'),
+                    () => blockCal('gallery')
+                );
+            } else {
+                requestAuth(
+                    PERMISSIONS.IOS.PHOTO_LIBRARY,
+                    () => openPicker('gallery'),
+                    () => blockCal('gallery')
+                );
+            }
         } catch (err) {
             console.warn(err);
         }

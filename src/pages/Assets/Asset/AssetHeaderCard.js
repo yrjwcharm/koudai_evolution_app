@@ -51,7 +51,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                     style={styles.assetsContainer}>
                     <Icon name="chevron-thin-right" color="#fff" size={px(13)} style={styles.rightIcon} />
                     {/* 资产信息 */}
-                    <View style={Style.flexRowCenter}>
+                    <View style={[Style.flexRowCenter, {marginTop: -px(12)}]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
                         <Text style={styles.date}>{summary?.asset_info?.date}</Text>
                         {children}
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.brandColor,
         borderRadius: px(6),
         alignItems: 'flex-start',
-        padding: px(20),
+        padding: Space.padding,
         marginHorizontal: px(16),
     },
     mofang: {
