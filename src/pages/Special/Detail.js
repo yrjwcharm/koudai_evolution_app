@@ -89,10 +89,14 @@ const SpecialDetail = ({navigation, route}) => {
             if (res.code == '000000') {
                 inputModal.current.cancel();
                 setContent('');
-                Modal.show({
-                    title: '提示',
-                    content: res.result.message,
-                });
+                if (res.result.message) {
+                    Modal.show({
+                        title: '提示',
+                        content: res.result.message,
+                    });
+                } else {
+                    webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+                }
             } else {
                 Toast.show(res.message);
             }
