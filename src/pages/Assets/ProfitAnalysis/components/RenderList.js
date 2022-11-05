@@ -11,9 +11,7 @@ import {Colors, Font, Style} from '../../../../common/commonStyle';
 import {DeviceEventEmitter, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
-import {useSelector} from 'react-redux';
 import {useJump} from '../../../../components/hooks';
-import EmptyData from '../../FixedInvestment/components/EmptyData';
 import Loading from '../../../Portfolio/components/PageLoading';
 const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', unitType}) => {
     const [[left, right], setHeaderList] = useState([]);
