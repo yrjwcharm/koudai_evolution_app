@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:16:07
+ * @LastEditTime: 2022-11-05 18:45:52
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -140,7 +140,7 @@ class Index extends Component {
                         fr: this.props.route?.params?.fr || '',
                         fund_code: this.props.route?.params?.fund_code,
                         url: this.props.route?.params?.url || '',
-                        append
+                        append,
                     });
                 }
             } else {

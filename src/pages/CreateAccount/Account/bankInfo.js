@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:15:01
+ * @LastEditTime: 2022-11-05 18:48:52
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -60,7 +60,7 @@ class BankInfo extends Component {
         if (this.state.bank_no) {
             this.onChangeBankNo(this.state.bank_no);
         }
-        http.get('/passport/bank_list/20210101').then((data) => {
+        http.get('/passport/bank_list/20210101', {fr: this.props.route?.params?.fr}).then((data) => {
             this.setState({bankList: data.result});
         });
     }
