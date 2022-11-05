@@ -30,7 +30,7 @@ const CommunityHome = ({navigation, route}) => {
     const parallaxHeaderHeight = px(220);
     const [parallTitle, setParallTitle] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
-    const {community_id = 1, muid = 0} = route?.params || {};
+    const {community_id = 1, history_id, muid = 0} = route?.params || {};
     const [data, setData] = useState();
     const [product, setProduct] = useState();
     const currentTab = useRef();
@@ -40,7 +40,7 @@ const CommunityHome = ({navigation, route}) => {
     const [loading, setLoading] = useState(true);
     const bottomModal = useRef();
     const getData = async (type) => {
-        let res = await getCommunityHomeData({community_id});
+        let res = await getCommunityHomeData({community_id, history_id});
         getProductList({community_id, type: type || res.result?.tabs[0]?.type});
         if (!currentTab.current) {
             currentTab.current = type || res.result?.tabs[0]?.type;
