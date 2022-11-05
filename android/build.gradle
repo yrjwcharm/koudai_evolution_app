@@ -34,6 +34,7 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+
         google()
         maven { url 'https://www.jitpack.io' }
         //签署
@@ -45,5 +46,10 @@ allprojects {
             url 'http://developer.huawei.com/repo/'
         }
 
+    }
+}
+configurations.all {
+    resolutionStrategy {
+        force "com.facebook.soloader:soloader:0.9.0+"
     }
 }
