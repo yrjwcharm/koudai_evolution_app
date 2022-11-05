@@ -251,11 +251,17 @@ const FixedInvestDetail = ({navigation, route}) => {
                                                 }}>
                                                 <View style={Style.flexRow}>
                                                     <View>
-                                                        {/*<Text style={styles.investStatus}>定投成功</Text>*/}
-                                                        <Text style={[styles.investFail, {textAlign: 'right'}]}>
-                                                            {item.status}
-                                                        </Text>
-                                                        {/*<Text style={styles.failReason}>银行卡余额不足</Text>*/}
+                                                        {item.status == '定投成功' && (
+                                                            <Text style={styles.investStatus}>{item.status}</Text>
+                                                        )}
+                                                        {item.status == '定投失败' && (
+                                                            <Text style={[styles.investFail, {textAlign: 'right'}]}>
+                                                                {item.status}
+                                                            </Text>
+                                                        )}
+                                                        {!isEmpty(item.reason) && (
+                                                            <Text style={styles.failReason}>{item.reason}</Text>
+                                                        )}
                                                     </View>
                                                     <Image
                                                         source={require('./assets/more.png')}
@@ -390,8 +396,8 @@ const styles = StyleSheet.create({
     investFail: {
         fontSize: px(12),
         marginTop: px(1),
-        fontFamily: Font.pingFangRegular,
         color: Colors.red,
+        fontFamily: Font.pingFangRegular,
     },
     payInfo: {
         paddingVertical: px(12),
@@ -404,6 +410,7 @@ const styles = StyleSheet.create({
     investStatus: {
         fontSize: px(12),
         fontFamily: Font.pingFangRegular,
+        color: Colors.defaultColor,
     },
     date: {
         fontSize: px(12),

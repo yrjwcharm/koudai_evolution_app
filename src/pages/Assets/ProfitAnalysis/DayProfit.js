@@ -236,14 +236,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                         let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
-                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                        // if (cur > max || cur < min) return;
-                        // cur == max && setIsNext(false);
-                        // cur == min && setIsPrev(false);
-                        // if (cur > min && cur < max) {
-                        //     setIsPrev(true);
-                        //     setIsNext(true);
-                        // }
                         setDate(dayjs_);
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[zIndex] && (arr[zIndex].checked = true);
