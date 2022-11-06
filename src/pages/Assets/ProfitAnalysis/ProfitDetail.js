@@ -17,8 +17,9 @@ import ScrollTabbar from '../../../components/ScrollTabbar';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [locked, setLocked] = useState(false);
+    const [data, setData] = useState({});
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([
         {text: '全部', type: 200},
@@ -28,15 +29,16 @@ const ProfitDetail = ({navigation, route}) => {
         {text: '私募基金', type: 20},
     ]);
     const [declarePic, setDeclarePic] = useState('');
-    const init = useCallback(() => {
+    const init = useCallback((type) => {
         (async () => {
             const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', tabs = []} = res[0]?.result || {};
+                const {title: navigationTitle = '', button, tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
                 setDeclarePic(declare_pic);
                 setTabs(tabs);
                 setLoading(false);
+                setData(button);
                 navigation.setOptions({
                     title: navigationTitle,
                     headerRight: () => (
@@ -56,13 +58,16 @@ const ProfitDetail = ({navigation, route}) => {
         })();
     }, []);
     useEffect(() => {
-        init();
+        init(type);
         let listener = DeviceEventEmitter.addListener('sendChartTrigger', (bool) => {
             console.log(bool);
             setLocked(bool);
         });
         return () => listener && listener.remove();
     }, [init]);
+    useEffect(() => {
+        data && Object.keys(data).length > 0 && DeviceEventEmitter.emit('sendTrigger', data);
+    }, [data]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
@@ -85,6 +90,7 @@ const ProfitDetail = ({navigation, route}) => {
                                     locked={true}
                                     onChangeTab={({i}) => {
                                         global.LogTool('changeTab', tabs[i]);
+                                        init(tabs[i].type);
                                     }}>
                                     {tabs.map((el, index) => {
                                         return (

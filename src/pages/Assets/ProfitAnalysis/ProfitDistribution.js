@@ -39,7 +39,7 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
+const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
@@ -189,7 +189,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
             )}
         </>
     );
-});
+};
 
 ProfitDistribution.propTypes = {
     setLoadingFn: PropTypes.func,

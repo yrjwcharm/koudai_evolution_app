@@ -33,7 +33,6 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
                 setProfitList(data_list);
-                Object.keys(button).length > 0 && DeviceEventEmitter.emit('sendTrigger', button);
                 setLoading(false);
             }
         })();
