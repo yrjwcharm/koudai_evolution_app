@@ -105,8 +105,8 @@ const FixedInvestDetail = ({navigation, route}) => {
                 invest_id: plan_id,
                 password,
             }).then((res) => {
+                Toast.show(res.message);
                 if (res.code == '000000') {
-                    Toast.show(res.message);
                     navigation.goBack();
                 }
                 Toast.hide(loading);
