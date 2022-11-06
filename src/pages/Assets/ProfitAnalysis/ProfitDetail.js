@@ -6,7 +6,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, isEmpty, px as text, px} from '../../../utils/appUtil';
@@ -74,45 +73,49 @@ const ProfitDetail = ({navigation, route}) => {
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
-            ) : isEmpty(poid) ? (
-                <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-                    {tabs.length > 1 && (
-                        <ScrollableTabView
-                            ref={scrollTab}
-                            renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
-                            initialPage={page}
-                            locked={true}
-                            onChangeTab={({i}) => {
-                                global.LogTool('changeTab', tabs[i]);
-                            }}>
-                            {tabs.map((el, index) => {
-                                return (
-                                    <ProfitDistribution
-                                        poid={poid}
-                                        type={el.type}
-                                        fund_code={fund_code}
-                                        tabLabel={el.text}
-                                        key={`${el + index}`}
-                                    />
-                                );
-                            })}
-                        </ScrollableTabView>
-                    )}
-                </View>
             ) : (
-                <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
+                <>
+                    {isEmpty(poid) ? (
+                        <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
+                            {tabs.length > 1 && (
+                                <ScrollableTabView
+                                    ref={scrollTab}
+                                    renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
+                                    initialPage={page}
+                                    locked={true}
+                                    onChangeTab={({i}) => {
+                                        global.LogTool('changeTab', tabs[i]);
+                                    }}>
+                                    {tabs.map((el, index) => {
+                                        return (
+                                            <ProfitDistribution
+                                                poid={poid}
+                                                type={el.type}
+                                                fund_code={fund_code}
+                                                tabLabel={el.text}
+                                                key={`${el + index}`}
+                                            />
+                                        );
+                                    })}
+                                </ScrollableTabView>
+                            )}
+                        </View>
+                    ) : (
+                        <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
+                    )}
+                    <BottomModal title={'更新说明'} ref={bottomModal}>
+                        <View style={{marginTop: px(30), alignItems: 'center'}}>
+                            <Image
+                                resizeMode={'cover'}
+                                style={styles.declareImg}
+                                source={{
+                                    uri: declarePic,
+                                }}
+                            />
+                        </View>
+                    </BottomModal>
+                </>
             )}
-            <BottomModal title={'更新说明'} ref={bottomModal}>
-                <View style={{marginTop: px(30), alignItems: 'center'}}>
-                    <Image
-                        resizeMode={'cover'}
-                        style={styles.declareImg}
-                        source={{
-                            uri: declarePic,
-                        }}
-                    />
-                </View>
-            </BottomModal>
         </>
     );
 };

@@ -3,21 +3,25 @@
  * @Author: yanruifeng
  * @Description:
  */
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {isIphoneX, px} from '../../../utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
 import AccEarningsCom from './components/AccEarningsCom';
 const TotalProfit = React.memo(({poid, fund_code, type, unit_type}) => {
+    const [period, setPeriod] = useState('all');
+    const changePeriod = useCallback((period) => {
+        setPeriod(period);
+    });
     return (
         <View style={styles.container}>
-            <AccEarningsCom type={type} fund_code={fund_code} poid={poid} />
+            <AccEarningsCom type={type} changePeriod={changePeriod} fund_code={fund_code} poid={poid} />
             <View
                 style={{
                     paddingHorizontal: px(12),
                 }}>
-                <RenderList curDate={''} fund_code={fund_code} poid={poid} type={type} unitType={unit_type} />
+                <RenderList curDate={period} fund_code={fund_code} poid={poid} type={type} unitType={unit_type} />
             </View>
         </View>
     );

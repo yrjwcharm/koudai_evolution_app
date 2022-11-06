@@ -8,7 +8,6 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData, getHeadData} from './services';
-import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
@@ -182,8 +181,8 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                                 </ScrollableTabView>
                             </View>
                         </ScrollView>
-                        {data.button && Object.keys(data.button).length > 0 && data?.type == type && (
-                            <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
+                        {Object.keys(data).length > 0 && (
+                            <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
                         )}
                     </View>
                 </>
