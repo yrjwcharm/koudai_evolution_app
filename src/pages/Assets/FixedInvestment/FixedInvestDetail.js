@@ -93,13 +93,11 @@ const FixedInvestDetail = ({navigation, route}) => {
                 password,
                 type,
             });
-            if (res.code === '000001' || res.code === '000000') {
-                Toast.hide(loading);
-                let timer = setTimeout(() => {
-                    Toast.show(res.message);
-                    timer && clearTimeout(timer);
-                }, 500);
-            }
+            Toast.hide(loading);
+            let timer = setTimeout(() => {
+                Toast.show(res.message);
+                timer && clearTimeout(timer);
+            }, 500);
         } else {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: plan_id,
