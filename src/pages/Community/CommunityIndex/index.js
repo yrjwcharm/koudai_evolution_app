@@ -623,13 +623,13 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleClick}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_id, handleClick}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
     const bottomModal = useRef();
     const init = () => {
-        getCanPublishContent({community_id, muid}).then((res) => {
+        getCanPublishContent({community_id, muid, history_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }

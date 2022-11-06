@@ -260,6 +260,7 @@ const CommunityHome = ({navigation, route}) => {
             ) : null}
             <PublishContent
                 community_id={community_id}
+                history_id={history_id}
                 muid={muid}
                 handleClick={(type) => {
                     setTimeout(() => {
