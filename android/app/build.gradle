@@ -191,11 +191,6 @@ android {
 
     packagingOptions {
         pickFirst "lib/arm64-v8a/librealm-jni.so"
-        pickFirst "lib/armeabi-v7a/libfbjni.so"
-        pickFirst 'lib/x86/libfbjni.so'
-        pickFirst 'lib/arm64-v8a/libfbjni.so'
-        pickFirst 'lib/armeabi-v7a/libfbjni.so'
-        pickFirst 'lib/x86_64/libfbjni.so'
     }
     splits {
         abi {

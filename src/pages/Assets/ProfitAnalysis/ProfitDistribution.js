@@ -56,7 +56,9 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
     useEffect(() => {
         dispatch({type: 'updateUnitType', payload: 'day'});
         let scrollListener = DeviceEventEmitter.addListener('changeScrollViewEnable', (enabled) => setEnabled(enabled));
-        let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => setData(data));
+        let listener = DeviceEventEmitter.addListener('sendTrigger', (data) => {
+            setData(data);
+        });
         return () => {
             listener && listener.remove();
             scrollListener && scrollListener.remove();
@@ -180,7 +182,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                                 </ScrollableTabView>
                             </View>
                         </ScrollView>
-                        {Object.keys(data).length > 0 && (
+                        {data.button && Object.keys(data.button).length > 0 && data?.type == type && (
                             <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
                         )}
                     </View>

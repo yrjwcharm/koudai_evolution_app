@@ -5,7 +5,7 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Text, TouchableOpacity, Modal, StyleSheet, View, Image} from 'react-native';
+import {Text, TouchableOpacity, Modal, StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
@@ -116,6 +116,13 @@ const FixedInvestDetail = ({navigation, route}) => {
     };
     const handleModal = () => {
         setModalVisible(true);
+    };
+    const ListFooterComponent = () => {
+        return (
+            <View style={[Style.flexRowCenter, {paddingTop: px(12)}]}>
+                <Text style={{color: Colors.darkGrayColor}}>我们是有底线的...</Text>
+            </View>
+        );
     };
     return (
         <>
@@ -273,6 +280,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                     </TouchableOpacity>
                                 );
                             })}
+                            {state.records?.data_list?.length > 0 && <ListFooterComponent />}
                         </View>
                     )}
                     <PasswordModal ref={passwordModal} onDone={submit} />

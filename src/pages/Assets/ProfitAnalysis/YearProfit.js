@@ -244,121 +244,121 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             />
         );
     }, [isBarChart]);
-    useEffect(() => {
-        (async () => {
-            myChart.current?.showLoading();
-            const res = await getChartData({
-                type,
-                unit_type,
-                unit_value: dayjs().year(),
-                poid,
-                fund_code,
-                chart_type: 'square',
-            });
-            if (res.code === '000000') {
-                const {profit_data_list = []} = res.result;
-                let xAxisData = [],
-                    dataAxis = [];
-                if (profit_data_list.length > 0) {
-                    let sortProfitDataList = profit_data_list.sort(
-                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
-                    );
-
-                    let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurYear);
-                    sortProfitDataList.map((el) => {
-                        xAxisData.push(el.unit_key);
-                        dataAxis.push(el.value);
-                    });
-                    let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
-                    let curDay = dayjs().year();
-                    if (lastDate == curDay) {
-                        for (let i = 0; i < 3; i++) {
-                            xAxisData.push(
-                                dayjs(sortProfitDataList[index].unit_key)
-                                    .add(i + 1, 'year')
-                                    .format('YYYY')
-                            );
-                            dataAxis.push('0.00');
-                        }
-                    }
-                    let [left, mid, right] = [index - 3, index, index + 3];
-                    let start = ((left + 1) / xAxisData.length) * 100;
-                    let center = mid;
-                    let end = ((right + 1) / xAxisData.length) * 100;
-                    barOption.dataZoom[0].start = start;
-                    barOption.dataZoom[0].end = end;
-                    barOption.xAxis.data = xAxisData;
-                    barOption.series[0].data = dataAxis;
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                dataAxis[center] > 0
-                                    ? Colors.red
-                                    : dataAxis[center] < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[center],
-                        yAxis: dataAxis[center],
-                    };
-                    setStartDate(xAxisData[left]);
-                    setEndDate(xAxisData[right]);
-                    setXAxisData(xAxisData);
-                    setDataAxis(dataAxis);
-                    setProfit(dataAxis[center]);
-                    myChart.current?.hideLoading();
-                    myChart.current?.setNewOption(barOption);
-                }
-            }
-        })();
-    }, [type, myChart.current, isBarChart]);
+    // useEffect(() => {
+    //     (async () => {
+    //         myChart.current?.showLoading();
+    //         const res = await getChartData({
+    //             type,
+    //             unit_type,
+    //             unit_value: dayjs().year(),
+    //             poid,
+    //             fund_code,
+    //             chart_type: 'square',
+    //         });
+    //         if (res.code === '000000') {
+    //             const {profit_data_list = []} = res.result;
+    //             let xAxisData = [],
+    //                 dataAxis = [];
+    //             if (profit_data_list.length > 0) {
+    //                 let sortProfitDataList = profit_data_list.sort(
+    //                     (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
+    //                 );
+    //
+    //                 let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurYear);
+    //                 sortProfitDataList.map((el) => {
+    //                     xAxisData.push(el.unit_key);
+    //                     dataAxis.push(el.value);
+    //                 });
+    //                 let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
+    //                 let curDay = dayjs().year();
+    //                 if (lastDate == curDay) {
+    //                     for (let i = 0; i < 3; i++) {
+    //                         xAxisData.push(
+    //                             dayjs(sortProfitDataList[index].unit_key)
+    //                                 .add(i + 1, 'year')
+    //                                 .format('YYYY')
+    //                         );
+    //                         dataAxis.push('0.00');
+    //                     }
+    //                 }
+    //                 let [left, mid, right] = [index - 3, index, index + 3];
+    //                 let start = ((left + 1) / xAxisData.length) * 100;
+    //                 let center = mid;
+    //                 let end = ((right + 1) / xAxisData.length) * 100;
+    //                 barOption.dataZoom[0].start = start;
+    //                 barOption.dataZoom[0].end = end;
+    //                 barOption.xAxis.data = xAxisData;
+    //                 barOption.series[0].data = dataAxis;
+    //                 barOption.series[0].markPoint.itemStyle = {
+    //                     normal: {
+    //                         color:
+    //                             dataAxis[center] > 0
+    //                                 ? Colors.red
+    //                                 : dataAxis[center] < 0
+    //                                 ? Colors.green
+    //                                 : Colors.transparent,
+    //                         borderColor: Colors.white,
+    //                         borderWidth: 1, // 标注边线线宽，单位px，默认为1
+    //                     },
+    //                 };
+    //                 barOption.series[0].markPoint.data[0] = {
+    //                     xAxis: xAxisData[center],
+    //                     yAxis: dataAxis[center],
+    //                 };
+    //                 setStartDate(xAxisData[left]);
+    //                 setEndDate(xAxisData[right]);
+    //                 setXAxisData(xAxisData);
+    //                 setDataAxis(dataAxis);
+    //                 setProfit(dataAxis[center]);
+    //                 myChart.current?.hideLoading();
+    //                 myChart.current?.setNewOption(barOption);
+    //             }
+    //         }
+    //     })();
+    // }, [type, myChart.current, isBarChart]);
     return (
         <View style={styles.container}>
             <View style={[styles.chartLeft]}>
-                <TouchableOpacity onPress={selCalendarType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isCalendar && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            日历图
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={selBarChartType}>
-                    <View
-                        style={[
-                            Style.flexCenter,
-                            styles.selChartType,
-                            isBarChart && {
-                                backgroundColor: Colors.white,
-                                width: px(60),
-                            },
-                        ]}>
-                        <Text
-                            style={{
-                                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                fontSize: px(12),
-                                fontFamily: Font.pingFangRegular,
-                            }}>
-                            柱状图
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+                {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                {/*    <View*/}
+                {/*        style={[*/}
+                {/*            Style.flexCenter,*/}
+                {/*            styles.selChartType,*/}
+                {/*            isCalendar && {*/}
+                {/*                backgroundColor: Colors.white,*/}
+                {/*                width: px(60),*/}
+                {/*            },*/}
+                {/*        ]}>*/}
+                {/*        <Text*/}
+                {/*            style={{*/}
+                {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                {/*                fontSize: px(12),*/}
+                {/*                fontFamily: Font.pingFangRegular,*/}
+                {/*            }}>*/}
+                {/*            日历图*/}
+                {/*        </Text>*/}
+                {/*    </View>*/}
+                {/*</TouchableOpacity>*/}
+                {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                {/*    <View*/}
+                {/*        style={[*/}
+                {/*            Style.flexCenter,*/}
+                {/*            styles.selChartType,*/}
+                {/*            isBarChart && {*/}
+                {/*                backgroundColor: Colors.white,*/}
+                {/*                width: px(60),*/}
+                {/*            },*/}
+                {/*        ]}>*/}
+                {/*        <Text*/}
+                {/*            style={{*/}
+                {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                {/*                fontSize: px(12),*/}
+                {/*                fontFamily: Font.pingFangRegular,*/}
+                {/*            }}>*/}
+                {/*            柱状图*/}
+                {/*        </Text>*/}
+                {/*    </View>*/}
+                {/*</TouchableOpacity>*/}
             </View>
             <>
                 {isHasData ? (
@@ -500,14 +500,14 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: px(5),
     },
     chartLeft: {
-        width: px(126),
-        height: px(27),
+        // width: px(126),
+        // height: px(27),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
         backgroundColor: '#F4F4F4',
         borderRadius: px(6),
-        opacity: 1,
+        opacity: 0,
     },
     selChartType: {
         borderRadius: px(4),

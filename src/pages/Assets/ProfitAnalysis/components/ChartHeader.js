@@ -17,46 +17,46 @@ const ChartHeader = React.memo(
             <>
                 <View style={Style.flexBetween}>
                     <View style={[styles.chartLeft, {}]}>
-                        <TouchableOpacity onPress={selCalendarType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isCalendar && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    日历图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={selBarChartType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isBarChart && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    柱状图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isCalendar && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            日历图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
+                        {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isBarChart && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            柱状图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                     {!isBarChart && (
                         <View style={styles.selMonth}>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         backgroundColor: '#F4F4F4',
         borderRadius: px(6),
-        opacity: 1,
+        opacity: 0,
     },
     selChartType: {
         borderRadius: px(4),

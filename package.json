@@ -91,7 +91,7 @@
     "react-native-vector-icons": "^9.2.0",
     "react-native-video": "^5.2.1",
     "react-native-waterflow-list": "^1.2.3",
-    "react-native-webview": "11.4.3",
+    "react-native-webview": "^11.23.1",
     "react-native-wechat-lib": "^1.1.25",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",

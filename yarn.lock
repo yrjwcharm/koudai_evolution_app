@@ -7618,16 +7618,16 @@ react-native-waterflow-list@^1.2.3:
   resolved "https://registry.npmmirror.com/react-native-waterflow-list/-/react-native-waterflow-list-1.2.3.tgz#1b6de3e559e68ffe8b082883cddcf14c88e64e67"
   integrity sha512-V6Edm6SJVhMBz60nNuqbjACrWzCi+uWw+XMDr31QDVBNF12YkElhpoTfbMPdzIVFp7P2Vz7YInps1dPOLLut7Q==
 
-react-native-webview@10.10.2:
-  version "10.10.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.10.2.tgz#13208aef17c9ccfd28355363688f4cbe2143f10a"
-  integrity sha512-98Dh7q1gEflicFZ8KNL3nK5XRjx50OZXqw87jHofVjKfjbK0LKmvI5X8ymgUMGg61JVgI3AF+g8qpDvqjgQsfg==
+react-native-webview@^11.23.1:
+  version "11.23.1"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.23.1.tgz#6a4bf2620e491dd4fecf4e6dc079005117fae12c"
+  integrity sha512-bmqsdg4RYOUYD37R9XTrQALm7eD62KbLNPRfgvpLGd1SjaurvAjjsLrLN4mt6yOtKOMKeZvlcAl3x6De6cCQsA==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
 react-native-wechat-lib@^1.1.25:
-  version "1.1.26"
+  version "1.1.25"
   resolved "https://registry.nlark.com/react-native-wechat-lib/download/react-native-wechat-lib-1.1.26.tgz"
   integrity sha1-YL5rqSOZo4yd9coPxME1OwifchA=
   dependencies:
