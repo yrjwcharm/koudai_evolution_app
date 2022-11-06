@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-06 14:36:42
+ * @LastEditTime: 2022-11-06 18:22:51
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -205,6 +205,7 @@ class BankInfo extends Component {
                 {
                     id_no: this.props.route?.params?.id_no,
                     name: this.props.route?.params?.name,
+                    fr: this.props.route?.params?.fr,
                     bank_no: bank_no.replace(/ /g, ''),
                     bank_code: selectBank.bank_code,
                     phone,
