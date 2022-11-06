@@ -39,8 +39,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
-    const [startMonth, setStartMonth] = useState('');
-    const [endMonth, setEndMonth] = useState(dayjs().format('YYYY-MM'));
+    const [isPrev, setIsPrev] = useState(true);
+    const [isNext, setIsNext] = useState(false);
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
@@ -217,12 +217,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
                     if (profit_data_list.length > 0) {
-                        let minDate = unit_list[unit_list.length - 1].value;
-                        let maxDate = unit_list[0].value;
-                        let endMonth = dayjs(maxDate).format('YYYY-MM');
-                        let startMonth = dayjs(minDate).format('YYYY-MM');
-                        setStartMonth(startMonth);
-                        setEndMonth(endMonth);
+                        let min = unit_list[unit_list.length - 1].value;
+                        let max = unit_list[0].value;
+                        let cur = dayjs_.format('YYYY-MM');
+                        if (cur > max || cur < min) return;
+                        // cur == max && setIsNext(false);
+                        // cur == min && setIsPrev(false);
                         for (let i = 0; i < arr.length; i++) {
                             for (let j = 0; j < profit_data_list.length; j++) {
                                 //小于当前日期的情况
@@ -241,6 +241,19 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
                         setSelCurDate(arr[zIndex]?.day);
+                        if (cur >= min && cur <= max) {
+                            if (cur == max) {
+                                setIsNext(false);
+                                return;
+                            }
+                            if (cur == min) {
+                                setIsPrev(false);
+                                return;
+                            }
+                            setIsPrev(true);
+                            setIsNext(true);
+                        }
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     } else {
                         setIsHasData(false);
                     }
@@ -255,13 +268,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     /**
      * 向上递增一个月
      */
-    const addMonth = async () => {
+    const addMonth = () => {
         setDiff((diff) => diff + 1);
     };
     /**
      * 向下递减一个月
      */
-    const subMonth = async () => {
+    const subMonth = () => {
         setDiff((diff) => diff - 1);
     };
     /**
@@ -480,8 +493,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 isBarChart={isBarChart}
                 subMonth={subMonth}
                 addMonth={addMonth}
-                startMonth={startMonth}
-                endMonth={endMonth}
+                isPrev={isPrev}
+                isNext={isNext}
                 date={date}
             />
             {isHasData ? (
