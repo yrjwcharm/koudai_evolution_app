@@ -46,7 +46,7 @@ const ProfitDetail = ({navigation, route}) => {
                                 activeOpacity={0.8}
                                 style={[styles.topRightBtn, Style.flexCenter]}
                                 onPress={() => {
-                                    bottomModal.current.show();
+                                    bottomModal.current?.show();
                                 }}>
                                 <Text style={styles.title}>{rightTitle}</Text>
                             </TouchableOpacity>
@@ -98,21 +98,21 @@ const ProfitDetail = ({navigation, route}) => {
                             })}
                         </ScrollableTabView>
                     )}
-                    <BottomModal title={'更新说明'} ref={bottomModal}>
-                        <View style={{marginTop: px(30), alignItems: 'center'}}>
-                            <Image
-                                resizeMode={'cover'}
-                                style={styles.declareImg}
-                                source={{
-                                    uri: declarePic,
-                                }}
-                            />
-                        </View>
-                    </BottomModal>
                 </View>
             ) : (
                 <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
             )}
+            <BottomModal title={'更新说明'} ref={bottomModal}>
+                <View style={{marginTop: px(30), alignItems: 'center'}}>
+                    <Image
+                        resizeMode={'cover'}
+                        style={styles.declareImg}
+                        source={{
+                            uri: declarePic,
+                        }}
+                    />
+                </View>
+            </BottomModal>
         </>
     );
 };
