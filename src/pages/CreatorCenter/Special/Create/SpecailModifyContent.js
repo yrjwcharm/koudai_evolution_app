@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
 
     searchModal: {
         width: '100%',
-        height: deviceHeight - 200,
+        height: deviceHeight - 330,
         padding: 16,
     },
     searchWrap: {
