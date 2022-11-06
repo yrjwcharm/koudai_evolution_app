@@ -100,9 +100,9 @@ function TagWrap(props) {
         <>
             <View style={[styles.space2, styles.tagsWrap]}>
                 {(tags || []).map((tag, i) => (
-                    <Tag key={tag + i} text={tag} onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
+                    <Tag key={tag + i} text={tag}   onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
                 ))}
-                {tags.length < 3 && <AddTag onPress={() => handleTagChange(-1)} />}
+                {tags.length < 3 && <AddTag key={"addTagkey"} onPress={() => handleTagChange(-1)} />}
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/special/warning_tip.png')} />
@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
 
     tagItemAdd: {
         backgroundColor: '#F5F6F8',
-        paddingRight: px(8),
+        paddingRight: px(12),
     },
     tagItemAdd_text: {
         color: '#9AA0B1',
