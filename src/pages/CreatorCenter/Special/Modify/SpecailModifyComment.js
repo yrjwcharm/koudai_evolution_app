@@ -332,6 +332,7 @@ export default function SpecailModifyComment({navigation, route}) {
             <Tabs tabs={tabsText} activeTab={activeTab} goToPage={handleTabChange} />
             <View style={styles.listWrap}>
                 <FlatList
+                  style={{flex:1}}
                     data={data}
                     refreshing={refreshing}
                     ListEmptyComponent={EmptyLit}
@@ -517,6 +518,7 @@ const styles = StyleSheet.create({
 
     footer: {
         paddingHorizontal: px(16),
+        paddingBottom: 20,
         width: '100%',
     },
     footer_textWrap: {

@@ -8,7 +8,6 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
 import {getChartData, getHeadData} from './services';
-import RenderList from './components/RenderList';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
@@ -40,7 +39,7 @@ const comObj = {
     累计收益: TotalProfit,
 };
 
-const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
+const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
@@ -182,7 +181,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                                 </ScrollableTabView>
                             </View>
                         </ScrollView>
-                        {data.button && Object.keys(data.button).length > 0 && data?.type == type && (
+                        {Object.keys(data).length > 0 && (
                             <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
                         )}
                     </View>
@@ -190,7 +189,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
             )}
         </>
     );
-});
+};
 
 ProfitDistribution.propTypes = {
     setLoadingFn: PropTypes.func,

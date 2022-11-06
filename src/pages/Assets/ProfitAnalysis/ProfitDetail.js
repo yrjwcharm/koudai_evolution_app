@@ -6,7 +6,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import Tab from '../../../components/TabBar';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, isEmpty, px as text, px} from '../../../utils/appUtil';
@@ -18,8 +17,9 @@ import ScrollTabbar from '../../../components/ScrollTabbar';
 const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type = 200} = route.params || {};
     const scrollTab = useRef(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [locked, setLocked] = useState(false);
+    const [data, setData] = useState({});
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([
         {text: '全部', type: 200},
@@ -29,15 +29,16 @@ const ProfitDetail = ({navigation, route}) => {
         {text: '私募基金', type: 20},
     ]);
     const [declarePic, setDeclarePic] = useState('');
-    const init = useCallback(() => {
+    const init = useCallback((type) => {
         (async () => {
             const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', tabs = []} = res[0]?.result || {};
+                const {title: navigationTitle = '', button, tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
                 setDeclarePic(declare_pic);
                 setTabs(tabs);
                 setLoading(false);
+                setData(button);
                 navigation.setOptions({
                     title: navigationTitle,
                     headerRight: () => (
@@ -46,7 +47,7 @@ const ProfitDetail = ({navigation, route}) => {
                                 activeOpacity={0.8}
                                 style={[styles.topRightBtn, Style.flexCenter]}
                                 onPress={() => {
-                                    bottomModal.current.show();
+                                    bottomModal.current?.show();
                                 }}>
                                 <Text style={styles.title}>{rightTitle}</Text>
                             </TouchableOpacity>
@@ -57,13 +58,16 @@ const ProfitDetail = ({navigation, route}) => {
         })();
     }, []);
     useEffect(() => {
-        init();
+        init(type);
         let listener = DeviceEventEmitter.addListener('sendChartTrigger', (bool) => {
             console.log(bool);
             setLocked(bool);
         });
         return () => listener && listener.remove();
     }, [init]);
+    useEffect(() => {
+        data && Object.keys(data).length > 0 && DeviceEventEmitter.emit('sendTrigger', data);
+    }, [data]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
     });
@@ -74,29 +78,36 @@ const ProfitDetail = ({navigation, route}) => {
         <>
             {loading ? (
                 <Loading color={Colors.btnColor} />
-            ) : isEmpty(poid) ? (
-                <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
-                    {tabs.length > 1 && (
-                        <ScrollableTabView
-                            ref={scrollTab}
-                            renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
-                            initialPage={page}
-                            locked={true}
-                            onChangeTab={({i}) => {
-                                global.LogTool('changeTab', tabs[i]);
-                            }}>
-                            {tabs.map((el, index) => {
-                                return (
-                                    <ProfitDistribution
-                                        poid={poid}
-                                        type={el.type}
-                                        fund_code={fund_code}
-                                        tabLabel={el.text}
-                                        key={`${el + index}`}
-                                    />
-                                );
-                            })}
-                        </ScrollableTabView>
+            ) : (
+                <>
+                    {isEmpty(poid) ? (
+                        <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
+                            {tabs.length > 1 && (
+                                <ScrollableTabView
+                                    ref={scrollTab}
+                                    renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
+                                    initialPage={page}
+                                    locked={true}
+                                    onChangeTab={({i}) => {
+                                        global.LogTool('changeTab', tabs[i]);
+                                        init(tabs[i].type);
+                                    }}>
+                                    {tabs.map((el, index) => {
+                                        return (
+                                            <ProfitDistribution
+                                                poid={poid}
+                                                type={el.type}
+                                                fund_code={fund_code}
+                                                tabLabel={el.text}
+                                                key={`${el + index}`}
+                                            />
+                                        );
+                                    })}
+                                </ScrollableTabView>
+                            )}
+                        </View>
+                    ) : (
+                        <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
                     )}
                     <BottomModal title={'更新说明'} ref={bottomModal}>
                         <View style={{marginTop: px(30), alignItems: 'center'}}>
@@ -109,9 +120,7 @@ const ProfitDetail = ({navigation, route}) => {
                             />
                         </View>
                     </BottomModal>
-                </View>
-            ) : (
-                <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
+                </>
             )}
         </>
     );

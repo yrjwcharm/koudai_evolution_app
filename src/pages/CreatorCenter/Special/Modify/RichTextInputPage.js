@@ -254,7 +254,7 @@ export default function RichTextInputPage({navigation, route}) {
 
     return (
         <View style={styles.pageWrap}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
+            <View style={styles.content}>
                 <View style={[styles.header]}>
                     <TouchableOpacity style={styles.close} onPress={handleBack}>
                         <Icon color={Colors.descColor} name={'close'} size={18} />
@@ -266,7 +266,8 @@ export default function RichTextInputPage({navigation, route}) {
                         <Text style={{fontSize: px(14), color: '#0051CC'}}>{'完成'}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.richTextModal}>
+                 
+                <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.richTextModal}>
                     <RNWebView
                         style={styles.webView}
                         androidLayerType="software"
@@ -285,12 +286,13 @@ export default function RichTextInputPage({navigation, route}) {
                         onLoad={() => {
                             console.log('onLoad');
                             webviewRef.current?.injectJavaScript(`setInputValue('${richText.html}')`);
-                            if (Platform.OS === 'android') {
-                                webviewRef.current?.requestFocus?.();
-                            }
-                            setTimeout(() => {
-                                webviewRef.current?.injectJavaScript(`focusInput()`);
-                            }, 200);
+                            // if (Platform.OS === 'ios') {
+                            //     webviewRef.current?.requestFocus?.();
+                                // setTimeout(() => {
+                                //   webviewRef.current?.injectJavaScript(`focusInput()`);
+                                // }, 200);
+                            // }
+                            
                         }}
                         onMessage={(event) => {
                             const data = event.nativeEvent.data;
@@ -327,8 +329,8 @@ export default function RichTextInputPage({navigation, route}) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </View>
         </View>
     );
 }

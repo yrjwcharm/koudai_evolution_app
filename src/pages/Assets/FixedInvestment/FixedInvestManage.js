@@ -49,7 +49,7 @@ const FixedInvestManage = ({navigation, route}) => {
         useCallback(() => {
             (async () => {
                 const res = await Promise.all([
-                    callFixedHeadDataApi({type, fund_code, poid}),
+                    callFixedHeadDataApi({type: unitType, fund_code, poid}),
                     callHistoryDataApi({type: unitType, fund_code, poid}),
                 ]);
                 if (res[0].code === '000000' && res[1].code === '000000') {

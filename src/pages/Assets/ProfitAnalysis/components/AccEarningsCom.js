@@ -15,7 +15,7 @@ import {areaChart} from '../../../Portfolio/components/ChartOption';
 import EmptyTip from '../../../../components/EmptyTip';
 import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type}) => {
+const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type, changePeriod}) => {
     const insets = useSafeAreaInsets();
     const [period, setPeriod] = useState('all');
     const [chartData, setChartData] = useState({});
@@ -135,6 +135,7 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type
                                     onPress={() => {
                                         global.LogTool('click', tab.val);
                                         !onlyAll && setPeriod(tab.val);
+                                        changePeriod(tab.val);
                                     }}
                                     style={[
                                         Style.flexCenter,

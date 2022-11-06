@@ -30,8 +30,19 @@ const TradeRecord = ({route, navigation}) => {
     const jump = useJump();
     const isMfb = fr == 'mfb';
     const scrollTab = useRef();
-    const tradeType = useRef([0, -35, 4, -2, -1, 6, 7]);
+    //0全部 -35申购 4赎回  -1签约 -2升级 6调仓 7分红
+    const tradeType = useRef([0, -35, 4, -1, 6, 7]);
     const mfbType = useRef([0, 1, 2]);
+    // const getType =()=>{
+    //     if (!fund_code && platform_class != 10 && platform_class != 20) {
+    //         return
+    //     }
+    // }
+    useEffect(() => {
+        if (fund_code || platform_class == 10 || platform_class == 20) {
+            tradeType.current = [0, -35, 4, 7];
+        }
+    }, []);
     const getData = useCallback(
         (_page, toast) => {
             let Page = _page || page;
@@ -66,11 +77,7 @@ const TradeRecord = ({route, navigation}) => {
         },
         [page, tabActive]
     );
-    useEffect(() => {
-        if (fund_code) {
-            tradeType.current = [0, -35, 4, -2, 7];
-        }
-    }, []);
+
     useEffect(() => {
         active !== 0 && scrollTab.current?.goToPage(active);
     }, [active]);

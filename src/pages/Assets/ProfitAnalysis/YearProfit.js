@@ -131,7 +131,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
-                const res = await getChartData({type, unit_type});
+                const res = await getChartData({type, unit_type, fund_code, poid});
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
