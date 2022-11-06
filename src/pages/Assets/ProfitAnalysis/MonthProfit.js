@@ -170,7 +170,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
                     // //双重for循环判断日历是否超过、小于或等于当前日期
-                    if (profit_data_list.length > 0) {
+                    if (unit_list.length > 0) {
                         let startYear = unit_list[unit_list.length - 1].value;
                         let endYear = unit_list[0].value;
                         for (let i = 0; i < arr.length; i++) {

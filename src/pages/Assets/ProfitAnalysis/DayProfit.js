@@ -216,7 +216,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-                    if (profit_data_list.length > 0) {
+                    if (unit_list.length > 0) {
                         let min = unit_list[unit_list.length - 1].value;
                         let max = unit_list[0].value;
                         let cur = dayjs_.format('YYYY-MM');

@@ -135,7 +135,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
-                    if (profit_data_list.length > 0) {
+                    if (unit_list.length > 0) {
                         let arr = profit_data_list
                             .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                             .map((el) => {
