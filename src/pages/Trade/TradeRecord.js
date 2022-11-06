@@ -40,7 +40,7 @@ const TradeRecord = ({route, navigation}) => {
     // }
     useEffect(() => {
         if (fund_code || platform_class == 10 || platform_class == 20) {
-            tradeType.current = [0, -35, 4, -2, 7];
+            tradeType.current = [0, -35, 4, 7];
         }
     }, []);
     const getData = useCallback(
