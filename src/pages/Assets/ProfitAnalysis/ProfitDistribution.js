@@ -183,7 +183,7 @@ const ProfitDistribution = React.memo(({poid = '', type, fund_code = ''}) => {
                             </View>
                         </ScrollView>
                         {data.button && Object.keys(data.button).length > 0 && data?.type == type && (
-                            <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
+                            <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
                         )}
                     </View>
                 </>
