@@ -37,6 +37,9 @@ const TerminatedFixedInvest = ({navigation, route}) => {
         if (data.sort_key) {
             callTerminatedFixedApi({
                 sort_key: data?.sort_key,
+                type,
+                poid,
+                fund_code: code,
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             }).then((res) => {
                 if (res.code === '000000') {
