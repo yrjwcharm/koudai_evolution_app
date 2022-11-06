@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 18:48:52
+ * @LastEditTime: 2022-11-06 14:36:42
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -263,6 +263,7 @@ class BankInfo extends Component {
         if (value && value.length > 11) {
             http.get('/passport/match/bank_card_info/20210101', {
                 bank_no: value.replace(/ /g, ''),
+                fr: this.props.route?.params?.fr,
             }).then((res) => {
                 this.setState(
                     {
