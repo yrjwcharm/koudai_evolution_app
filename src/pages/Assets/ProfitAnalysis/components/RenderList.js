@@ -13,10 +13,12 @@ import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useJump} from '../../../../components/hooks';
 import Loading from '../../../Portfolio/components/PageLoading';
+import Empty from '../../../../components/EmptyTip';
 const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', unitType}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [showEmpty, setShowEmpty] = useState(false);
     const jump = useJump();
     useEffect(() => {
         (async () => {
@@ -33,6 +35,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                 const {head_list = [], data_list = [], button = {}} = res.result || {};
                 setHeaderList(head_list);
                 setProfitList(data_list);
+                data_list.length > 0 ? setShowEmpty(false) : setShowEmpty(true);
                 setLoading(false);
             }
         })();
@@ -56,45 +59,50 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const renderList = useMemo(
         () => (
             <>
-                {profitList?.map((item, index) => {
-                    let color =
-                        delMille(item.profit) > 0
-                            ? Colors.red
-                            : delMille(item.profit) < 0
-                            ? Colors.green
-                            : Colors.lightGrayColor;
+                {profitList.length > 0 ? (
+                    profitList?.map((item, index) => {
+                        let color =
+                            delMille(item.profit) > 0
+                                ? Colors.red
+                                : delMille(item.profit) < 0
+                                ? Colors.green
+                                : Colors.lightGrayColor;
 
-                    return (
-                        <View style={styles.listRow} key={item + '' + index}>
-                            <View style={styles.typeView}>
-                                <View style={styles.typeWrap}>
-                                    <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        global.LogTool('MfbIndex');
-                                        jump(item?.url);
-                                    }}>
-                                    <Text style={[styles.title, {fontSize: item.text.length > 10 ? px(8) : px(10)}]}>
-                                        {item.text}
-                                    </Text>
-                                </TouchableOpacity>
-                                {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
-                                {item.tag ? (
-                                    <View
-                                        style={{
-                                            borderRadius: text(2),
-                                            backgroundColor: '#EFF5FF',
-                                            marginLeft: text(6),
-                                        }}>
-                                        <Text style={styles.tag}>{item.tag}</Text>
+                        return (
+                            <View style={styles.listRow} key={item + '' + index}>
+                                <View style={styles.typeView}>
+                                    <View style={styles.typeWrap}>
+                                        <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
                                     </View>
-                                ) : null}
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            global.LogTool('MfbIndex');
+                                            jump(item?.url);
+                                        }}>
+                                        <Text
+                                            style={[styles.title, {fontSize: item.text.length > 10 ? px(8) : px(10)}]}>
+                                            {item.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
+                                    {item.tag ? (
+                                        <View
+                                            style={{
+                                                borderRadius: text(2),
+                                                backgroundColor: '#EFF5FF',
+                                                marginLeft: text(6),
+                                            }}>
+                                            <Text style={styles.tag}>{item.tag}</Text>
+                                        </View>
+                                    ) : null}
+                                </View>
+                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
                             </View>
-                            <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
-                        </View>
-                    );
-                })}
+                        );
+                    })
+                ) : (
+                    <>{showEmpty ? <Empty text={'暂无数据'} /> : null}</>
+                )}
             </>
         ),
 

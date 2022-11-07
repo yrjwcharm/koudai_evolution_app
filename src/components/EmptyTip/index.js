@@ -11,9 +11,19 @@ import {px} from '../../utils/appUtil';
 import {Colors, Font} from '../../common/commonStyle';
 const image = require('../../assets/img/emptyTip/empty.png');
 const EmptyTip = (props) => {
-    const {children, text = '暂无数据', img = image, style, textStyle, imageStyle, type = 'page', desc = ''} = props;
+    const {
+        children,
+        text = '暂无数据',
+        paddingTop = px(80),
+        img = image,
+        style,
+        textStyle,
+        imageStyle,
+        type = 'page',
+        desc = '',
+    } = props;
     return (
-        <View style={[styles.con, style]}>
+        <View style={[styles.con, style, {paddingTop}]}>
             <Image style={[styles.image, type === 'page' ? {height: px(96)} : {}, imageStyle]} source={img} />
             <Text style={[styles.text, type === 'page' ? styles.title : {}, textStyle]}> {text} </Text>
             {desc ? <Text style={styles.desc}>{desc}</Text> : null}
@@ -24,7 +34,6 @@ const EmptyTip = (props) => {
 const styles = StyleSheet.create({
     con: {
         alignItems: 'center',
-        paddingTop: px(80),
     },
     image: {
         height: px(64),

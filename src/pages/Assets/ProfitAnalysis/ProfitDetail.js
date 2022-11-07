@@ -73,7 +73,7 @@ const ProfitDetail = ({navigation, route}) => {
     });
     useEffect(() => {
         Platform.OS === 'android' && page !== 0 && scrollTab.current?.goToPage(page);
-    }, [tabs]);
+    }, [page]);
     return (
         <>
             {loading ? (
