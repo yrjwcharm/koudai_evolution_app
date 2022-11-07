@@ -256,7 +256,7 @@ const FixedInvestManage = ({navigation, route}) => {
 
                     {/*<BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />*/}
 
-                    {Object.keys(data?.button).length > 0 && (
+                    {data?.button && Object.keys(data?.button).length > 0 && (
                         <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
                     )}
                 </View>

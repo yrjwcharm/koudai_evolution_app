@@ -439,7 +439,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             <RNEChartsPro
                 onDataZoom={(result, option) => {
                     const {start, end} = result?.batch[0];
-                    console.log('中线测试+++++', start, end, option);
                     const count = xAxisData?.length;
                     barOption.dataZoom[0].start = start;
                     barOption.dataZoom[0].end = end;
