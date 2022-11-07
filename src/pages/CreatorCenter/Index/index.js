@@ -466,11 +466,10 @@ const styles = StyleSheet.create({
     },
     cardItemHeader: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.5,
-        paddingBottom: px(10),
+        height: px(24),
     },
     cardItemHeaderTitle: {
         fontSize: px(13),
