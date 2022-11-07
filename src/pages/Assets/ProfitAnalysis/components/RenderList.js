@@ -67,7 +67,6 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                                 : delMille(item.profit) < 0
                                 ? Colors.green
                                 : Colors.lightGrayColor;
-
                         return (
                             <View style={styles.listRow} key={item + '' + index}>
                                 <View style={styles.typeView}>
