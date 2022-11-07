@@ -3,9 +3,8 @@
  * @Autor: wxp
  * @Date: 2022-09-16 16:55:33
  */
-import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, RefreshControl} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Space, Style} from '~/common/commonStyle';
@@ -20,7 +19,7 @@ import {px} from '~/utils/appUtil';
 const PortfolioIndex = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState(null);
-
+    const [refreshing, setRefreshing] = useState(false);
     const [subjectLoading, setSubjectLoading] = useState(false); // 显示加载动画
     const [subjectData, setSubjectsData] = useState({});
     const [subjectList, setSubjectList] = useState([]);
@@ -30,46 +29,55 @@ const PortfolioIndex = ({navigation, route}) => {
 
     const subjectLoadingRef = useRef(false); // 为了流程控制
 
-    const init = () => {
-        http.get('/products/portfolio/index/20220901', route?.params?.params).then((res) => {
-            if (res.code === '000000') {
-                const {title, search_btn} = res.result;
-                navigation.setOptions({
-                    title: title || '组合',
-                    headerRight: search_btn
-                        ? () => (
-                              <TouchableOpacity
-                                  style={[Style.flexRowCenter, {marginRight: Space.marginAlign}]}
-                                  activeOpacity={0.8}
-                                  onPress={() => {
-                                      jump(search_btn.url);
-                                  }}>
-                                  <FastImage
-                                      source={{
-                                          uri: search_btn.icon,
-                                      }}
-                                      style={{width: px(24), height: px(24)}}
-                                  />
-                              </TouchableOpacity>
-                          )
-                        : null,
-                });
-                setData({});
-                setData(res.result);
-                // 获取专题
-                setSubjectList([]);
-                pageRef.current = 1;
-                getSubjects(res.result?.page_type);
-            }
-        });
+    const init = (refresh) => {
+        refresh === true && setRefreshing(true);
+        http.get('/products/portfolio/index/20220901', route?.params?.params)
+            .then((res) => {
+                if (res.code === '000000') {
+                    const {title, search_btn} = res.result;
+                    navigation.setOptions({
+                        title: title || '组合',
+                        headerRight: search_btn
+                            ? () => (
+                                  <TouchableOpacity
+                                      style={[Style.flexRowCenter, {marginRight: Space.marginAlign}]}
+                                      activeOpacity={0.8}
+                                      onPress={() => {
+                                          jump(search_btn.url);
+                                      }}>
+                                      <FastImage
+                                          source={{
+                                              uri: search_btn.icon,
+                                          }}
+                                          style={{width: px(24), height: px(24)}}
+                                      />
+                                  </TouchableOpacity>
+                              )
+                            : null,
+                    });
+                    setData(res.result);
+                    if (res.result?.popular_subjects) {
+                        global.LogTool({
+                            event: 'rec_show',
+                            oid: res.result?.popular_subjects?.items?.[0]?.product_id,
+                            plateid: res.result?.popular_subjects.plateid,
+                            rec_json: res.result?.popular_subjects.rec_json,
+                        });
+                    }
+
+                    // 获取专题
+                    pageRef.current = 1;
+                    getSubjects(res.result?.page_type);
+                }
+            })
+            .finally(() => {
+                setRefreshing(false);
+            });
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
+    useEffect(() => {
+        init();
+    }, []);
 
     const genTopMenu = () => {
         return (
@@ -105,9 +113,10 @@ const PortfolioIndex = ({navigation, route}) => {
         http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++}).then((res) => {
             if (res.code === '000000') {
                 setSubjectLoading(false);
-                subjectLoadingRef.current = false;
                 setSubjectsData(res.result);
-                setSubjectList((val) => val.concat(res.result.items || []));
+                let newList = res.result.items || [];
+                setSubjectList((val) => (pageRef.current === 2 ? newList : val.concat(newList)));
+                subjectLoadingRef.current = false;
                 global.LogTool({
                     event: 'rec_show',
                     plateid: res.result.plateid,
@@ -136,21 +145,15 @@ const PortfolioIndex = ({navigation, route}) => {
 
     return data ? (
         <View style={styles.container}>
-            <LogView.Wrapper style={{flex: 1}} scrollIndicatorInsets={{right: 1}} onScroll={proScroll}>
+            <LogView.Wrapper
+                style={{flex: 1}}
+                scrollIndicatorInsets={{right: 1}}
+                onScroll={proScroll}
+                refreshControl={<RefreshControl onRefresh={() => init(true)} refreshing={refreshing} />}>
                 <LinearGradient colors={['#fff', Colors.bgColor]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                     {data?.nav ? genTopMenu() : null}
                     {data?.popular_subjects ? (
-                        <LogView.Item
-                            style={styles.recommendCon}
-                            logKey={data?.popular_subjects.type}
-                            handler={() => {
-                                global.LogTool({
-                                    event: 'rec_show',
-                                    oid: data?.popular_subjects?.items?.[0]?.product_id,
-                                    plateid: data?.popular_subjects.plateid,
-                                    rec_json: data?.popular_subjects.rec_json,
-                                });
-                            }}>
+                        <View style={styles.recommendCon}>
                             <ProductList
                                 data={data?.popular_subjects.items}
                                 type={data?.popular_subjects.type}
@@ -165,7 +168,7 @@ const PortfolioIndex = ({navigation, route}) => {
                                     rec_json: data?.popular_subjects.rec_json,
                                 }}
                             />
-                        </LogView.Item>
+                        </View>
                     ) : null}
                 </LinearGradient>
                 {subjectList?.[0] ? (
@@ -186,7 +189,11 @@ const PortfolioIndex = ({navigation, route}) => {
                         ) : null}
                         {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
                     </>
-                ) : null}
+                ) : (
+                    <View style={{paddingVertical: px(20)}}>
+                        <ActivityIndicator />
+                    </View>
+                )}
                 {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
                 <View
                     style={{backgroundColor: '#f5f6f8'}}

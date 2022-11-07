@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 11:29:49
+ * @LastEditTime: 2022-11-07 15:54:16
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -26,11 +26,14 @@ import Menu from './Menu';
 import Banner from './Banner';
 import Security from './Security';
 import LiveList from './LiveList';
+import {useSelector} from 'react-redux';
 
 const Product = ({navigation}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const isFocused = useIsFocused();
+
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
 
     const [refreshing, setRefreshing] = useState(false);
     const [tabActive, setTabActive] = useState(1);
@@ -47,17 +50,29 @@ const Product = ({navigation}) => {
     const pageRef = useRef(1);
     const subjectToBottomHeight = useRef(0);
     const subjectLoadingRef = useRef(false);
+    const prevUserInfo = useRef(null);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
 
+    // 自选tab focus时重新刷新
     useFocusEffect(
         useCallback(() => {
             let cPage = tabRef.current?.state?.currentPage;
             setTabActive(cPage);
-            tabRef.current.goToPage(cPage);
+            cPage === 0 && tabRef.current.goToPage(cPage);
         }, [])
+    );
+
+    // 产品tab 登录状态更换时更新
+    useFocusEffect(
+        useCallback(() => {
+            if (prevUserInfo.current?.is_login !== userInfo?.is_login) {
+                getProData();
+                prevUserInfo.current = userInfo;
+            }
+        }, [userInfo.is_login])
     );
 
     useEffect(() => {
@@ -97,7 +112,7 @@ const Product = ({navigation}) => {
                     }
                     // 获取专题
                     pageRef.current = 1;
-                    getSubjects(res.result?.page_type, 'init');
+                    getSubjects(res.result?.page_type);
                 }
             })
             .finally((_) => {
@@ -105,7 +120,7 @@ const Product = ({navigation}) => {
             });
     };
 
-    const getSubjects = (page_type, type) => {
+    const getSubjects = (page_type) => {
         if (subjectLoadingRef.current) return;
         setSubjectLoading(true);
         subjectLoadingRef.current = true;
@@ -115,7 +130,7 @@ const Product = ({navigation}) => {
                     setSubjectsData(res.result);
                     // 分页
                     const newList = res.result.items || [];
-                    setSubjectList((val) => (type === 'init' ? newList : val.concat(newList)));
+                    setSubjectList((val) => (pageRef.current === 2 ? newList : val.concat(newList)));
 
                     global.LogTool({
                         event: 'rec_show',
@@ -226,7 +241,7 @@ const Product = ({navigation}) => {
                             {/* 菜单 */}
                             <Menu proData={proData} bgType={bgType} />
                             {/* banner */}
-                            <Banner proData={proData} bgType={bgType} />
+                            <Banner proData={proData} bgType={bgType} key={proData.banner_list} />
                             <View style={styles.othersWrap}>
                                 {/* 安全保障 */}
                                 {proData?.menu_list ? <Security menu_list={proData?.menu_list} /> : null}

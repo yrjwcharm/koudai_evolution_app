@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-02 16:04:29
+ * @LastEditTime: 2022-11-07 15:50:52
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -87,6 +87,8 @@ const Settings = ({navigation}) => {
                                         second: 60,
                                         name: '',
                                         id_no: '',
+                                        show_audit_center: '',
+                                        show_manage_center: '',
                                     })
                                 );
                                 dispatch(

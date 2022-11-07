@@ -3,9 +3,8 @@
  * @Author: dx
  * @Description: 基金首页
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Font, Space} from '~/common/commonStyle';
@@ -57,10 +56,10 @@ const Index = ({navigation}) => {
 
     const subjectLoadingRef = useRef(false); // 为了流程控制
 
-    const getData = () => {
+    const getData = (refresh) => {
+        refresh === true && setRefreshing(true);
         getPageData()
             .then((res) => {
-                setRefreshing(false);
                 if (res.code === '000000') {
                     const {search_btn, title = '基金'} = res.result;
                     navigation.setOptions({
@@ -83,11 +82,16 @@ const Index = ({navigation}) => {
                             ) : null,
                         title,
                     });
-                    setData({});
                     setData(res.result);
-
+                    if (res.result?.popular_subjects) {
+                        global.LogTool({
+                            event: 'rec_show',
+                            oid: res.result?.popular_subjects?.items?.[0]?.product_id,
+                            plateid: res.result?.popular_subjects.plateid,
+                            rec_json: res.result?.popular_subjects.rec_json,
+                        });
+                    }
                     // 获取专题
-                    setSubjectList([]);
                     pageRef.current = 1;
                     getSubjects(res.result?.page_type);
                 }
@@ -104,9 +108,10 @@ const Index = ({navigation}) => {
         http.get('/products/subject/list/20220901', {page_type, page: pageRef.current++}).then((res) => {
             if (res.code === '000000') {
                 setSubjectLoading(false);
-                subjectLoadingRef.current = false;
                 setSubjectsData(res.result);
-                setSubjectList((val) => val.concat(res.result.items || []));
+                let newList = res.result.items || [];
+                setSubjectList((val) => (pageRef.current === 2 ? newList : val.concat(newList)));
+                subjectLoadingRef.current = false;
                 global.LogTool({
                     event: 'rec_show',
                     plateid: res.result.plateid,
@@ -133,18 +138,15 @@ const Index = ({navigation}) => {
         [subjectLoading, subjectList, subjectData, data]
     );
 
-    useFocusEffect(
-        useCallback(() => {
-            getData();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
+    useEffect(() => {
+        getData();
+    }, []);
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <LogView.Wrapper
                 onScroll={proScroll}
-                refreshControl={<RefreshControl onRefresh={getData} refreshing={refreshing} />}
+                refreshControl={<RefreshControl onRefresh={() => getData(true)} refreshing={refreshing} />}
                 scrollEventThrottle={16}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
@@ -154,17 +156,7 @@ const Index = ({navigation}) => {
                     </LinearGradient>
                 ) : null}
                 {popular_subjects ? (
-                    <LogView.Item
-                        style={styles.swiperContainer}
-                        logKey={popular_subjects?.type}
-                        handler={() => {
-                            global.LogTool({
-                                event: 'rec_show',
-                                oid: popular_subjects?.items?.[0]?.product_id,
-                                plateid: popular_subjects.plateid,
-                                rec_json: popular_subjects.rec_json,
-                            });
-                        }}>
+                    <View style={styles.swiperContainer}>
                         <View style={{backgroundColor: '#fff', borderRadius: Space.borderRadius}}>
                             <ProductList
                                 data={popular_subjects.items}
@@ -181,7 +173,7 @@ const Index = ({navigation}) => {
                                 }}
                             />
                         </View>
-                    </LogView.Item>
+                    </View>
                 ) : null}
                 {subjectList?.[0] ? (
                     <>
@@ -201,7 +193,11 @@ const Index = ({navigation}) => {
                         ) : null}
                         {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
                     </>
-                ) : null}
+                ) : (
+                    <View style={{paddingVertical: px(20)}}>
+                        <ActivityIndicator />
+                    </View>
+                )}
                 {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
                 <View
                     style={{backgroundColor: '#f5f6f8'}}
