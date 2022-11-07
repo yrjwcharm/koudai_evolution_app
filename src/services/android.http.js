@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-01-21 14:37:14
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-10 11:20:07
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-07 19:35:15
  * @Description:
  */
 import {fetch} from 'react-native-ssl-request';
@@ -67,6 +67,13 @@ const HTTP = async (method, url, body = {}) => {
             global.getUserInfo();
             setTimeout(() => {
                 global.navigation?.navigate('Login');
+            }, 1000);
+        }
+        if (response?.data?.code == 'A00002') {
+            Storage.delete('loginStatus');
+            global.getUserInfo();
+            setTimeout(() => {
+                global.navigation?.navigate('Register');
             }, 1000);
         }
 

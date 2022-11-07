@@ -73,6 +73,13 @@ axios.interceptors.response.use(
                 global.navigation?.navigate('Login');
             }, 1000);
         }
+        if (response?.data?.code == 'A00002') {
+            Storage.delete('loginStatus');
+            global.getUserInfo();
+            setTimeout(() => {
+                global.navigation?.navigate('Register');
+            }, 1000);
+        }
         return response.data.data || response.data;
     },
     (err) => {

@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     },
     cardItemHeaderTitle: {
         fontSize: px(13),
-        lineHeight: px(14),
+        lineHeight: px(15),
         color: '#121D3A',
         fontWeight: 'bold',
     },
