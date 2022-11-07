@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 15:54:16
+ * @LastEditTime: 2022-11-07 16:54:32
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -51,21 +51,24 @@ const Product = ({navigation}) => {
     const subjectToBottomHeight = useRef(0);
     const subjectLoadingRef = useRef(false);
     const prevUserInfo = useRef(null);
+    const showNum = useRef(1);
 
     const bgType = useMemo(() => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
 
-    // 自选tab focus时重新刷新
+    // 自选tab focus时重新刷新, 产品tab第一次加载时刷新
     useFocusEffect(
         useCallback(() => {
             let cPage = tabRef.current?.state?.currentPage;
             setTabActive(cPage);
-            cPage === 0 && tabRef.current.goToPage(cPage);
+            if (showNum.current++ === 1 || cPage === 0) {
+                tabRef.current.goToPage(cPage);
+            }
         }, [])
     );
 
-    // 产品tab 登录状态更换时更新
+    // 产品tab 增加 登录状态更换时也更新
     useFocusEffect(
         useCallback(() => {
             if (prevUserInfo.current?.is_login !== userInfo?.is_login) {
