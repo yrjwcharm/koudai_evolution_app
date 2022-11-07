@@ -1,12 +1,21 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 14:36:57
+ * @LastEditTime: 2022-11-07 19:16:25
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
 import React, {useRef, useState} from 'react';
-import {View, StyleSheet, SectionList, Text, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    SectionList,
+    Text,
+    Platform,
+    TouchableOpacity,
+    TextInput,
+    KeyboardAvoidingView,
+} from 'react-native';
 import NavBar from '~/components/NavBar';
 import {Colors} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -262,7 +271,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
             />
-            <View style={styles.content}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
                 <SectionList
                     sections={list}
                     initialNumToRender={20}
@@ -274,7 +283,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                     style={[styles.sectionList, {paddingBottom: insets.bottom}]}
                     stickySectionHeadersEnabled={false}
                 />
-            </View>
+            </KeyboardAvoidingView>
             <RichTextInputModal ref={richTextModalRef} onChangeText={handleRichTextChange} />
         </View>
     );

@@ -4,7 +4,7 @@
  * @Description:收益明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Image, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
+import {StyleSheet, Image, ScrollView, Text, TouchableOpacity, View, Platform, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
@@ -84,7 +84,9 @@ const ProfitDetail = ({navigation, route}) => {
                         <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
                             {tabs.length > 1 && (
                                 <ScrollableTabView
+                                    isUseViewPager={true}
                                     ref={scrollTab}
+                                    style={{flex: 1}}
                                     renderTabBar={() => <ScrollTabbar boxStyle={{backgroundColor: Colors.white}} />}
                                     initialPage={page}
                                     locked={true}

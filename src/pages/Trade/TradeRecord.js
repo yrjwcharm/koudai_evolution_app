@@ -39,7 +39,7 @@ const TradeRecord = ({route, navigation}) => {
     //     }
     // }
     useEffect(() => {
-        if (fund_code || platform_class == 10 || platform_class == 20) {
+        if (fund_code || platform_class == 10 || platform_class == 20 || platform_class == 80) {
             tradeType.current = [0, -35, 4, 7];
         }
     }, []);
@@ -320,12 +320,12 @@ const TradeRecord = ({route, navigation}) => {
                             {renderContent()}
                         </View>
                     )} */}
-                    {!fund_code && platform_class != 10 && platform_class != 20 ? (
+                    {!fund_code && platform_class != 10 && platform_class != 20 && platform_class != 80 ? (
                         <View tabLabel="投顾服务" style={styles.container}>
                             {renderContent()}
                         </View>
                     ) : null}
-                    {!fund_code && platform_class != 10 && platform_class != 20 ? (
+                    {!fund_code && platform_class != 10 && platform_class != 20 && platform_class != 80 ? (
                         <View tabLabel={adjust_name || '调仓'} style={styles.container}>
                             {renderContent()}
                         </View>
