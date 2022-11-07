@@ -81,7 +81,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
                             key={type}
                             onPress={() => {
                                 global.LogTool({event: `${type}_click`});
-                                if (type === 'follow' && !isLogin) jump({path: 'Login', type: 1});
+                                if (type === 'follow' && !isLogin) jump({path: 'Register', type: 1});
                                 else setActive(i);
                             }}
                             style={{marginLeft: i === 0 ? px(30) : px(20)}}>

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 10:44:55
+ * @LastEditTime: 2022-11-07 19:26:11
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -10,7 +10,7 @@ import {View, StyleSheet, SectionList, Text, TouchableOpacity, TextInput, FlatLi
 import NavBar from '~/components/NavBar';
 import {Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {deviceHeight, px} from '~/utils/appUtil';
+import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {BottomModal} from '~/components/Modal';
@@ -126,7 +126,7 @@ export default function SpecialModifyEntry({navigation, route}) {
                     />
                 </View>
                 {data.line_group ? (
-                    <View style={{...Style.flexBetween, ...styles.footer, height: 58 + insets.bottom}}>
+                    <View style={{...Style.flexBetween, ...styles.footer}}>
                         {data.apply_info?.title && (
                             <TouchableOpacity style={styles.btn} onPress={handleShowTip}>
                                 <Text style={styles.btn_text}>审核提示</Text>
@@ -202,12 +202,13 @@ const styles = StyleSheet.create({
         left: 0,
         width: '100%',
         backgroundColor: '#fff',
-        height: px(58),
+        // height: px(58),
         paddingHorizontal: px(16),
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'flex-start',
         paddingTop: px(10),
+        paddingBottom: isIphoneX() ? 34 : 20,
     },
     btn: {
         borderColor: '#545968',
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
         height: px(44),
         paddingHorizontal: px(20),
+        marginRight: 12,
         ...Style.flexCenter,
     },
     btn_text: {
@@ -224,7 +226,7 @@ const styles = StyleSheet.create({
     },
     submitBtn: {
         flex: 1,
-        marginLeft: px(12),
+
         backgroundColor: '#0051CC',
         borderRadius: px(6),
         height: px(44),

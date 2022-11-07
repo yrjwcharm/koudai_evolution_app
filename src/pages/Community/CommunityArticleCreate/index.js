@@ -29,7 +29,7 @@ import {Modal} from '~/components/Modal';
 import NavBar from '~/components/NavBar';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {isIphoneX, px} from '~/utils/appUtil';
+import {beforeGetPicture, isIphoneX, px} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {ChooseModal, ChooseTag} from '../CommunityVodCreate';
 import {getArticleDraft, publishArticle, saveArticleDraft} from './services';
@@ -178,28 +178,30 @@ const WriteArticle = ({article, setArticle}) => {
 
     const chooseFile = ({type}) => {
         if (type === 'picture' || type === 'video') {
-            launchImageLibrary({mediaType: type === 'picture' ? 'photo' : 'video', selectionLimit: 1}, (resp) => {
-                const {assets: [file] = []} = resp;
-                if (file) {
-                    upload({...file, fileType: type === 'picture' ? 'pic' : 'vod'}).then((res) => {
-                        if (res) {
-                            editor.current?.focusContentEditor?.();
-                            if (type === 'picture') {
-                                editor.current?.insertHTML(`
-                                    <br>
-                                    <img style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" src="${res.url}" alt="">
-                                    <br>
-                                `);
-                            } else {
-                                editor.current?.insertHTML(`
-                                    <br>
-                                    <img class="oss_media" id="oss_vod_${res.id}" src="${res.cover}" alt="" style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" videoUrl="${res.url}">
-                                    <br>
-                                `);
+            beforeGetPicture(() => {
+                launchImageLibrary({mediaType: type === 'picture' ? 'photo' : 'video', selectionLimit: 1}, (resp) => {
+                    const {assets: [file] = []} = resp;
+                    if (file) {
+                        upload({...file, fileType: type === 'picture' ? 'pic' : 'vod'}).then((res) => {
+                            if (res) {
+                                editor.current?.focusContentEditor?.();
+                                if (type === 'picture') {
+                                    editor.current?.insertHTML(`
+                                        <br>
+                                        <img style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" src="${res.url}" alt="">
+                                        <br>
+                                    `);
+                                } else {
+                                    editor.current?.insertHTML(`
+                                        <br>
+                                        <img class="oss_media" id="oss_vod_${res.id}" src="${res.cover}" alt="" style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" videoUrl="${res.url}">
+                                        <br>
+                                    `);
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
         } else {
             // RNFileSelector.Show({
@@ -467,6 +469,10 @@ const Index = ({navigation, route, setLoading}) => {
     };
 
     const chooseCover = () => {
+        beforeGetPicture(openPicker);
+    };
+
+    const openPicker = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
             const {assets: [file] = []} = resp;
             setTimeout(() => {

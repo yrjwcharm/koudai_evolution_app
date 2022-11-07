@@ -8,7 +8,7 @@ import {ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Platfor
 import {useJump} from '~/components/hooks';
 import Toast from '~/components/Toast';
 import {getData, goSave} from './services';
-import {px} from '~/utils/appUtil';
+import {beforeGetPicture, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {PageModal, SelectModal} from '~/components/Modal';
 import {Style} from '~/common/commonStyle';
@@ -133,62 +133,67 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                 });
                 break;
             case 1:
-                const loading = Toast.showLoading();
-                launchImageLibrary({quality: 1, mediaType: 'photo'}, (response) => {
-                    Toast.hide(loading);
-                    if (response.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (response.error) {
-                        console.log('ImagePicker Error: ', response.error);
-                    } else if (response.customButton) {
-                        console.log('User tapped custom button: ', response.customButton);
-                    } else if (response.assets) {
-                        const loading2 = Toast.showLoading();
-                        setTimeout(() => {
-                            ImageCropPicker.openCropper({
-                                path: response.assets[0].uri,
-                                width: 375,
-                                height: 200,
-                                cropperChooseText: '选择',
-                                cropperCancelText: '取消',
-                                loadingLabelText: '加载中',
-                            })
-                                .then((image) => {
-                                    if (image) {
-                                        const params = {
-                                            type: image.mime,
-                                            uri: image.path,
-                                            fileName: image.filename || '123.png',
-                                        };
-                                        const loading3 = Toast.showLoading();
-                                        upload(
-                                            '/common/image/upload',
-                                            params,
-                                            [],
-                                            (result) => {
-                                                console.log(result);
-                                                goSave({img: result.result.url, subject_id: route.params.subject_id})
-                                                    .then((res) => {
-                                                        getList();
-                                                        if (res.code === '000000') {
-                                                            Toast.show('上传成功');
-                                                        }
-                                                    })
-                                                    .finally((_) => {
-                                                        Toast.hide(loading3);
-                                                    });
-                                            },
-                                            () => {
-                                                Toast.hide(loading3);
-                                            }
-                                        );
-                                    }
+                beforeGetPicture(() => {
+                    const loading = Toast.showLoading();
+                    launchImageLibrary({quality: 1, mediaType: 'photo'}, (response) => {
+                        Toast.hide(loading);
+                        if (response.didCancel) {
+                            console.log('User cancelled image picker');
+                        } else if (response.error) {
+                            console.log('ImagePicker Error: ', response.error);
+                        } else if (response.customButton) {
+                            console.log('User tapped custom button: ', response.customButton);
+                        } else if (response.assets) {
+                            const loading2 = Toast.showLoading();
+                            setTimeout(() => {
+                                ImageCropPicker.openCropper({
+                                    path: response.assets[0].uri,
+                                    width: 375,
+                                    height: 200,
+                                    cropperChooseText: '选择',
+                                    cropperCancelText: '取消',
+                                    loadingLabelText: '加载中',
                                 })
-                                .finally((_) => {
-                                    Toast.hide(loading2);
-                                });
-                        }, 500);
-                    }
+                                    .then((image) => {
+                                        if (image) {
+                                            const params = {
+                                                type: image.mime,
+                                                uri: image.path,
+                                                fileName: image.filename || '123.png',
+                                            };
+                                            const loading3 = Toast.showLoading();
+                                            upload(
+                                                '/common/image/upload',
+                                                params,
+                                                [],
+                                                (result) => {
+                                                    console.log(result);
+                                                    goSave({
+                                                        img: result.result.url,
+                                                        subject_id: route.params.subject_id,
+                                                    })
+                                                        .then((res) => {
+                                                            getList();
+                                                            if (res.code === '000000') {
+                                                                Toast.show('上传成功');
+                                                            }
+                                                        })
+                                                        .finally((_) => {
+                                                            Toast.hide(loading3);
+                                                        });
+                                                },
+                                                () => {
+                                                    Toast.hide(loading3);
+                                                }
+                                            );
+                                        }
+                                    })
+                                    .finally((_) => {
+                                        Toast.hide(loading2);
+                                    });
+                            }, 500);
+                        }
+                    });
                 });
                 break;
         }
