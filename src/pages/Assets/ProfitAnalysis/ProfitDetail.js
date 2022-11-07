@@ -33,12 +33,12 @@ const ProfitDetail = ({navigation, route}) => {
         (async () => {
             const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', button, tabs = []} = res[0]?.result || {};
+                const {title: navigationTitle = '', button = {}, tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
                 setDeclarePic(declare_pic);
                 setTabs(tabs);
                 setLoading(false);
-                setData(button);
+                button && setData(button);
                 navigation.setOptions({
                     title: navigationTitle,
                     headerRight: () => (
@@ -66,7 +66,7 @@ const ProfitDetail = ({navigation, route}) => {
         return () => listener && listener.remove();
     }, [init]);
     useEffect(() => {
-        data && Object.keys(data).length > 0 && DeviceEventEmitter.emit('sendTrigger', data);
+        DeviceEventEmitter.emit('sendTrigger', data);
     }, [data]);
     const setLoadingFn = useCallback((loading) => {
         setLoadingFn(loading);
