@@ -93,20 +93,18 @@ const FixedInvestDetail = ({navigation, route}) => {
                 password,
                 type,
             });
-            if (res.code === '000001' || res.code === '000000') {
-                Toast.hide(loading);
-                let timer = setTimeout(() => {
-                    Toast.show(res.message);
-                    timer && clearTimeout(timer);
-                }, 500);
-            }
+            Toast.hide(loading);
+            let timer = setTimeout(() => {
+                Toast.show(res.message);
+                timer && clearTimeout(timer);
+            }, 500);
         } else {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: plan_id,
                 password,
             }).then((res) => {
+                Toast.show(res.message);
                 if (res.code == '000000') {
-                    Toast.show(res.message);
                     navigation.goBack();
                 }
                 Toast.hide(loading);
@@ -258,7 +256,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                                 }}>
                                                 <View style={Style.flexRow}>
                                                     <View>
-                                                        {item.status == '定投成功' && (
+                                                        {(item.status == '定投成功' || item.status == '确认中') && (
                                                             <Text style={styles.investStatus}>{item.status}</Text>
                                                         )}
                                                         {item.status == '定投失败' && (

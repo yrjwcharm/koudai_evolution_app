@@ -4,7 +4,7 @@
  * @Description:年收益
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px, delMille, compareDate, deviceWidth} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
@@ -135,7 +135,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
-                    if (profit_data_list.length > 0) {
+                    if (unit_list.length > 0) {
                         let arr = profit_data_list
                             .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                             .map((el) => {
@@ -318,96 +318,98 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     // }, [type, myChart.current, isBarChart]);
     return (
         <View style={styles.container}>
-            <View style={[styles.chartLeft]}>
-                {/*<TouchableOpacity onPress={selCalendarType}>*/}
-                {/*    <View*/}
-                {/*        style={[*/}
-                {/*            Style.flexCenter,*/}
-                {/*            styles.selChartType,*/}
-                {/*            isCalendar && {*/}
-                {/*                backgroundColor: Colors.white,*/}
-                {/*                width: px(60),*/}
-                {/*            },*/}
-                {/*        ]}>*/}
-                {/*        <Text*/}
-                {/*            style={{*/}
-                {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
-                {/*                fontSize: px(12),*/}
-                {/*                fontFamily: Font.pingFangRegular,*/}
-                {/*            }}>*/}
-                {/*            日历图*/}
-                {/*        </Text>*/}
-                {/*    </View>*/}
-                {/*</TouchableOpacity>*/}
-                {/*<TouchableOpacity onPress={selBarChartType}>*/}
-                {/*    <View*/}
-                {/*        style={[*/}
-                {/*            Style.flexCenter,*/}
-                {/*            styles.selChartType,*/}
-                {/*            isBarChart && {*/}
-                {/*                backgroundColor: Colors.white,*/}
-                {/*                width: px(60),*/}
-                {/*            },*/}
-                {/*        ]}>*/}
-                {/*        <Text*/}
-                {/*            style={{*/}
-                {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
-                {/*                fontSize: px(12),*/}
-                {/*                fontFamily: Font.pingFangRegular,*/}
-                {/*            }}>*/}
-                {/*            柱状图*/}
-                {/*        </Text>*/}
-                {/*    </View>*/}
-                {/*</TouchableOpacity>*/}
-            </View>
-            <>
-                {isHasData ? (
-                    <>
-                        {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
-                        {isBarChart && (
-                            <View style={styles.chartContainer}>
-                                <View style={styles.separatorView}>
-                                    <Text
-                                        style={[
-                                            styles.benefit,
-                                            {
-                                                textAlign: 'center',
-                                                color:
-                                                    delMille(profit) > 0
-                                                        ? Colors.red
-                                                        : delMille(profit) < 0
-                                                        ? Colors.green
-                                                        : Colors.lightGrayColor,
-                                            },
-                                        ]}>
-                                        {profit}
-                                    </Text>
-                                    <View style={styles.dateView}>
-                                        <Text style={styles.date}>{selCurYear}</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={[styles.chartLeft]}>
+                    {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                    {/*    <View*/}
+                    {/*        style={[*/}
+                    {/*            Style.flexCenter,*/}
+                    {/*            styles.selChartType,*/}
+                    {/*            isCalendar && {*/}
+                    {/*                backgroundColor: Colors.white,*/}
+                    {/*                width: px(60),*/}
+                    {/*            },*/}
+                    {/*        ]}>*/}
+                    {/*        <Text*/}
+                    {/*            style={{*/}
+                    {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                    {/*                fontSize: px(12),*/}
+                    {/*                fontFamily: Font.pingFangRegular,*/}
+                    {/*            }}>*/}
+                    {/*            日历图*/}
+                    {/*        </Text>*/}
+                    {/*    </View>*/}
+                    {/*</TouchableOpacity>*/}
+                    {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                    {/*    <View*/}
+                    {/*        style={[*/}
+                    {/*            Style.flexCenter,*/}
+                    {/*            styles.selChartType,*/}
+                    {/*            isBarChart && {*/}
+                    {/*                backgroundColor: Colors.white,*/}
+                    {/*                width: px(60),*/}
+                    {/*            },*/}
+                    {/*        ]}>*/}
+                    {/*        <Text*/}
+                    {/*            style={{*/}
+                    {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                    {/*                fontSize: px(12),*/}
+                    {/*                fontFamily: Font.pingFangRegular,*/}
+                    {/*            }}>*/}
+                    {/*            柱状图*/}
+                    {/*        </Text>*/}
+                    {/*    </View>*/}
+                    {/*</TouchableOpacity>*/}
+                </View>
+                <>
+                    {isHasData ? (
+                        <>
+                            {isCalendar && <View style={styles.yearFlex}>{renderCalendar}</View>}
+                            {isBarChart && (
+                                <View style={styles.chartContainer}>
+                                    <View style={styles.separatorView}>
+                                        <Text
+                                            style={[
+                                                styles.benefit,
+                                                {
+                                                    textAlign: 'center',
+                                                    color:
+                                                        delMille(profit) > 0
+                                                            ? Colors.red
+                                                            : delMille(profit) < 0
+                                                            ? Colors.green
+                                                            : Colors.lightGrayColor,
+                                                },
+                                            ]}>
+                                            {profit}
+                                        </Text>
+                                        <View style={styles.dateView}>
+                                            <Text style={styles.date}>{selCurYear}</Text>
+                                        </View>
                                     </View>
+                                    <View style={{marginTop: px(15)}}>{renderBarChart}</View>
+                                    <View style={styles.separator} />
                                 </View>
-                                <View style={{marginTop: px(15)}}>{renderBarChart}</View>
-                                <View style={styles.separator} />
-                            </View>
-                        )}
-                        {isBarChart && (
-                            <View style={[Style.flexBetween, {marginTop: px(6)}]}>
-                                <Text style={styles.chartDate}>{startDate}</Text>
-                                <Text style={styles.chartDate}>{endDate}</Text>
-                            </View>
-                        )}
-                        <RenderList
-                            curDate={selCurYear}
-                            type={type}
-                            poid={poid}
-                            fund_code={fund_code}
-                            unitType={unit_type}
-                        />
-                    </>
-                ) : (
-                    <EmptyData />
-                )}
-            </>
+                            )}
+                            {isBarChart && (
+                                <View style={[Style.flexBetween, {marginTop: px(6)}]}>
+                                    <Text style={styles.chartDate}>{startDate}</Text>
+                                    <Text style={styles.chartDate}>{endDate}</Text>
+                                </View>
+                            )}
+                            <RenderList
+                                curDate={selCurYear}
+                                type={type}
+                                poid={poid}
+                                fund_code={fund_code}
+                                unitType={unit_type}
+                            />
+                        </>
+                    ) : (
+                        <EmptyData />
+                    )}
+                </>
+            </ScrollView>
         </View>
     );
 };

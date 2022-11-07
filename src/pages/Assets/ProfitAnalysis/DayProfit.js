@@ -39,8 +39,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);
     const [selCurDate, setSelCurDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateArr, setDateArr] = useState([]);
-    const [startMonth, setStartMonth] = useState('');
-    const [endMonth, setEndMonth] = useState(dayjs().format('YYYY-MM'));
+    const [isPrev, setIsPrev] = useState(true);
+    const [isNext, setIsNext] = useState(false);
     const [isHasData, setIsHasData] = useState(true);
     const myChart = useRef();
     const [profit, setProfit] = useState('');
@@ -216,13 +216,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 //双重for循环判断日历是否超过、小于或等于当前日期
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-                    if (profit_data_list.length > 0) {
-                        let minDate = unit_list[unit_list.length - 1].value;
-                        let maxDate = unit_list[0].value;
-                        let endMonth = dayjs(maxDate).format('YYYY-MM');
-                        let startMonth = dayjs(minDate).format('YYYY-MM');
-                        setStartMonth(startMonth);
-                        setEndMonth(endMonth);
+                    if (unit_list.length > 0) {
+                        let min = unit_list[unit_list.length - 1].value;
+                        let max = unit_list[0].value;
+                        let cur = dayjs_.format('YYYY-MM');
+                        if (cur > max || cur < min) return;
+                        // cur == max && setIsNext(false);
+                        // cur == min && setIsPrev(false);
                         for (let i = 0; i < arr.length; i++) {
                             for (let j = 0; j < profit_data_list.length; j++) {
                                 //小于当前日期的情况
@@ -241,6 +241,19 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
                         setSelCurDate(arr[zIndex]?.day);
+                        if (cur >= min && cur <= max) {
+                            if (cur == max) {
+                                setIsNext(false);
+                                return;
+                            }
+                            if (cur == min) {
+                                setIsPrev(false);
+                                return;
+                            }
+                            setIsPrev(true);
+                            setIsNext(true);
+                        }
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     } else {
                         setIsHasData(false);
                     }
@@ -255,13 +268,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     /**
      * 向上递增一个月
      */
-    const addMonth = async () => {
+    const addMonth = () => {
         setDiff((diff) => diff + 1);
     };
     /**
      * 向下递减一个月
      */
-    const subMonth = async () => {
+    const subMonth = () => {
         setDiff((diff) => diff - 1);
     };
     /**
@@ -426,7 +439,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             <RNEChartsPro
                 onDataZoom={(result, option) => {
                     const {start, end} = result?.batch[0];
-                    console.log('中线测试+++++', start, end, option);
                     const count = xAxisData?.length;
                     barOption.dataZoom[0].start = start;
                     barOption.dataZoom[0].end = end;
@@ -473,68 +485,70 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, [isBarChart]);
     return (
         <View style={styles.container}>
-            <ChartHeader
-                selCalendarType={selCalendarType}
-                selBarChartType={selBarChartType}
-                isCalendar={isCalendar}
-                isBarChart={isBarChart}
-                subMonth={subMonth}
-                addMonth={addMonth}
-                startMonth={startMonth}
-                endMonth={endMonth}
-                date={date}
-            />
-            {isHasData ? (
-                <>
-                    {isCalendar && (
-                        <View style={{marginTop: px(12)}}>
-                            <View style={styles.weekFlex}>{renderWeek}</View>
-                            <View style={styles.dateWrap}>{renderCalendar}</View>
-                        </View>
-                    )}
-                    {isBarChart && (
-                        <View style={styles.chartContainer}>
-                            <View style={styles.separatorView}>
-                                <Text
-                                    style={[
-                                        styles.benefit,
-                                        {
-                                            textAlign: 'center',
-                                            color:
-                                                delMille(profit) > 0
-                                                    ? Colors.red
-                                                    : delMille(profit) < 0
-                                                    ? Colors.green
-                                                    : Colors.lightGrayColor,
-                                        },
-                                    ]}>
-                                    {profit}
-                                </Text>
-                                <View style={styles.dateView}>
-                                    <Text style={styles.date}>{selCurDate}</Text>
-                                </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <ChartHeader
+                    selCalendarType={selCalendarType}
+                    selBarChartType={selBarChartType}
+                    isCalendar={isCalendar}
+                    isBarChart={isBarChart}
+                    subMonth={subMonth}
+                    addMonth={addMonth}
+                    isPrev={isPrev}
+                    isNext={isNext}
+                    date={date}
+                />
+                {isHasData ? (
+                    <>
+                        {isCalendar && (
+                            <View style={{marginTop: px(12)}}>
+                                <View style={styles.weekFlex}>{renderWeek}</View>
+                                <View style={styles.dateWrap}>{renderCalendar}</View>
                             </View>
-                            <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart}</View>
-                            <View style={styles.separator} />
-                        </View>
-                    )}
-                    {isBarChart && (
-                        <View style={[Style.flexBetween]}>
-                            <Text style={styles.chartDate}>{startDate}</Text>
-                            <Text style={styles.chartDate}>{endDate}</Text>
-                        </View>
-                    )}
-                    <RenderList
-                        curDate={selCurDate}
-                        type={type}
-                        poid={poid}
-                        fund_code={fund_code}
-                        unitType={unit_type}
-                    />
-                </>
-            ) : (
-                <EmptyData />
-            )}
+                        )}
+                        {isBarChart && (
+                            <View style={styles.chartContainer}>
+                                <View style={styles.separatorView}>
+                                    <Text
+                                        style={[
+                                            styles.benefit,
+                                            {
+                                                textAlign: 'center',
+                                                color:
+                                                    delMille(profit) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightGrayColor,
+                                            },
+                                        ]}>
+                                        {profit}
+                                    </Text>
+                                    <View style={styles.dateView}>
+                                        <Text style={styles.date}>{selCurDate}</Text>
+                                    </View>
+                                </View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart}</View>
+                                <View style={styles.separator} />
+                            </View>
+                        )}
+                        {isBarChart && (
+                            <View style={[Style.flexBetween]}>
+                                <Text style={styles.chartDate}>{startDate}</Text>
+                                <Text style={styles.chartDate}>{endDate}</Text>
+                            </View>
+                        )}
+                        <RenderList
+                            curDate={selCurDate}
+                            type={type}
+                            poid={poid}
+                            fund_code={fund_code}
+                            unitType={unit_type}
+                        />
+                    </>
+                ) : (
+                    <EmptyData />
+                )}
+            </ScrollView>
         </View>
     );
 });

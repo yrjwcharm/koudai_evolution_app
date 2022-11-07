@@ -82,19 +82,24 @@ const FixedInvestManage = ({navigation, route}) => {
     const renderEmpty = useCallback(() => {
         return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
     }, [emptyMsg, showEmpty]);
-    const executeSort = useCallback((data) => {
-        if (data.sort_key) {
-            callHistoryDataApi({
-                type: unitType,
-                sort_key: data?.sort_key,
-                sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
-            }).then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result);
-                }
-            });
-        }
-    }, []);
+    const executeSort = useCallback(
+        (data) => {
+            if (data.sort_key) {
+                callHistoryDataApi({
+                    type: unitType,
+                    fund_code,
+                    poid,
+                    sort_key: data?.sort_key,
+                    sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    }
+                });
+            }
+        },
+        [unitType]
+    );
     return (
         <>
             {loading ? (
@@ -251,7 +256,7 @@ const FixedInvestManage = ({navigation, route}) => {
 
                     {/*<BottomDesc style={{marginBottom: isIPhoneX() ? px(104) : px(78)}} />*/}
 
-                    {Object.keys(data?.button).length > 0 && (
+                    {data?.button && Object.keys(data?.button).length > 0 && (
                         <FixedButton title={data?.button?.text} onPress={() => jump(data?.button?.url)} />
                     )}
                 </View>

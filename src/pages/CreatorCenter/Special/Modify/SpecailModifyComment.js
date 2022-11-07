@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 15:14:11
+ * @LastEditTime: 2022-11-07 15:33:27
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -332,7 +332,7 @@ export default function SpecailModifyComment({navigation, route}) {
             <Tabs tabs={tabsText} activeTab={activeTab} goToPage={handleTabChange} />
             <View style={styles.listWrap}>
                 <FlatList
-                  style={{flex:1}}
+                    style={{flex: 1}}
                     data={data}
                     refreshing={refreshing}
                     ListEmptyComponent={EmptyLit}
@@ -362,12 +362,11 @@ export default function SpecailModifyComment({navigation, route}) {
 const styles = StyleSheet.create({
     pageWrap: {
         backgroundColor: '#fff',
-        minHeight: '100%',
         flex: 1,
     },
     listWrap: {
         flex: 1,
-        height: '100%',
+        backgroundColor: '#fff',
     },
     tabContainer: {
         width: '100%',

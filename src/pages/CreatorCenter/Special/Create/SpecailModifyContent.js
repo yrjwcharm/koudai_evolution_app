@@ -1,19 +1,19 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 15:27:45
+ * @LastEditTime: 2022-11-07 15:32:01
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, Pressable, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import {View, StyleSheet, Text, Pressable, TouchableOpacity, TextInput, FlatList, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
-import {deviceHeight, isIphoneX, px, requestAuth} from '~/utils/appUtil';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {deviceHeight, px} from '~/utils/appUtil';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
-import {Modal, BottomModal, SelectModal} from '~/components/Modal';
+import {Modal, BottomModal} from '~/components/Modal';
 import {useJump} from '~/components/hooks';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {getContentList, getStashContentList, saveStashContentList} from './services';
@@ -200,7 +200,7 @@ function ContentSearchModal(props) {
     };
 
     return (
-        <View style={styles.searchModal}>
+        <View style={[styles.searchModal, props.style]}>
             <View style={{paddingBottom: 12}}>
                 <View style={[styles.searchWrap]}>
                     <FastImage
@@ -389,6 +389,17 @@ export default function SpecailModifyContent({navigation, route}) {
 
     if (!pageData) return null;
 
+    const bottomModalConfig = Platform.select({
+        ios: {
+            keyboardAvoiding: false,
+            height: deviceHeight - 200,
+        },
+        android: {
+            keyboardAvoiding: true, // 配置在android 可能不生校
+            height: deviceHeight - 400,
+        },
+    });
+
     return (
         <View style={styles.pageWrap}>
             <NavBar
@@ -424,11 +435,12 @@ export default function SpecailModifyContent({navigation, route}) {
                 ref={bottomModal}
                 style={{paddingBottom: 0}}
                 title="添加内容"
-                keyboardAvoiding={false}
+                keyboardAvoiding={bottomModalConfig.keyboardAvoiding}
                 showClose={true}
                 confirmText="确定"
                 children={
                     <ContentSearchModal
+                        style={{height: bottomModalConfig.height}}
                         subject_id={subject_id}
                         showToast={showToast}
                         selected={data}
@@ -453,6 +465,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: px(16),
         paddingRight: px(16),
+        backgroundColor: '#F5F6F8',
     },
     space1: {
         marginTop: px(12),
@@ -561,7 +574,8 @@ const styles = StyleSheet.create({
 
     searchModal: {
         width: '100%',
-        height: deviceHeight - 330,
+        // height: deviceHeight - 500,
+        minHeight: 300,
         padding: 16,
     },
     searchWrap: {

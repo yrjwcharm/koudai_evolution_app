@@ -56,7 +56,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const renderList = useMemo(
         () => (
             <>
-                {profitList.map((item, index) => {
+                {profitList?.map((item, index) => {
                     let color =
                         delMille(item.profit) > 0
                             ? Colors.red

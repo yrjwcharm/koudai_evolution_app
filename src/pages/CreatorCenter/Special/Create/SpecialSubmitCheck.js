@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 15:31:26
+ * @LastEditTime: 2022-11-07 15:07:09
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js
  * @Description: 提交审核成功页面
  */
@@ -10,7 +10,7 @@ import {View, StyleSheet, Text, TouchableOpacity, TextInput, FlatList} from 'rea
 import FastImage from 'react-native-fast-image';
 import NavBar from '~/components/NavBar';
 import {Style} from '~/common/commonStyle';
-import {deviceHeight, deviceWidth, px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useJump} from '~/components/hooks';
 import {useFocusEffect} from '@react-navigation/native';

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 16:08:04
+ * @LastEditTime: 2022-11-07 15:05:52
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description: 创建专题 - 基础信息
  */
@@ -38,7 +38,6 @@ function Tag(props) {
                 <Text style={styles.tagItem_text}>{text}</Text>
             </Pressable>
             <TouchableOpacity style={styles.tagItem_closeWrap} onPress={onClose}>
-                {/* <Icon style={styles.tagItem_closeIcon} name={'close'} size={12} /> */}
                 <FastImage
                     source={require('~/assets/img/special/clear_tag.png')}
                     style={{width: px(8), height: px(8)}}
@@ -100,9 +99,9 @@ function TagWrap(props) {
         <>
             <View style={[styles.space2, styles.tagsWrap]}>
                 {(tags || []).map((tag, i) => (
-                    <Tag key={tag + i} text={tag}   onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
+                    <Tag key={tag + i} text={tag} onPress={() => handleTagChange(i)} onClose={() => handelTagDel(i)} />
                 ))}
-                {tags.length < 3 && <AddTag key={"addTagkey"} onPress={() => handleTagChange(-1)} />}
+                {tags.length < 3 && <AddTag key="addTagkey" onPress={() => handleTagChange(-1)} />}
             </View>
             <View style={[styles.space1, styles.tipWrap]}>
                 <FastImage style={styles.tip_icon} source={require('~/assets/img/special/warning_tip.png')} />

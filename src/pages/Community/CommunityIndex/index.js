@@ -422,6 +422,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                 if (res.code === '000000') {
                     const {has_more, items = [], resource_private_tip: tip} = res.result;
                     setHasMore(has_more);
+                    page === 1 && waterfallWrapper.current?.clear?.();
                     setData((prev) => (page === 1 ? items : prev.concat(items)));
                     tip && setTip(tip);
                 }
@@ -434,7 +435,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
 
     const refresh = () => {
         waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
-        waterfallWrapper.current?.clear?.();
         setRefreshing(true);
         page > 1 ? setPage(1) : init();
     };
@@ -489,7 +489,6 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     logedPage.current.push(1);
                 },
                 onRefresh: () => {
-                    waterfallWrapper.current?.clear?.();
                     setRefreshing(true);
                     page > 1 ? setPage(1) : init();
                 },
@@ -623,13 +622,13 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
     );
 });
 
-export const PublishContent = forwardRef(({community_id = 0, muid = 0, handleClick}, ref) => {
+export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_id, handleClick}, ref) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const {add_icon, btn_list = []} = data;
     const bottomModal = useRef();
     const init = () => {
-        getCanPublishContent({community_id, muid}).then((res) => {
+        getCanPublishContent({community_id, muid, history_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
