@@ -197,7 +197,7 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1, paddingHorizontal: Space.padding}}>
                 <Text style={[styles.title, {marginTop: px(8)}]}>推荐关注</Text>
-                {data.map((item) => {
+                {data.map((item, index, arr) => {
                     const {avatar, count_str, item_id, item_type, name, status, url} = item;
                     const isFollowed = status === 1;
                     return (
@@ -205,7 +205,11 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
                             activeOpacity={0.8}
                             key={item_id}
                             onPress={() => jump(url)}
-                            style={[Style.flexBetween, styles.recommendItem]}>
+                            style={[
+                                Style.flexBetween,
+                                styles.recommendItem,
+                                index === arr.length - 1 ? {marginBottom: px(76)} : {},
+                            ]}>
                             <View style={Style.flexRow}>
                                 <Image
                                     source={{
