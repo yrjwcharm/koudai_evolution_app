@@ -113,11 +113,7 @@ const EditProduct = ({navigation, route}) => {
                                 <Text style={styles.cardHeaderTitle}>产品展示样式</Text>
                             </View>
                             <View style={styles.cardHeaderRight}>
-                                <Icon
-                                    color={Colors.descColor}
-                                    name={pageModalType === 1 ? 'angle-down' : 'angle-up'}
-                                    size={px(14)}
-                                />
+                                <Icon color={Colors.descColor} name={'angle-right'} size={px(14)} />
                             </View>
                         </TouchableOpacity>
                         <View style={styles.cardHint}>
@@ -174,11 +170,7 @@ const EditProduct = ({navigation, route}) => {
                             </View>
                             <View style={styles.cardHeaderRight}>
                                 <Text style={styles.cardHeaderDesc}>{curRange?.name || ''}</Text>
-                                <Icon
-                                    color={Colors.descColor}
-                                    name={pageModalType === 2 ? 'angle-down' : 'angle-up'}
-                                    size={px(14)}
-                                />
+                                <Icon color={Colors.descColor} name={'angle-right'} size={px(14)} />
                             </View>
                         </TouchableOpacity>
                     </View>
