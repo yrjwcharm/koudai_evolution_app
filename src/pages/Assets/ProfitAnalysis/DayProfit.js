@@ -486,68 +486,70 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, [isBarChart]);
     return (
         <View style={styles.container}>
-            <ChartHeader
-                selCalendarType={selCalendarType}
-                selBarChartType={selBarChartType}
-                isCalendar={isCalendar}
-                isBarChart={isBarChart}
-                subMonth={subMonth}
-                addMonth={addMonth}
-                isPrev={isPrev}
-                isNext={isNext}
-                date={date}
-            />
-            {isHasData ? (
-                <>
-                    {isCalendar && (
-                        <View style={{marginTop: px(12)}}>
-                            <View style={styles.weekFlex}>{renderWeek}</View>
-                            <View style={styles.dateWrap}>{renderCalendar}</View>
-                        </View>
-                    )}
-                    {isBarChart && (
-                        <View style={styles.chartContainer}>
-                            <View style={styles.separatorView}>
-                                <Text
-                                    style={[
-                                        styles.benefit,
-                                        {
-                                            textAlign: 'center',
-                                            color:
-                                                delMille(profit) > 0
-                                                    ? Colors.red
-                                                    : delMille(profit) < 0
-                                                    ? Colors.green
-                                                    : Colors.lightGrayColor,
-                                        },
-                                    ]}>
-                                    {profit}
-                                </Text>
-                                <View style={styles.dateView}>
-                                    <Text style={styles.date}>{selCurDate}</Text>
-                                </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <ChartHeader
+                    selCalendarType={selCalendarType}
+                    selBarChartType={selBarChartType}
+                    isCalendar={isCalendar}
+                    isBarChart={isBarChart}
+                    subMonth={subMonth}
+                    addMonth={addMonth}
+                    isPrev={isPrev}
+                    isNext={isNext}
+                    date={date}
+                />
+                {isHasData ? (
+                    <>
+                        {isCalendar && (
+                            <View style={{marginTop: px(12)}}>
+                                <View style={styles.weekFlex}>{renderWeek}</View>
+                                <View style={styles.dateWrap}>{renderCalendar}</View>
                             </View>
-                            <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart}</View>
-                            <View style={styles.separator} />
-                        </View>
-                    )}
-                    {isBarChart && (
-                        <View style={[Style.flexBetween]}>
-                            <Text style={styles.chartDate}>{startDate}</Text>
-                            <Text style={styles.chartDate}>{endDate}</Text>
-                        </View>
-                    )}
-                    <RenderList
-                        curDate={selCurDate}
-                        type={type}
-                        poid={poid}
-                        fund_code={fund_code}
-                        unitType={unit_type}
-                    />
-                </>
-            ) : (
-                <EmptyData />
-            )}
+                        )}
+                        {isBarChart && (
+                            <View style={styles.chartContainer}>
+                                <View style={styles.separatorView}>
+                                    <Text
+                                        style={[
+                                            styles.benefit,
+                                            {
+                                                textAlign: 'center',
+                                                color:
+                                                    delMille(profit) > 0
+                                                        ? Colors.red
+                                                        : delMille(profit) < 0
+                                                        ? Colors.green
+                                                        : Colors.lightGrayColor,
+                                            },
+                                        ]}>
+                                        {profit}
+                                    </Text>
+                                    <View style={styles.dateView}>
+                                        <Text style={styles.date}>{selCurDate}</Text>
+                                    </View>
+                                </View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart}</View>
+                                <View style={styles.separator} />
+                            </View>
+                        )}
+                        {isBarChart && (
+                            <View style={[Style.flexBetween]}>
+                                <Text style={styles.chartDate}>{startDate}</Text>
+                                <Text style={styles.chartDate}>{endDate}</Text>
+                            </View>
+                        )}
+                        <RenderList
+                            curDate={selCurDate}
+                            type={type}
+                            poid={poid}
+                            fund_code={fund_code}
+                            unitType={unit_type}
+                        />
+                    </>
+                ) : (
+                    <EmptyData />
+                )}
+            </ScrollView>
         </View>
     );
 });

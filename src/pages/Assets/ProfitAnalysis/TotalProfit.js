@@ -4,7 +4,7 @@
  * @Description:
  */
 import React, {useCallback, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {isIphoneX, px} from '../../../utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import RenderList from './components/RenderList';
@@ -16,13 +16,15 @@ const TotalProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     });
     return (
         <View style={styles.container}>
-            <AccEarningsCom type={type} changePeriod={changePeriod} fund_code={fund_code} poid={poid} />
-            <View
-                style={{
-                    paddingHorizontal: px(12),
-                }}>
-                <RenderList curDate={period} fund_code={fund_code} poid={poid} type={type} unitType={unit_type} />
-            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <AccEarningsCom type={type} changePeriod={changePeriod} fund_code={fund_code} poid={poid} />
+                <View
+                    style={{
+                        paddingHorizontal: px(12),
+                    }}>
+                    <RenderList curDate={period} fund_code={fund_code} poid={poid} type={type} unitType={unit_type} />
+                </View>
+            </ScrollView>
         </View>
     );
 });
