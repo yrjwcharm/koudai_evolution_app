@@ -214,6 +214,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                         collect_num: data?.collect_num,
                         collect_status: data?.collect_status,
                         comment_num: data?.comment_num,
+                        product_type: data?.product_type,
                     }}
                     handleComment={handleComment}
                 />

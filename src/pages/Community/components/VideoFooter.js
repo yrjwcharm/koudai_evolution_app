@@ -89,55 +89,59 @@ const VideoFooter = ({data, handleComment}) => {
                     }}>
                     <Text style={{fontSize: px(12), color: '#fff'}}>我来聊两句...</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => onFavor('normal')}
-                    style={[Style.flexCenter, {flex: 1, marginLeft: px(10)}]}>
-                    <AnimatedLottieView
-                        ref={zanRef}
-                        loop={false}
-                        autoPlay
-                        source={
-                            favor_status
-                                ? require('~/assets/animation/videoFavorActive.json')
-                                : require('~/assets/animation/videoFavor.json')
-                        }
-                        style={{height: px(36), width: px(36), marginBottom: px(-6)}}
-                    />
+                {data?.product_type != 'article_history' && (
+                    <View style={[Style.flexRow, {width: px(140)}]}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onFavor('normal')}
+                            style={[Style.flexCenter, {flex: 1, marginLeft: px(10)}]}>
+                            <AnimatedLottieView
+                                ref={zanRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    favor_status
+                                        ? require('~/assets/animation/videoFavorActive.json')
+                                        : require('~/assets/animation/videoFavor.json')
+                                }
+                                style={{height: px(36), width: px(36), marginBottom: px(-6)}}
+                            />
 
-                    <Text style={styles.iconText}>{`${favor_num >= 0 ? favor_num : 0}`}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        handleComment();
-                    }}
-                    style={[Style.flexCenter, {flex: 1, marginBottom: px(-7)}]}>
-                    <FastImage
-                        style={{height: px(24), width: px(24)}}
-                        source={require('~/assets/img/community/comment.png')}
-                    />
-                    <Text style={styles.iconText}>{data.comment_num}</Text>
-                </TouchableOpacity>
+                            <Text style={styles.iconText}>{`${favor_num >= 0 ? favor_num : 0}`}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                handleComment();
+                            }}
+                            style={[Style.flexCenter, {flex: 1, marginBottom: px(-7)}]}>
+                            <FastImage
+                                style={{height: px(24), width: px(24)}}
+                                source={require('~/assets/img/community/comment.png')}
+                            />
+                            <Text style={styles.iconText}>{data.comment_num}</Text>
+                        </TouchableOpacity>
 
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => onCollect('normal')}
-                    style={[Style.flexCenter, {flex: 1}]}>
-                    <AnimatedLottieView
-                        ref={collectRef}
-                        loop={false}
-                        autoPlay
-                        source={
-                            collect_status
-                                ? require('~/assets/animation/videoCollectActive.json')
-                                : require('~/assets/animation/videoCollect.json')
-                        }
-                        style={{height: px(36), width: px(36), marginBottom: px(-6)}}
-                    />
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => onCollect('normal')}
+                            style={[Style.flexCenter, {flex: 1}]}>
+                            <AnimatedLottieView
+                                ref={collectRef}
+                                loop={false}
+                                autoPlay
+                                source={
+                                    collect_status
+                                        ? require('~/assets/animation/videoCollectActive.json')
+                                        : require('~/assets/animation/videoCollect.json')
+                                }
+                                style={{height: px(36), width: px(36), marginBottom: px(-6)}}
+                            />
 
-                    <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
-                </TouchableOpacity>
+                            <Text style={styles.iconText}>{`${collect_num >= 0 ? collect_num : 0}`}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
                 {/* <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
         height: px(36),
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         borderRadius: px(16),
-        width: px(200),
+        flex: 1,
         justifyContent: 'center',
         paddingLeft: px(16),
     },
