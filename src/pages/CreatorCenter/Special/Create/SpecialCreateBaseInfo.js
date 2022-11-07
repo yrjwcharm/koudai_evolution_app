@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 16:44:02
+ * @LastEditTime: 2022-11-07 21:12:54
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description: 创建专题 - 基础信息
  */
@@ -353,6 +353,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 <View style={[styles.space1, styles.upload_imageWrap]}>{uploadImgSection}</View>
                 <View style={[styles.space2, styles.inputWrap]}>
                     <TextInput
+                        placeholderTextColor={'#9AA0B1'}
                         style={styles.titleInput}
                         onChangeText={setTitle}
                         placeholder="请输入专题名称，最多13个字符"
@@ -371,6 +372,7 @@ export default function SpecialModifyBaseInfo({navigation, route, isEdit}) {
                 <View style={[styles.space2, styles.inputWrap]}>
                     <TextInput
                         style={styles.descInput}
+                        placeholderTextColor={'#9AA0B1'}
                         placeholder="请输入专题简介，最少50个字，最多150个字"
                         onChangeText={setDesc}
                         maxLength={150}
