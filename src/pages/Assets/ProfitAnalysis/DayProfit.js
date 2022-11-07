@@ -413,7 +413,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                     {el?.profit}
                                 </Text>
                             )}
-                            {el.day == currentDay && (el?.profit > 0 || el?.profit < 0) && (
+                            {el.day == currentDay && (delMille(el?.profit) > 0 || delMille(el?.profit) < 0) && (
                                 <Text
                                     style={[
                                         styles.profit,
