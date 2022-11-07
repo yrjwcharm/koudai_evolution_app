@@ -241,16 +241,16 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                     onChangeText={(value) => {
                         setDesc(value);
                     }}
-                    maxLength={+data?.card_mode === 1 ? 45 : 16}
+                    maxLength={+data?.card_mode === 1 ? 45 : 10}
                     textAlignVertical="top"
                     placeholder={
-                        +data?.card_mode === 1 ? '建议25-45个字，最多不超过45个字' : '请编辑专题展示描述，最多16个字'
+                        +data?.card_mode === 1 ? '建议25-45个字，最多不超过45个字' : '请编辑专题展示描述，最多10个字'
                     }
                 />
                 <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
                     <View style={Style.flexRow}>
                         <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {desc?.length}/{+data?.card_mode === 1 ? 45 : 16}
+                            {desc?.length}/{+data?.card_mode === 1 ? 45 : 10}
                         </Text>
                         <Text
                             style={styles.clearInput}
