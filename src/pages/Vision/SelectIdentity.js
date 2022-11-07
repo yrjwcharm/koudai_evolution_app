@@ -1,36 +1,23 @@
 /*
  * @Date: 2022-02-15 14:47:58
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 18:18:47
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
-import {
-    PermissionsAndroid,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import Image from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
-import {Modal, SelectModal} from '../../components/Modal';
+import {SelectModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import Loading from '../Portfolio/components/PageLoading';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import http from '../../services';
 import upload from '../../services/upload';
-import {px, requestAuth} from '../../utils/appUtil';
+import {beforeGetPicture, px} from '../../utils/appUtil';
 
 function reducer(state, action) {
     switch (action.type) {
@@ -57,43 +44,11 @@ export default ({navigation}) => {
 
     // 选择图片或相册
     const onClickChoosePicture = () => {
-        try {
-            if (Platform.OS == 'android') {
-                requestAuth(
-                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                    () => openPicker('gallery'),
-                    () => blockCal('gallery')
-                );
-            } else {
-                requestAuth(
-                    PERMISSIONS.IOS.PHOTO_LIBRARY,
-                    () => openPicker('gallery'),
-                    () => blockCal('gallery')
-                );
-            }
-        } catch (err) {
-            console.warn(err);
-        }
+        beforeGetPicture(() => openPicker('gallery'));
     };
     // 从相机中选择
     const takePic = () => {
-        try {
-            if (Platform.OS == 'android') {
-                requestAuth(
-                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                    () => openPicker('camera'),
-                    () => blockCal('camera')
-                );
-            } else {
-                requestAuth(
-                    PERMISSIONS.IOS.CAMERA,
-                    () => openPicker('camera'),
-                    () => blockCal('camera')
-                );
-            }
-        } catch (err) {
-            console.warn(err);
-        }
+        beforeGetPicture(() => openPicker('camera'), 'camera');
     };
     // 打开相册或相机
     const openPicker = (action) => {
@@ -145,18 +100,6 @@ export default ({navigation}) => {
                     });
             }
         }, 800);
-    };
-    // 权限提示弹窗
-    const blockCal = (action) => {
-        Modal.show({
-            title: '权限申请',
-            content: `${action === 'gallery' ? '相册' : '相机'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
-            confirm: true,
-            confirmText: '前往',
-            confirmCallBack: () => {
-                openSettings().catch(() => console.warn('无法打开设置'));
-            },
-        });
     };
     // 上传图片
     const uploadImage = (file) => {

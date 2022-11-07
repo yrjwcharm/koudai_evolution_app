@@ -15,7 +15,7 @@ import {useJump} from '~/components/hooks';
 import {BottomModal} from '~/components/Modal';
 import withPageLoading from '~/components/withPageLoading';
 import {upload} from '~/utils/AliyunOSSUtils';
-import {px} from '~/utils/appUtil';
+import {beforeGetPicture, px} from '~/utils/appUtil';
 import {getCommunityInfo} from './services';
 import {editCommunity} from '../CommunityInfoCreate/services';
 import Toast from '~/components/Toast';
@@ -59,30 +59,32 @@ const Index = ({navigation, route, setLoading}) => {
     };
 
     const chooseBg = () => {
-        launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
-            const {assets: [file] = []} = resp;
-            setTimeout(() => {
-                file &&
-                    openCropper({
-                        path: file.uri,
-                        width: px(375),
-                        height: px(220),
-                        cropping: true,
-                        cropperChooseText: '选择',
-                        cropperCancelText: '取消',
-                        loadingLabelText: '加载中',
-                    })
-                        .then((img) => {
-                            if (img) {
-                                upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                                    res && onSave({bg_img: res.url, community_id, oss_bg_img_id: res.id});
-                                });
-                            }
+        beforeGetPicture(() => {
+            launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
+                const {assets: [file] = []} = resp;
+                setTimeout(() => {
+                    file &&
+                        openCropper({
+                            path: file.uri,
+                            width: px(375),
+                            height: px(220),
+                            cropping: true,
+                            cropperChooseText: '选择',
+                            cropperCancelText: '取消',
+                            loadingLabelText: '加载中',
                         })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-            }, 500);
+                            .then((img) => {
+                                if (img) {
+                                    upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
+                                        res && onSave({bg_img: res.url, community_id, oss_bg_img_id: res.id});
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                }, 500);
+            });
         });
     };
 

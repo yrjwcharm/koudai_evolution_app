@@ -1,12 +1,9 @@
 /*
  * @Date: 2020-11-09 10:27:46
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 17:08:04
  * @Description: 定义app常用工具类和常量
  */
-import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
-import {check, RESULTS, request, openSettings} from 'react-native-permissions';
+import {Alert, PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
+import {check, RESULTS, request, openSettings, PERMISSIONS} from 'react-native-permissions';
 const deviceHeight = Dimensions.get('window').height; //设备的高度
 
 const deviceWidth = Dimensions.get('window').width; //设备的宽度
@@ -451,6 +448,42 @@ const formatMediaTime = (time) => {
 //         return StatusBar.currentHeight;
 //     }
 // }
+// 权限提示弹窗
+const blockCal = (action) => {
+    setTimeout(() => {
+        Alert.alert(
+            '权限申请',
+            `${action === 'gallery' ? '相册' : '相机'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
+            [
+                {style: 'cancel', text: '取消'},
+                {
+                    onPress: () => openSettings().catch(() => console.warn('无法打开设置')),
+                    style: 'destructive',
+                    text: '前往',
+                },
+            ]
+        );
+    }, 500);
+};
+const beforeGetPicture = (success = () => {}, type = 'gallery') => {
+    try {
+        if (Platform.OS == 'android') {
+            requestAuth(
+                type === 'gallery'
+                    ? PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+                    : PermissionsAndroid.PERMISSIONS.CAMERA,
+                success,
+                () => blockCal(type)
+            );
+        } else {
+            requestAuth(type === 'gallery' ? PERMISSIONS.IOS.PHOTO_LIBRARY : PERMISSIONS.IOS.CAMERA, success, () =>
+                blockCal(type)
+            );
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+};
 export {
     isEmpty,
     compareDate,
@@ -475,4 +508,5 @@ export {
     arrDelete,
     compareVersion,
     formatMediaTime,
+    beforeGetPicture,
 };

@@ -21,7 +21,7 @@ import NavBar from '~/components/NavBar';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
-import {deviceHeight, formatMediaTime, isIphoneX, px, resolveTimeStemp} from '~/utils/appUtil';
+import {beforeGetPicture, deviceHeight, formatMediaTime, isIphoneX, px, resolveTimeStemp} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {getSearchList, publishVideo} from './services';
 import {debounce} from 'lodash';
@@ -292,20 +292,22 @@ const Index = ({route, setLoading}) => {
     }, [video]);
 
     const openPicker = () => {
-        launchImageLibrary({mediaType: 'video', selectionLimit: 1}, (resp) => {
-            const {assets: [file] = []} = resp;
-            if (file) {
-                if (file.fileSize > 100 * 1024 * 1024) {
-                    Toast.show('视频大小不能超过100M');
-                } else {
-                    const durationText = resolveTimeStemp(file.duration * 1000)
-                        .slice(-2)
-                        .join(':');
-                    upload({...file, fileName: file.fileName || file.uri, fileType: 'vod'}).then((res) => {
-                        res && setVideo({duration: file.duration, durationText, ...res});
-                    });
+        beforeGetPicture(() => {
+            launchImageLibrary({mediaType: 'video', selectionLimit: 1}, (resp) => {
+                const {assets: [file] = []} = resp;
+                if (file) {
+                    if (file.fileSize > 100 * 1024 * 1024) {
+                        Toast.show('视频大小不能超过100M');
+                    } else {
+                        const durationText = resolveTimeStemp(file.duration * 1000)
+                            .slice(-2)
+                            .join(':');
+                        upload({...file, fileName: file.fileName || file.uri, fileType: 'vod'}).then((res) => {
+                            res && setVideo({duration: file.duration, durationText, ...res});
+                        });
+                    }
                 }
-            }
+            });
         });
     };
 
