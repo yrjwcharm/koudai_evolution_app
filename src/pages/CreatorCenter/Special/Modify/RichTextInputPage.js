@@ -1,18 +1,17 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 10:57:20
+ * @LastEditTime: 2022-11-07 15:07:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/RichTextInputPage.js
  * @Description: 富文本编辑器
  */
 
 import React, {useRef, useState, useEffect} from 'react';
 import {View, StyleSheet, Platform, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
-import NavBar from '~/components/NavBar';
 import {deviceWidth, px, isIphoneX} from '~/utils/appUtil';
 import {WebView as RNWebView} from 'react-native-webview';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Colors, Font} from '~/common/commonStyle';
 import {constants} from '~/components/Modal/util.js';
 
 const html = `

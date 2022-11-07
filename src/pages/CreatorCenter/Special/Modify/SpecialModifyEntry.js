@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-05 16:10:29
+ * @LastEditTime: 2022-11-07 10:44:55
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js
  * @Description: 修改专题的入口
  */
@@ -22,7 +22,7 @@ import Html from '~/components/RenderHtml';
 
 export default function SpecialModifyEntry({navigation, route}) {
     console.log('SpecialModifyEntry:', route?.params);
-    const fix_id = route?.params?.fix_id || 1001;
+    const fix_id = route?.params?.fix_id || 1040;
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitable, setSubmitable] = useState(false);
