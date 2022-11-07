@@ -727,7 +727,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 style={{height: px(22), width: px(22)}}
                                 source={require('../../assets/img/vision/commentIcon.png')}
                             />
-                            {data.comment_num > 0 ? <Text style={styles.iconText}>{data.comment_num}</Text> : null}
+                            <Text style={styles.iconText}>{data.comment_num >= 0 ? data.comment_num : 0}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
