@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-09 14:06:05
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 15:05:52
+ * @LastEditTime: 2022-11-07 16:44:02
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js
  * @Description: 创建专题 - 基础信息
  */
@@ -11,6 +11,7 @@ import {
     View,
     StyleSheet,
     Text,
+    Platform,
     TouchableOpacity,
     TextInput,
     ScrollView,
@@ -95,6 +96,16 @@ function TagWrap(props) {
             }
         }
     };
+
+    const bottomModalConfig = Platform.select({
+        ios: {
+            keyboardAvoiding: true,
+        },
+        android: {
+            keyboardAvoiding: true, // 配置在android 可能不生校
+        },
+    });
+
     return (
         <>
             <View style={[styles.space2, styles.tagsWrap]}>
@@ -114,9 +125,9 @@ function TagWrap(props) {
                 title="标签内容编辑"
                 showClose={true}
                 confirmText="确定"
-                keyboardAvoiding={false}
+                keyboardAvoiding={bottomModalConfig.keyboardAvoiding}
                 onDone={handleTagEdit}>
-                <View style={styles.tagItem_inputWrap}>
+                <View style={[styles.tagItem_inputWrap]}>
                     <TextInput
                         ref={inputRef}
                         style={styles.tagItem_input}
