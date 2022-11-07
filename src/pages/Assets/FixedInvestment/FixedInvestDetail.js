@@ -172,6 +172,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                         </View>
                     </BoxShadow>
+
                     <View style={{marginTop: px(12)}}>
                         <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(176)}}>
                             <View style={[styles.section, {height: px(176)}]}>
