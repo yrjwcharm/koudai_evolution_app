@@ -143,51 +143,51 @@ const EditSpecialCardInfo = ({navigation, route}) => {
                     } else if (response.customButton) {
                         console.log('User tapped custom button: ', response.customButton);
                     } else if (response.assets) {
-                        console.log(response.assets[0]);
                         const loading2 = Toast.showLoading();
-                        ImageCropPicker.openCropper({
-                            path: response.assets[0].uri,
-                            width: 375,
-                            height: 200,
-                            cropperChooseText: '选择',
-                            cropperCancelText: '取消',
-                            loadingLabelText: '加载中',
-                        })
-                            .then((image) => {
-                                if (image) {
-                                    console.log(image);
-                                    const params = {
-                                        type: image.mime,
-                                        uri: image.path,
-                                        fileName: image.filename || '123.png',
-                                    };
-                                    const loading3 = Toast.showLoading();
-                                    upload(
-                                        '/common/image/upload',
-                                        params,
-                                        [],
-                                        (result) => {
-                                            console.log(result);
-                                            goSave({img: result.result.url, subject_id: route.params.subject_id})
-                                                .then((res) => {
-                                                    getList();
-                                                    if (res.code === '000000') {
-                                                        Toast.show('上传成功');
-                                                    }
-                                                })
-                                                .finally((_) => {
-                                                    Toast.hide(loading3);
-                                                });
-                                        },
-                                        () => {
-                                            Toast.hide(loading3);
-                                        }
-                                    );
-                                }
+                        setTimeout(() => {
+                            ImageCropPicker.openCropper({
+                                path: response.assets[0].uri,
+                                width: 375,
+                                height: 200,
+                                cropperChooseText: '选择',
+                                cropperCancelText: '取消',
+                                loadingLabelText: '加载中',
                             })
-                            .finally((_) => {
-                                Toast.hide(loading2);
-                            });
+                                .then((image) => {
+                                    if (image) {
+                                        const params = {
+                                            type: image.mime,
+                                            uri: image.path,
+                                            fileName: image.filename || '123.png',
+                                        };
+                                        const loading3 = Toast.showLoading();
+                                        upload(
+                                            '/common/image/upload',
+                                            params,
+                                            [],
+                                            (result) => {
+                                                console.log(result);
+                                                goSave({img: result.result.url, subject_id: route.params.subject_id})
+                                                    .then((res) => {
+                                                        getList();
+                                                        if (res.code === '000000') {
+                                                            Toast.show('上传成功');
+                                                        }
+                                                    })
+                                                    .finally((_) => {
+                                                        Toast.hide(loading3);
+                                                    });
+                                            },
+                                            () => {
+                                                Toast.hide(loading3);
+                                            }
+                                        );
+                                    }
+                                })
+                                .finally((_) => {
+                                    Toast.hide(loading2);
+                                });
+                        }, 500);
                     }
                 });
                 break;

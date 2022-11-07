@@ -33,25 +33,26 @@ const Index = ({navigation, route, setLoading}) => {
     const openPicker = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
             const {assets: [file] = []} = resp;
-            console.log(file);
             if (file) {
                 if (file.fileSize > 10 * 1024 * 1024) {
                     Toast.show('图片大小不能超过10M');
                 } else {
-                    openCropper({
-                        path: file.uri,
-                        width: px(240),
-                        height: px(240),
-                        cropping: true,
-                        cropperChooseText: '选择',
-                        cropperCancelText: '取消',
-                        loadingLabelText: '加载中',
-                    }).then((image) => {
-                        image &&
-                            upload({fileName: image.path, fileType: 'pic', uri: image.path}).then((res) => {
-                                res && setImg(res);
-                            });
-                    });
+                    setTimeout(() => {
+                        openCropper({
+                            path: file.uri,
+                            width: px(240),
+                            height: px(240),
+                            cropping: true,
+                            cropperChooseText: '选择',
+                            cropperCancelText: '取消',
+                            loadingLabelText: '加载中',
+                        }).then((image) => {
+                            image &&
+                                upload({fileName: image.path, fileType: 'pic', uri: image.path}).then((res) => {
+                                    res && setImg(res);
+                                });
+                        });
+                    }, 500);
                 }
             }
         });

@@ -469,26 +469,28 @@ const Index = ({navigation, route, setLoading}) => {
     const chooseCover = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
             const {assets: [file] = []} = resp;
-            file &&
-                openCropper({
-                    path: file.uri,
-                    width: px(400),
-                    height: px(300),
-                    cropping: true,
-                    cropperChooseText: '选择',
-                    cropperCancelText: '取消',
-                    loadingLabelText: '加载中',
-                })
-                    .then((img) => {
-                        if (img) {
-                            upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                                res && setCover(res);
-                            });
-                        }
+            setTimeout(() => {
+                file &&
+                    openCropper({
+                        path: file.uri,
+                        width: px(400),
+                        height: px(300),
+                        cropping: true,
+                        cropperChooseText: '选择',
+                        cropperCancelText: '取消',
+                        loadingLabelText: '加载中',
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                        .then((img) => {
+                            if (img) {
+                                upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
+                                    res && setCover(res);
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+            }, 500);
         });
     };
 

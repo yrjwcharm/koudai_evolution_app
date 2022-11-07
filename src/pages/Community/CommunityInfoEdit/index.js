@@ -61,26 +61,28 @@ const Index = ({navigation, route, setLoading}) => {
     const chooseBg = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
             const {assets: [file] = []} = resp;
-            file &&
-                openCropper({
-                    path: file.uri,
-                    width: px(375),
-                    height: px(220),
-                    cropping: true,
-                    cropperChooseText: '选择',
-                    cropperCancelText: '取消',
-                    loadingLabelText: '加载中',
-                })
-                    .then((img) => {
-                        if (img) {
-                            upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
-                                res && onSave({bg_img: res.url, community_id, oss_bg_img_id: res.id});
-                            });
-                        }
+            setTimeout(() => {
+                file &&
+                    openCropper({
+                        path: file.uri,
+                        width: px(375),
+                        height: px(220),
+                        cropping: true,
+                        cropperChooseText: '选择',
+                        cropperCancelText: '取消',
+                        loadingLabelText: '加载中',
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                        .then((img) => {
+                            if (img) {
+                                upload({fileName: img.path, fileType: 'pic', uri: img.path}).then((res) => {
+                                    res && onSave({bg_img: res.url, community_id, oss_bg_img_id: res.id});
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+            }, 500);
         });
     };
 

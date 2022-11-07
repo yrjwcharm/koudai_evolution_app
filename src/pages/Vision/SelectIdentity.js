@@ -2,7 +2,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 17:07:00
+ * @LastEditTime: 2022-11-07 18:18:47
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -101,26 +101,28 @@ export default ({navigation}) => {
             if (action === 'gallery') {
                 launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (res) => {
                     const {assets: [file] = []} = res;
-                    file &&
-                        ImagePicker.openCropper({
-                            path: file.uri,
-                            width: px(320),
-                            height: px(320),
-                            cropping: true,
-                            cropperChooseText: '选择',
-                            cropperCancelText: '取消',
-                            loadingLabelText: '加载中',
-                        })
-                            .then((image) => {
-                                uploadImage({
-                                    fileName: image.filename,
-                                    type: image.mime,
-                                    uri: image.path,
-                                });
+                    setTimeout(() => {
+                        file &&
+                            ImagePicker.openCropper({
+                                path: file.uri,
+                                width: px(320),
+                                height: px(320),
+                                cropping: true,
+                                cropperChooseText: '选择',
+                                cropperCancelText: '取消',
+                                loadingLabelText: '加载中',
                             })
-                            .catch((err) => {
-                                console.warn(err);
-                            });
+                                .then((image) => {
+                                    uploadImage({
+                                        fileName: image.filename,
+                                        type: image.mime,
+                                        uri: image.path,
+                                    });
+                                })
+                                .catch((err) => {
+                                    console.warn(err);
+                                });
+                    }, 500);
                 });
             } else if (action === 'camera') {
                 ImagePicker.openCamera({

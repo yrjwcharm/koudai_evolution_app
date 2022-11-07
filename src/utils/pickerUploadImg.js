@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-20 17:11:00
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-10-24 11:34:52
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-07 18:19:12
  * @FilePath: /koudai_evolution_app/src/utils/pickerUploadImg.js
  * @Description:
  */
@@ -90,7 +90,7 @@ export const doPickerAndUploadImg = (cb) => {
                         );
                     }
                 });
-            }, 200);
+            }, 500);
         }
     });
 };
