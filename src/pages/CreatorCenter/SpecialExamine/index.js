@@ -4,7 +4,16 @@
  * @Date: 2022-10-17 17:39:48
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Platform} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+    TextInput,
+    Platform,
+    KeyboardAvoidingView,
+} from 'react-native';
 import WebView from 'react-native-webview';
 import URI from 'urijs';
 import {Colors, Space} from '~/common/commonStyle';
@@ -168,7 +177,7 @@ const SpecialExamine = ({navigation, route}) => {
                 })}
             </ScrollView>
             {data?.refuse_info ? (
-                <View style={styles.bottomModal}>
+                <KeyboardAvoidingView style={styles.bottomModal} behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
                     <View style={styles.auditHeader}>
                         <Text style={styles.auditHeaderLeft}>审核不通过原因</Text>
                     </View>
@@ -210,7 +219,7 @@ const SpecialExamine = ({navigation, route}) => {
                             ) : null}
                         </View>
                     ) : null}
-                </View>
+                </KeyboardAvoidingView>
             ) : null}
         </>
     ) : null;
