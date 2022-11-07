@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 15:33:27
+ * @LastEditTime: 2022-11-07 18:15:54
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -212,7 +212,7 @@ export default function SpecailModifyComment({navigation, route}) {
             .then((res) => {
                 if (res.code === '000000') {
                     let tmp = tpage === 1 ? [] : data;
-                    tmp = tmp.concat(res.result?.comment_list || []);
+                    tmp = tmp.concat(res?.result?.comment_list ?? []);
                     setData(tmp);
                     setHasMore(res.result.hasMore);
                 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 15:32:01
+ * @LastEditTime: 2022-11-07 18:18:16
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -123,7 +123,7 @@ function ContentSearchModal(props) {
             .then((res) => {
                 if (res.code === '000000') {
                     let old = page === 1 ? [] : searchList;
-                    let result = old.concat(res.result.articles);
+                    let result = old.concat(res?.result?.articles ?? []);
 
                     setHasMore(res.result.has_more);
                     setSearchList(result);
