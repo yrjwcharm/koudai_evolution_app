@@ -177,7 +177,7 @@ const SpecialExamine = ({navigation, route}) => {
                 })}
             </ScrollView>
             {data?.refuse_info ? (
-                <KeyboardAvoidingView style={styles.bottomModal} behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
+                <KeyboardAvoidingView style={styles.bottomModal} behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                     <View style={styles.auditHeader}>
                         <Text style={styles.auditHeaderLeft}>审核不通过原因</Text>
                     </View>
