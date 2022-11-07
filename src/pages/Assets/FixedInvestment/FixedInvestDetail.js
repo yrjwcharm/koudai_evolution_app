@@ -5,7 +5,17 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Text, TouchableOpacity, Modal, StyleSheet, View, Image, ActivityIndicator} from 'react-native';
+import {
+    Text,
+    TouchableOpacity,
+    Modal,
+    StyleSheet,
+    View,
+    Image,
+    ActivityIndicator,
+    findNodeHandle,
+    UIManager,
+} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
@@ -162,9 +172,10 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                         </View>
                     </BoxShadow>
+
                     <View style={{marginTop: px(12)}}>
-                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(168)}}>
-                            <View style={styles.section}>
+                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(176)}}>
+                            <View style={[styles.section, {height: px(176)}]}>
                                 <View
                                     style={[
                                         styles.status,
@@ -504,7 +515,6 @@ const styles = StyleSheet.create({
     },
     section: {
         position: 'relative',
-        height: px(168),
         paddingTop: px(12),
         paddingHorizontal: px(16),
         borderRadius: px(6),
