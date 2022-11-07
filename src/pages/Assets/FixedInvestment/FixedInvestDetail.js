@@ -256,7 +256,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                                                 }}>
                                                 <View style={Style.flexRow}>
                                                     <View>
-                                                        {item.status == '定投成功' && (
+                                                        {(item.status == '定投成功' || item.status == '确认中') && (
                                                             <Text style={styles.investStatus}>{item.status}</Text>
                                                         )}
                                                         {item.status == '定投失败' && (
