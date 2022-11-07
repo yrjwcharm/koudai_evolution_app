@@ -306,7 +306,7 @@ const Follow = forwardRef(({list = []}, ref) => {
                                     item_id === 0 && global.LogTool({event: 'follow_whole'});
                                     jump(url);
                                 }}
-                                style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(28)}]}>
+                                style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(22)}]}>
                                 <View>
                                     {live_status === 2 ? (
                                         <>
@@ -901,9 +901,9 @@ const styles = StyleSheet.create({
         paddingBottom: Space.padding,
     },
     followedAvatar: {
-        borderRadius: px(54),
-        width: px(54),
-        height: px(54),
+        borderRadius: px(40),
+        width: px(40),
+        height: px(40),
     },
     liveIcon: {
         padding: px(4),
@@ -924,19 +924,6 @@ const styles = StyleSheet.create({
         borderRadius: Space.borderRadius,
         overflow: 'hidden',
         backgroundColor: '#fff',
-    },
-    contentBg: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        width: px(68),
-        height: px(54),
-    },
-    recommendAvatar: {
-        marginRight: px(4),
-        borderRadius: px(16),
-        width: px(16),
-        height: px(16),
     },
     addContent: {
         position: 'absolute',
