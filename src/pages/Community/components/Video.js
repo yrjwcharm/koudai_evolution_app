@@ -33,6 +33,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [followStatus, setFollowStatus] = useState();
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const [loading, setLoading] = useState(false);
+    const whenDragCanUpdateProgress = useRef(true);
     const jump = useJump();
     useEffect(() => {
         setPaused(index != currentIndex);
@@ -63,12 +64,19 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const customerOnprogress = (e) => {
         let time = e.currentTime; // 获取播放视频的秒数
         setCurrentItem(time);
-        setSlierValue(time);
+        if (whenDragCanUpdateProgress.current) {
+            setSlierValue(time);
+        }
     };
     //移动滑块
     const customerSliderValue = useCallback(
         _.debounce((value) => {
+            whenDragCanUpdateProgress.current = false;
+            setSlierValue(value);
             video.current?.seek(value);
+            setTimeout(() => {
+                whenDragCanUpdateProgress.current = true;
+            }, 200);
         }, 100),
         []
     );
