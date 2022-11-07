@@ -35,7 +35,7 @@
     "jcore-react-native": "^1.9.4",
     "jpush-react-native": "^2.8.7",
     "lottie-ios": "3.1.8",
-    "lottie-react-native": "3.5.0",
+    "lottie-react-native": "4.0.1",
     "mathjs": "^10.0.0",
     "memoize-one": "^6.0.0",
     "react": "16.13.1",

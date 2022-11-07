@@ -33,6 +33,7 @@ const Index = ({navigation, route, setLoading}) => {
     const openPicker = () => {
         launchImageLibrary({mediaType: 'photo', selectionLimit: 1}, (resp) => {
             const {assets: [file] = []} = resp;
+            console.log(file);
             if (file) {
                 if (file.fileSize > 10 * 1024 * 1024) {
                     Toast.show('图片大小不能超过10M');

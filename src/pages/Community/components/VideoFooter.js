@@ -92,7 +92,7 @@ const VideoFooter = ({data, handleComment}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => onFavor('normal')}
-                    style={[Style.flexCenter, {flex: 1}]}>
+                    style={[Style.flexCenter, {flex: 1, marginLeft: px(40)}]}>
                     <AnimatedLottieView
                         ref={zanRef}
                         loop={false}
