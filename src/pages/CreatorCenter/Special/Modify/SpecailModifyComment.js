@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 18:15:54
+ * @LastEditTime: 2022-11-07 20:12:30
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecailModifyComment.js
  * @Description: 修改专题-评论管理
  */
@@ -489,6 +489,14 @@ const styles = StyleSheet.create({
     commentItem_actionImg_recommend: {
         height: px(16),
         width: px(16),
+    },
+    commentItem_actionImg_pass: {
+        height: px(8),
+        width: px(8),
+    },
+    commentItem_actionImg_refuse: {
+        height: px(8),
+        width: px(8),
     },
     commentItem_actionText: {
         fontSize: px(10),
