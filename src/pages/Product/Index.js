@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 16:54:32
+ * @LastEditTime: 2022-11-08 14:10:37
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -26,13 +26,14 @@ import Menu from './Menu';
 import Banner from './Banner';
 import Security from './Security';
 import LiveList from './LiveList';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateUserInfo} from '~/redux/actions/userInfo';
 
 const Product = ({navigation}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const isFocused = useIsFocused();
-
+    const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
 
     const [refreshing, setRefreshing] = useState(false);
@@ -90,6 +91,19 @@ const Product = ({navigation}) => {
         });
         return () => unsubscribe();
     }, [isFocused, navigation]);
+
+    useEffect(() => {
+        if (userInfo?.pushRoute) {
+            http.get('/common/push/jump/redirect/20210810', {
+                url: encodeURI(userInfo?.pushRoute),
+            }).then((res) => {
+                dispatch(updateUserInfo({pushRoute: ''}));
+                if (res.code == '000000') {
+                    jump(res.result?.url);
+                }
+            });
+        }
+    }, [userInfo]);
 
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
