@@ -11,6 +11,7 @@ import {
     Modal,
     StyleSheet,
     View,
+    ScrollView,
     Image,
     ActivityIndicator,
     findNodeHandle,
@@ -139,208 +140,212 @@ const FixedInvestDetail = ({navigation, route}) => {
             ) : (
                 <View style={styles.container}>
                     {/*定投*/}
-                    <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(123)}}>
-                        <View style={styles.investHeader}>
-                            <View style={styles.headerTop}>
-                                <View style={styles.headerTopWrap}>
-                                    <View style={Style.flexBetween}>
-                                        <Text style={styles.fundName}>{state.header?.name}</Text>
-                                        <TouchableOpacity onPress={() => jump(state.header?.url?.url)}>
-                                            <Text style={styles.detail}>{state.header?.url?.text}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    {!isEmpty(state.header?.code) && (
-                                        <Text style={styles.fundCode}>{state.header?.code}</Text>
-                                    )}
-                                </View>
-                            </View>
-                            <View style={styles.headerBottom}>
-                                <View style={styles.headerBottomWrap}>
-                                    <View style={styles.headerBottomWrapItem}>
-                                        <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
-                                        <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
-                                    </View>
-                                    <View style={styles.headerBottomWrapItem}>
-                                        <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
-                                        <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
-                                    </View>
-                                    <View style={styles.headerBottomWrapItem}>
-                                        <Text style={styles.itemValue}>{state.header?.head_list[2]?.value}</Text>
-                                        <Text style={styles.itemLabel}>{state.header?.head_list[2]?.text}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </BoxShadow>
-
-                    <View style={{marginTop: px(12)}}>
-                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(176)}}>
-                            <View style={[styles.section, {height: px(176)}]}>
-                                <View
-                                    style={[
-                                        styles.status,
-                                        {
-                                            backgroundColor:
-                                                state.pay_info?.btn_type == 20
-                                                    ? '#EDF7EC'
-                                                    : state.pay_info?.btn_type == 30
-                                                    ? '#FDEFE4'
-                                                    : '#E9EAEF',
-                                        },
-                                    ]}>
-                                    <Text
-                                        style={[
-                                            styles.statusText,
-                                            {
-                                                color:
-                                                    state.pay_info?.btn_type == 20
-                                                        ? Colors.green
-                                                        : state.pay_info?.btn_type == 30
-                                                        ? '#FF7D41'
-                                                        : Colors.lightGrayColor,
-                                            },
-                                        ]}>
-                                        {state.pay_info?.status}
-                                    </Text>
-                                </View>
-                                <Text style={styles.title}>{state.pay_info?.title}</Text>
-                                <View style={styles.bankcard}>
-                                    <Image
-                                        resizeMode={'cover'}
-                                        style={{width: px(25), height: px(27)}}
-                                        source={{uri: state.pay_info?.bank_icon}}
-                                    />
-                                    <View style={{marginLeft: px(8)}}>
-                                        <Text style={styles.card}>{state.pay_info?.bank_name}</Text>
-                                        {!isEmpty(state.pay_info?.limit_desc) && (
-                                            <Text style={[styles.transfer, {marginTop: px(2)}]}>
-                                                {state.pay_info?.limit_desc}
-                                            </Text>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(123)}}>
+                            <View style={styles.investHeader}>
+                                <View style={styles.headerTop}>
+                                    <View style={styles.headerTopWrap}>
+                                        <View style={Style.flexBetween}>
+                                            <Text style={styles.fundName}>{state.header?.name}</Text>
+                                            <TouchableOpacity onPress={() => jump(state.header?.url?.url)}>
+                                                <Text style={styles.detail}>{state.header?.url?.text}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        {!isEmpty(state.header?.code) && (
+                                            <Text style={styles.fundCode}>{state.header?.code}</Text>
                                         )}
-                                        <Text style={[styles.schedule, {marginTop: px(12)}]}>
-                                            {state.pay_info?.text}
-                                        </Text>
                                     </View>
                                 </View>
-                                {!isEmpty(state.pay_info?.remind) && (
-                                    <View style={styles.payInfo}>
-                                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                            <HTML
-                                                html={state.pay_info?.remind}
-                                                style={{fontSize: px(13), lineHeight: px(20)}}
-                                            />
+                                <View style={styles.headerBottom}>
+                                    <View style={styles.headerBottomWrap}>
+                                        <View style={styles.headerBottomWrapItem}>
+                                            <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
+                                            <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
+                                        </View>
+                                        <View style={styles.headerBottomWrapItem}>
+                                            <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
+                                            <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
+                                        </View>
+                                        <View style={styles.headerBottomWrapItem}>
+                                            <Text style={styles.itemValue}>{state.header?.head_list[2]?.value}</Text>
+                                            <Text style={styles.itemLabel}>{state.header?.head_list[2]?.text}</Text>
                                         </View>
                                     </View>
-                                )}
+                                </View>
                             </View>
                         </BoxShadow>
-                    </View>
-                    {state.records?.data_list?.length > 0 && (
-                        <View style={styles.footer}>
-                            <View>
-                                <Text style={styles.listRowTitle}>{state.records?.title}</Text>
-                            </View>
-                            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                                <Text style={styles.rowTitle}>日期</Text>
-                                <Text style={styles.rowTitle}>金额(元)</Text>
-                                <Text style={styles.rowTitle}>交易状态</Text>
-                            </View>
-                            {state.records?.data_list?.map((item, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            global.LogTool('click', 'accumlated_investment_record');
-                                            jump(item?.url);
-                                        }}>
-                                        <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
-                                            <View style={{width: '38.5%'}}>
-                                                <Text style={styles.date}>{item.date}</Text>
-                                            </View>
-                                            <View style={{width: '38.5%'}}>
-                                                <Text style={styles.money}>{item.value}</Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    width: '23%',
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'flex-end',
-                                                }}>
-                                                <View style={Style.flexRow}>
-                                                    <View>
-                                                        {(item.status == '定投成功' || item.status == '确认中') && (
-                                                            <Text style={styles.investStatus}>{item.status}</Text>
-                                                        )}
-                                                        {item.status == '定投失败' && (
-                                                            <Text style={[styles.investFail, {textAlign: 'right'}]}>
-                                                                {item.status}
-                                                            </Text>
-                                                        )}
-                                                        {!isEmpty(item.reason) && (
-                                                            <Text style={styles.failReason}>{item.reason}</Text>
-                                                        )}
-                                                    </View>
-                                                    <Image
-                                                        source={require('./assets/more.png')}
-                                                        style={{marginLeft: px(4)}}
-                                                    />
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                            {state.records?.data_list?.length > 0 && <ListFooterComponent />}
-                        </View>
-                    )}
-                    <PasswordModal ref={passwordModal} onDone={submit} />
-                    <Modal
-                        animationType="fade"
-                        statusBarTranslucent={true}
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            setModalVisible(!modalVisible);
-                        }}>
-                        <View style={styles.modal}>
-                            <View style={styles.centeredView}>
-                                <Text style={styles.terminatedConfirm}>{state.btn_list[2]?.popup?.title ?? ''}</Text>
-                                <Text style={styles.content}>{state.btn_list[2]?.popup?.content ?? ''}</Text>
-                                <View style={styles.bottomWrap}>
-                                    <TouchableOpacity onPress={handleClick}>
-                                        <Text style={styles.confirmTerminated}>
-                                            {state.btn_list[2]?.popup?.confirm.text ?? ''}
+
+                        <View style={{marginTop: px(12)}}>
+                            <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(176)}}>
+                                <View style={[styles.section, {height: px(176)}]}>
+                                    <View
+                                        style={[
+                                            styles.status,
+                                            {
+                                                backgroundColor:
+                                                    state.pay_info?.btn_type == 20
+                                                        ? '#EDF7EC'
+                                                        : state.pay_info?.btn_type == 30
+                                                        ? '#FDEFE4'
+                                                        : '#E9EAEF',
+                                            },
+                                        ]}>
+                                        <Text
+                                            style={[
+                                                styles.statusText,
+                                                {
+                                                    color:
+                                                        state.pay_info?.btn_type == 20
+                                                            ? Colors.green
+                                                            : state.pay_info?.btn_type == 30
+                                                            ? '#FF7D41'
+                                                            : Colors.lightGrayColor,
+                                                },
+                                            ]}>
+                                            {state.pay_info?.status}
                                         </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                        <View style={styles.keepOnView}>
-                                            <Text style={styles.keepOnText}>
-                                                {state.btn_list[2]?.popup?.cancel.text ?? ''}
+                                    </View>
+                                    <Text style={styles.title}>{state.pay_info?.title}</Text>
+                                    <View style={styles.bankcard}>
+                                        <Image
+                                            resizeMode={'cover'}
+                                            style={{width: px(25), height: px(27)}}
+                                            source={{uri: state.pay_info?.bank_icon}}
+                                        />
+                                        <View style={{marginLeft: px(8)}}>
+                                            <Text style={styles.card}>{state.pay_info?.bank_name}</Text>
+                                            {!isEmpty(state.pay_info?.limit_desc) && (
+                                                <Text style={[styles.transfer, {marginTop: px(2)}]}>
+                                                    {state.pay_info?.limit_desc}
+                                                </Text>
+                                            )}
+                                            <Text style={[styles.schedule, {marginTop: px(12)}]}>
+                                                {state.pay_info?.text}
                                             </Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </View>
+                                    {!isEmpty(state.pay_info?.remind) && (
+                                        <View style={styles.payInfo}>
+                                            <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                                                <HTML
+                                                    html={state.pay_info?.remind}
+                                                    style={{fontSize: px(13), lineHeight: px(20)}}
+                                                />
+                                            </View>
+                                        </View>
+                                    )}
+                                </View>
+                            </BoxShadow>
+                        </View>
+                        {state.records?.data_list?.length > 0 && (
+                            <View style={styles.footer}>
+                                <View>
+                                    <Text style={styles.listRowTitle}>{state.records?.title}</Text>
+                                </View>
+                                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                                    <Text style={styles.rowTitle}>日期</Text>
+                                    <Text style={styles.rowTitle}>金额(元)</Text>
+                                    <Text style={styles.rowTitle}>交易状态</Text>
+                                </View>
+                                {state.records?.data_list?.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                global.LogTool('click', 'accumlated_investment_record');
+                                                jump(item?.url);
+                                            }}>
+                                            <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
+                                                <View style={{width: '38.5%'}}>
+                                                    <Text style={styles.date}>{item.date}</Text>
+                                                </View>
+                                                <View style={{width: '38.5%'}}>
+                                                    <Text style={styles.money}>{item.value}</Text>
+                                                </View>
+                                                <View
+                                                    style={{
+                                                        width: '23%',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'flex-end',
+                                                    }}>
+                                                    <View style={Style.flexRow}>
+                                                        <View>
+                                                            {(item.status == '定投成功' || item.status == '确认中') && (
+                                                                <Text style={styles.investStatus}>{item.status}</Text>
+                                                            )}
+                                                            {item.status == '定投失败' && (
+                                                                <Text style={[styles.investFail, {textAlign: 'right'}]}>
+                                                                    {item.status}
+                                                                </Text>
+                                                            )}
+                                                            {!isEmpty(item.reason) && (
+                                                                <Text style={styles.failReason}>{item.reason}</Text>
+                                                            )}
+                                                        </View>
+                                                        <Image
+                                                            source={require('./assets/more.png')}
+                                                            style={{marginLeft: px(4)}}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                                {state.records?.data_list?.length > 0 && <ListFooterComponent />}
+                            </View>
+                        )}
+                        <PasswordModal ref={passwordModal} onDone={submit} />
+                        <Modal
+                            animationType="fade"
+                            statusBarTranslucent={true}
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(!modalVisible);
+                            }}>
+                            <View style={styles.modal}>
+                                <View style={styles.centeredView}>
+                                    <Text style={styles.terminatedConfirm}>
+                                        {state.btn_list[2]?.popup?.title ?? ''}
+                                    </Text>
+                                    <Text style={styles.content}>{state.btn_list[2]?.popup?.content ?? ''}</Text>
+                                    <View style={styles.bottomWrap}>
+                                        <TouchableOpacity onPress={handleClick}>
+                                            <Text style={styles.confirmTerminated}>
+                                                {state.btn_list[2]?.popup?.confirm.text ?? ''}
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                            <View style={styles.keepOnView}>
+                                                <Text style={styles.keepOnText}>
+                                                    {state.btn_list[2]?.popup?.cancel.text ?? ''}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    </Modal>
-                    <SelectModal
-                        style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
-                        callback={(index) => {
-                            if (index === 0) {
-                                global.LogTool('click', 'accumlated_investment_modify');
-                                jump(state.btn_list[index]?.url);
-                            } else if (index === 1) {
-                                global.LogTool('click', 'accumlated_investment_pause');
-                                setType(state.pay_info?.btn_type);
-                                handleClick();
-                            } else if (index === 2) {
-                                handleModal();
-                            }
-                        }}
-                        avail={avail}
-                        closeModal={() => setVisible(false)}
-                        entityList={selectData}
-                        show={visible}
-                    />
+                        </Modal>
+                        <SelectModal
+                            style={{borderTopRightRadius: px(10), borderTopLeftRadius: px(10)}}
+                            callback={(index) => {
+                                if (index === 0) {
+                                    global.LogTool('click', 'accumlated_investment_modify');
+                                    jump(state.btn_list[index]?.url);
+                                } else if (index === 1) {
+                                    global.LogTool('click', 'accumlated_investment_pause');
+                                    setType(state.pay_info?.btn_type);
+                                    handleClick();
+                                } else if (index === 2) {
+                                    handleModal();
+                                }
+                            }}
+                            avail={avail}
+                            closeModal={() => setVisible(false)}
+                            entityList={selectData}
+                            show={visible}
+                        />
+                    </ScrollView>
                 </View>
             )}
         </>

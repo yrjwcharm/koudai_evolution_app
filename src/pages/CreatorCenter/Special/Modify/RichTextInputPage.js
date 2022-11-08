@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-15 16:57:18
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 15:07:24
+ * @LastEditTime: 2022-11-07 21:10:18
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/RichTextInputPage.js
  * @Description: 富文本编辑器
  */
@@ -133,6 +133,8 @@ const html = `
     }
 
     const tag1 = '<span style="color: rgb(255, 0, 0);">'
+    const tag1_1 = '<span style="caret-color: rgb(255, 0, 0); color: rgb(255, 0, 0);">'
+    const tag1_2 = '<span style="caret-color: rgb(255, 0, 0); color: rgb(1, 1, 1);">'
     const tag2 = "</span>"
     const tag3 = '<span>'
 
@@ -149,7 +151,7 @@ const html = `
 
         let resultText = text.substr(0, 15)
 
-        let grayHtml = html.replaceAll(tag1, flag1.repeat(tag1.length)).replaceAll(tag2, flag2.repeat(tag2.length))
+        let grayHtml = html.replaceAll(tag1, flag1.repeat(tag1.length)).replaceAll(tag1_1, flag1.repeat(tag1_1.length)).replaceAll(tag1_2, flag1.repeat(tag1_2.length)).replaceAll(tag2, flag2.repeat(tag2.length))
         let endIndex = 0
         let endInScope = false
         for (let i = 0; i < cntMaxLength; i++) {
@@ -196,8 +198,9 @@ const html = `
 
     function toggleRed(flag) {
       log('toggleRed:' + flag ? 'red' : null)
-      document.execCommand('styleWithCSS', false, flag);
-      document.execCommand('foreColor', false, flag ? 'rgb(255, 0, 0)' : 'rgb(0, 0, 0)');
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('foreColor', false, flag ? 'rgb(255, 0, 0)' : 'rgb(1, 1, 1)');
+      // input.blur() 
     }
 
     function setInputValue(str) {

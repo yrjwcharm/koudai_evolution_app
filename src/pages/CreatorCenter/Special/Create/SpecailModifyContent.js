@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 18:18:16
+ * @LastEditTime: 2022-11-07 21:18:24
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -201,7 +201,7 @@ function ContentSearchModal(props) {
 
     return (
         <View style={[styles.searchModal, props.style]}>
-            <View style={{paddingBottom: 12}}>
+            <View style={{paddingBottom: 12, paddingHorizontal: 16}}>
                 <View style={[styles.searchWrap]}>
                     <FastImage
                         source={require('~/assets/img/special/pk-search.png')}
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
         width: '100%',
         // height: deviceHeight - 500,
         minHeight: 300,
-        padding: 16,
+        paddingVertical: 16,
     },
     searchWrap: {
         backgroundColor: '#E9EAEF',
@@ -605,6 +605,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         marginTop: 24,
+        paddingHorizontal: 16,
     },
     searchItem_first: {
         marginTop: 12,
