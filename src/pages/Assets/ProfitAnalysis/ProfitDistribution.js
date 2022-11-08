@@ -160,6 +160,7 @@ const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
                                         {tabs?.map((el, index) => {
                                             return (
                                                 <TouchableOpacity
+                                                    key={el + `` + index}
                                                     style={styles.flexItem}
                                                     onPress={() => selUnitType(el, index)}>
                                                     <View style={styles.flexItemView}>

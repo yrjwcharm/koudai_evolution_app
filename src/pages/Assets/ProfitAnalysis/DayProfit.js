@@ -495,7 +495,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     addMonth={addMonth}
                     isPrev={isPrev}
                     isNext={isNext}
-                    date={date}
+                    date={date.month() + 1 + `月`}
                 />
                 {isHasData ? (
                     <>

@@ -76,7 +76,7 @@ const ChartHeader = React.memo(
                                 />
                             </TouchableOpacity>
                         )}
-                        <Text style={styles.MMText}>{date.month() + 1 + '月'}</Text>
+                        <Text style={styles.MMText}>{date}</Text>
                         {isNext && (
                             <TouchableOpacity onPress={addMonth}>
                                 <Image
