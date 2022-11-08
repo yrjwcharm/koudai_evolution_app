@@ -372,7 +372,7 @@ const Follow = forwardRef(({list = []}, ref) => {
             data={data}
             initialNumToRender={20}
             keyExtractor={(item, index) => item.title + item.id + index}
-            ListEmptyComponent={() => <EmptyTip />}
+            ListEmptyComponent={() => (!refreshing ? <EmptyTip /> : null)}
             ListFooterComponent={renderFooter}
             ListHeaderComponent={renderHeader}
             onEndReached={onEndReached}
