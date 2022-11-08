@@ -59,7 +59,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const renderList = useMemo(
         () => (
             <>
-                {profitList.length > 0 ? (
+                {!showEmpty ? (
                     profitList?.map((item, index) => {
                         let color =
                             delMille(item.profit) > 0
@@ -100,12 +100,12 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                         );
                     })
                 ) : (
-                    <>{showEmpty ? <Empty text={'暂无数据'} /> : null}</>
+                    <Empty text={'暂无数据'} />
                 )}
             </>
         ),
 
-        [profitList]
+        [profitList, showEmpty]
     );
     return (
         <>
