@@ -175,29 +175,19 @@ const Index = ({navigation}) => {
                         </View>
                     </View>
                 ) : null}
-                {subjectList?.[0] ? (
-                    <>
-                        <View style={{backgroundColor: Colors.bgColor}}>
-                            {subjectList?.map?.((subject, index, ar) => (
-                                <View
-                                    key={subject.id + index}
-                                    style={{marginTop: px(12), paddingHorizontal: Space.padding}}>
-                                    <AlbumCard {...subject} />
-                                </View>
-                            ))}
+                <View style={{backgroundColor: Colors.bgColor}}>
+                    {subjectList?.map?.((subject, index, ar) => (
+                        <View key={subject.id + index} style={{marginTop: px(12), paddingHorizontal: Space.padding}}>
+                            <AlbumCard {...subject} />
                         </View>
-                        {subjectLoading ? (
-                            <View style={{paddingVertical: px(20)}}>
-                                <ActivityIndicator />
-                            </View>
-                        ) : null}
-                        {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
-                    </>
-                ) : (
+                    ))}
+                </View>
+                {subjectLoading ? (
                     <View style={{paddingVertical: px(20)}}>
                         <ActivityIndicator />
                     </View>
-                )}
+                ) : null}
+                {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
                 {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
                 <View
                     style={{backgroundColor: '#f5f6f8'}}

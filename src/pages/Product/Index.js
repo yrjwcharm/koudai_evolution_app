@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-08 14:10:37
+ * @LastEditTime: 2022-11-08 15:36:13
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -295,26 +295,18 @@ const Product = ({navigation}) => {
                                 {/* 直播列表 */}
                                 {proData?.live_list && <LiveList proData={proData} />}
                                 {/* 专题们 */}
-                                {subjectList?.[0] ? (
-                                    <>
-                                        <View style={{backgroundColor: Colors.bgColor}}>
-                                            {subjectList?.map?.((subject, index, ar) => (
-                                                <View key={index} style={{marginTop: px(12)}}>
-                                                    <AlbumCard {...subject} />
-                                                </View>
-                                            ))}
+                                <View style={{backgroundColor: Colors.bgColor}}>
+                                    {subjectList?.map?.((subject, index, ar) => (
+                                        <View key={index} style={{marginTop: px(12)}}>
+                                            <AlbumCard {...subject} />
                                         </View>
-                                        {subjectLoading ? (
-                                            <View style={{paddingVertical: px(20)}}>
-                                                <ActivityIndicator />
-                                            </View>
-                                        ) : null}
-                                    </>
-                                ) : (
+                                    ))}
+                                </View>
+                                {subjectLoading ? (
                                     <View style={{paddingVertical: px(20)}}>
                                         <ActivityIndicator />
                                     </View>
-                                )}
+                                ) : null}
                             </View>
                             {/* subjectList以下的内容请写到这里，因为在计算其距底部的距离 */}
                             <View
