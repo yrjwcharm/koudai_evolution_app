@@ -29,9 +29,10 @@ import http from '~/services';
 import {BottomModal, Modal} from '~/components/Modal';
 import Toast from '~/components/Toast';
 import {resetAudio} from '../components/audioService/SetUpService';
+import _ from 'lodash';
 const viewabilityConfig = {
     waitForInteraction: true,
-    viewAreaCoveragePercentThreshold: 95,
+    viewAreaCoveragePercentThreshold: 50,
 };
 const inputMaxLength = 500;
 const HEIGHT = Dimensions.get('window').height;
@@ -100,11 +101,15 @@ const CommunityVideo = ({navigation, route}) => {
     const getItemLayout = useCallback((data, index) => {
         return {length: HEIGHT, offset: HEIGHT * index, index};
     }, []);
-    const _onViewableItemsChanged = useCallback(({viewableItems}) => {
-        // if (viewableItems.length === 1) {
-        setCurrentItem(viewableItems[0].index);
-        // }
-    }, []);
+    const _onViewableItemsChanged = useCallback(
+        _.debounce(({viewableItems, changed}) => {
+            console.log(viewableItems[0].index, changed);
+            if (viewableItems.length > 0) {
+                setCurrentItem(viewableItems[0].index);
+            }
+        }, 0),
+        []
+    );
     const layout = useCallback((e) => setHeight(e.nativeEvent.layout.height), []);
     //发布评论
     const publish = () => {
@@ -159,12 +164,13 @@ const CommunityVideo = ({navigation, route}) => {
                     data={videoData?.items}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => item.id.toString()}
-                    getItemLayout={getItemLayout}
+                    getItemLayout={Platform.OS == 'ios' ? getItemLayout : null}
                     showsVerticalScrollIndicator={false}
                     pagingEnabled={true}
                     disableIntervalMomentum
                     initialNumToRender={10}
                     onViewableItemsChanged={_onViewableItemsChanged}
+                    viewabilityConfig={viewabilityConfig}
                     removeClippedSubviews={false}
                     onEndReached={() => {
                         if (videoData?.has_more) {

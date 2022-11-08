@@ -123,6 +123,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     paused={paused}
                                     volume={7.0}
                                     onLoadStart={(e) => {
+                                        console.log('onLoadStart', e);
                                         setLoading(true);
                                     }}
                                     onBuffer={(isBuffering) => {
