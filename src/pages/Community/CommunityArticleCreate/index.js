@@ -245,6 +245,12 @@ const WriteArticle = ({article, setArticle}) => {
         };
     }, []);
 
+    useEffect(() => {
+        setTimeout(() => {
+            editor.current?.sendAction(actions.updateHeight);
+        }, 1000);
+    }, []);
+
     return (
         <>
             <ScrollView
