@@ -186,11 +186,12 @@ const WriteArticle = ({article, setArticle}) => {
                             if (res) {
                                 editor.current?.focusContentEditor?.();
                                 if (type === 'picture') {
-                                    editor.current?.insertHTML(`
-                                        <br>
-                                        <img style="display: block;width: 100%;margin: 12px 0;border-radius: 6px;" src="${res.url}" alt="">
-                                        <br>
-                                    `);
+                                    editor.current?.sendAction(
+                                        actions.insertImage,
+                                        'result',
+                                        res.url,
+                                        `display: block;width: 100%;margin: 12px 0;border-radius: 6px;`
+                                    );
                                 } else {
                                     editor.current?.insertHTML(`
                                         <br>
@@ -198,6 +199,9 @@ const WriteArticle = ({article, setArticle}) => {
                                         <br>
                                     `);
                                 }
+                                setTimeout(() => {
+                                    editor.current?.sendAction(actions.updateHeight);
+                                }, 1000);
                             }
                         });
                     }

@@ -1,8 +1,5 @@
 /*
  * @Date: 2021-11-29 11:18:44
- * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 14:23:24
  * @Description: 投顾服务费
  */
 import React, {useEffect, useState} from 'react';
@@ -16,20 +13,20 @@ import {useJump} from '../../components/hooks';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import {BottomModal} from '../../components/Modal';
-import {isIphoneX, px} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const bottomModal = React.useRef(null);
+
     useEffect(() => {
-        http.get('/adviser/fee/20211101').then((res) => {
+        http.get('/adviser/fee/20211101', route.params || {}).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '投顾服务费'});
                 setData(res.result || {});
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
