@@ -244,10 +244,12 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         if (cur >= min && cur <= max) {
                             if (cur == max) {
                                 setIsNext(false);
+                                setIsPrev(true);
                                 return;
                             }
                             if (cur == min) {
                                 setIsPrev(false);
+                                setIsNext(true);
                                 return;
                             }
                             setIsPrev(true);
