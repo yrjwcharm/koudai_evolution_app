@@ -252,10 +252,9 @@ const PortfolioAssetList = ({route, navigation}) => {
                                         global.LogTool('guide_click', '卡片标签 ', log_id);
                                     }
                                     global.LogTool('single_card', log_id);
-                                    console.log(product);
                                     jump(url);
                                 }}
-                                key={log_id}>
+                                key={log_id + index}>
                                 {type != 10 && (
                                     <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                                         <View style={Style.flexRow}>
