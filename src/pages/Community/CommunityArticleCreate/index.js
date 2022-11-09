@@ -118,7 +118,6 @@ const WriteArticle = ({article, setArticle}) => {
         },
         // {action: 'setRed', name: '红', style: {...styles.title, color: Colors.red}},
     ]);
-    const [height, setHeight] = useState(px(500));
     const scrollView = useRef();
     const chooseModal = useRef();
 
@@ -137,7 +136,7 @@ const WriteArticle = ({article, setArticle}) => {
     const onCursorPosition = (y) => {
         scrollView.current?.scrollTo({
             animated: false,
-            y: y < Platform.select({android: px(280), ios: px(300)}) ? 0 : y + px(100),
+            y,
         });
     };
 
@@ -259,6 +258,7 @@ const WriteArticle = ({article, setArticle}) => {
                 nestedScrollEnabled
                 ref={scrollView}
                 scrollIndicatorInsets={{right: 1}}
+                showsVerticalScrollIndicator={false}
                 style={{paddingHorizontal: Space.padding}}>
                 <TextInput
                     clearButtonMode="while-editing"
@@ -326,6 +326,7 @@ const WriteArticle = ({article, setArticle}) => {
                     }}
                     initialContentHTML={article?.content || ''}
                     initialFocus
+                    initialHeight={px(200)}
                     onBlur={() => {
                         setEditorIsFocused(false);
                         setFirstLevelOps((prev) => {
@@ -335,20 +336,14 @@ const WriteArticle = ({article, setArticle}) => {
                         });
                     }}
                     onChange={(data) => {
-                        // console.log(data);
                         setArticle((prev) => ({...prev, content: data}));
                     }}
                     onCursorPosition={onCursorPosition}
                     onFocus={() => setEditorIsFocused(true)}
-                    onHeightChange={(h) => {
-                        setHeight(h + px(40));
-                    }}
                     placeholder="请输入正文"
                     ref={editor}
                     showsVerticalScrollIndicator={false}
-                    style={{flex: 1, minHeight: height}}
                 />
-                <View style={{height: px(100)}} />
             </ScrollView>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 {fontActive && (

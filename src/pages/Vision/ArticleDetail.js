@@ -114,42 +114,38 @@ const ArticleDetail = ({navigation, route}) => {
         const y = event.nativeEvent.contentOffset.y;
         setScrollY(y);
     }, []);
-    const init = useCallback(
-        (type) => {
-            http.get('/community/article/status/20210101', {article_id: route.params?.article_id, fr}).then((res) => {
-                if (res.code === '000000') {
-                    setCollectNum(res.result.collect_num);
-                    setCollectStatus(res.result.collect_status);
-                    setFavorNum(res.result.favor_num);
-                    setFavorStatus(res.result.favor_status);
-                    setData(res.result);
-                    setFinishRead(!!res.result.read_info?.done_status);
-                }
-            });
-            http.get('/community/article/20210101', {
-                article_id: route.params?.article_id,
-                fr,
-            }).then((res) => {
-                if (res.code === '000000') {
-                    const {media_list = [], current_article_url} = res?.result;
-                    current_artic_url.current = current_article_url;
-                    audioMedia.current = media_list.filter((audio) => audio.media_type == 'audio');
-                    setAudio(audioMedia.current);
-                }
-            });
-            http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
-                setRecommendData(result.result);
-            });
-            userInfo.is_login &&
-                http
-                    .get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1})
-                    .then((res) => {
-                        setCommentData(res.result);
-                    });
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    );
+    const init = useCallback((type) => {
+        http.get('/community/article/status/20210101', {article_id: route.params?.article_id, fr}).then((res) => {
+            if (res.code === '000000') {
+                setCollectNum(res.result.collect_num);
+                setCollectStatus(res.result.collect_status);
+                setFavorNum(res.result.favor_num);
+                setFavorStatus(res.result.favor_status);
+                setData(res.result);
+                setFinishRead(!!res.result.read_info?.done_status);
+            }
+        });
+        http.get('/community/article/20210101', {
+            article_id: route.params?.article_id,
+            fr,
+        }).then((res) => {
+            if (res.code === '000000') {
+                const {media_list = [], current_article_url} = res?.result;
+                current_artic_url.current = current_article_url;
+                audioMedia.current = media_list.filter((audio) => audio.media_type == 'audio');
+                setAudio(audioMedia.current);
+            }
+        });
+        http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
+            setRecommendData(result.result);
+        });
+        userInfo.is_login &&
+            http
+                .get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1})
+                .then((res) => {
+                    setCommentData(res.result);
+                });
+    }, []);
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
         if (eventData.indexOf('audioPlay') > -1 && audioMedia.current.length > 0 && focus) {
@@ -569,7 +565,7 @@ const ArticleDetail = ({navigation, route}) => {
                                         <Text style={[styles.footnote, {marginBottom: text(2)}]}>
                                             本文更新于{data?.edit_time}
                                         </Text>
-                                        <Text style={styles.footnote}>著作权 为©理财魔方 所有，未经许可禁止转载</Text>
+                                        <Text style={styles.footnote}>{data?.copyright_str}</Text>
                                     </>
                                 ) : null}
                                 {route?.params?.type !== 5 ? (

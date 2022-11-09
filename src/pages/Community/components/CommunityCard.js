@@ -406,15 +406,14 @@ export const CommunityCard = (props) => {
                 )}
                 {isRecommend ? (
                     <View style={{padding: px(10), paddingBottom: px(12)}}>
-                        {title ? (
-                            <View>
-                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
-                            </View>
-                        ) : null}
+                        {title ? <HTML html={title} numberOfLines={2} style={styles.subTitle} /> : null}
                         {desc ? (
-                            <View style={{marginTop: px(8)}}>
-                                <HTML html={desc} numberOfLines={4} style={styles.desc} />
-                            </View>
+                            <HTML
+                                html={desc}
+                                nativeProps={{containerStyle: {marginTop: px(8)}}}
+                                numberOfLines={4}
+                                style={styles.desc}
+                            />
                         ) : null}
                         {author?.nickname ? (
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
