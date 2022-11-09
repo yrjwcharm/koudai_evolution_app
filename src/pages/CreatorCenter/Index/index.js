@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-10-09 10:51:22
  */
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import {px} from '~/utils/appUtil';
 import {getData, getList, getUnRead} from './services';
 import bellWhite from '~/assets/img/creatorCenter/bell-white.png';
 import bellBlack from '~/assets/img/creatorCenter/bell-black.png';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -23,49 +23,94 @@ import Loading from '~/pages/Portfolio/components/PageLoading';
 import RenderHtml from '~/components/RenderHtml';
 import {CommunityCard} from '~/pages/Community/components/CommunityCard';
 
-const CreatorCenterIndex = () => {
+const CreatorCenterIndex = ({navigation}) => {
     const inset = useSafeAreaInsets();
     const userInfo = useSelector((store) => store.userInfo);
     const jump = useJump();
+    const isFocused = useIsFocused();
 
     const [loading, setLoading] = useState(true);
     const [{system}, setUnreadData] = useState({});
     const [data, setData] = useState();
     const [list, setList] = useState([]);
+    const [listLoading, setListLoading] = useState(false); // 只针对社区tab的loading
     const [refreshing, setRefreshing] = useState(false);
     const [criticalState, setScrollCriticalState] = useState(false);
 
     const navBarRef = useRef();
     const scrollableRef = useRef();
-    const showNum = useRef(0);
+    const showNum = useRef(1);
+    const scrollViewRef = useRef();
+    const pageRef = useRef(1);
+    const containerHeight = useRef(0);
+    const containerScrollHeight = useRef(0);
+    const listLoadingRef = useRef(false); // 只针对社区tab的流程控制
 
     useFocusEffect(
         useCallback(() => {
+            showNum.current++ === 1 && setLoading(true);
             if (userInfo.toJS().is_login) getUnReadData();
-
-            showNum.current === 0 && setLoading(true);
-
-            getData()
-                .then((res) => {
-                    if (res.code === '000000') {
-                        setData(res.result);
-                        setLoading(false);
-                        showNum.current > 0 && getListData(res.result?.items);
-                    }
-                })
-                .finally((_) => {
-                    showNum.current++;
-                });
         }, [getUnReadData, userInfo])
     );
 
-    const getListData = (items) => {
-        const index = scrollableRef.current?.state?.currentPage || 0;
-        getList(items?.[index]?.params).then((res) => {
+    const init = () => {
+        getData().then((res) => {
             if (res.code === '000000') {
-                setList(res.result);
+                setData(res.result);
+                scrollViewRef.current?.scrollTo?.(0);
+                setList(new Array(res.result?.items?.length || 0).fill({}));
+                setLoading(false);
+                pageRef.current = 1;
+                showNum.current > 1 && getListData(res.result?.items);
             }
         });
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if (isFocused) {
+                init();
+            }
+        });
+        return () => unsubscribe();
+    }, [isFocused, navigation]);
+
+    const getListData = (items) => {
+        const index = scrollableRef.current?.state?.currentPage || 0;
+        let params = items?.[index]?.params;
+        if (index === 0) {
+            if (listLoadingRef.current) return;
+            params.page = pageRef.current++;
+            listLoadingRef.current = true;
+        }
+        setListLoading(index === 0);
+        getList(params)
+            .then((res) => {
+                if (res.code === '000000') {
+                    setList((val) => {
+                        let newVal = [...val];
+                        if (index === 0) {
+                            if (pageRef.current === 2) {
+                                newVal[index] = res.result;
+                            } else {
+                                newVal[index].has_more = res.result.has_more;
+                                newVal[index].list = newVal[index].list?.concat(res.result.list);
+                            }
+                        } else {
+                            newVal[index] = res.result;
+                        }
+                        return newVal;
+                    });
+                }
+            })
+            .finally((_) => {
+                listLoadingRef.current = false;
+                setListLoading(false);
+            });
     };
 
     const getUnReadData = useCallback(() => {
@@ -100,9 +145,19 @@ const CreatorCenterIndex = () => {
         });
     };
 
+    const communityScroll = (e) => {
+        let resetHeight = containerScrollHeight.current - containerHeight.current;
+        let y = e.nativeEvent.contentOffset.y;
+
+        if (!listLoading && list?.[0]?.list?.[0] && list?.[0]?.has_more && resetHeight - y <= 40) {
+            getListData(data?.items);
+        }
+    };
+
     const onChangeTab = useCallback(() => {
-        getListData(data?.items);
-    }, [data]);
+        const cPage = scrollableRef.current?.state?.currentPage;
+        (cPage > 0 || !list?.[cPage]?.list?.length) && getListData(data?.items);
+    }, [data, list]);
 
     return loading ? (
         <Loading color={Colors.btnColor} />
@@ -130,7 +185,7 @@ const CreatorCenterIndex = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <ScrollView
+            <View
                 style={{flex: 1, marginTop: px(-178)}}
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
@@ -203,28 +258,54 @@ const CreatorCenterIndex = () => {
                         initialPage={0}
                         renderTabBar={() => (
                             <ScrollableTabBar
-                                style={{paddingHorizontal: px(15), marginTop: px(2), justifyContent: 'space-around'}}
+                                style={{
+                                    paddingHorizontal: px(15),
+                                    marginTop: px(2),
+                                    justifyContent: 'space-around',
+                                    marginBottom: px(12),
+                                }}
                             />
                         )}
                         ref={scrollableRef}
                         onChangeTab={onChangeTab}>
                         {data?.items?.map?.((item, idx) => {
                             return (
-                                <View key={idx} tabLabel={item.title}>
+                                <ScrollView
+                                    key={idx}
+                                    tabLabel={item.title}
+                                    style={{flex: 1}}
+                                    contentContainerStyle={{paddingHorizontal: px(16)}}
+                                    scrollIndicatorInsets={{right: 1}}
+                                    ref={scrollViewRef}
+                                    onScroll={idx === 0 ? communityScroll : null}
+                                    onLayout={(e) => {
+                                        containerHeight.current = e.nativeEvent.layout.height;
+                                    }}
+                                    onContentSizeChange={(w, h) => {
+                                        containerScrollHeight.current = h;
+                                    }}>
                                     {item.type === 'product' ? (
-                                        list?.list?.map((itm, index) => (
-                                            <CommunityCard
-                                                data={itm}
-                                                key={index}
-                                                style={{
-                                                    marginTop: px(12),
-                                                }}
-                                            />
-                                        ))
+                                        <>
+                                            {list?.[idx]?.list?.map((itm, index) => (
+                                                <CommunityCard
+                                                    data={itm}
+                                                    key={index}
+                                                    style={{
+                                                        marginTop: index > 0 ? px(12) : 0,
+                                                    }}
+                                                />
+                                            ))}
+                                            {listLoading ? (
+                                                <View style={{paddingVertical: px(10)}}>
+                                                    <ActivityIndicator />
+                                                </View>
+                                            ) : null}
+                                            <View style={{height: 40}} />
+                                        </>
                                     ) : (
                                         <View style={styles.cardWrap}>
                                             <>
-                                                {list?.list?.map((itm, index) => (
+                                                {list?.[idx]?.list?.map((itm, index) => (
                                                     <View style={styles.cardItem} key={index}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.7}
@@ -328,12 +409,12 @@ const CreatorCenterIndex = () => {
                                             </>
                                         </View>
                                     )}
-                                </View>
+                                </ScrollView>
                             );
                         })}
                     </ScrollableTabView>
                 </View>
-            </ScrollView>
+            </View>
             {!userInfo.toJS().is_login && <LoginMask />}
         </View>
     );
@@ -452,12 +533,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F6F8',
         borderTopLeftRadius: px(12),
         borderTopRightRadius: px(12),
-        padding: px(16),
+        paddingTop: px(16),
+        paddingBottom: 0,
         marginTop: px(24),
+        flex: 1,
     },
-    cardWrap: {
-        marginTop: px(12),
-    },
+    cardWrap: {},
     cardItem: {
         borderRadius: px(6),
         backgroundColor: '#fff',

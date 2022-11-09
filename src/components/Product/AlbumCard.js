@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         height: '100%',
-        flexDirection: 'row',
     },
     icon: {
         marginRight: px(4),
