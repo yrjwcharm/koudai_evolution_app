@@ -306,7 +306,11 @@ const Follow = forwardRef(({list = []}, ref) => {
                                     item_id === 0 && global.LogTool({event: 'follow_whole'});
                                     jump(url);
                                 }}
-                                style={[Style.flexCenter, {marginLeft: index === 0 ? 0 : px(22)}]}>
+                                style={[
+                                    Style.flexCenter,
+                                    index > 0 ? {width: px(62)} : {},
+                                    {marginLeft: index === 0 ? 0 : index === 1 ? px(29) : px(18)},
+                                ]}>
                                 <View>
                                     {live_status === 2 ? (
                                         <>

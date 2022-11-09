@@ -20,7 +20,6 @@ import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
 import Slider from 'react-native-slider';
 import _ from 'lodash';
 import VideoFooter from './VideoFooter';
-import http from '../../../services';
 import {useJump} from '~/components/hooks';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 const HEIGHT = Dimensions.get('window').height;
@@ -39,7 +38,6 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         setPaused(index != currentIndex);
         customerSliderValue(0);
         setFollowStatus(data?.follow_status);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, currentIndex]);
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
@@ -175,8 +173,12 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                     <Text style={{fontSize: px(14), color: '#fff'}}>{data?.author?.nickname}</Text>
                     {!!data?.follow_btn && (
                         <TouchableWithoutFeedback onPress={handleFollow}>
-                            <View style={styles.button}>
-                                <Text style={{fontSize: px(12), color: '#fff'}}>
+                            <View style={[styles.button, followStatus === 1 ? {backgroundColor: '#E9EAEF'} : {}]}>
+                                <Text
+                                    style={{
+                                        fontSize: px(12),
+                                        color: followStatus === 1 ? Colors.lightGrayColor : '#fff',
+                                    }}>
                                     {followStatus == 1 ? '已关注' : '+关注'}
                                 </Text>
                             </View>

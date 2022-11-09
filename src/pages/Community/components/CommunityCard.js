@@ -333,7 +333,9 @@ export const CommunityCard = (props) => {
                                 ) : null}
                                 <View>
                                     <Text style={styles.subTitle}>{author?.nickname}</Text>
-                                    <Text style={[styles.smText, {marginTop: px(2)}]}>{author_desc}</Text>
+                                    <Text style={[styles.smText, {color: Colors.lightGrayColor, marginTop: px(2)}]}>
+                                        {author_desc}
+                                    </Text>
                                 </View>
                             </TouchableOpacity>
                             {title ? <Text style={[styles.subTitle, {marginTop: px(8)}]}>{title}</Text> : null}

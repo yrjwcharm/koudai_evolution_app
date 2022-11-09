@@ -4,6 +4,7 @@
  */
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
+    BackHandler,
     ImageBackground,
     Keyboard,
     KeyboardAvoidingView,
@@ -583,6 +584,20 @@ const Index = ({navigation, route, setLoading}) => {
             };
         }
     }, [article, cover]);
+
+    useEffect(() => {
+        const fun = () => {
+            if (step === 1) return false;
+            else {
+                setStep(1);
+                return true;
+            }
+        };
+        BackHandler.addEventListener('hardwareBackPress', fun);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', fun);
+        };
+    }, [step]);
 
     useEffect(() => {
         getArticleDraft({article_id, history_id})

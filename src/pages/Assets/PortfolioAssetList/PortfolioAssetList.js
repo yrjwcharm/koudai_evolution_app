@@ -65,7 +65,6 @@ const PortfolioAssetList = ({route, navigation}) => {
     };
     useEffect(() => {
         init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
@@ -347,8 +346,8 @@ const PortfolioAssetList = ({route, navigation}) => {
                         );
                     })
                 ) : (
-                    <View style={[styles.portCard, {paddingBottom: px(32)}]}>
-                        <EmptyTip style={{paddingTop: px(20)}} type="part" />
+                    <View style={[Style.flexCenter, styles.portCard, {height: px(220)}]}>
+                        <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
                     </View>
                 )}
                 <BottomDesc />
