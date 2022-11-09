@@ -4,7 +4,7 @@
  */
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import {px} from '~/utils/appUtil';
+import {deviceWidth, px} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 
@@ -17,7 +17,9 @@ const ToolMenusCard = ({data, style}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={item.tool_id}
-                        style={[{width: '20%', marginBottom: px(18), alignItems: 'center'}]}
+                        style={[
+                            {width: Math.floor((deviceWidth - px(52)) / 5), marginBottom: px(18), alignItems: 'center'},
+                        ]}
                         onPress={() => {
                             if (item?.tip) {
                                 global.LogTool('guide_click', item?.text, item.tool_id);
