@@ -4,7 +4,7 @@
  * @Description:年收益
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View, Image} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {px, delMille, compareDate, deviceWidth} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
@@ -29,6 +29,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [currentYear] = useState(dayjs().year());
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
     const [isHasData, setIsHasData] = useState(true);
+    const [diff, setDiff] = useState(0);
+    const [unitList, setUnitList] = useState([]);
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -131,11 +133,13 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
+                // let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({type, unit_type, fund_code, poid});
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
                     if (unit_list.length > 0) {
+                        setUnitList(unit_list);
                         let arr = profit_data_list
                             .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                             .map((el) => {
@@ -154,7 +158,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 }
             })();
         },
-        [type]
+        [type, diff]
     );
     useEffect(() => {
         init(selCurYear);
@@ -198,6 +202,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             }),
         [dateArr]
     );
+    const subStract = () => {};
+    const add = () => {};
     const renderBarChart = useMemo(() => {
         return (
             <RNEChartsPro
@@ -319,47 +325,64 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={[styles.chartLeft]}>
-                    {/*<TouchableOpacity onPress={selCalendarType}>*/}
-                    {/*    <View*/}
-                    {/*        style={[*/}
-                    {/*            Style.flexCenter,*/}
-                    {/*            styles.selChartType,*/}
-                    {/*            isCalendar && {*/}
-                    {/*                backgroundColor: Colors.white,*/}
-                    {/*                width: px(60),*/}
-                    {/*            },*/}
-                    {/*        ]}>*/}
-                    {/*        <Text*/}
-                    {/*            style={{*/}
-                    {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
-                    {/*                fontSize: px(12),*/}
-                    {/*                fontFamily: Font.pingFangRegular,*/}
-                    {/*            }}>*/}
-                    {/*            日历图*/}
-                    {/*        </Text>*/}
-                    {/*    </View>*/}
-                    {/*</TouchableOpacity>*/}
-                    {/*<TouchableOpacity onPress={selBarChartType}>*/}
-                    {/*    <View*/}
-                    {/*        style={[*/}
-                    {/*            Style.flexCenter,*/}
-                    {/*            styles.selChartType,*/}
-                    {/*            isBarChart && {*/}
-                    {/*                backgroundColor: Colors.white,*/}
-                    {/*                width: px(60),*/}
-                    {/*            },*/}
-                    {/*        ]}>*/}
-                    {/*        <Text*/}
-                    {/*            style={{*/}
-                    {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
-                    {/*                fontSize: px(12),*/}
-                    {/*                fontFamily: Font.pingFangRegular,*/}
-                    {/*            }}>*/}
-                    {/*            柱状图*/}
-                    {/*        </Text>*/}
-                    {/*    </View>*/}
-                    {/*</TouchableOpacity>*/}
+                <View style={Style.flexBetween}>
+                    <View style={[styles.chartLeft]}>
+                        {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isCalendar && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            日历图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
+                        {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isBarChart && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            柱状图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
+                    </View>
+                    <View style={Style.flexRow}>
+                        {/*<TouchableOpacity onPress={subStract}>*/}
+                        {/*    <Image*/}
+                        {/*        style={{width: px(13), height: px(13)}}*/}
+                        {/*        source={require('../../../assets/img/icon/prev.png')}*/}
+                        {/*    />*/}
+                        {/*</TouchableOpacity>*/}
+                        <Text style={styles.yearDateText}>近5年</Text>
+                        {/*<TouchableOpacity onPress={add}>*/}
+                        {/*    <Image*/}
+                        {/*        style={{width: px(13), height: px(13)}}*/}
+                        {/*        source={require('../../../assets/img/icon/next.png')}*/}
+                        {/*    />*/}
+                        {/*</TouchableOpacity>*/}
+                    </View>
                 </View>
                 <>
                     {isHasData ? (
@@ -424,6 +447,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
+    },
+    yearDateText: {
+        fontSize: px(15),
+        fontFamily: Font.numFontFamily,
+        color: '#3D3D3D',
+        marginLeft: px(10),
+        marginRight: px(8),
     },
     year: {
         marginBottom: px(4),
