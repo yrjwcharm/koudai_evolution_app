@@ -247,8 +247,8 @@ const PortfolioAssetList = ({route, navigation}) => {
                                 style={styles.portCard}
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    if (tag_info) {
-                                        global.LogTool('guide_click', '卡片标签 ', log_id);
+                                    if (tag_info?.log_id) {
+                                        global.LogTool('guide_click', '卡片标签 ', tag_info.log_id);
                                     }
                                     global.LogTool('single_card', log_id);
                                     jump(url);

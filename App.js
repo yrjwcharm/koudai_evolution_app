@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yanruifeng
- * @LastEditTime: 2022-10-28 15:48:02
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-10 17:49:09
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -166,6 +166,17 @@ function App(props) {
                                 let balancePoid = getRouteNameId(currentRoute, 'BlancedPortfolio', 'poid');
                                 let PortfolioAssetListId = getRouteNameId(currentRoute, 'PortfolioAssetList', 'type');
                                 let TotalIncomeDetailId = getRouteNameId(currentRoute, 'TotalIncomeDetail', 'type');
+                                const {subject_id: SpecialDetailId = ''} = getRouteNameId(
+                                    currentRoute,
+                                    'SpecialDetail',
+                                    'params'
+                                );
+                                const CommunityId = getRouteNameId(currentRoute, 'CommunityHome', 'community_id');
+                                const CommunityPersonalId = getRouteNameId(
+                                    currentRoute,
+                                    'CommunityPersonalHome',
+                                    'muid'
+                                );
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
@@ -178,7 +189,10 @@ function App(props) {
                                     code +
                                     balancePoid +
                                     PortfolioAssetListId +
-                                    TotalIncomeDetailId;
+                                    TotalIncomeDetailId +
+                                    SpecialDetailId +
+                                    CommunityId +
+                                    CommunityPersonalId;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {

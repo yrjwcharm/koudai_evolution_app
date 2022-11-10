@@ -23,8 +23,8 @@ const ClassCard = ({data = {}, showEye}) => {
             style={styles.card}
             activeOpacity={0.9}
             onPress={() => {
-                if (tag_info) {
-                    global.LogTool('guide_click', '卡片标签', tag_info?.log_id);
+                if (tag_info?.log_id) {
+                    global.LogTool('guide_click', '卡片标签', tag_info.log_id);
                 }
                 global.LogTool('product_type', data?.log_id);
                 jump(url);

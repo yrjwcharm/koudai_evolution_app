@@ -14,7 +14,7 @@ const AdInfo = ({ad_info}) => {
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
-                global.LogTool('guide_click', 'banner', ad_info?.id);
+                ad_info?.log_id && global.LogTool('guide_click', 'banner', ad_info.log_id);
                 jump(ad_info?.url);
             }}>
             <FastImage

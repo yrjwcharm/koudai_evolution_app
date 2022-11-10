@@ -23,7 +23,7 @@ const PointCard = ({data, style}) => {
                     },
                 ]}
                 onPress={() => {
-                    global.LogTool('guide_click', '重要观点-标题', data?.log_id);
+                    data?.log_id && global.LogTool('guide_click', '重要观点-标题', data.log_id);
                     jump(url);
                 }}
                 activeOpacity={0.8}>
@@ -44,7 +44,7 @@ const PointCard = ({data, style}) => {
                         activeOpacity={0.8}
                         style={[Style.flexRow, {marginBottom: px(12)}]}
                         onPress={() => {
-                            global.LogTool('guide_click', `重要观点${index + 1}`, data?.log_id);
+                            data?.log_id && global.LogTool('guide_click', `重要观点${index + 1}`, data.log_id);
                             jump(item.url);
                         }}>
                         <View style={styles.circle} />

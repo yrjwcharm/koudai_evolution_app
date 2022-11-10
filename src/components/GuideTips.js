@@ -2,7 +2,7 @@
  * @Date: 2021-06-09 11:37:24
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 12:03:50
+ * @LastEditTime: 2022-11-10 18:10:28
  * @Description:引导提示tips
  */
 import React, {useState} from 'react';
@@ -26,7 +26,7 @@ const GuideTips = ({data, style}) => {
             style={[styles.con, style]}
             activeOpacity={0.9}
             onPress={() => {
-                global.LogTool('guide_click', '底部小黑条', data?.log_id);
+                data?.log_id && global.LogTool('guide_click', '底部小黑条', data.log_id);
                 jump(data?.button?.url);
             }}>
             <Text style={[styles.text, {flex: 1}]} numberOfLines={2}>
