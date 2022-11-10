@@ -244,12 +244,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         if (cur >= min && cur <= max) {
                             if (cur == max) {
                                 setIsNext(false);
-                                setIsPrev(true);
                                 return;
                             }
                             if (cur == min) {
                                 setIsPrev(false);
-                                setIsNext(true);
                                 return;
                             }
                             setIsPrev(true);
@@ -305,77 +303,81 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, []);
     useEffect(() => {
         (async () => {
-            myChart.current?.showLoading();
-            let dayjs_ = dayjs().add(diff, 'month').startOf('month');
-            const res = await getChartData({
-                type,
-                unit_type,
-                unit_value: dayjs_.format('YYYY-MM'),
-                poid,
-                fund_code,
-                chart_type: 'square',
-            });
-            if (res.code === '000000') {
-                const {profit_data_list = []} = res.result;
-                let xAxisData = [],
-                    dataAxis = [];
-                if (profit_data_list.length > 0) {
-                    let sortProfitDataList = profit_data_list.sort(
-                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
-                    );
-
-                    let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurDate);
-                    sortProfitDataList.map((el) => {
-                        xAxisData.push(el.unit_key);
-                        dataAxis.push(el.value);
-                    });
-                    let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
-                    let curDay = dayjs().format('YYYY-MM-DD');
-                    if (lastDate === curDay) {
+            if (isBarChart) {
+                console.log(myChart.current);
+                // myChart.current?.showLoading();
+                let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+                const res = await getChartData({
+                    type,
+                    unit_type,
+                    unit_value: dayjs_.format('YYYY-MM'),
+                    poid,
+                    fund_code,
+                    chart_type: 'square',
+                });
+                if (res.code === '000000') {
+                    const {profit_data_list = []} = res.result;
+                    let xAxisData = [],
+                        dataAxis = [];
+                    if (profit_data_list.length > 0) {
+                        let sortProfitDataList = profit_data_list.sort(
+                            (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
+                        );
+                        let startDate = sortProfitDataList[0].unit_key;
+                        let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
                         for (let i = 0; i < 15; i++) {
-                            xAxisData.push(
-                                dayjs(sortProfitDataList[index].unit_key)
+                            sortProfitDataList.unshift({
+                                unit_key: dayjs(startDate)
+                                    .add(-(i + 1), 'day')
+                                    .format('YYYY-MM-DD'),
+                                value: '0.00',
+                            });
+                            sortProfitDataList.push({
+                                unit_key: dayjs(lastDate)
                                     .add(i + 1, 'day')
-                                    .format('YYYY-MM-DD')
-                            );
-                            dataAxis.push('0.00');
+                                    .format('YYYY-MM-DD'),
+                                value: '0.00',
+                            });
                         }
+                        sortProfitDataList.map((el) => {
+                            xAxisData.push(el.unit_key);
+                            dataAxis.push(el.value);
+                        });
+                        let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurDate);
+                        let [left, mid, right] = [index - 15, index, index + 15];
+                        let center = mid;
+                        barOption.dataZoom[0].startValue = left;
+                        barOption.dataZoom[0].endValue = right;
+                        barOption.xAxis.data = xAxisData;
+                        barOption.series[0].data = dataAxis;
+                        barOption.series[0].markPoint.itemStyle = {
+                            normal: {
+                                color:
+                                    dataAxis[center] > 0
+                                        ? Colors.red
+                                        : dataAxis[center] < 0
+                                        ? Colors.green
+                                        : Colors.transparent,
+                                borderColor: Colors.white,
+                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                            },
+                        };
+                        barOption.series[0].markPoint.data[0] = {
+                            xAxis: xAxisData[center],
+                            yAxis: dataAxis[center],
+                        };
+                        setStartDate(xAxisData[left]);
+                        setEndDate(xAxisData[right]);
+                        setXAxisData(xAxisData);
+                        setDataAxis(dataAxis);
+                        setProfit(dataAxis[center]);
+                        // myChart.current?.hideLoading();
+                        myChart.current?.setNewOption(barOption);
                     }
-                    let [left, mid, right] = [index - 15, index, index + 15];
-                    let start = ((left + 1) / xAxisData.length) * 100;
-                    let center = mid;
-                    let end = ((right + 1) / xAxisData.length) * 100;
-                    barOption.dataZoom[0].startValue = start;
-                    barOption.dataZoom[0].endValue = end;
-                    barOption.xAxis.data = xAxisData;
-                    barOption.series[0].data = dataAxis;
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                dataAxis[center] > 0
-                                    ? Colors.red
-                                    : dataAxis[center] < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[center],
-                        yAxis: dataAxis[center],
-                    };
-                    setStartDate(xAxisData[left]);
-                    setEndDate(xAxisData[right]);
-                    setXAxisData(xAxisData);
-                    setDataAxis(dataAxis);
-                    setProfit(dataAxis[center]);
-                    myChart.current?.hideLoading();
-                    myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, myChart.current, isBarChart]);
+    }, [type, myChart.current, isBarChart, diff, selCurDate]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -440,22 +442,18 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         return (
             <RNEChartsPro
                 onDataZoom={(result, option) => {
-                    const {start, end} = result?.batch[0];
-                    const count = xAxisData?.length;
-                    barOption.dataZoom[0].start = start;
-                    barOption.dataZoom[0].end = end;
-                    let center = (xAxisData.length * ((start + end) / 2)) / 100;
-                    let index = round(center - 1);
-                    let startIndex = round(count * (start / 100) - 1);
-                    let endIndex = round(count * (end / 100) - 1);
-                    setStartDate(xAxisData[startIndex]);
-                    setEndDate(xAxisData[endIndex]);
+                    const {startValue, endValue} = option.dataZoom[0];
+                    let center = startValue + 15;
+                    barOption.dataZoom[0].startValue = startValue;
+                    barOption.dataZoom[0].endValue = endValue;
+                    setStartDate(xAxisData[startValue]);
+                    setEndDate(xAxisData[endValue]);
                     barOption.series[0].markPoint.itemStyle = {
                         normal: {
                             color:
-                                dataAxis[index] > 0
+                                dataAxis[center] > 0
                                     ? Colors.red
-                                    : dataAxis[index] < 0
+                                    : dataAxis[center] < 0
                                     ? Colors.green
                                     : Colors.transparent,
                             borderColor: Colors.white,
@@ -463,14 +461,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         },
                     };
                     barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[index],
-                        yAxis: dataAxis[index],
+                        xAxis: xAxisData[center],
+                        yAxis: dataAxis[center],
                     };
-                    setProfit(dataAxis[index]);
-                    let curMonth = dayjs(xAxisData[index]).month();
-                    let diffMonth = dayjs().month() - curMonth;
-                    setDiff(-diffMonth);
-                    setSelCurDate(xAxisData[index]);
+                    setProfit(dataAxis[center]);
+                    setSelCurDate(xAxisData[center]);
                     myChart.current.setNewOption(barOption);
                 }}
                 legendSelectChanged={(result) => {}}

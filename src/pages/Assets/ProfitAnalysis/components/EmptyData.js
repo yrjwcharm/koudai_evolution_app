@@ -7,7 +7,7 @@
 import {Image, Text, StyleSheet, View} from 'react-native';
 import {deviceWidth, px} from '../../../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import image from '../../../../assets/img/emptyTip/empty.png';
+import image from '../../../../assets/img/emptyTip/noProfit.png';
 import React from 'react';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
 const shadow = {

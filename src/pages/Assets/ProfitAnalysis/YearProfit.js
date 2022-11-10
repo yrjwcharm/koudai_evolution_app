@@ -31,6 +31,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [isHasData, setIsHasData] = useState(true);
     const [diff, setDiff] = useState(0);
     const [unitList, setUnitList] = useState([]);
+    const [period, setPeriod] = useState('近5年');
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -133,8 +134,14 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const init = useCallback(
         (curYear) => {
             (async () => {
-                // let dayjs_ = dayjs().add(diff, 'month').startOf('month');
-                const res = await getChartData({type, unit_type, fund_code, poid});
+                let dayjs_ = dayjs().add(diff, 'year');
+                const res = await getChartData({
+                    type,
+                    unit_type,
+                    fund_code,
+                    poid,
+                    unit_value: `${dayjs_.year() - 4}-${dayjs_.year()}`,
+                });
                 if (res.code === '000000') {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
@@ -148,6 +155,12 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                     profit: el.value,
                                 };
                             });
+                        let period = `${arr[0].day}-${arr[arr.length - 1].day}`;
+                        if (period == `${dayjs().year() - 4}-${dayjs().year()}`) {
+                            setPeriod('近5年');
+                        } else {
+                            setPeriod('5年前');
+                        }
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                         setDateArr([...arr]);
@@ -202,8 +215,12 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             }),
         [dateArr]
     );
-    const subStract = () => {};
-    const add = () => {};
+    const subStract = () => {
+        setDiff((diff) => diff - 5);
+    };
+    const add = () => {
+        setDiff((diff) => diff + 5);
+    };
     const renderBarChart = useMemo(() => {
         return (
             <RNEChartsPro
@@ -369,19 +386,19 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         {/*</TouchableOpacity>*/}
                     </View>
                     <View style={Style.flexRow}>
-                        {/*<TouchableOpacity onPress={subStract}>*/}
-                        {/*    <Image*/}
-                        {/*        style={{width: px(13), height: px(13)}}*/}
-                        {/*        source={require('../../../assets/img/icon/prev.png')}*/}
-                        {/*    />*/}
-                        {/*</TouchableOpacity>*/}
-                        <Text style={styles.yearDateText}>近5年</Text>
-                        {/*<TouchableOpacity onPress={add}>*/}
-                        {/*    <Image*/}
-                        {/*        style={{width: px(13), height: px(13)}}*/}
-                        {/*        source={require('../../../assets/img/icon/next.png')}*/}
-                        {/*    />*/}
-                        {/*</TouchableOpacity>*/}
+                        <TouchableOpacity onPress={subStract}>
+                            <Image
+                                style={{width: px(13), height: px(13)}}
+                                source={require('../../../assets/img/icon/prev.png')}
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.yearDateText}>{period}</Text>
+                        <TouchableOpacity onPress={add}>
+                            <Image
+                                style={{width: px(13), height: px(13)}}
+                                source={require('../../../assets/img/icon/next.png')}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <>

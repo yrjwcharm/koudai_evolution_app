@@ -59,49 +59,44 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const renderList = useMemo(
         () => (
             <>
-                {!showEmpty ? (
-                    profitList?.map((item, index) => {
-                        let color =
-                            delMille(item.profit) > 0
-                                ? Colors.red
-                                : delMille(item.profit) < 0
-                                ? Colors.green
-                                : Colors.lightGrayColor;
-                        return (
-                            <View style={styles.listRow} key={item + '' + index}>
-                                <View style={styles.typeView}>
-                                    <View style={styles.typeWrap}>
-                                        <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
-                                    </View>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            global.LogTool('MfbIndex');
-                                            jump(item?.url);
-                                        }}>
-                                        <Text
-                                            style={[styles.title, {fontSize: item.text.length > 10 ? px(8) : px(10)}]}>
-                                            {item.text}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
-                                    {item.tag ? (
-                                        <View
-                                            style={{
-                                                borderRadius: text(2),
-                                                backgroundColor: '#EFF5FF',
-                                                marginLeft: text(6),
-                                            }}>
-                                            <Text style={styles.tag}>{item.tag}</Text>
-                                        </View>
-                                    ) : null}
+                {profitList?.map((item, index) => {
+                    let color =
+                        delMille(item.profit) > 0
+                            ? Colors.red
+                            : delMille(item.profit) < 0
+                            ? Colors.green
+                            : Colors.lightGrayColor;
+                    return (
+                        <View style={styles.listRow} key={item + '' + index}>
+                            <View style={styles.typeView}>
+                                <View style={styles.typeWrap}>
+                                    <Text style={[styles.type, {fontSize: px(10)}]}>{item.type}</Text>
                                 </View>
-                                <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        global.LogTool('MfbIndex');
+                                        jump(item?.url);
+                                    }}>
+                                    <Text style={[styles.title, {fontSize: item.text.length > 10 ? px(8) : px(10)}]}>
+                                        {item.text}
+                                    </Text>
+                                </TouchableOpacity>
+                                {!isEmpty(item.anno) && <Text style={{fontSize: px(8)}}>{item.anno}</Text>}
+                                {item.tag ? (
+                                    <View
+                                        style={{
+                                            borderRadius: text(2),
+                                            backgroundColor: '#EFF5FF',
+                                            marginLeft: text(6),
+                                        }}>
+                                        <Text style={styles.tag}>{item.tag}</Text>
+                                    </View>
+                                ) : null}
                             </View>
-                        );
-                    })
-                ) : (
-                    <Empty text={'暂无数据'} />
-                )}
+                            <Text style={[styles.detail, {color: `${color}`}]}>{item.profit}</Text>
+                        </View>
+                    );
+                })}
             </>
         ),
 
