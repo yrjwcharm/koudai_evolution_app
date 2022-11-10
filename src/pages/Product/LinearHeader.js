@@ -82,6 +82,7 @@ const LinearHeader = ({bgType, proData, tabActive, tabRef}) => {
                 {proData?.message ? (
                     <TouchableOpacity
                         activeOpacity={0.8}
+                        style={{marginRight: px(16)}}
                         onPress={() => {
                             global.LogTool('indexNotificationCenter');
                             jump(proData?.message?.url);
@@ -92,7 +93,7 @@ const LinearHeader = ({bgType, proData, tabActive, tabRef}) => {
                             </View>
                         ) : null}
                         <FastImage
-                            style={{width: px(24), height: px(24), marginRight: px(12)}}
+                            style={{width: px(24), height: px(24)}}
                             source={{
                                 uri: bgType
                                     ? 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png'

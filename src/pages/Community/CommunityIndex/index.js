@@ -62,7 +62,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
     );
 
     return (
-        <View style={[Style.flexBetween, styles.header, {paddingTop: insets.top + px(4)}]}>
+        <View style={[Style.flexBetween, styles.header, {paddingTop: insets.top + px(5)}]}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
                 <Image
                     source={{
