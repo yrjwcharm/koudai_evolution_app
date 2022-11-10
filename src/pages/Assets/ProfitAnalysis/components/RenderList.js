@@ -136,7 +136,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                             </TouchableOpacity>
                         </View>
                     )}
-                    {renderList}
+                    <View style={{marginBottom: px(8)}}>{renderList}</View>
                 </>
             )}
         </>

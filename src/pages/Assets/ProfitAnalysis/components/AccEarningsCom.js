@@ -57,9 +57,9 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type
         }
     }, []);
     return (
-        <>
+        <React.Fragment>
             {chartData.chart ? (
-                <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
+                <View style={[styles.chartContainer]}>
                     <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>
                         {chartData.profit_acc}
                     </Text>
@@ -176,7 +176,7 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type
                     type={'part'}
                 />
             ) : null}
-        </>
+        </React.Fragment>
     );
 });
 
@@ -189,7 +189,6 @@ export default AccEarningsCom;
 const styles = StyleSheet.create({
     chartContainer: {
         paddingTop: text(14),
-        backgroundColor: '#fff',
     },
     subTitle: {
         fontSize: text(13),
