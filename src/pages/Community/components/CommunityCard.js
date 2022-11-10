@@ -8,19 +8,20 @@ import {AppState, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import HapticFeedback from 'react-native-haptic-feedback';
 import LinearGradient from 'react-native-linear-gradient';
+import LottieView from 'lottie-react-native';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import collect from '~/assets/img/icon/collect.png';
-import collectActive from '~/assets/img/icon/collectActive.png';
+import collect from '~/assets/animation/collect16.json';
+import collectActive from '~/assets/animation/collect16Active.json';
 import comment from '~/assets/img/icon/comment.png';
 import live from '~/assets/img/vision/live.gif';
 import share from '~/assets/img/icon/share.png';
 import video from '~/assets/img/vision/video.png';
 import videoPlay from '~/assets/img/icon/videoPlay.png';
-import zan from '~/assets/img/icon/zan.png';
-import zanActive from '~/assets/img/icon/zanActive.png';
+import zan from '~/assets/animation/zan16.json';
+import zanActive from '~/assets/animation/zan16Active.json';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
@@ -490,16 +491,18 @@ export const CommunityCard = (props) => {
                                 activeOpacity={0.8}
                                 onPress={() => onBottomOps('collect')}
                                 style={[Style.flexRow, {marginRight: px(16)}]}>
-                                <Image
+                                <LottieView
+                                    autoPlay
+                                    loop={false}
                                     source={collected === 0 ? collect : collectActive}
-                                    style={styles.operationIcon}
+                                    style={styles.operationGifIcon}
                                 />
                                 <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{collectNum}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => jump(comment_url)}
-                                style={[Style.flexRow, {marginRight: px(16)}]}>
+                                style={[Style.flexRow, {marginRight: px(12)}]}>
                                 <Image source={comment} style={styles.operationIcon} />
                                 <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{comment_num}</Text>
                             </TouchableOpacity>
@@ -507,7 +510,12 @@ export const CommunityCard = (props) => {
                                 activeOpacity={0.8}
                                 onPress={() => onBottomOps('favor')}
                                 style={Style.flexRow}>
-                                <Image source={favored === 0 ? zan : zanActive} style={styles.operationIcon} />
+                                <LottieView
+                                    autoPlay
+                                    loop={false}
+                                    source={favored === 0 ? zan : zanActive}
+                                    style={styles.operationGifIcon}
+                                />
                                 <Text style={[styles.desc, {fontFamily: Font.numRegular}]}>{favorNum}</Text>
                             </TouchableOpacity>
                         </View>
@@ -630,6 +638,11 @@ const styles = StyleSheet.create({
         marginRight: px(2),
         width: px(16),
         height: px(16),
+    },
+    operationGifIcon: {
+        marginRight: -px(2),
+        width: px(24),
+        height: px(24),
     },
     applyBox: {
         marginTop: px(12),
