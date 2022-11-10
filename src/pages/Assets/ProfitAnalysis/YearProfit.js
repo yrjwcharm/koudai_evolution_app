@@ -29,8 +29,9 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [selCurYear, setSelCurYear] = useState(dayjs().year());
     const [isHasData, setIsHasData] = useState(true);
     const [diff, setDiff] = useState(0);
-    const [unitList, setUnitList] = useState([]);
-    const [period, setPeriod] = useState('近5年');
+    const [startYear, setStartYear] = useState('');
+    const [endYear, setEndYear] = useState('');
+    const [date, setDate] = useState(dayjs());
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -145,7 +146,12 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
                     if (unit_list.length > 0) {
-                        setUnitList(unit_list);
+                        const max = unit_list[0].value.split('-')[1];
+                        const min = unit_list[unit_list.length - 1].value.split('-')[0];
+                        setStartYear(min);
+                        setEndYear(max);
+                        let cur = dayjs_.year();
+                        if (cur > max || cur < min) return;
                         let arr = profit_data_list
                             .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                             .map((el) => {
@@ -154,12 +160,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                     profit: el.value,
                                 };
                             });
-                        // let period = `${arr[0].day}-${arr[arr.length - 1].day}`;
-                        // if (period == `${dayjs().year() - 4}-${dayjs().year()}`) {
-                        //     setPeriod('近5年');
-                        // } else {
-                        //     setPeriod('5年前');
-                        // }
+                        setDate(dayjs_);
                         profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                         arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                         setDateArr([...arr]);
@@ -215,10 +216,10 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         [dateArr]
     );
     const subStract = () => {
-        setDiff((diff) => diff - 1);
+        setDiff((diff) => diff - 5);
     };
     const add = () => {
-        setDiff((diff) => diff + 1);
+        setDiff((diff) => diff + 5);
     };
     const renderBarChart = useCallback(
         (xAxisData, dataAxis) => {
@@ -341,61 +342,67 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={Style.flexBetween}>
                     <View style={[styles.chartLeft]}>
-                        <TouchableOpacity onPress={selCalendarType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isCalendar && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    日历图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={selBarChartType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isBarChart && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    柱状图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isCalendar && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            日历图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
+                        {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isBarChart && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            柱状图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                     <View style={Style.flexRow}>
-                        <TouchableOpacity onPress={subStract}>
-                            <Image
-                                style={{width: px(13), height: px(13)}}
-                                source={require('../../../assets/img/icon/prev.png')}
-                            />
-                        </TouchableOpacity>
-                        <Text style={styles.yearDateText}>{period}</Text>
-                        <TouchableOpacity onPress={add}>
-                            <Image
-                                style={{width: px(13), height: px(13)}}
-                                source={require('../../../assets/img/icon/next.png')}
-                            />
-                        </TouchableOpacity>
+                        {parseInt(startYear) + 4 != date.year() && (
+                            <TouchableOpacity onPress={subStract}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../assets/img/icon/prev.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        <Text style={styles.yearDateText}>
+                            {parseInt(startYear) + 4 == date.year() ? '5年前' : '近5年'}
+                        </Text>
+                        {endYear != date.year() && (
+                            <TouchableOpacity onPress={add}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../assets/img/icon/next.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </View>
                 <>
@@ -553,7 +560,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         backgroundColor: '#F4F4F4',
         borderRadius: px(6),
-        opacity: 1,
+        opacity: 0,
     },
     selChartType: {
         borderRadius: px(4),
