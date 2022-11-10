@@ -19,56 +19,57 @@ const ChartHeader = React.memo(
         subMonth,
         addMonth,
         date,
-        isPrev = false,
-        isNext = true,
+        minDate,
+        maxDate,
+        filterDate,
     }) => {
         return (
             <>
                 <View style={Style.flexBetween}>
                     <View style={[styles.chartLeft, {}]}>
-                        <TouchableOpacity onPress={selCalendarType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isCalendar && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    日历图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={selBarChartType}>
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.selChartType,
-                                    isBarChart && {
-                                        backgroundColor: Colors.white,
-                                        width: px(60),
-                                    },
-                                ]}>
-                                <Text
-                                    style={{
-                                        color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,
-                                        fontSize: px(12),
-                                        fontFamily: Font.pingFangRegular,
-                                    }}>
-                                    柱状图
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity onPress={selCalendarType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isCalendar && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isCalendar ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            日历图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
+                        {/*<TouchableOpacity onPress={selBarChartType}>*/}
+                        {/*    <View*/}
+                        {/*        style={[*/}
+                        {/*            Style.flexCenter,*/}
+                        {/*            styles.selChartType,*/}
+                        {/*            isBarChart && {*/}
+                        {/*                backgroundColor: Colors.white,*/}
+                        {/*                width: px(60),*/}
+                        {/*            },*/}
+                        {/*        ]}>*/}
+                        {/*        <Text*/}
+                        {/*            style={{*/}
+                        {/*                color: isBarChart ? Colors.defaultColor : Colors.lightBlackColor,*/}
+                        {/*                fontSize: px(12),*/}
+                        {/*                fontFamily: Font.pingFangRegular,*/}
+                        {/*            }}>*/}
+                        {/*            柱状图*/}
+                        {/*        </Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                     <View style={styles.selMonth}>
-                        {isPrev && (
+                        {filterDate.format('YYYY-MM') !== minDate && (
                             <TouchableOpacity onPress={subMonth}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}
@@ -77,7 +78,7 @@ const ChartHeader = React.memo(
                             </TouchableOpacity>
                         )}
                         <Text style={styles.MMText}>{date}</Text>
-                        {isNext && (
+                        {filterDate.format('YYYY-MM') !== maxDate && (
                             <TouchableOpacity onPress={addMonth}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         backgroundColor: '#F4F4F4',
         borderRadius: px(6),
-        opacity: 1,
+        opacity: 0,
     },
     selChartType: {
         borderRadius: px(4),
