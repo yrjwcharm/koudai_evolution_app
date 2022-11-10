@@ -46,14 +46,13 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: px(6),
     },
     emptyImg: {
-        height: px(96),
+        height: px(64),
         width: px(120),
     },
     emptyText: {
         marginTop: px(15),
-        fontSize: px(13),
-        fontFamily: Font.pingFangRegular,
-        fontWeight: 'normal',
-        color: Colors.lightGrayColor,
+        fontWeight: '500',
+        fontSize: px(12),
+        color: Colors.descColor,
     },
 });
