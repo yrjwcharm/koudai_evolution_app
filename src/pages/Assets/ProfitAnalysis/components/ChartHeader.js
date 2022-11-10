@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, Image, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
-import {debounce, px} from '../../../../utils/appUtil';
+import {debounce, isEmpty, px} from '../../../../utils/appUtil';
 
 const ChartHeader = React.memo(
     ({
@@ -69,7 +69,7 @@ const ChartHeader = React.memo(
                         {/*</TouchableOpacity>*/}
                     </View>
                     <View style={styles.selMonth}>
-                        {filterDate.format('YYYY-MM') !== minDate && (
+                        {!isEmpty(minDate) && filterDate.format('YYYY-MM') !== minDate && (
                             <TouchableOpacity onPress={subMonth}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}
@@ -78,7 +78,7 @@ const ChartHeader = React.memo(
                             </TouchableOpacity>
                         )}
                         <Text style={styles.MMText}>{date}</Text>
-                        {filterDate.format('YYYY-MM') !== maxDate && (
+                        {!isEmpty(maxDate) && filterDate.format('YYYY-MM') !== maxDate && (
                             <TouchableOpacity onPress={addMonth}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}

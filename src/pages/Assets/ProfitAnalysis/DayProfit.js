@@ -44,6 +44,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [profit, setProfit] = useState('');
     const [maxDate, setMaxDate] = useState('');
     const [minDate, setMindDate] = useState('');
+    const [unitList, setUnitList] = useState([]);
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -215,6 +216,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let max = unit_list[0].value;
                         setMaxDate(max);
                         setMindDate(min);
+                        setUnitList(unit_list);
                         let cur = dayjs_.format('YYYY-MM');
                         if (cur > max || cur < min) return;
                         for (let i = 0; i < arr.length; i++) {

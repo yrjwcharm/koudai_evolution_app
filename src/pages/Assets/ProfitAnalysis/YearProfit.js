@@ -32,6 +32,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [startYear, setStartYear] = useState('');
     const [endYear, setEndYear] = useState('');
     const [date, setDate] = useState(dayjs());
+    const [unitList, setUnitList] = useState([]);
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -150,6 +151,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         const min = unit_list[unit_list.length - 1].value.split('-')[0];
                         setStartYear(min);
                         setEndYear(max);
+                        setUnitList(unit_list);
                         let cur = dayjs_.year();
                         if (cur > max || cur < min) return;
                         let arr = profit_data_list
@@ -393,7 +395,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </TouchableOpacity>
                         )}
                         <Text style={styles.yearDateText}>
-                            {parseInt(startYear) + 4 == date.year() ? '5年前' : '近5年'}
+                            {unitList.length > 1 && parseInt(startYear) + 4 == date.year() ? '5年前' : '近5年'}
                         </Text>
                         {endYear != date.year() && (
                             <TouchableOpacity onPress={add}>
