@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-18 14:06:36
+ * @LastEditTime: 2022-11-10 16:43:19
  * @Description:直播模块
  */
 
@@ -277,6 +277,8 @@ const styles = StyleSheet.create({
         width: px(26),
         height: px(26),
         borderRadius: px(13),
+        borderWidth: 0.5,
+        borderColor: '#e9eaef',
     },
     live_order: {
         borderBottomRightRadius: Space.borderRadius,
