@@ -17,3 +17,5 @@ export const setDividend = (params) => http.post('/portfolio/fund/dividend/20220
 export const postUnFavor = (params) => http.post('/portfolio/asset/close_upgrade/20220712', params);
 
 export const postRenewal = (params) => http.post('/tool/signal/renewal/20220810', params);
+
+export const getTransferGuidePop = (params) => http.get('/transfer/force/guide/pop/202208', params);

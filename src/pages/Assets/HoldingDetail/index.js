@@ -35,7 +35,7 @@ import withPageLoading from '~/components/withPageLoading';
 import {baseAreaChart} from '~/pages/Portfolio/components/ChartOption';
 import {deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
-import {getChartData, getCommonData, getDsData, getPageData, setDividend} from './services';
+import {getChartData, getCommonData, getDsData, getPageData, getTransferGuidePop, setDividend} from './services';
 import CenterControl from './CenterControl';
 import PointCard from '../components/PointCard';
 import RenderAlert from '../components/RenderAlert';
@@ -54,7 +54,6 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
             Storage.save('portfolioAssets', show === 'true' ? 'false' : 'true');
             return show === 'true' ? 'false' : 'true';
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /** @name 处理隐藏金额信息 */
@@ -513,12 +512,10 @@ const RenderChart = ({data = {}}) => {
 
     useEffect(() => {
         init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, params, period]);
 
     useEffect(() => {
         label && onHide();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [label]);
 
     return (
@@ -950,6 +947,26 @@ const Index = ({navigation, route, setLoading}) => {
         getCommonData(route.params || {}).then((res) => {
             if (res.code === '000000') {
                 setCommonData(res.result);
+            }
+        });
+        getTransferGuidePop(route.params || {}).then((res) => {
+            if (res.code === '000000') {
+                const {back_close, cancel, confirm, content, title, touch_close} = res.result;
+                content &&
+                    Modal.show({
+                        backButtonClose: back_close,
+                        cancelCallBack: () => global.LogTool('PortfolioTransition_Windows_No', route.params?.poid),
+                        cancelText: cancel.text,
+                        confirm: true,
+                        confirmCallBack: () => {
+                            global.LogTool('PortfolioTransition_Windows_yes', route.params?.poid);
+                            jump(confirm.url);
+                        },
+                        confirmText: confirm.text,
+                        content,
+                        isTouchMaskToClose: touch_close,
+                        title,
+                    });
             }
         });
     };
