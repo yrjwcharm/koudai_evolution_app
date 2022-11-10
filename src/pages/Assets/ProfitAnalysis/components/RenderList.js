@@ -13,7 +13,6 @@ import {px as text, px} from '../../../../utils/appUtil';
 import {getProfitDetail} from '../services';
 import {useJump} from '../../../../components/hooks';
 import Loading from '../../../Portfolio/components/PageLoading';
-import Empty from '../../../../components/EmptyTip';
 import EmptyTip from '../../../../components/EmptyTip';
 const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', unitType}) => {
     const [[left, right], setHeaderList] = useState([]);
