@@ -47,7 +47,7 @@ const AlbumHeader = ({
                                 colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
                                 start={{x: 0, y: 0}}
                                 end={{x: 0.5, y: 0}}
-                                style={[{width: bgWidth, height: '100%'}]}
+                                style={[{width: bgWidth + 1, height: '100%'}]}
                             />
                         </View>
                     )}
