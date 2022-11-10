@@ -14,6 +14,7 @@ import {getProfitDetail} from '../services';
 import {useJump} from '../../../../components/hooks';
 import Loading from '../../../Portfolio/components/PageLoading';
 import EmptyTip from '../../../../components/EmptyTip';
+import Empty from '../../../../components/EmptyTip';
 const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', unitType}) => {
     const [[left, right], setHeaderList] = useState([]);
     const [profitList, setProfitList] = useState([]);
@@ -100,11 +101,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                         );
                     })
                 ) : showEmpty ? (
-                    <EmptyTip
-                        img={require('../../../../assets/img/emptyTip/noProfit.png')}
-                        text={'暂无收益数据'}
-                        type={'part'}
-                    />
+                    <Empty text={'暂无数据'} imageStyle={{width: px(120), height: px(64)}} />
                 ) : null}
             </>
         ),
