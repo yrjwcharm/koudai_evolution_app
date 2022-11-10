@@ -110,7 +110,12 @@ const WriteArticle = ({article, setArticle}) => {
         },
         {action: 'heading3', name: '二级标题', style: styles.headingText, type: 'heading3'},
         {action: 'setBold', name: 'B', style: {...styles.fontStyleText, fontWeight: 'bold'}, type: 'bold'},
-        {action: 'setItalic', name: 'I', style: {...styles.fontStyleText, fontStyle: 'italic'}, type: 'italic'},
+        {
+            action: 'setItalic',
+            name: ' I ',
+            style: {...styles.fontStyleText, fontStyle: 'italic', right: Platform.select({android: px(1.5), ios: 0})},
+            type: 'italic',
+        },
         {
             action: 'setUnderline',
             name: 'U',

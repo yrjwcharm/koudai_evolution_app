@@ -18,39 +18,36 @@ const Header = ({newMes}) => {
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
     return (
         <>
-            <View style={[styles.header, {paddingTop: inset.top}]}>
-                <View style={[Style.flexBetween, {height: px(42)}]}>
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        style={Style.flexRow}
-                        onPress={() => {
-                            navigation.navigate('Profile');
-                        }}>
-                        <Image source={{uri: userInfo?.avatar}} style={styles.avatar} />
-                        <Text style={styles.name}>{userInfo?.nickname || '昵称'}</Text>
-                        <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
-                    </TouchableOpacity>
-                    {/* 消息 */}
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={{position: 'relative', ...Style.flexRow}}
-                        onPress={() => {
-                            global.LogTool('indexNotificationCenter');
-                            jump({path: 'RemindMessage'});
-                        }}>
-                        <Image
-                            style={{width: px(24), height: px(24)}}
-                            source={{
-                                uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
-                            }}
-                        />
-                        {newMes ? (
-                            <View style={[styles.point_sty, Style.flexCenter]}>
-                                <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
-                            </View>
-                        ) : null}
-                    </TouchableOpacity>
-                </View>
+            <View style={[Style.flexBetween, styles.header, {paddingTop: inset.top + px(4)}]}>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={Style.flexRow}
+                    onPress={() => {
+                        navigation.navigate('Profile');
+                    }}>
+                    <Image source={{uri: userInfo?.avatar}} style={styles.avatar} />
+                    <Text style={styles.name}>{userInfo?.nickname || '昵称'}</Text>
+                    <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
+                </TouchableOpacity>
+                {/* 消息 */}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        global.LogTool('indexNotificationCenter');
+                        jump({path: 'RemindMessage'});
+                    }}>
+                    <Image
+                        style={{width: px(24), height: px(24)}}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
+                        }}
+                    />
+                    {newMes ? (
+                        <View style={[styles.point_sty, Style.flexCenter]}>
+                            <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
+                        </View>
+                    ) : null}
+                </TouchableOpacity>
             </View>
         </>
     );
@@ -61,9 +58,10 @@ export default Header;
 const styles = StyleSheet.create({
     header: {
         paddingHorizontal: px(16),
+        paddingBottom: px(10),
         backgroundColor: '#ECF5FF',
     },
-    avatar: {width: px(30), height: px(30), borderRadius: px(16), marginRight: px(10)},
+    avatar: {width: px(30), height: px(30), borderRadius: px(30), marginRight: px(10)},
     name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
     header_icon: {
         width: px(32),
