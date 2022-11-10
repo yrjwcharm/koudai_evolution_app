@@ -273,6 +273,7 @@ const CreatorCenterIndex = ({navigation}) => {
                                 <ScrollView
                                     key={idx}
                                     tabLabel={item.title}
+                                    scrollEventThrottle={6}
                                     style={{flex: 1}}
                                     contentContainerStyle={{paddingHorizontal: px(16)}}
                                     scrollIndicatorInsets={{right: 1}}
