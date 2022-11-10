@@ -833,14 +833,14 @@ const styles = StyleSheet.create({
         borderRadius: px(20),
         zIndex: 3,
         minWidth: px(14),
-        height: px(14),
-        paddingHorizontal: 4,
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
     },
     msgNum: {
         textAlign: 'center',
         color: '#fff',
         fontSize: px(9),
-        lineHeight: px(13),
+        lineHeight: px(10),
         fontFamily: Font.numFontFamily,
     },
     title: {

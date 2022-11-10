@@ -5,7 +5,7 @@
  */
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -36,7 +36,7 @@ const LinearHeader = ({bgType, proData, tabActive, tabRef}) => {
 
     return (
         <LinearGradient
-            style={{paddingTop: insets.top + px(6), height: px(170)}}
+            style={{paddingTop: insets.top + px(Platform.OS === 'ios' ? 6 : 7), height: px(170)}}
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
             colors={(bgType ? proData?.bg_colors : proData?.popular_banner_list?.bg_colors) || ['#EBF5FF', '#F4F5F7']}>
@@ -153,14 +153,14 @@ const styles = StyleSheet.create({
         borderRadius: px(20),
         zIndex: 3,
         minWidth: px(14),
-        height: px(14),
-        paddingHorizontal: 4,
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
     },
     point_text: {
         textAlign: 'center',
         color: '#fff',
         fontSize: px(9),
-        lineHeight: px(13),
+        lineHeight: px(10),
         fontFamily: Font.numFontFamily,
     },
 });
