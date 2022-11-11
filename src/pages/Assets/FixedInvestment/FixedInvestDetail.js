@@ -250,11 +250,12 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 {state.records?.data_list?.map((item, index) => {
                                     return (
                                         <TouchableOpacity
+                                            key={item + '' + index}
                                             onPress={() => {
                                                 global.LogTool('click', 'accumlated_investment_record');
                                                 jump(item?.url);
                                             }}>
-                                            <View key={item + '' + index} style={[Style.flexRow, {marginTop: px(12)}]}>
+                                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
                                                 <View style={{width: '38.5%'}}>
                                                     <Text style={styles.date}>{item.date}</Text>
                                                 </View>
