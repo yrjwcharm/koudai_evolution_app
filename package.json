@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
-  "version": "7.0.0",
-  "versionCode": 70000,
+  "version": "7.0.1",
+  "versionCode": 70100,
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
