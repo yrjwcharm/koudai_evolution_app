@@ -102,14 +102,14 @@ const Index = ({navigation, route}) => {
     return (
         <View style={[styles.con, {paddingTop: inset.top}]}>
             {current == 0 ? ( //处理第一题
-                <>
+                <View style={{backgroundColor: '#fff', flex: 1}}>
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={onSkip}
                         style={[Style.flexRow, styles.skip, {top: inset.top}]}>
                         <Text>跳过</Text>
                     </TouchableOpacity>
-                    <ScrollView bounces={false} style={{marginTop: px(56)}}>
+                    <ScrollView bounces={false} style={{marginTop: px(56), flex: 1}}>
                         <Text style={styles.title}>{data[current]?.tag_name}</Text>
                         <Text style={[styles.title_desc, {marginBottom: px(44)}]}>{data[current]?.desc}</Text>
                         <View style={[Style.flexRow, {flexWrap: 'wrap', paddingHorizontal: deviceWidth / 8}]}>
@@ -155,9 +155,9 @@ const Index = ({navigation, route}) => {
                             ))}
                         </View>
                     </ScrollView>
-                </>
+                </View>
             ) : (
-                <View style={{paddingHorizontal: px(28), flex: 1}}>
+                <View style={{paddingHorizontal: px(28), flex: 1, backgroundColor: '#fff'}}>
                     <View style={styles.header}>
                         <TouchableOpacity
                             activeOpacity={0.8}

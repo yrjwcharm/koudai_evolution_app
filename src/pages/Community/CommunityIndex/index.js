@@ -62,7 +62,7 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
     );
 
     return (
-        <View style={[Style.flexBetween, styles.header, {paddingTop: insets.top + px(4)}]}>
+        <View style={[Style.flexBetween, styles.header, {paddingTop: insets.top + px(5)}]}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => jump(url)}>
                 <Image
                     source={{
@@ -837,14 +837,14 @@ const styles = StyleSheet.create({
         borderRadius: px(20),
         zIndex: 3,
         minWidth: px(14),
-        height: px(14),
-        paddingHorizontal: 4,
+        paddingVertical: px(2),
+        paddingHorizontal: px(4),
     },
     msgNum: {
         textAlign: 'center',
         color: '#fff',
         fontSize: px(9),
-        lineHeight: px(13),
+        lineHeight: px(10),
         fontFamily: Font.numFontFamily,
     },
     title: {

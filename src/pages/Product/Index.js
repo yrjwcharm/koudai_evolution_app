@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-08 15:36:13
+ * @LastEditTime: 2022-11-10 10:47:56
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -58,13 +58,15 @@ const Product = ({navigation}) => {
         return tabActive === 1 && proData?.popular_banner_list ? false : true;
     }, [tabActive, proData]);
 
-    // 自选tab focus时重新刷新, 产品tab第一次加载时刷新
+    // 自选tab focus时重新刷新, 产品tab第一次加载时刷新 剩下的只刷新上半部分接口
     useFocusEffect(
         useCallback(() => {
             let cPage = tabRef.current?.state?.currentPage;
             setTabActive(cPage);
             if (showNum.current++ === 1 || cPage === 0) {
                 tabRef.current.goToPage(cPage);
+            } else if (cPage === 1) {
+                getProData(null, true);
             }
         }, [])
     );
@@ -110,7 +112,7 @@ const Product = ({navigation}) => {
         [getFollowTabs, getProData][cur.i]();
     }, []);
 
-    const getProData = (type) => {
+    const getProData = (type, DoNotUpdateSubjects) => {
         if (type === 0) {
             setRefreshing(true);
         }
@@ -127,9 +129,11 @@ const Product = ({navigation}) => {
                             rec_json: res.result?.popular_subject.rec_json,
                         });
                     }
-                    // 获取专题
-                    pageRef.current = 1;
-                    getSubjects(res.result?.page_type);
+                    if (!DoNotUpdateSubjects) {
+                        // 获取专题
+                        pageRef.current = 1;
+                        getSubjects(res.result?.page_type);
+                    }
                 }
             })
             .finally((_) => {

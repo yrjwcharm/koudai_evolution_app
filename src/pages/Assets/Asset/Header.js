@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     point_sty: {
         position: 'absolute',
         left: px(15),
-        bottom: px(17),
+        top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(20),
         paddingVertical: px(2),

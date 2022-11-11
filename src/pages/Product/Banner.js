@@ -40,7 +40,11 @@ const Banner = ({bgType, proData}) => {
                                     key={index}
                                     activeOpacity={0.9}
                                     onPress={() => {
-                                        global.LogTool('swiper', banner.id);
+                                        global.LogTool({
+                                            event: 'swiper',
+                                            ctrl: banner.id,
+                                            oid: banner.log_id,
+                                        });
                                         jump(banner.url);
                                     }}>
                                     <FastImage
