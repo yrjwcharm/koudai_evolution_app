@@ -25,7 +25,7 @@ import ChartHeader from './components/ChartHeader';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-import {round} from 'mathjs';
+import Loading from '../../Portfolio/components/PageLoading';
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -469,6 +469,25 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         },
         [isBarChart]
     );
+    const LazyComponent = React.lazy(
+        () =>
+            new Promise((resolve) => {
+                let timer = setTimeout(() => {
+                    resolve({
+                        default: () => (
+                            <RenderList
+                                curDate={selCurDate}
+                                type={type}
+                                poid={poid}
+                                fund_code={fund_code}
+                                unitType={unit_type}
+                            />
+                        ),
+                    });
+                    timer && clearTimeout(timer);
+                }, 800);
+            })
+    );
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -526,13 +545,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 <Text style={styles.chartDate}>{endDate}</Text>
                             </View>
                         )}
-                        <RenderList
-                            curDate={selCurDate}
-                            type={type}
-                            poid={poid}
-                            fund_code={fund_code}
-                            unitType={unit_type}
-                        />
+                        <React.Suspense fallback={<Loading color={Colors.btnColor} />}>
+                            <LazyComponent />
+                        </React.Suspense>
                     </>
                 ) : (
                     <EmptyData />
