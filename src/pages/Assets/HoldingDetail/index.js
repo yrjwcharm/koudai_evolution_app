@@ -76,18 +76,16 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
                     </TouchableOpacity>
                 ) : null}
             </View>
-            {tags?.length > 0 && (
-                <View style={[Style.flexRow, {marginTop: px(6)}]}>
-                    <Text style={styles.smallText}>{code}</Text>
-                    {tags.map((tag, i) => {
-                        return (
-                            <View key={tag + i} style={styles.labelBox}>
-                                <Text style={styles.tagText}>{tag}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-            )}
+            <View style={[Style.flexRow, {marginTop: px(6)}]}>
+                <Text style={styles.smallText}>{code}</Text>
+                {tags.map((tag, i) => {
+                    return (
+                        <View key={tag + i} style={styles.labelBox}>
+                            <Text style={styles.tagText}>{tag}</Text>
+                        </View>
+                    );
+                })}
+            </View>
             <View style={[Style.flexBetween, styles.profitBox]}>
                 <View>
                     <View style={Style.flexRow}>
