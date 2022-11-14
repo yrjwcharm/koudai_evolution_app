@@ -17,6 +17,7 @@ import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
 import {publishNewComment} from '../Common/CommentList/services';
 import {constants} from '~/components/Modal/util';
+import QuestionModal from './QuestionModal';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -26,6 +27,7 @@ const SpecialDetail = ({navigation, route}) => {
     const [scrolling, setScrolling] = useState(false);
 
     const webview = useRef(null);
+    const questionModalRef = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
     const inputRef = useRef();
@@ -109,6 +111,19 @@ const SpecialDetail = ({navigation, route}) => {
         setTimeout(() => {
             inputRef?.current?.focus();
         }, 100);
+    };
+
+
+    const handleTestSure = (questions) => {
+        // TODO: request
+        const result = JSON.stringify(questions);
+        console.log('result:', questions, result);
+        webview.current?.injectJavaScript(`answer('${result}')`);
+
+        questionModalRef.current?.hide();
+    };
+    const handleTestClose = (back) => {
+        questionModalRef.current?.hide();
     };
 
     return (
@@ -198,6 +213,10 @@ const SpecialDetail = ({navigation, route}) => {
                             global.LogTool(logParams);
                         } else if (data?.indexOf('writeComment=') > -1) {
                             writeComment();
+                        } else if (data?.indexOf('showTest=') > -1) {
+                            const config = JSON.parse(data?.split('showTest=')[1] || []);
+                            console.log('config:', config);
+                            questionModalRef.current?.show(config);
                         }
                     }}
                     originWhitelist={['*']}
@@ -321,6 +340,8 @@ const SpecialDetail = ({navigation, route}) => {
                     </View>
                 </View>
             </PageModal>
+
+            <QuestionModal onSure={handleTestSure} onClose={handleTestClose} ref={questionModalRef} />
         </View>
     );
 };
