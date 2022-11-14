@@ -4,7 +4,7 @@
  * @Description:列表渲染封装
  */
 
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {delMille, isEmpty, isIphoneX} from '../../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../../common/commonStyle';
@@ -47,6 +47,8 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                 type,
                 unit_type: unitType,
                 unit_key: curDate,
+                poid,
+                fund_code,
                 sort_key: data?.sort_key,
                 sort: data?.sort_type == 'asc' ? '' : data?.sort_type == 'desc' ? 'asc' : 'desc',
             });
