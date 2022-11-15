@@ -167,7 +167,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
             <View style={styles.bottomCon}>
                 <View style={[Style.flexRow, {marginBottom: px(8)}]}>
                     {!!data?.author?.avatar && (
-                        <TouchableWithoutFeedback onPress={() => jump(data?.author?.url)}>
+                        <TouchableWithoutFeedback onPress={() => jump(data?.author?.url, 'push')}>
                             <Image
                                 source={{uri: data?.author?.avatar}}
                                 style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}
