@@ -167,7 +167,7 @@ const ArticleDetail = ({navigation, route}) => {
             }
         } else if (eventData?.indexOf?.('url=') > -1) {
             const url = JSON.parse(eventData.split('url=')[1] || '{}');
-            url?.path && jump(url);
+            url?.path && jump(url, ['CommunityHome', 'CommunityPersonalHome'].includes(url.path) ? 'push' : 'navigate');
         }
 
         if (eventData.indexOf('article_id') !== -1) {
