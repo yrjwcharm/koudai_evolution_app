@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-10 10:47:56
+ * @LastEditTime: 2022-11-15 16:41:18
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -151,7 +151,7 @@ const Product = ({navigation}) => {
                     setSubjectsData(res.result);
                     // 分页
                     const newList = res.result.items || [];
-                    setSubjectList((val) => (pageRef.current === 2 ? newList : val.concat(newList)));
+                    setSubjectList((val) => (pageRef.current <= 2 ? newList : val.concat(newList)));
 
                     global.LogTool({
                         event: 'rec_show',
