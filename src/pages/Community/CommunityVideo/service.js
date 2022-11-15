@@ -10,3 +10,4 @@ export const getVideoList = (params) => {
 export const getCommentList = (params) => {
     return http.get('/community/article/comment/list/20210101', params);
 };
+export const postProgress = (params) => http.post('/community/article/progress/20210101', params);

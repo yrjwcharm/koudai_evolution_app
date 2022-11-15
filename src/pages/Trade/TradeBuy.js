@@ -1351,7 +1351,6 @@ function WithHooks(props) {
                 });
                 setModal(_modal);
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
     return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} modalRef={modal} />;
