@@ -6,7 +6,6 @@ import React, {useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import ProductList from './ProductList';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
@@ -14,7 +13,7 @@ import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 
 const AlbumHeader = ({
-    data: {bg_img, title_tag, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
+    data: {bg_color, bg_img, bg_linear = false, desc, desc_icon, icon, title, title_desc, title_tag, url} = {},
     logParams,
 }) => {
     const jump = useJump();
@@ -42,15 +41,21 @@ const AlbumHeader = ({
                         style={{width: bgWidth, height: '100%'}}
                     />
                     {bg_linear && (
-                        <View style={[styles.bgLinear]}>
-                            <LinearGradient
-                                colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
-                                start={{x: 0, y: 0}}
-                                end={{x: 0.5, y: 0}}
-                                style={[{width: bgWidth + 1, height: '100%'}]}
-                            />
-                        </View>
+                        <LinearGradient
+                            colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0.5, y: 0}}
+                            style={[styles.bgLinear, {width: bgWidth}]}
+                        />
                     )}
+                    {bg_color ? (
+                        <LinearGradient
+                            colors={bg_color}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            style={[styles.bgLinear, {width: '100%'}]}
+                        />
+                    ) : null}
                 </View>
             ) : null}
             <View style={Style.flexBetween}>
@@ -215,6 +220,8 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         bottom: 0,
+        left: 0,
+        alignItems: 'flex-end',
     },
     bgLinear: {
         position: 'absolute',
