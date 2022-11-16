@@ -180,7 +180,7 @@ const PortfolioIndex = ({navigation, route}) => {
                 </View>
                 {subjectLoading ? (
                     <View style={{paddingVertical: px(20)}}>
-                        <ActivityIndicator />
+                        <ActivityIndicator color="#999" />
                     </View>
                 ) : null}
                 {/* {!subjectData?.has_more ? <Text style={{textAlign: 'center'}}>已经没有更多了</Text> : null} */}
