@@ -4,7 +4,7 @@
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -40,6 +40,7 @@ import {updateUserInfo} from '~/redux/actions/userInfo.js';
 import ProductCards from '~/components/Portfolios/ProductCards.js';
 import Storage from '~/utils/storage.js';
 import {useIsFocused} from '@react-navigation/native';
+import LogView from '~/components/LogView';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -475,7 +476,7 @@ const ArticleDetail = ({navigation, route}) => {
                             />
                         </TouchableOpacity>
                     ) : null}
-                    <ScrollView
+                    <LogView.Wrapper
                         ref={scrollRef}
                         style={{flex: 1}}
                         onScroll={onScroll}
@@ -589,9 +590,17 @@ const ArticleDetail = ({navigation, route}) => {
                                 )}
 
                                 {Object.keys(recommendData).length > 0 ? (
-                                    <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
+                                    <>
                                         {recommendData?.portfolios?.list?.length > 0 && (
-                                            <>
+                                            <LogView.Item
+                                                handler={() =>
+                                                    global.LogTool({
+                                                        event: 'suggested_products_show',
+                                                        rec_json: recommendData.portfolios.rec_json,
+                                                    })
+                                                }
+                                                logKey="portfolios"
+                                                style={{paddingTop: px(40), paddingHorizontal: px(16)}}>
                                                 <RenderTitle title={recommendData.portfolios.title} />
                                                 {recommendData.portfolios.list.map?.((item, index) => {
                                                     return (
@@ -609,17 +618,25 @@ const ArticleDetail = ({navigation, route}) => {
                                                         />
                                                     );
                                                 })}
-                                            </>
+                                            </LogView.Item>
                                         )}
                                         {recommendData?.articles?.list?.length > 0 && (
-                                            <>
+                                            <LogView.Item
+                                                handler={() =>
+                                                    global.LogTool({
+                                                        event: 'recommended_articles_show',
+                                                        rec_json: recommendData.articles.rec_json,
+                                                    })
+                                                }
+                                                logKey="articles"
+                                                style={{paddingHorizontal: px(16), paddingBottom: px(40)}}>
                                                 <RenderTitle title={recommendData.articles.title} />
                                                 {recommendData.articles.list.map?.((item, index) => {
                                                     return RenderCate(item, styles.cardStye, 'article');
                                                 })}
-                                            </>
+                                            </LogView.Item>
                                         )}
-                                    </View>
+                                    </>
                                 ) : null}
                                 {/* 问答 */}
                                 {userInfo.is_login && (
@@ -672,7 +689,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 </View>
                             </>
                         )}
-                    </ScrollView>
+                    </LogView.Wrapper>
                     <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
                         <TextInput
                             ref={inputRef}
