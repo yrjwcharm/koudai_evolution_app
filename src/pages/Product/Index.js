@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-15 16:41:18
+ * @LastEditTime: 2022-11-16 18:15:43
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -74,7 +74,8 @@ const Product = ({navigation}) => {
     // 产品tab 增加 登录状态更换时也更新
     useFocusEffect(
         useCallback(() => {
-            if (prevUserInfo.current?.is_login !== userInfo?.is_login) {
+            // 退出登录 或切换账号
+            if (prevUserInfo.current?.is_login !== userInfo?.is_login || prevUserInfo.current?.uid !== userInfo.uid) {
                 getProData();
                 prevUserInfo.current = userInfo;
             }

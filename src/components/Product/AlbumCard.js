@@ -141,8 +141,8 @@ const Index = ({
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
-                {groups?.length > 0 && (
-                    <View style={{paddingTop: px(12)}}>
+                {groups?.length > 0 ? (
+                    <View style={{paddingTop: px(12), flex: 1}}>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                             {groups.map?.((group, index) => {
                                 const {name} = group;
@@ -178,7 +178,7 @@ const Index = ({
                             <Text style={[styles.desc, {marginTop: px(12), color: Colors.red}]}>{groupDesc}</Text>
                         ) : null}
                     </View>
-                )}
+                ) : null}
                 {list?.length > 0 && (
                     <View
                         style={{
