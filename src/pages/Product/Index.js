@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-16 18:15:43
+ * @LastEditTime: 2022-11-16 19:13:41
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
@@ -309,7 +309,7 @@ const Product = ({navigation}) => {
                                 </View>
                                 {subjectLoading ? (
                                     <View style={{paddingVertical: px(20)}}>
-                                        <ActivityIndicator />
+                                        <ActivityIndicator color="#999" />
                                     </View>
                                 ) : null}
                             </View>

@@ -79,7 +79,7 @@ const DetailModal = ({bottom, onClose, selections, handlerSelections}) => {
                         ))
                     ) : (
                         <View style={{paddingVertical: px(20)}}>
-                            <ActivityIndicator />
+                            <ActivityIndicator color="#999" />
                         </View>
                     )}
                 </View>

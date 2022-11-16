@@ -298,7 +298,7 @@ const CreatorCenterIndex = ({navigation}) => {
                                             ))}
                                             {listLoading ? (
                                                 <View style={{paddingVertical: px(10)}}>
-                                                    <ActivityIndicator />
+                                                    <ActivityIndicator color="#999" />
                                                 </View>
                                             ) : null}
                                             <View style={{height: 40}} />
