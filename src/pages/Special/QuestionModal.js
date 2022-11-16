@@ -1,51 +1,93 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-14 20:02:37
+ * @LastEditTime: 2022-11-16 17:57:11
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
 
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
 import {useRef, useState} from 'react/cjs/react.development';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
+import http from '~/services';
+import Toast from '~/components/Toast';
+import FastImage from 'react-native-fast-image';
+import SelectIcon from '~/assets/img/special/select_checked.png';
 
+console.log('SelectIcon:', SelectIcon);
+function AnswerItem({question, ans, index, ...other}) {
+    const selected = question.answer_num === ans.num;
+    return (
+        <TouchableOpacity style={[styles.answerItem, selected && styles.answerItem_selected]} {...other}>
+            <Text style={[styles.answerTitle, selected && styles.answerTitle_selected]}>{ans.desc}</Text>
 
-function AnswerItem({item, ans, ...other}) {
-  const selected = item.answer === ans
-  return (
-    <TouchableOpacity style={[styles.answerItem, selected && styles.answerItem_selected]} {...other} >
-        <Text style={[styles.answerTitle, selected && styles.answerTitle_selected]}>{ans}</Text>
-    </TouchableOpacity>
-  )
+            {selected ? <FastImage source={SelectIcon} style={styles.selectedIcon} /> : null}
+        </TouchableOpacity>
+    );
 }
-
 
 function QuestionModal(props, ref) {
     const [params, setParams] = useState({});
+    const [isLoading, setLoading] = useState(false);
     const modal = useRef(null);
     const show = (config) => {
+        if (!config) {
+            console.log('QuestionModal show with config is null');
+            return;
+        }
         setParams(config);
         modal.current.show();
     };
     const hide = () => {
         modal.current?.hide?.();
     };
-    const handleAnswer = (question, answer) => {
-      question.answer = answer
-      setParams({
-        ...params,
-        questions: [...params.questions],
-      })
-    } 
+    const handleAnswer = (question, answer, index) => {
+        question.answer_num = answer.num;
+        setParams({
+            ...params,
+            questions: [...params.questions],
+        });
+    };
     const handleSure = () => {
-      props.onSure(params)
-    } 
+        const result = {
+            advisor_id: params.advisor_id,
+            answer_str: '',
+        };
+
+        const answer = {};
+        let hasEmpty = false;
+        params.questions.forEach((q) => {
+            answer[q.question_num] = q.answer_num;
+            if (!q.answer_num) {
+                hasEmpty = true;
+            }
+        });
+        if (hasEmpty) return;
+
+        result.answer_str = JSON.stringify(answer);
+        setLoading(true);
+        http.post('http://localhost:3001/kyc/answer/20220901', result)
+            .then((res) => {
+                if (res.code === '000000') {
+                    props.onSure();
+                } else {
+                    Toast.show(res.message);
+                }
+            })
+            .finally((_) => {
+                setLoading(false);
+            });
+    };
+
+    const handleClose = () => {
+        //  是否要返回前一页
+        props.onClose(params.answered ? false : true);
+    };
     React.useImperativeHandle(ref, () => {
         return {
             show: show,
@@ -60,9 +102,9 @@ function QuestionModal(props, ref) {
             header={
                 <View style={[styles.header]}>
                     <View style={{alignItems: 'center'}}>
-                        <Text style={styles.title}>调整你的投资需求</Text>
+                        <Text style={styles.title}>{params.answer_title}</Text>
                     </View>
-                    <TouchableOpacity style={styles.close} onPress={props.onClose}>
+                    <TouchableOpacity style={styles.close} onPress={handleClose}>
                         <Icon color={Colors.descColor} name={'close'} size={18} />
                     </TouchableOpacity>
                 </View>
@@ -71,13 +113,17 @@ function QuestionModal(props, ref) {
                 <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}}>
                     {(questions || []).map((item) => (
                         <View style={styles.questionItem}>
-                            <Text style={styles.questionTitle}>{item.question}</Text>
+                            <Text style={styles.questionTitle}>{item.title}</Text>
                             <View style={styles.answerWrap}>
-                                {(item.answerList || []).map((ans, index) => (
+                                {(item.answer_list || []).map((ans, index) => (
                                     <>
                                         {index % 2 === 1 && <View style={{width: 10, height: 1}} />}
-                                       <AnswerItem item={item} ans={ans} key={ans} onPress={()=>handleAnswer(item, ans)} />
-                                        
+                                        <AnswerItem
+                                            question={item}
+                                            ans={ans}
+                                            key={ans.id}
+                                            onPress={() => handleAnswer(item, ans)}
+                                        />
                                     </>
                                 ))}
                             </View>
@@ -85,7 +131,8 @@ function QuestionModal(props, ref) {
                     ))}
                 </ScrollView>
                 <TouchableOpacity style={styles.btn} onPress={handleSure}>
-                    <Text style={styles.btn_text}>确定</Text>
+                    <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
+                    <Text style={styles.btn_text}>{params?.answer_button?.text}</Text>
                 </TouchableOpacity>
             </>
         </BottomModal>
@@ -117,8 +164,8 @@ const styles = StyleSheet.create({
     content: {
         paddingTop: 4,
         // flex: 1,
-        height: deviceHeight * 0.6,
-        maxHeight: 500,
+        height: 360,
+        maxHeight: deviceHeight - 100,
     },
     questionItem: {
         marginTop: 16,
@@ -146,15 +193,22 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     answerItem_selected: {
-      backgroundColor: '#DEE8FF',
+        backgroundColor: '#DEE8FF',
+    },
+    selectedIcon: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        width: 16,
+        height: 16,
     },
     answerTitle: {
         fontSize: px(12),
         color: Colors.defaultFontColor,
     },
     answerTitle_selected: {
-      color: '#0051CC',
-      fontWeight: 'bold'
+        color: '#0051CC',
+        fontWeight: 'bold',
     },
     btn: {
         backgroundColor: '#0051CC',
@@ -163,7 +217,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 28,
         borderRadius: 6,
         marginBottom: isIphoneX() ? 34 : 20,
-
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },

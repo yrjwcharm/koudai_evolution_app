@@ -114,15 +114,14 @@ const SpecialDetail = ({navigation, route}) => {
     };
 
 
-    const handleTestSure = (questions) => {
-        // TODO: request
-        const result = JSON.stringify(questions);
-        console.log('result:', questions, result);
-        webview.current?.injectJavaScript(`answer('${result}')`);
-
+    const handleTestSure = () => {
+        webview.current?.postMessage(JSON.stringify({action: 'reload'}));
         questionModalRef.current?.hide();
     };
     const handleTestClose = (back) => {
+        if (back) {
+            navigation.goBack();
+        }
         questionModalRef.current?.hide();
     };
 
@@ -229,7 +228,15 @@ const SpecialDetail = ({navigation, route}) => {
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async (e) => {
                         const loginStatus = await Storage.get('loginStatus');
-                        // console.log(loginStatus);
+                        // console.log('loginStatus:', loginStatus);
+                        const loginStatusStr = JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                            navBarHeight: navBarRef.current.navBarHeight,
+                        });
+                        webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
                         console.log(
                             JSON.stringify({
                                 ...loginStatus,
