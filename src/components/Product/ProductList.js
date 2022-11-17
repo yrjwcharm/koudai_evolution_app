@@ -427,7 +427,13 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                             <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
                         </TouchableOpacity>
                     ) : null}
-                    {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
+                    {desc ? (
+                        <HTML
+                            html={desc}
+                            nativeProps={{containerStyle: {paddingTop: Space.padding}}}
+                            style={styles.cardDesc}
+                        />
+                    ) : null}
                     {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
                     {tags?.length > 0 && (
                         <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
@@ -617,7 +623,6 @@ const styles = StyleSheet.create({
         height: px(2),
     },
     swiperItem: {
-        paddingTop: Space.padding,
         borderRadius: Space.borderRadius,
         overflow: 'hidden',
         height: '100%',
