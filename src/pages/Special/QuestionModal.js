@@ -1,13 +1,13 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-17 17:46:20
+ * @LastEditTime: 2022-11-17 18:02:14
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
 
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet, Pressable, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
 import {useRef, useState} from 'react/cjs/react.development';
@@ -18,7 +18,6 @@ import http from '~/services';
 import Toast from '~/components/Toast';
 import FastImage from 'react-native-fast-image';
 import SelectIcon from '~/assets/img/special/select_checked.png';
-import {i} from 'mathjs';
 
 console.log('SelectIcon:', SelectIcon);
 function AnswerItem({question, ans, index, ...other}) {
@@ -43,11 +42,7 @@ function QuestionModal(props, ref) {
             console.log('QuestionModal show with config is null');
             return;
         }
-        // config.questions = [...config.questions, ...config.questions, ...config.questions, ...config.questions];
-        // config.questions.forEach((it, index) => {
-        //     it.answer_num = null;
-        //     it.title += index;
-        // });
+
         setParams(config);
         modal.current.show();
     };
@@ -126,28 +121,32 @@ function QuestionModal(props, ref) {
             <>
                 <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
                     {(questions || []).map((item, i) => (
-                        <View style={styles.questionItem} onLayout={({layout: {y}}) => (itemsY[i] = y)}>
-                            <Text style={styles.questionTitle}>{item.title}</Text>
-                            <View style={styles.answerWrap}>
-                                {(item.answer_list || []).map((ans, index) => (
-                                    <>
-                                        {index % 2 === 1 && <View style={{width: 10, height: 1}} />}
-                                        <AnswerItem
-                                            question={item}
-                                            ans={ans}
-                                            key={ans.id}
-                                            onPress={() => handleAnswer(item, ans)}
-                                        />
-                                    </>
-                                ))}
+                        <Pressable>
+                            <View style={styles.questionItem} onLayout={({layout: {y}}) => (itemsY[i] = y)}>
+                                <Text style={styles.questionTitle}>{item.title}</Text>
+                                <View style={styles.answerWrap}>
+                                    {(item.answer_list || []).map((ans, index) => (
+                                        <>
+                                            {index % 2 === 1 && <View style={{width: 10, height: 1}} />}
+                                            <AnswerItem
+                                                question={item}
+                                                ans={ans}
+                                                key={ans.id}
+                                                onPress={() => handleAnswer(item, ans)}
+                                            />
+                                        </>
+                                    ))}
+                                </View>
                             </View>
-                        </View>
+                        </Pressable>
                     ))}
                 </ScrollView>
-                <TouchableOpacity style={styles.btn} onPress={handleSure}>
-                    <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
-                    <Text style={styles.btn_text}>{params?.answer_button?.text}</Text>
-                </TouchableOpacity>
+                <View style={styles.btnWrap}>
+                    <TouchableOpacity style={styles.btn} onPress={handleSure}>
+                        <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
+                        <Text style={styles.btn_text}>{params?.answer_button?.text}</Text>
+                    </TouchableOpacity>
+                </View>
             </>
         </BottomModal>
     );
@@ -201,9 +200,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
+        width: '50%',
         minWidth: '40%',
         flex: 1,
-        marginRight: 10,
         marginTop: 10,
     },
     answerItem_selected: {
@@ -224,13 +223,18 @@ const styles = StyleSheet.create({
         color: '#0051CC',
         fontWeight: 'bold',
     },
+    btnWrap: {
+        backgroundColor: '#fff',
+        height: 50,
+        paddingTop: 10,
+        width: '100%',
+        marginBottom: isIphoneX() ? 34 : 20,
+    },
     btn: {
         backgroundColor: '#0051CC',
         height: 40,
-        // width: 'auto',
         marginHorizontal: 28,
         borderRadius: 6,
-        marginBottom: isIphoneX() ? 34 : 20,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
