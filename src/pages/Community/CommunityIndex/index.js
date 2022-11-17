@@ -943,7 +943,7 @@ const styles = StyleSheet.create({
     },
     addContent: {
         position: 'absolute',
-        right: px(5),
+        right: px(10),
         bottom: px(38),
     },
     addIcon: {
