@@ -29,6 +29,7 @@ const SearchContent = ({data, type, selections, handlerSelections, refresh}) => 
                             item_type: data.item_type || 1,
                         }).then((res) => {
                             res.message && Toast.show(res.message);
+                            refresh?.();
                         });
                     } else {
                         followAdd({
@@ -36,11 +37,11 @@ const SearchContent = ({data, type, selections, handlerSelections, refresh}) => 
                             item_type: data.item_type || 1,
                         }).then((res) => {
                             res.message && Toast.show(res.message);
+                            refresh?.();
                         });
                     }
                     return !_favor;
                 });
-                refresh?.();
             },
             500,
             {leading: true, trailing: false}
