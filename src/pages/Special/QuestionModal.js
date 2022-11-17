@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-16 17:57:11
+ * @LastEditTime: 2022-11-17 17:46:20
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -18,6 +18,7 @@ import http from '~/services';
 import Toast from '~/components/Toast';
 import FastImage from 'react-native-fast-image';
 import SelectIcon from '~/assets/img/special/select_checked.png';
+import {i} from 'mathjs';
 
 console.log('SelectIcon:', SelectIcon);
 function AnswerItem({question, ans, index, ...other}) {
@@ -35,11 +36,18 @@ function QuestionModal(props, ref) {
     const [params, setParams] = useState({});
     const [isLoading, setLoading] = useState(false);
     const modal = useRef(null);
+    const itemsY = useRef([]);
+    const scrollRef = useRef();
     const show = (config) => {
         if (!config) {
             console.log('QuestionModal show with config is null');
             return;
         }
+        // config.questions = [...config.questions, ...config.questions, ...config.questions, ...config.questions];
+        // config.questions.forEach((it, index) => {
+        //     it.answer_num = null;
+        //     it.title += index;
+        // });
         setParams(config);
         modal.current.show();
     };
@@ -54,24 +62,29 @@ function QuestionModal(props, ref) {
         });
     };
     const handleSure = () => {
+        const answer = {};
+        // 检查是否有没选择的，滚动到该选项
+        let emptyIndex = -1;
+        params.questions.forEach((q, i) => {
+            answer[q.question_num] = q.answer_num;
+            if (!q.answer_num) {
+                emptyIndex = i;
+            }
+        });
+        if (emptyIndex !== -1) {
+            scrollRef.current?.scrollTo({x: 0, y: itemsY[emptyIndex], animated: true});
+            return;
+        }
+
         const result = {
             advisor_id: params.advisor_id,
             answer_str: '',
         };
 
-        const answer = {};
-        let hasEmpty = false;
-        params.questions.forEach((q) => {
-            answer[q.question_num] = q.answer_num;
-            if (!q.answer_num) {
-                hasEmpty = true;
-            }
-        });
-        if (hasEmpty) return;
-
         result.answer_str = JSON.stringify(answer);
         setLoading(true);
-        http.post('http://localhost:3001/kyc/answer/20220901', result)
+        // http.post('http://localhost:3001/kyc/answer/20220901', result)
+        http.post('/kyc/answer/20220901', result)
             .then((res) => {
                 if (res.code === '000000') {
                     props.onSure();
@@ -99,6 +112,7 @@ function QuestionModal(props, ref) {
     return (
         <BottomModal
             ref={modal}
+            isTouchMaskToClose={false}
             header={
                 <View style={[styles.header]}>
                     <View style={{alignItems: 'center'}}>
@@ -110,9 +124,9 @@ function QuestionModal(props, ref) {
                 </View>
             }>
             <>
-                <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}}>
-                    {(questions || []).map((item) => (
-                        <View style={styles.questionItem}>
+                <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
+                    {(questions || []).map((item, i) => (
+                        <View style={styles.questionItem} onLayout={({layout: {y}}) => (itemsY[i] = y)}>
                             <Text style={styles.questionTitle}>{item.title}</Text>
                             <View style={styles.answerWrap}>
                                 {(item.answer_list || []).map((ans, index) => (
