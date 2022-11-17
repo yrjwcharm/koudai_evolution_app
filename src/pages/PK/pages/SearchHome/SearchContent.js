@@ -16,7 +16,7 @@ import {debounce} from 'lodash';
 import FastImage from 'react-native-fast-image';
 import {genKey} from '~/pages/CreatorCenter/SelectProduct/utils';
 
-const SearchContent = ({data, type, selections, handlerSelections}) => {
+const SearchContent = ({data, type, selections, handlerSelections, refresh}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const onFavor = useCallback(
@@ -40,6 +40,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                     }
                     return !_favor;
                 });
+                refresh?.();
             },
             500,
             {leading: true, trailing: false}
