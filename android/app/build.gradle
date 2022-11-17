@@ -158,8 +158,8 @@ android {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 70100
-        versionName '7.0.1'
+        versionCode 70200
+        versionName '7.0.2'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
