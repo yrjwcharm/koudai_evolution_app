@@ -333,7 +333,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let index = sortProfitDataList.findIndex(
                             (el) => el.unit_key == (profitDay || latest_profit_date)
                         );
-                        console.log(profitDay);
                         let [left, center, right] = [index - 15, index, index + 15];
                         barOption.dataZoom[0].startValue = left;
                         barOption.dataZoom[0].endValue = right;
@@ -370,7 +369,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             }
         })();
         return () => (canceled = true);
-    }, [type, isBarChart, profitDay, diff]);
+    }, [type, isBarChart, profitDay]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -438,9 +437,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     onDataZoom={(result, option) => {
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 15;
-                        let curMonth = dayjs(xAxisData[center]).month();
-                        let diffMonth = dayjs().month() - curMonth;
-                        setDiff(-diffMonth);
+                        let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
+                        let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
+                        let diff = dayjs(realDate).diff(curDate, 'month');
+                        setDiff(-diff);
                         setProfitDay(xAxisData[center]);
                         if (startValue == 0) {
                             Toast.show('只展示近一年数据');
@@ -477,7 +477,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         ),
                     });
                     timer && clearTimeout(timer);
-                }, 800);
+                }, 500);
             })
     );
     return (
