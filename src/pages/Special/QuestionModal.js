@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-17 18:02:14
+ * @LastEditTime: 2022-11-18 11:44:26
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -67,7 +67,7 @@ function QuestionModal(props, ref) {
             }
         });
         if (emptyIndex !== -1) {
-            scrollRef.current?.scrollTo({x: 0, y: itemsY[emptyIndex], animated: true});
+            scrollRef.current?.scrollTo({x: 0, y: itemsY.current[emptyIndex], animated: true});
             return;
         }
 
@@ -119,10 +119,14 @@ function QuestionModal(props, ref) {
                 </View>
             }>
             <>
-                <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
-                    {(questions || []).map((item, i) => (
-                        <Pressable>
-                            <View style={styles.questionItem} onLayout={({layout: {y}}) => (itemsY[i] = y)}>
+                <Pressable>
+                    <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
+                        {(questions || []).map((item, i) => (
+                            <View
+                                style={styles.questionItem}
+                                onLayout={(e) => {
+                                    itemsY.current[i] = e.nativeEvent.layout.y;
+                                }}>
                                 <Text style={styles.questionTitle}>{item.title}</Text>
                                 <View style={styles.answerWrap}>
                                     {(item.answer_list || []).map((ans, index) => (
@@ -138,9 +142,9 @@ function QuestionModal(props, ref) {
                                     ))}
                                 </View>
                             </View>
-                        </Pressable>
-                    ))}
-                </ScrollView>
+                        ))}
+                    </ScrollView>
+                </Pressable>
                 <View style={styles.btnWrap}>
                     <TouchableOpacity style={styles.btn} onPress={handleSure}>
                         <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
@@ -200,9 +204,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
-        width: '50%',
-        minWidth: '40%',
-        flex: 1,
+        width: (deviceWidth - 28 * 2 - 10) / 2,
         marginTop: 10,
     },
     answerItem_selected: {
