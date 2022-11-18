@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-18 11:44:26
+ * @LastEditTime: 2022-11-18 14:52:25
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -22,8 +22,12 @@ import SelectIcon from '~/assets/img/special/select_checked.png';
 console.log('SelectIcon:', SelectIcon);
 function AnswerItem({question, ans, index, ...other}) {
     const selected = question.answer_num === ans.num;
+    const isLong = ans.desc?.length > 12;
+    const stylesArr = [styles.answerItem];
+    if (selected) stylesArr.push(styles.answerItem_selected);
+    if (isLong) stylesArr.push(styles.answerItem_long);
     return (
-        <TouchableOpacity style={[styles.answerItem, selected && styles.answerItem_selected]} {...other}>
+        <TouchableOpacity style={stylesArr} {...other}>
             <Text style={[styles.answerTitle, selected && styles.answerTitle_selected]}>{ans.desc}</Text>
 
             {selected ? <FastImage source={SelectIcon} style={styles.selectedIcon} /> : null}
@@ -119,8 +123,8 @@ function QuestionModal(props, ref) {
                 </View>
             }>
             <>
-                <Pressable>
-                    <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
+                <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 30}} ref={scrollRef}>
+                    <Pressable>
                         {(questions || []).map((item, i) => (
                             <View
                                 style={styles.questionItem}
@@ -131,7 +135,7 @@ function QuestionModal(props, ref) {
                                 <View style={styles.answerWrap}>
                                     {(item.answer_list || []).map((ans, index) => (
                                         <>
-                                            {index % 2 === 1 && <View style={{width: 10, height: 1}} />}
+                                            {index % 2 === 1 && <View style={{width: 11, height: 1}} />}
                                             <AnswerItem
                                                 question={item}
                                                 ans={ans}
@@ -143,8 +147,8 @@ function QuestionModal(props, ref) {
                                 </View>
                             </View>
                         ))}
-                    </ScrollView>
-                </Pressable>
+                    </Pressable>
+                </ScrollView>
                 <View style={styles.btnWrap}>
                     <TouchableOpacity style={styles.btn} onPress={handleSure}>
                         <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
@@ -196,7 +200,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
-        alignItems: 'center',
     },
     answerItem: {
         backgroundColor: '#F5F6F8',
@@ -204,8 +207,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
-        width: (deviceWidth - 28 * 2 - 10) / 2,
-        marginTop: 10,
+        width: (deviceWidth - 28 * 2 - 11) / 2,
+        marginTop: 12,
+    },
+    answerItem_long: {
+        width: deviceWidth - 28 * 2,
+        height: 'auto',
+        minHeight: 40,
     },
     answerItem_selected: {
         backgroundColor: '#DEE8FF',
