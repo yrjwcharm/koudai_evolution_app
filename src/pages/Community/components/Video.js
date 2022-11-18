@@ -34,12 +34,15 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const [loading, setLoading] = useState(false);
     const whenDragCanUpdateProgress = useRef(true);
+    const finished = useRef(false);
     const jump = useJump();
     useEffect(() => {
         setPaused(index != currentIndex);
         customerSliderValue(0);
         setFollowStatus(data?.follow_status);
-        index == currentIndex && postProgress({article_id: data.id, done_status: data.view_status});
+        index == currentIndex &&
+            data.product_type !== 'article_history' &&
+            postProgress({article_id: data.id, done_status: data.view_status});
     }, [data, index, currentIndex]);
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
@@ -54,7 +57,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         return minute + ':' + second;
     };
     const onCustomerEnd = () => {
-        postProgress({article_id: data.id, article_progress: 100, done_status: 1, latency: duration * 1000});
+        if (finished.current) return false;
+        data.product_type !== 'article_history' &&
+            postProgress({article_id: data.id, article_progress: 100, done_status: 1, latency: duration * 1000});
+        finished.current = true;
     };
     //加载视频调用，主要是拿到 “总时间”，并格式化
     const customerOnload = (e) => {
