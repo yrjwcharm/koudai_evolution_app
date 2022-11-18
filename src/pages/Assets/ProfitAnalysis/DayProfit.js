@@ -47,6 +47,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [maxDate, setMaxDate] = useState('');
     const [minDate, setMindDate] = useState('');
     const [unitList, setUnitList] = useState([]);
+    const [profitDay, setProfitDay] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -158,95 +159,94 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      * 初始化日历日期
      */
     const init = useCallback(() => {
-        initData(diff);
-    }, [diff, type]);
-    const initData = async (diff, selCurDate = '') => {
-        let dayjs_ = dayjs().add(diff, 'month').startOf('month');
-        let dayNums = dayjs_.daysInMonth();
-        let weekDay = dayjs_.startOf('month').day();
-        let startTrim = weekDay % 7;
-        let arr = [];
-        //for循环装载日历数据
-        for (let i = 0; i < dayNums; i++) {
-            let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
-            let item = {
-                day,
-                profit: '0.00',
-                checked: false,
-            };
-            arr.push(item);
-        }
-        //获取当月最后一天是星期几
-        let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
-        let endTrim = 6 - lastWeekDay;
-        //当月日期开始
-        if (startTrim != 7) {
-            for (let i = 0; i < startTrim; i++) {
-                arr.unshift({
-                    checked: false,
+        (async () => {
+            let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+            let dayNums = dayjs_.daysInMonth();
+            let weekDay = dayjs_.startOf('month').day();
+            let startTrim = weekDay % 7;
+            let arr = [];
+            //for循环装载日历数据
+            for (let i = 0; i < dayNums; i++) {
+                let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
+                let item = {
+                    day,
                     profit: '0.00',
+                    checked: false,
+                };
+                arr.push(item);
+            }
+            //获取当月最后一天是星期几
+            let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
+            let endTrim = 6 - lastWeekDay;
+            //当月日期开始
+            if (startTrim != 7) {
+                for (let i = 0; i < startTrim; i++) {
+                    arr.unshift({
+                        checked: false,
+                        profit: '0.00',
+                        style: {
+                            opacity: 0,
+                        },
+                        isDisabled: true,
+                        day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
+                    });
+                }
+            }
+            //当月日期结束
+            for (let i = 0; i < endTrim; i++) {
+                arr.push({
+                    day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
+                    checked: false,
                     style: {
                         opacity: 0,
                     },
-                    isDisabled: true,
-                    day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
+                    profit: '0.00',
                 });
             }
-        }
-        //当月日期结束
-        for (let i = 0; i < endTrim; i++) {
-            arr.push({
-                day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
-                checked: false,
-                style: {
-                    opacity: 0,
-                },
-                profit: '0.00',
+            const res = await getChartData({
+                type,
+                unit_type,
+                unit_value: dayjs_.format('YYYY-MM'),
+                poid,
+                fund_code,
             });
-        }
-        const res = await getChartData({
-            type,
-            unit_type,
-            unit_value: dayjs_.format('YYYY-MM'),
-            poid,
-            fund_code,
-        });
-        //双重for循环判断日历是否超过、小于或等于当前日期
-        if (res.code === '000000') {
-            const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-            if (unit_list.length > 0) {
-                let min = unit_list[unit_list.length - 1].value;
-                let max = unit_list[0].value;
-                setMaxDate(max);
-                setMindDate(min);
-                setUnitList(unit_list);
-                let cur = dayjs_.format('YYYY-MM');
-                if (cur > max || cur < min) return;
-                for (let i = 0; i < arr.length; i++) {
-                    for (let j = 0; j < profit_data_list.length; j++) {
-                        //小于当前日期的情况
-                        if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                            if (arr[i].day == profit_data_list[j].unit_key) {
-                                arr[i].profit = profit_data_list[j].value;
+            //双重for循环判断日历是否超过、小于或等于当前日期
+            if (res.code === '000000') {
+                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+                if (unit_list.length > 0) {
+                    let min = unit_list[unit_list.length - 1].value;
+                    let max = unit_list[0].value;
+                    setMaxDate(max);
+                    setMindDate(min);
+                    setUnitList(unit_list);
+                    let cur = dayjs_.format('YYYY-MM');
+                    if (cur > max || cur < min) return;
+                    for (let i = 0; i < arr.length; i++) {
+                        for (let j = 0; j < profit_data_list.length; j++) {
+                            //小于当前日期的情况
+                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                if (arr[i].day == profit_data_list[j].unit_key) {
+                                    arr[i].profit = profit_data_list[j].value;
+                                }
+                            } else {
+                                delete arr[i].profit;
                             }
-                        } else {
-                            delete arr[i].profit;
                         }
                     }
-                }
 
-                let zIndex = arr.findIndex((el) => el.day == (selCurDate || latest_profit_date));
-                setDate(dayjs_);
-                profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                arr[zIndex] && (arr[zIndex].checked = true);
-                setDateArr([...arr]);
-                setSelCurDate(arr[zIndex]?.day);
-                // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-            } else {
-                setIsHasData(false);
+                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                    setDate(dayjs_);
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                    arr[zIndex] && (arr[zIndex].checked = true);
+                    setDateArr([...arr]);
+                    setSelCurDate(arr[zIndex]?.day);
+                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                } else {
+                    setIsHasData(false);
+                }
             }
-        }
-    };
+        })();
+    }, [diff, type]);
     useEffect(() => {
         init();
     }, [init]);
@@ -254,12 +254,14 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      * 向上递增一个月
      */
     const addMonth = () => {
+        setProfitDay('');
         setDiff((diff) => diff + 1);
     };
     /**
      * 向下递减一个月
      */
     const subMonth = () => {
+        setProfitDay('');
         setDiff((diff) => diff - 1);
     };
     /**
@@ -267,6 +269,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      */
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
+        setProfitDay(item.day);
         setProfit(item.profit);
     };
     useEffect(() => {
@@ -290,18 +293,17 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         let canceled = false;
         (async () => {
             if (isBarChart) {
-                // myChart.current?.showLoading();
-                // let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+                let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
                     unit_type,
-                    unit_value: dayjs().format('YYYY-MM'),
+                    unit_value: dayjs_.format('YYYY-MM'),
                     poid,
                     fund_code,
                     chart_type: 'square',
                 });
                 if (res.code === '000000') {
-                    const {profit_data_list = []} = res.result;
+                    const {profit_data_list = [], latest_profit_date = ''} = res.result;
                     let xAxisData = [],
                         dataAxis = [];
                     if (profit_data_list.length > 0) {
@@ -328,7 +330,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             xAxisData.push(el.unit_key);
                             dataAxis.push(delMille(el.value));
                         });
-                        let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurDate);
+                        let index = sortProfitDataList.findIndex(
+                            (el) => el.unit_key == (profitDay || latest_profit_date)
+                        );
+                        console.log(profitDay);
                         let [left, center, right] = [index - 15, index, index + 15];
                         barOption.dataZoom[0].startValue = left;
                         barOption.dataZoom[0].endValue = right;
@@ -355,6 +360,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             setEndDate(xAxisData[right]);
                             setXAxisData(xAxisData);
                             setDataAxis(dataAxis);
+                            setSelCurDate(xAxisData[center]);
                             setProfit(dataAxis[center]);
                         }
                         // myChart.current?.hideLoading();
@@ -364,7 +370,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             }
         })();
         return () => (canceled = true);
-    }, [type, isBarChart, selCurDate]);
+    }, [type, isBarChart, profitDay, diff]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
@@ -435,7 +441,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let curMonth = dayjs(xAxisData[center]).month();
                         let diffMonth = dayjs().month() - curMonth;
                         setDiff(-diffMonth);
-                        initData(-diffMonth, xAxisData[center]);
+                        setProfitDay(xAxisData[center]);
                         if (startValue == 0) {
                             Toast.show('只展示近一年数据');
                             return;

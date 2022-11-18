@@ -817,7 +817,9 @@ const DsList = ({data = [], showEye}) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     key={fundName + i}
-                                    onPress={() => jump(url)}
+                                    onPress={() => {
+                                        jump(url);
+                                    }}
                                     style={styles.dsFundBox}>
                                     <View style={Style.flexBetween}>
                                         <Text style={styles.desc}>{fundName}</Text>
