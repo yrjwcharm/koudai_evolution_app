@@ -203,7 +203,7 @@ const SearchContent = ({data, type, selections, handlerSelections, refresh}) => 
                             style={{width: px(16), height: px(16)}}
                         />
                     </TouchableOpacity>
-                ) : (
+                ) : data.is_private_fund ? null : (
                     <TouchableOpacity
                         style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
                         onPress={onFavor}
