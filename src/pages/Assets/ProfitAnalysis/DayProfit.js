@@ -48,6 +48,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [minDate, setMindDate] = useState('');
     const [unitList, setUnitList] = useState([]);
     const [profitDay, setProfitDay] = useState('');
+    const [minBundary, setMinBundary] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -61,7 +62,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: true,
+                zoomLock: false,
+                preventDefaultMouseMove: false,
                 throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
@@ -219,6 +221,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     setMaxDate(max);
                     setMindDate(min);
                     setUnitList(unit_list);
+                    setMinBundary(profit_data_list[profit_data_list.length - 1].unit_key);
                     let cur = dayjs_.format('YYYY-MM');
                     if (cur > max || cur < min) return;
                     for (let i = 0; i < arr.length; i++) {
@@ -442,10 +445,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff);
                         setProfitDay(xAxisData[center]);
-                        if (startValue == 0) {
-                            Toast.show('只展示近一年数据');
-                            return;
-                        }
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
