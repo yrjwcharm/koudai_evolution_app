@@ -360,7 +360,7 @@ const ChartTabs = ({tabs = []}) => {
 };
 
 /** @name 渲染图表 */
-const RenderChart = ({data = {}}) => {
+export const RenderChart = ({data = {}}) => {
     const route = useRoute();
     const {key, params, period: initPeriod} = data;
     const [period, setPeriod] = useState(initPeriod);

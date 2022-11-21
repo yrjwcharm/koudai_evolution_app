@@ -1,42 +1,33 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, DeviceEventEmitter, TouchableOpacity} from 'react-native';
 import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {Colors, Font, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
-import Tab from '../../../components/TabBar';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import PropTypes from 'prop-types';
 import Loading from '../../Portfolio/components/PageLoading';
-import {getChartData, getHeadData} from './services';
+import {getHeadData} from './services';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
 import {useJump} from '../../../components/hooks';
 import DayProfit from './DayProfit';
 import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
+import {RenderChart} from '../HoldingDetail';
 const shadow = {
     color: '#AAA',
     border: 4,
     radius: px(5),
-    opacity: 0.102,
+    opacity: 0.1,
     x: 0,
     y: 2,
     width: deviceWidth - px(32),
     height: text(71),
     style: {
-        position: 'relative',
-        top: px(12),
-        left: px(16),
-        zIndex: 0,
+        marginHorizontal: px(16),
+        marginTop: px(12),
     },
-};
-const comObj = {
-    日收益: DayProfit,
-    月收益: MonthProfit,
-    年收益: YearProfit,
-    累计收益: TotalProfit,
 };
 
 const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
@@ -94,7 +85,7 @@ const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
                 <Loading color={Colors.btnColor} />
             ) : (
                 <>
-                    <View style={{flex: 1, position: 'relative'}}>
+                    <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
                         <BoxShadow setting={{...shadow}}>
                             <View style={styles.header}>
                                 <View style={Style.flexEvenly}>
@@ -152,7 +143,36 @@ const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
                                 </View>
                             </View>
                         </BoxShadow>
-                        <View style={{marginTop: px(26)}} />
+                        <BoxShadow
+                            setting={{
+                                color: '#AAA',
+                                border: px(4),
+                                radius: px(6),
+                                opacity: 0.1,
+                                x: 0,
+                                y: 2,
+                                width: px(343),
+                                height: px(326),
+                                style: {
+                                    marginHorizontal: px(16),
+                                    marginTop: px(12),
+                                },
+                            }}>
+                            <View style={styles.assetTrends}>
+                                <Text style={styles.cardTitle}>资产趋势</Text>
+                                <RenderChart
+                                    data={{
+                                        key: 'acc_profit',
+                                        title: '累计收益',
+                                        period: 'y1',
+                                        params: {
+                                            poid: 'X00F000003',
+                                        },
+                                    }}
+                                />
+                            </View>
+                        </BoxShadow>
+                        <View style={{marginTop: px(12)}} />
                         <View style={styles.section}>
                             <View style={styles.flexContainer}>
                                 <View style={styles.flexViewContainer}>
@@ -213,7 +233,7 @@ const ProfitDistribution = ({poid = '', type, fund_code = ''}) => {
                         {Object.keys(data).length > 0 && (
                             <FixedButton title={data?.text} onPress={() => jump(data?.url)} />
                         )}
-                    </View>
+                    </ScrollView>
                 </>
             )}
         </>
@@ -304,5 +324,17 @@ const styles = StyleSheet.create({
     section: {
         flex: 1,
         marginHorizontal: px(16),
+    },
+    assetTrends: {
+        paddingVertical: px(12),
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+    },
+    cardTitle: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: '#121D3A',
+        fontWeight: 'bold',
+        paddingHorizontal: px(16),
     },
 });
