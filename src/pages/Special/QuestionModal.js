@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-21 16:30:33
+ * @LastEditTime: 2022-11-21 21:07:33
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -16,20 +16,17 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    EventEmitter,
 } from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
 import {useEffect, useRef, useState} from 'react/cjs/react.development';
-import {Colors, Font, Style} from '~/common/commonStyle';
+import {Colors, Font} from '~/common/commonStyle';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import http from '~/services';
-import Toast from '~/components/Toast';
 import FastImage from 'react-native-fast-image';
 import SelectIcon from '~/assets/img/special/select_checked.png';
 
-console.log('SelectIcon:', SelectIcon);
 function AnswerItem({question, ans, index, ...other}) {
     const selected = question.answer_num === ans.num;
     const isLong = ans.desc?.length > 12;
