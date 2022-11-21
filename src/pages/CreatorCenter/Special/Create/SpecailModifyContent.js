@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-18 18:55:35
+ * @LastEditTime: 2022-11-21 16:44:21
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -286,7 +286,7 @@ export default function SpecailModifyContent({navigation, route}) {
                 handleBack();
             });
             return () => listener?.();
-        }, [])
+        }, [data])
     );
 
     useEffect(() => {
