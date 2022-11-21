@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-10-11 13:03:31
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 21:18:24
+ * @LastEditTime: 2022-11-18 18:55:35
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailModifyContent.js
  * @Description: 创建专题-精选内容编辑
  */
@@ -169,7 +169,7 @@ function ContentSearchModal(props) {
     const renderEmpty = useCallback(() => {
         if (refreshing) return null;
         return (
-            <View style={styles.searchEmpty}>
+            <View style={[styles.searchEmpty, {height: 200}]}>
                 <FastImage
                     style={styles.searchEmpty_image}
                     resizeMode={FastImage.resizeMode.contain}

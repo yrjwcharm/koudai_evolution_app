@@ -1,11 +1,11 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-02 11:06:27
+ * @LastEditTime: 2022-11-21 15:00:46
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Create/SpecailSortContent.js
  * @Description: 创建专题-内容编辑-修改内容排序
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
@@ -14,7 +14,7 @@ import {Colors, Style} from '~/common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {deviceHeight, px} from '~/utils/appUtil';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
+import {useFocusEffect} from '@react-navigation/native';
 import {Modal} from '~/components/Modal';
 
 export default function SpecailSortContent({navigation, route}) {
@@ -25,9 +25,18 @@ export default function SpecailSortContent({navigation, route}) {
     const [check, setCheck] = useState(0); // 0没有选中 1部分选中 2全选
 
     const handleBack = () => {
-        changeCallBack([...data]);
         navigation.goBack();
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            let listener = navigation.addListener('beforeRemove', (e) => {
+                changeCallBack([...data]);
+            });
+            return () => listener?.();
+        }, [data])
+    );
+
     useEffect(() => {
         if (data?.length <= 0) return;
         let tmp = data?.filter((item) => item.check) || [];
