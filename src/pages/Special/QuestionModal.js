@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-18 14:52:25
+ * @LastEditTime: 2022-11-21 14:03:38
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -10,7 +10,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Pressable, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
-import {useRef, useState} from 'react/cjs/react.development';
+import {useEffect, useRef, useState} from 'react/cjs/react.development';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -41,6 +41,20 @@ function QuestionModal(props, ref) {
     const modal = useRef(null);
     const itemsY = useRef([]);
     const scrollRef = useRef();
+    const [avalible, setAvalible] = useState(false);
+
+    useEffect(() => {
+        if (!params || !params.questions) return;
+        let emptyIndex = -1;
+        params.questions.forEach((q, i) => {
+            if (!q.answer_num && q.answer_list) {
+                emptyIndex = i;
+            }
+        });
+        const result = emptyIndex === -1;
+        setAvalible(result);
+    }, [params]);
+
     const show = (config) => {
         if (!config) {
             console.log('QuestionModal show with config is null');
@@ -61,12 +75,14 @@ function QuestionModal(props, ref) {
         });
     };
     const handleSure = () => {
+        if (!avalible) return;
+
         const answer = {};
         // 检查是否有没选择的，滚动到该选项
         let emptyIndex = -1;
         params.questions.forEach((q, i) => {
             answer[q.question_num] = q.answer_num;
-            if (!q.answer_num) {
+            if (!q.answer_num && q.answer_list) {
                 emptyIndex = i;
             }
         });
@@ -82,13 +98,12 @@ function QuestionModal(props, ref) {
 
         result.answer_str = JSON.stringify(answer);
         setLoading(true);
-        // http.post('http://localhost:3001/kyc/answer/20220901', result)
         http.post('/kyc/answer/20220901', result)
             .then((res) => {
                 if (res.code === '000000') {
                     props.onSure();
                 } else {
-                    Toast.show(res.message);
+                    modal.current.toastShow(res.message);
                 }
             })
             .finally((_) => {
@@ -111,7 +126,8 @@ function QuestionModal(props, ref) {
     return (
         <BottomModal
             ref={modal}
-            isTouchMaskToClose={false}
+            backButtonClose={params.answered}
+            isTouchMaskToClose={params.answered}
             header={
                 <View style={[styles.header]}>
                     <View style={{alignItems: 'center'}}>
@@ -150,7 +166,10 @@ function QuestionModal(props, ref) {
                     </Pressable>
                 </ScrollView>
                 <View style={styles.btnWrap}>
-                    <TouchableOpacity style={styles.btn} onPress={handleSure}>
+                    <TouchableOpacity
+                        disabled={!avalible || isLoading}
+                        style={[styles.btn, !avalible || isLoading ? styles.btn_disabled : null]}
+                        onPress={handleSure}>
                         <ActivityIndicator animating={isLoading} style={{marginLeft: -20}} />
                         <Text style={styles.btn_text}>{params?.answer_button?.text}</Text>
                     </TouchableOpacity>
@@ -248,6 +267,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    btn_disabled: {
+        backgroundColor: '#CEDDF5',
     },
     btn_text: {
         color: '#fff',
