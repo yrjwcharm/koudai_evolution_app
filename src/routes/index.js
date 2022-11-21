@@ -564,7 +564,7 @@ export default function AppStack() {
                     component={TradeProcessing}
                     options={{gestureEnabled: false, headerShown: false}}
                 />
-                <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
+                <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
                 <Stack.Screen
                     name="LargeAmountIntro"
                     component={LargeAmountIntro}

@@ -68,10 +68,10 @@ const PortfolioAssetList = ({route, navigation}) => {
     }, []);
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
-            return text.split('/')?.map((item, index) =>
+            return text.split('|')?.map((item, index) =>
                 item == activeText ? (
                     <Text style={{color: Colors.defaultColor}}>
-                        {index == 1 ? '/' : ''} {activeText} {index == 0 ? '/' : ''}
+                        {index == 1 ? '|' : ''} {activeText} {index == 0 ? '|' : ''}
                     </Text>
                 ) : (
                     item
@@ -230,6 +230,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             profit_acc,
                             remind_info,
                             tag_info,
+                            tool_tag_info,
                             url,
                             name,
                             anno,
@@ -241,6 +242,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             code,
                             signal_icons, //工具icon
                             open_tip, //私募下期开放时间
+                            profit_title,
                         } = product;
                         return (
                             <TouchableOpacity
@@ -254,6 +256,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     jump(url);
                                 }}
                                 key={log_id + index}>
+                                {profit_title ? (
+                                    <View style={styles.portCardUpdateHint}>
+                                        <Text style={styles.portCardUpdateHintText}>{profit_title}</Text>
+                                    </View>
+                                ) : null}
                                 {type != 10 && (
                                     <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                                         <View style={Style.flexRow}>
@@ -262,6 +269,20 @@ const PortfolioAssetList = ({route, navigation}) => {
                                                 <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>
                                             )}
                                             {!!tag_info && <TagInfo data={tag_info} />}
+                                            {tool_tag_info?.map?.((item) => (
+                                                <View
+                                                    style={[styles.toolTag, {borderColor: item.tag_color}]}
+                                                    key={item.text}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(10),
+                                                            lineHeight: px(14),
+                                                            color: item.tag_color,
+                                                        }}>
+                                                        {item?.text}
+                                                    </Text>
+                                                </View>
+                                            ))}
                                         </View>
                                         {!!open_tip && (
                                             <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>
@@ -426,6 +447,20 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
         marginBottom: px(8),
     },
+    portCardUpdateHint: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        backgroundColor: '#F1F6FF',
+        paddingVertical: px(2),
+        paddingHorizontal: px(3),
+        borderRadius: px(4),
+    },
+    portCardUpdateHintText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#0051CC',
+    },
     card_amount: {
         fontSize: px(12),
         fontFamily: Font.numFontFamily,
@@ -444,5 +479,12 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         lineHeight: px(15.4),
         marginBottom: px(4),
+    },
+    toolTag: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: px(2),
+        paddingHorizontal: px(5),
+        paddingVertical: 1,
+        marginLeft: px(6),
     },
 });
