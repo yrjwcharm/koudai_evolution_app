@@ -44,11 +44,19 @@ export default ({navigation}) => {
 
     // 选择图片或相册
     const onClickChoosePicture = () => {
-        beforeGetPicture(() => openPicker('gallery'));
+        beforeGetPicture(() => openPicker('gallery'), 'gallery', {
+            title: '获取权限提示',
+            message: '为了便于上传用户头像',
+            buttonPositive: '知道了',
+        });
     };
     // 从相机中选择
     const takePic = () => {
-        beforeGetPicture(() => openPicker('camera'), 'camera');
+        beforeGetPicture(() => openPicker('camera'), 'camera', {
+            title: '获取权限提示',
+            message: '为了便于上传用户头像',
+            buttonPositive: '知道了',
+        });
     };
     // 打开相册或相机
     const openPicker = (action) => {

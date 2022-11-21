@@ -43,7 +43,7 @@ function isIphoneX() {
 /**
  * 判断权限申请
  */
-const requestAuth = async (permission, grantedCallback, blockCallBack) => {
+const requestAuth = async (permission, grantedCallback, blockCallBack, rationale) => {
     if (Platform.OS == 'ios') {
         check(permission)
             .then((result) => {
@@ -86,7 +86,7 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
         try {
             let granted = await PermissionsAndroid.check(permission);
             if (!granted) {
-                const res = await PermissionsAndroid.request(permission);
+                const res = await PermissionsAndroid.request(permission, rationale);
                 if (res !== 'granted') {
                     blockCallBack ? blockCallBack() : openSettings().catch(() => console.warn('cannot open settings'));
                 } else {
@@ -465,7 +465,7 @@ const blockCal = (action) => {
         );
     }, 500);
 };
-const beforeGetPicture = (success = () => {}, type = 'gallery') => {
+const beforeGetPicture = (success = () => {}, type = 'gallery', rationale) => {
     try {
         if (Platform.OS == 'android') {
             requestAuth(
@@ -473,7 +473,8 @@ const beforeGetPicture = (success = () => {}, type = 'gallery') => {
                     ? PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
                     : PermissionsAndroid.PERMISSIONS.CAMERA,
                 success,
-                () => blockCal(type)
+                () => blockCal(type),
+                rationale
             );
         } else {
             requestAuth(type === 'gallery' ? PERMISSIONS.IOS.PHOTO_LIBRARY : PERMISSIONS.IOS.CAMERA, success, () =>
