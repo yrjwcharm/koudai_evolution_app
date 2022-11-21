@@ -43,7 +43,16 @@ function isIphoneX() {
 /**
  * 判断权限申请
  */
-const requestAuth = async (permission, grantedCallback, blockCallBack, rationale) => {
+const requestAuth = async (permission, grantedCallback, blockCallBack) => {
+    const rationale = {
+        title: '获取权限提示',
+        //相册或者相机
+        message:
+            permission.indexOf('PHOTO') > -1 || permission.indexOf('STORAGE') > -1
+                ? '理财魔方申请获取读取设备上的照片及文件权限。允许后，将可以查看和选择相册里的图片，图片将用于上传身份证件、社区评论发帖、头像更换、图片识别、客户服务业务场景。您可以在设置页面取消相册授权。'
+                : '理财魔方申请获取拍摄照片和录制视频权限，允许后，将用于拍摄功能，拍摄图片可用于上传身份证件、社区评论发帖、头像更换、客户服务业务场景。您可以在设置页面取消摄像头权限。',
+        buttonPositive: '知道了',
+    };
     if (Platform.OS == 'ios') {
         check(permission)
             .then((result) => {
@@ -52,7 +61,7 @@ const requestAuth = async (permission, grantedCallback, blockCallBack, rationale
                         console.log('This feature is not available (on this device / in this context)');
                         break;
                     case RESULTS.DENIED:
-                        request(permission).then((res) => {
+                        request(permission, rationale).then((res) => {
                             if (res == 'blocked') {
                                 blockCallBack
                                     ? blockCallBack()
@@ -465,7 +474,7 @@ const blockCal = (action) => {
         );
     }, 500);
 };
-const beforeGetPicture = (success = () => {}, type = 'gallery', rationale) => {
+const beforeGetPicture = (success = () => {}, type = 'gallery') => {
     try {
         if (Platform.OS == 'android') {
             requestAuth(
@@ -473,8 +482,7 @@ const beforeGetPicture = (success = () => {}, type = 'gallery', rationale) => {
                     ? PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
                     : PermissionsAndroid.PERMISSIONS.CAMERA,
                 success,
-                () => blockCal(type),
-                rationale
+                () => blockCal(type)
             );
         } else {
             requestAuth(type === 'gallery' ? PERMISSIONS.IOS.PHOTO_LIBRARY : PERMISSIONS.IOS.CAMERA, success, () =>
