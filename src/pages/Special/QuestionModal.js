@@ -1,13 +1,23 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-21 14:03:38
+ * @LastEditTime: 2022-11-21 16:30:33
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
 
 import React from 'react';
-import {View, Text, StyleSheet, Pressable, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    DeviceEventEmitter,
+    TouchableOpacity,
+    ScrollView,
+    ActivityIndicator,
+    EventEmitter,
+} from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
 import {useEffect, useRef, useState} from 'react/cjs/react.development';
@@ -101,6 +111,7 @@ function QuestionModal(props, ref) {
         http.post('/kyc/answer/20220901', result)
             .then((res) => {
                 if (res.code === '000000') {
+                    DeviceEventEmitter.emit('kyc_change');
                     props.onSure();
                 } else {
                     modal.current.toastShow(res.message);

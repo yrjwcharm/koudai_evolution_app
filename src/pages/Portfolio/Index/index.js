@@ -4,7 +4,15 @@
  * @Date: 2022-09-16 16:55:33
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, RefreshControl} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ActivityIndicator,
+    RefreshControl,
+    DeviceEventEmitter,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors, Space, Style} from '~/common/commonStyle';
@@ -77,6 +85,15 @@ const PortfolioIndex = ({navigation, route}) => {
 
     useEffect(() => {
         init();
+    }, []);
+
+    useEffect(() => {
+        const emiter = DeviceEventEmitter.addListener('kyc_change', () => {
+            init();
+        });
+        return () => {
+            emiter?.remove?.();
+        };
     }, []);
 
     const genTopMenu = () => {
