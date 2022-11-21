@@ -105,8 +105,10 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                             </Text>
                         </View>
                         <View style={[{flex: 1}]}>
-                            <Text style={styles.profitKey}>{'累计收益'}</Text>
-                            <Text style={styles.profitVal}>{showEye === 'true' ? 'xxx' : '****'}</Text>
+                            <Text style={styles.profitKey}>{summary?.profit_acc?.text || '累计收益'}</Text>
+                            <Text style={styles.profitVal}>
+                                {showEye === 'true' ? summary?.profit_acc?.value : '****'}
+                            </Text>
                         </View>
                     </View>
                     {/* 交易通知 */}
