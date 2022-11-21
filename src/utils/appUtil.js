@@ -61,7 +61,7 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
                         console.log('This feature is not available (on this device / in this context)');
                         break;
                     case RESULTS.DENIED:
-                        request(permission, rationale).then((res) => {
+                        request(permission).then((res) => {
                             if (res == 'blocked') {
                                 blockCallBack
                                     ? blockCallBack()
