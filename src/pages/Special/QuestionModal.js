@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-22 11:02:36
+ * @LastEditTime: 2022-11-22 16:33:10
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
 
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     View,
     Text,
@@ -16,10 +16,12 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
+    BackHandler,
+    Platform,
 } from 'react-native';
 import {constants} from '~/components/Modal/util';
 import {BottomModal} from '~/components/Modal';
-import {useEffect, useRef, useState} from 'react/cjs/react.development';
+
 import {Colors, Font} from '~/common/commonStyle';
 import {deviceHeight, deviceWidth, isIphoneX, px} from '~/utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -61,6 +63,19 @@ function QuestionModal(props, ref) {
         const result = emptyIndex === -1;
         setAvalible(result);
     }, [params]);
+
+    // const onBackAndroid = () => {
+    //     props.onClose(params.answered ? false : true);
+    // };
+
+    // useEffect(() => {
+    //     if (Platform.OS === 'android') {
+    //         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
+    //     }
+    //     return () => {
+    //         BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
+    //     };
+    // }, [onBackAndroid, props, params]);
 
     const show = (config) => {
         if (!config) {
