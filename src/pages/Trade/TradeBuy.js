@@ -917,17 +917,20 @@ class TradeBuy extends Component {
                                         {large_pay_method.limit_desc}
                                     </Text>
                                 </View>
-                                <TouchableOpacity
-                                    style={[styles.yel_btn]}
-                                    onPress={() => {
-                                        global.LogTool('usebutton');
-                                        this.jumpPage('LargeAmount');
-                                    }}>
-                                    <Text style={{color: Colors.yellow}}>
-                                        去使用
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
-                                </TouchableOpacity>
+                                {large_pay_method?.button ? (
+                                    <TouchableOpacity
+                                        style={[styles.yel_btn]}
+                                        onPress={() => {
+                                            global.LogTool('usebutton');
+                                            const url = large_pay_method?.button.url;
+                                            this.jumpPage(url.path, url.params);
+                                        }}>
+                                        <Text style={{color: Colors.yellow}}>
+                                            {large_pay_method?.button.text}
+                                            <Icon name={'right'} size={px(12)} />
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : null}
                             </>
                         ) : null}
                     </View>
