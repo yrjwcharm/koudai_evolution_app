@@ -48,7 +48,7 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
         title: '获取权限提示',
         //相册或者相机
         message:
-            permission.indexOf('PHOTO') > -1 || permission.indexOf('STORAGE') > -1
+            permission.indexOf('STORAGE') > -1
                 ? '理财魔方申请获取读取设备上的照片及文件权限。允许后，将可以查看和选择相册里的图片，图片将用于上传身份证件、社区评论发帖、头像更换、图片识别、客户服务业务场景。您可以在设置页面取消相册授权。'
                 : '理财魔方申请获取拍摄照片和录制视频权限，允许后，将用于拍摄功能，拍摄图片可用于上传身份证件、社区评论发帖、头像更换、客户服务业务场景。您可以在设置页面取消摄像头权限。',
         buttonPositive: '知道了',

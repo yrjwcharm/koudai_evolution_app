@@ -1,9 +1,6 @@
 /*
  * @Description: 产品首页
- * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
- * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-22 17:06:39
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, RefreshControl, ActivityIndicator, DeviceEventEmitter} from 'react-native';
@@ -28,7 +25,7 @@ import Security from './Security';
 import LiveList from './LiveList';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserInfo} from '~/redux/actions/userInfo';
-
+import Clipboard from '@react-native-community/clipboard';
 const Product = ({navigation}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
@@ -92,19 +89,22 @@ const Product = ({navigation}) => {
         };
     }, [getProData]);
 
+    const refresh = () => {
+        scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+        setTimeout(() => {
+            [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(0);
+        }, 0);
+    };
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
             if (isFocused) {
-                scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-                setTimeout(() => {
-                    [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(0);
-                }, 0);
+                refresh();
                 global.LogTool('tabDoubleClick', 'ProductIndex');
             }
         });
         return () => unsubscribe();
     }, [isFocused, navigation]);
-
+    // push跳转
     useEffect(() => {
         if (userInfo?.pushRoute) {
             http.get('/common/push/jump/redirect/20210810', {
@@ -117,7 +117,27 @@ const Product = ({navigation}) => {
             });
         }
     }, [userInfo]);
-
+    // 获取剪切板内容
+    const getClipboard = async () => {
+        const hasContent = await Clipboard.hasString();
+        if (hasContent) {
+            const res = await Clipboard.getString();
+            if (res) {
+                http.post('/common/device/heart_beat/20210101', {polaris_favor: res}).then((result) => {
+                    if (result.code === '000000') {
+                        // 刷新
+                        refresh();
+                        Clipboard.setString('');
+                    }
+                });
+            }
+        }
+    };
+    useEffect(() => {
+        if (!userInfo.is_login) {
+            getClipboard();
+        }
+    }, []);
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
         [getFollowTabs, getProData][cur.i]();
