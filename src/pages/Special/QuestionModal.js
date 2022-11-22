@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-21 21:07:33
+ * @LastEditTime: 2022-11-22 11:02:36
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -151,6 +151,7 @@ function QuestionModal(props, ref) {
                     <Pressable>
                         {(questions || []).map((item, i) => (
                             <View
+                                key={item.title}
                                 style={styles.questionItem}
                                 onLayout={(e) => {
                                     itemsY.current[i] = e.nativeEvent.layout.y;
@@ -159,7 +160,9 @@ function QuestionModal(props, ref) {
                                 <View style={styles.answerWrap}>
                                     {(item.answer_list || []).map((ans, index) => (
                                         <>
-                                            {index % 2 === 1 && <View style={{width: 11, height: 1}} />}
+                                            {index % 2 === 1 && (
+                                                <View key={index} style={{flex: 0, width: 11, height: 1}} />
+                                            )}
                                             <AnswerItem
                                                 question={item}
                                                 ans={ans}
