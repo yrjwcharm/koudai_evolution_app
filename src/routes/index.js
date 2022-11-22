@@ -40,7 +40,7 @@ import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
-import PortfolioDetails from '../pages/Portfolio/Details/Index'; // 组合详情
+import PortfolioDetails from '../pages/Portfolio/PortfolioDetails/Index'; // 组合详情
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
