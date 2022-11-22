@@ -342,17 +342,27 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                     })()}
                 </TouchableOpacity>
                 {reason ? (
-                    <TouchableOpacity
-                        activeOpacity={edit_button ? 0.8 : 1}
-                        style={styles.reasonBox}
-                        onPress={() => {
-                            edit_button && jump(edit_button.url);
-                        }}>
-                        {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
-                        <View style={{flexShrink: 1}}>
-                            <HTML numberOfLines={2} html={reason} style={{...styles.label, color: Colors.descColor}} />
-                        </View>
-                    </TouchableOpacity>
+                    <LinearGradient
+                        colors={[Colors.bgColor, 'rgba(245, 246, 248, 0.3)']}
+                        start={{x: 0, y: 0}}
+                        end={{x: 1, y: 0}}
+                        style={{marginTop: px(12), borderRadius: px(4)}}>
+                        <TouchableOpacity
+                            activeOpacity={edit_button ? 0.8 : 1}
+                            style={styles.reasonBox}
+                            onPress={() => {
+                                edit_button && jump(edit_button.url);
+                            }}>
+                            {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
+                            <View style={{flexShrink: 1}}>
+                                <HTML
+                                    numberOfLines={2}
+                                    html={reason}
+                                    style={{...styles.label, color: Colors.descColor}}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </LinearGradient>
                 ) : null}
             </View>
         );
@@ -617,10 +627,7 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     reasonBox: {
-        marginTop: px(12),
         padding: px(8),
-        borderRadius: px(4),
-        backgroundColor: Colors.bgColor,
         flexDirection: 'row',
     },
     reasonIcon: {

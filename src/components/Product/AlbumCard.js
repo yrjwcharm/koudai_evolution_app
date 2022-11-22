@@ -42,7 +42,7 @@ const AlbumHeader = ({
                     />
                     {bg_linear && (
                         <LinearGradient
-                            colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
+                            colors={['#FFF', 'rgba(255, 255, 255, 0.8)']}
                             start={{x: 0, y: 0}}
                             end={{x: 0.5, y: 0}}
                             style={[styles.bgLinear, {width: bgWidth}]}
@@ -52,7 +52,7 @@ const AlbumHeader = ({
                         <LinearGradient
                             colors={bg_color}
                             start={{x: 0, y: 0}}
-                            end={{x: 0, y: 1}}
+                            end={{x: 0, y: 0.5}}
                             style={[styles.bgLinear, {width: '100%'}]}
                         />
                     ) : null}
@@ -209,11 +209,14 @@ const Index = ({
 const styles = StyleSheet.create({
     container: {
         borderRadius: Space.borderRadius,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#fff',
         backgroundColor: '#fff',
         overflow: 'hidden',
     },
     headerContainer: {
         padding: px(12),
+        height: px(80),
     },
     bgContainer: {
         position: 'absolute',
@@ -222,6 +225,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         alignItems: 'flex-end',
+        backgroundColor: '#fff',
     },
     bgLinear: {
         position: 'absolute',
@@ -235,8 +239,8 @@ const styles = StyleSheet.create({
         height: px(16),
     },
     title: {
-        fontSize: Font.textH1,
-        lineHeight: px(20),
+        fontSize: px(15),
+        lineHeight: px(21),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
     },
