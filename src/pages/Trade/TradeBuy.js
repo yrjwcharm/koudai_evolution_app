@@ -150,7 +150,11 @@ class TradeBuy extends Component {
             });
         }, 300);
     };
-
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        if (!!nextProps.route?.params.isLargeAmount !== !!this.state.isLargeAmount && !this.state.isLargeAmount) {
+            this.ratioChange(null, 1);
+        }
+    }
     /**
      * @description 展示风险揭示书
      * @param {any} data 风险揭示书内容

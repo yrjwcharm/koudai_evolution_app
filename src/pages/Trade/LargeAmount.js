@@ -3,45 +3,41 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-15 10:11:45
+ * @LastEditTime: 2022-11-22 11:46:26
  */
-import React, {useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import {px as text, isIphoneX} from '~/utils/appUtil';
+import {px as text, isIphoneX, px} from '~/utils/appUtil';
 import Html from '~/components/RenderHtml';
 import Http from '~/services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '~/components/Button';
 import Toast from '~/components/Toast/';
 import Clipboard from '@react-native-community/clipboard';
-import Notice from '~/components/Notice';
 import {Modal} from '~/components/Modal';
-import Entypo from 'react-native-vector-icons/Entypo';
 import {useFocusEffect} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+import Feather from 'react-native-vector-icons/Feather';
+import BottomDesc from '~/components/BottomDesc';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Feather';
+import {useJump} from '~/components/hooks';
+
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
-const tips = (phone) => [
-    '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款；',
-    '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝；',
-    `3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：<span style="color: ${Colors.red}">${phone}</span>`,
-    '4. 民生银行是理财魔方的资金监管银行，您的汇款资金安全有保障。',
-];
-
 const LargeAmount = (props) => {
-    const [data, setData] = useState({});
+    const inset = useSafeAreaInsets();
+    const jump = useJump();
+
+    const [data, setData] = useState(null);
+    const [criticalState, setScrollCriticalState] = useState(false);
+
+    const navBarRef = useRef();
+
     const init = () => {
-        Http.get('/trade/large_transfer/info/20210101').then((res) => {
+        Http.get('/trade/large_transfer/info/20210101', props.route.params).then((res) => {
             setData(res.result);
-            props.navigation.setOptions({
-                headerRight: () => {
-                    return (
-                        <TouchableOpacity onPress={rightPress} activeOpacity={0.8}>
-                            <Text style={styles.right_sty}>{'使用说明'}</Text>
-                        </TouchableOpacity>
-                    );
-                },
-            });
         });
     };
     const jumpPage = (url) => {
@@ -69,47 +65,77 @@ const LargeAmount = (props) => {
         Clipboard.setString(_text);
         Toast.show('复制成功！');
     };
-    const rightPress = () => {
-        props.navigation.navigate('LargeAmountIntro');
-    };
 
     useFocusEffect(
         useCallback(() => {
             init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
-    return (
+
+    const onScroll = (e) => {
+        const y = e.nativeEvent.contentOffset.y;
+        const criticalNum = 100;
+        const interval = 1 / criticalNum;
+
+        let opacity = 0;
+
+        if (y > criticalNum) {
+            opacity = 1;
+        } else {
+            opacity = interval * y;
+        }
+
+        if (opacity > 0.8) {
+            !criticalState && setScrollCriticalState(true);
+        } else {
+            criticalState && setScrollCriticalState(false);
+        }
+
+        requestAnimationFrame(() => {
+            navBarRef.current.setNativeProps({
+                style: {backgroundColor: `rgba(255,255,255,${opacity})`},
+            });
+        });
+    };
+
+    return data ? (
         <View style={{backgroundColor: Colors.bgColor}}>
-            {Object.keys(data).length > 0 && (
-                <ScrollView
-                    style={
-                        (Style.containerPadding,
-                        {padding: 0, marginBottom: btnHeight, borderTopWidth: 0.5, borderColor: Colors.borderColor})
-                    }>
-                    <Notice content={{content: data?.processing}} isClose={true} />
-                    <View style={[{padding: Space.padding}, styles.card_sty]}>
-                        <Text style={styles.title_sty}>大额极速购-使用流程</Text>
-                        <View style={styles.process_wrap}>
-                            <Image
-                                source={require('~/assets/img/common/largeAmount.png')}
-                                resizeMode="contain"
-                                style={styles.image_sty}
-                            />
-                        </View>
-                        <View style={styles.process_list}>
-                            <Html
-                                html={
-                                    "1.使用指定银行卡<br/><font style='color:#E74949'>向<font style='font-weight:bold'>魔方监管户</font>汇款</font>"
-                                }
-                                style={{lineHeight: text(18)}}
-                            />
-                            <Html
-                                html={'<span style="textAlign:center">2.汇款金额存入<br/>魔方宝</span>'}
-                                style={{lineHeight: text(18)}}
-                            />
-                        </View>
-                    </View>
+            <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>
+                <TouchableNativeFeedback
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        props.navigation.goBack();
+                    }}
+                    style={styles.btn}>
+                    <Icon name={'chevron-left'} size={px(28)} color={Colors.navTitleColor} />
+                </TouchableNativeFeedback>
+                {/* {criticalState && <Text style={styles.navTitle}>大额极速购</Text>} */}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={{
+                        backgroundColor: '#e74949',
+                        paddingHorizontal: px(8),
+                        paddingVertical: px(5),
+                        borderRadius: px(125),
+                    }}
+                    onPress={btnClick}>
+                    <Text style={{fontSize: px(13), lineHeight: px(18), color: '#fff'}}>到账查询</Text>
+                </TouchableOpacity>
+            </View>
+            <ScrollView
+                style={
+                    (Style.containerPadding,
+                    {padding: 0, marginBottom: btnHeight, borderTopWidth: 0.5, borderColor: Colors.borderColor})
+                }
+                scrollEventThrottle={16}
+                onScroll={onScroll}>
+                <FastImage
+                    source={{
+                        uri: data.large_amount_top_img,
+                    }}
+                    style={{width: '100%', height: px(379), marginBottom: px(12)}}
+                />
+                <View style={{paddingHorizontal: px(16)}}>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={[styles.title_sty, {marginBottom: text(16)}]}>
                             可用银行卡列表<Text style={styles.desc_sty}> (仅支持已绑定银行卡汇款)</Text>
@@ -148,20 +174,22 @@ const LargeAmount = (props) => {
                                 onPress={() =>
                                     props.navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})
                                 }>
-                                <Image
-                                    style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
-                                    source={require('~/assets/img/common/mfbIcon.png')}
-                                />
-                                <View style={{flex: 1}}>
-                                    <Text style={styles.text}>使用新卡汇款</Text>
-                                </View>
-                                <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
+                                <Feather size={px(16)} name={'plus-circle'} color={Colors.btnColor} />
+                                <Text
+                                    style={{
+                                        fontSize: px(14),
+                                        lineHeight: px(20),
+                                        color: '#0051CC',
+                                        marginLeft: px(3),
+                                    }}>
+                                    新增银行卡
+                                </Text>
                             </TouchableOpacity>
                         </>
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={[styles.title_sty, {paddingBottom: text(16)}]}>
-                            魔方监管户信息<Text style={styles.desc_sty}>（民生银行监管）</Text>
+                            监管账户<Text style={styles.desc_sty}>（民生银行监管）</Text>
                         </Text>
                         <View>
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
@@ -202,21 +230,36 @@ const LargeAmount = (props) => {
                             </View>
                         </View>
                     </View>
+                    <View style={[styles.item_wrap_sty, {marginBottom: px(12)}]}>
+                        <Image source={{uri: data.account_refer_pic}} style={{width: px(343), height: px(361)}} />
+                    </View>
                     <View style={styles.tip_sty}>
-                        <Text style={{color: Colors.descColor}}>提示信息：</Text>
-                        {tips(data.phone)?.map((_i, _d) => {
+                        <Text style={{color: Colors.descColor, fontWeight: 'bold'}}>提示信息：</Text>
+                        {data?.tips?.map((_i, _d) => {
                             return (
-                                <View style={{marginTop: text(10)}} key={_i + _d}>
-                                    <Html html={_i} style={{lineHeight: text(18), color: Colors.descColor}} />
+                                <View style={{marginTop: text(8)}} key={_i + _d}>
+                                    <Html
+                                        html={_i}
+                                        style={{lineHeight: text(20), fontSize: px(12), color: Colors.descColor}}
+                                    />
                                 </View>
                             );
                         })}
                     </View>
-                </ScrollView>
-            )}
-            {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={btnClick} />}
+                    <BottomDesc />
+                </View>
+            </ScrollView>
+            <FixedButton
+                title={data.button.text}
+                agreement={data.agreement_bottom}
+                containerStyle={{paddingTop: px(4)}}
+                agreementStyle={{paddingBottom: px(8)}}
+                onPress={() => {
+                    jump(data.button.url);
+                }}
+            />
         </View>
-    );
+    ) : null;
 };
 
 const styles = StyleSheet.create({
@@ -246,6 +289,7 @@ const styles = StyleSheet.create({
     card_sty: {
         backgroundColor: '#fff',
         marginBottom: text(12),
+        borderRadius: px(6),
     },
     desc_sty: {
         color: Colors.red,
@@ -287,7 +331,6 @@ const styles = StyleSheet.create({
     },
     tip_sty: {
         paddingTop: text(6),
-        padding: Space.padding,
     },
     right_sty: {
         paddingHorizontal: text(7),
@@ -301,10 +344,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flexDirection: 'row',
         alignItems: 'center',
-        height: text(62),
-        justifyContent: 'space-between',
-
-        // overflow: 'hidden'
+        paddingVertical: px(17),
+        justifyContent: 'center',
     },
     bank_icon: {
         width: text(32),
@@ -318,6 +359,34 @@ const styles = StyleSheet.create({
         marginBottom: text(20),
         color: '#545968',
         fontSize: text(12),
+    },
+    navBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: px(12),
+        paddingRight: px(16),
+        position: 'absolute',
+        width: '100%',
+        top: 0,
+        left: 0,
+        zIndex: 1,
+        paddingBottom: px(8),
+    },
+    navTitle: {
+        position: 'absolute',
+        left: px(17),
+        bottom: px(3),
+        width: '100%',
+        textAlign: 'center',
+        color: Colors.navTitleColor,
+        fontWeight: 'bold',
+        fontSize: px(17),
+    },
+    btn: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
     },
 });
 export default LargeAmount;
