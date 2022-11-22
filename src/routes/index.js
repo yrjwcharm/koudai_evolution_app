@@ -313,6 +313,7 @@ import PreviewArticle from '~/pages/Community/PreviewArticle'; // 预览文章
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
 import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // 专题草稿
 import RichTextInputPage from '~/pages/CreatorCenter/Special/Modify/RichTextInputPage'; // 富文本编辑
+import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机构
 
 const Stack = createStackNavigator();
 
@@ -1307,6 +1308,7 @@ export default function AppStack() {
                         cardStyle: {backgroundColor: 'transparent', shadowColor: 'transparent'},
                     }}
                 />
+                <Stack.Screen name="AdvisorTransfer" component={AdvisorTransfer} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );
