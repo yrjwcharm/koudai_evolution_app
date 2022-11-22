@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-10 17:49:09
+ * @LastEditTime: 2022-11-22 16:21:56
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -177,6 +177,11 @@ function App(props) {
                                     'CommunityPersonalHome',
                                     'muid'
                                 );
+                                const PortfolioDetailsMfCode = getRouteNameId(
+                                    currentRoute,
+                                    'PortfolioDetails',
+                                    'mf_code'
+                                );
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
@@ -192,7 +197,8 @@ function App(props) {
                                     TotalIncomeDetailId +
                                     SpecialDetailId +
                                     CommunityId +
-                                    CommunityPersonalId;
+                                    CommunityPersonalId +
+                                    PortfolioDetailsMfCode;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {
