@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-11-10 16:09:15
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-22 16:33:10
+ * @LastEditTime: 2022-11-22 19:35:02
  * @FilePath: /koudai_evolution_app/src/pages/Special/QuestionModal.js
  * @Description:
  */
@@ -64,19 +64,6 @@ function QuestionModal(props, ref) {
         setAvalible(result);
     }, [params]);
 
-    // const onBackAndroid = () => {
-    //     props.onClose(params.answered ? false : true);
-    // };
-
-    // useEffect(() => {
-    //     if (Platform.OS === 'android') {
-    //         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
-    //     }
-    //     return () => {
-    //         BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
-    //     };
-    // }, [onBackAndroid, props, params]);
-
     const show = (config) => {
         if (!config) {
             console.log('QuestionModal show with config is null');
@@ -134,10 +121,12 @@ function QuestionModal(props, ref) {
             });
     };
 
+    // 如果已经评测，点返回按钮或点x，隐藏弹窗。没有评测就直接返回上一页
     const handleClose = () => {
         //  是否要返回前一页
         props.onClose(params.answered ? false : true);
     };
+
     React.useImperativeHandle(ref, () => {
         return {
             show: show,
@@ -149,8 +138,8 @@ function QuestionModal(props, ref) {
     return (
         <BottomModal
             ref={modal}
-            backButtonClose={params.answered}
             isTouchMaskToClose={params.answered}
+            onBackButtonClose={handleClose}
             header={
                 <View style={[styles.header]}>
                     <View style={{alignItems: 'center'}}>
