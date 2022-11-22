@@ -2,11 +2,11 @@
  * @Description: 产品首页
  * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-16 19:13:41
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-11-22 17:06:39
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, RefreshControl, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Space} from '~/common/commonStyle';
@@ -81,6 +81,16 @@ const Product = ({navigation}) => {
             }
         }, [userInfo.is_login])
     );
+
+    // kyc 变化时也刷新产品tab
+    useEffect(() => {
+        const emitter = DeviceEventEmitter.addListener('kyc_change', () => {
+            getProData();
+        });
+        return () => {
+            emitter?.remove?.();
+        };
+    }, [getProData]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
