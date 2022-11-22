@@ -401,7 +401,17 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
     };
     /** @name 轮播卡片 */
     const renderSwiperItem = (item, index) => {
-        const {bg_img, button, desc, name, product_id = '', tags, url} = item;
+        const {
+            bg_img,
+            button,
+            desc,
+            name,
+            product_id = '',
+            tags,
+            tag_bg_color = 'rgba(246, 226, 195, 0.8)',
+            tag_font_color = '#B38051',
+            url,
+        } = item;
         return (
             <LinearGradient
                 colors={['#FFFCF7', '#FFF2E0']}
@@ -441,8 +451,11 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                 return (
                                     <View
                                         key={tag + i}
-                                        style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
-                                        <Text style={styles.goldenTagText}>{tag}</Text>
+                                        style={[
+                                            styles.goldenTagBox,
+                                            {backgroundColor: tag_bg_color, marginLeft: i === 0 ? 0 : px(8)},
+                                        ]}>
+                                        <Text style={[styles.goldenTagText, {color: tag_font_color}]}>{tag}</Text>
                                     </View>
                                 );
                             })}
@@ -695,7 +708,6 @@ const styles = StyleSheet.create({
         paddingVertical: px(2),
         paddingHorizontal: px(6),
         borderRadius: px(2),
-        backgroundColor: 'rgba(246, 226, 195, 0.8)',
     },
     goldenTagText: {
         fontSize: px(10),
@@ -732,7 +744,7 @@ const styles = StyleSheet.create({
     outBox: {
         padding: px(12),
         borderRadius: Space.borderRadius,
-        borderWidth: Space.borderWidth,
+        borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#F1F6FF',
         borderTopColor: 'transparent',
         overflow: 'hidden',
