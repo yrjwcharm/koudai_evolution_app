@@ -16,7 +16,7 @@ import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import withPageLoading from '~/components/withPageLoading';
 import {px} from '~/utils/appUtil';
-import {doTransfer, getData} from './services';
+import {actionReport, doTransfer, getData} from './services';
 
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
@@ -28,6 +28,7 @@ const Index = ({navigation, route, setLoading}) => {
     const showRiskDisclosure = useRef(true);
 
     const onTransfer = () => {
+        actionReport({action: 'confirm', poids: [data.poid]});
         if (risk_disclosure && showRiskDisclosure.current) {
             showRiskDisclosure.current = false;
             const {content, countdown, sub_title, title} = risk_disclosure;
@@ -47,7 +48,10 @@ const Index = ({navigation, route, setLoading}) => {
                         </>
                     );
                 },
-                confirmCallBack: () => passwordModal.current.show(),
+                confirmCallBack: () => {
+                    actionReport({action: 'read', poids: [data.poid]});
+                    passwordModal.current.show();
+                },
                 confirmText: '关闭',
                 countdown,
                 isTouchMaskToClose: false,
@@ -74,6 +78,7 @@ const Index = ({navigation, route, setLoading}) => {
         getData()
             .then((res) => {
                 if (res.code === '000000') {
+                    actionReport({action: 'select', poids: [res.result.poid]});
                     setData(res.result);
                 }
             })
