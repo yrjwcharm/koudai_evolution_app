@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 16:59:50
+ * @LastEditTime: 2022-11-23 17:08:13
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -177,11 +177,7 @@ function App(props) {
                                     'CommunityPersonalHome',
                                     'muid'
                                 );
-                                const PortfolioDetailsMfCode = getRouteNameId(
-                                    currentRoute,
-                                    'PortfolioDetails',
-                                    'mfcode'
-                                );
+                                const PortfolioDetailsMfCode = getRouteNameId(currentRoute, 'PortfolioDetails', 'poid');
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
