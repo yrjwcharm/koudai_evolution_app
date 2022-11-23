@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 20:01:03
+ * @LastEditTime: 2022-11-23 20:07:58
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -812,7 +812,7 @@ class Question extends Component {
                                             </TouchableOpacity>
                                             <Text
                                                 style={{fontSize: px(12), color: Colors.lightBlackColor}}
-                                                onPress={() => this.props.jump(openAccount?.light_btn?.url, 'replace')}>
+                                                onPress={() => this.props.jump(openAccount?.light_btn?.url)}>
                                                 {openAccount?.light_btn?.text}
                                             </Text>
                                         </LinearGradient>
