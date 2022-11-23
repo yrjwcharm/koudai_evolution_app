@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 20:07:58
+ * @LastEditTime: 2022-11-23 20:19:59
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -828,8 +828,8 @@ class Question extends Component {
                                             onPress={() => {
                                                 this.props.navigation.pop(1);
                                             }}
-                                            style={[styles.btn_unactive]}
-                                            textStyle={[styles.btn_unactive_text]}
+                                            style={[styles.common_button]}
+                                            textStyle={{color: Colors.btnColor}}
                                         />
                                     </Animatable.View>
                                 ) : null}
@@ -945,6 +945,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: Colors.borderColor,
     },
+    common_button: {
+        backgroundColor: '#fff',
+        borderColor: Colors.btnColor,
+    },
+
     btn_unactive_text: {
         color: Colors.darkGrayColor,
     },
