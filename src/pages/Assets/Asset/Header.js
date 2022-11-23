@@ -22,7 +22,7 @@ const Header = ({newMes}) => {
                 style={[
                     Style.flexBetween,
                     styles.header,
-                    {paddingTop: inset.top + Platform.OS == 'ios' ? px(5) : px(6)},
+                    {paddingTop: inset.top + (Platform.OS == 'ios' ? px(5) : px(6))},
                 ]}>
                 <TouchableOpacity
                     activeOpacity={0.9}
