@@ -2,7 +2,7 @@
  * @Date: 2022-07-13 15:22:30
  * @Description:
  */
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image, Platform} from 'react-native';
 import React from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
@@ -18,7 +18,12 @@ const Header = ({newMes}) => {
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
     return (
         <>
-            <View style={[Style.flexBetween, styles.header, {paddingTop: inset.top + px(5)}]}>
+            <View
+                style={[
+                    Style.flexBetween,
+                    styles.header,
+                    {paddingTop: inset.top + Platform.OS == 'ios' ? px(5) : px(6)},
+                ]}>
                 <TouchableOpacity
                     activeOpacity={0.9}
                     style={Style.flexRow}

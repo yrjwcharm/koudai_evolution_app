@@ -4,7 +4,6 @@
  */
 import {Alert, PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
 import {check, RESULTS, request, openSettings, PERMISSIONS} from 'react-native-permissions';
-// import {Modal} from '~/components/Modal';
 const deviceHeight = Dimensions.get('window').height; //设备的高度
 
 const deviceWidth = Dimensions.get('window').width; //设备的宽度
@@ -61,7 +60,7 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
                             {
                                 onPress: () => {
                                     request(permission).then((res) => {
-                                        if (res == 'blocked') {
+                                        if (res !== RESULTS.GRANTED) {
                                             blockCallBack
                                                 ? blockCallBack()
                                                 : openSettings().catch(() => console.warn('cannot open settings'));
