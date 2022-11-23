@@ -95,6 +95,7 @@ const ProfitDetail = ({navigation, route}) => {
                                             <ProfitDistribution
                                                 poid={poid}
                                                 type={el.type}
+                                                chartParams={el?.asset_chart}
                                                 headData={headData}
                                                 fund_code={fund_code}
                                                 tabLabel={el.text}

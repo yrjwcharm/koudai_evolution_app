@@ -20,3 +20,7 @@ export const getProfitDetail = (params) => http.get(`/platform_tool/profit/detai
  * 获取收益更新说明
  */
 export const getEarningsUpdateNote = (params) => http.get(`/platform_tool/profit/declare/20221010`, params);
+/**
+ * 获取资产趋势图
+ */
+export const getOverviewChartData = (params) => http.get(`/asset/overview/chart/20221123`, params);

@@ -4,8 +4,6 @@ import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {BoxShadow} from 'react-native-shadow';
 import PropTypes from 'prop-types';
-import Loading from '../../Portfolio/components/PageLoading';
-import {getHeadData} from './services';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useDispatch} from 'react-redux';
 import {FixedButton} from '../../../components/Button';
@@ -14,7 +12,7 @@ import DayProfit from './DayProfit';
 import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
-import {RenderChart} from '../HoldingDetail';
+import OverviewChart from './OverviewChart';
 const shadow = {
     color: '#AAA',
     border: 4,
@@ -30,7 +28,7 @@ const shadow = {
     },
 };
 
-const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}}) => {
+const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}, chartParams}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
@@ -127,35 +125,28 @@ const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}}) =>
                     </View>
                 </View>
             </BoxShadow>
-            <BoxShadow
-                setting={{
-                    color: '#AAA',
-                    border: px(4),
-                    radius: px(6),
-                    opacity: 0.1,
-                    x: 0,
-                    y: 2,
-                    width: px(343),
-                    height: px(326),
-                    style: {
-                        marginHorizontal: px(16),
-                        marginTop: px(12),
-                    },
-                }}>
-                <View style={styles.assetTrends}>
-                    <Text style={styles.cardTitle}>资产趋势</Text>
-                    <RenderChart
-                        data={{
-                            key: 'acc_profit',
-                            title: '累计收益',
-                            period: 'y1',
-                            params: {
-                                poid: 'X00F000003',
-                            },
-                        }}
-                    />
-                </View>
-            </BoxShadow>
+            {chartParams ? (
+                <BoxShadow
+                    setting={{
+                        color: '#AAA',
+                        border: px(4),
+                        radius: px(6),
+                        opacity: 0.1,
+                        x: 0,
+                        y: 2,
+                        width: px(343),
+                        height: px(326),
+                        style: {
+                            marginHorizontal: px(16),
+                            marginTop: px(12),
+                        },
+                    }}>
+                    <View style={styles.assetTrends}>
+                        <Text style={styles.cardTitle}>{chartParams.title}</Text>
+                        <OverviewChart params={chartParams.params} />
+                    </View>
+                </BoxShadow>
+            ) : null}
             <View style={{marginTop: px(12)}} />
             <View style={styles.section}>
                 <View style={styles.flexContainer}>
