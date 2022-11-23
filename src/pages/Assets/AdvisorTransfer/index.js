@@ -28,7 +28,6 @@ const Index = ({navigation, route, setLoading}) => {
     const showRiskDisclosure = useRef(true);
 
     const onTransfer = () => {
-        actionReport({action: 'confirm', poids: [data.poid]});
         if (risk_disclosure && showRiskDisclosure.current) {
             showRiskDisclosure.current = false;
             const {content, countdown, sub_title, title} = risk_disclosure;
@@ -49,8 +48,10 @@ const Index = ({navigation, route, setLoading}) => {
                     );
                 },
                 confirmCallBack: () => {
-                    actionReport({action: 'read', poids: [data.poid]});
-                    passwordModal.current.show();
+                    actionReport({action: 'read', poids: [data.poid]}).finally(() => {
+                        actionReport({action: 'confirm', poids: [data.poid]});
+                        passwordModal.current.show();
+                    });
                 },
                 confirmText: '关闭',
                 countdown,
@@ -58,7 +59,10 @@ const Index = ({navigation, route, setLoading}) => {
                 onCountdownChange: (val) => +val === 1 && riskScrollView.current.scrollToEnd({animated: true}),
                 title,
             });
-        } else passwordModal.current.show();
+        } else {
+            actionReport({action: 'confirm', poids: [data.poid]});
+            passwordModal.current.show();
+        }
     };
 
     const onSubmit = (password) => {
