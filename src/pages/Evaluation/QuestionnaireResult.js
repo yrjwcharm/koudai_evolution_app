@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 17:48:20
+ * @LastEditTime: 2022-11-23 19:56:23
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: px(36),
         marginHorizontal: px(32),
+        borderRadius: px(6),
         paddingVertical: px(24),
     },
     open_account_btn: {

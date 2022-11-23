@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 16:39:57
+ * @LastEditTime: 2022-11-23 19:26:15
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -172,7 +172,7 @@ const Questionnaire = () => {
                             />
                         </View>
                     ) : null}
-                    <Text style={styles.title}>{questions[current]?.title}</Text>
+                    <Text style={styles.title}>{questions[current]?.risk_title}</Text>
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View style={[Style.flexRow, styles.curStyle]}>
                             <Text style={styles.current}>{current + 1}</Text>
