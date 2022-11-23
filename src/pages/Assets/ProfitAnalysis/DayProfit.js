@@ -3,18 +3,8 @@
  * @Author: yanruifeng
  * @Description: 日收益
  */
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useTransition} from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-    TouchableOpacity,
-    Dimensions,
-    ScrollView,
-    Image,
-    Platform,
-    DeviceEventEmitter,
-} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Text, View, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Platform} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {deviceWidth, isIphoneX, px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
@@ -26,8 +16,6 @@ import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 import Loading from '../../Portfolio/components/PageLoading';
-import Toast from '../../../components/Toast';
-
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -460,25 +448,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         },
         [isBarChart]
     );
-    const LazyComponent = React.lazy(
-        () =>
-            new Promise((resolve) => {
-                let timer = setTimeout(() => {
-                    resolve({
-                        default: () => (
-                            <RenderList
-                                curDate={selCurDate}
-                                type={type}
-                                poid={poid}
-                                fund_code={fund_code}
-                                unitType={unit_type}
-                            />
-                        ),
-                    });
-                    timer && clearTimeout(timer);
-                }, 500);
-            })
-    );
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -534,9 +503,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 <Text style={styles.chartDate}>{endDate}</Text>
                             </View>
                         )}
-                        <React.Suspense fallback={<Loading color={Colors.btnColor} />}>
-                            <LazyComponent />
-                        </React.Suspense>
+                        <RenderList
+                            curDate={selCurDate}
+                            type={type}
+                            poid={poid}
+                            fund_code={fund_code}
+                            unitType={unit_type}
+                        />
                     </>
                 ) : (
                     <EmptyData />

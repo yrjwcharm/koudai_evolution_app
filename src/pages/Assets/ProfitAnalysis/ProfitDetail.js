@@ -18,7 +18,7 @@ const ProfitDetail = ({navigation, route}) => {
     const {fund_code = '', poid = '', page = 0, type = 200} = route.params || {};
     const scrollTab = useRef(null);
     const [loading, setLoading] = useState(true);
-    const [locked, setLocked] = useState(false);
+    const [headData, setHeadData] = useState({});
     const [data, setData] = useState({});
     const bottomModal = useRef(null);
     const [tabs, setTabs] = useState([
@@ -33,10 +33,11 @@ const ProfitDetail = ({navigation, route}) => {
         (async () => {
             const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
             if (res[0].code === '000000' && res[1].code === '000000') {
-                const {title: navigationTitle = '', button = {}, tabs = []} = res[0]?.result || {};
+                const {title: navigationTitle = '', header = {}, button = {}, tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
                 setDeclarePic(declare_pic);
                 setTabs(tabs);
+                setHeadData(header);
                 setLoading(false);
                 button && setData(button);
                 navigation.setOptions({
@@ -59,11 +60,6 @@ const ProfitDetail = ({navigation, route}) => {
     }, []);
     useEffect(() => {
         init(type);
-        let listener = DeviceEventEmitter.addListener('sendChartTrigger', (bool) => {
-            console.log(bool);
-            setLocked(bool);
-        });
-        return () => listener && listener.remove();
     }, [init]);
     useEffect(() => {
         DeviceEventEmitter.emit('sendTrigger', data);
@@ -99,6 +95,7 @@ const ProfitDetail = ({navigation, route}) => {
                                             <ProfitDistribution
                                                 poid={poid}
                                                 type={el.type}
+                                                headData={headData}
                                                 fund_code={fund_code}
                                                 tabLabel={el.text}
                                                 key={`${el + index}`}
@@ -109,7 +106,7 @@ const ProfitDetail = ({navigation, route}) => {
                             )}
                         </View>
                     ) : (
-                        <ProfitDistribution type={type} poid={poid} fund_code={fund_code} />
+                        <ProfitDistribution type={type} headData={headData} poid={poid} fund_code={fund_code} />
                     )}
                     <BottomModal title={'更新说明'} ref={bottomModal}>
                         <View style={{marginTop: px(30), alignItems: 'center'}}>
