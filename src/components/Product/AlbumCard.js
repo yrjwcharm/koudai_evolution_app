@@ -32,7 +32,7 @@ const AlbumHeader = ({
                 logParams && global.LogTool(logParams);
                 jump(url);
             }}
-            style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB'} : {}]}>
+            style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB', height: px(80)} : {}]}>
             {bg_img ? (
                 <View style={styles.bgContainer}>
                     <Image
@@ -216,7 +216,6 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         padding: px(12),
-        height: px(80),
     },
     bgContainer: {
         position: 'absolute',
