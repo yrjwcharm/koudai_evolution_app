@@ -41,6 +41,7 @@ import PointCard from '../components/PointCard';
 import RenderAlert from '../components/RenderAlert';
 import ToolMenusCard from '../components/ToolMenusCard';
 import RenderHtml from '~/components/RenderHtml';
+import http from '~/services';
 
 /** @name 顶部基金信息 */
 const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info = {}, profit_explain}) => {
@@ -1073,6 +1074,48 @@ const Index = ({navigation, route, setLoading}) => {
         }, [])
     );
 
+    const accountJump = (url) => {
+        http.get('/position/popup/20210101', {poid: route?.params?.poid, action: 'redeem'}).then((res) => {
+            if (res.result) {
+                global.LogTool('RedemptionDetainmentWindows');
+                if (res.result?.button_list) {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: res.result?.button_list[0]?.text || '确认赎回',
+                        confirmText: res.result?.button_list[1]?.text || '再想一想',
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                            jump(res?.result?.button_list[0]?.url || url);
+                        },
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(res?.result?.button_list[1]?.url || url);
+                        },
+                    });
+                } else {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: '确认赎回',
+                        confirmText: '再想一想',
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                        },
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(url);
+                        },
+                    });
+                }
+            } else {
+                jump(url);
+            }
+        });
+    };
+
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
@@ -1172,10 +1215,10 @@ const Index = ({navigation, route, setLoading}) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            disabled={avail === 0}
                                             onPress={() => {
                                                 log_id && global.LogTool({event: log_id});
-                                                jump(url);
+
+                                                accountJump(url);
                                             }}
                                             key={text + i}
                                             style={[Style.flexCenter, {paddingHorizontal: px(26)}]}>
