@@ -134,7 +134,7 @@ const Product = ({navigation}) => {
         }
     };
     useEffect(() => {
-        if (!userInfo.is_login) {
+        if (!userInfo.is_login && userInfo.use_clipboard == 1) {
             getClipboard();
         }
     }, []);
