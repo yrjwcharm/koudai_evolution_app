@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 19:56:23
+ * @LastEditTime: 2022-11-24 17:16:37
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -51,8 +51,7 @@ const QuestionnaireResult = () => {
         [jump]
     );
     const buttonJump = (url) => {
-        let routes = navigation.dangerouslyGetState()?.routes;
-        if (fr?.includes('riskch') || routes[routes.length - 2]?.name === 'PortfolioDetails') {
+        if (fr?.includes('riskch')) {
             navigation.goBack();
         } else {
             jump(url, fr === 'single_buy' && !url?.path?.indexOf('IdAuth') > -1 ? 'navigate' : 'replace');
