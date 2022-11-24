@@ -21,7 +21,7 @@ import {actionReport, doTransfer, getData} from './services';
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const {agreement, agreement_bottom, button, codes = '', desc_img, risk_disclosure, top_img, type = 0} = data;
+    const {agreement, agreement_bottom, button, desc_img, fr = '', poid = '', risk_disclosure, top_img} = data;
     const [scrollY, setScrollY] = useState(0);
     const passwordModal = useRef();
     const riskScrollView = useRef();
@@ -124,7 +124,7 @@ const Index = ({navigation, route, setLoading}) => {
                     onPress={onTransfer}
                     suffix={agreement_bottom?.agree_text}
                     otherAgreement={agreement}
-                    otherParam={{fund_codes: codes, type}}
+                    otherParam={{fr, poid}}
                     title={button.text}
                 />
             ) : null}
