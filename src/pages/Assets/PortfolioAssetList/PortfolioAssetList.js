@@ -133,7 +133,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                         )}
                         {/* 收益 */}
                         <View style={[Style.flexRow]}>
-                            <View style={[{flex: 1}, Style.flexRow]}>
+                            <View style={[{flex: 1}]}>
                                 <Text style={styles.profitKey}>{summary?.profit_info?.text}</Text>
                                 <Text
                                     style={[
@@ -148,7 +148,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     {showEye === 'true' ? summary?.profit_info?.value : '****'}
                                 </Text>
                             </View>
-                            <View style={[{flex: 1}, Style.flexRow]}>
+                            <View style={[{flex: 1}]}>
                                 <Text style={styles.profitKey}>{summary?.profit_acc_info?.text}</Text>
                                 <Text
                                     style={[
@@ -161,6 +161,21 @@ const PortfolioAssetList = ({route, navigation}) => {
                                         },
                                     ]}>
                                     {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                                </Text>
+                            </View>
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_acc?.text}</Text>
+                                <Text
+                                    style={[
+                                        styles.profitVal,
+                                        {
+                                            color:
+                                                showEye === 'true'
+                                                    ? summary?.profit_acc?.color || Colors.defaultColor
+                                                    : Colors.defaultColor,
+                                        },
+                                    ]}>
+                                    {showEye === 'true' ? summary?.profit_acc?.value : '****'}
                                 </Text>
                             </View>
                         </View>
