@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 20:19:59
+ * @LastEditTime: 2022-11-25 11:19:57
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -87,7 +87,7 @@ class Question extends Component {
     plan_id = this.props.route?.params?.plan_id;
     append = this.props.route?.params?.append;
     fund_code = this.props.route?.params?.fund_code;
-    poid = this.props.route?.params?.fund_code;
+    poid = this.props.route?.params?.poid;
     init = () => {
         http.get('/questionnaire/start/20210101', {plan_id: this.plan_id, fr: this.fr}).then((data) => {
             if (data.code === '000000') {
