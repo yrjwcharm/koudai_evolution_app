@@ -4,7 +4,7 @@
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text} from 'react-native';
-import Image from 'react-native-fast-image';
+import Image from 'react-native-fit-image';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {FixedButton} from '~/components/Button';
@@ -112,7 +112,7 @@ const Index = ({navigation, route, setLoading}) => {
                 scrollEventThrottle={16}
                 scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
-                {top_img ? <Image source={{uri: top_img}} style={{width: '100%', height: px(290)}} /> : null}
+                {top_img ? <Image source={{uri: top_img}} /> : null}
                 {desc_img ? <Image source={{uri: desc_img}} style={styles.descImage} /> : null}
                 <BottomDesc />
             </ScrollView>
@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
     descImage: {
         marginTop: px(12),
         marginHorizontal: Space.marginAlign,
-        height: px(350),
     },
 });
 
