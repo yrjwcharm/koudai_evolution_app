@@ -32,7 +32,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
             };
             if (type && unitType && curDate) {
                 const res = await getProfitDetail(params);
-                if (res.code === '000000') {
+                if (res?.code === '000000') {
                     const {head_list = [], data_list = [], button = {}} = res.result || {};
                     setHeaderList(head_list);
                     setProfitList(data_list);

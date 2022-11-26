@@ -36,7 +36,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [minDate, setMindDate] = useState('');
     const [unitList, setUnitList] = useState([]);
     const [profitDay, setProfitDay] = useState('');
-    const [minBundary, setMinBundary] = useState('');
+    const [sortProfitList, setSortProfitList] = useState([]);
+    const [latestProfitDate, setLatestProfitDate] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -202,14 +203,13 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             });
             //双重for循环判断日历是否超过、小于或等于当前日期
             if (res.code === '000000') {
-                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res.result ?? {};
                 if (unit_list.length > 0) {
                     let min = unit_list[unit_list.length - 1].value;
                     let max = unit_list[0].value;
                     setMaxDate(max);
                     setMindDate(min);
                     setUnitList(unit_list);
-                    setMinBundary(profit_data_list[profit_data_list.length - 1].unit_key);
                     let cur = dayjs_.format('YYYY-MM');
                     if (cur > max || cur < min) return;
                     for (let i = 0; i < arr.length; i++) {
@@ -295,8 +295,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 });
                 if (res.code === '000000') {
                     const {profit_data_list = [], latest_profit_date = ''} = res.result;
-                    let xAxisData = [],
-                        dataAxis = [];
                     if (profit_data_list.length > 0) {
                         let sortProfitDataList = profit_data_list.sort(
                             (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
@@ -317,50 +315,55 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 value: '0.00',
                             });
                         }
-                        sortProfitDataList.map((el) => {
-                            xAxisData.push(el.unit_key);
-                            dataAxis.push(delMille(el.value));
-                        });
-                        let index = sortProfitDataList.findIndex(
-                            (el) => el.unit_key == (profitDay || latest_profit_date)
-                        );
-                        let [left, center, right] = [index - 15, index, index + 15];
-                        barOption.dataZoom[0].startValue = left;
-                        barOption.dataZoom[0].endValue = right;
-                        barOption.xAxis.data = xAxisData;
-                        barOption.series[0].data = dataAxis;
-                        barOption.series[0].markPoint.itemStyle = {
-                            normal: {
-                                color:
-                                    dataAxis[center] > 0
-                                        ? Colors.red
-                                        : dataAxis[center] < 0
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                borderColor: Colors.white,
-                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                            },
-                        };
-                        barOption.series[0].markPoint.data[0] = {
-                            xAxis: xAxisData[center],
-                            yAxis: dataAxis[center],
-                        };
-                        if (!canceled) {
-                            setStartDate(xAxisData[left]);
-                            setEndDate(xAxisData[right]);
-                            setXAxisData(xAxisData);
-                            setDataAxis(dataAxis);
-                            setSelCurDate(xAxisData[center]);
-                            setProfit(dataAxis[center]);
-                        }
-                        // myChart.current?.hideLoading();
-                        myChart.current?.setNewOption(barOption);
+                        setSortProfitList(sortProfitDataList);
+                        setLatestProfitDate(latest_profit_date);
                     }
                 }
             }
         })();
         return () => (canceled = true);
-    }, [type, isBarChart, profitDay]);
+    }, [type, isBarChart, diff]);
+    useEffect(() => {
+        if (isBarChart && latestProfitDate) {
+            let xAxisData = [],
+                dataAxis = [];
+            sortProfitList?.map((el) => {
+                xAxisData.push(el.unit_key);
+                dataAxis.push(delMille(el.value));
+            });
+            let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || latestProfitDate));
+            let [left, center, right] = [index - 15, index, index + 15];
+            barOption.dataZoom[0].startValue = left;
+            barOption.dataZoom[0].endValue = right;
+            barOption.xAxis.data = xAxisData;
+            barOption.series[0].data = dataAxis;
+            barOption.series[0].markPoint.itemStyle = {
+                normal: {
+                    color: dataAxis[center] > 0 ? Colors.red : dataAxis[center] < 0 ? Colors.green : Colors.transparent,
+                    borderColor: Colors.white,
+                    borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                },
+            };
+            barOption.series[0].markPoint.data[0] = {
+                xAxis: xAxisData[center],
+                yAxis: dataAxis[center],
+            };
+            // if (!canceled) {
+            setStartDate(xAxisData[left]);
+            setEndDate(xAxisData[right]);
+            setSelCurDate(xAxisData[center]);
+            setProfit(dataAxis[center]);
+            setXAxisData(xAxisData);
+            setDataAxis(dataAxis);
+            // }
+            // myChart.current?.hideLoading();
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
+        }
+    }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
