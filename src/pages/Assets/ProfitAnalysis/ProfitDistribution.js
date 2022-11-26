@@ -67,144 +67,148 @@ const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}, cha
         );
     };
     return (
-        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
-            <BoxShadow setting={{...shadow}}>
-                <View style={styles.header}>
-                    <View style={Style.flexEvenly}>
-                        <View style={styles.headerItem}>
-                            <Text
-                                style={[
-                                    styles.profitLabel,
-                                    {
-                                        color:
-                                            delMille(profit_info?.value) > 0
-                                                ? Colors.red
-                                                : delMille(profit_info?.value) < 0
-                                                ? Colors.green
-                                                : Colors.lightBlackColor,
-                                    },
-                                ]}>
-                                {profit_info?.value}
-                            </Text>
-                            <Text style={styles.profitValue}>{profit_info?.text}</Text>
+        <>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <BoxShadow setting={{...shadow}}>
+                    <View style={styles.header}>
+                        <View style={Style.flexEvenly}>
+                            <View style={styles.headerItem}>
+                                <Text
+                                    style={[
+                                        styles.profitLabel,
+                                        {
+                                            color:
+                                                delMille(profit_info?.value) > 0
+                                                    ? Colors.red
+                                                    : delMille(profit_info?.value) < 0
+                                                    ? Colors.green
+                                                    : Colors.lightBlackColor,
+                                        },
+                                    ]}>
+                                    {profit_info?.value}
+                                </Text>
+                                <Text style={styles.profitValue}>{profit_info?.text}</Text>
+                            </View>
+                            <View style={styles.headerItem}>
+                                <Text
+                                    style={[
+                                        styles.profitLabel,
+                                        {
+                                            color:
+                                                delMille(profit_acc_info?.value) > 0
+                                                    ? Colors.red
+                                                    : delMille(profit_acc_info?.value) < 0
+                                                    ? Colors.green
+                                                    : Colors.lightBlackColor,
+                                        },
+                                    ]}>
+                                    {profit_acc_info?.value}
+                                </Text>
+                                <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
+                            </View>
+                            <View style={styles.headerItem}>
+                                <Text
+                                    style={[
+                                        styles.profitLabel,
+                                        {
+                                            color:
+                                                delMille(profit_all?.value) > 0
+                                                    ? Colors.red
+                                                    : delMille(profit_all?.value) < 0
+                                                    ? Colors.green
+                                                    : Colors.lightBlackColor,
+                                        },
+                                    ]}>
+                                    {profit_all?.value}
+                                </Text>
+                                <Text style={styles.profitValue}>{profit_all?.text}</Text>
+                            </View>
                         </View>
-                        <View style={styles.headerItem}>
-                            <Text
-                                style={[
-                                    styles.profitLabel,
-                                    {
-                                        color:
-                                            delMille(profit_acc_info?.value) > 0
-                                                ? Colors.red
-                                                : delMille(profit_acc_info?.value) < 0
-                                                ? Colors.green
-                                                : Colors.lightBlackColor,
-                                    },
-                                ]}>
-                                {profit_acc_info?.value}
-                            </Text>
-                            <Text style={styles.profitValue}>{profit_acc_info?.text}</Text>
-                        </View>
-                        <View style={styles.headerItem}>
-                            <Text
-                                style={[
-                                    styles.profitLabel,
-                                    {
-                                        color:
-                                            delMille(profit_all?.value) > 0
-                                                ? Colors.red
-                                                : delMille(profit_all?.value) < 0
-                                                ? Colors.green
-                                                : Colors.lightBlackColor,
-                                    },
-                                ]}>
-                                {profit_all?.value}
-                            </Text>
-                            <Text style={styles.profitValue}>{profit_all?.text}</Text>
-                        </View>
-                    </View>
-                </View>
-            </BoxShadow>
-            {chartParams ? (
-                <BoxShadow
-                    setting={{
-                        color: '#AAA',
-                        border: px(4),
-                        radius: px(6),
-                        opacity: 0.1,
-                        x: 0,
-                        y: 2,
-                        width: px(343),
-                        height: px(326),
-                        style: {
-                            marginHorizontal: px(16),
-                            marginTop: px(12),
-                        },
-                    }}>
-                    <View style={styles.assetTrends}>
-                        <Text style={styles.cardTitle}>{chartParams.title}</Text>
-                        <OverviewChart params={chartParams.params} />
                     </View>
                 </BoxShadow>
-            ) : null}
-            <View style={{marginTop: px(12)}} />
-            <View style={styles.section}>
-                <View style={styles.flexContainer}>
-                    <View style={styles.flexViewContainer}>
-                        <View style={styles.flexViewWrap}>
-                            {tabs?.map((el, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={el + `` + index}
-                                        style={styles.flexItem}
-                                        onPress={() => selUnitType(el, index)}>
-                                        <View style={styles.flexItemView}>
-                                            <Text
-                                                style={[
-                                                    styles.flexItemText,
-                                                    {
-                                                        color: el.checked
-                                                            ? Colors.defaultColor
-                                                            : Colors.lightBlackColor,
-                                                        fontSize: el.checked ? px(16) : px(14),
-                                                        fontFamily: el.checked
-                                                            ? Font.pingFangMedium
-                                                            : Font.pingFangRegular,
-                                                        fontWeight: el.checked ? '700' : '500',
-                                                    },
-                                                ]}>
-                                                {el.text}
-                                            </Text>
-                                            <View
-                                                style={[
-                                                    styles.separator,
-                                                    {
-                                                        backgroundColor: el.checked
-                                                            ? Colors.defaultColor
-                                                            : Colors.transparent,
-                                                    },
-                                                ]}
-                                            />
-                                        </View>
-                                    </TouchableOpacity>
-                                );
-                            })}
+                {chartParams ? (
+                    <BoxShadow
+                        setting={{
+                            color: '#AAA',
+                            border: px(4),
+                            radius: px(6),
+                            opacity: 0.1,
+                            x: 0,
+                            y: 2,
+                            width: px(343),
+                            height: px(326),
+                            style: {
+                                marginHorizontal: px(16),
+                                marginTop: px(12),
+                            },
+                        }}>
+                        <View style={styles.assetTrends}>
+                            <Text style={styles.cardTitle}>{chartParams.title}</Text>
+                            <OverviewChart params={chartParams.params} />
+                        </View>
+                    </BoxShadow>
+                ) : null}
+                <View style={{marginTop: px(12)}} />
+                <View style={styles.section}>
+                    <View style={styles.flexContainer}>
+                        <View style={styles.flexViewContainer}>
+                            <View style={styles.flexViewWrap}>
+                                {tabs?.map((el, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            key={el + `` + index}
+                                            style={styles.flexItem}
+                                            onPress={() => selUnitType(el, index)}>
+                                            <View style={styles.flexItemView}>
+                                                <Text
+                                                    style={[
+                                                        styles.flexItemText,
+                                                        {
+                                                            color: el.checked
+                                                                ? Colors.defaultColor
+                                                                : Colors.lightBlackColor,
+                                                            fontSize: el.checked ? px(16) : px(14),
+                                                            fontFamily: el.checked
+                                                                ? Font.pingFangMedium
+                                                                : Font.pingFangRegular,
+                                                            fontWeight: el.checked ? '700' : '500',
+                                                        },
+                                                    ]}>
+                                                    {el.text}
+                                                </Text>
+                                                <View
+                                                    style={[
+                                                        styles.separator,
+                                                        {
+                                                            backgroundColor: el.checked
+                                                                ? Colors.defaultColor
+                                                                : Colors.transparent,
+                                                        },
+                                                    ]}
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
                         </View>
                     </View>
+                    {unitType == 'day' && (
+                        <DayProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                    )}
+                    {unitType == 'month' && (
+                        <MonthProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                    )}
+                    {unitType == 'year' && (
+                        <YearProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                    )}
+                    {unitType == 'all' && (
+                        <TotalProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                    )}
                 </View>
-                {unitType == 'day' && <DayProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />}
-                {unitType == 'month' && (
-                    <MonthProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
-                )}
-                {unitType == 'year' && (
-                    <YearProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
-                )}
-                {unitType == 'all' && (
-                    <TotalProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
-                )}
-            </View>
+            </ScrollView>
             {Object.keys(data).length > 0 && <FixedButton title={data?.text} onPress={() => jump(data?.url)} />}
-        </ScrollView>
+        </>
     );
 };
 

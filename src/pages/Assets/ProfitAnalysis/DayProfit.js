@@ -15,7 +15,6 @@ import ChartHeader from './components/ChartHeader';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-import Loading from '../../Portfolio/components/PageLoading';
 const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -231,6 +230,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setSelCurDate(arr[zIndex]?.day);
+                    setProfit(arr[zIndex].profit);
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                 } else {
                     setIsHasData(false);
@@ -281,9 +281,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         setIsBarChart(true);
     }, []);
     useEffect(() => {
-        let canceled = false;
         (async () => {
             if (isBarChart) {
+                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
@@ -317,11 +317,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
+                        myChart.current?.hideLoading();
                     }
                 }
             }
         })();
-        return () => (canceled = true);
     }, [type, isBarChart, diff]);
     useEffect(() => {
         if (isBarChart && latestProfitDate) {
@@ -348,15 +348,10 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
-            // if (!canceled) {
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
-            // }
-            // myChart.current?.hideLoading();
             myChart.current?.setNewOption(barOption, {
                 notMerge: false,
                 lazyUpdate: true,
@@ -425,7 +420,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData) => {
+        (xAxisData, dataAxis) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
@@ -434,7 +429,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
                         let diff = dayjs(realDate).diff(curDate, 'month');
-                        setDiff(-diff);
+                        setDiff(-diff || 0);
+                        setSelCurDate(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -496,7 +493,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
+                                    {renderBarChart(xAxisData, dataAxis)}
+                                </View>
                                 <View style={styles.separator} />
                             </View>
                         )}
