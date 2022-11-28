@@ -1,45 +1,35 @@
 /*
  * @Date: 2022-11-28 14:43:36
- * @Description:
+ * @Description:社区主页列表
  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator, Image} from 'react-native';
-import React, {forwardRef, useImperativeHandle, useEffect, useRef, useState} from 'react';
-import ScrollTabbar from '~/components/ScrollTabbar';
-import {deviceWidth, px} from '~/utils/appUtil';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/AntDesign';
-import {Colors, Space} from '~/common/commonStyle';
-import {getCommunityHomeData, getCommunityProductList, removeProduct, addProduct} from './service';
-import CommunityHomeHeader from '../components/CommunityHomeHeader';
-import Intro from './Intro';
-import {PublishContent} from '../CommunityIndex';
+import {StyleSheet, Text, ActivityIndicator, View} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {px} from '~/utils/appUtil';
+import {Colors, Font, Space} from '~/common/commonStyle';
+import {addProduct, removeProduct} from './service';
 import {CommunityCard} from '../components/CommunityCard';
 import ProductCards from '../../../components/Portfolios/ProductCards';
-import {Modal, ShareModal} from '../../../components/Modal';
-import EmptyTip from '../../../components/EmptyTip';
-import {Button} from '../../../components/Button';
+import {Modal} from '../../../components/Modal';
+import {FlatList} from 'react-native-scroll-head-tab-view';
+import {PublishContent} from '../CommunityIndex';
 import {ChooseModal} from '../CommunityVodCreate';
-import {ScrollTabView, FlatList, ScrollView} from 'react-native-scroll-head-tab-view';
-import {useFocusEffect} from '@react-navigation/native';
-import {Modalize} from 'react-native-modalize';
-import {useJump} from '~/components/hooks';
+import EmptyTip from '~/components/EmptyTip';
+import {Button} from '~/components/Button';
 
-const CommunityHomeList = forwardRef(({getData = () => {}, params, children, ...rest}, ref) => {
-    const jump = useJump();
+const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_add_btn, ...rest}) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const waterfallFlow = useRef();
-    const waterfallWrapper = useRef();
-    const [resource_private_tip, setTip] = useState('');
     const [loading, setLoading] = useState(true);
+    const chooseModal = useRef();
+    const page_size = 20;
     const init = () => {
-        getData({...params, page})
+        getData({...params, page, page_size})
             .then((res) => {
                 if (res.code === '000000') {
                     const _data = res.result;
-                    setHasMore(!(_data?.length < params.page_size));
+                    setHasMore(!(_data?.length < page_size));
                     setData((prev) => (page === 1 ? _data : prev.concat(_data)));
                 }
             })
@@ -48,7 +38,7 @@ const CommunityHomeList = forwardRef(({getData = () => {}, params, children, ...
                 setRefreshing(false);
             });
     };
-    const onDelete = ({type, item_id}) => {
+    const onDelete = (type, item_id) => {
         Modal.show({
             content: '您确定要删除吗?',
             confirm: true,
@@ -67,6 +57,16 @@ const CommunityHomeList = forwardRef(({getData = () => {}, params, children, ...
             },
         });
     };
+    //添加
+    const handleAddProduct = async (_data) => {
+        if (_data?.length > 0) {
+            let item_id = _data?.map((item) => item.id).join(',');
+            let res = await addProduct({community_id: params.community_id, item_id, type: _data[0]?.relation_type});
+            if (res.code == '000000') {
+                refresh();
+            }
+        }
+    };
     const renderItem = ({item = {}}) => {
         return params.type == 1 ? (
             <CommunityCard data={item} onDelete={onDelete} />
@@ -83,38 +83,104 @@ const CommunityHomeList = forwardRef(({getData = () => {}, params, children, ...
 
     /** @name 渲染底部 */
     const renderFooter = () => {
-        return <Text style={{lineHeight: 100, fontSize: 50}}>1312312</Text>;
-        // return data?.length > 0 && !refreshing ? (
-        //     <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
-        //         {hasMore ? '正在加载...' : '我们是有底线的...'}
-        //     </Text>
-        // ) : null;
+        return data?.length > 0 && !refreshing ? (
+            <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
+                {hasMore ? '正在加载...' : '我们是有底线的...'}
+            </Text>
+        ) : null;
     };
+    const renderEmpty = () => {
+        return params.type == 1 ? (
+            <EmptyTip
+                desc={show_add_btn ? '请点击按钮进行添加' : ''}
+                text={'暂无相关作品'}
+                style={{marginTop: px(200)}}
+                imageStyle={{marginBottom: px(-30)}}>
+                {show_add_btn && (
+                    <Button
+                        onPress={() => {
+                            chooseModal?.current?.show('article');
+                        }}
+                        title="添加作品"
+                        style={styles.addBtn}
+                        textStyle={{fontSize: px(13)}}
+                    />
+                )}
+            </EmptyTip>
+        ) : (
+            <EmptyTip
+                desc={show_add_btn ? '请点击按钮进行添加' : ''}
+                text={'暂无相关产品'}
+                style={{marginTop: px(200)}}
+                imageStyle={{marginBottom: px(-30)}}>
+                {show_add_btn && (
+                    <Button
+                        onPress={() => {
+                            chooseModal?.current?.show('all');
+                        }}
+                        title="添加产品"
+                        style={styles.addBtn}
+                        textStyle={{fontSize: px(13)}}
+                    />
+                )}
+            </EmptyTip>
+        );
+    };
+
     const refresh = () => {
         page > 1 ? setPage(1) : init();
     };
-    useImperativeHandle(ref, () => ({refresh}));
+
     useEffect(() => {
         init();
     }, [page]);
-    return data?.length > 0 ? (
-        <FlatList
-            keyExtractor={(item) => item.id}
-            style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
-            data={data}
-            renderFooter={renderFooter}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.5}
-            renderItem={renderItem}
-            {...rest}
-        />
-    ) : loading ? (
-        <ActivityIndicator color={'#ddd'} />
-    ) : (
-        {children}
+    return (
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
+            {data?.length > 0 ? (
+                <FlatList
+                    keyExtractor={(item) => item.id.toString()}
+                    style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
+                    data={data}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.5}
+                    renderItem={renderItem}
+                    {...rest}
+                    ListFooterComponent={renderFooter}
+                />
+            ) : loading ? (
+                <View style={{marginTop: px(300)}}>
+                    <ActivityIndicator color={'#ddd'} />
+                </View>
+            ) : (
+                renderEmpty()
+            )}
+            <ChooseModal ref={chooseModal} onDone={handleAddProduct} />
+            <PublishContent
+                community_id={params.community_id}
+                history_id={history_id}
+                muid={muid}
+                handleClick={(type) => {
+                    setTimeout(() => {
+                        chooseModal?.current?.show(type, data);
+                    }, 100);
+                }}
+            />
+        </View>
     );
-});
+};
 
 export default CommunityHomeList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    addBtn: {
+        width: px(180),
+        height: px(36),
+        borderRadius: px(100),
+        marginTop: px(16),
+    },
+    desc: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.descColor,
+    },
+});
