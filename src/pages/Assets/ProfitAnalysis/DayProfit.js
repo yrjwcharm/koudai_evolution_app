@@ -201,8 +201,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 fund_code,
             });
             //双重for循环判断日历是否超过、小于或等于当前日期
-            if (res.code === '000000') {
-                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res.result ?? {};
+            if (res?.code === '000000') {
+                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
                 if (unit_list.length > 0) {
                     let min = unit_list[unit_list.length - 1].value;
                     let max = unit_list[0].value;
@@ -245,15 +245,32 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
      * 向上递增一个月
      */
     const addMonth = () => {
+        //为了防止多次点击导致达到下限时diff变量比上限还大的bug
         setProfitDay('');
-        setDiff((diff) => diff + 1);
+        changeDiff(false);
     };
     /**
      * 向下递减一个月
      */
     const subMonth = () => {
+        //为了防止多次点击导致达到下限时diff变量比下限还小的bug
         setProfitDay('');
-        setDiff((diff) => diff - 1);
+        changeDiff(true);
+    };
+    const changeDiff = (isDecrease) => {
+        new Promise((resolve) => {
+            setDiff((diff) => {
+                isDecrease ? resolve(diff - 1) : resolve(diff + 1);
+                return isDecrease ? diff - 1 : diff + 1;
+            });
+        }).then((differ) => {
+            let curDate = dayjs().endOf('month').format('YYYY-MM-DD');
+            let realDate = dayjs(isDecrease ? minDate : maxDate)
+                .endOf('month')
+                .format('YYYY-MM-DD');
+            let diff = dayjs(realDate).diff(curDate, 'month');
+            isDecrease ? differ <= diff && setDiff(diff) : differ >= diff && setDiff(diff);
+        });
     };
     /**
      * 通过选中日期获取收益数据
@@ -293,8 +310,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     fund_code,
                     chart_type: 'square',
                 });
-                if (res.code === '000000') {
-                    const {profit_data_list = [], latest_profit_date = ''} = res.result;
+                if (res?.code === '000000') {
+                    const {profit_data_list = [], latest_profit_date = ''} = res?.result;
                     if (profit_data_list.length > 0) {
                         let sortProfitDataList = profit_data_list.sort(
                             (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
@@ -325,8 +342,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, [type, isBarChart, diff]);
     useEffect(() => {
         if (isBarChart && latestProfitDate) {
-            let xAxisData = [],
-                dataAxis = [];
+            const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
@@ -428,11 +444,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let center = startValue + 15;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
-                        let diff = dayjs(realDate).diff(curDate, 'month');
-                        setDiff(-diff || 0);
                         setSelCurDate(xAxisData[center]);
                         setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
+                        let diff = dayjs(realDate).diff(curDate, 'month');
+                        setDiff(-diff || 0);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}

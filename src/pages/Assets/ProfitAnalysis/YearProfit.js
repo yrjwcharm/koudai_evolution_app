@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View, Image} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px, delMille, compareDate, deviceWidth} from '../../../utils/appUtil';
+import {px, delMille, compareDate, deviceWidth, isEmpty} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
@@ -36,6 +36,9 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [period, setPeriod] = useState('近5年');
     const [prev, setPrev] = useState(true);
     const [next, setNext] = useState(false);
+    const [sortProfitList, setSortProfitList] = useState([]);
+    const [latestProfitDate, setLatestProfitDate] = useState('');
+    const [profitDay, setProfitDay] = useState('');
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -168,6 +171,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
                     setSelCurYear(arr[arr.length - 1].day);
+                    setProfit(arr[arr.length - 1].profit);
                 } else {
                     setIsHasData(false);
                 }
@@ -222,22 +226,19 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         setDiff((diff) => diff + 5);
     };
     const renderBarChart = useCallback(
-        (xAxisData, date) => {
+        (xAxisData, dataAxis) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
-                        const {startValue, endValue} = option.dataZoom[0];
+                        const {startValue} = option.dataZoom[0];
                         let center = startValue + 5;
-                        if (xAxisData[center] < date.year() - 4) {
-                            setPeriod('5年前');
-                            setPrev(false);
-                            setNext(true);
-                        } else {
-                            setPeriod('近5年');
-                            setNext(false);
-                            setPrev(true);
-                        }
+                        let curYear = xAxisData[center];
                         setSelCurYear(xAxisData[center]);
+                        setProfit(dataAxis[center]);
+                        setProfitDay(xAxisData[center]);
+                        let diffYear = dayjs().year() - curYear;
+                        console.log(diffYear);
+                        // setDiff(-diffYear || 0);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -255,70 +256,80 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     );
     useEffect(() => {
         (async () => {
-            const res = await getChartData({
-                type,
-                unit_type,
-                // unit_value: dayjs().format('YYYY-MM'),
-                poid,
-                fund_code,
-                chart_type: 'square',
-            });
-            if (res.code === '000000') {
-                const {profit_data_list = []} = res.result;
-                const [xAxisData, dataAxis] = [[], []];
-                if (profit_data_list.length > 0) {
-                    let sortProfitDataList = profit_data_list.sort(
-                        (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
-                    );
-                    let startYear = sortProfitDataList[0].unit_key;
-                    let lastYear = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
-                    for (let i = 0; i < 5; i++) {
-                        sortProfitDataList.unshift({
-                            unit_key: startYear - (i + 1),
-                            value: '0.00',
-                        });
-                        sortProfitDataList.push({
-                            unit_key: Math.floor(lastYear) + (i + 1),
-                            value: '0.00',
-                        });
+            if (isBarChart) {
+                myChart.current?.showLoading();
+                let dayjs_ = dayjs().add(diff, 'year').startOf('year');
+                const res = await getChartData({
+                    type,
+                    unit_type,
+                    unit_value: dayjs_.year(),
+                    poid,
+                    fund_code,
+                    chart_type: 'square',
+                });
+                if (res?.code === '000000') {
+                    const {profit_data_list = [], latest_profit_date = ''} = res?.result;
+                    if (profit_data_list.length > 0) {
+                        let sortProfitDataList = profit_data_list.sort(
+                            (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
+                        );
+                        let startYear = sortProfitDataList[0].unit_key;
+                        let lastYear = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
+                        for (let i = 0; i < 5; i++) {
+                            sortProfitDataList.unshift({
+                                unit_key: startYear - (i + 1),
+                                value: '0.00',
+                            });
+                            sortProfitDataList.push({
+                                unit_key: Math.floor(lastYear) + (i + 1),
+                                value: '0.00',
+                            });
+                        }
+                        setSortProfitList(sortProfitDataList);
+                        setLatestProfitDate(latest_profit_date);
+                        myChart.current?.hideLoading();
                     }
-                    sortProfitDataList.map((el) => {
-                        xAxisData.push(String(el.unit_key));
-                        dataAxis.push(String(delMille(el.value)));
-                    });
-                    let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurYear);
-                    let [left, center, right] = [index - 5, index, index + 5];
-                    barOption.dataZoom[0].startValue = left;
-                    barOption.dataZoom[0].endValue = right;
-                    barOption.xAxis.data = xAxisData;
-                    barOption.series[0].data = dataAxis;
-                    barOption.series[0].markPoint.itemStyle = {
-                        normal: {
-                            color:
-                                dataAxis[center] > 0
-                                    ? Colors.red
-                                    : dataAxis[center] < 0
-                                    ? Colors.green
-                                    : Colors.transparent,
-                            borderColor: Colors.white,
-                            borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                        },
-                    };
-                    barOption.series[0].markPoint.data[0] = {
-                        xAxis: xAxisData[center],
-                        yAxis: dataAxis[center],
-                    };
-                    setStartDate(xAxisData[left]);
-                    setEndDate(xAxisData[right]);
-                    setXAxisData(xAxisData);
-                    setDataAxis(dataAxis);
-                    setProfit(dataAxis[center]);
-                    // myChart.current?.hideLoading();
-                    myChart.current?.setNewOption(barOption);
                 }
             }
         })();
-    }, [type, isBarChart, selCurYear]);
+    }, [type, isBarChart, diff]);
+    useEffect(() => {
+        if (isBarChart && latestProfitDate) {
+            const [xAxisData, dataAxis] = [[], []];
+            sortProfitList?.map((el) => {
+                xAxisData.push(el.unit_key);
+                dataAxis.push(delMille(el.value));
+            });
+            let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
+            let newLatestProfitDate = dayjs().year();
+            let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || newLatestProfitDate));
+            let [left, center, right] = [index - 5, index, index + 5];
+            barOption.dataZoom[0].startValue = left;
+            barOption.dataZoom[0].endValue = right;
+            barOption.xAxis.data = xAxisData;
+            barOption.series[0].data = dataAxis;
+            barOption.series[0].markPoint.itemStyle = {
+                normal: {
+                    color: dataAxis[center] > 0 ? Colors.red : dataAxis[center] < 0 ? Colors.green : Colors.transparent,
+                    borderColor: Colors.white,
+                    borderWidth: 1, // 标注边线线宽，单位px，默认为1
+                },
+            };
+            barOption.series[0].markPoint.data[0] = {
+                xAxis: xAxisData[center],
+                yAxis: dataAxis[center],
+            };
+            setStartDate(xAxisData[left]);
+            setEndDate(xAxisData[right]);
+            setXAxisData(xAxisData);
+            setDataAxis(dataAxis);
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
+        }
+    }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -413,7 +424,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                             <Text style={styles.date}>{selCurYear}</Text>
                                         </View>
                                     </View>
-                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, date)}</View>
+                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, dataAxis)}</View>
                                     <View style={styles.separator} />
                                 </View>
                             )}
