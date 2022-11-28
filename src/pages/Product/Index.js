@@ -137,7 +137,7 @@ const Product = ({navigation}) => {
         if (!userInfo.is_login && userInfo.use_clipboard == 1) {
             getClipboard();
         }
-    }, []);
+    }, [userInfo.is_login, userInfo.use_clipboard]);
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
         [getFollowTabs, getProData][cur.i]();
@@ -327,6 +327,7 @@ const Product = ({navigation}) => {
                                         </View>
                                     </LinearGradient>
                                 ) : null}
+
                                 {/* 直播列表 */}
                                 {proData?.live_list && <LiveList proData={proData} />}
                                 {/* 专题们 */}
