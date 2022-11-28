@@ -34,8 +34,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [date, setDate] = useState(dayjs());
     const [unitList, setUnitList] = useState([]);
     const [period, setPeriod] = useState('近5年');
-    const [prev, setPrev] = useState(true);
-    const [next, setNext] = useState(false);
     const [sortProfitList, setSortProfitList] = useState([]);
     const [latestProfitDate, setLatestProfitDate] = useState('');
     const [profitDay, setProfitDay] = useState('');
@@ -145,14 +143,15 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 unit_type,
                 fund_code,
                 poid,
-                unit_value: `${dayjs_.year() - 4}-${dayjs_.year()}`,
+                unit_value: dayjs_.year(),
             });
             if (res.code === '000000') {
-                const {profit_data_list = [], unit_list = []} = res?.result ?? {};
+                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
 
                 if (unit_list.length > 0) {
                     const max = unit_list[0].value.split('-')[1];
                     const min = unit_list[unit_list.length - 1].value.split('-')[0];
+                    console.log(max, min);
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
@@ -162,16 +161,17 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                         .map((el) => {
                             return {
-                                day: parseFloat(el.unit_key),
-                                profit: el.value,
+                                day: el.unit_key,
+                                profit: delMille(el.value),
                             };
                         });
+                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
                     setDate(dayjs_);
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
-                    setSelCurYear(arr[arr.length - 1].day);
-                    setProfit(arr[arr.length - 1].profit);
+                    setSelCurYear(arr[zIndex]?.day);
+                    setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
@@ -183,6 +183,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     }, [init]);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
+        setProfitDay(item.day);
+        setProfit(item.profit);
     };
     useEffect(() => {
         dateArr.map((el) => {
@@ -220,10 +222,25 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         [dateArr]
     );
     const subStract = () => {
-        setDiff((diff) => diff - 5);
+        setProfitDay('');
+        changeDiff(true);
     };
     const add = () => {
-        setDiff((diff) => diff + 5);
+        setProfitDay('');
+        changeDiff(false);
+    };
+    const changeDiff = (isDecrease) => {
+        new Promise((resolve) => {
+            setDiff((diff) => {
+                isDecrease ? resolve(diff - 5) : resolve(diff + 5);
+                return isDecrease ? diff - 5 : diff + 5;
+            });
+        }).then((differ) => {
+            let curDate = dayjs().year();
+            let realDate = isDecrease ? startYear : endYear;
+            let diff = realDate - curDate;
+            isDecrease ? differ <= diff + 4 && setDiff(diff + 4) : differ >= diff && setDiff(diff);
+        });
     };
     const renderBarChart = useCallback(
         (xAxisData, dataAxis) => {
@@ -237,8 +254,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
-                        console.log(diffYear);
-                        // setDiff(-diffYear || 0);
+                        setDiff(-diffYear || 0);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -258,7 +274,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         (async () => {
             if (isBarChart) {
                 myChart.current?.showLoading();
-                let dayjs_ = dayjs().add(diff, 'year').startOf('year');
+                let dayjs_ = dayjs().add(diff, 'year');
                 const res = await getChartData({
                     type,
                     unit_type,
@@ -281,7 +297,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 value: '0.00',
                             });
                             sortProfitDataList.push({
-                                unit_key: Math.floor(lastYear) + (i + 1),
+                                unit_key: lastYear + (i + 1),
                                 value: '0.00',
                             });
                         }
@@ -297,7 +313,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
-                xAxisData.push(el.unit_key);
+                xAxisData.push(String(el.unit_key));
                 dataAxis.push(delMille(el.value));
             });
             let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
@@ -377,7 +393,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         </TouchableOpacity>
                     </View>
                     <View style={Style.flexRow}>
-                        {parseInt(startYear) + 4 != date.year() && (
+                        {date.year() - 4 > startYear && (
                             <TouchableOpacity onPress={subStract}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}
@@ -386,9 +402,9 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </TouchableOpacity>
                         )}
                         <Text style={styles.yearDateText}>
-                            {unitList.length > 1 && parseInt(startYear) + 4 == date.year() ? '5年前' : '近5年'}
+                            {date.year() - 4}~{date.year()}
                         </Text>
-                        {endYear != date.year() && (
+                        {date.year() < endYear && (
                             <TouchableOpacity onPress={add}>
                                 <Image
                                     style={{width: px(13), height: px(13)}}
