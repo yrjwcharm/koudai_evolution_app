@@ -23,7 +23,6 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const jump = useJump();
     useEffect(() => {
         (async () => {
-            setLoading(true);
             let params = {
                 type,
                 unit_type: unitType,
@@ -37,7 +36,6 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                 setHeaderList(head_list);
                 setProfitList(data_list);
                 data_list.length > 0 ? setShowEmpty(false) : setShowEmpty(true);
-                setLoading(false);
             }
         })();
     }, [type, unitType, curDate]);

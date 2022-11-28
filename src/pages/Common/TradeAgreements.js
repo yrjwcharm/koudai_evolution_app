@@ -2,7 +2,7 @@
  * @Date: 2021-03-06 12:00:27
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-23 11:59:27
+ * @LastEditTime: 2022-11-24 19:26:34
  * @Description: 基金组合协议和产品概要
  */
 import React, {useEffect, useState} from 'react';
@@ -19,9 +19,12 @@ const TradeAgreements = ({navigation, route}) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        const {fund_codes, poid, type} = route.params || {};
-        const url = fund_codes ? '/fund/product_overview/20210101' : '/passport/trade/agreements/20210101';
-        const params = fund_codes ? {fund_codes} : {poid, type};
+        const {fr = '', fund_codes = '', poid = '', type = ''} = route.params || {};
+        const url =
+            fund_codes || fr === 'adviser_transfer'
+                ? '/fund/product_overview/20210101'
+                : '/passport/trade/agreements/20210101';
+        const params = fund_codes || fr === 'adviser_transfer' ? {fund_codes, poid} : {poid, type};
         http.get(url, params).then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '基金组合协议'});

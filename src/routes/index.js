@@ -40,7 +40,7 @@ import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import WalletAutoRechargeDetail from '../pages/Trade/WalletAutoRechargeDetail'; // 魔方宝自动充值详情
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
-import PortfolioDetails from '../pages/Portfolio/Details/Index'; // 组合详情
+import PortfolioDetails from '../pages/Portfolio/PortfolioDetails/Index'; // 组合详情
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
@@ -313,6 +313,7 @@ import PreviewArticle from '~/pages/Community/PreviewArticle'; // 预览文章
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
 import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // 专题草稿
 import RichTextInputPage from '~/pages/CreatorCenter/Special/Modify/RichTextInputPage'; // 富文本编辑
+import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机构
 
 const Stack = createStackNavigator();
 
@@ -1307,6 +1308,7 @@ export default function AppStack() {
                         cardStyle: {backgroundColor: 'transparent', shadowColor: 'transparent'},
                     }}
                 />
+                <Stack.Screen name="AdvisorTransfer" component={AdvisorTransfer} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );

@@ -61,7 +61,7 @@ const List = withPageLoading(
                                 next[index].status = isFollowed ? 2 : 1;
                                 return next;
                             });
-                            setTotal((prev) => (isFollowed ? prev - 1 : prev + 1));
+                            item_type === 2 && setTotal((prev) => (isFollowed ? prev - 1 : prev + 1));
                         }
                     });
                 },

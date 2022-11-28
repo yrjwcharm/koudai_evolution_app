@@ -33,6 +33,9 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [endYear, setEndYear] = useState('');
     const [date, setDate] = useState(dayjs());
     const [unitList, setUnitList] = useState([]);
+    const [period, setPeriod] = useState('近5年');
+    const [prev, setPrev] = useState(true);
+    const [next, setNext] = useState(false);
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
         animation: true, //设置动画效果
@@ -63,7 +66,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 fontSize: 9,
                 align: 'left',
                 margin: 8,
-                interval: 29,
             },
             axisLine: {
                 lineStyle: {
@@ -132,55 +134,51 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             },
         ],
     };
-    const init = useCallback(
-        (curYear) => {
-            (async () => {
-                let dayjs_ = dayjs().add(diff, 'year');
-                const res = await getChartData({
-                    type,
-                    unit_type,
-                    fund_code,
-                    poid,
-                    unit_value: `${dayjs_.year() - 4}-${dayjs_.year()}`,
-                });
-                if (res.code === '000000') {
-                    const {profit_data_list = [], unit_list = []} = res?.result ?? {};
+    const init = useCallback(() => {
+        (async () => {
+            let dayjs_ = dayjs().add(diff, 'year');
+            const res = await getChartData({
+                type,
+                unit_type,
+                fund_code,
+                poid,
+                unit_value: `${dayjs_.year() - 4}-${dayjs_.year()}`,
+            });
+            if (res.code === '000000') {
+                const {profit_data_list = [], unit_list = []} = res?.result ?? {};
 
-                    if (unit_list.length > 0) {
-                        const max = unit_list[0].value.split('-')[1];
-                        const min = unit_list[unit_list.length - 1].value.split('-')[0];
-                        setStartYear(min);
-                        setEndYear(max);
-                        setUnitList(unit_list);
-                        let cur = dayjs_.year();
-                        if (cur > max || cur < min) return;
-                        let arr = profit_data_list
-                            .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
-                            .map((el) => {
-                                return {
-                                    day: parseFloat(el.unit_key),
-                                    profit: el.value,
-                                };
-                            });
-                        setDate(dayjs_);
-                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
-                        setDateArr([...arr]);
-                        setSelCurYear(arr[arr.length - 1].day);
-                    } else {
-                        setIsHasData(false);
-                    }
+                if (unit_list.length > 0) {
+                    const max = unit_list[0].value.split('-')[1];
+                    const min = unit_list[unit_list.length - 1].value.split('-')[0];
+                    setStartYear(min);
+                    setEndYear(max);
+                    setUnitList(unit_list);
+                    let cur = dayjs_.year();
+                    if (cur > max || cur < min) return;
+                    let arr = profit_data_list
+                        .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
+                        .map((el) => {
+                            return {
+                                day: parseFloat(el.unit_key),
+                                profit: el.value,
+                            };
+                        });
+                    setDate(dayjs_);
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                    arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
+                    setDateArr([...arr]);
+                    setSelCurYear(arr[arr.length - 1].day);
+                } else {
+                    setIsHasData(false);
                 }
-            })();
-        },
-        [type, diff]
-    );
+            }
+        })();
+    }, [type, diff]);
     useEffect(() => {
-        init(selCurYear);
+        init();
     }, [init]);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
-        setProfit();
     };
     useEffect(() => {
         dateArr.map((el) => {
@@ -208,7 +206,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         disabled={el.day > currentYear}
                         key={`${el + '' + index}`}
                         onPress={() => getProfitBySelDate(el)}>
-                        <View style={[styles.year, wrapStyle, {marginRight: index % 3 == 2 ? px(0) : px(4)}]}>
+                        <View
+                            style={[styles.year, wrapStyle, {marginHorizontal: (index + 1) % 3 == 2 ? px(4) : px(0)}]}>
                             <Text style={[styles.yearText, yearStyle]}>{el?.day}</Text>
                             <Text style={[styles.yearProfit, profitStyle]}>{el?.profit}</Text>
                         </View>
@@ -224,38 +223,22 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         setDiff((diff) => diff + 5);
     };
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData, date) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
                         const {startValue, endValue} = option.dataZoom[0];
                         let center = startValue + 5;
-                        barOption.dataZoom[0].startValue = startValue;
-                        barOption.dataZoom[0].endValue = endValue;
-                        setStartDate(xAxisData[startValue]);
-                        setEndDate(xAxisData[endValue]);
-                        barOption.series[0].markPoint.itemStyle = {
-                            normal: {
-                                color:
-                                    dataAxis[center] > 0
-                                        ? Colors.red
-                                        : dataAxis[center] < 0
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                borderColor: Colors.white,
-                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                            },
-                        };
-                        barOption.series[0].markPoint.data[0] = {
-                            xAxis: xAxisData[center],
-                            yAxis: dataAxis[center],
-                        };
-                        // let curYear = dayjs(xAxisData[center]).year();
-                        // let diffYear = dayjs().year() - curYear;
-                        // setDiff(-diffYear);
-                        setProfit(dataAxis[center]);
+                        if (xAxisData[center] < date.year() - 4) {
+                            setPeriod('5年前');
+                            setPrev(false);
+                            setNext(true);
+                        } else {
+                            setPeriod('近5年');
+                            setNext(false);
+                            setPrev(true);
+                        }
                         setSelCurYear(xAxisData[center]);
-                        myChart.current.setNewOption(barOption);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -283,8 +266,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             });
             if (res.code === '000000') {
                 const {profit_data_list = []} = res.result;
-                let xAxisData = [],
-                    dataAxis = [];
+                const [xAxisData, dataAxis] = [[], []];
                 if (profit_data_list.length > 0) {
                     let sortProfitDataList = profit_data_list.sort(
                         (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
@@ -293,21 +275,20 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     let lastYear = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
                     for (let i = 0; i < 5; i++) {
                         sortProfitDataList.unshift({
-                            unit_key: `${startYear - (i + 1)}`,
+                            unit_key: startYear - (i + 1),
                             value: '0.00',
                         });
                         sortProfitDataList.push({
-                            unit_key: `${parseInt(lastYear) + (i + 1)}`,
+                            unit_key: Math.floor(lastYear) + (i + 1),
                             value: '0.00',
                         });
                     }
                     sortProfitDataList.map((el) => {
-                        xAxisData.push(el.unit_key);
-                        dataAxis.push(el.value);
+                        xAxisData.push(String(el.unit_key));
+                        dataAxis.push(String(delMille(el.value)));
                     });
                     let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurYear);
-                    let [left, mid, right] = [index - 5, index, index + 5];
-                    let center = mid;
+                    let [left, center, right] = [index - 5, index, index + 5];
                     barOption.dataZoom[0].startValue = left;
                     barOption.dataZoom[0].endValue = right;
                     barOption.xAxis.data = xAxisData;
@@ -433,7 +414,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                             <Text style={styles.date}>{selCurYear}</Text>
                                         </View>
                                     </View>
-                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, dataAxis)}</View>
+                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, date)}</View>
                                     <View style={styles.separator} />
                                 </View>
                             )}
@@ -480,9 +461,8 @@ const styles = StyleSheet.create({
     },
     year: {
         marginBottom: px(4),
-        width: px(103),
+        width: px(102),
         height: px(46),
-        marginRight: px(4),
         backgroundColor: '#f5f6f8',
         borderRadius: px(4),
         alignItems: 'center',

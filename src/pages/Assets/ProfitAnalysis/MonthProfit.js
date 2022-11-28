@@ -17,6 +17,7 @@ import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
 import {round} from 'mathjs';
 import moment from 'moment';
+import Toast from '../../../components/Toast/Toast';
 let timer = null;
 const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
@@ -150,61 +151,61 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const subtract = useCallback(() => {
         setDiff((diff) => diff - 1);
     }, []);
-    const init = useCallback(
-        (selCurDate) => {
-            (async () => {
-                let dayjs_ = dayjs().add(diff, 'year').startOf('year');
-                let arr = [];
-                //for循环装载日历数据
-                for (let i = 0; i < 12; i++) {
-                    let day = dayjs_.add(i, 'month').format('YYYY-MM');
-                    let item = {
-                        day,
+    const init = useCallback(() => {
+        initData(diff);
+    }, [diff, type]);
+    const initData = async (diff, selCurDate = '') => {
+        let dayjs_ = dayjs().add(diff, 'year').startOf('year');
+        let arr = [];
+        //for循环装载日历数据
+        for (let i = 0; i < 12; i++) {
+            let day = dayjs_.add(i, 'month').format('YYYY-MM');
+            let item = {
+                day,
 
-                        profit: '0.00',
-                        checked: false,
-                    };
-                    arr.push(item);
-                }
-                const res = await getChartData({type, unit_type, unit_value: dayjs_.year(), poid, fund_code});
-                if (res.code === '000000') {
-                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-                    // //双重for循环判断日历是否超过、小于或等于当前日期
-                    if (unit_list.length > 0) {
-                        let startYear = unit_list[unit_list.length - 1].value;
-                        let endYear = unit_list[0].value;
-                        setStartYear(startYear);
-                        setEndYear(endYear);
-                        let cur = dayjs_.year();
-                        if (cur > endYear || cur < startYear) return;
-                        for (let i = 0; i < arr.length; i++) {
-                            for (let j = 0; j < profit_data_list.length; j++) {
-                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                    let unit = profit_data_list[j].unit_key;
-                                    if (arr[i].day == unit) {
-                                        arr[i].profit = profit_data_list[j].value;
-                                    }
-                                } else {
-                                    delete arr[i].profit;
-                                }
+                profit: '0.00',
+                checked: false,
+            };
+            arr.push(item);
+        }
+        const res = await getChartData({type, unit_type, unit_value: dayjs_.year(), poid, fund_code});
+        if (res.code === '000000') {
+            const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+            // //双重for循环判断日历是否超过、小于或等于当前日期
+            if (unit_list.length > 0) {
+                let startYear = unit_list[unit_list.length - 1].value;
+                let endYear = unit_list[0].value;
+                setStartYear(startYear);
+                setEndYear(endYear);
+                let cur = dayjs_.year();
+                if (cur > endYear || cur < startYear) return;
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < profit_data_list.length; j++) {
+                        if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                            let unit = profit_data_list[j].unit_key;
+                            if (arr[i].day == unit) {
+                                arr[i].profit = profit_data_list[j].value;
                             }
+                        } else {
+                            delete arr[i].profit;
                         }
-                        let zIndex = arr.findIndex((el) => el.day == dayjs(latest_profit_date).format('YYYY-MM'));
-                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        arr[zIndex] && (arr[zIndex].checked = true);
-                        setDateArr([...arr]);
-                        setProfit(profit_data_list[zIndex]?.value);
-                        setDate(dayjs_);
-                        setSelCurDate(arr[zIndex].day);
-                    } else {
-                        setIsHasData(false);
                     }
                 }
-            })();
-        },
-        [diff, type]
-    );
+                let zIndex = arr.findIndex(
+                    (el) => el.day == (selCurDate || dayjs(latest_profit_date).format('YYYY-MM'))
+                );
+                // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                arr[zIndex] && (arr[zIndex].checked = true);
+                setDateArr([...arr]);
+                setProfit(profit_data_list[zIndex]?.value);
+                setDate(dayjs_);
+                setSelCurDate(arr[zIndex].day);
+            } else {
+                setIsHasData(false);
+            }
+        }
+    };
     const getProfitBySelDate = (item) => {
         setSelCurDate(item.day);
         setProfit(item.profit);
@@ -260,7 +261,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         }
                         sortProfitDataList.map((el) => {
                             xAxisData.push(el.unit_key);
-                            dataAxis.push(el.value);
+                            dataAxis.push(delMille(el.value));
                         });
                         let index = sortProfitDataList.findIndex((el) => el.unit_key == selCurDate);
                         let [left, mid, right] = [index - 6, index, index + 6];
@@ -325,38 +326,20 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
-                        const {startValue, endValue} = option.dataZoom[0];
+                        const {startValue} = option.dataZoom[0];
                         let center = startValue + 6;
-                        barOption.dataZoom[0].startValue = startValue;
-                        barOption.dataZoom[0].endValue = endValue;
-                        setStartDate(xAxisData[startValue]);
-                        setEndDate(xAxisData[endValue]);
-                        barOption.series[0].markPoint.itemStyle = {
-                            normal: {
-                                color:
-                                    dataAxis[center] > 0
-                                        ? Colors.red
-                                        : dataAxis[center] < 0
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                borderColor: Colors.white,
-                                borderWidth: 1, // 标注边线线宽，单位px，默认为1
-                            },
-                        };
-                        barOption.series[0].markPoint.data[0] = {
-                            xAxis: xAxisData[center],
-                            yAxis: dataAxis[center],
-                        };
                         let curYear = dayjs(xAxisData[center]).year();
-                        let diffYear = dayjs().month() - curYear;
+                        let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear);
-                        setProfit(dataAxis[center]);
-                        setSelCurDate(xAxisData[center]);
-                        myChart.current.setNewOption(barOption);
+                        initData(-diffYear, xAxisData[center]);
+                        if (startValue == 0) {
+                            Toast.show('只展示近一年数据');
+                            return;
+                        }
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -411,7 +394,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, dataAxis)}</View>
+                                <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData)}</View>
                                 <View style={styles.separator} />
                             </View>
                         )}

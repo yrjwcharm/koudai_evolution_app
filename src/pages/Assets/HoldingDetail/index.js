@@ -1043,7 +1043,12 @@ const Index = ({navigation, route, setLoading}) => {
                             {console_sub ? <ConsoleSub data={console_sub} showModal={showSignalModal} /> : null}
                             {dsList?.length > 0 && <DsList data={dsList} showEye={showEye} />}
                             {group_bulletin ? <GroupBulletIn data={group_bulletin} /> : null}
-                            {point_info ? <PointCard data={point_info} /> : null}
+                            {point_info ? (
+                                <PointCard
+                                    data={point_info}
+                                    style={{marginTop: px(12), marginHorizontal: 0, marginBottom: 0}}
+                                />
+                            ) : null}
                             {mode_info ? <BuyMode data={mode_info} refresh={init} /> : null}
                             {chart_tabs ? <ChartTabs tabs={chart_tabs} /> : null}
                             {service_info ? (

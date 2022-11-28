@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 11:07:31
+ * @LastEditTime: 2022-11-23 19:26:15
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -172,6 +172,7 @@ const Questionnaire = () => {
                             />
                         </View>
                     ) : null}
+                    <Text style={styles.title}>{questions[current]?.risk_title}</Text>
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View style={[Style.flexRow, styles.curStyle]}>
                             <Text style={styles.current}>{current + 1}</Text>
@@ -235,6 +236,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    title: {
+        fontSize: text(14),
+        lineHeight: text(20),
+        color: Colors.lightGrayColor,
+        padding: text(16),
+        paddingBottom: 0,
     },
     tipBox: {
         paddingVertical: text(12),

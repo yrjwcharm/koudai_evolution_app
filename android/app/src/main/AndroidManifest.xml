@@ -52,6 +52,18 @@
           <data android:scheme="lcmf" />
        </intent-filter>
       </activity>
+      
+      <receiver
+          android:name="cn.jpush.android.service.PushReceiver"
+          android:enabled="true"
+          android:exported="false"
+          tools:node="replace">
+          <intent-filter android:priority="1000">
+            <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
+            <category android:name="com.licaimofang.app" />
+          </intent-filter>
+      </receiver>
+      <receiver android:name="cn.jpush.android.service.AlarmReceiver" tools:node="remove"/>
 
         <activity
             android:name="com.eidlink.face.sdk.activity.LiveActivity"
