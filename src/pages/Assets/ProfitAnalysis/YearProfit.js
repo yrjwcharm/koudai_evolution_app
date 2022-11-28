@@ -154,12 +154,11 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
+                    let cur = dayjs_.year();
+                    if (cur > max || cur < min) return;
                     dayjs_.year() >= start && dayjs_.year() <= max
                         ? setPeriod(unit_list[0].text)
                         : setPeriod(unit_list[unit_list.length - 1].text);
-
-                    let cur = dayjs_.year();
-                    if (cur > max || cur < min) return;
                     let arr = profit_data_list
                         .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                         .map((el) => {
