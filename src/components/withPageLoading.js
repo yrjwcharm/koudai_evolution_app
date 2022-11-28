@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        borderTopWidth: 0.5,
+        borderTopWidth: StyleSheet.hairlineWidth,
         borderColor: Colors.borderColor,
     },
     loadingContainer: {

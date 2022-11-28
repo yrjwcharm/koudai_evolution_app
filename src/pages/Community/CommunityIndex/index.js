@@ -423,6 +423,7 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     const [resource_private_tip, setTip] = useState('');
     const [loading, setLoading] = useState(true);
     const logedPage = useRef([]);
+    const waterfallFlowHeight = useRef(0);
 
     const init = () => {
         getData({...params, page})
@@ -448,12 +449,12 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     };
 
     const renderItem = ({item = {}}) => {
-        const {id, url} = item;
+        const {id, rec_json, url} = item;
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                    global.LogTool({event: 'content', oid: id});
+                    global.LogTool({event: rec_json ? 'rec_click' : 'content', oid: id, rec_json});
                     jump(url);
                 }}
                 style={styles.waterfallFlowItem}>
@@ -477,6 +478,12 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
         ) : null;
     };
 
+    const onViewableItemsChanged = useCallback(({viewableItems: items, changed}) => {
+        changed?.forEach(({isViewable, item: {id, rec_json}}) => {
+            isViewable && rec_json && global.LogTool({event: 'rec_show', oid: id, rec_json});
+        });
+    }, []);
+
     useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
@@ -486,13 +493,19 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
     return data?.length > 0 ? (
         <WaterFlow
             columnFlatListProps={{
+                onViewableItemsChanged,
                 style: {marginHorizontal: px(5) / 2, top: -px(5)},
             }}
             columnsFlatListProps={{
                 ListFooterComponent: renderFooter,
                 onEndReached,
                 onEndReachedThreshold: 0.05,
-                onLayout: () => {
+                onLayout: ({
+                    nativeEvent: {
+                        layout: {height},
+                    },
+                }) => {
+                    waterfallFlowHeight.current = height;
                     wrapper === 'Recommend' && global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: 1});
                     logedPage.current.push(1);
                 },
@@ -504,9 +517,8 @@ export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrappe
                     if (wrapper === 'Recommend') {
                         const {
                             contentOffset: {y},
-                            layoutMeasurement: {height},
                         } = e.nativeEvent;
-                        const screen = Math.floor(y / height) + 1;
+                        const screen = Math.floor(y / waterfallFlowHeight.current) + 1;
                         if (screen > 1 && !logedPage.current.includes(screen)) {
                             global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: screen});
                             logedPage.current.push(screen);
@@ -931,7 +943,7 @@ const styles = StyleSheet.create({
     },
     addContent: {
         position: 'absolute',
-        right: px(5),
+        right: px(10),
         bottom: px(38),
     },
     addIcon: {

@@ -103,10 +103,7 @@ const Index = ({navigation, route}) => {
         <View style={[styles.con, {paddingTop: inset.top}]}>
             {current == 0 ? ( //处理第一题
                 <View style={{backgroundColor: '#fff', flex: 1}}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={onSkip}
-                        style={[Style.flexRow, styles.skip, {top: inset.top}]}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={onSkip} style={[Style.flexRow, styles.skip]}>
                         <Text>跳过</Text>
                     </TouchableOpacity>
                     <ScrollView bounces={false} style={{marginTop: px(56), flex: 1}}>
@@ -296,6 +293,7 @@ const styles = StyleSheet.create({
     },
     skip: {
         position: 'absolute',
+        top: 0,
         right: px(16),
         height: px(44),
     },

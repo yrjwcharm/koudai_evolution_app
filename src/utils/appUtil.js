@@ -44,14 +44,35 @@ function isIphoneX() {
  * 判断权限申请
  */
 const requestAuth = async (permission, grantedCallback, blockCallBack) => {
-    if (Platform.OS == 'ios') {
-        check(permission)
-            .then((result) => {
-                switch (result) {
-                    case RESULTS.UNAVAILABLE:
-                        console.log('This feature is not available (on this device / in this context)');
-                        break;
-                    case RESULTS.DENIED:
+    const message =
+        permission.indexOf('STORAGE') > -1
+            ? '理财魔方申请获取读取设备上的照片及文件权限。允许后，将可以查看和选择相册里的图片，图片将用于上传身份证件、社区评论发帖、头像更换、图片识别、客户服务业务场景。您可以在设置页面取消相册授权。'
+            : '理财魔方申请获取拍摄照片和录制视频权限，允许后，将用于拍摄功能，拍摄图片可用于上传身份证件、社区评论发帖、头像更换、客户服务业务场景。您可以在设置页面取消摄像头权限。';
+    check(permission)
+        .then((result) => {
+            switch (result) {
+                case RESULTS.UNAVAILABLE:
+                    console.log('This feature is not available (on this device / in this context)');
+                    break;
+                case RESULTS.DENIED:
+                    if (Platform.OS === 'android') {
+                        Alert.alert('获取权限提示', message, [
+                            {
+                                onPress: () => {
+                                    request(permission).then((res) => {
+                                        if (res !== RESULTS.GRANTED) {
+                                            blockCallBack
+                                                ? blockCallBack()
+                                                : openSettings().catch(() => console.warn('cannot open settings'));
+                                        } else {
+                                            grantedCallback();
+                                        }
+                                    });
+                                },
+                                text: '知道了',
+                            },
+                        ]);
+                    } else {
                         request(permission).then((res) => {
                             if (res == 'blocked') {
                                 blockCallBack
@@ -61,47 +82,26 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
                                 grantedCallback();
                             }
                         });
-                        console.log('The permission has not been requested / is denied but requestable');
-                        break;
-                    case RESULTS.LIMITED:
-                        console.log('The permission is limited: some actions are possible');
-                        grantedCallback();
-                        break;
-                    case RESULTS.GRANTED:
-                        console.log('The permission is granted');
-                        grantedCallback();
-                        break;
-                    case RESULTS.BLOCKED:
-                        blockCallBack
-                            ? blockCallBack()
-                            : openSettings().catch(() => console.warn('cannot open settings'));
-                        console.log('The permission is denied and not requestable anymore');
-                        break;
-                }
-            })
-            .catch((error) => {
-                // …
-            });
-    } else {
-        try {
-            let granted = await PermissionsAndroid.check(permission);
-            if (!granted) {
-                const res = await PermissionsAndroid.request(permission);
-                if (res !== 'granted') {
-                    blockCallBack ? blockCallBack() : openSettings().catch(() => console.warn('cannot open settings'));
-                } else {
+                    }
+
+                    break;
+                case RESULTS.LIMITED:
+                    console.log('The permission is limited: some actions are possible');
+                    grantedCallback();
+                    break;
+                case RESULTS.GRANTED:
                     console.log('The permission is granted');
                     grantedCallback();
-                }
-            } else {
-                console.log('The permission is granted');
-                grantedCallback();
+                    break;
+                case RESULTS.BLOCKED:
+                    blockCallBack ? blockCallBack() : openSettings().catch(() => console.warn('cannot open settings'));
+                    console.log('The permission is denied and not requestable anymore');
+                    break;
             }
-        } catch (err) {
-            console.error('Failed to request permission ', err);
-            return null;
-        }
-    }
+        })
+        .catch((error) => {
+            // …
+        });
 };
 /**
  * @description: 格式化数字 每三位增加逗号

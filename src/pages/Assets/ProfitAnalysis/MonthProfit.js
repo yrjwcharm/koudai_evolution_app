@@ -260,7 +260,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     const {profit_data_list = [], latest_profit_date = ''} = res?.result;
                     if (profit_data_list.length > 0) {
                         let sortProfitDataList = profit_data_list.sort(
-                            (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime(),
+                            (a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime()
                         );
                         let startDate = sortProfitDataList[0].unit_key;
                         let lastDate = sortProfitDataList[sortProfitDataList.length - 1].unit_key;
@@ -350,7 +350,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     </TouchableOpacity>
                 );
             }),
-        [dateArr],
+        [dateArr]
     );
     const renderBarChart = useCallback(
         (xAxisData, dataAxis) => {
@@ -378,7 +378,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 />
             );
         },
-        [isBarChart],
+        [isBarChart]
     );
     return (
         <View style={styles.container}>
@@ -508,7 +508,7 @@ const CalendarHeader = React.memo(
                 </View>
             </View>
         );
-    },
+    }
 );
 export default MonthProfit;
 const styles = StyleSheet.create({

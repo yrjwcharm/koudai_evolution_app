@@ -6,7 +6,6 @@ import React, {useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import ProductList from './ProductList';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
@@ -14,7 +13,7 @@ import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
 
 const AlbumHeader = ({
-    data: {bg_img, title_tag, desc, desc_icon, icon, bg_linear = false, title, title_desc, url} = {},
+    data: {bg_color, bg_img, bg_linear = false, desc, desc_icon, icon, title, title_desc, title_tag, url} = {},
     logParams,
 }) => {
     const jump = useJump();
@@ -33,7 +32,7 @@ const AlbumHeader = ({
                 logParams && global.LogTool(logParams);
                 jump(url);
             }}
-            style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB'} : {}]}>
+            style={[styles.headerContainer, bg_img ? {backgroundColor: '#FBFBFB', height: px(80)} : {}]}>
             {bg_img ? (
                 <View style={styles.bgContainer}>
                     <Image
@@ -42,15 +41,21 @@ const AlbumHeader = ({
                         style={{width: bgWidth, height: '100%'}}
                     />
                     {bg_linear && (
-                        <View style={[styles.bgLinear]}>
-                            <LinearGradient
-                                colors={['#FCFCFC', 'rgba(255, 255, 255, 0.8)']}
-                                start={{x: 0, y: 0}}
-                                end={{x: 0.5, y: 0}}
-                                style={[{width: bgWidth + 1, height: '100%'}]}
-                            />
-                        </View>
+                        <LinearGradient
+                            colors={['#FFF', 'rgba(255, 255, 255, 0.8)']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0.5, y: 0}}
+                            style={[styles.bgLinear, {width: bgWidth}]}
+                        />
                     )}
+                    {bg_color ? (
+                        <LinearGradient
+                            colors={bg_color}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 0.5}}
+                            style={[styles.bgLinear, {width: '100%'}]}
+                        />
+                    ) : null}
                 </View>
             ) : null}
             <View style={Style.flexBetween}>
@@ -136,8 +141,8 @@ const Index = ({
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
-                {groups?.length > 0 && (
-                    <View style={{paddingTop: px(12)}}>
+                {groups?.length > 0 ? (
+                    <View style={{paddingTop: px(12), flex: 1}}>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                             {groups.map?.((group, index) => {
                                 const {name} = group;
@@ -173,7 +178,7 @@ const Index = ({
                             <Text style={[styles.desc, {marginTop: px(12), color: Colors.red}]}>{groupDesc}</Text>
                         ) : null}
                     </View>
-                )}
+                ) : null}
                 {list?.length > 0 && (
                     <View
                         style={{
@@ -204,6 +209,8 @@ const Index = ({
 const styles = StyleSheet.create({
     container: {
         borderRadius: Space.borderRadius,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#fff',
         backgroundColor: '#fff',
         overflow: 'hidden',
     },
@@ -215,6 +222,9 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         bottom: 0,
+        left: 0,
+        alignItems: 'flex-end',
+        backgroundColor: '#fff',
     },
     bgLinear: {
         position: 'absolute',
@@ -228,8 +238,8 @@ const styles = StyleSheet.create({
         height: px(16),
     },
     title: {
-        fontSize: Font.textH1,
-        lineHeight: px(20),
+        fontSize: px(15),
+        lineHeight: px(21),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
     },

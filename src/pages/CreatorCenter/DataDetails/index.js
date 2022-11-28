@@ -113,7 +113,7 @@ const DataDetails = () => {
                     <ScrollView tabLabel={item.val} key={idx} showsHorizontalScrollIndicator={false} style={{flex: 1}}>
                         {listLoading ? (
                             <View style={{paddingVertical: px(20)}}>
-                                <ActivityIndicator />
+                                <ActivityIndicator color="#999" />
                             </View>
                         ) : (
                             <View style={styles.cardsWrap}>
