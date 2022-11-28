@@ -311,9 +311,26 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     {/* 基金 */}
                                     {type == 10 ? (
                                         <View style={{flex: 1.4}}>
-                                            <Text style={[styles.name]} numberOfLines={1}>
-                                                {name}
-                                            </Text>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text style={[styles.name]} numberOfLines={1}>
+                                                    {name}
+                                                </Text>
+                                                {tool_tag_info?.map?.((item) => (
+                                                    <View
+                                                        style={[styles.toolTag, {borderColor: item.tag_color}]}
+                                                        key={item.text}>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: px(10),
+                                                                lineHeight: px(14),
+                                                                color: item.tag_color,
+                                                            }}>
+                                                            {item?.text}
+                                                        </Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+
                                             <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
                                         </View>
                                     ) : (
@@ -488,7 +505,7 @@ const styles = StyleSheet.create({
         marginLeft: px(1),
         marginBottom: px(-2),
     },
-    name: {fontWeight: '700', fontSize: px(12), marginBottom: px(6)},
+    name: {fontWeight: '700', fontSize: px(12)},
     holdingDays: {
         fontSize: px(11),
         color: Colors.lightBlackColor,
