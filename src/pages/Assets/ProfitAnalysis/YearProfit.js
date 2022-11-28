@@ -151,7 +151,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 if (unit_list.length > 0) {
                     const max = unit_list[0].value.split('-')[1];
                     const min = unit_list[unit_list.length - 1].value.split('-')[0];
-                    console.log(max, min);
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
@@ -161,7 +160,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                         .map((el) => {
                             return {
-                                day: el.unit_key,
+                                day: parseFloat(el.unit_key),
                                 profit: delMille(el.value),
                             };
                         });
@@ -297,7 +296,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 value: '0.00',
                             });
                             sortProfitDataList.push({
-                                unit_key: lastYear + (i + 1),
+                                unit_key: Math.floor(lastYear) + (i + 1),
                                 value: '0.00',
                             });
                         }
@@ -313,7 +312,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
-                xAxisData.push(String(el.unit_key));
+                xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
             let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
