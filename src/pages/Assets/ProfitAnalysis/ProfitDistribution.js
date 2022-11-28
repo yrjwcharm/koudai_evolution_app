@@ -28,7 +28,7 @@ const shadow = {
     },
 };
 
-const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}, chartParams}) => {
+const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData = {}, chartParams}) => {
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
@@ -194,7 +194,7 @@ const ProfitDistribution = ({poid = '', type, fund_code = '', headData = {}, cha
                         </View>
                     </View>
                     {unitType == 'day' && (
-                        <DayProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                        <DayProfit type={type} differ={differ} poid={poid} unit_type={unitType} fund_code={fund_code} />
                     )}
                     {unitType == 'month' && (
                         <MonthProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />

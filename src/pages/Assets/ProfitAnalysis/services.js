@@ -24,3 +24,7 @@ export const getEarningsUpdateNote = (params) => http.get(`/platform_tool/profit
  * 获取资产趋势图
  */
 export const getOverviewChartData = (params) => http.get(`/asset/overview/chart/20221123`, params);
+/**
+ * 是否重置当前日历
+ */
+export const getResetDate = (params) => http.get(`/platform_tool/profit/chartconf/20221010`, params);

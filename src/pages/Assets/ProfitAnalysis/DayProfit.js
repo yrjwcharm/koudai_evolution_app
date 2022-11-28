@@ -15,14 +15,14 @@ import ChartHeader from './components/ChartHeader';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-const DayProfit = React.memo(({poid, fund_code, type, unit_type}) => {
+const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [isCalendar, setIsCalendar] = useState(true);
     const [isBarChart, setIsBarChart] = useState(false);
-    const [diff, setDiff] = useState(0);
+    const [diff, setDiff] = useState(differ);
     const [date, setDate] = useState(dayjs());
     const [currentDay] = useState(dayjs().format('YYYY-MM-DD'));
     const week = useRef(['日', '一', '二', '三', '四', '五', '六']);

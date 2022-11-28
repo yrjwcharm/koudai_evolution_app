@@ -10,7 +10,7 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import ProfitDistribution from './ProfitDistribution';
 import {deviceWidth, isEmpty, px as text, px} from '../../../utils/appUtil';
 import {BottomModal} from '../../../components/Modal';
-import {getEarningsUpdateNote, getHeadData} from './services';
+import {getEarningsUpdateNote, getHeadData, getResetDate} from './services';
 import Loading from '../../Portfolio/components/PageLoading';
 import {useDispatch} from 'react-redux';
 import ScrollTabbar from '../../../components/ScrollTabbar';
@@ -21,6 +21,7 @@ const ProfitDetail = ({navigation, route}) => {
     const [headData, setHeadData] = useState({});
     const [data, setData] = useState({});
     const bottomModal = useRef(null);
+    const [diff, setDiff] = useState(0);
     const [tabs, setTabs] = useState([
         {text: '全部', type: 200},
         {text: '公募基金', type: 10},
@@ -31,10 +32,16 @@ const ProfitDetail = ({navigation, route}) => {
     const [declarePic, setDeclarePic] = useState('');
     const init = useCallback((type) => {
         (async () => {
-            const res = await Promise.all([getHeadData({type, poid, fund_code}), getEarningsUpdateNote({})]);
-            if (res[0].code === '000000' && res[1].code === '000000') {
+            const res = await Promise.all([
+                getHeadData({type, poid, fund_code}),
+                getEarningsUpdateNote({}),
+                getResetDate({type, unit_type: 'day', poid, fund_code}),
+            ]);
+            if (res[0].code === '000000' && res[1].code === '000000' && res[2].code === '000000') {
                 const {title: navigationTitle = '', header = {}, button = {}, tabs = []} = res[0]?.result || {};
                 const {title: rightTitle = '', declare_pic = ''} = res[1]?.result || {};
+                const {month_reset} = res[2]?.result || {};
+                setDiff(month_reset ? -1 : 0);
                 setDeclarePic(declare_pic);
                 setTabs(tabs);
                 setHeadData(header);
@@ -95,6 +102,7 @@ const ProfitDetail = ({navigation, route}) => {
                                             <ProfitDistribution
                                                 poid={poid}
                                                 type={el.type}
+                                                differ={diff}
                                                 chartParams={el?.asset_chart}
                                                 headData={headData}
                                                 fund_code={fund_code}
