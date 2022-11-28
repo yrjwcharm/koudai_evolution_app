@@ -3,7 +3,7 @@
 // //  * @Description:社区主页
 // //  */
 import {StyleSheet, Text, View, Animated, TouchableOpacity, ActivityIndicator, Image} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -19,10 +19,11 @@ import {Modal, ShareModal} from '../../../components/Modal';
 import EmptyTip from '../../../components/EmptyTip';
 import {Button} from '../../../components/Button';
 import {ChooseModal} from '../CommunityVodCreate';
-import {ScrollTabView, ScrollView} from 'react-native-scroll-head-tab-view';
+import {ScrollTabView, FlatList, ScrollView} from 'react-native-scroll-head-tab-view';
 import {useFocusEffect} from '@react-navigation/native';
 import {Modalize} from 'react-native-modalize';
 import {useJump} from '~/components/hooks';
+import CommunityHomeList from './CommunityHomeList';
 const CommunityHome = ({navigation, route}) => {
     const jump = useJump();
     const inset = useSafeAreaInsets();
@@ -38,13 +39,14 @@ const CommunityHome = ({navigation, route}) => {
     const chooseModal = useRef();
     const [introHeight, setIntroHeight] = useState(0);
     const [loading, setLoading] = useState(true);
+    const page = useRef(1);
+    const loadMoreIng = useRef(false);
+    const hasMore = useRef(true);
     const bottomModal = useRef();
-    const getData = async (type) => {
+    const ListRef = useRef();
+    const page_size = 20;
+    const getHomeData = async () => {
         let res = await getCommunityHomeData({community_id, history_id});
-        getProductList({community_id, type: type || res.result?.tabs[0]?.type});
-        if (!currentTab.current) {
-            currentTab.current = type || res.result?.tabs[0]?.type;
-        }
         setData(res.result);
         if (res.result?.bottom_pop) {
             setTimeout(() => {
@@ -52,46 +54,56 @@ const CommunityHome = ({navigation, route}) => {
             }, 200);
         }
     };
-    const getProductList = async (params) => {
-        let res = await getCommunityProductList(params);
-        setLoading(false);
-        setProduct(res.result);
+    const getProData = (params) => {
+        return getCommunityProductList(params);
     };
+    // console.log(page);
+    // const getProductList = async (params) => {
+    //     try {
+    //         let res = await getCommunityProductList({...params, page_size});
+    //         setLoading(false);
+    //         loadMoreIng.current = false;
+    //         if (params.page == 1) {
+    //             setProduct(res.result);
+    //         } else {
+    //             setProduct((prev) => prev.concat(res.result));
+    //         }
+    //         if (res.result?.length < page_size) {
+    //             hasMore.current = false;
+    //         } else {
+    //             hasMore.current = true;
+    //         }
+    //     } catch (error) {
+    //         loadMoreIng.current = false;
+    //     }
+    // };
     useFocusEffect(
         useCallback(() => {
-            getData(currentTab.current);
+            getHomeData();
         }, [])
     );
 
-    //移除产品
-    const onDelete = (type, item_id) => {
-        Modal.show({
-            content: '您确定要删除吗?',
-            confirm: true,
-            confirmCallBack: async () => {
-                let res = await removeProduct({type, community_id, item_id});
-                if (res.code == '000000') {
-                    setProduct((prev) => {
-                        let tmp = [...prev];
-                        let index = product.findIndex((item) => {
-                            return item.id == item_id || item.code == item_id;
-                        });
-                        tmp.splice(index, 1);
-                        return tmp;
-                    });
-                }
-            },
-        });
-    };
     //添加
     const handleAddProduct = async (_data) => {
         if (_data?.length > 0) {
             let item_id = _data?.map((item) => item.id).join(',');
             let res = await addProduct({community_id, item_id, type: _data[0]?.relation_type});
             if (res.code == '000000') {
-                getProductList({community_id, type: currentTab.current});
+                ListRef.current?.refresh();
             }
         }
+    };
+    const onEndReached = () => {
+        if (!hasMore.current) return;
+        // const event = evt.nativeEvent;
+        // // 如果拖拽值超过底部50，且当前的scrollview高度大于屏幕高度，则加载更多
+        // const _num = event.contentSize.height - event.layoutMeasurement.height - event.contentOffset.y;
+        // if (event.contentSize.height > event.layoutMeasurement.height && _num < 50) {
+        // loadMoreIng.current = true;
+        page.current = page.current + 1;
+        getProData();
+        //     console.log('上拉，加载更多评论');
+        // }
     };
     const Header = () => {
         const animateOpacity = scrollY.interpolate({
@@ -136,10 +148,10 @@ const CommunityHome = ({navigation, route}) => {
                         headerHeight={parallaxHeaderHeight + introHeight - px(30)}
                         insetValue={headerHeight}
                         style={{backgroundColor: '#fff', flex: 1}}
-                        onChangeTab={({i}) => {
-                            getProductList({community_id, type: data?.tabs[i]?.type});
-                            currentTab.current = data?.tabs[i]?.type;
-                        }}
+                        // onChangeTab={({i}) => {
+                        //     getProductList({community_id, type: data?.tabs[i]?.type, page: 1});
+                        //     currentTab.current = data?.tabs[i]?.type;
+                        // }}
                         onContentScroll={(e) => {
                             scrollY.setValue(e.value);
                             if (e.value > 80) {
@@ -180,70 +192,121 @@ const CommunityHome = ({navigation, route}) => {
                                 </>
                             );
                         }}>
-                        {data?.tabs?.map((tab, index) =>
-                            tab.type == 1 ? (
-                                <ScrollView
+                        {data?.tabs?.map(
+                            ({name, type}, index) => (
+                                <CommunityHomeList
+                                    tabLabel={name}
                                     key={index}
-                                    style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
-                                    tabLabel={tab?.name}>
-                                    {!loading ? (
-                                        product?.length ? (
-                                            product?.map((_data) => (
-                                                <CommunityCard key={_data.id} data={_data} onDelete={onDelete} />
-                                            ))
-                                        ) : (
-                                            <EmptyTip
-                                                desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
-                                                text={'暂无相关作品'}
-                                                imageStyle={{marginBottom: px(-30)}}>
-                                                {data?.show_add_btn && (
-                                                    <Button
-                                                        onPress={() => {
-                                                            chooseModal?.current?.show('article', product);
-                                                        }}
-                                                        title="添加作品"
-                                                        style={styles.addBtn}
-                                                        textStyle={{fontSize: px(13)}}
-                                                    />
-                                                )}
-                                            </EmptyTip>
-                                        )
+                                    getData={getProData}
+                                    ref={ListRef}
+                                    params={{community_id, type, page_size}}>
+                                    {type == 1 ? (
+                                        <EmptyTip
+                                            desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                            text={'暂无相关作品'}
+                                            imageStyle={{marginBottom: px(-30)}}>
+                                            {data?.show_add_btn && (
+                                                <Button
+                                                    onPress={() => {
+                                                        chooseModal?.current?.show('article', data);
+                                                    }}
+                                                    title="添加作品"
+                                                    style={styles.addBtn}
+                                                    textStyle={{fontSize: px(13)}}
+                                                />
+                                            )}
+                                        </EmptyTip>
                                     ) : (
-                                        <ActivityIndicator />
+                                        <EmptyTip
+                                            desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                            text={'暂无相关产品'}
+                                            imageStyle={{marginBottom: px(-30)}}>
+                                            {data?.show_add_btn && (
+                                                <Button
+                                                    onPress={() => {
+                                                        chooseModal?.current?.show('all', data);
+                                                    }}
+                                                    title="添加产品"
+                                                    style={styles.addBtn}
+                                                    textStyle={{fontSize: px(13)}}
+                                                />
+                                            )}
+                                        </EmptyTip>
                                     )}
-                                </ScrollView>
-                            ) : (
-                                <ScrollView
-                                    key={index}
-                                    style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
-                                    tabLabel={tab?.name}>
-                                    {!loading ? (
-                                        product?.length ? (
-                                            product?.map((_data) => (
-                                                <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
-                                            ))
-                                        ) : (
-                                            <EmptyTip
-                                                desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
-                                                text={'暂无相关产品'}
-                                                imageStyle={{marginBottom: px(-30)}}>
-                                                {data?.show_add_btn && (
-                                                    <Button
-                                                        onPress={() => {
-                                                            chooseModal?.current?.show('all', product);
-                                                        }}
-                                                        title="添加产品"
-                                                        style={styles.addBtn}
-                                                        textStyle={{fontSize: px(13)}}
-                                                    />
-                                                )}
-                                            </EmptyTip>
-                                        )
-                                    ) : (
-                                        <ActivityIndicator />
-                                    )}
-                                </ScrollView>
+                                </CommunityHomeList>
+                                // <FlatList
+                                //     keyExtractor={(item) => item.id}
+                                //     style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
+                                //     // _onScroll={onScoll}
+                                //     tabLabel={tab?.name}
+                                //     data={product}
+                                //     onEndReached={onEndReached}
+                                //     onEndReachedThreshold={0.5}
+                                //     renderItem={({item}) => {
+                                //         return tab.type == 1 ? (
+                                //             <CommunityCard key={item.id} data={item} onDelete={onDelete} />
+                                //         ) : (
+                                //             <ProductCards key={item.id} data={item} onDelete={onDelete} />
+                                //         );
+                                //     }}>
+                                //     {!loading ? (
+                                //         product?.length ? (
+                                //             product?.map((_data) => (
+                                //                 <CommunityCard key={_data.id} data={_data} onDelete={onDelete} />
+                                //             ))
+                                //         ) : (
+                                //             <EmptyTip
+                                //                 desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                                //                 text={'暂无相关作品'}
+                                //                 imageStyle={{marginBottom: px(-30)}}>
+                                //                 {data?.show_add_btn && (
+                                //                     <Button
+                                //                         onPress={() => {
+                                //                             chooseModal?.current?.show('article', product);
+                                //                         }}
+                                //                         title="添加作品"
+                                //                         style={styles.addBtn}
+                                //                         textStyle={{fontSize: px(13)}}
+                                //                     />
+                                //                 )}
+                                //             </EmptyTip>
+                                //         )
+                                //     ) : (
+                                //         <ActivityIndicator />
+                                //     )}
+                                // </FlatList>
                             )
+
+                            // <ScrollView
+                            //     key={index}
+                            //     style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
+                            //     tabLabel={tab?.name}>
+                            //     {!loading ? (
+                            //         product?.length ? (
+                            //             product?.map((_data) => (
+                            //                 <ProductCards key={_data.id} data={_data} onDelete={onDelete} />
+                            //             ))
+                            //         ) : (
+                            //             <EmptyTip
+                            //                 desc={data?.show_add_btn ? '请点击按钮进行添加' : ''}
+                            //                 text={'暂无相关产品'}
+                            //                 imageStyle={{marginBottom: px(-30)}}>
+                            //                 {data?.show_add_btn && (
+                            //                     <Button
+                            //                         onPress={() => {
+                            //                             chooseModal?.current?.show('all', product);
+                            //                         }}
+                            //                         title="添加产品"
+                            //                         style={styles.addBtn}
+                            //                         textStyle={{fontSize: px(13)}}
+                            //                     />
+                            //                 )}
+                            //             </EmptyTip>
+                            //         )
+                            //     ) : (
+                            //         <ActivityIndicator />
+                            //     )}
+                            // </ScrollView>
                         )}
                     </ScrollTabView>
                 )}

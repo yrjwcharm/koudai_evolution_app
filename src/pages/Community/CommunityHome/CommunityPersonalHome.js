@@ -25,13 +25,12 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
     const {muid} = route?.params || {};
     const [data, setData] = useState();
     const [introHeight, setIntroHeight] = useState(0);
-    const waterFallRef = useRef();
     const shareModal = useRef();
     const getData = async () => {
         let res = await getPersonalHomeData({muid});
         setData(res.result);
     };
-    const getProductList = async (params) => {
+    const getProductList = (params) => {
         return getPersonaProductList(params);
     };
     useEffect(() => {
@@ -80,9 +79,6 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                         headerHeight={parallaxHeaderHeight + introHeight - px(30)}
                         insetValue={headerHeight}
                         style={{backgroundColor: Colors.bgColor}}
-                        onChangeTab={() => {
-                            // waterFallRef?.current?.scrollTop();
-                        }}
                         onContentScroll={(e) => {
                             scrollY.setValue(e.value);
                             if (e.value > 80) {
@@ -128,7 +124,6 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                                 key={index}
                                 tabLabel={name}
                                 contentContainerStyle={{marginTop: px(12)}}
-                                ref={waterFallRef}
                                 getData={getProductList}
                                 params={{muid, type: type}}
                             />
