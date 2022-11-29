@@ -87,7 +87,7 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
                             marginTop: px(4),
                             textAlign: 'center',
                         }}>
-                        {start_date} ~ {end_date}
+                        {start_date || '--'} ~ {end_date || '--'}
                     </Text>
                     <View style={{marginTop: px(18), alignItems: 'center'}}>
                         <RenderHtml html={profit_holding} />
@@ -159,11 +159,19 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
                     <View style={Style.flexRow}>
                         <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_info.text}</Text>
                         <HTML html={hideAmount(`${profit_info.value}`)} style={styles.profitText} />
+                        {profit_explain?.tool_type == 21 ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={profitAccInfoMean}
+                                style={{marginLeft: px(6)}}>
+                                <Image source={tip} style={{width: px(16), height: px(16)}} />
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
                     <View style={[Style.flexRow, {marginTop: px(8)}]}>
                         <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_acc_info.text}</Text>
                         <HTML html={hideAmount(`${profit_acc_info.value}`)} style={styles.profitText} />
-                        {profit_explain ? (
+                        {profit_explain?.tool_type != 21 ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={profitAccInfoMean}
