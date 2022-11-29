@@ -94,7 +94,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             splitNumber: 5, // 坐标轴的分割段数，是一个预估值，实际显示会根据数据稍作调整。
             // interval: interval, // 强制设置坐标轴分割间隔。
             axisLabel: {
-                show: true, // 不显示坐标轴上的文字
+                show: false, // 不显示坐标轴上的文字
                 // margin: 0,
             },
             splitLine: {
