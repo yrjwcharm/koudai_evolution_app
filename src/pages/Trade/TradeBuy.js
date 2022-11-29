@@ -66,7 +66,7 @@ class TradeBuy extends Component {
             fee_text: '',
             errTip: '', //错误提示
             mfbTip: false,
-            isLargeAmount: false,
+            isLargeAmount: !!this.props.route?.params?.isLargeAmount,
             largeAmount: '',
             fixTip: '',
             largeTip: '',
@@ -133,6 +133,7 @@ class TradeBuy extends Component {
                         {
                             data: res.result,
                             bankSelect: res.result?.pay_methods[0],
+                            largeAmount: this.state.isLargeAmount ? res.result.large_pay_method : '',
                             currentDate: res.result?.period_info?.current_date,
                             nextday: res.result?.period_info?.nextday,
                         },

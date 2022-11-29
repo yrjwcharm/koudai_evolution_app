@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 11:46:26
+ * @LastEditTime: 2022-11-29 17:44:39
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
@@ -32,12 +32,15 @@ const LargeAmount = (props) => {
 
     const [data, setData] = useState(null);
     const [criticalState, setScrollCriticalState] = useState(false);
+    const [button, setButton] = useState(null);
 
     const navBarRef = useRef();
 
     const init = () => {
         Http.get('/trade/large_transfer/info/20210101', props.route.params).then((res) => {
             setData(res.result);
+            setButton(null);
+            setButton(res.result.button);
         });
     };
     const jumpPage = (url) => {
@@ -249,15 +252,21 @@ const LargeAmount = (props) => {
                     <BottomDesc />
                 </View>
             </ScrollView>
-            <FixedButton
-                title={data.button.text}
-                agreement={data.agreement_bottom}
-                containerStyle={{paddingTop: px(4)}}
-                agreementStyle={{paddingBottom: px(8)}}
-                onPress={() => {
-                    jump(data.button.url);
-                }}
-            />
+            {button ? (
+                <FixedButton
+                    title={button.text}
+                    agreement={data.agreement_bottom}
+                    containerStyle={{paddingTop: px(4)}}
+                    agreementStyle={{paddingBottom: px(8)}}
+                    onPress={() => {
+                        let url = button.url;
+                        if (typeof url.params.isLargeAmount === 'string') {
+                            url.params.isLargeAmount = url.params.isLargeAmount == 'true' ? true : false;
+                        }
+                        jump(button.url);
+                    }}
+                />
+            ) : null}
         </View>
     ) : null;
 };
