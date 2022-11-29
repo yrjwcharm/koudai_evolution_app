@@ -75,6 +75,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             data: [],
         },
         yAxis: {
+            scale: true,
             boundaryGap: false,
             type: 'value',
             axisLabel: {
@@ -260,7 +261,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
-                        setDiff(-diffYear || 0);
+                        setDiff(-diffYear);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -279,7 +280,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     useEffect(() => {
         (async () => {
             if (isBarChart) {
-                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'year');
                 const res = await getChartData({
                     type,
@@ -309,7 +309,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
-                        myChart.current?.hideLoading();
                     }
                 }
             }

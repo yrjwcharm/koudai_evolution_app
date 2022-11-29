@@ -300,7 +300,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     useEffect(() => {
         (async () => {
             if (isBarChart) {
-                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
@@ -334,7 +333,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
-                        myChart.current?.hideLoading();
                     }
                 }
             }
@@ -448,7 +446,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diff = dayjs(realDate).diff(curDate, 'month');
-                        setDiff(-diff || 0);
+                        setDiff(-diff);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
