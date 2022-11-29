@@ -1,12 +1,9 @@
 /*
  * @Description: 产品首页
- * @Autor: wxp
  * @Date: 2022-09-13 11:45:41
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-10 10:47:56
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, RefreshControl, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Space} from '~/common/commonStyle';
@@ -28,7 +25,7 @@ import Security from './Security';
 import LiveList from './LiveList';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserInfo} from '~/redux/actions/userInfo';
-
+import Clipboard from '@react-native-community/clipboard';
 const Product = ({navigation}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
@@ -74,26 +71,40 @@ const Product = ({navigation}) => {
     // 产品tab 增加 登录状态更换时也更新
     useFocusEffect(
         useCallback(() => {
-            if (prevUserInfo.current?.is_login !== userInfo?.is_login) {
+            // 退出登录 或切换账号
+            if (prevUserInfo.current?.is_login !== userInfo?.is_login || prevUserInfo.current?.uid !== userInfo.uid) {
                 getProData();
                 prevUserInfo.current = userInfo;
             }
         }, [userInfo.is_login])
     );
 
+    // kyc 变化时也刷新产品tab
+    useEffect(() => {
+        const emitter = DeviceEventEmitter.addListener('kyc_change', () => {
+            getProData();
+        });
+        return () => {
+            emitter?.remove?.();
+        };
+    }, [getProData]);
+
+    const refresh = () => {
+        scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+        setTimeout(() => {
+            [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(0);
+        }, 0);
+    };
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
             if (isFocused) {
-                scrollViewRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-                setTimeout(() => {
-                    [getFollowTabs, getProData][tabRef.current?.state?.currentPage]?.(0);
-                }, 0);
+                refresh();
                 global.LogTool('tabDoubleClick', 'ProductIndex');
             }
         });
         return () => unsubscribe();
     }, [isFocused, navigation]);
-
+    // push跳转
     useEffect(() => {
         if (userInfo?.pushRoute) {
             http.get('/common/push/jump/redirect/20210810', {
@@ -106,7 +117,27 @@ const Product = ({navigation}) => {
             });
         }
     }, [userInfo]);
-
+    // 获取剪切板内容
+    const getClipboard = async () => {
+        const hasContent = await Clipboard.hasString();
+        if (hasContent) {
+            const res = await Clipboard.getString();
+            if (res) {
+                http.post('/common/device/heart_beat/20210101', {polaris_favor: res}).then((result) => {
+                    if (result.code === '000000') {
+                        // 刷新
+                        refresh();
+                        Clipboard.setString('');
+                    }
+                });
+            }
+        }
+    };
+    useEffect(() => {
+        if (!userInfo.is_login && userInfo.use_clipboard == 1) {
+            getClipboard();
+        }
+    }, [userInfo.is_login, userInfo.use_clipboard]);
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
         [getFollowTabs, getProData][cur.i]();
@@ -151,7 +182,7 @@ const Product = ({navigation}) => {
                     setSubjectsData(res.result);
                     // 分页
                     const newList = res.result.items || [];
-                    setSubjectList((val) => (pageRef.current === 2 ? newList : val.concat(newList)));
+                    setSubjectList((val) => (pageRef.current <= 2 ? newList : val.concat(newList)));
 
                     global.LogTool({
                         event: 'rec_show',
@@ -296,6 +327,7 @@ const Product = ({navigation}) => {
                                         </View>
                                     </LinearGradient>
                                 ) : null}
+
                                 {/* 直播列表 */}
                                 {proData?.live_list && <LiveList proData={proData} />}
                                 {/* 专题们 */}
@@ -308,7 +340,7 @@ const Product = ({navigation}) => {
                                 </View>
                                 {subjectLoading ? (
                                     <View style={{paddingVertical: px(20)}}>
-                                        <ActivityIndicator />
+                                        <ActivityIndicator color="#999" />
                                     </View>
                                 ) : null}
                             </View>

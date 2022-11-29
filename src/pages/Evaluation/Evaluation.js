@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-18 10:59:04
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-25 11:19:57
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -37,6 +37,8 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import RenderHtml from '../../components/RenderHtml';
 const bottom = isIphoneX() ? 64 : px(30);
 //机器人动画
 const layoutAnimation = () => {
@@ -73,6 +75,8 @@ class Question extends Component {
         previousCount: 0,
         loading_text: '',
         nextUrl: '', //最后一步跳转
+        openAccount: '',
+        commonButton: '',
     };
     //动画进行时不能点击下一题
     canNextClick = false;
@@ -81,6 +85,9 @@ class Question extends Component {
     endTime = '';
     fr = this.props.route?.params?.fr; //risk来自个人资料
     plan_id = this.props.route?.params?.plan_id;
+    append = this.props.route?.params?.append;
+    fund_code = this.props.route?.params?.fund_code;
+    poid = this.props.route?.params?.poid;
     init = () => {
         http.get('/questionnaire/start/20210101', {plan_id: this.plan_id, fr: this.fr}).then((data) => {
             if (data.code === '000000') {
@@ -170,9 +177,27 @@ class Question extends Component {
                 });
             }, 2000);
         } else if (action == 'submit' && this.fr == 'risk') {
-            setTimeout(() => {
-                this.props.navigation.pop(1);
-            }, 2000);
+            http.get('/questionnaire/result/20210101', {
+                fr: this.fr,
+                fund_code: this.append,
+                upid: this.upid,
+                plan_id: this.plan_id,
+                poid: this.poid,
+                append: this.append,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    if (res.result?.open_account || res.result?.button) {
+                        this.setState({
+                            openAccount: res.result?.open_account,
+                            commonButton: res.result?.button,
+                        });
+                    } else {
+                        setTimeout(() => {
+                            this.props.navigation.pop(1);
+                        }, 2000);
+                    }
+                }
+            });
         } else {
             this.setState({
                 current: _current,
@@ -482,6 +507,8 @@ class Question extends Component {
             finishTest,
             loading_text,
             warnText,
+            openAccount,
+            commonButton,
         } = this.state;
         const current_ques = questions[current];
         let previousTest = current - 1;
@@ -763,7 +790,49 @@ class Question extends Component {
                                             {loading_text}
                                         </Text>
                                     )}
+                                    {openAccount ? (
+                                        <LinearGradient
+                                            start={{x: 0, y: 0}}
+                                            end={{x: 0, y: 1}}
+                                            colors={['#FFF9EF', '#FFF0D9']}
+                                            style={styles.open_account_con}>
+                                            {openAccount?.title && (
+                                                <RenderHtml
+                                                    style={{fontSize: px(14), fontWeight: 'bold'}}
+                                                    html={openAccount?.title}
+                                                />
+                                            )}
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => this.props.jump(openAccount?.strong_btn?.url, 'replace')}
+                                                style={[styles.open_account_btn]}>
+                                                <Text style={{fontSize: px(12), color: '#fff'}}>
+                                                    {openAccount?.strong_btn?.text}
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <Text
+                                                style={{fontSize: px(12), color: Colors.lightBlackColor}}
+                                                onPress={() => this.props.jump(openAccount?.light_btn?.url)}>
+                                                {openAccount?.light_btn?.text}
+                                            </Text>
+                                        </LinearGradient>
+                                    ) : null}
                                 </Animatable.View>
+                                {commonButton ? (
+                                    <Animatable.View
+                                        ref={this.handleViewRef}
+                                        animation="fadeInRight"
+                                        style={[styles.question_con]}>
+                                        <QuestionBtn
+                                            button={{text: commonButton.text}}
+                                            onPress={() => {
+                                                this.props.navigation.pop(1);
+                                            }}
+                                            style={[styles.common_button]}
+                                            textStyle={{color: Colors.btnColor}}
+                                        />
+                                    </Animatable.View>
+                                ) : null}
                                 {/* 按钮 */}
                                 {!finishTest ? (
                                     <Animatable.View
@@ -876,6 +945,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: Colors.borderColor,
     },
+    common_button: {
+        backgroundColor: '#fff',
+        borderColor: Colors.btnColor,
+    },
+
     btn_unactive_text: {
         color: Colors.darkGrayColor,
     },
@@ -941,5 +1015,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCDCF5',
         borderColor: '#CCDCF5',
         color: '#fff',
+    },
+    open_account_con: {
+        alignItems: 'center',
+        marginTop: px(36),
+        borderRadius: px(6),
+        paddingVertical: px(24),
+    },
+    open_account_btn: {
+        ...Style.flexCenter,
+        backgroundColor: Colors.red,
+        width: px(150),
+        height: px(34),
+        borderRadius: px(50),
+        marginVertical: px(12),
     },
 });

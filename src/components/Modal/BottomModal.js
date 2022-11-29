@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 02:49:25
+ * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
+ * @LastEditTime: 2022-11-22 19:35:09
  * @Description: 底部弹窗
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -31,6 +31,7 @@ const BottomModal = React.forwardRef((props, ref) => {
         isTouchMaskToClose = true,
         backButtonClose = true,
         onClose = () => {},
+        onBackButtonClose,
         destroy = () => {},
         showClose = true,
         keyboardAvoiding = true,
@@ -103,7 +104,7 @@ const BottomModal = React.forwardRef((props, ref) => {
         <Modal
             animationType={'slide'}
             visible={visible}
-            onRequestClose={backButtonClose ? hide : () => {}}
+            onRequestClose={onBackButtonClose || (backButtonClose ? hide : () => {})}
             transparent={true}>
             {backdrop && !global.rootSibling && <Mask />}
             <TouchableOpacity

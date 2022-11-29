@@ -41,8 +41,8 @@ const Index = ({navigation, route, setLoading}) => {
                         setTimeout(() => {
                             openCropper({
                                 path: file.uri,
-                                width: px(240),
-                                height: px(240),
+                                width: px(1200),
+                                height: px(1200),
                                 cropping: true,
                                 cropperChooseText: '选择',
                                 cropperCancelText: '取消',

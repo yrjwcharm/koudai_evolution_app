@@ -42,7 +42,6 @@ const Index = ({navigation, route}) => {
     const onChangeText = (value) => {
         setKeyword(value);
         global.LogTool('search_click', 'input', value);
-        getSerachList(value);
     };
     //获取搜索数据
     const getSerachList = async (content) => {
@@ -97,6 +96,11 @@ const Index = ({navigation, route}) => {
         useCallback(() => {
             getSearchIndexInfo();
         }, [])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            getSerachList(keyword);
+        }, [keyword])
     );
     const handlerSelections = useCallback((arr) => {
         try {
@@ -154,6 +158,15 @@ const Index = ({navigation, route}) => {
                                         let options = {
                                             data: _list,
                                             key: index,
+                                            refresh: () =>
+                                                keyword &&
+                                                getSearchData({
+                                                    fr,
+                                                    keyword,
+                                                    scene: route.params?.selections ? 'subject_product' : '',
+                                                }).then((res) => {
+                                                    res.code === '000000' && setSearchList(res.result);
+                                                }),
                                             type: item?.type,
                                         };
                                         if (route?.params?.selections) {

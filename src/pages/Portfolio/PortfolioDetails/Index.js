@@ -1,16 +1,16 @@
 /*
- * @Description:
+ * @Description:组合详情页
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 15:42:58
+ * @LastEditTime: 2022-11-22 16:18:20
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 import {WebView as RNWebView} from 'react-native-webview';
-import Loading from '../../Portfolio/components/PageLoading';
+import Loading from '../components/PageLoading';
 import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
 import Html from '~/components/RenderHtml';
@@ -23,7 +23,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 
-const PortFolioDetail = ({navigation, route}) => {
+const PortfolioDetails = ({navigation, route}) => {
     const jump = useJump();
     const [token, setToken] = useState('');
     const [data, setData] = useState({});
@@ -182,15 +182,6 @@ const PortFolioDetail = ({navigation, route}) => {
                         // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                         onLoadEnd={async (e) => {
                             const loginStatus = await Storage.get('loginStatus');
-                            // console.log(loginStatus);
-                            console.log(
-                                JSON.stringify({
-                                    ...loginStatus,
-                                    did: global.did,
-                                    timeStamp: timeStamp.current + '',
-                                    ver: global.ver,
-                                })
-                            );
                             webview.current.postMessage(
                                 JSON.stringify({
                                     ...loginStatus,
@@ -278,7 +269,7 @@ const PortFolioDetail = ({navigation, route}) => {
     );
 };
 
-export default PortFolioDetail;
+export default PortfolioDetails;
 
 const styles = StyleSheet.create({
     container: {

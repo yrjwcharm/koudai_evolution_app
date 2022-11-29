@@ -22,6 +22,7 @@ import _ from 'lodash';
 import VideoFooter from './VideoFooter';
 import {useJump} from '~/components/hooks';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import {postProgress} from '../CommunityVideo/service';
 const HEIGHT = Dimensions.get('window').height;
 const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid, height}) => {
     const [paused, setPaused] = useState(true);
@@ -33,12 +34,16 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     const [showPause, setShowPause] = useState(false); //是否展示暂停按钮
     const [loading, setLoading] = useState(false);
     const whenDragCanUpdateProgress = useRef(true);
+    const finished = useRef(false);
     const jump = useJump();
     useEffect(() => {
         setPaused(index != currentIndex);
         customerSliderValue(0);
         setFollowStatus(data?.follow_status);
-    }, [index, currentIndex]);
+        index == currentIndex &&
+            data.product_type !== 'article_history' &&
+            postProgress({article_id: data.id, done_status: data.view_status});
+    }, [data, index, currentIndex]);
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
         if (!paused) setShowPause(true);
@@ -51,7 +56,12 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
         second = second >= 10 ? second : '0' + second;
         return minute + ':' + second;
     };
-    const onCustomerEnd = () => {};
+    const onCustomerEnd = () => {
+        if (finished.current) return false;
+        data.product_type !== 'article_history' &&
+            postProgress({article_id: data.id, article_progress: 100, done_status: 1, latency: duration * 1000});
+        finished.current = true;
+    };
     //加载视频调用，主要是拿到 “总时间”，并格式化
     const customerOnload = (e) => {
         setLoading(false);
@@ -163,7 +173,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
             <View style={styles.bottomCon}>
                 <View style={[Style.flexRow, {marginBottom: px(8)}]}>
                     {!!data?.author?.avatar && (
-                        <TouchableWithoutFeedback onPress={() => jump(data?.author?.url)}>
+                        <TouchableWithoutFeedback onPress={() => jump(data?.author?.url, 'push')}>
                             <Image
                                 source={{uri: data?.author?.avatar}}
                                 style={{width: px(36), height: px(36), marginRight: px(12), borderRadius: px(18)}}

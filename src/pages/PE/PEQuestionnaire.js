@@ -3,7 +3,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-22 16:51:07
+ * @LastEditTime: 2022-11-17 17:15:44
  * @Description: 私募风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -149,19 +149,6 @@ const PEQuestionnaire = () => {
 
     useFocusEffect(
         useCallback(() => {
-            const fun = () => true;
-            if (route.params.fr === 'private_index_risk') {
-                navigation.setOptions({gestureEnabled: false, headerLeft: () => null});
-                BackHandler.addEventListener('hardwareBackPress', fun);
-            }
-            return () => {
-                BackHandler.removeEventListener('hardwareBackPress', fun);
-            };
-        }, [])
-    );
-
-    useFocusEffect(
-        useCallback(() => {
             init();
         }, [])
     );
@@ -177,6 +164,7 @@ const PEQuestionnaire = () => {
                     confirm: true,
                     confirmCallBack: () => {
                         navigation.dispatch(e.data.action);
+                        route.params.fr === 'private_index_risk' && navigation.goBack();
                     },
                     confirmTextColor: '#D7AF74',
                     isTouchMaskToClose: false,

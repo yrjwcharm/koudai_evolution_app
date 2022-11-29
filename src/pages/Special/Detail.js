@@ -17,6 +17,7 @@ import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '../Attention/Index/service';
 import {publishNewComment} from '../Common/CommentList/services';
 import {constants} from '~/components/Modal/util';
+import QuestionModal from './QuestionModal';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -26,6 +27,7 @@ const SpecialDetail = ({navigation, route}) => {
     const [scrolling, setScrolling] = useState(false);
 
     const webview = useRef(null);
+    const questionModalRef = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
     const inputRef = useRef();
@@ -109,6 +111,18 @@ const SpecialDetail = ({navigation, route}) => {
         setTimeout(() => {
             inputRef?.current?.focus();
         }, 100);
+    };
+
+
+    const handleTestSure = () => {
+        webview.current?.postMessage(JSON.stringify({action: 'reload'}));
+        questionModalRef.current?.hide();
+    };
+    const handleTestClose = (back) => {
+        if (back) {
+            navigation.goBack();
+        }
+        questionModalRef.current?.hide();
     };
 
     return (
@@ -198,6 +212,10 @@ const SpecialDetail = ({navigation, route}) => {
                             global.LogTool(logParams);
                         } else if (data?.indexOf('writeComment=') > -1) {
                             writeComment();
+                        } else if (data?.indexOf('showTest=') > -1) {
+                            const config = JSON.parse(data?.split('showTest=')[1] || []);
+                            console.log('config:', config);
+                            questionModalRef.current?.show(config);
                         }
                     }}
                     originWhitelist={['*']}
@@ -210,7 +228,15 @@ const SpecialDetail = ({navigation, route}) => {
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async (e) => {
                         const loginStatus = await Storage.get('loginStatus');
-                        // console.log(loginStatus);
+                        // console.log('loginStatus:', loginStatus);
+                        const loginStatusStr = JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                            navBarHeight: navBarRef.current.navBarHeight,
+                        });
+                        webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
                         console.log(
                             JSON.stringify({
                                 ...loginStatus,
@@ -321,6 +347,8 @@ const SpecialDetail = ({navigation, route}) => {
                     </View>
                 </View>
             </PageModal>
+
+            <QuestionModal onSure={handleTestSure} onClose={handleTestClose} ref={questionModalRef} />
         </View>
     );
 };

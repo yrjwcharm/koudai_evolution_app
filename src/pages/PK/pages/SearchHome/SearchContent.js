@@ -16,7 +16,7 @@ import {debounce} from 'lodash';
 import FastImage from 'react-native-fast-image';
 import {genKey} from '~/pages/CreatorCenter/SelectProduct/utils';
 
-const SearchContent = ({data, type, selections, handlerSelections}) => {
+const SearchContent = ({data, type, selections, handlerSelections, refresh}) => {
     const [favor, setFavor] = useState(data.favor);
     const jump = useJump();
     const onFavor = useCallback(
@@ -29,6 +29,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                             item_type: data.item_type || 1,
                         }).then((res) => {
                             res.message && Toast.show(res.message);
+                            refresh?.();
                         });
                     } else {
                         followAdd({
@@ -36,6 +37,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                             item_type: data.item_type || 1,
                         }).then((res) => {
                             res.message && Toast.show(res.message);
+                            refresh?.();
                         });
                     }
                     return !_favor;
@@ -125,6 +127,41 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
             </TouchableOpacity>
         );
     }
+    // 创作者, 社区
+    if (['creator', 'community'].includes(type)) {
+        return (
+            <TouchableOpacity
+                style={[styles.con, Style.flexBetween]}
+                onPress={() => jump(data.url)}
+                activeOpacity={0.9}>
+                <View style={{maxWidth: '100%', flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                    <FastImage
+                        source={{uri: data.avatar}}
+                        resizeMode="cover"
+                        style={{width: px(32), height: px(32), borderRadius: px(32)}}
+                    />
+                    <View style={{flex: 1, marginLeft: px(6)}}>
+                        <RenderHtml style={styles.title} numberOfLines={1} html={data?.name} />
+                        <Text style={styles.fansCount}>粉丝：{data.fans_count}</Text>
+                    </View>
+                </View>
+                <View style={[Style.flexRow, {marginLeft: px(10)}]}>
+                    <TouchableOpacity
+                        style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
+                        onPress={onFavor}
+                        activeOpacity={0.8}>
+                        <Text
+                            style={[
+                                {fontSize: Font.textH3, lineHeight: px(17)},
+                                {color: favor ? '#BDC2CC' : Colors.brandColor},
+                            ]}>
+                            {favor ? '已关注' : '+关注'}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </TouchableOpacity>
+        );
+    }
 
     return (
         <TouchableOpacity style={[styles.con, Style.flexBetween]} onPress={() => jump(data.url)} activeOpacity={0.9}>
@@ -166,7 +203,7 @@ const SearchContent = ({data, type, selections, handlerSelections}) => {
                             style={{width: px(16), height: px(16)}}
                         />
                     </TouchableOpacity>
-                ) : (
+                ) : data.is_private_fund ? null : (
                     <TouchableOpacity
                         style={[styles.pkBtn, Style.flexCenter, {borderColor: favor ? '#BDC2CC' : Colors.brandColor}]}
                         onPress={onFavor}
@@ -225,5 +262,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(10),
         borderRadius: px(2),
         backgroundColor: '#F1F6FF',
+    },
+    fansCount: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#545968',
+        marginTop: px(2),
     },
 });

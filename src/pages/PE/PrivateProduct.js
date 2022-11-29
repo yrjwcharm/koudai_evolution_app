@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-18 17:21:32
- * @LastEditors: dx
+ * @LastEditors: Please set LastEditors
  * @Desc:私募产品公告
- * @LastEditTime: 2022-06-15 16:20:09
+ * @LastEditTime: 2022-11-24 20:47:58
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -55,7 +55,7 @@ export default function PrivateAssets(props) {
                         <Text style={{flex: 1}}>{_data?.content?.title}</Text>
                         <Text>{_data?.content?.subtitle}</Text>
                     </View>
-                    <View style={[Style.flexCenter]}>
+                    <View style={[Style.flexCenter, {marginHorizontal: px(16), height: px(200)}]}>
                         <Video url={_data?.content?.video} />
                     </View>
                 </>

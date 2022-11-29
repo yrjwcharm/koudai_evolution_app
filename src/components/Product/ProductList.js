@@ -342,17 +342,27 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                     })()}
                 </TouchableOpacity>
                 {reason ? (
-                    <TouchableOpacity
-                        activeOpacity={edit_button ? 0.8 : 1}
-                        style={styles.reasonBox}
-                        onPress={() => {
-                            edit_button && jump(edit_button.url);
-                        }}>
-                        {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
-                        <View style={{flexShrink: 1}}>
-                            <HTML numberOfLines={2} html={reason} style={{...styles.label, color: Colors.descColor}} />
-                        </View>
-                    </TouchableOpacity>
+                    <LinearGradient
+                        colors={[Colors.bgColor, 'rgba(245, 246, 248, 0.3)']}
+                        start={{x: 0, y: 0}}
+                        end={{x: 1, y: 0}}
+                        style={{marginTop: px(12), borderRadius: px(4)}}>
+                        <TouchableOpacity
+                            activeOpacity={edit_button ? 0.8 : 1}
+                            style={styles.reasonBox}
+                            onPress={() => {
+                                edit_button && jump(edit_button.url);
+                            }}>
+                            {reason_icon ? <Image source={{uri: reason_icon}} style={styles.reasonIcon} /> : null}
+                            <View style={{flexShrink: 1}}>
+                                <HTML
+                                    numberOfLines={2}
+                                    html={reason}
+                                    style={{...styles.label, color: Colors.descColor}}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </LinearGradient>
                 ) : null}
             </View>
         );
@@ -401,7 +411,17 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
     };
     /** @name 轮播卡片 */
     const renderSwiperItem = (item, index) => {
-        const {bg_img, button, desc, name, product_id = '', tags, url} = item;
+        const {
+            bg_img,
+            button,
+            desc,
+            name,
+            product_id = '',
+            tags,
+            tag_bg_color = 'rgba(246, 226, 195, 0.8)',
+            tag_font_color = '#B38051',
+            url,
+        } = item;
         return (
             <LinearGradient
                 colors={['#FFFCF7', '#FFF2E0']}
@@ -427,7 +447,13 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                             <Image source={{uri: bg_img}} style={{width: '100%', height: '100%'}} />
                         </TouchableOpacity>
                     ) : null}
-                    {desc ? <HTML html={desc} style={styles.cardDesc} /> : null}
+                    {desc ? (
+                        <HTML
+                            html={desc}
+                            nativeProps={{containerStyle: {paddingTop: Space.padding}}}
+                            style={styles.cardDesc}
+                        />
+                    ) : null}
                     {name ? <Text style={[styles.name, {marginTop: px(8), fontWeight: '400'}]}>{name}</Text> : null}
                     {tags?.length > 0 && (
                         <View style={[Style.flexRowCenter, {marginTop: px(8)}]}>
@@ -435,8 +461,11 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                 return (
                                     <View
                                         key={tag + i}
-                                        style={[styles.goldenTagBox, {marginLeft: i === 0 ? 0 : px(8)}]}>
-                                        <Text style={styles.goldenTagText}>{tag}</Text>
+                                        style={[
+                                            styles.goldenTagBox,
+                                            {backgroundColor: tag_bg_color, marginLeft: i === 0 ? 0 : px(8)},
+                                        ]}>
+                                        <Text style={[styles.goldenTagText, {color: tag_font_color}]}>{tag}</Text>
                                     </View>
                                 );
                             })}
@@ -598,10 +627,7 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     reasonBox: {
-        marginTop: px(12),
         padding: px(8),
-        borderRadius: px(4),
-        backgroundColor: Colors.bgColor,
         flexDirection: 'row',
     },
     reasonIcon: {
@@ -617,7 +643,6 @@ const styles = StyleSheet.create({
         height: px(2),
     },
     swiperItem: {
-        paddingTop: Space.padding,
         borderRadius: Space.borderRadius,
         overflow: 'hidden',
         height: '100%',
@@ -690,7 +715,6 @@ const styles = StyleSheet.create({
         paddingVertical: px(2),
         paddingHorizontal: px(6),
         borderRadius: px(2),
-        backgroundColor: 'rgba(246, 226, 195, 0.8)',
     },
     goldenTagText: {
         fontSize: px(10),
@@ -727,7 +751,7 @@ const styles = StyleSheet.create({
     outBox: {
         padding: px(12),
         borderRadius: Space.borderRadius,
-        borderWidth: Space.borderWidth,
+        borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#F1F6FF',
         borderTopColor: 'transparent',
         overflow: 'hidden',

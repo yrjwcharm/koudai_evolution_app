@@ -6,15 +6,13 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View, Image} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px, delMille, compareDate, deviceWidth, isEmpty} from '../../../utils/appUtil';
+import {px, delMille, deviceWidth, isEmpty} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-import {round} from 'mathjs';
-import axios from 'axios';
 const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -33,7 +31,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [endYear, setEndYear] = useState('');
     const [date, setDate] = useState(dayjs());
     const [unitList, setUnitList] = useState([]);
-    const [period, setPeriod] = useState('近5年');
+    const [period, setPeriod] = useState('');
     const [sortProfitList, setSortProfitList] = useState([]);
     const [latestProfitDate, setLatestProfitDate] = useState('');
     const [profitDay, setProfitDay] = useState('');
@@ -149,13 +147,22 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
 
                 if (unit_list.length > 0) {
-                    const max = unit_list[0].value.split('-')[1];
-                    const min = unit_list[unit_list.length - 1].value.split('-')[0];
+                    const [, max] = unit_list[0].value.split('-');
+                    const [min] = unit_list[unit_list.length - 1].value.split('-');
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
                     let cur = dayjs_.year();
                     if (cur > max || cur < min) return;
+                    let period = '';
+                    for (let item of unit_list) {
+                        const [start, end] = item.value.split('-');
+                        if (dayjs_.year() >= start && dayjs_.year() <= end) {
+                            period = item.text;
+                            break;
+                        }
+                    }
+                    setPeriod(period);
                     let arr = profit_data_list
                         .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                         .map((el) => {
@@ -222,24 +229,11 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     );
     const subStract = () => {
         setProfitDay('');
-        changeDiff(true);
+        setDiff((diff) => diff - 5);
     };
     const add = () => {
         setProfitDay('');
-        changeDiff(false);
-    };
-    const changeDiff = (isDecrease) => {
-        new Promise((resolve) => {
-            setDiff((diff) => {
-                isDecrease ? resolve(diff - 5) : resolve(diff + 5);
-                return isDecrease ? diff - 5 : diff + 5;
-            });
-        }).then((differ) => {
-            let curDate = dayjs().year();
-            let realDate = isDecrease ? startYear : endYear;
-            let diff = realDate - curDate;
-            isDecrease ? differ <= diff + 4 && setDiff(diff + 4) : differ >= diff && setDiff(diff);
-        });
+        setDiff((diff) => diff + 5);
     };
     const renderBarChart = useCallback(
         (xAxisData, dataAxis) => {
@@ -296,7 +290,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 value: '0.00',
                             });
                             sortProfitDataList.push({
-                                unit_key: Math.floor(lastYear) + (i + 1),
+                                unit_key: parseInt(lastYear) + (i + 1),
                                 value: '0.00',
                             });
                         }
@@ -316,8 +310,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 dataAxis.push(delMille(el.value));
             });
             let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
-            let newLatestProfitDate = dayjs().year();
-            let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || newLatestProfitDate));
+            let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || latestProfitDate));
             let [left, center, right] = [index - 5, index, index + 5];
             barOption.dataZoom[0].startValue = left;
             barOption.dataZoom[0].endValue = right;
@@ -391,27 +384,27 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={Style.flexRow}>
-                        {date.year() - 4 > startYear && (
-                            <TouchableOpacity onPress={subStract}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/prev.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                        <Text style={styles.yearDateText}>
-                            {date.year() - 4}~{date.year()}
-                        </Text>
-                        {date.year() < endYear && (
-                            <TouchableOpacity onPress={add}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/next.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    {isCalendar && (
+                        <View style={Style.flexRow}>
+                            {date.year() - 4 > startYear && (
+                                <TouchableOpacity onPress={subStract}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/prev.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            <Text style={styles.yearDateText}>{period}</Text>
+                            {date.year() + 4 < endYear && (
+                                <TouchableOpacity onPress={add}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/next.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
                 </View>
                 <>
                     {isHasData ? (
