@@ -42,8 +42,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: true,
-                animation: true, //设置动画效果
+                zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
+                throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
         xAxis: {

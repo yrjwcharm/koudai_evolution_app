@@ -49,10 +49,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: true,
-                // startValue: 0,
-                // endValue: 0,
-                // rangeMode: ['value', 'percent'], //rangeMode: ['value', 'percent']，表示 start 值取绝对数值，end 取百分比。
+                zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
                 throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],

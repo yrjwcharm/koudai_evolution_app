@@ -50,8 +50,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: false,
-                preventDefaultMouseMove: false,
+                zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
                 throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
@@ -75,7 +74,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 fontSize: 9,
                 align: 'left',
                 margin: 8,
-                interval: 29,
                 showMaxLabel: true,
             },
             axisLine: {
@@ -87,10 +85,16 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             data: [],
         },
         yAxis: {
+            // scale: true,
             boundaryGap: false,
             type: 'value',
+            // position: 'left',
+            // min: minVal, // 坐标轴刻度最小值。
+            // max: maxVal, // 坐标轴刻度最大值。
+            splitNumber: 5, // 坐标轴的分割段数，是一个预估值，实际显示会根据数据稍作调整。
+            // interval: interval, // 强制设置坐标轴分割间隔。
             axisLabel: {
-                show: false, // 不显示坐标轴上的文字
+                show: true, // 不显示坐标轴上的文字
                 // margin: 0,
             },
             splitLine: {
@@ -345,7 +349,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
-            console.log(sortProfitList);
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
+            // 计算坐标轴分割间隔
             let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || latestProfitDate));
             let [left, center, right] = [index - 15, index, index + 15];
             barOption.dataZoom[0].startValue = left;
