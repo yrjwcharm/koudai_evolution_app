@@ -50,8 +50,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: false,
-                preventDefaultMouseMove: false,
+                zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
                 throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
@@ -75,7 +74,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 fontSize: 9,
                 align: 'left',
                 margin: 8,
-                interval: 29,
                 showMaxLabel: true,
             },
             axisLine: {
@@ -87,8 +85,14 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             data: [],
         },
         yAxis: {
+            // scale: true,
             boundaryGap: false,
             type: 'value',
+            // position: 'left',
+            // min: minVal, // 坐标轴刻度最小值。
+            // max: maxVal, // 坐标轴刻度最大值。
+            splitNumber: 5, // 坐标轴的分割段数，是一个预估值，实际显示会根据数据稍作调整。
+            // interval: interval, // 强制设置坐标轴分割间隔。
             axisLabel: {
                 show: false, // 不显示坐标轴上的文字
                 // margin: 0,
@@ -300,7 +304,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     useEffect(() => {
         (async () => {
             if (isBarChart) {
-                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
@@ -334,7 +337,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
-                        myChart.current?.hideLoading();
                     }
                 }
             }
@@ -347,6 +349,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
+            // 计算坐标轴分割间隔
             let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || latestProfitDate));
             let [left, center, right] = [index - 15, index, index + 15];
             barOption.dataZoom[0].startValue = left;
@@ -366,6 +373,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             };
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
+            setSelCurDate(xAxisData[center]);
+            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -436,7 +445,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
@@ -444,11 +453,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let center = startValue + 15;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
-                        setSelCurDate(xAxisData[center]);
-                        setProfit(dataAxis[center]);
-                        setProfitDay(xAxisData[center]);
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff || 0);
+                        setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -509,9 +516,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
-                                    {renderBarChart(xAxisData, dataAxis)}
-                                </View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
                                 <View style={styles.separator} />
                             </View>
                         )}

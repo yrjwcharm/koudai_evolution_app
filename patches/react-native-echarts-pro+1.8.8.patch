@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-echarts-pro/index.d.ts b/node_modules/react-native-echarts-pro/index.d.ts
-index 8b14787..541404a 100644
+index 8b14787..e39ca19 100644
 --- a/node_modules/react-native-echarts-pro/index.d.ts
 +++ b/node_modules/react-native-echarts-pro/index.d.ts
 @@ -11,8 +11,11 @@ declare function RNEChartsPro(props: {
@@ -89,9 +89,18 @@ index 5ab341e..f7f90c3 100644
        props.legendSelectChanged?.(echartsData.name);
      } else if (echartsData.type === "tooltipEvent") {
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-index d232268..6e6034d 100644
+index d232268..2479a6c 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
+@@ -3,7 +3,7 @@
+  * Setting echarts width and height.
+  * Support dataZoom/legendselectchanged/click listener.
+  */
+-import { Platform, Dimensions } from "react-native";
++import { Platform, Dimensions,Alert, } from "react-native";
+ import getMapJSON from "./map/worldJson";
+ import toString from "../../util/toString";
+ const isiOS = Platform.OS === "ios";
 @@ -50,8 +50,19 @@ export default function renderChart(props) {
        window.ReactNativeWebView.postMessage(JSON.stringify(clickParams));
      });
@@ -118,10 +127,10 @@ index d232268..6e6034d 100644
              dispatchAction(option.action);
            }
 +          if(option.type==='showLoading'){
-+              myChart.showLoading(option.opt);
++              myChart?.showLoading(option.opt);
 +          }
 +           if(option.type==='hideLoading'){
-+              myChart.hideLoading();
++              myChart?.hideLoading();
 +          }
            // 获取实例进行操作
            if (option.type === "getInstance") {

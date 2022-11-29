@@ -49,10 +49,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         dataZoom: [
             {
                 type: 'inside',
-                zoomLock: true,
-                // startValue: 0,
-                // endValue: 0,
-                // rangeMode: ['value', 'percent'], //rangeMode: ['value', 'percent']，表示 start 值取绝对数值，end 取百分比。
+                zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
                 throttle: 100, //设置触发视图刷新的频率。单位为毫秒（ms）
             },
         ],
@@ -246,7 +243,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     useEffect(() => {
         (async () => {
             if (isBarChart) {
-                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'year').startOf('year');
                 const res = await getChartData({
                     type,
@@ -280,7 +276,6 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
-                        myChart.current?.hideLoading();
                     }
                 }
             }
@@ -315,6 +310,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             };
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
+            setSelCurDate(xAxisData[center]);
+            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -353,18 +350,16 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 6;
                         let curYear = dayjs(xAxisData[center]).year();
-                        setSelCurDate(xAxisData[center]);
-                        setProfit(dataAxis[center]);
-                        setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear || 0);
+                        setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -419,7 +414,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, dataAxis)}</View>
+                                <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData)}</View>
                                 <View style={styles.separator} />
                             </View>
                         )}
