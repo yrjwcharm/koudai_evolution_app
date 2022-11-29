@@ -6,15 +6,13 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Platform, StyleSheet, ScrollView, Text, TouchableOpacity, View, Image} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {px, delMille, compareDate, deviceWidth, isEmpty} from '../../../utils/appUtil';
+import {px, delMille, deviceWidth, isEmpty} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {getStyles} from './styles/getStyle';
 import RenderList from './components/RenderList';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-import {round} from 'mathjs';
-import axios from 'axios';
 const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
@@ -149,16 +147,22 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
 
                 if (unit_list.length > 0) {
-                    const [start, max] = unit_list[0].value.split('-');
+                    const [, max] = unit_list[0].value.split('-');
                     const [min] = unit_list[unit_list.length - 1].value.split('-');
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
                     let cur = dayjs_.year();
                     if (cur > max || cur < min) return;
-                    dayjs_.year() >= start && dayjs_.year() <= max
-                        ? setPeriod(unit_list[0].text)
-                        : setPeriod(unit_list[unit_list.length - 1].text);
+                    let period = '';
+                    for (let item of unit_list) {
+                        const [start, end] = item.value.split('-');
+                        if (dayjs_.year() >= start && dayjs_.year() <= end) {
+                            period = item.text;
+                            break;
+                        }
+                    }
+                    setPeriod(period);
                     let arr = profit_data_list
                         .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
                         .map((el) => {
@@ -380,25 +384,27 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={Style.flexRow}>
-                        {date.year() - 4 > startYear && (
-                            <TouchableOpacity onPress={subStract}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/prev.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                        <Text style={styles.yearDateText}>{period}</Text>
-                        {date.year() < endYear && (
-                            <TouchableOpacity onPress={add}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/next.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    {isCalendar && (
+                        <View style={Style.flexRow}>
+                            {date.year() - 4 > startYear && (
+                                <TouchableOpacity onPress={subStract}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/prev.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            <Text style={styles.yearDateText}>{period}</Text>
+                            {date.year() + 4 < endYear && (
+                                <TouchableOpacity onPress={add}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/next.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
                 </View>
                 <>
                     {isHasData ? (
