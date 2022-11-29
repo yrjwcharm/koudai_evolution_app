@@ -152,6 +152,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     setStartYear(min);
                     setEndYear(max);
                     setUnitList(unit_list);
+                    setDate(dayjs_);
                     let cur = dayjs_.year();
                     if (cur > max || cur < min) return;
                     let period = '';
@@ -172,7 +173,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             };
                         });
                     let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
-                    setDate(dayjs_);
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
@@ -229,11 +229,24 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     );
     const subStract = () => {
         setProfitDay('');
-        setDiff((diff) => diff - 5);
+        changeDiff(true);
     };
     const add = () => {
         setProfitDay('');
-        setDiff((diff) => diff + 5);
+        changeDiff(false);
+    };
+    const changeDiff = (isDecrease) => {
+        new Promise((resolve) => {
+            setDiff((diff) => {
+                isDecrease ? resolve(diff - 5) : resolve(diff + 5);
+                return isDecrease ? diff - 5 : diff + 5;
+            });
+        }).then((differ) => {
+            let curDate = dayjs().year();
+            let realDate = isDecrease ? startYear : endYear;
+            let diff = realDate - curDate;
+            isDecrease ? differ <= diff && setDiff(diff) : differ >= diff && setDiff(diff);
+        });
     };
     const renderBarChart = useCallback(
         (xAxisData, dataAxis) => {
@@ -384,27 +397,25 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    {isCalendar && (
-                        <View style={Style.flexRow}>
-                            {date.year() - 4 > startYear && (
-                                <TouchableOpacity onPress={subStract}>
-                                    <Image
-                                        style={{width: px(13), height: px(13)}}
-                                        source={require('../../../assets/img/icon/prev.png')}
-                                    />
-                                </TouchableOpacity>
-                            )}
-                            <Text style={styles.yearDateText}>{period}</Text>
-                            {date.year() + 4 < endYear && (
-                                <TouchableOpacity onPress={add}>
-                                    <Image
-                                        style={{width: px(13), height: px(13)}}
-                                        source={require('../../../assets/img/icon/next.png')}
-                                    />
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                    )}
+                    <View style={Style.flexRow}>
+                        {date.year() > startYear && (
+                            <TouchableOpacity onPress={subStract}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../assets/img/icon/prev.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        <Text style={styles.yearDateText}>{period}</Text>
+                        {date.year() < endYear && (
+                            <TouchableOpacity onPress={add}>
+                                <Image
+                                    style={{width: px(13), height: px(13)}}
+                                    source={require('../../../assets/img/icon/next.png')}
+                                />
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
                 <>
                     {isHasData ? (
