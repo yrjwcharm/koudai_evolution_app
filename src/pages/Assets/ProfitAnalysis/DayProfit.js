@@ -345,6 +345,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            console.log(sortProfitList);
             let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || latestProfitDate));
             let [left, center, right] = [index - 15, index, index + 15];
             barOption.dataZoom[0].startValue = left;
@@ -364,6 +365,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             };
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
+            setSelCurDate(xAxisData[center]);
+            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -442,11 +445,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let center = startValue + 15;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
-                        setSelCurDate(xAxisData[center]);
-                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diff = dayjs(realDate).diff(curDate, 'month');
-                        setDiff(-diff);
+                        setDiff(-diff || 0);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}

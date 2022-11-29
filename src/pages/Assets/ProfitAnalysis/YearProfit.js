@@ -257,8 +257,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 5;
                         let curYear = xAxisData[center];
-                        setSelCurYear(xAxisData[center]);
-                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear);
@@ -341,6 +339,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             };
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
+            setSelCurYear(xAxisData[center]);
+            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {

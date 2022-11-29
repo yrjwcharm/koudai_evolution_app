@@ -313,6 +313,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             };
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
+            setSelCurDate(xAxisData[center]);
+            setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -362,7 +364,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
-                        setDiff(-diffYear);
+                        setDiff(-diffYear || 0);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
