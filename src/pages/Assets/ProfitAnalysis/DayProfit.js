@@ -437,7 +437,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
@@ -445,9 +445,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let center = startValue + 15;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
-                        setProfitDay(xAxisData[center]);
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff || 0);
+                        setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -508,9 +508,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
-                                    {renderBarChart(xAxisData, dataAxis)}
-                                </View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
                                 <View style={styles.separator} />
                             </View>
                         )}

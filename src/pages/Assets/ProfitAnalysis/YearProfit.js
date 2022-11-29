@@ -250,16 +250,16 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         });
     };
     const renderBarChart = useCallback(
-        (xAxisData, dataAxis) => {
+        (xAxisData) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 5;
                         let curYear = xAxisData[center];
-                        setProfitDay(xAxisData[center]);
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear);
+                        setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
@@ -442,7 +442,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                             <Text style={styles.date}>{selCurYear}</Text>
                                         </View>
                                     </View>
-                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData, dataAxis)}</View>
+                                    <View style={{marginTop: px(15)}}>{renderBarChart(xAxisData)}</View>
                                     <View style={styles.separator} />
                                 </View>
                             )}
