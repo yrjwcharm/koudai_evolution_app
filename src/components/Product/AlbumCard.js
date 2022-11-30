@@ -114,6 +114,7 @@ const Index = ({
     subject_id,
     bottom_btns,
     show_mask,
+    top_comment,
 }) => {
     const jump = useJump();
     const [active, setActive] = useState(0);
@@ -189,21 +190,26 @@ const Index = ({
                         <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
-                {true ? (
+                {top_comment ? (
                     <View style={styles.commentWrap}>
-                        <TouchableOpacity activeOpacity={0.7} style={styles.commentMain} onPress={() => {}}>
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={styles.commentMain}
+                            onPress={() => {
+                                jump(header?.url);
+                            }}>
                             <Image
                                 style={styles.commentAvatar}
                                 source={{
-                                    uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/11/WechatIMG8.jpeg',
+                                    uri: top_comment.avatar,
                                 }}
                             />
                             <View style={styles.commentRight}>
-                                <Text style={styles.commentName}>趋势吃鸡：</Text>
+                                <Text style={styles.commentName}>{top_comment.nickname}</Text>
                                 <View style={{marginTop: px(2), flexDirection: 'row'}}>
                                     <Image source={quotes} style={styles.commentIcon} />
                                     <Text style={styles.commentContent} numberOfLines={2}>
-                                        精选评论区域，最多显示两行，瞄准医疗、新能源、消费，准备开抢！跌多少买多少精选评论区域，最多显示两行，瞄准医疗、新能源、消费，准备开抢！跌多少买多少
+                                        {top_comment.content}
                                     </Text>
                                 </View>
                             </View>

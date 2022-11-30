@@ -10,7 +10,7 @@ import {WebView} from 'react-native-webview';
 import {useJump} from '~/components/hooks';
 import Storage from '~/utils/storage';
 import {useFocusEffect} from '@react-navigation/native';
-import Loading from '../components/PageLoading';
+import Loading from '../Portfolio/components/PageLoading';
 import URI from 'urijs';
 
 const Popularize = ({route}) => {
