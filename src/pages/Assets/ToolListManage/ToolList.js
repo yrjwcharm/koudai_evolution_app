@@ -91,9 +91,6 @@ const ToolList = ({route}) => {
             } else {
                 global.LogTool('icon_click', item?.text, item.tool_id);
             }
-            // item.url.params.fund_code = fund_code;
-            // item.url.params.poid = poid;
-            console.log(444, item);
             jump(item.url);
             return;
         }
@@ -118,7 +115,6 @@ const ToolList = ({route}) => {
             } else {
                 global.LogTool('icon_click', item?.text, item.tool_id);
             }
-            console.log(333, item);
             !isEditState && jump(item.url);
             return;
         }
