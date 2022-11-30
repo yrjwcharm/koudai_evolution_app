@@ -314,6 +314,7 @@ import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'
 import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // 专题草稿
 import RichTextInputPage from '~/pages/CreatorCenter/Special/Modify/RichTextInputPage'; // 富文本编辑
 import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机构
+import Popularize from '~/pages/Popularize'; // 产品推广
 
 const Stack = createStackNavigator();
 
@@ -1309,6 +1310,7 @@ export default function AppStack() {
                     }}
                 />
                 <Stack.Screen name="AdvisorTransfer" component={AdvisorTransfer} options={{headerShown: false}} />
+                <Stack.Screen name="Popularize" component={Popularize} options={{headerShown: false}} />
             </Stack.Navigator>
         </>
     );

@@ -11,6 +11,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
+import quotes from '~/assets/img/quotes.png';
 
 const AlbumHeader = ({
     data: {bg_color, bg_img, bg_linear = false, desc, desc_icon, icon, title, title_desc, title_tag, url} = {},
@@ -188,6 +189,27 @@ const Index = ({
                         <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
+                {true ? (
+                    <View style={styles.commentWrap}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.commentMain} onPress={() => {}}>
+                            <Image
+                                style={styles.commentAvatar}
+                                source={{
+                                    uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/11/WechatIMG8.jpeg',
+                                }}
+                            />
+                            <View style={styles.commentRight}>
+                                <Text style={styles.commentName}>趋势吃鸡：</Text>
+                                <View style={{marginTop: px(2), flexDirection: 'row'}}>
+                                    <Image source={quotes} style={styles.commentIcon} />
+                                    <Text style={styles.commentContent} numberOfLines={2}>
+                                        精选评论区域，最多显示两行，瞄准医疗、新能源、消费，准备开抢！跌多少买多少精选评论区域，最多显示两行，瞄准医疗、新能源、消费，准备开抢！跌多少买多少
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                ) : null}
                 {bottom_btns?.map?.((btn, idx) => (
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -306,6 +328,44 @@ const styles = StyleSheet.create({
     tagText: {
         fontSize: px(10),
         lineHeight: px(14),
+    },
+    commentWrap: {
+        borderTopColor: '#E9EAEF',
+        borderTopWidth: StyleSheet.hairlineWidth,
+        paddingVertical: px(12),
+    },
+    commentMain: {
+        padding: px(8),
+        borderRadius: px(4),
+        backgroundColor: '#F5F6F8',
+        flexDirection: 'row',
+    },
+    commentAvatar: {
+        width: px(30),
+        height: px(30),
+        borderRadius: px(30),
+    },
+    commentRight: {
+        flex: 1,
+        marginLeft: px(8),
+    },
+    commentName: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#545968',
+    },
+    commentContent: {
+        flex: 1,
+        marginRight: px(4),
+        marginLeft: px(3),
+        fontSize: px(11),
+        lineHeight: px(16),
+        color: '#121D3A',
+    },
+    commentIcon: {
+        marginTop: px(3),
+        width: px(8),
+        height: px(8),
     },
 });
 
