@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '~/utils/appUtil';
@@ -7,6 +7,7 @@ import {useJump} from '~/components/hooks';
 import {useSelector} from 'react-redux';
 import {copilot, CopilotStep, walkthroughable} from 'react-native-copilot';
 import {useIsFocused} from '@react-navigation/native';
+import {Colors} from '~/common/commonStyle';
 const CopilotView = walkthroughable(View);
 
 const SubscribeManage = ({start}) => {
@@ -100,7 +101,7 @@ const SubscribeManage = ({start}) => {
                 ) : null}
             </View>
             <View style={{marginTop: px(12)}} />
-            <ScrollView style={{flex: 1}} scrollIndicatorInsets={{right: 1}} ref={scrollViewRef}>
+            <ScrollView bounces={false} style={{flex: 1}} scrollIndicatorInsets={{right: 1}} ref={scrollViewRef}>
                 <View>
                     <CopilotStep order={0} name="all">
                         <CopilotView key={-1} style={[styles.switchCell]}>
@@ -190,6 +191,7 @@ export default copilot({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.bgColor,
     },
     topHintWrap: {
         paddingVertical: px(12),

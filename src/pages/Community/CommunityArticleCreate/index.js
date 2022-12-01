@@ -433,8 +433,8 @@ const Index = ({navigation, route, setLoading}) => {
     const [article, setArticle] = useState({}); // content 文章内容 tags 文章标签 title 文章标题
 
     const canPublish = useMemo(() => {
-        const {content, tags, title} = article;
-        return content?.length > 0 && tags?.length > 0 && title?.length > 0 ? true : false;
+        const {content, title} = article;
+        return content?.length > 0 && title?.length > 0 ? true : false;
     }, [article]);
 
     const renderRight = () => {

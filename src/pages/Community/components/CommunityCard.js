@@ -22,6 +22,7 @@ import video from '~/assets/img/vision/video.png';
 import videoPlay from '~/assets/img/icon/videoPlay.png';
 import zan from '~/assets/animation/zan16.json';
 import zanActive from '~/assets/animation/zan16Active.json';
+import zanImg from '~/assets/img/icon/zan.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {useJump} from '~/components/hooks';
@@ -156,7 +157,8 @@ export const CommunityCard = (props) => {
         media_duration, // 媒体时长
         can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
-        product_type, // "article_history" 不展示底部操作按钮
+        product_type, // "article_history"或"community" 不展示底部操作按钮
+        rec_json = '',
         relation_type,
         reserved, // 直播是否已预约
         right_desc, // 直播时间或观看人数
@@ -168,7 +170,7 @@ export const CommunityCard = (props) => {
         url, // 跳转地址
     } = props.data || {};
     const {
-        isRecommend = false, // 是否推荐卡片
+        cardType = 'list', // 卡片类型 list代表列表卡片 waterflow代表瀑布流卡片
         onDelete, //移除作品
         style, // 自定义样式
     } = props;
@@ -302,7 +304,7 @@ export const CommunityCard = (props) => {
 
     return (
         <>
-            <View style={[isRecommend ? {} : styles.communityCard, style]}>
+            <View style={[cardType === 'waterflow' ? {} : styles.communityCard, style]}>
                 {can_delete && (
                     <TouchableOpacity
                         style={[styles.cardDelete, Style.flexRow]}
@@ -316,10 +318,10 @@ export const CommunityCard = (props) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        global.LogTool({event: 'content', oid: id});
+                        global.LogTool({event: rec_json ? 'rec_click' : 'content', oid: id, rec_json});
                         jump(url);
                     }}>
-                    {isRecommend ? null : (
+                    {cardType === 'waterflow' ? null : (
                         <>
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -354,29 +356,80 @@ export const CommunityCard = (props) => {
                             media_duration={media_duration}
                             right_desc={right_desc}
                             style={
-                                isRecommend
+                                cardType === 'waterflow'
                                     ? {width: (deviceWidth - 3 * px(5)) / 2}
                                     : {...styles.followCover, width: play_mode === 2 ? '100%' : px(180)}
                             }
                             type={type}
                             type_str={type_str}
                             width={
-                                isRecommend
+                                cardType === 'waterflow'
                                     ? (deviceWidth - 3 * px(5)) / 2
                                     : play_mode === 2
                                     ? deviceWidth - 2 * Space.padding - 2 * px(12)
                                     : px(180)
                             }
                         />
-                    ) : isRecommend ? (
+                    ) : cardType === 'waterflow' ? (
                         <Image
                             source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/contentBg.png'}}
                             style={styles.contentBg}
                         />
                     ) : null}
+                    {cardType === 'waterflow' ? (
+                        <View style={{padding: px(10), paddingBottom: px(12)}}>
+                            {title ? <HTML html={title} numberOfLines={2} style={styles.subTitle} /> : null}
+                            {desc ? (
+                                <HTML
+                                    html={desc}
+                                    nativeProps={{containerStyle: {marginTop: px(8)}}}
+                                    numberOfLines={4}
+                                    style={styles.desc}
+                                />
+                            ) : null}
+                            {author?.nickname ? (
+                                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        disabled={!author.url}
+                                        onPress={() => jump(author.url)}
+                                        style={Style.flexRow}>
+                                        {author?.avatar ? (
+                                            type === 9 && live_status === 2 ? (
+                                                <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
+                                            ) : (
+                                                <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
+                                            )
+                                        ) : null}
+                                        <Text numberOfLines={1} style={[styles.smText, {maxWidth: px(88)}]}>
+                                            {author.nickname}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {live_status === 1 && button?.text ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            disabled={isReserved}
+                                            onPress={onReserve}
+                                            style={[
+                                                styles.applyBtn,
+                                                {borderColor: isReserved ? Colors.lightGrayColor : Colors.brandColor},
+                                            ]}>
+                                            <Text
+                                                style={[
+                                                    styles.desc,
+                                                    {color: isReserved ? Colors.lightGrayColor : Colors.brandColor},
+                                                ]}>
+                                                {isReserved ? '已预约' : button.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </View>
+                            ) : null}
+                        </View>
+                    ) : null}
                 </TouchableOpacity>
                 {/* 评论 */}
-                {comment_info && !isRecommend && (
+                {comment_info && cardType === 'list' && (
                     <View style={{padding: px(8), backgroundColor: '#F5F6F8', borderRadius: px(6), marginTop: px(9)}}>
                         <View style={Style.flexBetween}>
                             <TouchableOpacity
@@ -393,7 +446,7 @@ export const CommunityCard = (props) => {
                                 <Text style={[styles.smText, {fontFamily: Font.numRegular}]}>
                                     {comment_info?.favor_num}
                                 </Text>
-                                <Image source={zan} style={{width: px(16), height: px(16), marginLeft: px(4)}} />
+                                <Image source={zanImg} style={{width: px(15), height: px(15), marginLeft: px(4)}} />
                             </View>
                         </View>
                         <Text
@@ -407,53 +460,7 @@ export const CommunityCard = (props) => {
                         </Text>
                     </View>
                 )}
-                {isRecommend ? (
-                    <View style={{padding: px(10), paddingBottom: px(12)}}>
-                        {title ? <HTML html={title} numberOfLines={2} style={styles.subTitle} /> : null}
-                        {desc ? (
-                            <HTML
-                                html={desc}
-                                nativeProps={{containerStyle: {marginTop: px(8)}}}
-                                numberOfLines={4}
-                                style={styles.desc}
-                            />
-                        ) : null}
-                        {author?.nickname ? (
-                            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                                <View style={Style.flexRow}>
-                                    {author?.avatar ? (
-                                        type === 9 && live_status === 2 ? (
-                                            <AnimateAvatar source={author.avatar} style={styles.recommendAvatar} />
-                                        ) : (
-                                            <Image source={{uri: author.avatar}} style={styles.recommendAvatar} />
-                                        )
-                                    ) : null}
-                                    <Text numberOfLines={1} style={[styles.smText, {maxWidth: px(88)}]}>
-                                        {author.nickname}
-                                    </Text>
-                                </View>
-                                {live_status === 1 && button?.text ? (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        disabled={isReserved}
-                                        onPress={onReserve}
-                                        style={[
-                                            styles.applyBtn,
-                                            {borderColor: isReserved ? Colors.lightGrayColor : Colors.brandColor},
-                                        ]}>
-                                        <Text
-                                            style={[
-                                                styles.desc,
-                                                {color: isReserved ? Colors.lightGrayColor : Colors.brandColor},
-                                            ]}>
-                                            {isReserved ? '已预约' : button.text}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </View>
-                        ) : null}
-                    </View>
-                ) : type === 9 ? (
+                {cardType === 'waterflow' ? null : type === 9 ? (
                     button?.text && live_status === 1 ? (
                         // 直播预约按钮
                         <View style={[Style.flexBetween, styles.applyBox]}>
@@ -477,7 +484,7 @@ export const CommunityCard = (props) => {
                         </View>
                     ) : null
                 ) : // 卡片底部分享、收藏、评论和点赞
-                product_type === 'article_history' ? null : (
+                ['article_history', 'community'].includes(product_type) ? null : (
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -522,7 +529,7 @@ export const CommunityCard = (props) => {
                     </View>
                 )}
             </View>
-            {share_info && !isRecommend ? (
+            {share_info && cardType === 'list' ? (
                 <ShareModal
                     ref={shareModal}
                     shareCallback={(share_to) => onBottomOps('share', {share_to})}

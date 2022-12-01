@@ -21,6 +21,8 @@ import WaterFlow from 'react-native-waterflow-list';
 import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native';
 import close from '~/assets/img/icon/close.png';
 import live from '~/assets/img/vision/live.gif';
+import listIcon from '~/assets/img/community/list.png';
+import waterflowIcon from '~/assets/img/community/waterflow.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import AnimateAvatar from '~/components/AnimateAvatar';
 import {Button} from '~/components/Button';
@@ -44,7 +46,7 @@ import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {cloneDeep, debounce, groupBy, isEqual, sortBy} from 'lodash';
 
 /** @name 社区头部 */
-const Header = ({active, isLogin, message_url, search_url, setActive, tabs, userInfo = {}}) => {
+const Header = ({active, isLogin, message_url, refresh, search_url, setActive, tabs, userInfo = {}}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const {url, user: {avatar} = {}} = userInfo;
@@ -73,19 +75,20 @@ const Header = ({active, isLogin, message_url, search_url, setActive, tabs, user
             </TouchableOpacity>
             <View style={Style.flexRow}>
                 {tabs?.map((tab, i) => {
-                    const {name, type} = tab;
+                    const {has_news, name, type} = tab;
                     return (
                         <TouchableOpacity
-                            activeOpacity={0.8}
-                            disabled={active === i}
+                            activeOpacity={active === i ? 1 : 0.8}
                             key={type}
                             onPress={() => {
                                 global.LogTool({event: `${type}_click`});
                                 if (type === 'follow' && !isLogin) jump({path: 'Register', type: 1});
                                 else setActive(i);
+                                active === i && refresh?.();
                             }}
                             style={{marginLeft: i === 0 ? px(30) : px(20)}}>
                             <Text style={[styles.headerTabText, active === i ? styles.activeTabText : {}]}>{name}</Text>
+                            {has_news && <View style={styles.redPoint} />}
                         </TouchableOpacity>
                     );
                 })}
@@ -254,19 +257,68 @@ const RecommendFollow = forwardRef(({refresh}, ref) => {
     ) : null;
 });
 
+/** @name 渲染头部 */
+const renderHeader = (jump, list) => {
+    return list?.length > 0 ? (
+        <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
+            <View style={[Style.flexRow, styles.followedList]}>
+                {list.map((item, index) => {
+                    const {avatar, item_id, live_status, name, url} = item;
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={name + index}
+                            onPress={() => {
+                                item_id === 0 && global.LogTool({event: 'follow_whole'});
+                                jump(url);
+                            }}
+                            style={[
+                                Style.flexCenter,
+                                index > 0 ? {width: px(62)} : {},
+                                {marginLeft: index === 0 ? 0 : index === 1 ? px(29) : px(18)},
+                            ]}>
+                            <View>
+                                {live_status === 2 ? (
+                                    <>
+                                        <AnimateAvatar source={avatar} style={styles.followedAvatar} />
+                                        <View style={styles.liveIcon}>
+                                            <Image source={live} style={{width: px(12), height: px(12)}} />
+                                        </View>
+                                    </>
+                                ) : (
+                                    <Image
+                                        source={{
+                                            uri: avatar,
+                                        }}
+                                        style={styles.followedAvatar}
+                                    />
+                                )}
+                            </View>
+                            <Text numberOfLines={1} style={[styles.desc, {marginTop: px(8), maxWidth: px(70)}]}>
+                                {name}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+        </ScrollView>
+    ) : null;
+};
+
 /** @name 关注 */
-const Follow = forwardRef(({list = []}, ref) => {
+const Follow = forwardRef(({list = [], tabs = []}, ref) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [current, setCurrent] = useState(0);
     const flatList = useRef();
     const followedList = useRef(list);
     const logedPage = useRef([]);
 
     const init = () => {
-        getFollowedData({page})
+        getFollowedData({page, type: current})
             .then((res) => {
                 if (res.code === '000000') {
                     const {has_more, list: _list} = res.result;
@@ -289,54 +341,6 @@ const Follow = forwardRef(({list = []}, ref) => {
     const onEndReached = ({distanceFromEnd}) => {
         if (distanceFromEnd < 0) return false;
         if (hasMore) setPage((p) => p + 1);
-    };
-
-    /** @name 渲染头部 */
-    const renderHeader = () => {
-        return (
-            <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false}>
-                <View style={[Style.flexRow, styles.followedList]}>
-                    {list.map((item, index) => {
-                        const {avatar, item_id, live_status, name, url} = item;
-                        return (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                key={name + index}
-                                onPress={() => {
-                                    item_id === 0 && global.LogTool({event: 'follow_whole'});
-                                    jump(url);
-                                }}
-                                style={[
-                                    Style.flexCenter,
-                                    index > 0 ? {width: px(62)} : {},
-                                    {marginLeft: index === 0 ? 0 : index === 1 ? px(29) : px(18)},
-                                ]}>
-                                <View>
-                                    {live_status === 2 ? (
-                                        <>
-                                            <AnimateAvatar source={avatar} style={styles.followedAvatar} />
-                                            <View style={styles.liveIcon}>
-                                                <Image source={live} style={{width: px(12), height: px(12)}} />
-                                            </View>
-                                        </>
-                                    ) : (
-                                        <Image
-                                            source={{
-                                                uri: avatar,
-                                            }}
-                                            style={styles.followedAvatar}
-                                        />
-                                    )}
-                                </View>
-                                <Text numberOfLines={1} style={[styles.desc, {marginTop: px(8), maxWidth: px(70)}]}>
-                                    {name}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </ScrollView>
-        );
     };
 
     /** @name 渲染底部 */
@@ -365,197 +369,245 @@ const Follow = forwardRef(({list = []}, ref) => {
 
     useEffect(() => {
         init();
-    }, [page]);
+    }, [current, page]);
 
     useEffect(() => {
         global.LogTool({event: 'follow'});
     }, []);
 
     return (
-        <FlatList
-            data={data}
-            initialNumToRender={20}
-            keyExtractor={(item, index) => item.title + item.id + index}
-            ListEmptyComponent={() => (!refreshing ? <EmptyTip /> : null)}
-            ListFooterComponent={renderFooter}
-            ListHeaderComponent={renderHeader}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.99}
-            onLayout={() => {
-                global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: 1});
-                logedPage.current.push(1);
-            }}
-            onRefresh={() => (page > 1 ? setPage(1) : init())}
-            onScroll={({
-                nativeEvent: {
-                    contentOffset: {y},
-                    layoutMeasurement: {height},
-                },
-            }) => {
-                const screen = Math.floor(y / height) + 1;
-                if (screen > 1 && !logedPage.current.includes(screen)) {
-                    global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: screen});
-                    logedPage.current.push(screen);
-                }
-            }}
-            ref={flatList}
-            refreshing={refreshing}
-            renderItem={({item, index}) => (
-                <CommunityCard
-                    data={item}
-                    style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
-                />
-            )}
-            scrollIndicatorInsets={{right: 1}}
-        />
+        <>
+            <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
+                <View style={[Style.flexRow, {paddingVertical: px(8), paddingHorizontal: Space.padding}]}>
+                    {tabs?.map((tab, i) => {
+                        const {name, type} = tab;
+                        const isActive = current === type;
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                disabled={isActive}
+                                key={name + type}
+                                onPress={() => {
+                                    flatList.current?.scrollToOffset({animated: false, offset: 0});
+                                    setCurrent(type);
+                                    setPage(1);
+                                    setRefreshing(true);
+                                }}
+                                style={[
+                                    styles.recommendTab,
+                                    {
+                                        marginLeft: i === 0 ? 0 : px(8),
+                                        backgroundColor: isActive ? Colors.brandColor : '#fff',
+                                    },
+                                ]}>
+                                <Text
+                                    style={[
+                                        styles.smText,
+                                        {
+                                            color: isActive ? '#fff' : Colors.defaultColor,
+                                            fontWeight: isActive ? Font.weightMedium : '400',
+                                        },
+                                    ]}>
+                                    {name}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            </ScrollView>
+            <FlatList
+                data={data}
+                initialNumToRender={20}
+                keyExtractor={(item, index) => item.title + item.id + index}
+                ListEmptyComponent={() => (!refreshing ? <EmptyTip /> : null)}
+                ListFooterComponent={renderFooter}
+                ListHeaderComponent={() => renderHeader(jump, list)}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.99}
+                onLayout={() => {
+                    global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: 1});
+                    logedPage.current.push(1);
+                }}
+                onRefresh={() => (page > 1 ? setPage(1) : init())}
+                onScroll={({
+                    nativeEvent: {
+                        contentOffset: {y},
+                        layoutMeasurement: {height},
+                    },
+                }) => {
+                    const screen = Math.floor(y / height) + 1;
+                    if (screen > 1 && !logedPage.current.includes(screen)) {
+                        global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: screen});
+                        logedPage.current.push(screen);
+                    }
+                }}
+                ref={flatList}
+                refreshing={refreshing}
+                renderItem={({item, index}) => (
+                    <CommunityCard
+                        data={item}
+                        style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
+                    />
+                )}
+                scrollIndicatorInsets={{right: 1}}
+                style={{flex: 1}}
+            />
+        </>
     );
 });
 
 /** @name 推荐瀑布流列表 */
-export const WaterfallFlowList = forwardRef(({getData = () => {}, params, wrapper, ...rest}, ref) => {
-    const jump = useJump();
-    const [refreshing, setRefreshing] = useState(true);
-    const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const waterfallFlow = useRef();
-    const waterfallWrapper = useRef();
-    const [resource_private_tip, setTip] = useState('');
-    const [loading, setLoading] = useState(true);
-    const logedPage = useRef([]);
-    const waterfallFlowHeight = useRef(0);
+export const WaterfallFlowList = forwardRef(
+    ({getData = () => {}, listType = 'waterflow', params, wrapper, ...rest}, ref) => {
+        const [refreshing, setRefreshing] = useState(true);
+        const [data, setData] = useState([]);
+        const [page, setPage] = useState(1);
+        const [hasMore, setHasMore] = useState(true);
+        const waterfallFlow = useRef();
+        const waterfallWrapper = useRef();
+        const [resource_private_tip, setTip] = useState('');
+        const [loading, setLoading] = useState(true);
+        const logedPage = useRef([]);
+        const waterfallFlowHeight = useRef(0);
 
-    const init = () => {
-        getData({...params, page})
-            .then((res) => {
-                if (res.code === '000000') {
-                    const {has_more, items = [], resource_private_tip: tip} = res.result;
-                    setHasMore(has_more);
-                    page === 1 && waterfallWrapper.current?.clear?.();
-                    setData((prev) => (page === 1 ? items : prev.concat(items)));
-                    tip && setTip(tip);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-                setRefreshing(false);
-            });
-    };
-
-    const refresh = () => {
-        waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
-        setRefreshing(true);
-        page > 1 ? setPage(1) : init();
-    };
-
-    const renderItem = ({item = {}}) => {
-        const {id, rec_json, url} = item;
-        return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                    global.LogTool({event: rec_json ? 'rec_click' : 'content', oid: id, rec_json});
-                    jump(url);
-                }}
-                style={styles.waterfallFlowItem}>
-                <CommunityCard data={item} isRecommend />
-            </TouchableOpacity>
-        );
-    };
-
-    /** @name 上拉加载 */
-    const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) return false;
-        if (hasMore) setPage((p) => p + 1);
-    };
-
-    /** @name 渲染底部 */
-    const renderFooter = () => {
-        return data?.length > 0 && !refreshing ? (
-            <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
-                {hasMore ? '正在加载...' : '我们是有底线的...'}
-            </Text>
-        ) : null;
-    };
-
-    const onViewableItemsChanged = useCallback(({viewableItems: items, changed}) => {
-        changed?.forEach(({isViewable, item: {id, rec_json}}) => {
-            isViewable && rec_json && global.LogTool({event: 'rec_show', oid: id, rec_json});
-        });
-    }, []);
-
-    useImperativeHandle(ref, () => ({refresh}));
-
-    useEffect(() => {
-        init();
-    }, [page]);
-
-    return data?.length > 0 ? (
-        <WaterFlow
-            columnFlatListProps={{
-                onViewableItemsChanged,
-                style: {marginHorizontal: px(5) / 2, top: -px(5)},
-            }}
-            columnsFlatListProps={{
-                ListFooterComponent: renderFooter,
-                onEndReached,
-                onEndReachedThreshold: 0.05,
-                onLayout: ({
-                    nativeEvent: {
-                        layout: {height},
-                    },
-                }) => {
-                    waterfallFlowHeight.current = height;
-                    wrapper === 'Recommend' && global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: 1});
-                    logedPage.current.push(1);
-                },
-                onRefresh: () => {
-                    setRefreshing(true);
-                    page > 1 ? setPage(1) : init();
-                },
-                _onScroll: (e) => {
-                    if (wrapper === 'Recommend') {
-                        const {
-                            contentOffset: {y},
-                        } = e.nativeEvent;
-                        const screen = Math.floor(y / waterfallFlowHeight.current) + 1;
-                        if (screen > 1 && !logedPage.current.includes(screen)) {
-                            global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: screen});
-                            logedPage.current.push(screen);
-                        }
+        const init = () => {
+            getData({...params, page})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        const {has_more, items = [], resource_private_tip: tip} = res.result;
+                        setHasMore(has_more);
+                        page === 1 && waterfallWrapper.current?.clear?.();
+                        setData((prev) => (page === 1 ? items : prev.concat(items)));
+                        tip && setTip(tip);
                     }
-                },
-                ref: waterfallFlow,
-                refreshing,
-                style: {paddingHorizontal: px(5) / 2, backgroundColor: Colors.bgColor},
-                ...rest,
-            }}
-            data={data}
-            keyForItem={(item) => item.title + item.id}
-            numColumns={2}
-            ref={waterfallWrapper}
-            renderItem={renderItem}
-        />
-    ) : (
-        <View style={wrapper === 'Recommend' ? [Style.flexCenter, {flex: 1}] : {paddingTop: px(280)}}>
-            {loading ? (
-                <ActivityIndicator color={'#ddd'} />
-            ) : (
-                <EmptyTip
-                    style={wrapper === 'Recommend' ? {paddingTop: 0} : {}}
-                    text={resource_private_tip || '暂无数据'}
+                })
+                .finally(() => {
+                    setLoading(false);
+                    setRefreshing(false);
+                });
+        };
+
+        const refresh = () => {
+            waterfallFlow.current?.scrollToOffset?.({animated: false, offset: 0});
+            setRefreshing(true);
+            page > 1 ? setPage(1) : init();
+        };
+
+        const renderItem = ({item = {}, index}) => {
+            return (
+                <CommunityCard
+                    cardType={listType}
+                    data={item}
+                    style={
+                        listType === 'list'
+                            ? {marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}
+                            : styles.waterfallFlowItem
+                    }
                 />
-            )}
-        </View>
-    );
-});
+            );
+        };
+
+        /** @name 上拉加载 */
+        const onEndReached = ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) return false;
+            if (hasMore) setPage((p) => p + 1);
+        };
+
+        /** @name 渲染底部 */
+        const renderFooter = () => {
+            return data?.length > 0 && !refreshing ? (
+                <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
+                    {hasMore ? '正在加载...' : '我们是有底线的...'}
+                </Text>
+            ) : null;
+        };
+
+        const onViewableItemsChanged = useCallback(({viewableItems: items, changed}) => {
+            changed?.forEach(({isViewable, item: {id, rec_json}}) => {
+                isViewable && rec_json && global.LogTool({event: 'rec_show', oid: id, rec_json});
+            });
+        }, []);
+
+        useImperativeHandle(ref, () => ({refresh}));
+
+        useEffect(() => {
+            init();
+        }, [page]);
+
+        return data?.length > 0 ? (
+            <WaterFlow
+                columnFlatListProps={{
+                    onViewableItemsChanged,
+                    style: {
+                        marginHorizontal: listType === 'list' ? 0 : px(5) / 2,
+                        top: listType === 'list' ? 0 : -px(5),
+                    },
+                }}
+                columnsFlatListProps={{
+                    ListFooterComponent: renderFooter,
+                    onEndReached,
+                    onEndReachedThreshold: 0.05,
+                    onLayout: ({
+                        nativeEvent: {
+                            layout: {height},
+                        },
+                    }) => {
+                        waterfallFlowHeight.current = height;
+                        wrapper === 'Recommend' &&
+                            global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: 1});
+                        logedPage.current.push(1);
+                    },
+                    onRefresh: () => {
+                        setRefreshing(true);
+                        page > 1 ? setPage(1) : init();
+                    },
+                    _onScroll: (e) => {
+                        if (wrapper === 'Recommend') {
+                            const {
+                                contentOffset: {y},
+                            } = e.nativeEvent;
+                            const screen = Math.floor(y / waterfallFlowHeight.current) + 1;
+                            if (screen > 1 && !logedPage.current.includes(screen)) {
+                                global.LogTool({ctrl: 'recommend', event: 'community_browsing', oid: screen});
+                                logedPage.current.push(screen);
+                            }
+                        }
+                    },
+                    ref: waterfallFlow,
+                    refreshing,
+                    style: {paddingHorizontal: listType === 'list' ? 0 : px(5) / 2, backgroundColor: Colors.bgColor},
+                    ...rest,
+                }}
+                data={data}
+                key={listType}
+                keyForItem={(item) => item.title + item.id}
+                numColumns={listType === 'list' ? 1 : 2}
+                ref={waterfallWrapper}
+                renderItem={renderItem}
+            />
+        ) : (
+            <View style={wrapper === 'Recommend' ? [Style.flexCenter, {flex: 1}] : {paddingTop: px(280)}}>
+                {loading ? (
+                    <ActivityIndicator color={'#ddd'} />
+                ) : (
+                    <EmptyTip
+                        style={wrapper === 'Recommend' ? {paddingTop: 0} : {}}
+                        text={resource_private_tip || '暂无数据'}
+                    />
+                )}
+            </View>
+        );
+    }
+);
 
 /** @name 推荐 */
-const Recommend = forwardRef(({tabs = []}, ref) => {
+const Recommend = forwardRef(({list = [], tabs = []}, ref) => {
     const route = useRoute();
+    const jump = useJump();
     const {init_type = 0} = route.params || {};
     const store = useStore();
     const [current, setCurrent] = useState(init_type);
+    const [listType, setListType] = useState('waterflow');
     const scrollTab = useRef();
     const recommendList = useRef([]);
     const userInfo = useRef();
@@ -584,39 +636,50 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
 
     return (
         <>
-            <View style={[Style.flexRow, {paddingTop: px(8), paddingHorizontal: Space.padding}]}>
-                {tabs?.map((tab, i) => {
-                    const {name, type} = tab;
-                    const isActive = current === i;
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            disabled={isActive}
-                            key={name + type}
-                            onPress={() => {
-                                global.LogTool({event: 'recommend_content', oid: type});
-                                scrollTab.current.goToPage(i);
-                            }}
-                            style={[
-                                styles.recommendTab,
-                                {
-                                    marginLeft: i === 0 ? 0 : px(8),
-                                    backgroundColor: isActive ? Colors.brandColor : '#fff',
-                                },
-                            ]}>
-                            <Text
-                                style={[
-                                    styles.smText,
-                                    {
-                                        color: isActive ? '#fff' : Colors.defaultColor,
-                                        fontWeight: isActive ? Font.weightMedium : '400',
-                                    },
-                                ]}>
-                                {name}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
+            {renderHeader(jump, list)}
+            <View style={Style.flexRow}>
+                <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
+                    <View style={[Style.flexRow, {paddingHorizontal: Space.padding}]}>
+                        {tabs?.map((tab, i) => {
+                            const {name, type} = tab;
+                            const isActive = current === i;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    disabled={isActive}
+                                    key={name + type}
+                                    onPress={() => {
+                                        global.LogTool({event: 'recommend_content', oid: type});
+                                        scrollTab.current.goToPage(i);
+                                    }}
+                                    style={[
+                                        styles.recommendTab,
+                                        {
+                                            marginLeft: i === 0 ? 0 : px(8),
+                                            backgroundColor: isActive ? Colors.brandColor : '#fff',
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            styles.smText,
+                                            {
+                                                color: isActive ? '#fff' : Colors.defaultColor,
+                                                fontWeight: isActive ? Font.weightMedium : '400',
+                                            },
+                                        ]}>
+                                        {name}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </ScrollView>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => setListType((prev) => (prev === 'list' ? 'waterflow' : 'list'))}
+                    style={{marginRight: Space.marginAlign}}>
+                    <Image source={listType === 'waterflow' ? listIcon : waterflowIcon} style={styles.modeIcon} />
+                </TouchableOpacity>
             </View>
             <ScrollableTabView
                 initialPage={0}
@@ -630,8 +693,9 @@ const Recommend = forwardRef(({tabs = []}, ref) => {
                         <View key={name + type} style={{flex: 1}} tabLabel={name}>
                             <WaterfallFlowList
                                 getData={getRecommendData}
+                                listType={listType}
                                 params={{type}}
-                                ref={(list) => (recommendList.current[i] = list)}
+                                ref={(flow) => (recommendList.current[i] = flow)}
                                 wrapper="Recommend"
                             />
                         </View>
@@ -740,16 +804,20 @@ const Index = ({navigation, route, setLoading}) => {
             });
     };
 
+    const refresh = () => {
+        init();
+        if (active === 0) {
+            followRef.current?.refresh?.();
+        } else {
+            recommendRef.current?.refresh?.();
+        }
+        publishRef.current?.refresh?.();
+    };
+
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
             if (isFocused) {
-                init();
-                if (active === 0) {
-                    followRef.current?.refresh?.();
-                } else {
-                    recommendRef.current?.refresh?.();
-                }
-                publishRef.current?.refresh?.();
+                refresh();
             }
         });
         return () => listener();
@@ -780,6 +848,7 @@ const Index = ({navigation, route, setLoading}) => {
                 active={active}
                 isLogin={userInfo.is_login}
                 message_url={message_url}
+                refresh={refresh}
                 search_url={search_url}
                 setActive={(i) => scrollTab.current?.goToPage(i)}
                 tabs={tabs}
@@ -798,12 +867,14 @@ const Index = ({navigation, route, setLoading}) => {
                         <View key={type} style={{flex: 1}} tabLabel={name}>
                             {type === 'follow' ? (
                                 follow?.list?.length > 0 ? (
-                                    <Follow list={follow.list} ref={followRef} />
+                                    <Follow list={follow.list} ref={followRef} tabs={follow.tags} />
                                 ) : (
                                     <RecommendFollow ref={followRef} refresh={init} />
                                 )
                             ) : null}
-                            {type === 'recommend' ? <Recommend ref={recommendRef} tabs={recommend?.tags} /> : null}
+                            {type === 'recommend' ? (
+                                <Recommend list={recommend?.list} ref={recommendRef} tabs={recommend?.tags} />
+                            ) : null}
                         </View>
                     );
                 })}
@@ -836,6 +907,15 @@ const styles = StyleSheet.create({
         fontSize: px(18),
         lineHeight: px(25),
         fontWeight: Font.weightMedium,
+    },
+    redPoint: {
+        position: 'absolute',
+        top: 0,
+        right: -px(5),
+        borderRadius: px(8),
+        width: px(8),
+        height: px(8),
+        backgroundColor: Colors.red,
     },
     headerRightIcon: {
         width: px(24),
@@ -934,6 +1014,10 @@ const styles = StyleSheet.create({
         paddingVertical: px(6),
         paddingHorizontal: px(12),
         borderRadius: px(20),
+    },
+    modeIcon: {
+        width: px(16),
+        height: px(16),
     },
     waterfallFlowItem: {
         marginTop: px(5),

@@ -251,7 +251,7 @@ export const ChooseTag = ({setTags, tags}) => {
                         chooseModal.current.show('tag', tags);
                     }}
                     style={[Style.flexRow, styles.tagBox, {backgroundColor: Colors.bgColor}]}>
-                    <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '标签(至少添加一个)'}</Text>
+                    <Text style={styles.desc}>{tags?.length > 0 ? '+标签' : '添加标签(选填)'}</Text>
                 </TouchableOpacity>
                 {tags?.map?.((tag, i) => {
                     const {id, name} = tag;
@@ -287,8 +287,8 @@ const Index = ({route, setLoading}) => {
     const videoRef = useRef();
 
     const finished = useMemo(() => {
-        const {intro, tags, url} = video || {};
-        return intro?.length > 0 && tags?.length > 0 && url ? true : false;
+        const {intro, url} = video || {};
+        return intro?.length > 0 && url ? true : false;
     }, [video]);
 
     const openPicker = () => {

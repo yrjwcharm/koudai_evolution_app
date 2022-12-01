@@ -23,7 +23,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderCate from './components/RenderCate.js';
-import RenderTitle from './components/RenderTitle';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
@@ -38,6 +37,8 @@ import {useOnTogglePlayback} from '../Community/components/audioService/useOnTog
 import {startAudio} from '../Community/components/audioService/StartAudioService.js';
 import {updateUserInfo} from '~/redux/actions/userInfo.js';
 import ProductCards from '~/components/Portfolios/ProductCards.js';
+import {AlbumCard} from '~/components/Product';
+import {CommunityCard} from '../Community/components/CommunityCard';
 import Storage from '~/utils/storage.js';
 import {useIsFocused} from '@react-navigation/native';
 import LogView from '~/components/LogView';
@@ -51,6 +52,7 @@ const ArticleDetail = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
+    const {articles, portfolios, series} = recommendData;
     const netInfo = useNetInfo();
     const scrollRef = useRef(null);
     const [hasNet, setHasNet] = useState(true);
@@ -589,103 +591,175 @@ const ArticleDetail = ({navigation, route}) => {
                                     <View style={{height: text(20)}} />
                                 )}
 
-                                {Object.keys(recommendData).length > 0 ? (
-                                    <>
-                                        {recommendData?.portfolios?.list?.length > 0 && (
-                                            <LogView.Item
-                                                handler={() =>
-                                                    global.LogTool({
-                                                        event: 'suggested_products_show',
-                                                        rec_json: recommendData.portfolios.rec_json,
-                                                    })
-                                                }
-                                                logKey="portfolios"
-                                                style={{paddingTop: px(40), paddingHorizontal: px(16)}}>
-                                                <RenderTitle title={recommendData.portfolios.title} />
-                                                {recommendData.portfolios.list.map?.((item, index) => {
-                                                    return (
-                                                        <ProductCards
-                                                            data={{
-                                                                ...item,
-                                                                LogTool: () =>
-                                                                    global.LogTool({
-                                                                        event: 'suggested_products',
-                                                                        oid: item.code || item.plan_id,
-                                                                    }),
-                                                            }}
-                                                            key={index}
-                                                            style={styles.cardStye}
-                                                        />
-                                                    );
-                                                })}
-                                            </LogView.Item>
-                                        )}
-                                        {recommendData?.articles?.list?.length > 0 && (
-                                            <LogView.Item
-                                                handler={() =>
-                                                    global.LogTool({
-                                                        event: 'recommended_articles_show',
-                                                        rec_json: recommendData.articles.rec_json,
-                                                    })
-                                                }
-                                                logKey="articles"
-                                                style={{paddingHorizontal: px(16), paddingBottom: px(40)}}>
-                                                <RenderTitle title={recommendData.articles.title} />
-                                                {recommendData.articles.list.map?.((item, index) => {
-                                                    return RenderCate(item, styles.cardStye, 'article');
-                                                })}
-                                            </LogView.Item>
-                                        )}
-                                    </>
-                                ) : null}
-                                {/* 问答 */}
-                                {userInfo.is_login && (
-                                    <RenderInteract
-                                        article_id={route.params.article_id}
-                                        style={{marginVertical: px(24)}}
-                                    />
-                                )}
-                                {/* 评论 */}
-                                <RenderTitle title={'评论'} style={{paddingLeft: px(16)}} />
-                                <View style={{padding: px(16)}}>
-                                    {commentData?.list?.length > 0 ? (
+                                <View style={{backgroundColor: Colors.bgColor}}>
+                                    {Object.keys(recommendData).length > 0 ? (
                                         <>
-                                            {commentData?.list?.map((item, index) => (
-                                                <View key={item.id}>
-                                                    <CommentItem data={item} style={{marginBottom: px(9)}} />
-                                                </View>
-                                            ))}
-                                            <View style={[{height: px(40)}, Style.flexCenter]}>
-                                                {commentData?.list?.length >= 10 && commentData.has_more ? (
-                                                    <Text
-                                                        style={[styles.footnote, {color: Colors.btnColor}]}
-                                                        onPress={() => {
-                                                            handelComment(false);
+                                            {series?.list?.length > 0 && (
+                                                <LogView.Item
+                                                    logKey="series"
+                                                    style={{paddingHorizontal: Space.padding}}>
+                                                    <View style={styles.titleBox}>
+                                                        <Text style={styles.title}>{series.title}</Text>
+                                                        {series.button?.text ? (
+                                                            <TouchableOpacity
+                                                                activeOpacity={0.8}
+                                                                onPress={() => jump(series.button?.url)}>
+                                                                <Text style={styles.moreText}>
+                                                                    {series.button?.text}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        ) : null}
+                                                    </View>
+                                                    {series.list.map?.((item, index) => (
+                                                        <CommunityCard data={item} key={index} />
+                                                    ))}
+                                                </LogView.Item>
+                                            )}
+                                            {portfolios?.list?.length > 0 && (
+                                                <LogView.Item
+                                                    handler={() =>
+                                                        global.LogTool({
+                                                            event: 'suggested_products_show',
+                                                            rec_json: portfolios.rec_json,
+                                                        })
+                                                    }
+                                                    logKey="portfolios"
+                                                    style={{paddingHorizontal: Space.padding}}>
+                                                    <View style={styles.titleBox}>
+                                                        <Text style={styles.title}>{portfolios.title}</Text>
+                                                        {portfolios.button?.text ? (
+                                                            <TouchableOpacity
+                                                                activeOpacity={0.8}
+                                                                onPress={() => jump(portfolios.button?.url)}>
+                                                                <Text style={styles.moreText}>
+                                                                    {portfolios.button?.text}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        ) : null}
+                                                    </View>
+                                                    {portfolios.list.map?.((item, index) => {
+                                                        return portfolios.product_type === '3' ? (
+                                                            <View key={index} style={{marginTop: px(12)}}>
+                                                                <AlbumCard {...item} rec_json={portfolios.rec_json} />
+                                                            </View>
+                                                        ) : (
+                                                            <ProductCards
+                                                                data={{
+                                                                    ...item,
+                                                                    LogTool: () =>
+                                                                        global.LogTool({
+                                                                            event: 'suggested_products',
+                                                                            oid: item.code || item.plan_id,
+                                                                        }),
+                                                                }}
+                                                                key={index}
+                                                                style={{marginTop: px(12)}}
+                                                            />
+                                                        );
+                                                    })}
+                                                </LogView.Item>
+                                            )}
+                                            {articles?.list?.length > 0 && (
+                                                <LogView.Item
+                                                    handler={() =>
+                                                        global.LogTool({
+                                                            event: 'recommended_articles_show',
+                                                            rec_json: articles.rec_json,
+                                                        })
+                                                    }
+                                                    logKey="articles"
+                                                    style={{paddingHorizontal: px(16)}}>
+                                                    <View style={styles.titleBox}>
+                                                        <Text style={styles.title}>{articles.title}</Text>
+                                                        {articles.button?.text ? (
+                                                            <TouchableOpacity
+                                                                activeOpacity={0.8}
+                                                                onPress={() => jump(articles.button?.url)}>
+                                                                <Text style={styles.moreText}>
+                                                                    {articles.button?.text}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        ) : null}
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            marginTop: px(12),
+                                                            borderRadius: Space.borderRadius,
+                                                            overflow: 'hidden',
                                                         }}>
-                                                        查看全部评论
-                                                    </Text>
-                                                ) : (
-                                                    <Text style={styles.footnote}>已显示全部评论</Text>
-                                                )}
-                                            </View>
+                                                        {articles.list.map?.((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {index === 0 ? null : (
+                                                                        <View
+                                                                            style={{
+                                                                                borderTopWidth:
+                                                                                    StyleSheet.hairlineWidth,
+                                                                                borderColor: Colors.borderColor,
+                                                                                marginHorizontal: Space.marginAlign,
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                    {RenderCate(item, styles.cardStye, 'article')}
+                                                                </>
+                                                            );
+                                                        })}
+                                                    </View>
+                                                </LogView.Item>
+                                            )}
                                         </>
-                                    ) : (
-                                        <View style={[{height: px(40)}, Style.flexCenter]}>
-                                            <Text style={styles.footnote}>
-                                                暂无评论&nbsp;
-                                                <Text
-                                                    style={{color: Colors.btnColor}}
-                                                    onPress={() => {
-                                                        inputModal.current.show();
-                                                        setTimeout(() => {
-                                                            inputRef?.current?.focus();
-                                                        }, 100);
-                                                    }}>
-                                                    我来写一条
-                                                </Text>
-                                            </Text>
-                                        </View>
+                                    ) : null}
+                                    {/* 问答 */}
+                                    {userInfo.is_login && (
+                                        <RenderInteract
+                                            article_id={route.params.article_id}
+                                            style={{marginVertical: px(24)}}
+                                        />
                                     )}
+                                    {/* 评论 */}
+                                    <View style={[styles.titleBox, {paddingHorizontal: Space.padding}]}>
+                                        <Text style={styles.title}>{'评论'}</Text>
+                                    </View>
+                                    <View style={{padding: px(16)}}>
+                                        {commentData?.list?.length > 0 ? (
+                                            <>
+                                                {commentData?.list?.map((item, index) => (
+                                                    <View key={item.id}>
+                                                        <CommentItem data={item} style={{marginBottom: px(9)}} />
+                                                    </View>
+                                                ))}
+                                                <View style={[{height: px(40)}, Style.flexCenter]}>
+                                                    {commentData?.list?.length >= 10 && commentData.has_more ? (
+                                                        <Text
+                                                            style={[styles.footnote, {color: Colors.btnColor}]}
+                                                            onPress={() => {
+                                                                handelComment(false);
+                                                            }}>
+                                                            查看全部评论
+                                                        </Text>
+                                                    ) : (
+                                                        <Text style={styles.footnote}>已显示全部评论</Text>
+                                                    )}
+                                                </View>
+                                            </>
+                                        ) : (
+                                            <View style={[{height: px(40)}, Style.flexCenter]}>
+                                                <Text style={styles.footnote}>
+                                                    暂无评论&nbsp;
+                                                    <Text
+                                                        style={{color: Colors.btnColor}}
+                                                        onPress={() => {
+                                                            inputModal.current.show();
+                                                            setTimeout(() => {
+                                                                inputRef?.current?.focus();
+                                                            }, 100);
+                                                        }}>
+                                                        我来写一条
+                                                    </Text>
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
                                 </View>
                             </>
                         )}
@@ -876,9 +950,8 @@ const styles = StyleSheet.create({
         paddingLeft: px(16),
     },
     cardStye: {
-        marginBottom: text(12),
-        borderWidth: 0.5,
-        borderColor: '#ddd',
+        borderRadius: 0,
+        backgroundColor: '#fff',
     },
     button: {
         marginLeft: px(7),
@@ -892,6 +965,23 @@ const styles = StyleSheet.create({
         height: px(215),
         fontSize: px(14),
         lineHeight: px(20),
+    },
+    titleBox: {
+        marginTop: px(20),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+    },
+    title: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    moreText: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.brandColor,
     },
 });
 
