@@ -214,14 +214,14 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     setDateArr([...arr]);
                     setProfit(profit_data_list[zIndex]?.value);
                     setDate(dayjs_);
-                    setSelCurDate(arr[zIndex].day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurDate(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type]);
+    }, [diff, type, isBarChart]);
 
     const getProfitBySelDate = (item) => {
         setProfitDay(item.day);
@@ -289,6 +289,10 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
             let newProfitDay = !isEmpty(profitDay) ? dayjs(profitDay).format('YYYY-MM') : '';
             let newLatestProfitDate = dayjs(latestProfitDate).format('YYYY-MM');
             let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || newLatestProfitDate));
@@ -308,6 +312,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
             setSelCurDate(xAxisData[center]);

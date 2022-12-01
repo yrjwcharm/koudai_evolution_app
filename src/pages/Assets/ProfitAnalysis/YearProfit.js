@@ -177,14 +177,14 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
-                    setSelCurYear(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurYear(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [type, diff]);
+    }, [type, diff, isBarChart]);
     useEffect(() => {
         init();
     }, [init]);
@@ -319,6 +319,10 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
             let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
             let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || latestProfitDate));
             let [left, center, right] = [index - 5, index, index + 5];
@@ -337,6 +341,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
             setSelCurYear(xAxisData[center]);

@@ -233,15 +233,15 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
-                    setSelCurDate(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurDate(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type]);
+    }, [diff, type, isBarChart]);
     useEffect(() => {
         init();
     }, [init]);
@@ -371,6 +371,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
             setSelCurDate(xAxisData[center]);
