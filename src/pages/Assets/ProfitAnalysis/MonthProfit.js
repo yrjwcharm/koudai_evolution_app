@@ -146,6 +146,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const add = () => {
         //为了防止多次点击导致达到下限时diff变量比上限还大的bug
         setProfitDay('');
+        setSelCurDate('');
         changeDiff(false);
     };
     /**
@@ -154,6 +155,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const subtract = () => {
         //为了防止多次点击导致达到下限时diff变量比下限还小的bug
         setProfitDay('');
+        setSelCurDate('');
         changeDiff(true);
     };
     const changeDiff = (isDecrease) => {
@@ -207,7 +209,9 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                     }
-                    let zIndex = arr.findIndex((el) => el.day == dayjs(latest_profit_date).format('YYYY-MM'));
+                    let zIndex = arr.findIndex(
+                        (el) => el.day == (selCurDate || dayjs(latest_profit_date).format('YYYY-MM'))
+                    );
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
@@ -221,7 +225,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 }
             }
         })();
-    }, [diff, type, isBarChart]);
+    }, [diff, type, isBarChart, selCurDate]);
 
     const getProfitBySelDate = (item) => {
         setProfitDay(item.day);

@@ -24,7 +24,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [profit, setProfit] = useState('');
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
-    const [selCurYear, setSelCurYear] = useState(dayjs().year());
+    const [selCurYear, setSelCurYear] = useState('');
     const [isHasData, setIsHasData] = useState(true);
     const [diff, setDiff] = useState(0);
     const [startYear, setStartYear] = useState('');
@@ -173,7 +173,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 profit: delMille(el.value),
                             };
                         });
-                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                    let zIndex = arr.findIndex((el) => el.day == (selCurYear || latest_profit_date));
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
@@ -184,7 +184,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 }
             }
         })();
-    }, [type, diff, isBarChart]);
+    }, [type, diff, isBarChart, selCurYear]);
     useEffect(() => {
         init();
     }, [init]);
@@ -230,10 +230,12 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     );
     const subStract = () => {
         setProfitDay('');
+        setSelCurYear('');
         changeDiff(true);
     };
     const add = () => {
         setProfitDay('');
+        setSelCurYear('');
         changeDiff(false);
     };
     const changeDiff = (isDecrease) => {
