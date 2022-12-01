@@ -163,17 +163,23 @@ export default function Launch({navigation}) {
             if (Platform.OS == 'android') {
                 getAppMetaData('UMENG_CHANNEL')
                     .then((data) => {
-                        postHeartData(result.registerID, data);
-                        global.channel = data;
+                        if (!global.channel) {
+                            global.channel = data;
+                        }
+                        postHeartData(result.registerID, global.channel);
                     })
                     .catch(() => {
-                        global.channel = '';
+                        if (!global.channel) {
+                            global.channel = '';
+                        }
                         postHeartData(result.registerID, 'android');
                         console.log('获取渠道失败');
                     });
             } else {
-                global.channel = 'ios';
-                postHeartData(result.registerID, 'ios');
+                if (!global.channel) {
+                    global.channel = 'ios';
+                }
+                postHeartData(result.registerID, global.channel);
             }
         });
     }, []);
@@ -289,6 +295,9 @@ export default function Launch({navigation}) {
                 .then((result) => {
                     if (result.code != '000000') {
                         throw new Error();
+                    }
+                    if (result.result?.chn) {
+                        global.channel = result.result?.chn;
                     }
                     if (!__DEV__) {
                         if (result.result?.env) {
