@@ -466,6 +466,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         setDiff(-diff || 0);
                         setProfitDay(xAxisData[center]);
                     }}
+                    webViewSettings={{androidLayerType: 'software'}}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
                     ref={myChart}
