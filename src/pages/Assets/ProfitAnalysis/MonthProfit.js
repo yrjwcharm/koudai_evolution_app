@@ -249,6 +249,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     useEffect(() => {
         (async () => {
             if (isBarChart) {
+                myChart.current?.showLoading();
                 let dayjs_ = dayjs().add(diff, 'year').startOf('year');
                 const res = await getChartData({
                     type,
@@ -282,6 +283,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         }
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
+                        myChart.current?.hideLoading();
                     }
                 }
             }
