@@ -590,6 +590,7 @@ const styles = StyleSheet.create({
     selChartType: {
         borderRadius: px(4),
         height: px(21),
+        width: px(60),
         fontFamily: Font.numRegular,
     },
 });

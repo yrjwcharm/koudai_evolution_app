@@ -67,3 +67,4 @@ buck-out/
 /src/test.html
 /ios/Podfile.lock
 
+/src/pages/Assets/ProfitAnalysis/Example.js
