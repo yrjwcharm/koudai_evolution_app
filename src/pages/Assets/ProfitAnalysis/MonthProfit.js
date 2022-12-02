@@ -289,6 +289,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, [type, isBarChart, diff]);
 
     useEffect(() => {
+        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
@@ -320,18 +321,19 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             };
             // barOption.yAxis.min = Math.floor(minVal);
             // barOption.yAxis.max = Math.ceil(maxVal);
-            setStartDate(xAxisData[left]);
-            setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
-            setXAxisData(xAxisData);
-            setDataAxis(dataAxis);
-            myChart.current?.setNewOption(barOption, {
-                notMerge: false,
-                lazyUpdate: true,
-                silent: false,
-            });
+            if (!isCanceled) {
+                setStartDate(xAxisData[left]);
+                setEndDate(xAxisData[right]);
+                setXAxisData(xAxisData);
+                setDataAxis(dataAxis);
+                myChart.current?.setNewOption(barOption, {
+                    notMerge: false,
+                    lazyUpdate: true,
+                    silent: false,
+                });
+            }
         }
+        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
 
     const selCalendarType = useCallback(() => {
@@ -371,6 +373,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let curYear = dayjs(xAxisData[center]).year();
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear || 0);
+                        setSelCurDate(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}

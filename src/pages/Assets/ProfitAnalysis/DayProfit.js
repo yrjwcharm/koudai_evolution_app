@@ -345,6 +345,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         })();
     }, [type, isBarChart, diff]);
     useEffect(() => {
+        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
@@ -375,18 +376,19 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             };
             // barOption.yAxis.min = Math.floor(minVal);
             // barOption.yAxis.max = Math.ceil(maxVal);
-            setStartDate(xAxisData[left]);
-            setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
-            setXAxisData(xAxisData);
-            setDataAxis(dataAxis);
-            myChart.current?.setNewOption(barOption, {
-                notMerge: false,
-                lazyUpdate: true,
-                silent: false,
-            });
+            if (!isCanceled) {
+                setStartDate(xAxisData[left]);
+                setEndDate(xAxisData[right]);
+                setXAxisData(xAxisData);
+                setDataAxis(dataAxis);
+                myChart.current?.setNewOption(barOption, {
+                    notMerge: false,
+                    lazyUpdate: true,
+                    silent: false,
+                });
+            }
         }
+        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     const renderWeek = useMemo(
         () =>
@@ -449,7 +451,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData) => {
+        (xAxisData, dataAxis) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
@@ -459,6 +461,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff || 0);
+                        setSelCurDate(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -520,7 +524,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
+                                    {renderBarChart(xAxisData, dataAxis)}
+                                </View>
                                 <View style={styles.separator} />
                             </View>
                         )}
