@@ -8,6 +8,8 @@ export const getPageData = (params) => http.get('/community/index/202209', param
 
 export const getAllMsg = (params) => http.get('/message/unread/20210101', params);
 
+export const getNewsData = (params) => http.get('/community/news/refresh/20221202', params);
+
 export const getFollowedData = (params) => http.get('/community/follow/202209', params);
 
 export const getRecommendFollowUsers = (params) => http.get('/follow/recommend/users/202209', params);

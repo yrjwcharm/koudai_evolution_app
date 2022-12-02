@@ -323,26 +323,42 @@ export const CommunityCard = (props) => {
                     }}>
                     {cardType === 'waterflow' ? null : (
                         <>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => jump(author.url)}
-                                style={Style.flexRow}>
-                                {author?.avatar ? (
-                                    type === 9 && live_status === 2 ? (
-                                        <AnimateAvatar source={author.avatar} style={styles.avatar} />
-                                    ) : (
-                                        <Image source={{uri: author.avatar}} style={styles.avatar} />
-                                    )
-                                ) : null}
-                                <View>
-                                    <Text style={styles.subTitle}>{author?.nickname}</Text>
-                                    <Text style={[styles.smText, {color: Colors.lightGrayColor, marginTop: px(2)}]}>
-                                        {author_desc}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            {title ? <Text style={[styles.subTitle, {marginTop: px(8)}]}>{title}</Text> : null}
-                            {desc ? <Text style={[styles.desc, {marginTop: px(8)}]}>{desc}</Text> : null}
+                            {author?.nickname ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(author.url)}
+                                    style={Style.flexRow}>
+                                    {author?.avatar ? (
+                                        type === 9 && live_status === 2 ? (
+                                            <AnimateAvatar source={author.avatar} style={styles.avatar} />
+                                        ) : (
+                                            <Image source={{uri: author.avatar}} style={styles.avatar} />
+                                        )
+                                    ) : null}
+                                    <View>
+                                        <Text style={styles.subTitle}>{author?.nickname}</Text>
+                                        {author_desc ? (
+                                            <Text
+                                                style={[
+                                                    styles.smText,
+                                                    {color: Colors.lightGrayColor, marginTop: px(2)},
+                                                ]}>
+                                                {author_desc}
+                                            </Text>
+                                        ) : null}
+                                    </View>
+                                </TouchableOpacity>
+                            ) : null}
+                            {title ? (
+                                <Text style={[styles.subTitle, {marginTop: author?.nickname ? px(8) : 0}]}>
+                                    {title}
+                                </Text>
+                            ) : null}
+                            {desc ? (
+                                <Text style={[styles.desc, {marginTop: author?.nickname || title ? px(8) : 0}]}>
+                                    {desc}
+                                </Text>
+                            ) : null}
                         </>
                     )}
                     {cover ? (

@@ -3,7 +3,7 @@
  * @Description: 社区首页
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {useSelector, useStore} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {
     ActivityIndicator,
     FlatList,
@@ -38,15 +38,16 @@ import {
     getAllMsg,
     getCanPublishContent,
     getFollowedData,
+    getNewsData,
     getPageData,
     getRecommendData,
     getRecommendFollowUsers,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
-import {cloneDeep, debounce, groupBy, isEqual, sortBy} from 'lodash';
+import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 
 /** @name 社区头部 */
-const Header = ({active, isLogin, message_url, refresh, search_url, setActive, tabs, userInfo = {}}) => {
+const Header = ({active, isLogin, message_url, newsData, refresh, search_url, setActive, tabs, userInfo = {}}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
     const {url, user: {avatar} = {}} = userInfo;
@@ -54,12 +55,13 @@ const Header = ({active, isLogin, message_url, refresh, search_url, setActive, t
 
     useFocusEffect(
         useCallback(() => {
-            isLogin &&
-                getAllMsg().then((res) => {
-                    if (res.code === '000000') {
-                        setAll(res.result.all);
-                    }
-                });
+            isLogin
+                ? getAllMsg().then((res) => {
+                      if (res.code === '000000') {
+                          setAll(res.result.all);
+                      }
+                  })
+                : setActive(1);
         }, [isLogin])
     );
 
@@ -75,7 +77,7 @@ const Header = ({active, isLogin, message_url, refresh, search_url, setActive, t
             </TouchableOpacity>
             <View style={Style.flexRow}>
                 {tabs?.map((tab, i) => {
-                    const {has_news, name, type} = tab;
+                    const {name, type} = tab;
                     return (
                         <TouchableOpacity
                             activeOpacity={active === i ? 1 : 0.8}
@@ -88,7 +90,7 @@ const Header = ({active, isLogin, message_url, refresh, search_url, setActive, t
                             }}
                             style={{marginLeft: i === 0 ? px(30) : px(20)}}>
                             <Text style={[styles.headerTabText, active === i ? styles.activeTabText : {}]}>{name}</Text>
-                            {has_news && <View style={styles.redPoint} />}
+                            {newsData?.[`${type}_news`] && <View style={styles.redPoint} />}
                         </TouchableOpacity>
                     );
                 })}
@@ -306,7 +308,7 @@ const renderHeader = (jump, list) => {
 };
 
 /** @name 关注 */
-const Follow = forwardRef(({list = [], tabs = []}, ref) => {
+const Follow = forwardRef(({list = [], pageInit, tabs = []}, ref) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -428,7 +430,10 @@ const Follow = forwardRef(({list = [], tabs = []}, ref) => {
                     global.LogTool({ctrl: 'follow', event: 'community_browsing', oid: 1});
                     logedPage.current.push(1);
                 }}
-                onRefresh={() => (page > 1 ? setPage(1) : init())}
+                onRefresh={() => {
+                    pageInit?.();
+                    page > 1 ? setPage(1) : init();
+                }}
                 onScroll={({
                     nativeEvent: {
                         contentOffset: {y},
@@ -446,7 +451,7 @@ const Follow = forwardRef(({list = [], tabs = []}, ref) => {
                 renderItem={({item, index}) => (
                     <CommunityCard
                         data={item}
-                        style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
+                        style={{marginTop: index === 0 ? px(8) : px(12), marginHorizontal: Space.marginAlign}}
                     />
                 )}
                 scrollIndicatorInsets={{right: 1}}
@@ -458,7 +463,7 @@ const Follow = forwardRef(({list = [], tabs = []}, ref) => {
 
 /** @name 推荐瀑布流列表 */
 export const WaterfallFlowList = forwardRef(
-    ({getData = () => {}, listType = 'waterflow', params, wrapper, ...rest}, ref) => {
+    ({getData = () => {}, listType = 'waterflow', pageInit, params, wrapper, ...rest}, ref) => {
         const [refreshing, setRefreshing] = useState(true);
         const [data, setData] = useState([]);
         const [page, setPage] = useState(1);
@@ -559,6 +564,7 @@ export const WaterfallFlowList = forwardRef(
                     },
                     onRefresh: () => {
                         setRefreshing(true);
+                        pageInit?.();
                         page > 1 ? setPage(1) : init();
                     },
                     _onScroll: (e) => {
@@ -601,16 +607,15 @@ export const WaterfallFlowList = forwardRef(
 );
 
 /** @name 推荐 */
-const Recommend = forwardRef(({list = [], tabs = []}, ref) => {
+const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) => {
     const route = useRoute();
     const jump = useJump();
     const {init_type = 0} = route.params || {};
-    const store = useStore();
     const [current, setCurrent] = useState(init_type);
     const [listType, setListType] = useState('waterflow');
     const scrollTab = useRef();
     const recommendList = useRef([]);
-    const userInfo = useRef();
+    const isLoginRef = useRef(isLogin);
 
     const refresh = () => {
         recommendList.current[current]?.refresh?.();
@@ -619,14 +624,13 @@ const Recommend = forwardRef(({list = [], tabs = []}, ref) => {
     useImperativeHandle(ref, () => ({refresh}));
 
     useEffect(() => {
-        store.subscribe(() => {
-            const next = store.getState().userInfo.toJS();
-            const prev = userInfo.current;
-            if (prev?.is_login !== next?.is_login) refresh();
-            userInfo.current = cloneDeep(next);
-        });
         global.LogTool({event: 'recommend'});
     }, []);
+
+    useEffect(() => {
+        if (isLoginRef.current !== isLogin) refresh();
+        isLoginRef.current = isLogin;
+    }, [isLogin]);
 
     useEffect(() => {
         const index = tabs?.findIndex((tab) => tab.type === init_type);
@@ -639,7 +643,7 @@ const Recommend = forwardRef(({list = [], tabs = []}, ref) => {
             {renderHeader(jump, list)}
             <View style={Style.flexRow}>
                 <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
-                    <View style={[Style.flexRow, {paddingHorizontal: Space.padding}]}>
+                    <View style={[Style.flexRow, {paddingTop: px(8), paddingHorizontal: Space.padding}]}>
                         {tabs?.map((tab, i) => {
                             const {name, type} = tab;
                             const isActive = current === i;
@@ -694,6 +698,7 @@ const Recommend = forwardRef(({list = [], tabs = []}, ref) => {
                             <WaterfallFlowList
                                 getData={getRecommendData}
                                 listType={listType}
+                                pageInit={pageInit}
                                 params={{type}}
                                 ref={(flow) => (recommendList.current[i] = flow)}
                                 wrapper="Recommend"
@@ -782,6 +787,7 @@ const Index = ({navigation, route, setLoading}) => {
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
     const {follow, message_url, recommend, search_url, tabs, user_info} = data;
+    const [newsData, setNewsData] = useState({});
     const followRef = useRef();
     const recommendRef = useRef();
     const publishRef = useRef();
@@ -802,6 +808,9 @@ const Index = ({navigation, route, setLoading}) => {
             .finally(() => {
                 setLoading(false);
             });
+        getNewsData().then((res) => {
+            setNewsData(res.result);
+        });
     };
 
     const refresh = () => {
@@ -848,6 +857,7 @@ const Index = ({navigation, route, setLoading}) => {
                 active={active}
                 isLogin={userInfo.is_login}
                 message_url={message_url}
+                newsData={newsData}
                 refresh={refresh}
                 search_url={search_url}
                 setActive={(i) => scrollTab.current?.goToPage(i)}
@@ -867,13 +877,19 @@ const Index = ({navigation, route, setLoading}) => {
                         <View key={type} style={{flex: 1}} tabLabel={name}>
                             {type === 'follow' ? (
                                 follow?.list?.length > 0 ? (
-                                    <Follow list={follow.list} ref={followRef} tabs={follow.tags} />
+                                    <Follow list={follow.list} pageInit={init} ref={followRef} tabs={follow.tags} />
                                 ) : (
                                     <RecommendFollow ref={followRef} refresh={init} />
                                 )
                             ) : null}
                             {type === 'recommend' ? (
-                                <Recommend list={recommend?.list} ref={recommendRef} tabs={recommend?.tags} />
+                                <Recommend
+                                    isLogin={data.is_login}
+                                    list={recommend?.list}
+                                    pageInit={init}
+                                    ref={recommendRef}
+                                    tabs={recommend?.tags}
+                                />
                             ) : null}
                         </View>
                     );
@@ -992,9 +1008,8 @@ const styles = StyleSheet.create({
         left: px(16),
     },
     followedList: {
-        paddingTop: px(8),
+        paddingVertical: px(8),
         paddingHorizontal: Space.padding,
-        paddingBottom: Space.padding,
     },
     followedAvatar: {
         borderRadius: px(40),
