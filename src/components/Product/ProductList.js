@@ -320,7 +320,7 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                                     </Text>
                                                 </View>
                                             ) : null}
-                                            {true ? (
+                                            {style_id === 203 ? (
                                                 <View style={styles.showButton}>
                                                     <Text style={styles.showButtonText}>立即查看</Text>
                                                 </View>
