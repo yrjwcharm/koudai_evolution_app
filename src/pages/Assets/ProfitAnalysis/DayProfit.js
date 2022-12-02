@@ -228,20 +228,20 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         }
                     }
 
-                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                    let zIndex = arr.findIndex((el) => el.day == (selCurDate || latest_profit_date));
                     setDate(dayjs_);
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
-                    setSelCurDate(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurDate(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type]);
+    }, [diff, type, isBarChart, selCurDate]);
     useEffect(() => {
         init();
     }, [init]);
@@ -249,6 +249,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
      * 向上递增一个月
      */
     const addMonth = () => {
+        setSelCurDate('');
         //为了防止多次点击导致达到下限时diff变量比上限还大的bug
         setProfitDay('');
         changeDiff(false);
@@ -257,6 +258,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
      * 向下递减一个月
      */
     const subMonth = () => {
+        setSelCurDate('');
         //为了防止多次点击导致达到下限时diff变量比下限还小的bug
         setProfitDay('');
         changeDiff(true);
@@ -343,6 +345,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         })();
     }, [type, isBarChart, diff]);
     useEffect(() => {
+        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
@@ -371,18 +374,21 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
-            setStartDate(xAxisData[left]);
-            setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
-            setXAxisData(xAxisData);
-            setDataAxis(dataAxis);
-            myChart.current?.setNewOption(barOption, {
-                notMerge: false,
-                lazyUpdate: true,
-                silent: false,
-            });
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
+            if (!isCanceled) {
+                setStartDate(xAxisData[left]);
+                setEndDate(xAxisData[right]);
+                setXAxisData(xAxisData);
+                setDataAxis(dataAxis);
+                myChart.current?.setNewOption(barOption, {
+                    notMerge: false,
+                    lazyUpdate: true,
+                    silent: false,
+                });
+            }
         }
+        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     const renderWeek = useMemo(
         () =>
@@ -445,7 +451,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData) => {
+        (xAxisData, dataAxis) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
@@ -455,6 +461,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff || 0);
+                        setSelCurDate(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -516,7 +524,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
+                                    {renderBarChart(xAxisData, dataAxis)}
+                                </View>
                                 <View style={styles.separator} />
                             </View>
                         )}

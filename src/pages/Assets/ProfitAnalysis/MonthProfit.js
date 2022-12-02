@@ -35,6 +35,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [profitDay, setProfitDay] = useState('');
     const [sortProfitList, setSortProfitList] = useState([]);
     const [latestProfitDate, setLatestProfitDate] = useState('');
+    const [unitList, setUnitList] = useState([]);
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -146,6 +147,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const add = () => {
         //为了防止多次点击导致达到下限时diff变量比上限还大的bug
         setProfitDay('');
+        setSelCurDate('');
         changeDiff(false);
     };
     /**
@@ -154,6 +156,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const subtract = () => {
         //为了防止多次点击导致达到下限时diff变量比下限还小的bug
         setProfitDay('');
+        setSelCurDate('');
         changeDiff(true);
     };
     const changeDiff = (isDecrease) => {
@@ -193,6 +196,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     let endYear = unit_list[0].value;
                     setStartYear(startYear);
                     setEndYear(endYear);
+                    setUnitList(unit_list);
                     let cur = dayjs_.year();
                     if (cur > endYear || cur < startYear) return;
                     for (let i = 0; i < arr.length; i++) {
@@ -207,21 +211,23 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                     }
-                    let zIndex = arr.findIndex((el) => el.day == dayjs(latest_profit_date).format('YYYY-MM'));
+                    let zIndex = arr.findIndex(
+                        (el) => el.day == (selCurDate || dayjs(latest_profit_date).format('YYYY-MM'))
+                    );
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setProfit(profit_data_list[zIndex]?.value);
                     setDate(dayjs_);
-                    setSelCurDate(arr[zIndex].day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurDate(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type]);
+    }, [diff, type, isBarChart, selCurDate]);
 
     const getProfitBySelDate = (item) => {
         setProfitDay(item.day);
@@ -283,12 +289,17 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     }, [type, isBarChart, diff]);
 
     useEffect(() => {
+        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
             let newProfitDay = !isEmpty(profitDay) ? dayjs(profitDay).format('YYYY-MM') : '';
             let newLatestProfitDate = dayjs(latestProfitDate).format('YYYY-MM');
             let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || newLatestProfitDate));
@@ -308,18 +319,21 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
-            setStartDate(xAxisData[left]);
-            setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
-            setXAxisData(xAxisData);
-            setDataAxis(dataAxis);
-            myChart.current?.setNewOption(barOption, {
-                notMerge: false,
-                lazyUpdate: true,
-                silent: false,
-            });
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
+            if (!isCanceled) {
+                setStartDate(xAxisData[left]);
+                setEndDate(xAxisData[right]);
+                setXAxisData(xAxisData);
+                setDataAxis(dataAxis);
+                myChart.current?.setNewOption(barOption, {
+                    notMerge: false,
+                    lazyUpdate: true,
+                    silent: false,
+                });
+            }
         }
+        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
 
     const selCalendarType = useCallback(() => {
@@ -359,6 +373,8 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         let curYear = dayjs(xAxisData[center]).year();
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear || 0);
+                        setSelCurDate(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -385,6 +401,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     selBarChartType={selBarChartType}
                     date={date.year()}
                     subtract={subtract}
+                    unitList={unitList}
                     add={add}
                     startYear={startYear}
                     endYear={endYear}
@@ -440,7 +457,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     );
 });
 const CalendarHeader = React.memo(
-    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, startYear, endYear, add}) => {
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, unitList, date, subtract, startYear, endYear, add}) => {
         return (
             <View style={Style.flexBetween}>
                 <View style={[styles.chartLeft]}>
@@ -486,13 +503,13 @@ const CalendarHeader = React.memo(
                     </TouchableOpacity>
                 </View>
                 <View style={styles.selMonth}>
-                    {date != startYear && (
+                    {unitList.length > 0 && date != startYear && (
                         <TouchableOpacity onPress={subtract}>
                             <Image source={require('../../../assets/img/icon/prev.png')} />
                         </TouchableOpacity>
                     )}
                     <Text style={styles.MMText}>{date}</Text>
-                    {date != endYear && (
+                    {unitList.length > 0 && date != endYear && (
                         <TouchableOpacity onPress={add}>
                             <Image
                                 style={{width: px(13), height: px(13)}}

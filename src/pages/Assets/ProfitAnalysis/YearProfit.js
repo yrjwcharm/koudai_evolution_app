@@ -24,7 +24,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [profit, setProfit] = useState('');
     const [dateArr, setDateArr] = useState([]);
     const [currentYear] = useState(dayjs().year());
-    const [selCurYear, setSelCurYear] = useState(dayjs().year());
+    const [selCurYear, setSelCurYear] = useState('');
     const [isHasData, setIsHasData] = useState(true);
     const [diff, setDiff] = useState(0);
     const [startYear, setStartYear] = useState('');
@@ -173,18 +173,18 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 profit: delMille(el.value),
                             };
                         });
-                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                    let zIndex = arr.findIndex((el) => el.day == (selCurYear || latest_profit_date));
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
-                    setSelCurYear(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
+                    !isBarChart && setSelCurYear(arr[zIndex]?.day);
+                    !isBarChart && setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [type, diff]);
+    }, [type, diff, isBarChart, selCurYear]);
     useEffect(() => {
         init();
     }, [init]);
@@ -230,10 +230,12 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     );
     const subStract = () => {
         setProfitDay('');
+        setSelCurYear('');
         changeDiff(true);
     };
     const add = () => {
         setProfitDay('');
+        setSelCurYear('');
         changeDiff(false);
     };
     const changeDiff = (isDecrease) => {
@@ -259,6 +261,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         let curYear = xAxisData[center];
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear);
+                        setSelCurYear(xAxisData[center]);
+                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -313,12 +317,17 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         })();
     }, [type, isBarChart, diff]);
     useEffect(() => {
+        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
+            // let flowData = sortProfitList?.map((el) => delMille(el.value));
+            // const maxVal = Number(Math.max(...flowData));
+            // // // 获取坐标轴刻度最小值
+            // const minVal = Number(Math.min(...flowData));
             let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
             let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || latestProfitDate));
             let [left, center, right] = [index - 5, index, index + 5];
@@ -337,18 +346,21 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
-            setStartDate(xAxisData[left]);
-            setEndDate(xAxisData[right]);
-            setSelCurYear(xAxisData[center]);
-            setProfit(dataAxis[center]);
-            setXAxisData(xAxisData);
-            setDataAxis(dataAxis);
-            myChart.current?.setNewOption(barOption, {
-                notMerge: false,
-                lazyUpdate: true,
-                silent: false,
-            });
+            // barOption.yAxis.min = Math.floor(minVal);
+            // barOption.yAxis.max = Math.ceil(maxVal);
+            if (!isCanceled) {
+                setStartDate(xAxisData[left]);
+                setEndDate(xAxisData[right]);
+                setXAxisData(xAxisData);
+                setDataAxis(dataAxis);
+                myChart.current?.setNewOption(barOption, {
+                    notMerge: false,
+                    lazyUpdate: true,
+                    silent: false,
+                });
+            }
         }
+        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     return (
         <View style={styles.container}>
@@ -396,25 +408,27 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={Style.flexRow}>
-                        {date.year() > startYear && (
-                            <TouchableOpacity onPress={subStract}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/prev.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                        <Text style={styles.yearDateText}>{period}</Text>
-                        {date.year() < endYear && (
-                            <TouchableOpacity onPress={add}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/next.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    {unitList.length > 0 && (
+                        <View style={Style.flexRow}>
+                            {date.year() > startYear && (
+                                <TouchableOpacity onPress={subStract}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/prev.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            <Text style={styles.yearDateText}>{period}</Text>
+                            {date.year() < endYear && (
+                                <TouchableOpacity onPress={add}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/next.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
                 </View>
                 <>
                     {isHasData ? (

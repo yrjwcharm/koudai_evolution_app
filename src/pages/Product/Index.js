@@ -122,7 +122,7 @@ const Product = ({navigation}) => {
         const hasContent = await Clipboard.hasString();
         if (hasContent) {
             const res = await Clipboard.getString();
-            if (res) {
+            if (res && res?.indexOf('vmark') == 0) {
                 http.post('/common/device/heart_beat/20210101', {polaris_favor: res}).then((result) => {
                     if (result.code === '000000') {
                         // 刷新
