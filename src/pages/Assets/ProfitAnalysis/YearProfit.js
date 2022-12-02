@@ -404,25 +404,27 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={Style.flexRow}>
-                        {date.year() > startYear && (
-                            <TouchableOpacity onPress={subStract}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/prev.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                        <Text style={styles.yearDateText}>{period}</Text>
-                        {date.year() < endYear && (
-                            <TouchableOpacity onPress={add}>
-                                <Image
-                                    style={{width: px(13), height: px(13)}}
-                                    source={require('../../../assets/img/icon/next.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    {unitList.length > 0 && (
+                        <View style={Style.flexRow}>
+                            {date.year() > startYear && (
+                                <TouchableOpacity onPress={subStract}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/prev.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                            <Text style={styles.yearDateText}>{period}</Text>
+                            {date.year() < endYear && (
+                                <TouchableOpacity onPress={add}>
+                                    <Image
+                                        style={{width: px(13), height: px(13)}}
+                                        source={require('../../../assets/img/icon/next.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
                 </View>
                 <>
                     {isHasData ? (

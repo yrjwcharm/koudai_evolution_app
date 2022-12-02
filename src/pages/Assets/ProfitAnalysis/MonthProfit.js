@@ -35,6 +35,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     const [profitDay, setProfitDay] = useState('');
     const [sortProfitList, setSortProfitList] = useState([]);
     const [latestProfitDate, setLatestProfitDate] = useState('');
+    const [unitList, setUnitList] = useState([]);
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -195,6 +196,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     let endYear = unit_list[0].value;
                     setStartYear(startYear);
                     setEndYear(endYear);
+                    setUnitList(unit_list);
                     let cur = dayjs_.year();
                     if (cur > endYear || cur < startYear) return;
                     for (let i = 0; i < arr.length; i++) {
@@ -395,6 +397,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                     selBarChartType={selBarChartType}
                     date={date.year()}
                     subtract={subtract}
+                    unitList={unitList}
                     add={add}
                     startYear={startYear}
                     endYear={endYear}
@@ -450,7 +453,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
     );
 });
 const CalendarHeader = React.memo(
-    ({selCalendarType, selBarChartType, isCalendar, isBarChart, date, subtract, startYear, endYear, add}) => {
+    ({selCalendarType, selBarChartType, isCalendar, isBarChart, unitList, date, subtract, startYear, endYear, add}) => {
         return (
             <View style={Style.flexBetween}>
                 <View style={[styles.chartLeft]}>
@@ -496,13 +499,13 @@ const CalendarHeader = React.memo(
                     </TouchableOpacity>
                 </View>
                 <View style={styles.selMonth}>
-                    {date != startYear && (
+                    {unitList.length > 0 && date != startYear && (
                         <TouchableOpacity onPress={subtract}>
                             <Image source={require('../../../assets/img/icon/prev.png')} />
                         </TouchableOpacity>
                     )}
                     <Text style={styles.MMText}>{date}</Text>
-                    {date != endYear && (
+                    {unitList.length > 0 && date != endYear && (
                         <TouchableOpacity onPress={add}>
                             <Image
                                 style={{width: px(13), height: px(13)}}
