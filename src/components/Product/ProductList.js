@@ -101,6 +101,7 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
             style_id,
             drawback,
             drawback_desc,
+            product_button,
         } = item;
         const containerSty = out_box
             ? {
@@ -320,10 +321,15 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                                     </Text>
                                                 </View>
                                             ) : null}
-                                            {style_id === 203 ? (
-                                                <View style={styles.showButton}>
-                                                    <Text style={styles.showButtonText}>立即查看</Text>
-                                                </View>
+                                            {product_button ? (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={styles.showButton}
+                                                    onPress={() => {
+                                                        jump(product_button.url);
+                                                    }}>
+                                                    <Text style={styles.showButtonText}>{product_button.text}</Text>
+                                                </TouchableOpacity>
                                             ) : null}
                                         </View>
                                         {edit_button ? (

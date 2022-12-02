@@ -106,6 +106,7 @@ const Index = ({
     header,
     img,
     img_url,
+    img_height,
     items,
     plateid,
     rec_json,
@@ -137,7 +138,7 @@ const Index = ({
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => jump(img_url)}
-                        style={[styles.albumImg, {marginTop: header.bg_img ? px(12) : 0}]}>
+                        style={[styles.albumImg, {marginTop: header.bg_img ? px(12) : 0, height: px(img_height)}]}>
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
@@ -260,7 +261,6 @@ const styles = StyleSheet.create({
     },
     albumImg: {
         borderRadius: Space.borderRadius,
-        height: px(80),
         overflow: 'hidden',
     },
     groupTab: {
