@@ -138,7 +138,10 @@ const Index = ({
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => jump(img_url)}
-                        style={[styles.albumImg, {marginTop: header.bg_img ? px(12) : 0, height: px(img_height)}]}>
+                        style={[
+                            styles.albumImg,
+                            {marginTop: header.bg_img ? px(12) : 0, height: px(img_height || 80)},
+                        ]}>
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
