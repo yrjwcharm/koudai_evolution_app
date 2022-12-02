@@ -1,12 +1,13 @@
 /*
  * @Date: 2022-01-17 19:32:47
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-24 17:00:45
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-02 10:45:47
  * @Description: 
  */
 package com.licaimofang.app;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle; // here
 import org.devio.rn.splashscreen.SplashScreen; // here
 import com.facebook.react.ReactActivity;
@@ -47,11 +48,25 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "EvolutionApp";
   }
+  /**
+ * 判断当前应用是否是debug状态
+   * @param context
+   */
+public static boolean isApkInDebug(MainActivity context) {
+    try {
+        ApplicationInfo info = context.getApplicationInfo();
+        return (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    } catch (Exception e) {
+        return false;
+    }
+}
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //webview 调试
-    //     WebView.setWebContentsDebuggingEnabled(true);
-    // }
+     if(MainActivity.isApkInDebug(this)){ 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { 
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+     }
       SplashScreen.show(this,R.style.SplashScreenTheme);  // here
       super.onCreate(savedInstanceState);
       handleOpenClick(getIntent());

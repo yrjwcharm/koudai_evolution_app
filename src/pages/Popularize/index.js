@@ -37,11 +37,6 @@ const Popularize = ({route}) => {
 
     return (
         <View style={styles.container}>
-            <NavBar
-                leftIcon="chevron-left"
-                fontStyle={{color: '#fff'}}
-                style={{backgroundColor: 'transparent', position: 'absolute', zIndex: 20}}
-            />
             {token ? (
                 <WebView
                     bounces={false}

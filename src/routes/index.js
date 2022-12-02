@@ -1310,7 +1310,24 @@ export default function AppStack() {
                     }}
                 />
                 <Stack.Screen name="AdvisorTransfer" component={AdvisorTransfer} options={{headerShown: false}} />
-                <Stack.Screen name="Popularize" component={Popularize} options={{headerShown: false}} />
+                <Stack.Screen
+                    name="Popularize"
+                    component={Popularize}
+                    options={{
+                        title: '',
+                        headerTransparent: true,
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
             </Stack.Navigator>
         </>
     );
