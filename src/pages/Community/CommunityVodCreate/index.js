@@ -58,7 +58,7 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
                     Style.flexBetween,
                     {marginTop: px(24), marginBottom: index === list.length - 1 ? (isIphoneX() ? 34 : px(24)) : 0},
                 ]}>
-                <View>
+                <View style={{flexShrink: 1}}>
                     <Text numberOfLines={1} style={[styles.subTitle, {maxWidth: px(270)}]}>
                         {name}
                     </Text>
@@ -68,7 +68,9 @@ export const ChooseModal = forwardRef(({maxCount = Infinity, onDone, type: defau
                                 <HTML html={ratio} style={styles.ratio} />
                             </View>
                         ) : null}
-                        <Text style={styles.desc}>{desc}</Text>
+                        <Text numberOfLines={3} style={[styles.desc, {textAlign: 'justify'}]}>
+                            {desc}
+                        </Text>
                     </View>
                 </View>
                 <Button
@@ -657,6 +659,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     addBtn: {
+        marginLeft: Space.marginAlign,
         borderRadius: px(50),
         width: px(64),
         height: px(30),

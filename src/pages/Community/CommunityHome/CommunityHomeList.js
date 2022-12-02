@@ -60,8 +60,11 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
     //添加
     const handleAddProduct = async (_data) => {
         if (_data?.length > 0) {
-            let item_id = _data?.map((item) => item.id).join(',');
-            let res = await addProduct({community_id: params.community_id, item_id, type: _data[0]?.relation_type});
+            const relation_list = _data?.map?.((item) => ({id: item.id, type: item.relation_type})) || [];
+            const res = await addProduct({
+                community_id: params.community_id,
+                relation_list: JSON.stringify(relation_list),
+            });
             if (res.code == '000000') {
                 refresh();
             }
