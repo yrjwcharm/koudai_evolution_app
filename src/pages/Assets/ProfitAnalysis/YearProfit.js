@@ -261,8 +261,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         let curYear = xAxisData[center];
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear);
-                        setSelCurYear(xAxisData[center]);
-                        setProfit(dataAxis[center]);
                         setProfitDay(xAxisData[center]);
                     }}
                     legendSelectChanged={(result) => {}}
@@ -317,7 +315,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         })();
     }, [type, isBarChart, diff]);
     useEffect(() => {
-        let isCanceled = false;
         if (isBarChart && latestProfitDate) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
@@ -348,19 +345,18 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             };
             // barOption.yAxis.min = Math.floor(minVal);
             // barOption.yAxis.max = Math.ceil(maxVal);
-            if (!isCanceled) {
-                setStartDate(xAxisData[left]);
-                setEndDate(xAxisData[right]);
-                setXAxisData(xAxisData);
-                setDataAxis(dataAxis);
-                myChart.current?.setNewOption(barOption, {
-                    notMerge: false,
-                    lazyUpdate: true,
-                    silent: false,
-                });
-            }
+            setStartDate(xAxisData[left]);
+            setEndDate(xAxisData[right]);
+            setSelCurYear(xAxisData[center]);
+            setProfit(dataAxis[center]);
+            setXAxisData(xAxisData);
+            setDataAxis(dataAxis);
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
         }
-        return () => (isCanceled = true);
     }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
     return (
         <View style={styles.container}>
