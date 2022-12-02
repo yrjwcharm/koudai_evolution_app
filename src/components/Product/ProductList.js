@@ -320,6 +320,11 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                                     </Text>
                                                 </View>
                                             ) : null}
+                                            {true ? (
+                                                <View style={styles.showButton}>
+                                                    <Text style={styles.showButtonText}>立即查看</Text>
+                                                </View>
+                                            ) : null}
                                         </View>
                                         {edit_button ? (
                                             <TouchableOpacity
@@ -795,6 +800,20 @@ const styles = StyleSheet.create({
         marginTop: px(12),
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    showButton: {
+        position: 'absolute',
+        top: px(20),
+        right: px(4),
+        backgroundColor: '#FF7D41',
+        borderRadius: px(103),
+        paddingVertical: px(3),
+        paddingHorizontal: px(12),
+    },
+    showButtonText: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#fff',
     },
 });
 
