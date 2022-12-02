@@ -154,96 +154,94 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
      */
     const init = useCallback(() => {
         (async () => {
-            if (isCalendar) {
-                let dayjs_ = dayjs().add(diff, 'month').startOf('month');
-                let dayNums = dayjs_.daysInMonth();
-                let weekDay = dayjs_.startOf('month').day();
-                let startTrim = weekDay % 7;
-                let arr = [];
-                //for循环装载日历数据
-                for (let i = 0; i < dayNums; i++) {
-                    let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
-                    let item = {
-                        day,
+            let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+            let dayNums = dayjs_.daysInMonth();
+            let weekDay = dayjs_.startOf('month').day();
+            let startTrim = weekDay % 7;
+            let arr = [];
+            //for循环装载日历数据
+            for (let i = 0; i < dayNums; i++) {
+                let day = dayjs_.add(i, 'day').format('YYYY-MM-DD');
+                let item = {
+                    day,
+                    profit: '0.00',
+                    checked: false,
+                };
+                arr.push(item);
+            }
+            //获取当月最后一天是星期几
+            let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
+            let endTrim = 6 - lastWeekDay;
+            //当月日期开始
+            if (startTrim != 7) {
+                for (let i = 0; i < startTrim; i++) {
+                    arr.unshift({
+                        checked: false,
                         profit: '0.00',
-                        checked: false,
-                    };
-                    arr.push(item);
-                }
-                //获取当月最后一天是星期几
-                let lastWeekDay = dayjs_.add(dayNums - 1, 'day').day();
-                let endTrim = 6 - lastWeekDay;
-                //当月日期开始
-                if (startTrim != 7) {
-                    for (let i = 0; i < startTrim; i++) {
-                        arr.unshift({
-                            checked: false,
-                            profit: '0.00',
-                            style: {
-                                opacity: 0,
-                            },
-                            isDisabled: true,
-                            day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
-                        });
-                    }
-                }
-                //当月日期结束
-                for (let i = 0; i < endTrim; i++) {
-                    arr.push({
-                        day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
-                        checked: false,
                         style: {
                             opacity: 0,
                         },
-                        profit: '0.00',
+                        isDisabled: true,
+                        day: dayjs_.subtract(i + 1, 'day').format('YYYY-MM-DD'),
                     });
                 }
-                const res = await getChartData({
-                    type,
-                    unit_type,
-                    unit_value: dayjs_.format('YYYY-MM'),
-                    poid,
-                    fund_code,
+            }
+            //当月日期结束
+            for (let i = 0; i < endTrim; i++) {
+                arr.push({
+                    day: dayjs_.add(dayNums + i, 'day').format('YYYY-MM-DD'),
+                    checked: false,
+                    style: {
+                        opacity: 0,
+                    },
+                    profit: '0.00',
                 });
-                //双重for循环判断日历是否超过、小于或等于当前日期
-                if (res?.code === '000000') {
-                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-                    if (unit_list.length > 0) {
-                        let min = unit_list[unit_list.length - 1].value;
-                        let max = unit_list[0].value;
-                        setMaxDate(max);
-                        setMindDate(min);
-                        setUnitList(unit_list);
-                        let cur = dayjs_.format('YYYY-MM');
-                        if (cur > max || cur < min) return;
-                        for (let i = 0; i < arr.length; i++) {
-                            for (let j = 0; j < profit_data_list.length; j++) {
-                                //小于当前日期的情况
-                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                    if (arr[i].day == profit_data_list[j].unit_key) {
-                                        arr[i].profit = profit_data_list[j].value;
-                                    }
-                                } else {
-                                    delete arr[i].profit;
+            }
+            const res = await getChartData({
+                type,
+                unit_type,
+                unit_value: dayjs_.format('YYYY-MM'),
+                poid,
+                fund_code,
+            });
+            //双重for循环判断日历是否超过、小于或等于当前日期
+            if (res?.code === '000000') {
+                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+                if (unit_list.length > 0) {
+                    let min = unit_list[unit_list.length - 1].value;
+                    let max = unit_list[0].value;
+                    setMaxDate(max);
+                    setMindDate(min);
+                    setUnitList(unit_list);
+                    let cur = dayjs_.format('YYYY-MM');
+                    if (cur > max || cur < min) return;
+                    for (let i = 0; i < arr.length; i++) {
+                        for (let j = 0; j < profit_data_list.length; j++) {
+                            //小于当前日期的情况
+                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                if (arr[i].day == profit_data_list[j].unit_key) {
+                                    arr[i].profit = profit_data_list[j].value;
                                 }
+                            } else {
+                                delete arr[i].profit;
                             }
                         }
-
-                        let zIndex = arr.findIndex((el) => el.day == (selCurDate || latest_profit_date));
-                        setDate(dayjs_);
-                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                        arr[zIndex] && (arr[zIndex].checked = true);
-                        setDateArr([...arr]);
-                        !isBarChart && setSelCurDate(arr[zIndex]?.day);
-                        !isBarChart && setProfit(arr[zIndex].profit);
-                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                    } else {
-                        setIsHasData(false);
                     }
+
+                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                    setDate(dayjs_);
+                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                    arr[zIndex] && (arr[zIndex].checked = true);
+                    setDateArr([...arr]);
+                    setSelCurDate(arr[zIndex]?.day);
+                    setProfit(arr[zIndex].profit);
+                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                } else {
+                    setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type, isBarChart, selCurDate, isCalendar]);
+    }, [diff, type]);
     useEffect(() => {
         init();
     }, [init]);

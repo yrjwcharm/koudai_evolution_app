@@ -173,18 +173,18 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                                 profit: delMille(el.value),
                             };
                         });
-                    let zIndex = arr.findIndex((el) => el.day == (selCurYear || latest_profit_date));
+                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                     setDateArr([...arr]);
-                    !isBarChart && setSelCurYear(arr[zIndex]?.day);
-                    !isBarChart && setProfit(arr[zIndex].profit);
+                    setSelCurYear(arr[zIndex]?.day);
+                    setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [type, diff, isBarChart, selCurYear]);
+    }, [type, diff]);
     useEffect(() => {
         init();
     }, [init]);

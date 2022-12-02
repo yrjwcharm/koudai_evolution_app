@@ -211,23 +211,21 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                             }
                         }
                     }
-                    let zIndex = arr.findIndex(
-                        (el) => el.day == (selCurDate || dayjs(latest_profit_date).format('YYYY-MM'))
-                    );
+                    let zIndex = arr.findIndex((el) => el.day == dayjs(latest_profit_date).format('YYYY-MM'));
                     // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
                     arr[zIndex] && (arr[zIndex].checked = true);
                     setDateArr([...arr]);
                     setProfit(profit_data_list[zIndex]?.value);
                     setDate(dayjs_);
-                    !isBarChart && setSelCurDate(arr[zIndex]?.day);
-                    !isBarChart && setProfit(arr[zIndex].profit);
+                    setSelCurDate(arr[zIndex]?.day);
+                    setProfit(arr[zIndex].profit);
                 } else {
                     setIsHasData(false);
                 }
             }
         })();
-    }, [diff, type, isBarChart, selCurDate]);
+    }, [diff, type]);
 
     const getProfitBySelDate = (item) => {
         setProfitDay(item.day);
@@ -281,6 +279,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                                 value: '0.00',
                             });
                         }
+                        setDate(dayjs_);
                         setSortProfitList(sortProfitDataList);
                         setLatestProfitDate(latest_profit_date);
                         myChart.current?.hideLoading();
