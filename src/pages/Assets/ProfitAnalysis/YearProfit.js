@@ -33,7 +33,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const [unitList, setUnitList] = useState([]);
     const [period, setPeriod] = useState('');
     const [sortProfitList, setSortProfitList] = useState([]);
-    const [latestProfitDate, setLatestProfitDate] = useState('');
     const [profitDay, setProfitDay] = useState('');
     const barOption = {
         grid: {left: 0, right: 0, bottom: 0, containLabel: true},
@@ -209,6 +208,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
     const selBarChartType = () => {
         setIsCalendar(false);
         setIsBarChart(true);
+        setProfitDay('');
     };
     const renderCalendar = useMemo(
         () =>
@@ -281,11 +281,10 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         (async () => {
             if (isBarChart) {
                 // myChart.current?.showLoading();
-                let dayjs_ = dayjs().add(diff, 'year');
                 const res = await getChartData({
                     type,
                     unit_type,
-                    unit_value: dayjs_.year(),
+                    unit_value: dayjs().year(),
                     poid,
                     fund_code,
                     chart_type: 'square',
@@ -309,7 +308,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                             });
                         }
                         setSortProfitList(sortProfitDataList);
-                        setLatestProfitDate(latest_profit_date);
                         // myChart.current?.hideLoading();
                     }
                 }
@@ -317,7 +315,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
         })();
     }, [type, isBarChart, diff]);
     useEffect(() => {
-        if (isBarChart && latestProfitDate) {
+        if (isBarChart && selCurYear && sortProfitList.length > 0) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
                 xAxisData.push(el.unit_key);
@@ -327,8 +325,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             // const maxVal = Number(Math.max(...flowData));
             // // // 获取坐标轴刻度最小值
             // const minVal = Number(Math.min(...flowData));
-            let newProfitDay = !isEmpty(profitDay) ? profitDay : '';
-            let index = sortProfitList?.findIndex((el) => el.unit_key == (newProfitDay || latestProfitDate));
+            let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || selCurYear));
             let [left, center, right] = [index - 5, index, index + 5];
             barOption.dataZoom[0].startValue = left;
             barOption.dataZoom[0].endValue = right;
@@ -349,8 +346,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
-            setSelCurYear(xAxisData[center]);
-            setProfit(dataAxis[center]);
+            profitDay && setSelCurYear(xAxisData[center]);
+            profitDay && setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -359,7 +356,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 silent: false,
             });
         }
-    }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
+    }, [isBarChart, sortProfitList, profitDay, selCurYear]);
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>

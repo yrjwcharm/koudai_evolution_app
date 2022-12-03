@@ -6,7 +6,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Dimensions, ScrollView, Platform} from 'react-native';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import {deviceWidth, isIphoneX, px as text, px} from '../../../utils/appUtil';
+import {deviceWidth, isEmpty, isIphoneX, px as text, px} from '../../../utils/appUtil';
 import dayjs from 'dayjs';
 import {compareDate, delMille} from '../../../utils/appUtil';
 import RenderList from './components/RenderList';
@@ -36,7 +36,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     const [unitList, setUnitList] = useState([]);
     const [profitDay, setProfitDay] = useState('');
     const [sortProfitList, setSortProfitList] = useState([]);
-    const [latestProfitDate, setLatestProfitDate] = useState('');
     const barOption = {
         // tooltip: {
         //     trigger: 'axis',
@@ -301,17 +300,18 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     }, []);
     const selBarChartType = useCallback(() => {
         setIsCalendar(false);
+        setProfitDay('');
         setIsBarChart(true);
     }, []);
     useEffect(() => {
         (async () => {
             if (isBarChart) {
                 myChart.current?.showLoading();
-                let dayjs_ = dayjs().add(diff, 'month').startOf('month');
+                // let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
                     unit_type,
-                    unit_value: dayjs_.format('YYYY-MM'),
+                    unit_value: dayjs().format('YYYY-MM'),
                     poid,
                     fund_code,
                     chart_type: 'square',
@@ -338,17 +338,15 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                                 value: '0.00',
                             });
                         }
-                        setDate(dayjs_);
                         setSortProfitList(sortProfitDataList);
-                        setLatestProfitDate(latest_profit_date);
                         myChart.current?.hideLoading();
                     }
                 }
             }
         })();
-    }, [type, isBarChart, diff]);
+    }, [type, isBarChart]);
     useEffect(() => {
-        if (isBarChart && latestProfitDate) {
+        if (isBarChart && selCurDate && sortProfitList.length > 0) {
             const [xAxisData, dataAxis] = [[], []];
             sortProfitList?.map((el) => {
                 xAxisData.push(el.unit_key);
@@ -359,7 +357,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             // 获取坐标轴刻度最小值
             // const minVal = Number(Math.min(...flowData));
             // 计算坐标轴分割间隔
-            let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || latestProfitDate));
+            let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || selCurDate));
             let [left, center, right] = [index - 15, index, index + 15];
             barOption.dataZoom[0].startValue = left;
             barOption.dataZoom[0].endValue = right;
@@ -380,8 +378,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
-            setSelCurDate(xAxisData[center]);
-            setProfit(dataAxis[center]);
+            profitDay && setSelCurDate(xAxisData[center]);
+            profitDay && setProfit(dataAxis[center]);
             setXAxisData(xAxisData);
             setDataAxis(dataAxis);
             myChart.current?.setNewOption(barOption, {
@@ -390,7 +388,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 silent: false,
             });
         }
-    }, [isBarChart, sortProfitList, profitDay, latestProfitDate]);
+    }, [isBarChart, sortProfitList, profitDay, selCurDate]);
     const renderWeek = useMemo(
         () =>
             week.current?.map((el, index) => {
