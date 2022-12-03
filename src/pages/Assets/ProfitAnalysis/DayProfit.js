@@ -306,7 +306,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     useEffect(() => {
         (async () => {
             if (isBarChart) {
-                myChart.current?.showLoading();
                 // let dayjs_ = dayjs().add(diff, 'month').startOf('month');
                 const res = await getChartData({
                     type,
@@ -339,7 +338,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                             });
                         }
                         setSortProfitList(sortProfitDataList);
-                        myChart.current?.hideLoading();
                     }
                 }
             }
@@ -352,11 +350,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxisData.push(el.unit_key);
                 dataAxis.push(delMille(el.value));
             });
-            // let flowData = sortProfitList?.map((el) => delMille(el.value));
-            // const maxVal = Number(Math.max(...flowData));
-            // 获取坐标轴刻度最小值
-            // const minVal = Number(Math.min(...flowData));
-            // 计算坐标轴分割间隔
             let index = sortProfitList?.findIndex((el) => el.unit_key == (profitDay || selCurDate));
             let [left, center, right] = [index - 15, index, index + 15];
             barOption.dataZoom[0].startValue = left;
@@ -374,8 +367,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                 xAxis: xAxisData[center],
                 yAxis: dataAxis[center],
             };
-            // barOption.yAxis.min = Math.floor(minVal);
-            // barOption.yAxis.max = Math.ceil(maxVal);
             setStartDate(xAxisData[left]);
             setEndDate(xAxisData[right]);
             profitDay && setSelCurDate(xAxisData[center]);
@@ -468,9 +459,6 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                     ref={myChart}
                     width={deviceWidth - px(58)}
                     height={px(300)}
-                    onMousemove={() => {}}
-                    onFinished={() => {}}
-                    onRendered={() => {}}
                     option={barOption}
                 />
             );

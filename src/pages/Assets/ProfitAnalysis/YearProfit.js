@@ -268,9 +268,6 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                     ref={myChart}
                     width={deviceWidth - px(58)}
                     height={px(300)}
-                    onMousemove={() => {}}
-                    onFinished={() => {}}
-                    onRendered={() => {}}
                     option={barOption}
                 />
             );

@@ -7342,15 +7342,10 @@ react-native-easy-chat-ui@^0.4.14:
   dependencies:
     moment "^2.22.2"
 
-react-native-echarts-pro@^1.8.8:
-  version "1.8.8"
-  resolved "https://registry.yarnpkg.com/react-native-echarts-pro/-/react-native-echarts-pro-1.8.8.tgz#3856d60c41c43f409628e4a3a1651b72e7d9325a"
-  integrity sha512-1LMSMCBQ7vFecISi2nxHuZA1iCuJbjwc6GmvApnR08Vr8Ab4O26OVYtXwj11vhsEXequvCq/EUCHRJ++fxcX8g==
-
-react-native-echarts@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.npmmirror.com/react-native-echarts/-/react-native-echarts-0.0.1.tgz#fce7d354fea8d5a285ed2760019a8aaf2d7bd2f3"
-  integrity sha512-l3UogmFJ1zvNIlzIRWAV8/kHV+eFC628UwIfFUCS8jtU1ZMVyBdQFhFZfD9StUja+uabW/3luGd4pDMf4AII8g==
+react-native-echarts-pro@^1.8.9:
+  version "1.8.9"
+  resolved "https://registry.npmmirror.com/react-native-echarts-pro/-/react-native-echarts-pro-1.8.9.tgz#afbf65609304950906694f7288d0c265aed8d141"
+  integrity sha512-Da8IoFuVBSU3bXF1+0WXH8KkQqS/DehqW6KuzueFRjMrgxIkbKCv8R1SXFRJD5RU6yFhH9sjrYWcuf5s2Pybjg==
 
 react-native-error-helper@^0.2.2:
   version "0.2.2"
