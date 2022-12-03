@@ -151,7 +151,8 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
     /**
      * 初始化日历日期
      */
-    const init = useCallback(() => {
+    useEffect(() => {
+        let didCancel = false;
         (async () => {
             let dayjs_ = dayjs().add(diff, 'month').startOf('month');
             let dayNums = dayjs_.daysInMonth();
@@ -205,45 +206,45 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             });
             //双重for循环判断日历是否超过、小于或等于当前日期
             if (res?.code === '000000') {
-                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
-                if (unit_list.length > 0) {
-                    let min = unit_list[unit_list.length - 1].value;
-                    let max = unit_list[0].value;
-                    setMaxDate(max);
-                    setMindDate(min);
-                    setUnitList(unit_list);
-                    let cur = dayjs_.format('YYYY-MM');
-                    if (cur > max || cur < min) return;
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let j = 0; j < profit_data_list.length; j++) {
-                            //小于当前日期的情况
-                            if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
-                                if (arr[i].day == profit_data_list[j].unit_key) {
-                                    arr[i].profit = profit_data_list[j].value;
+                if (!didCancel) {
+                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+                    if (unit_list.length > 0) {
+                        let min = unit_list[unit_list.length - 1].value;
+                        let max = unit_list[0].value;
+                        setMaxDate(max);
+                        setMindDate(min);
+                        setUnitList(unit_list);
+                        let cur = dayjs_.format('YYYY-MM');
+                        if (cur > max || cur < min) return;
+                        for (let i = 0; i < arr.length; i++) {
+                            for (let j = 0; j < profit_data_list.length; j++) {
+                                //小于当前日期的情况
+                                if (compareDate(currentDay, arr[i].day) || currentDay == arr[i].day) {
+                                    if (arr[i].day == profit_data_list[j].unit_key) {
+                                        arr[i].profit = profit_data_list[j].value;
+                                    }
+                                } else {
+                                    delete arr[i].profit;
                                 }
-                            } else {
-                                delete arr[i].profit;
                             }
                         }
-                    }
 
-                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
-                    setDate(dayjs_);
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[zIndex] && (arr[zIndex].checked = true);
-                    setDateArr([...arr]);
-                    setSelCurDate(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
-                    // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
-                } else {
-                    setIsHasData(false);
+                        let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                        setDate(dayjs_);
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[zIndex] && (arr[zIndex].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurDate(arr[zIndex]?.day);
+                        setProfit(arr[zIndex].profit);
+                        // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
+                    } else {
+                        setIsHasData(false);
+                    }
                 }
             }
         })();
+        return () => (didCancel = true);
     }, [diff, type]);
-    useEffect(() => {
-        init();
-    }, [init]);
     /**
      * 向上递增一个月
      */

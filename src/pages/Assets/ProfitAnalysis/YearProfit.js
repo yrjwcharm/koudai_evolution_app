@@ -133,7 +133,8 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
             },
         ],
     };
-    const init = useCallback(() => {
+    useEffect(() => {
+        let didCancel = false;
         (async () => {
             let dayjs_ = dayjs().add(diff, 'year');
             const res = await getChartData({
@@ -144,49 +145,49 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                 unit_value: dayjs_.year(),
             });
             if (res.code === '000000') {
-                const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
+                if (!didCancel) {
+                    const {profit_data_list = [], unit_list = [], latest_profit_date = ''} = res?.result ?? {};
 
-                if (unit_list.length > 0) {
-                    const [, max] = unit_list[0].value.split('-');
-                    const [min] = unit_list[unit_list.length - 1].value.split('-');
-                    setStartYear(min);
-                    setEndYear(max);
-                    setUnitList(unit_list);
-                    setDate(dayjs_);
-                    let cur = dayjs_.year();
-                    if (cur > max || cur < min) return;
-                    let period = '';
-                    for (let item of unit_list) {
-                        const [start, end] = item.value.split('-');
-                        if (dayjs_.year() >= start && dayjs_.year() <= end) {
-                            period = item.text;
-                            break;
+                    if (unit_list.length > 0) {
+                        const [, max] = unit_list[0].value.split('-');
+                        const [min] = unit_list[unit_list.length - 1].value.split('-');
+                        setStartYear(min);
+                        setEndYear(max);
+                        setUnitList(unit_list);
+                        setDate(dayjs_);
+                        let cur = dayjs_.year();
+                        if (cur > max || cur < min) return;
+                        let period = '';
+                        for (let item of unit_list) {
+                            const [start, end] = item.value.split('-');
+                            if (dayjs_.year() >= start && dayjs_.year() <= end) {
+                                period = item.text;
+                                break;
+                            }
                         }
+                        setPeriod(period);
+                        let arr = profit_data_list
+                            .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
+                            .map((el) => {
+                                return {
+                                    day: parseFloat(el.unit_key),
+                                    profit: delMille(el.value),
+                                };
+                            });
+                        let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
+                        profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
+                        arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
+                        setDateArr([...arr]);
+                        setSelCurYear(arr[zIndex]?.day);
+                        setProfit(arr[zIndex].profit);
+                    } else {
+                        setIsHasData(false);
                     }
-                    setPeriod(period);
-                    let arr = profit_data_list
-                        .sort((a, b) => new Date(a.unit_key).getTime() - new Date(b.unit_key).getTime())
-                        .map((el) => {
-                            return {
-                                day: parseFloat(el.unit_key),
-                                profit: delMille(el.value),
-                            };
-                        });
-                    let zIndex = arr.findIndex((el) => el.day == latest_profit_date);
-                    profit_data_list.length > 0 ? setIsHasData(true) : setIsHasData(false);
-                    arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
-                    setDateArr([...arr]);
-                    setSelCurYear(arr[zIndex]?.day);
-                    setProfit(arr[zIndex].profit);
-                } else {
-                    setIsHasData(false);
                 }
             }
         })();
+        return () => (didCancel = true);
     }, [type, diff]);
-    useEffect(() => {
-        init();
-    }, [init]);
     const getProfitBySelDate = (item) => {
         setSelCurYear(item.day);
         setProfitDay(item.day);
