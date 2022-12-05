@@ -76,10 +76,10 @@ const ShareModal = React.forwardRef((props, ref) => {
         },
         {
             img:
-                shareContent?.can_up != undefined && shareContent?.can_up == 1
+                shareContent?.can_up == 0
                     ? require('../../assets/img/share/cancelUp.png')
                     : require('../../assets/img/share/up.png'),
-            title: shareContent?.can_up != undefined && shareContent?.can_up == 1 ? '取消置顶' : '置顶',
+            title: shareContent?.can_up == 0 ? '取消置顶' : '置顶',
             type: 'articleUp',
         },
         {
@@ -221,7 +221,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             }, 500);
         }
     };
-
+    console.log(shareContent);
     React.useImperativeHandle(ref, () => {
         return {
             show: show,
@@ -278,7 +278,14 @@ const ShareModal = React.forwardRef((props, ref) => {
                             }
                             if (item.type === 'QRCode' && !shareContent.show_qr_code) return null;
 
-                            // if (item?.type == 'articleUp' && shareContent?.can_up == undefined) return null;
+                            if (item?.type == 'articleUp' && shareContent?.can_up == undefined) return null;
+                            if (item.type === 'articleUp') {
+                                item.title = shareContent?.can_up == 0 ? '取消置顶' : '置顶';
+                                item.img =
+                                    shareContent?.can_up == 0
+                                        ? require('../../assets/img/share/cancelUp.png')
+                                        : require('../../assets/img/share/up.png');
+                            }
                             return (
                                 <TouchableOpacity
                                     key={index}

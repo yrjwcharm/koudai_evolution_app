@@ -2,7 +2,7 @@
  * @Date: 2022-11-28 14:43:36
  * @Description:社区主页列表
  */
-import {StyleSheet, Text, ActivityIndicator, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, ActivityIndicator, View} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
@@ -122,6 +122,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
     useEffect(() => {
         init();
     }, [page]);
+
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {data?.length > 0 ? (

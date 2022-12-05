@@ -165,6 +165,7 @@ export const CommunityCard = (props) => {
         type, // 卡片类型 1文章 2音频 3视频 9直播
         type_str, // 类型文案
         url, // 跳转地址
+        keep_top, //置顶标志
     } = props.data || {};
     const {
         cardType = 'list', // 卡片类型 list代表列表卡片 waterflow代表瀑布流卡片
@@ -304,8 +305,7 @@ export const CommunityCard = (props) => {
         <>
             <View style={[cardType === 'waterflow' ? {} : styles.communityCard, style]}>
                 {drag && (
-                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]}  
-activeOpacity={0.8} onPressIn={drag}>
+                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} activeOpacity={0.8} onPressIn={drag}>
                         <Image
                             source={require('~/assets/img/community/sort.png')}
                             style={{width: px(18), height: px(18), marginRight: px(2)}}
@@ -352,6 +352,7 @@ activeOpacity={0.8} onPressIn={drag}>
                                     {title}
                                 </Text>
                             ) : null}
+
                             {desc ? (
                                 <Text style={[styles.desc, {marginTop: author?.nickname || title ? px(8) : 0}]}>
                                     {desc}
@@ -392,7 +393,23 @@ activeOpacity={0.8} onPressIn={drag}>
                     ) : null}
                     {cardType === 'waterflow' ? (
                         <View style={{padding: px(10), paddingBottom: px(12)}}>
-                            {title ? <HTML html={title} numberOfLines={2} style={styles.subTitle} /> : null}
+                            {keep_top && keep_top == 1 ? (
+                                <>
+                                    <View style={styles.keepTop}>
+                                        <Text style={{color: '#FF7D41', fontSize: px(10)}}>置顶</Text>
+                                    </View>
+                                    {title ? (
+                                        <HTML
+                                            html={`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${title}`}
+                                            numberOfLines={2}
+                                            style={styles.subTitle}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : title ? (
+                                <HTML html={title} numberOfLines={2} style={styles.subTitle} />
+                            ) : null}
+
                             {desc ? (
                                 <HTML
                                     html={desc}
@@ -698,5 +715,15 @@ const styles = StyleSheet.create({
         top: px(0),
         padding: px(12),
         zIndex: 10,
+    },
+    keepTop: {
+        position: 'absolute',
+        top: px(10),
+        left: px(10),
+        backgroundColor: '#FFF5E5',
+        width: px(28),
+        height: px(17),
+        borderRadius: px(3),
+        ...Style.flexCenter,
     },
 });

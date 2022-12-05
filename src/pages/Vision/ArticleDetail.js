@@ -304,17 +304,16 @@ const ArticleDetail = ({navigation, route}) => {
         [data, collect_status]
     );
     //文章置顶
-    const onArticeUp = useCallback(() => {
+    const onArticeUp = () => {
         setCanUp((pre) => {
             return pre == 0 ? 1 : 0;
         });
         http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp}).then(
             () => {
-                shareModal.current.toastShow(canUp == 1 ? '置顶成功' : '取消置顶');
+                shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
             }
         );
-    }, [canUp, data]);
-    console.log(canUp, 'canUp');
+    };
     const postProgress = useCallback(async (params) => {
         http.post('/community/article/progress/20210101', params || {}).then((res) => {
             if (res.code == '000000' && res.result?.add_rational_num > 0) {
