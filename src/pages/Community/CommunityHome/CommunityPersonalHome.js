@@ -2,7 +2,7 @@
 // //  * @Date: 2022-10-09 14:35:24
 // //  * @Description:社区个人主页
 // //  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Animated, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
@@ -26,6 +26,11 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
     const [data, setData] = useState();
     const [introHeight, setIntroHeight] = useState(0);
     const shareModal = useRef();
+    const recommendList = useRef([]);
+
+    const refresh = () => {
+        recommendList.current[0]?.refresh?.();
+    };
     const getData = async () => {
         let res = await getPersonalHomeData({muid});
         setData(res.result);
@@ -36,6 +41,15 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
     useEffect(() => {
         getData();
     }, []);
+    useEffect(() => {
+        //当置顶变化时刷新
+        const emitter = DeviceEventEmitter.addListener('articel_up_change', () => {
+            refresh();
+        });
+        return () => {
+            emitter?.remove?.();
+        };
+    });
     const Header = () => {
         const animateOpacity = scrollY.interpolate({
             inputRange: [px(50), parallaxHeaderHeight - 100],
@@ -122,6 +136,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
                         {data?.tabs?.map(({name, type}, index) => (
                             <WaterfallFlowList
                                 key={index}
+                                ref={(flow) => (recommendList.current[index] = flow)}
                                 tabLabel={name}
                                 contentContainerStyle={{marginTop: px(12)}}
                                 getData={getProductList}

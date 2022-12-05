@@ -16,6 +16,7 @@ import EmptyTip from '~/components/EmptyTip';
 import {Button} from '~/components/Button';
 
 import {AlbumCard} from '~/components/Product';
+import {ProductList} from '../../../components/Product';
 const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_add_btn, ...rest}) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -47,7 +48,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
                 community_id: params.community_id,
                 relation_list: JSON.stringify(relation_list),
             });
-            if (res.code == '000000') {
+            if (res.code === '000000') {
                 refresh();
             }
         }
@@ -55,8 +56,8 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
     const renderItem = ({item = {}}) => {
         return params.type == 1 ? (
             <CommunityCard data={item} style={{flex: 1}} x />
-        ) : item?.type == 'recommend_card' ? (
-            <ProductCards data={item} style={{flex: 1}} />
+        ) : item?.relation_type == 4 ? (
+            <ProductList data={[item]} style={styles.card} />
         ) : (
             <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} />
         );
@@ -177,5 +178,12 @@ const styles = StyleSheet.create({
         paddingRight: px(6),
         marginTop: px(12),
         paddingTop: px(16),
+    },
+    card: {
+        flex: 1,
+        backgroundColor: '#fff',
+        marginTop: px(12),
+        padding: px(12),
+        borderRadius: px(6),
     },
 });

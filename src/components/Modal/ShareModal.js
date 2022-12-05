@@ -221,7 +221,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             }, 500);
         }
     };
-    console.log(shareContent);
     React.useImperativeHandle(ref, () => {
         return {
             show: show,

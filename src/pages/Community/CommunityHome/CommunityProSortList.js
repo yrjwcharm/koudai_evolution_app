@@ -175,17 +175,6 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
 export default CommunityProSortList;
 
 const styles = StyleSheet.create({
-    addBtn: {
-        width: px(180),
-        height: px(36),
-        borderRadius: px(100),
-        marginTop: px(16),
-    },
-    desc: {
-        fontSize: Font.textH3,
-        lineHeight: px(17),
-        color: Colors.descColor,
-    },
     cardDelete: {
         alignSelf: 'flex-start',
         paddingRight: px(6),

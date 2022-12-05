@@ -4,7 +4,7 @@
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View, TextInput, DeviceEventEmitter} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -309,8 +309,11 @@ const ArticleDetail = ({navigation, route}) => {
             return pre == 0 ? 1 : 0;
         });
         http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp}).then(
-            () => {
-                shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
+            (res) => {
+                if (res.code === '000000') {
+                    DeviceEventEmitter.emit('articel_up_change');
+                    shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
+                }
             }
         );
     };
