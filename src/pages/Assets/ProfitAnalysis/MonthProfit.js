@@ -15,7 +15,7 @@ import RenderList from './components/RenderList';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
+const MonthProfit = React.memo(({poid, fund_code, type, unit_type, slideFn}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
     const [startDate, setStartDate] = useState('');
@@ -363,12 +363,16 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
+                        slideFn(false);
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 6;
                         let curYear = dayjs(xAxisData[center]).year();
                         let diffYear = dayjs().year() - curYear;
                         setDiff(-diffYear || 0);
                         setProfitDay(xAxisData[center]);
+                    }}
+                    onFinished={() => {
+                        slideFn(true);
                     }}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}

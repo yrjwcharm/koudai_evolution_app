@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView, DeviceEventEmitter, TouchableOpacity} from 'react-native';
 import {deviceWidth, px as text, px, delMille} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
@@ -33,6 +33,7 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
     const [data, setData] = useState({});
     const dispatch = useDispatch();
     const jump = useJump();
+    const scrollRef = useRef(null);
     const [{profit_info, profit_acc_info, profit_all}, setHeadData] = useState({});
     const [unitType, setUnitType] = useState('day');
     const [tabs, setTabs] = useState([
@@ -67,9 +68,15 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
             i == 0 ? 'day_earnings' : i == 1 ? 'month_earnings' : i == 2 ? 'year_earnings' : 'accumlated_earnings'
         );
     };
+    const slideFn = (bool) => {
+        scrollRef.current?.setNativeProps({
+            scrollEnabled: bool,
+        });
+    };
     return (
         <>
             <ScrollView
+                ref={scrollRef}
                 showsVerticalScrollIndicator={false}
                 style={{marginBottom: Object.keys(data).length > 0 ? px(86) : px(0)}}>
                 <BoxShadow setting={{...shadow}}>
@@ -197,13 +204,32 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
                         </View>
                     </View>
                     {unitType == 'day' && (
-                        <DayProfit type={type} differ={differ} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                        <DayProfit
+                            slideFn={slideFn}
+                            type={type}
+                            differ={differ}
+                            poid={poid}
+                            unit_type={unitType}
+                            fund_code={fund_code}
+                        />
                     )}
                     {unitType == 'month' && (
-                        <MonthProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                        <MonthProfit
+                            slideFn={slideFn}
+                            type={type}
+                            poid={poid}
+                            unit_type={unitType}
+                            fund_code={fund_code}
+                        />
                     )}
                     {unitType == 'year' && (
-                        <YearProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />
+                        <YearProfit
+                            slideFn={slideFn}
+                            type={type}
+                            poid={poid}
+                            unit_type={unitType}
+                            fund_code={fund_code}
+                        />
                     )}
                     {unitType == 'all' && (
                         <TotalProfit type={type} poid={poid} unit_type={unitType} fund_code={fund_code} />

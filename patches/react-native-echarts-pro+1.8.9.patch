@@ -1,13 +1,14 @@
 diff --git a/node_modules/react-native-echarts-pro/index.d.ts b/node_modules/react-native-echarts-pro/index.d.ts
-index c53e08d..30765b7 100644
+index c53e08d..e45a1b2 100644
 --- a/node_modules/react-native-echarts-pro/index.d.ts
 +++ b/node_modules/react-native-echarts-pro/index.d.ts
-@@ -12,7 +12,7 @@ declare function RNEChartsPro(props: {
+@@ -12,7 +12,8 @@ declare function RNEChartsPro(props: {
    formatterVariable?: object;
    eventActions?:object;
    legendSelectChanged?(result: string);
 -  onDataZoom?(result: string);
 +  onDataZoom?(result: object,option:object);
++  onFinished?();
    onPress?(result: string);
  }): JSX.Element;
  
@@ -48,7 +49,7 @@ index e1e5f49..57deb32 100644
       * Get echarts instance support function.
       * @param {string} functionName
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
-index 3014574..4c6f5ec 100644
+index 3014574..a35713b 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
 @@ -43,6 +43,17 @@ function Echarts(props, ref) {
@@ -69,29 +70,36 @@ index 3014574..4c6f5ec 100644
      /**
       * Get echarts instance support function.
       * @param {string} functionName
-@@ -101,7 +112,7 @@ function Echarts(props, ref) {
+@@ -101,8 +112,10 @@ function Echarts(props, ref) {
      const echartsData = JSON.parse(event.nativeEvent.data);
      // 判断监听类型
      if (echartsData.type === "datazoom") {
 -      props.onDataZoom?.();
-+      props.onDataZoom?.(echartsData.params,echartsData.option);
-     } else if (echartsData.type === "legendselectchanged") {
+-    } else if (echartsData.type === "legendselectchanged") {
++      props.onDataZoom?.(echartsData.params, echartsData.option);
++    } else if(echartsData.type==='finished'){
++      props.onFinished?.();
++    }else if (echartsData.type === "legendselectchanged") {
        props.legendSelectChanged?.(echartsData.name);
      } else if (echartsData.type === "tooltipEvent") {
+       props.tooltipEvent?.(echartsData.params);
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-index d232268..5418fe2 100644
+index d232268..8f4ad2c 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-@@ -50,7 +50,7 @@ export default function renderChart(props) {
+@@ -50,7 +50,10 @@ export default function renderChart(props) {
        window.ReactNativeWebView.postMessage(JSON.stringify(clickParams));
      });
      myChart.on('dataZoom', (params)=>{
 -        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type}));
 +        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type,params,option:myChart.getOption()}));
++    });
++    myChart.on('finished',()=>{
++        window.ReactNativeWebView.postMessage(JSON.stringify({type:'finished'}));
      });
      myChart.on('legendselectchanged', (params)=>{
          window.ReactNativeWebView.postMessage(JSON.stringify({type: params.type,name:params.name}));
-@@ -93,6 +93,12 @@ export default function renderChart(props) {
+@@ -93,6 +96,12 @@ export default function renderChart(props) {
            if (option.type === "dispatchAction") {
              dispatchAction(option.action);
            }
@@ -104,7 +112,7 @@ index d232268..5418fe2 100644
            // 获取实例进行操作
            if (option.type === "getInstance") {
              const result = myChart[option.functionName](option.params);
-@@ -115,6 +121,12 @@ export default function renderChart(props) {
+@@ -115,6 +124,12 @@ export default function renderChart(props) {
          if(option.type === 'dispatchAction'){
            dispatchAction(option.action)
          }
