@@ -17,7 +17,7 @@ export const getStyles = (el, currentDay) => {
         }
         if (delMille(el?.profit) == 0) {
             wrapStyle = {
-                backgroundColor: el?.day == currentDay ? Colors.transparent : '#F5F6F8',
+                backgroundColor: '#F5F6F8',
             };
             profitStyle = {
                 color: Colors.lightGrayColor,
