@@ -101,6 +101,7 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
             style_id,
             drawback,
             drawback_desc,
+            product_button,
         } = item;
         const containerSty = out_box
             ? {
@@ -319,6 +320,16 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
                                                         {profit_desc}
                                                     </Text>
                                                 </View>
+                                            ) : null}
+                                            {product_button ? (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={styles.showButton}
+                                                    onPress={() => {
+                                                        jump(product_button.url);
+                                                    }}>
+                                                    <Text style={styles.showButtonText}>{product_button.text}</Text>
+                                                </TouchableOpacity>
                                             ) : null}
                                         </View>
                                         {edit_button ? (
@@ -795,6 +806,20 @@ const styles = StyleSheet.create({
         marginTop: px(12),
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    showButton: {
+        position: 'absolute',
+        top: px(20),
+        right: px(4),
+        backgroundColor: '#FF7D41',
+        borderRadius: px(103),
+        paddingVertical: px(3),
+        paddingHorizontal: px(12),
+    },
+    showButtonText: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#fff',
     },
 });
 
