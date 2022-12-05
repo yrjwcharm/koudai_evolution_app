@@ -75,11 +75,9 @@ const ShareModal = React.forwardRef((props, ref) => {
             type: 'QRCode',
         },
         {
-            img:
-                shareContent?.can_up == 0
-                    ? require('../../assets/img/share/cancelUp.png')
-                    : require('../../assets/img/share/up.png'),
-            title: shareContent?.can_up == 0 ? '取消置顶' : '置顶',
+            img: require('../../assets/img/share/cancelUp.png'),
+
+            title: '取消置顶',
             type: 'articleUp',
         },
         {
