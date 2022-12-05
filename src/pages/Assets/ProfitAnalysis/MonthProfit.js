@@ -343,7 +343,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
         () =>
             dateArr?.map((el, index) => {
                 const month = dayjs(el?.day).month() + 1;
-                const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay);
+                const {wrapStyle, dayStyle: monthStyle, profitStyle} = getStyles(el, currentDay, 'month');
                 return (
                     <TouchableOpacity
                         disabled={el.day > currentDay}
