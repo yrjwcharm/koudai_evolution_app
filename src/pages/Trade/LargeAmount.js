@@ -260,7 +260,7 @@ const LargeAmount = (props) => {
                     agreementStyle={{paddingBottom: px(8)}}
                     onPress={() => {
                         let url = button.url;
-                        if (typeof url.params.isLargeAmount === 'string') {
+                        if (typeof url.params?.isLargeAmount === 'string') {
                             url.params.isLargeAmount = url.params.isLargeAmount == 'true' ? true : false;
                         }
                         jump(button.url);
