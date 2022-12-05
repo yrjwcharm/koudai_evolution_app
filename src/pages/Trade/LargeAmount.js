@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 10:59:31
+ * @LastEditTime: 2022-12-05 11:30:12
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
@@ -165,29 +165,29 @@ const LargeAmount = (props) => {
                                     </TouchableOpacity>
                                 );
                             })}
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[
-                                    styles.bankCard,
-                                    {
-                                        borderTopColor: Colors.borderColor,
-                                        borderTopWidth: 0.5,
-                                    },
-                                ]}
-                                onPress={() =>
-                                    props.navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})
-                                }>
-                                <Feather size={px(16)} name={'plus-circle'} color={Colors.btnColor} />
-                                <Text
-                                    style={{
-                                        fontSize: px(14),
-                                        lineHeight: px(20),
-                                        color: '#0051CC',
-                                        marginLeft: px(3),
-                                    }}>
-                                    新增银行卡
-                                </Text>
-                            </TouchableOpacity>
+                            {data?.add_bank_card ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[
+                                        styles.bankCard,
+                                        {
+                                            borderTopColor: Colors.borderColor,
+                                            borderTopWidth: 0.5,
+                                        },
+                                    ]}
+                                    onPress={() => jump(data?.add_bank_card.url)}>
+                                    <Feather size={px(16)} name={'plus-circle'} color={Colors.btnColor} />
+                                    <Text
+                                        style={{
+                                            fontSize: px(14),
+                                            lineHeight: px(20),
+                                            color: '#0051CC',
+                                            marginLeft: px(3),
+                                        }}>
+                                        {data?.add_bank_card?.text}
+                                    </Text>
+                                </TouchableOpacity>
+                            ) : null}
                         </>
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
