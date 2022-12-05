@@ -69,7 +69,9 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
     };
     return (
         <>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{marginBottom: Object.keys(data).length > 0 ? px(86) : px(0)}}>
                 <BoxShadow setting={{...shadow}}>
                     <View style={styles.header}>
                         <View style={Style.flexEvenly}>
