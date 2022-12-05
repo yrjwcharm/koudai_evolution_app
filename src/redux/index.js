@@ -2,7 +2,7 @@
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-31 16:42:45
+ * @LastEditTime: 2022-12-05 10:58:43
  * @Description:
  */
 import {applyMiddleware, createStore, compose} from 'redux';
@@ -11,6 +11,7 @@ import {combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import UserReducer from './reducers/userReducer';
 import VisionReducer from './reducers/visionReducer';
+import CommunityReducer from './reducers/communityReducer';
 import AccountReducer from './reducers/accountReducer';
 import ModalReducer from './reducers/modalReducer';
 import pkProductsReducer from './reducers/pk/pkProductsReducer';
@@ -37,6 +38,7 @@ const middlewares = [thunkMiddleware];
 const reducer = combineReducers({
     userInfo: UserReducer,
     vision: VisionReducer,
+    community: CommunityReducer,
     accountInfo: AccountReducer,
     modalInfo: ModalReducer,
     pkProducts: pkProductsReducer,

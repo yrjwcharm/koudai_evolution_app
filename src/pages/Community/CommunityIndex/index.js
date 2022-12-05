@@ -3,7 +3,7 @@
  * @Description: 社区首页
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
     ActivityIndicator,
     FlatList,
@@ -42,8 +42,10 @@ import {
     getPageData,
     getRecommendData,
     getRecommendFollowUsers,
+    saveShowType,
 } from './services';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import actionTypes from '~/redux/actionTypes';
 import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 
 /** @name 社区头部 */
@@ -78,6 +80,8 @@ const Header = ({active, isLogin, message_url, newsData, refresh, search_url, se
             <View style={Style.flexRow}>
                 {tabs?.map((tab, i) => {
                     const {name, type} = tab;
+                    const needRefresh =
+                        type === 'follow' ? newsData?.communityFollowNews : newsData?.communityRecommendNews;
                     return (
                         <TouchableOpacity
                             activeOpacity={active === i ? 1 : 0.8}
@@ -85,12 +89,15 @@ const Header = ({active, isLogin, message_url, newsData, refresh, search_url, se
                             onPress={() => {
                                 global.LogTool({event: `${type}_click`});
                                 if (type === 'follow' && !isLogin) jump({path: 'Register', type: 1});
-                                else setActive(i);
-                                active === i && refresh?.();
+                                else {
+                                    setActive(i);
+                                    needRefresh && refresh?.(i);
+                                }
+                                active === i && refresh?.(i);
                             }}
                             style={{marginLeft: i === 0 ? px(30) : px(20)}}>
                             <Text style={[styles.headerTabText, active === i ? styles.activeTabText : {}]}>{name}</Text>
-                            {newsData?.[`${type}_news`] && <View style={styles.redPoint} />}
+                            {needRefresh && <View style={styles.redPoint} />}
                         </TouchableOpacity>
                     );
                 })}
@@ -308,7 +315,7 @@ const renderHeader = (jump, list) => {
 };
 
 /** @name 关注 */
-const Follow = forwardRef(({list = [], pageInit, tabs = []}, ref) => {
+const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -431,7 +438,7 @@ const Follow = forwardRef(({list = [], pageInit, tabs = []}, ref) => {
                     logedPage.current.push(1);
                 }}
                 onRefresh={() => {
-                    pageInit?.();
+                    refreshNews?.('follow');
                     page > 1 ? setPage(1) : init();
                 }}
                 onScroll={({
@@ -463,7 +470,7 @@ const Follow = forwardRef(({list = [], pageInit, tabs = []}, ref) => {
 
 /** @name 推荐瀑布流列表 */
 export const WaterfallFlowList = forwardRef(
-    ({getData = () => {}, listType = 'waterflow', pageInit, params, wrapper, ...rest}, ref) => {
+    ({getData = () => {}, listType = 'waterflow', params, refreshNews, wrapper, ...rest}, ref) => {
         const [refreshing, setRefreshing] = useState(true);
         const [data, setData] = useState([]);
         const [page, setPage] = useState(1);
@@ -564,7 +571,7 @@ export const WaterfallFlowList = forwardRef(
                     },
                     onRefresh: () => {
                         setRefreshing(true);
-                        pageInit?.();
+                        refreshNews?.('recommend');
                         page > 1 ? setPage(1) : init();
                     },
                     _onScroll: (e) => {
@@ -607,12 +614,12 @@ export const WaterfallFlowList = forwardRef(
 );
 
 /** @name 推荐 */
-const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) => {
+const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs = []}, ref) => {
     const route = useRoute();
     const jump = useJump();
     const {init_type = 0} = route.params || {};
     const [current, setCurrent] = useState(init_type);
-    const [listType, setListType] = useState('waterflow');
+    const [listType, setListType] = useState(showType === 1 ? 'waterflow' : 'list');
     const scrollTab = useRef();
     const recommendList = useRef([]);
     const isLoginRef = useRef(isLogin);
@@ -620,6 +627,20 @@ const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) =>
     const refresh = () => {
         recommendList.current[current]?.refresh?.();
     };
+
+    /** @name 改变列表展示形式 */
+    const changeShowType = useCallback(
+        debounce(
+            () =>
+                setListType((prev) => {
+                    saveShowType({show_type: prev === 'list' ? 1 : 2});
+                    return prev === 'list' ? 'waterflow' : 'list';
+                }),
+            500,
+            {leading: true, trailing: false}
+        ),
+        []
+    );
 
     useImperativeHandle(ref, () => ({refresh}));
 
@@ -641,9 +662,9 @@ const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) =>
     return (
         <>
             {renderHeader(jump, list)}
-            <View style={Style.flexRow}>
+            <View style={[Style.flexRow, {paddingTop: px(8)}]}>
                 <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
-                    <View style={[Style.flexRow, {paddingTop: px(8), paddingHorizontal: Space.padding}]}>
+                    <View style={[Style.flexRow, {paddingHorizontal: Space.padding}]}>
                         {tabs?.map((tab, i) => {
                             const {name, type} = tab;
                             const isActive = current === i;
@@ -678,10 +699,7 @@ const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) =>
                         })}
                     </View>
                 </ScrollView>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => setListType((prev) => (prev === 'list' ? 'waterflow' : 'list'))}
-                    style={{marginRight: Space.marginAlign}}>
+                <TouchableOpacity activeOpacity={0.8} onPress={changeShowType} style={{marginRight: Space.marginAlign}}>
                     <Image source={listType === 'waterflow' ? listIcon : waterflowIcon} style={styles.modeIcon} />
                 </TouchableOpacity>
             </View>
@@ -698,7 +716,7 @@ const Recommend = forwardRef(({isLogin, list = [], pageInit, tabs = []}, ref) =>
                             <WaterfallFlowList
                                 getData={getRecommendData}
                                 listType={listType}
-                                pageInit={pageInit}
+                                refreshNews={refreshNews}
                                 params={{type}}
                                 ref={(flow) => (recommendList.current[i] = flow)}
                                 wrapper="Recommend"
@@ -781,13 +799,15 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
 });
 
 const Index = ({navigation, route, setLoading}) => {
+    const dispatch = useDispatch();
     const isFocused = useIsFocused();
+    const community = useSelector((store) => store.community).toJS();
+    const {communityFollowNews, communityRecommendNews} = community;
     const {init_type} = route.params || {};
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
     const [active, setActive] = useState(0);
     const [data, setData] = useState({});
-    const {follow, message_url, recommend, search_url, tabs, user_info} = data;
-    const [newsData, setNewsData] = useState({});
+    const {follow, message_url, recommend, search_url, show_type, tabs, user_info} = data;
     const followRef = useRef();
     const recommendRef = useRef();
     const publishRef = useRef();
@@ -808,14 +828,12 @@ const Index = ({navigation, route, setLoading}) => {
             .finally(() => {
                 setLoading(false);
             });
-        getNewsData().then((res) => {
-            setNewsData(res.result);
-        });
     };
 
-    const refresh = () => {
+    const refresh = (tab) => {
         init();
-        if (active === 0) {
+        refreshNews(tab === 0 ? 'follow' : 'recommend');
+        if (tab === 0) {
             followRef.current?.refresh?.();
         } else {
             recommendRef.current?.refresh?.();
@@ -823,20 +841,38 @@ const Index = ({navigation, route, setLoading}) => {
         publishRef.current?.refresh?.();
     };
 
-    useEffect(() => {
-        const listener = navigation.addListener('tabPress', () => {
-            if (isFocused) {
-                refresh();
-            }
+    const refreshNews = (page) => {
+        getNewsData({init: 1, tab: page});
+        dispatch({
+            payload: page === 'follow' ? {communityFollowNews: false} : {communityRecommendNews: false},
+            type: actionTypes.Community,
         });
-        return () => listener();
-    }, [active, isFocused]);
+    };
 
     useFocusEffect(
         useCallback(() => {
             init();
         }, [])
     );
+
+    useEffect(() => {
+        refreshNews('recommend');
+    }, []);
+
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            if (isFocused) {
+                refresh(active);
+            } else if (communityFollowNews && active === 0) {
+                refreshNews('follow');
+                followRef.current?.refresh?.();
+            } else if (communityRecommendNews && active === 1) {
+                refreshNews('recommend');
+                recommendRef.current?.refresh?.();
+            }
+        });
+        return () => listener();
+    }, [active, communityFollowNews, communityRecommendNews, isFocused]);
 
     useEffect(() => {
         if (Object.keys(data).length > 0 && firstIn.current) {
@@ -857,7 +893,7 @@ const Index = ({navigation, route, setLoading}) => {
                 active={active}
                 isLogin={userInfo.is_login}
                 message_url={message_url}
-                newsData={newsData}
+                newsData={community}
                 refresh={refresh}
                 search_url={search_url}
                 setActive={(i) => scrollTab.current?.goToPage(i)}
@@ -877,7 +913,12 @@ const Index = ({navigation, route, setLoading}) => {
                         <View key={type} style={{flex: 1}} tabLabel={name}>
                             {type === 'follow' ? (
                                 follow?.list?.length > 0 ? (
-                                    <Follow list={follow.list} pageInit={init} ref={followRef} tabs={follow.tags} />
+                                    <Follow
+                                        list={follow.list}
+                                        refreshNews={refreshNews}
+                                        ref={followRef}
+                                        tabs={follow.tags}
+                                    />
                                 ) : (
                                     <RecommendFollow ref={followRef} refresh={init} />
                                 )
@@ -886,8 +927,9 @@ const Index = ({navigation, route, setLoading}) => {
                                 <Recommend
                                     isLogin={data.is_login}
                                     list={recommend?.list}
-                                    pageInit={init}
+                                    refreshNews={refreshNews}
                                     ref={recommendRef}
+                                    showType={show_type}
                                     tabs={recommend?.tags}
                                 />
                             ) : null}

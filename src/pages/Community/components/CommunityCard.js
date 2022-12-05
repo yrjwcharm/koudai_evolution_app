@@ -10,7 +10,6 @@ import HapticFeedback from 'react-native-haptic-feedback';
 import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
-import AntdIcon from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import collect from '~/assets/animation/collect16.json';
@@ -169,8 +168,9 @@ export const CommunityCard = (props) => {
     } = props.data || {};
     const {
         cardType = 'list', // 卡片类型 list代表列表卡片 waterflow代表瀑布流卡片
-        style, // 自定义样式
         drag,
+        scene, // 场景 article代表在内容详情页
+        style, // 自定义样式
     } = props;
     const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
@@ -316,7 +316,7 @@ export const CommunityCard = (props) => {
                     activeOpacity={0.8}
                     onPress={() => {
                         global.LogTool({event: rec_json ? 'rec_click' : 'content', oid: id, rec_json});
-                        jump(url);
+                        jump(url, scene === 'article' ? 'push' : 'navigate');
                     }}>
                     {cardType === 'waterflow' ? null : (
                         <>

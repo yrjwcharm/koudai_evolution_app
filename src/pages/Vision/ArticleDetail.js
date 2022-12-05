@@ -478,31 +478,29 @@ const ArticleDetail = ({navigation, route}) => {
                             />
                         </TouchableOpacity>
                     ) : null}
+                    <ShareModal
+                        ctrl={route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link}
+                        likeCallback={onFavor}
+                        collectCallback={onCollect}
+                        ref={shareModal}
+                        more={more}
+                        shareCallback={(share_to) =>
+                            global.LogTool({ctrl: share_to, event: 'content_share', oid: data?.id})
+                        }
+                        shareContent={{
+                            favor_status: favor_status,
+                            collect_status: collect_status,
+                            ...data?.share_info,
+                        }}
+                        title={data?.title}
+                        needLogin={!userInfo.is_login}
+                    />
                     <LogView.Wrapper
                         ref={scrollRef}
                         style={{flex: 1}}
                         onScroll={onScroll}
                         scrollIndicatorInsets={{right: 1}}
                         scrollEventThrottle={100}>
-                        <ShareModal
-                            ctrl={
-                                route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link
-                            }
-                            likeCallback={onFavor}
-                            collectCallback={onCollect}
-                            ref={shareModal}
-                            more={more}
-                            shareCallback={(share_to) =>
-                                global.LogTool({ctrl: share_to, event: 'content_share', oid: data?.id})
-                            }
-                            shareContent={{
-                                favor_status: favor_status,
-                                collect_status: collect_status,
-                                ...data?.share_info,
-                            }}
-                            title={data?.title}
-                            needLogin={!userInfo.is_login}
-                        />
                         <View>
                             <RNWebView
                                 javaScriptEnabled
@@ -611,7 +609,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                         ) : null}
                                                     </View>
                                                     {series.list.map?.((item, index) => (
-                                                        <CommunityCard data={item} key={index} />
+                                                        <CommunityCard data={item} key={index} scene="article" />
                                                     ))}
                                                 </LogView.Item>
                                             )}

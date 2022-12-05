@@ -1,13 +1,11 @@
 /*
  * @Date: 2021-03-25 10:57:56
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 16:21:32
  * @Description:
  */
 export default {
     UserInfo: 'UserInfo',
     Vision: 'Vision',
+    Community: 'Community',
     ResetVision: 'ResetVision',
     Account: 'Account',
     Modal: 'Modal',
