@@ -220,7 +220,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type}) => {
                         setProfit(profit_data_list[zIndex]?.value);
                         setDate(dayjs_);
                         setSelCurDate(arr[zIndex]?.day);
-                        setProfit(arr[zIndex].profit);
+                        setProfit(arr[zIndex]?.profit);
                     } else {
                         setIsHasData(false);
                     }

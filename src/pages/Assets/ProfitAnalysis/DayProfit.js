@@ -235,7 +235,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         arr[zIndex] && (arr[zIndex].checked = true);
                         setDateArr([...arr]);
                         setSelCurDate(arr[zIndex]?.day);
-                        setProfit(arr[zIndex].profit);
+                        setProfit(arr[zIndex]?.profit);
                         // //找到选中的日期与当前日期匹配时的索引,默认给予选中绿色状态
                     } else {
                         setIsHasData(false);

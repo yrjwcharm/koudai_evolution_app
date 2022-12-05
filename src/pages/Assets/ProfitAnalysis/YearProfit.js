@@ -179,7 +179,7 @@ const YearProfit = ({poid, fund_code, type, unit_type}) => {
                         arr[arr.length - 1] && (arr[arr.length - 1].checked = true);
                         setDateArr([...arr]);
                         setSelCurYear(arr[zIndex]?.day);
-                        setProfit(arr[zIndex].profit);
+                        setProfit(arr[zIndex]?.profit);
                     } else {
                         setIsHasData(false);
                     }
