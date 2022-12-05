@@ -304,7 +304,8 @@ export const CommunityCard = (props) => {
         <>
             <View style={[cardType === 'waterflow' ? {} : styles.communityCard, style]}>
                 {drag && (
-                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} onPressIn={drag}>
+                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]}  
+activeOpacity={0.8} onPressIn={drag}>
                         <Image
                             source={require('~/assets/img/community/sort.png')}
                             style={{width: px(18), height: px(18), marginRight: px(2)}}

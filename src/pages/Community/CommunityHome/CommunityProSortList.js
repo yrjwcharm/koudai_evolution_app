@@ -8,16 +8,14 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import {proSort, removeProduct} from './service';
 import {CommunityCard} from '../components/CommunityCard';
-import ProductCards from '../../../components/Portfolios/ProductCards';
 import {Modal} from '../../../components/Modal';
-
 import EmptyTip from '~/components/EmptyTip';
 import CommunityFooter from './CommunityFooter';
 import {Style} from '../../../common/commonStyle';
 import {AlbumCard} from '~/components/Product';
-import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
-
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
+import {ProductList} from '../../../components/Product';
 const CommunityProSortList = ({getData = () => {}, params}) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -96,8 +94,8 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                 </TouchableOpacity>
                 {params.type == 1 ? (
                     <CommunityCard data={item} style={{flex: 1}} drag={drag} />
-                ) : item?.type == 'recommend_card' ? (
-                    <ProductCards data={item} style={{flex: 1}} drag={drag} />
+                ) : item?.relation_type == 4 ? (
+                    <ProductList data={[item]} drag={drag} style={styles.card} />
                 ) : (
                     <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} drag={drag} />
                 )}
@@ -155,7 +153,6 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                             setData(_data.data);
                         }}
                         ListFooterComponent={renderFooter}
-                        dragHitSlop={{right: px(16), top: px(16)}}
                     />
                 ) : loading ? (
                     <View style={{marginTop: px(300)}}>
@@ -194,5 +191,12 @@ const styles = StyleSheet.create({
         paddingRight: px(6),
         marginTop: px(12),
         paddingTop: px(16),
+    },
+    card: {
+        flex: 1,
+        backgroundColor: '#fff',
+        marginTop: px(12),
+        padding: px(12),
+        borderRadius: px(6),
     },
 });

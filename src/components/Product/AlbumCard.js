@@ -15,6 +15,7 @@ import FastImage from 'react-native-fast-image';
 const AlbumHeader = ({
     data: {bg_color, bg_img, bg_linear = false, desc, desc_icon, icon, title, title_desc, title_tag, url} = {},
     logParams,
+    drag,
 }) => {
     const jump = useJump();
     const [containerHeight, setContainerHeight] = useState(0);
@@ -82,12 +83,14 @@ const AlbumHeader = ({
                         </View>
                     ) : null}
                 </View>
-                <FastImage
-                    style={{width: px(10), height: px(10)}}
-                    source={{
-                        uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
-                    }}
-                />
+                {!drag && (
+                    <FastImage
+                        style={{width: px(10), height: px(10)}}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/10/right-arrow2.png',
+                        }}
+                    />
+                )}
             </View>
             {desc ? (
                 <View style={styles.detailDesc}>
@@ -134,7 +137,7 @@ const AlbumCard = ({
     return (
         <View style={[styles.container, style]}>
             {drag && (
-                <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} onPressIn={drag}>
+                <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} activeOpacity={0.8} onPressIn={drag}>
                     <Image
                         source={require('~/assets/img/community/sort.png')}
                         style={{width: px(18), height: px(18), marginRight: px(2)}}
@@ -142,7 +145,7 @@ const AlbumCard = ({
                     <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>拖动</Text>
                 </TouchableOpacity>
             )}
-            {header ? <AlbumHeader data={header} logParams={logParams} /> : null}
+            {header ? <AlbumHeader data={header} logParams={logParams} drag={drag} /> : null}
             <View style={{paddingHorizontal: px(12)}}>
                 {img ? (
                     <TouchableOpacity

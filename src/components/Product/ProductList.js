@@ -76,7 +76,7 @@ const LeftPart = ({chart, image, rank_icon, rank_num, ratio_labels, yesterday_pr
     }
 };
 
-const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) => {
+const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 'default'}) => {
     const jump = useJump();
 
     /** @name 默认卡片 */
@@ -109,7 +109,17 @@ const ProductList = ({data = [], logParams, slideLogParams, type = 'default'}) =
               }
             : {};
         return (
-            <View key={name + id + index} style={containerSty}>
+            <View key={name + id + index} style={[containerSty, style]}>
+                {drag && (
+                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} activeOpacity={0.8} onPressIn={drag}>
+                        <Image
+                            source={require('~/assets/img/community/sort.png')}
+                            style={{width: px(18), height: px(18), marginRight: px(2)}}
+                        />
+                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>拖动</Text>
+                    </TouchableOpacity>
+                )}
+
                 {out_box ? (
                     <LinearGradient
                         colors={['#F1F6FF', '#fff']}
@@ -795,6 +805,13 @@ const styles = StyleSheet.create({
         marginTop: px(12),
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    cardDelete: {
+        position: 'absolute',
+        right: px(0),
+        top: px(0),
+        padding: px(12),
+        zIndex: 10,
     },
 });
 

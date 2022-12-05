@@ -17,6 +17,7 @@ import Clipboard from '@react-native-community/clipboard';
 import * as WeChat from 'react-native-wechat-lib';
 import LazyImage from '../LazyImage';
 import saveImg from '~/utils/saveImg';
+import http from '../../services';
 
 const ShareModal = React.forwardRef((props, ref) => {
     const navigation = navigationRef.current;
@@ -33,6 +34,7 @@ const ShareModal = React.forwardRef((props, ref) => {
         needLogin = false,
         otherList = [], //除分享外的其他
         noShare = false, //不能分享点赞
+        articelUpCallback,
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -73,10 +75,20 @@ const ShareModal = React.forwardRef((props, ref) => {
             type: 'QRCode',
         },
         {
+            img:
+                shareContent?.can_up == 1 && shareContent?.can_up != undefined
+                    ? require('../../assets/img/share/cancelUp.png')
+                    : require('../../assets/img/share/up.png'),
+            title: shareContent?.can_up != undefined && shareContent?.can_up == 1 ? '取消置顶' : '置顶',
+            type: 'articleUp',
+        },
+
+        {
             img: require('../../assets/img/share/more.png'),
             title: '更多',
             type: 'MoreOptions',
         },
+
         ...otherList,
     ]);
     const show = () => {
@@ -86,7 +98,7 @@ const ShareModal = React.forwardRef((props, ref) => {
     const hide = () => {
         setVisible(false);
     };
-
+    console.log(shareContent?.can_up);
     const toastShow = (t, duration = 2000, {onHidden} = {}) => {
         setToastText(t);
         setShowToast(true);
@@ -205,6 +217,10 @@ const ShareModal = React.forwardRef((props, ref) => {
             item.type === 'Edit' && global.LogTool({event: 'community_editor', oid: item.url.params.community_id});
             hide();
             navigation.navigate(item?.url?.path, item?.url?.params);
+        } else if (item?.type == 'articleUp') {
+            setTimeout(() => {
+                articelUpCallback();
+            }, 500);
         }
     };
 
@@ -263,7 +279,10 @@ const ShareModal = React.forwardRef((props, ref) => {
                                 return null;
                             }
                             if (item.type === 'QRCode' && !shareContent.show_qr_code) return null;
-
+                            // if (keep_top_info) {
+                            //     keep_top_info?.can_up == 0 && item?.title?.indexOf('置顶') > -1
+                            // }
+                            if (item?.type == 'articleUp' && shareContent.can_up == undefined) return null;
                             return (
                                 <TouchableOpacity
                                     key={index}

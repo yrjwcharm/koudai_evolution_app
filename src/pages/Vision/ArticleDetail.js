@@ -90,6 +90,7 @@ const ArticleDetail = ({navigation, route}) => {
     const timeStamp = useRef(Date.now());
     const current_artic_url = useRef();
     const focus = useIsFocused();
+    const [canUp, setCanUp] = useState(0);
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
         let tmp = audioList.filter((audio) => audio.media_id == current_track.media_id);
@@ -120,6 +121,7 @@ const ArticleDetail = ({navigation, route}) => {
     const init = useCallback((type) => {
         http.get('/community/article/status/20210101', {article_id: route.params?.article_id, fr}).then((res) => {
             if (res.code === '000000') {
+                setCanUp(res.result?.keep_top_info?.can_up);
                 setCollectNum(res.result.collect_num);
                 setCollectStatus(res.result.collect_status);
                 setFavorNum(res.result.favor_num);
@@ -301,6 +303,13 @@ const ArticleDetail = ({navigation, route}) => {
         },
         [data, collect_status]
     );
+    //文章置顶
+    const onArticeUp = () => {
+        setCanUp((pre) => {
+            return pre == 0 ? 1 : 0;
+        });
+        http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp});
+    };
     const postProgress = useCallback(async (params) => {
         http.post('/community/article/progress/20210101', params || {}).then((res) => {
             if (res.code == '000000' && res.result?.add_rational_num > 0) {
@@ -465,6 +474,7 @@ const ArticleDetail = ({navigation, route}) => {
             }
         );
     };
+
     return (
         <View style={[styles.container]}>
             {hasNet ? (
@@ -482,6 +492,7 @@ const ArticleDetail = ({navigation, route}) => {
                         ctrl={route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link}
                         likeCallback={onFavor}
                         collectCallback={onCollect}
+                        articelUpCallback={onArticeUp}
                         ref={shareModal}
                         more={more}
                         shareCallback={(share_to) =>
@@ -490,6 +501,7 @@ const ArticleDetail = ({navigation, route}) => {
                         shareContent={{
                             favor_status: favor_status,
                             collect_status: collect_status,
+                            can_up: canUp,
                             ...data?.share_info,
                         }}
                         title={data?.title}
