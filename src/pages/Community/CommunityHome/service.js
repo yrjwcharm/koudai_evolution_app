@@ -22,3 +22,9 @@ export const removeProduct = (params) => {
 export const addProduct = (params) => {
     return http.post('/community/relation/data/20220928', params);
 };
+export const proSort = (params) => {
+    return http.post('community/relation/rank/20220928', params);
+};
+export const proMutiRemove = (params) => {
+    return http.post('/community/relation/del_batch/20220928', params);
+};

@@ -19,6 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Modalize} from 'react-native-modalize';
 import {useJump} from '~/components/hooks';
 import CommunityHomeList from './CommunityHomeList';
+
 const CommunityHome = ({navigation, route}) => {
     const jump = useJump();
     const inset = useSafeAreaInsets();
@@ -174,6 +175,7 @@ const CommunityHome = ({navigation, route}) => {
                     style={{marginTop: px(24), marginHorizontal: px(30)}}
                 />
             </Modalize>
+            {/* <CommunityFooter /> */}
         </>
     ) : null;
 };

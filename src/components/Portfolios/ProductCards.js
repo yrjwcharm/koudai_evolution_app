@@ -218,7 +218,7 @@ const RankCard = ({data = {}, isPking}) => {
 };
 
 /** @name 推荐卡片 */
-const RecommendCard = ({data = {}, onDelete, isPking}) => {
+const RecommendCard = ({data = {}, drag, isPking}) => {
     const dispatch = useDispatch();
     const {
         button,
@@ -233,8 +233,6 @@ const RecommendCard = ({data = {}, onDelete, isPking}) => {
         tags = [],
         yield_info,
         icon_url,
-        relation_type,
-        can_delete,
     } = data;
     const btnText = isPking ? 'PK中' : button?.text;
     const [showChart, setShowChart] = useState(false);
@@ -245,14 +243,13 @@ const RecommendCard = ({data = {}, onDelete, isPking}) => {
     }, [chart]);
     return (
         <View>
-            {can_delete && (
-                <TouchableOpacity
-                    style={[styles.cardDelete, Style.flexRow]}
-                    onPress={() => {
-                        onDelete(relation_type, code || plan_id);
-                    }}>
-                    <AntdIcon name="close" color={Colors.lightGrayColor} />
-                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
+            {drag && (
+                <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} onPressIn={drag}>
+                    <Image
+                        source={require('~/assets/img/community/sort.png')}
+                        style={{width: px(18), height: px(18), marginRight: px(2)}}
+                    />
+                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>拖动</Text>
                 </TouchableOpacity>
             )}
             <View style={Style.flexRow}>
@@ -629,7 +626,7 @@ const DefaultCard = ({data = {}, isPking}) => {
     );
 };
 
-export default ({data = {}, onDelete, style = {}, tabLabel = ''}) => {
+export default ({data = {}, style = {}, tabLabel = '', drag}) => {
     const jump = useJump();
     const outerStyle = Object.prototype.toString.call(style) === '[object Array]' ? style : [style];
     const {code, type, url, LogTool} = data;
@@ -667,7 +664,7 @@ export default ({data = {}, onDelete, style = {}, tabLabel = ''}) => {
                         return <RankCard data={data} isPking={isPking} />;
                     // 推荐卡片
                     case 'recommend_card':
-                        return <RecommendCard data={data} isPking={isPking} onDelete={onDelete} />;
+                        return <RecommendCard data={data} isPking={isPking} drag={drag} />;
                     //计划小卡片
                     case 'project_sm_card':
                         return <ProjectSmCard data={data} />;
@@ -938,5 +935,11 @@ const styles = StyleSheet.create({
         height: px(102),
         marginTop: px(12),
     },
-    cardDelete: {position: 'absolute', right: px(-16), top: px(-8), padding: px(12), zIndex: 10},
+    cardDelete: {
+        position: 'absolute',
+        right: px(-12),
+        top: px(-12),
+        padding: px(12),
+        zIndex: 10,
+    },
 });

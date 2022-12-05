@@ -101,7 +101,7 @@ const AlbumHeader = ({
     );
 };
 
-const Index = ({
+const AlbumCard = ({
     groups = [],
     header,
     img,
@@ -113,6 +113,8 @@ const Index = ({
     subject_id,
     bottom_btns,
     show_mask,
+    style,
+    drag,
 }) => {
     const jump = useJump();
     const [active, setActive] = useState(0);
@@ -130,7 +132,16 @@ const Index = ({
     }, [plateid, rec_json, subject_id]);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
+            {drag && (
+                <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} onPressIn={drag}>
+                    <Image
+                        source={require('~/assets/img/community/sort.png')}
+                        style={{width: px(18), height: px(18), marginRight: px(2)}}
+                    />
+                    <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>拖动</Text>
+                </TouchableOpacity>
+            )}
             {header ? <AlbumHeader data={header} logParams={logParams} /> : null}
             <View style={{paddingHorizontal: px(12)}}>
                 {img ? (
@@ -307,6 +318,13 @@ const styles = StyleSheet.create({
         fontSize: px(10),
         lineHeight: px(14),
     },
+    cardDelete: {
+        position: 'absolute',
+        right: px(0),
+        top: px(0),
+        padding: px(12),
+        zIndex: 10,
+    },
 });
 
-export default Index;
+export default AlbumCard;

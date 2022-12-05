@@ -155,11 +155,9 @@ export const CommunityCard = (props) => {
         live_status, // 直播状态 1 预约中 2 直播中 3 回放
         left_desc, // 直播状态或预约人数
         media_duration, // 媒体时长
-        can_delete, //是否显示移除
         play_mode, // 视频播放模式 1 竖屏 2 横屏
         product_type, // "article_history"或"community" 不展示底部操作按钮
         rec_json = '',
-        relation_type,
         reserved, // 直播是否已预约
         right_desc, // 直播时间或观看人数
         share_num, // 分享数
@@ -171,8 +169,8 @@ export const CommunityCard = (props) => {
     } = props.data || {};
     const {
         cardType = 'list', // 卡片类型 list代表列表卡片 waterflow代表瀑布流卡片
-        onDelete, //移除作品
         style, // 自定义样式
+        drag,
     } = props;
     const jump = useJump();
     const userInfo = useSelector((store) => store.userInfo)?.toJS?.();
@@ -305,14 +303,13 @@ export const CommunityCard = (props) => {
     return (
         <>
             <View style={[cardType === 'waterflow' ? {} : styles.communityCard, style]}>
-                {can_delete && (
-                    <TouchableOpacity
-                        style={[styles.cardDelete, Style.flexRow]}
-                        onPress={() => {
-                            onDelete(relation_type, id);
-                        }}>
-                        <AntdIcon name="close" color={Colors.lightGrayColor} />
-                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>移除</Text>
+                {drag && (
+                    <TouchableOpacity style={[styles.cardDelete, Style.flexRow]} onPressIn={drag}>
+                        <Image
+                            source={require('~/assets/img/community/sort.png')}
+                            style={{width: px(18), height: px(18), marginRight: px(2)}}
+                        />
+                        <Text style={{fontSize: px(11), color: Colors.lightGrayColor}}>拖动</Text>
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity
@@ -680,13 +677,7 @@ const styles = StyleSheet.create({
         borderRadius: px(24),
         borderWidth: Space.borderWidth,
     },
-    cardDelete: {
-        position: 'absolute',
-        right: px(0),
-        top: px(0),
-        padding: px(12),
-        zIndex: 10,
-    },
+
     contentBg: {
         position: 'absolute',
         top: 0,
@@ -699,5 +690,12 @@ const styles = StyleSheet.create({
         borderRadius: px(16),
         width: px(16),
         height: px(16),
+    },
+    cardDelete: {
+        position: 'absolute',
+        right: px(0),
+        top: px(0),
+        padding: px(12),
+        zIndex: 10,
     },
 });

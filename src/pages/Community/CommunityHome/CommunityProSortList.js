@@ -1,0 +1,198 @@
+/*
+ * @Date: 2022-11-28 14:43:36
+ * @Description:社区主页列表
+ */
+import {StyleSheet, Text, ActivityIndicator, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {px} from '~/utils/appUtil';
+import {Colors, Font, Space} from '~/common/commonStyle';
+import {proSort, removeProduct} from './service';
+import {CommunityCard} from '../components/CommunityCard';
+import ProductCards from '../../../components/Portfolios/ProductCards';
+import {Modal} from '../../../components/Modal';
+
+import EmptyTip from '~/components/EmptyTip';
+import CommunityFooter from './CommunityFooter';
+import {Style} from '../../../common/commonStyle';
+import {AlbumCard} from '~/components/Product';
+import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
+
+import AntdIcon from 'react-native-vector-icons/AntDesign';
+const CommunityProSortList = ({getData = () => {}, params}) => {
+    const [refreshing, setRefreshing] = useState(true);
+    const [data, setData] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [chooseDeleteData, setChooseDeleteData] = useState([]);
+    const page_size = 20;
+    const init = () => {
+        getData({...params, page, page_size})
+            .then((res) => {
+                if (res.code === '000000') {
+                    const _data = res.result;
+                    setHasMore(!(_data?.length < page_size));
+                    setData((prev) => (page === 1 ? _data : prev.concat(_data)));
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+                setRefreshing(false);
+            });
+    };
+    const onChooseClick = (type, item_id) => {
+        let index = chooseDeleteData.indexOf(item_id);
+        setChooseDeleteData((pre) => {
+            let tmp = [...pre];
+            if (index > -1) {
+                tmp.splice(index, 1);
+            } else {
+                tmp.push(item_id);
+            }
+            return tmp;
+        });
+    };
+    const onDelete = () => {
+        Modal.show({
+            content: '您确定要删除吗?',
+            confirm: true,
+            confirmCallBack: async () => {
+                const item_ids = chooseDeleteData.join(',');
+                let res = await removeProduct({community_id: params.community_id, item_ids});
+                if (res.code == '000000') {
+                    setData((prev) => {
+                        let tmp = [...prev];
+                        chooseDeleteData.forEach((chooseItem) => {
+                            let index = data.findIndex((item) => {
+                                return item.item_id == chooseItem.item_id;
+                            });
+                            tmp.splice(index, 1);
+                        });
+
+                        return tmp;
+                    });
+                }
+            },
+        });
+    };
+    const sort = () => {
+        const item_ids = data.map((item) => item.item_id).join(',');
+        proSort({community_id: params.community_id, item_ids});
+    };
+    const renderItem = ({item = {}, drag}) => {
+        return (
+            <View style={Style.flexRow}>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.cardDelete}
+                    onPress={() => {
+                        onChooseClick(item?.relation_type, item.item_id);
+                    }}>
+                    <AntdIcon
+                        name="checkcircle"
+                        color={chooseDeleteData.indexOf(item.item_id) > -1 ? Colors.btnColor : '#ddd'}
+                        size={px(16)}
+                    />
+                </TouchableOpacity>
+                {params.type == 1 ? (
+                    <CommunityCard data={item} style={{flex: 1}} drag={drag} />
+                ) : item?.type == 'recommend_card' ? (
+                    <ProductCards data={item} style={{flex: 1}} drag={drag} />
+                ) : (
+                    <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} drag={drag} />
+                )}
+            </View>
+        );
+    };
+
+    /** @name 上拉加载 */
+    const onEndReached = ({distanceFromEnd}) => {
+        if (distanceFromEnd < 0) return false;
+        if (hasMore) setPage((p) => p + 1);
+    };
+
+    /** @name 渲染底部 */
+    const renderFooter = () => {
+        return data?.length > 0 && !refreshing ? (
+            <Text style={[styles.desc, {paddingVertical: Space.padding, textAlign: 'center'}]}>
+                {hasMore ? '正在加载...' : '我们是有底线的...'}
+            </Text>
+        ) : null;
+    };
+    const chooseAll = () => {
+        if (chooseDeleteData.length == data.length) {
+            setChooseDeleteData([]);
+        } else {
+            setChooseDeleteData(() => {
+                return data.map((item) => item.item_id);
+            });
+        }
+    };
+    const renderEmpty = () => {
+        return params.type == 1 ? (
+            <EmptyTip text={'暂无相关作品'} style={{marginTop: px(200)}} imageStyle={{marginBottom: px(-30)}} />
+        ) : (
+            <EmptyTip text={'暂无相关产品'} style={{marginTop: px(200)}} imageStyle={{marginBottom: px(-30)}} />
+        );
+    };
+
+    useEffect(() => {
+        init();
+    }, [page]);
+    return (
+        <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                {data?.length > 0 ? (
+                    <DraggableFlatList
+                        keyExtractor={(item) => item.id.toString()}
+                        style={{backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
+                        data={data}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.5}
+                        renderItem={renderItem}
+                        onDragEnd={(_data) => {
+                            sort();
+                            setData(_data.data);
+                        }}
+                        ListFooterComponent={renderFooter}
+                        dragHitSlop={{right: px(16), top: px(16)}}
+                    />
+                ) : loading ? (
+                    <View style={{marginTop: px(300)}}>
+                        <ActivityIndicator color={'#ddd'} />
+                    </View>
+                ) : (
+                    renderEmpty()
+                )}
+            </View>
+            <CommunityFooter
+                onDelete={onDelete}
+                onChooseAll={chooseAll}
+                isAllSelect={chooseDeleteData.length == data.length}
+                btnActive={chooseDeleteData.length > 0}
+            />
+        </View>
+    );
+};
+
+export default CommunityProSortList;
+
+const styles = StyleSheet.create({
+    addBtn: {
+        width: px(180),
+        height: px(36),
+        borderRadius: px(100),
+        marginTop: px(16),
+    },
+    desc: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.descColor,
+    },
+    cardDelete: {
+        alignSelf: 'flex-start',
+        paddingRight: px(6),
+        marginTop: px(12),
+        paddingTop: px(16),
+    },
+});

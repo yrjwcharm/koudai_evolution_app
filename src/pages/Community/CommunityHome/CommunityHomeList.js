@@ -2,20 +2,20 @@
  * @Date: 2022-11-28 14:43:36
  * @Description:社区主页列表
  */
-import {StyleSheet, Text, ActivityIndicator, View} from 'react-native';
+import {StyleSheet, Text, ActivityIndicator, View, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
-import {addProduct, removeProduct} from './service';
+import {addProduct} from './service';
 import {CommunityCard} from '../components/CommunityCard';
 import ProductCards from '../../../components/Portfolios/ProductCards';
-import {Modal} from '../../../components/Modal';
 import {FlatList} from 'react-native-scroll-head-tab-view';
 import {PublishContent} from '../CommunityIndex';
 import {ChooseModal} from '../CommunityVodCreate';
 import EmptyTip from '~/components/EmptyTip';
 import {Button} from '~/components/Button';
 
+import {AlbumCard} from '~/components/Product';
 const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_add_btn, ...rest}) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
@@ -38,25 +38,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
                 setRefreshing(false);
             });
     };
-    const onDelete = (type, item_id) => {
-        Modal.show({
-            content: '您确定要删除吗?',
-            confirm: true,
-            confirmCallBack: async () => {
-                let res = await removeProduct({community_id: params.community_id, type, item_id});
-                if (res.code == '000000') {
-                    setData((prev) => {
-                        let tmp = [...prev];
-                        let index = data.findIndex((item) => {
-                            return item.id == item_id || item.code == item_id;
-                        });
-                        tmp.splice(index, 1);
-                        return tmp;
-                    });
-                }
-            },
-        });
-    };
+
     //添加
     const handleAddProduct = async (_data) => {
         if (_data?.length > 0) {
@@ -72,9 +54,11 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
     };
     const renderItem = ({item = {}}) => {
         return params.type == 1 ? (
-            <CommunityCard data={item} onDelete={onDelete} />
+            <CommunityCard data={item} style={{flex: 1}} x />
+        ) : item?.type == 'recommend_card' ? (
+            <ProductCards data={item} style={{flex: 1}} />
         ) : (
-            <ProductCards data={item} onDelete={onDelete} />
+            <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} />
         );
     };
 
@@ -92,6 +76,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
             </Text>
         ) : null;
     };
+
     const renderEmpty = () => {
         return params.type == 1 ? (
             <EmptyTip
@@ -185,5 +170,11 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.descColor,
+    },
+    cardDelete: {
+        alignSelf: 'flex-start',
+        paddingRight: px(6),
+        marginTop: px(12),
+        paddingTop: px(16),
     },
 });
