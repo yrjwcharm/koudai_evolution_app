@@ -90,7 +90,7 @@ const ArticleDetail = ({navigation, route}) => {
     const timeStamp = useRef(Date.now());
     const current_artic_url = useRef();
     const focus = useIsFocused();
-    const [canUp, setCanUp] = useState(0);
+    const [canUp, setCanUp] = useState(1);
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
         let tmp = audioList.filter((audio) => audio.media_id == current_track.media_id);
@@ -304,12 +304,17 @@ const ArticleDetail = ({navigation, route}) => {
         [data, collect_status]
     );
     //文章置顶
-    const onArticeUp = () => {
+    const onArticeUp = useCallback(() => {
         setCanUp((pre) => {
             return pre == 0 ? 1 : 0;
         });
-        http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp});
-    };
+        http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp}).then(
+            () => {
+                shareModal.current.toastShow(canUp == 1 ? '置顶成功' : '取消置顶');
+            }
+        );
+    }, [canUp, data]);
+    console.log(canUp, 'canUp');
     const postProgress = useCallback(async (params) => {
         http.post('/community/article/progress/20210101', params || {}).then((res) => {
             if (res.code == '000000' && res.result?.add_rational_num > 0) {
@@ -504,6 +509,7 @@ const ArticleDetail = ({navigation, route}) => {
                             can_up: canUp,
                             ...data?.share_info,
                         }}
+                        can_up={canUp}
                         title={data?.title}
                         needLogin={!userInfo.is_login}
                     />
