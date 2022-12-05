@@ -13,6 +13,7 @@ import MonthProfit from './MonthProfit';
 import YearProfit from './YearProfit';
 import TotalProfit from './TotalProfit';
 import OverviewChart from './OverviewChart';
+import Example from './Example';
 const shadow = {
     color: '#AAA',
     border: 4,
