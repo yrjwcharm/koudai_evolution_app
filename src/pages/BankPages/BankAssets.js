@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 15:01:44
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-06 15:13:27
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -48,7 +48,7 @@ export default function BankAssets(props) {
                     <Header
                         title={data.title}
                         leftIcon="chevron-left"
-                        rightText={data.trade_record.text}
+                        rightText={data.trade_record?.text}
                         rightPress={() => rightPress(data.trade_record.url)}
                         rightTextStyle={styles.right_sty}
                         fontStyle={{color: '#000'}}
@@ -146,20 +146,23 @@ export default function BankAssets(props) {
                                                     })}
                                                 </View>
                                             </View>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                disabled={_s.button.avail == 0}
-                                                style={[
-                                                    styles.outBtn,
-                                                    {
-                                                        backgroundColor: _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',
-                                                    },
-                                                ]}
-                                                onPress={() => jump(_s.button.url)}>
-                                                <Text style={[{fontSize: text(12), color: '#fff'}]}>
-                                                    {_s.button.text}
-                                                </Text>
-                                            </TouchableOpacity>
+                                            {_s.button?.text ? (
+                                                <TouchableOpacity
+                                                    activeOpacity={1}
+                                                    disabled={_s.button.avail == 0}
+                                                    style={[
+                                                        styles.outBtn,
+                                                        {
+                                                            backgroundColor:
+                                                                _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',
+                                                        },
+                                                    ]}
+                                                    onPress={() => jump(_s.button.url)}>
+                                                    <Text style={[{fontSize: text(12), color: '#fff'}]}>
+                                                        {_s.button.text}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ) : null}
                                         </View>
                                     );
                                 })}
