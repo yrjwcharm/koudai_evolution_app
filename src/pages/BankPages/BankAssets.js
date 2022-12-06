@@ -1,9 +1,6 @@
 /*
  * @Author: xjh
- * @Date: 2021-01-25 11:20:31
- * @Description:银行持仓
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-06 15:13:27
+ * @LastEditTime: 2022-12-06 15:28:13
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -60,7 +57,7 @@ export default function BankAssets(props) {
                         <ScrollView style={{marginBottom: btnHeight}}>
                             <View style={[styles.card_sty, Style.flexCenter]}>
                                 <View style={Style.flexRowCenter}>
-                                    <Text style={Style.descSty}>{data.asset.amount.k}</Text>
+                                    <Text style={Style.descSty}>{data.asset?.amount?.k}</Text>
                                     <TouchableOpacity onPress={reasonShow} activeOpacity={1}>
                                         <AntDesign
                                             name={'questioncircleo'}
@@ -70,19 +67,19 @@ export default function BankAssets(props) {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={styles.amount_sty}>{data.asset.amount.v}</Text>
+                                <Text style={styles.amount_sty}>{data.asset?.amount?.v}</Text>
                                 <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
                                     <View style={{flex: 1}}>
-                                        <Text style={styles.top_text_sty}>{data.asset.principal.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset.principal.v}</Text>
+                                        <Text style={styles.top_text_sty}>{data.asset?.principal?.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset?.principal?.v}</Text>
                                     </View>
                                     <View style={{flex: 1, textAlign: 'center'}}>
-                                        <Text style={styles.top_text_sty}>{data.asset.profit.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset.profit.v}</Text>
+                                        <Text style={styles.top_text_sty}>{data.asset?.profit?.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset?.profit?.v}</Text>
                                     </View>
                                     <View style={{flex: 1, textAlign: 'center'}}>
-                                        <Text style={styles.top_text_sty}>{data.asset.profit_acc.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset.profit_acc.v}</Text>
+                                        <Text style={styles.top_text_sty}>{data.asset?.profit_acc?.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset?.profit_acc?.v}</Text>
                                     </View>
                                 </View>
                                 {data?.button && (
