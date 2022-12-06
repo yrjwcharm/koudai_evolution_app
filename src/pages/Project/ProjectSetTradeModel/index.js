@@ -36,6 +36,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
     const getData = async () => {
         const res = await getSetModel({fr, poid, upgrade_id});
         const {agreement_bottom, pop_tool_risk_reminder, risk_pop, sale_model} = res.result;
+        global.LogTool('effect_jump', '', res?.result?.log_id);
         if (pop_tool_risk_reminder) {
             Modal.show({
                 title: pop_tool_risk_reminder?.title,
@@ -123,6 +124,7 @@ const ProjectSetTradeModel = ({route, navigation}) => {
         handlePost(password);
     };
     const jumpNext = async () => {
+        global.LogTool({event: 'SetFormNext_Click', plate_id: toolStatus[3] ? 'A' : 'B', oid: data?.log_id});
         if (data?.pop_trade_password && allToolClose) {
             passwordModal?.current?.show();
         } else {

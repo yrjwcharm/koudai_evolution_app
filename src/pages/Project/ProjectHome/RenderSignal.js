@@ -15,7 +15,13 @@ const RenderSignal = ({list, more, desc, style, copilot}) => {
         <View style={style}>
             <View style={Style.flexRow} {...copilot}>
                 {list?.map((item, index) => (
-                    <TouchableOpacity key={index} activeOpacity={0.8} onPress={() => jump(item.url)}>
+                    <TouchableOpacity
+                        key={index}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool('PlanHome_click', 'C', index + 1);
+                            jump(item.url);
+                        }}>
                         <LinearGradient
                             style={styles.con}
                             colors={item?.background || ['#E0F9DC', '#EEF7ED']}
@@ -38,7 +44,13 @@ const RenderSignal = ({list, more, desc, style, copilot}) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 ))}
-                <TouchableOpacity style={styles.more} onPress={() => jump(more?.url)} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.more}
+                    onPress={() => {
+                        global.LogTool('PlanHome_click', 'C', '更多');
+                        jump(more?.url);
+                    }}
+                    activeOpacity={0.8}>
                     <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{more?.text}</Text>
                     <Icon name={'rightcircleo'} color={Colors.lightBlackColor} size={px(12)} />
                 </TouchableOpacity>

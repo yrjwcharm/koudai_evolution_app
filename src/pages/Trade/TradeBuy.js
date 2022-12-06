@@ -77,6 +77,7 @@ class TradeBuy extends Component {
         this.plan_id = this.props.route?.params?.plan_id || '';
         this.show_risk_disclosure = true;
         this._tabType = null;
+        this.log_id;
     }
     getTab = async () => {
         const {poid} = this.state;
@@ -117,6 +118,8 @@ class TradeBuy extends Component {
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
+                    this.log_id = res.result?.log_id;
+                    global.LogTool('effect_jump', '', this.log_id);
                     // this.props.modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
                     if (
                         this.props.isFocused &&
@@ -222,6 +225,7 @@ class TradeBuy extends Component {
      * @returns void
      */
     showRishPop = (data) => {
+        global.LogTool('RiskWindow_Show', '', this.log_id);
         if (!data.risk_pop) return false;
         Modal.show({
             cancelCallBack: () => {
@@ -450,7 +454,12 @@ class TradeBuy extends Component {
      */
     buyClick = async () => {
         const {type, data, poid} = this.state;
-        global.LogTool('buy');
+        global.LogTool({
+            event: 'buy',
+            plate_id: this.state.isLargeAmount ? 'B' : 'A',
+            ctrl: this.state.amount,
+            oid: this.log_id,
+        });
         http.post('/advisor/action/report/20220422', {action: 'confirm', poids: [poid]});
         Keyboard.dismiss();
         const res = await getBuyQuestionnaire({fr: 'compliance', poid});

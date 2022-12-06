@@ -85,7 +85,10 @@ const Index = ({navigation, start}) => {
                                             style={{flex: 1, alignItems: 'center'}}
                                             key={index}
                                             activeOpacity={0.8}
-                                            onPress={() => jump(item.url)}>
+                                            onPress={() => {
+                                                global.LogTool('PlanHome_click', 'B', index + 1);
+                                                jump(item.url);
+                                            }}>
                                             {!!item.icon && (
                                                 <Image
                                                     source={{uri: item.icon}}
@@ -139,12 +142,7 @@ const Index = ({navigation, start}) => {
                                     prerenderingSiblingsNumber={data?.project_list?.tab_list?.length}
                                     onChangeTab={(obj) => {
                                         setCurrentTab(obj.i);
-                                        global.LogTool({
-                                            event: 'ProjectHome',
-                                            plateid: data?.project_list?.tab_list[obj.i]?.plateid,
-                                            ctrl: data?.project_list?.tab_list[obj.i]?.title,
-                                            oid: data?.project_list?.tab_list[obj.i]?.project_id_list?.join(','),
-                                        });
+                                        global.LogTool('PlanHome_click', 'D', obj.i + 1);
                                     }}
                                     renderTabBar={() => <CapsuleTabbar unActiveStyle={{backgroundColor: '#F5F6F8'}} />}
                                     style={{flex: 1}}>

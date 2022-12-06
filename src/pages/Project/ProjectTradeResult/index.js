@@ -18,6 +18,7 @@ const Index = ({route, navigation}) => {
     const jump = useJump();
     const getInfo = async () => {
         let res = await getData(route?.params);
+        global.LogTool('effect_jump', '', res.result?.log_id);
         setStatus(res.result?.wallet?.wallet_auto_charge == 1);
         setData(res.result);
         res.result.title && navigation.setOptions({title: res.result.title});
@@ -176,6 +177,7 @@ const Index = ({route, navigation}) => {
                 title={data?.btn?.text}
                 containerStyle={{position: 'relative'}}
                 onPress={() => {
+                    global.LogTool('TradeFinish_Click', '', data?.log_id);
                     if (data?.btn?.url) {
                         jump(data?.btn?.url);
                         return;

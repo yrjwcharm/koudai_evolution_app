@@ -36,7 +36,7 @@ const Banner = ({data}) => {
                             key={index}
                             activeOpacity={0.9}
                             onPress={() => {
-                                global.LogTool('project_swiper', banner.id);
+                                global.LogTool('PlanHome_click', 'A', banner.id);
                                 jump(banner.url);
                             }}>
                             <FastImage

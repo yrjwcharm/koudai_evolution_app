@@ -36,9 +36,11 @@ const Index = ({route, navigation}) => {
 
     const getData = async () => {
         const res = await getInfo(route?.params);
+        global.LogTool('effect_jump', '', res?.result?.log_id);
         const {pop_risk_disclosure, risk_disclosure} = res.result || {};
         if (isFocused && pop_risk_disclosure && risk_disclosure && showRiskDisclosureRef.current) {
-            showRiskDisclosure(risk_disclosure);
+            global.LogTool('RiskAgreementWindow_Show', '', res?.result?.log_id);
+            showRiskDisclosure(risk_disclosure, res?.result?.log_id);
         }
         navigation.setOptions({title: res.result?.label});
         setData(res.result);
@@ -49,7 +51,7 @@ const Index = ({route, navigation}) => {
      * @param {any} _data 风险揭示书内容
      * @returns void
      */
-    const showRiskDisclosure = (_data) => {
+    const showRiskDisclosure = (_data, log_id) => {
         showRiskDisclosureRef.current = false;
         const {poid} = route.params || {};
         Modal.show({
@@ -87,6 +89,7 @@ const Index = ({route, navigation}) => {
                     action: 'read',
                     poids: [poid],
                 });
+                global.LogTool('RiskAgreementWindow_Click', '', log_id);
             },
             confirmText: '关闭',
             countdown: _data.countdown,
@@ -149,6 +152,12 @@ const Index = ({route, navigation}) => {
         setAmount(onlyNumber(value >= 100000000 ? '99999999.99' : value));
     };
     const showPassword = () => {
+        global.LogTool({
+            event: 'SetForm_Click',
+            plate_id: data?.pay_methods[bankSelect]?.pay_method == 'wallet' ? 'B' : 'A',
+            ctrl: amount,
+            oid: data?.log_id,
+        });
         Keyboard.dismiss();
         passwordModal.current.show();
     };
