@@ -1,6 +1,6 @@
 /*
  * @Author: xjh
- * @LastEditTime: 2022-12-06 15:28:13
+ * @LastEditTime: 2022-12-06 15:30:03
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -56,32 +56,36 @@ export default function BankAssets(props) {
                     {Object.keys(data).length > 0 && (
                         <ScrollView style={{marginBottom: btnHeight}}>
                             <View style={[styles.card_sty, Style.flexCenter]}>
-                                <View style={Style.flexRowCenter}>
-                                    <Text style={Style.descSty}>{data.asset?.amount?.k}</Text>
-                                    <TouchableOpacity onPress={reasonShow} activeOpacity={1}>
-                                        <AntDesign
-                                            name={'questioncircleo'}
-                                            color={'#666666'}
-                                            size={13}
-                                            style={{marginLeft: text(5)}}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={styles.amount_sty}>{data.asset?.amount?.v}</Text>
-                                <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.top_text_sty}>{data.asset?.principal?.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset?.principal?.v}</Text>
-                                    </View>
-                                    <View style={{flex: 1, textAlign: 'center'}}>
-                                        <Text style={styles.top_text_sty}>{data.asset?.profit?.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset?.profit?.v}</Text>
-                                    </View>
-                                    <View style={{flex: 1, textAlign: 'center'}}>
-                                        <Text style={styles.top_text_sty}>{data.asset?.profit_acc?.k}</Text>
-                                        <Text style={styles.bottom_num_sty}>{data.asset?.profit_acc?.v}</Text>
-                                    </View>
-                                </View>
+                                {data?.asset ? (
+                                    <>
+                                        <View style={Style.flexRowCenter}>
+                                            <Text style={Style.descSty}>{data.asset?.amount?.k}</Text>
+                                            <TouchableOpacity onPress={reasonShow} activeOpacity={1}>
+                                                <AntDesign
+                                                    name={'questioncircleo'}
+                                                    color={'#666666'}
+                                                    size={13}
+                                                    style={{marginLeft: text(5)}}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <Text style={styles.amount_sty}>{data.asset?.amount?.v}</Text>
+                                        <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
+                                            <View style={{flex: 1}}>
+                                                <Text style={styles.top_text_sty}>{data.asset?.principal?.k}</Text>
+                                                <Text style={styles.bottom_num_sty}>{data.asset?.principal?.v}</Text>
+                                            </View>
+                                            <View style={{flex: 1, textAlign: 'center'}}>
+                                                <Text style={styles.top_text_sty}>{data.asset?.profit?.k}</Text>
+                                                <Text style={styles.bottom_num_sty}>{data.asset?.profit?.v}</Text>
+                                            </View>
+                                            <View style={{flex: 1, textAlign: 'center'}}>
+                                                <Text style={styles.top_text_sty}>{data.asset?.profit_acc?.k}</Text>
+                                                <Text style={styles.bottom_num_sty}>{data.asset?.profit_acc?.v}</Text>
+                                            </View>
+                                        </View>
+                                    </>
+                                ) : null}
                                 {data?.button && (
                                     <TouchableOpacity
                                         activeOpacity={1}
@@ -104,7 +108,7 @@ export default function BankAssets(props) {
                                     ]}
                                     onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
-                                        {data.elec_account.title}
+                                        {data.elec_account?.title}
                                         {data?.elec_account?.balance ? (
                                             <Text>({data?.elec_account?.balance})</Text>
                                         ) : null}

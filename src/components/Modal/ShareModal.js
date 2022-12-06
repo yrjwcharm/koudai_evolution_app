@@ -79,13 +79,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             title: '取消置顶',
             type: 'articleUp',
         },
-        {
-            img: require('../../assets/img/share/more.png'),
-            title: '更多',
-            type: 'MoreOptions',
-        },
-
-        ...otherList,
     ]);
     const show = () => {
         setVisible(true);
@@ -225,7 +218,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             toastShow: toastShow,
         };
     });
-    const listData = noShare ? otherList : list;
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             {backdrop && <Mask />}
@@ -251,7 +243,18 @@ const ShareModal = React.forwardRef((props, ref) => {
                             </View>
                         ) : null)}
                     <View style={[Style.flexRow, styles.optionBox]}>
-                        {listData.map((item, index) => {
+                        {(noShare
+                            ? otherList
+                            : [
+                                  ...list,
+                                  ...otherList,
+                                  {
+                                      img: require('../../assets/img/share/more.png'),
+                                      title: '更多',
+                                      type: 'MoreOptions',
+                                  },
+                              ]
+                        ).map((item, index) => {
                             if (item.type === 'Like') {
                                 item.title = shareContent?.favor_status ? '取消点赞' : '点赞';
                                 item.img = shareContent?.favor_status

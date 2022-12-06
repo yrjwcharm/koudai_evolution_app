@@ -33,7 +33,7 @@ import withPageLoading from '~/components/withPageLoading';
 import {beforeGetPicture, isIphoneX, px} from '~/utils/appUtil';
 import {upload} from '~/utils/AliyunOSSUtils';
 import {ChooseModal, ChooseTag} from '../CommunityVodCreate';
-import {getArticleDraft, publishArticle, saveArticleDraft} from './services';
+import {editArticle, getArticleDraft, publishArticle, saveArticleDraft} from './services';
 import {SERVER_URL} from '~/services/config';
 
 const toolbarIcons = {
@@ -427,7 +427,7 @@ const WriteArticle = ({article, setArticle}) => {
 
 const Index = ({navigation, route, setLoading}) => {
     const jump = useJump();
-    const {article_id = 0, community_id = 0, fr = '', history_id = 0} = route.params || {};
+    const {article_id = 0, community_id = 0, fr = '', history_id = 0, is_edit} = route.params || {};
     const [step, setStep] = useState(1); // 步骤：1 第一步上传文章封面 2 第二步写文章内容
     const [cover, setCover] = useState(''); // 文章封面
     const [article, setArticle] = useState({}); // content 文章内容 tags 文章标签 title 文章标题
@@ -537,7 +537,7 @@ const Index = ({navigation, route, setLoading}) => {
     const onPublish = () => {
         const loading = Toast.showLoading('提交审核中...');
         const {content = '', tags = [], title = ''} = article;
-        publishArticle({
+        (is_edit ? editArticle : publishArticle)({
             article_id,
             community_id,
             content,
