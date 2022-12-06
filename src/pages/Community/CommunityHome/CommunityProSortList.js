@@ -157,6 +157,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                         onEndReached={onEndReached}
                         onEndReachedThreshold={0.5}
                         renderItem={renderItem}
+                        autoscrollSpeed={150}
                         onDragEnd={(_data) => {
                             sort();
                             setData(_data.data);
