@@ -3,7 +3,7 @@
  * @Description:社区主页列表
  */
 import {StyleSheet, Text, ActivityIndicator, View} from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, forwardRef, useImperativeHandle} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import {addProduct} from './service';
@@ -17,13 +17,14 @@ import {Button} from '~/components/Button';
 
 import {AlbumCard} from '~/components/Product';
 import {ProductList} from '../../../components/Product';
-const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_add_btn, ...rest}) => {
+const CommunityHomeList = forwardRef(({getData = () => {}, params, muid, history_id, show_add_btn, ...rest}, ref) => {
     const [refreshing, setRefreshing] = useState(true);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
     const chooseModal = useRef();
+    const flatlistRef = useRef();
     const page_size = 20;
     const init = () => {
         getData({...params, page, page_size})
@@ -39,7 +40,11 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
                 setRefreshing(false);
             });
     };
-
+    const refresh = () => {
+        flatlistRef.current?.scrollToOffset?.({animated: false, offset: 0});
+        setRefreshing(true);
+        page > 1 ? setPage(1) : init();
+    };
     //添加
     const handleAddProduct = async (_data) => {
         if (_data?.length > 0) {
@@ -53,6 +58,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
             }
         }
     };
+
     const renderItem = ({item = {}}) => {
         return params.type == 1 ? (
             <CommunityCard data={item} style={{flex: 1}} x />
@@ -77,6 +83,8 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
             </Text>
         ) : null;
     };
+
+    useImperativeHandle(ref, () => ({refresh}));
     const renderEmpty = () => {
         return params.type == 1 ? (
             <EmptyTip
@@ -115,10 +123,6 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
         );
     };
 
-    const refresh = () => {
-        page > 1 ? setPage(1) : init();
-    };
-
     useEffect(() => {
         init();
     }, [page]);
@@ -126,6 +130,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {data?.length > 0 ? (
                 <FlatList
+                    ref={flatlistRef}
                     keyExtractor={(item) => item.id.toString()}
                     style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
                     data={data}
@@ -155,7 +160,7 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
             />
         </View>
     );
-};
+});
 
 export default CommunityHomeList;
 

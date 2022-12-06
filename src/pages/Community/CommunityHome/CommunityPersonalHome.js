@@ -49,7 +49,7 @@ const CommunityPersonalHome = ({navigation, route, ...props}) => {
         return () => {
             emitter?.remove?.();
         };
-    });
+    }, []);
     const Header = () => {
         const animateOpacity = scrollY.interpolate({
             inputRange: [px(50), parallaxHeaderHeight - 100],

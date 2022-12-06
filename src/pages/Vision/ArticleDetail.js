@@ -311,7 +311,9 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp}).then(
             (res) => {
                 if (res.code === '000000') {
-                    DeviceEventEmitter.emit('articel_up_change');
+                    setTimeout(() => {
+                        DeviceEventEmitter.emit('articel_up_change');
+                    }, []);
                     shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
                 }
             }

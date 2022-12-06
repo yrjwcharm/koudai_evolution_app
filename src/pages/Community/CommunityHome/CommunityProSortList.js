@@ -2,7 +2,7 @@
  * @Date: 2022-11-28 14:43:36
  * @Description:社区主页列表
  */
-import {StyleSheet, Text, ActivityIndicator, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, ActivityIndicator, View, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
@@ -58,11 +58,14 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                 const item_ids = chooseDeleteData.join(',');
                 let res = await removeProduct({community_id: params.community_id, item_ids});
                 if (res.code == '000000') {
+                    setTimeout(() => {
+                        DeviceEventEmitter.emit('community_product_change');
+                    }, 200);
                     setData((prev) => {
                         let tmp = [...prev];
                         chooseDeleteData.forEach((chooseItem) => {
                             let index = data.findIndex((item) => {
-                                return item.item_id == chooseItem.item_id;
+                                return item.item_id == chooseItem;
                             });
                             tmp.splice(index, 1);
                         });
@@ -75,7 +78,13 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
     };
     const sort = () => {
         const item_ids = data.map((item) => item.item_id).join(',');
-        proSort({community_id: params.community_id, item_ids});
+        proSort({community_id: params.community_id, item_ids}).then((res) => {
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    DeviceEventEmitter.emit('community_product_change');
+                }, 200);
+            }
+        });
     };
     const renderItem = ({item = {}, drag}) => {
         return (

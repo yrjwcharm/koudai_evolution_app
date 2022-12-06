@@ -2,7 +2,6 @@
  * @Date: 2022-12-02 16:46:39
  * @Description:社区主页作品管理排序
  */
-import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {ScrollTabView} from 'react-native-scroll-head-tab-view';

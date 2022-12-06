@@ -2,8 +2,8 @@
  * @Date: 2022-10-09 14:35:24
  * @Description:社区主页
  */
-import {StyleSheet, Text, View, Animated, TouchableOpacity, Image} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import {StyleSheet, Text, View, Animated, TouchableOpacity, Image, DeviceEventEmitter} from 'react-native';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import ScrollTabbar from '~/components/ScrollTabbar';
 import {deviceWidth, px} from '~/utils/appUtil';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -31,6 +31,11 @@ const CommunityHome = ({navigation, route}) => {
     const shareModal = useRef();
     const [introHeight, setIntroHeight] = useState(0);
     const bottomModal = useRef();
+    const recommendList = useRef([]);
+    const refresh = () => {
+        recommendList.current[0]?.refresh?.();
+        recommendList.current[1]?.refresh?.();
+    };
     const getHomeData = async () => {
         let res = await getCommunityHomeData({community_id, history_id});
         setData(res.result);
@@ -43,7 +48,15 @@ const CommunityHome = ({navigation, route}) => {
     const getProData = (params) => {
         return getCommunityProductList(params);
     };
-
+    useEffect(() => {
+        //当删除时刷新
+        const emitter = DeviceEventEmitter.addListener('community_product_change', () => {
+            refresh();
+        });
+        return () => {
+            emitter?.remove?.();
+        };
+    }, []);
     useFocusEffect(
         useCallback(() => {
             getHomeData();
@@ -135,6 +148,7 @@ const CommunityHome = ({navigation, route}) => {
                         }}>
                         {data?.tabs?.map(({name, type}, index) => (
                             <CommunityHomeList
+                                ref={(flow) => (recommendList.current[index] = flow)}
                                 tabLabel={name}
                                 key={index}
                                 getData={getProData}
