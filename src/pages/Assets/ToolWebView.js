@@ -21,7 +21,6 @@ const ToolWebView = ({navigation, route}) => {
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
     const [listData, setListData] = useState(null);
     const [topButton, setTopButton] = useState(null);
-    const [, setReminder] = useState('');
     const httpFlag = useRef(true);
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
@@ -41,7 +40,6 @@ const ToolWebView = ({navigation, route}) => {
         if (res.tool_id) {
             global.LogTool({ctrl: 'tool', event: 'jump', oid: res.tool_id});
             getRelation();
-            getShareHoldings();
         }
         if (res.top_button) {
             setTopButton(res.top_button);
@@ -85,21 +83,6 @@ const ToolWebView = ({navigation, route}) => {
             .then((result) => {
                 if (result.code === '000000') {
                     setListData(result.result);
-                }
-            })
-            .finally(() => {
-                StatusBar.setBarStyle('light-content');
-            });
-    };
-    /**
-     * 获取持仓份额
-     */
-    const getShareHoldings = () => {
-        http.get('/tool/signal/chart/20220711', {tool_id: res.tool_id})
-            .then((resp) => {
-                if (resp.code === '000000') {
-                    const {reminder = ''} = resp?.result?.compare_table;
-                    setReminder(reminder);
                 }
             })
             .finally(() => {
