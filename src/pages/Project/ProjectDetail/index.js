@@ -166,7 +166,7 @@ export default ({navigation, route}) => {
             return false;
         }
         const {event_id, url} = btn;
-        const logParams = {ctrl: project_id, event: event_id};
+        const logParams = {event: event_id, oid: project_id};
         global.LogTool(logParams);
         if (event_id === 'consult_click') {
             bottomModal.current.show();
@@ -183,7 +183,6 @@ export default ({navigation, route}) => {
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -267,7 +266,7 @@ export default ({navigation, route}) => {
                                     disabled={avail === 0}
                                     key={title + i}
                                     onPress={() => {
-                                        global.LogTool({ctrl: project_id, event: event_id});
+                                        event_id && global.LogTool({event: event_id, oid: project_id});
                                         jump(url);
                                     }}
                                     style={[

@@ -17,7 +17,6 @@ import Clipboard from '@react-native-community/clipboard';
 import * as WeChat from 'react-native-wechat-lib';
 import LazyImage from '../LazyImage';
 import saveImg from '~/utils/saveImg';
-import http from '../../services';
 
 const ShareModal = React.forwardRef((props, ref) => {
     const navigation = navigationRef.current;

@@ -511,7 +511,6 @@ const ArticleDetail = ({navigation, route}) => {
                             can_up: canUp,
                             ...data?.share_info,
                         }}
-                        can_up={canUp}
                         title={data?.title}
                         needLogin={!userInfo.is_login}
                     />

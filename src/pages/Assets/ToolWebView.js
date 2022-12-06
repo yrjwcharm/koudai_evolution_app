@@ -21,13 +21,12 @@ const ToolWebView = ({navigation, route}) => {
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
     const [listData, setListData] = useState(null);
     const [topButton, setTopButton] = useState(null);
-    const [reminder, setReminder] = useState('');
+    const [, setReminder] = useState('');
     const httpFlag = useRef(true);
     const webview = useRef(null);
     const timeStamp = useRef(Date.now());
 
     useEffect(() => {
-        console.log(222, URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf());
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 setToken(result?.access_token ? result?.access_token : 'null');
@@ -37,7 +36,10 @@ const ToolWebView = ({navigation, route}) => {
     }, []);
 
     useEffect(() => {
+        const index_id = route.params.link?.split?.('index_id=')?.[1] || '';
+        index_id && global.LogTool({ctrl: 'index', event: 'jump', oid: index_id});
         if (res.tool_id) {
+            global.LogTool({ctrl: 'tool', event: 'jump', oid: res.tool_id});
             getRelation();
             getShareHoldings();
         }
@@ -94,9 +96,9 @@ const ToolWebView = ({navigation, route}) => {
      */
     const getShareHoldings = () => {
         http.get('/tool/signal/chart/20220711', {tool_id: res.tool_id})
-            .then((res) => {
-                if (res.code === '000000') {
-                    const {reminder = ''} = res?.result?.compare_table;
+            .then((resp) => {
+                if (resp.code === '000000') {
+                    const {reminder = ''} = resp?.result?.compare_table;
                     setReminder(reminder);
                 }
             })
@@ -178,7 +180,7 @@ const ToolWebView = ({navigation, route}) => {
                         javaScriptEnabled={true}
                         injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
                         // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
-                        onLoadEnd={async (e) => {
+                        onLoadEnd={async () => {
                             const loginStatus = await Storage.get('loginStatus');
                             // console.log(loginStatus);
                             webview.current.postMessage(

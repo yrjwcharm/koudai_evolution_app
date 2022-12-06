@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
 /*
  * @Date: 2020-11-03 19:28:28
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-28 20:54:07
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -179,6 +176,7 @@ function App(props) {
                                     'CommunityPersonalHome',
                                     'muid'
                                 );
+                                const ProjectId = getRouteNameId(currentRoute, 'ProjectDetail', 'project_id');
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
@@ -194,7 +192,8 @@ function App(props) {
                                     TotalIncomeDetailId +
                                     SpecialDetailId +
                                     CommunityId +
-                                    CommunityPersonalId;
+                                    CommunityPersonalId +
+                                    ProjectId;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {
