@@ -296,6 +296,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, sli
         setDateArr([...dateArr]);
     }, [selCurDate]);
     const selCalendarType = useCallback(() => {
+        slideFn(true);
         setIsCalendar(true);
         setIsBarChart(false);
     }, []);

@@ -331,6 +331,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type, slideFn}) => 
     }, [isBarChart, sortProfitList, profitDay, selCurDate]);
 
     const selCalendarType = useCallback(() => {
+        slideFn(true);
         setIsCalendar(true);
         setIsBarChart(false);
     });

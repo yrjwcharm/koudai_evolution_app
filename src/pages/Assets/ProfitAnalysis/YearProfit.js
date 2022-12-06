@@ -224,6 +224,7 @@ const YearProfit = ({poid, fund_code, type, unit_type, slideFn}) => {
         setDateArr([...dateArr]);
     }, [selCurYear]);
     const selCalendarType = () => {
+        slideFn(true);
         setIsCalendar(true);
         setIsBarChart(false);
     };
