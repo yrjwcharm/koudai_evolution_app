@@ -122,7 +122,7 @@ const Product = ({navigation}) => {
         const hasContent = await Clipboard.hasString();
         if (hasContent) {
             const res = await Clipboard.getString();
-            if (res) {
+            if (res && res?.indexOf('vmark') == 0) {
                 http.post('/common/device/heart_beat/20210101', {polaris_favor: res}).then((result) => {
                     if (result.code === '000000') {
                         // 刷新
@@ -137,7 +137,7 @@ const Product = ({navigation}) => {
         if (!userInfo.is_login && userInfo.use_clipboard == 1) {
             getClipboard();
         }
-    }, []);
+    }, [userInfo.is_login, userInfo.use_clipboard]);
     const onChangeTab = useCallback((cur) => {
         setTabActive(cur.i);
         [getFollowTabs, getProData][cur.i]();
@@ -327,6 +327,7 @@ const Product = ({navigation}) => {
                                         </View>
                                     </LinearGradient>
                                 ) : null}
+
                                 {/* 直播列表 */}
                                 {proData?.live_list && <LiveList proData={proData} />}
                                 {/* 专题们 */}

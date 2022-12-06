@@ -11,6 +11,7 @@ import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import {useJump} from '~/components/hooks';
 import {px} from '~/utils/appUtil';
 import FastImage from 'react-native-fast-image';
+import quotes from '~/assets/img/quotes.png';
 
 const AlbumHeader = ({
     data: {bg_color, bg_img, bg_linear = false, desc, desc_icon, icon, title, title_desc, title_tag, url} = {},
@@ -109,6 +110,7 @@ const AlbumCard = ({
     header,
     img,
     img_url,
+    img_height,
     items,
     plateid,
     rec_json,
@@ -118,6 +120,7 @@ const AlbumCard = ({
     show_mask,
     style,
     drag,
+    top_comment,
 }) => {
     const jump = useJump();
     const [active, setActive] = useState(0);
@@ -151,7 +154,10 @@ const AlbumCard = ({
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => jump(img_url)}
-                        style={[styles.albumImg, {marginTop: header.bg_img ? px(12) : 0}]}>
+                        style={[
+                            styles.albumImg,
+                            {marginTop: header.bg_img ? px(12) : 0, height: px(img_height || 80)},
+                        ]}>
                         <Image source={{uri: img}} style={{width: '100%', height: '100%'}} />
                     </TouchableOpacity>
                 ) : null}
@@ -202,6 +208,32 @@ const AlbumCard = ({
                         <ProductList data={list} logParams={logParams} type={style_type} />
                     </View>
                 )}
+                {top_comment ? (
+                    <View style={styles.commentWrap}>
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={styles.commentMain}
+                            onPress={() => {
+                                jump(header?.url);
+                            }}>
+                            <Image
+                                style={styles.commentAvatar}
+                                source={{
+                                    uri: top_comment.avatar,
+                                }}
+                            />
+                            <View style={styles.commentRight}>
+                                <Text style={styles.commentName}>{top_comment.nickname}</Text>
+                                <View style={{marginTop: px(2), flexDirection: 'row'}}>
+                                    <Image source={quotes} style={styles.commentIcon} />
+                                    <Text style={styles.commentContent} numberOfLines={2}>
+                                        {top_comment.content}
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                ) : null}
                 {bottom_btns?.map?.((btn, idx) => (
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -274,7 +306,6 @@ const styles = StyleSheet.create({
     },
     albumImg: {
         borderRadius: Space.borderRadius,
-        height: px(80),
         overflow: 'hidden',
     },
     groupTab: {
@@ -327,6 +358,44 @@ const styles = StyleSheet.create({
         top: px(0),
         padding: px(12),
         zIndex: 10,
+    },
+    commentWrap: {
+        borderTopColor: '#E9EAEF',
+        borderTopWidth: StyleSheet.hairlineWidth,
+        paddingVertical: px(12),
+    },
+    commentMain: {
+        padding: px(8),
+        borderRadius: px(4),
+        backgroundColor: '#F5F6F8',
+        flexDirection: 'row',
+    },
+    commentAvatar: {
+        width: px(30),
+        height: px(30),
+        borderRadius: px(30),
+    },
+    commentRight: {
+        flex: 1,
+        marginLeft: px(8),
+    },
+    commentName: {
+        fontSize: px(11),
+        lineHeight: px(15),
+        color: '#545968',
+    },
+    commentContent: {
+        flex: 1,
+        marginRight: px(4),
+        marginLeft: px(3),
+        fontSize: px(11),
+        lineHeight: px(16),
+        color: '#121D3A',
+    },
+    commentIcon: {
+        marginTop: px(3),
+        width: px(8),
+        height: px(8),
     },
 });
 

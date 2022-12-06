@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
-  "version": "7.0.3",
-  "versionCode": 70300,
+  "version": "7.0.4",
+  "versionCode": 70400,
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
@@ -11,7 +11,7 @@
     "test": "jest",
     "lint": "eslint .",
     "svg": "node src/assets/getSvg.js",
-    "bundle-android":"react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "bundle-ios": "react-native bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
   },
   "dependencies": {
@@ -54,7 +54,7 @@
     "react-native-drag-sort": "^2.4.4",
     "react-native-draggable-flatlist": "^3.1.2",
     "react-native-easy-chat-ui": "^0.4.14",
-    "react-native-echarts-pro": "^1.8.8",
+    "react-native-echarts-pro": "^1.8.9",
     "react-native-error-helper": "^0.2.2",
     "react-native-exit-app": "^1.1.0",
     "react-native-fast-image": "^8.3.4",

@@ -8,7 +8,7 @@ import Storage from '~/utils/storage';
 import Feather from 'react-native-vector-icons/Feather';
 import {px} from '~/utils/appUtil';
 
-const Eye = ({storageKey, onChange, color}) => {
+const Eye = ({storageKey, onChange, color, size}) => {
     const [showEye, setShowEye] = useState('true');
     useEffect(() => {
         Storage.get(storageKey || 'myAssetsEye').then((res) => {
@@ -33,7 +33,7 @@ const Eye = ({storageKey, onChange, color}) => {
             style={{width: px(40), height: px(40), justifyContent: 'center'}}>
             <Feather
                 name={showEye === 'true' ? 'eye' : 'eye-off'}
-                size={px(16)}
+                size={size || px(16)}
                 color={color || 'rgba(255, 255, 255, 0.8)'}
             />
         </TouchableOpacity>

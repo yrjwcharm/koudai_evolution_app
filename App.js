@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 17:08:13
+ * @LastEditTime: 2022-11-28 20:54:07
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -72,10 +72,12 @@ function App(props) {
             if (__DEV__) {
                 console.log('global error：', error, isFatal);
             } else {
-                http.post('/mapi/report/app_log/20210101', {
-                    error: error,
-                    is_fatal: isFatal,
-                });
+                if (isFatal) {
+                    http.post('/mapi/report/app_log/20210101', {
+                        error: error,
+                        is_fatal: isFatal,
+                    });
+                }
             }
         }, true);
 
@@ -177,7 +179,6 @@ function App(props) {
                                     'CommunityPersonalHome',
                                     'muid'
                                 );
-                                const PortfolioDetailsMfCode = getRouteNameId(currentRoute, 'PortfolioDetails', 'poid');
                                 let currentRoutePageId =
                                     currentRouteName +
                                     article_id +
@@ -193,8 +194,7 @@ function App(props) {
                                     TotalIncomeDetailId +
                                     SpecialDetailId +
                                     CommunityId +
-                                    CommunityPersonalId +
-                                    PortfolioDetailsMfCode;
+                                    CommunityPersonalId;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {

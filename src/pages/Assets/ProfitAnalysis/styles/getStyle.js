@@ -1,7 +1,7 @@
-import {compareDate, delMille} from '../../../../utils/appUtil';
+import {compareDate, delMille, isEmpty} from '../../../../utils/appUtil';
 import {Colors} from '../../../../common/commonStyle';
 
-export const getStyles = (el, currentDay) => {
+export const getStyles = (el, currentDay, unit = '') => {
     let wrapStyle = {backgroundColor: Colors.transparent},
         dayStyle = {},
         profitStyle = {};
@@ -17,7 +17,7 @@ export const getStyles = (el, currentDay) => {
         }
         if (delMille(el?.profit) == 0) {
             wrapStyle = {
-                backgroundColor: el?.day == currentDay ? Colors.transparent : '#F5F6F8',
+                backgroundColor: el?.day == currentDay && isEmpty(unit) ? Colors.transparent : '#F5F6F8',
             };
             profitStyle = {
                 color: Colors.lightGrayColor,

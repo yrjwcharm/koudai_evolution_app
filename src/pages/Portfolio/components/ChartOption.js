@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-02-05 14:32:45
- * @LastEditors: yanruifeng
- * @LastEditTime: 2022-10-21 15:05:06
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-23 16:04:17
  * @Description: 基金相关图表配置
  */
 // 交互图例

@@ -41,13 +41,22 @@ const ClassCard = ({data = {}, showEye}) => {
                 </View>
             )}
             <View style={[Style.flexRow]}>
-                {indicators?.map(({text, value, color}, index) => (
+                {indicators?.map(({text, value, color, type}, index) => (
                     <View
                         key={index}
                         style={{
-                            flex: index == 0 ? 2 : 1,
+                            flex: [2, 1.15, 1][index],
                         }}>
-                        <Text style={[styles.label_text]}>{text}</Text>
+                        {type === 1 ? (
+                            <View style={Style.flexRow}>
+                                <View style={styles.labelBgWrap}>
+                                    <Text style={styles.labelBgText}>{text}</Text>
+                                </View>
+                            </View>
+                        ) : (
+                            <Text style={[styles.label_text]}>{text}</Text>
+                        )}
+
                         <Text
                             style={[
                                 styles.amount_text,
@@ -174,6 +183,18 @@ const styles = StyleSheet.create({
         lineHeight: px(15),
         marginBottom: px(3),
         color: Colors.lightBlackColor,
+    },
+    labelBgWrap: {
+        backgroundColor: '#F1F6FF',
+        paddingVertical: px(2),
+        paddingHorizontal: px(3),
+        borderRadius: px(4),
+    },
+    labelBgText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        marginBottom: px(3),
+        color: '#0051CC',
     },
     amount_text: {
         fontSize: px(15),

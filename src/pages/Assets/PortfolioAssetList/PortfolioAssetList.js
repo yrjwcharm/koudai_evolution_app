@@ -68,10 +68,10 @@ const PortfolioAssetList = ({route, navigation}) => {
     }, []);
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
-            return text.split('/')?.map((item, index) =>
+            return text.split('|')?.map((item, index) =>
                 item == activeText ? (
                     <Text style={{color: Colors.defaultColor}}>
-                        {index == 1 ? '/' : ''} {activeText} {index == 0 ? '/' : ''}
+                        {index == 1 ? '|' : ''} {activeText} {index == 0 ? '|' : ''}
                     </Text>
                 ) : (
                     item
@@ -133,7 +133,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                         )}
                         {/* 收益 */}
                         <View style={[Style.flexRow]}>
-                            <View style={[{flex: 1}, Style.flexRow]}>
+                            <View style={[{flex: 1}]}>
                                 <Text style={styles.profitKey}>{summary?.profit_info?.text}</Text>
                                 <Text
                                     style={[
@@ -148,7 +148,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     {showEye === 'true' ? summary?.profit_info?.value : '****'}
                                 </Text>
                             </View>
-                            <View style={[{flex: 1}, Style.flexRow]}>
+                            <View style={[{flex: 1}]}>
                                 <Text style={styles.profitKey}>{summary?.profit_acc_info?.text}</Text>
                                 <Text
                                     style={[
@@ -161,6 +161,21 @@ const PortfolioAssetList = ({route, navigation}) => {
                                         },
                                     ]}>
                                     {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                                </Text>
+                            </View>
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_acc?.text}</Text>
+                                <Text
+                                    style={[
+                                        styles.profitVal,
+                                        {
+                                            color:
+                                                showEye === 'true'
+                                                    ? summary?.profit_acc?.color || Colors.defaultColor
+                                                    : Colors.defaultColor,
+                                        },
+                                    ]}>
+                                    {showEye === 'true' ? summary?.profit_acc?.value : '****'}
                                 </Text>
                             </View>
                         </View>
@@ -230,6 +245,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             profit_acc,
                             remind_info,
                             tag_info,
+                            tool_tag_info,
                             url,
                             name,
                             anno,
@@ -241,6 +257,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             code,
                             signal_icons, //工具icon
                             open_tip, //私募下期开放时间
+                            profit_title,
                         } = product;
                         return (
                             <TouchableOpacity
@@ -254,6 +271,11 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     jump(url);
                                 }}
                                 key={log_id + index}>
+                                {profit_title ? (
+                                    <View style={styles.portCardUpdateHint}>
+                                        <Text style={styles.portCardUpdateHintText}>{profit_title}</Text>
+                                    </View>
+                                ) : null}
                                 {type != 10 && (
                                     <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                                         <View style={Style.flexRow}>
@@ -262,6 +284,20 @@ const PortfolioAssetList = ({route, navigation}) => {
                                                 <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>
                                             )}
                                             {!!tag_info && <TagInfo data={tag_info} />}
+                                            {tool_tag_info?.map?.((item) => (
+                                                <View
+                                                    style={[styles.toolTag, {borderColor: item.tag_color}]}
+                                                    key={item.text}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(10),
+                                                            lineHeight: px(14),
+                                                            color: item.tag_color,
+                                                        }}>
+                                                        {item?.text}
+                                                    </Text>
+                                                </View>
+                                            ))}
                                         </View>
                                         {!!open_tip && (
                                             <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>
@@ -275,9 +311,26 @@ const PortfolioAssetList = ({route, navigation}) => {
                                     {/* 基金 */}
                                     {type == 10 ? (
                                         <View style={{flex: 1.4}}>
-                                            <Text style={[styles.name]} numberOfLines={1}>
-                                                {name}
-                                            </Text>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text style={[styles.name]} numberOfLines={1}>
+                                                    {name}
+                                                </Text>
+                                                {tool_tag_info?.map?.((item) => (
+                                                    <View
+                                                        style={[styles.toolTag, {borderColor: item.tag_color}]}
+                                                        key={item.text}>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: px(10),
+                                                                lineHeight: px(14),
+                                                                color: item.tag_color,
+                                                            }}>
+                                                            {item?.text}
+                                                        </Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+
                                             <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
                                         </View>
                                     ) : (
@@ -426,6 +479,20 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
         marginBottom: px(8),
     },
+    portCardUpdateHint: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        backgroundColor: '#F1F6FF',
+        paddingVertical: px(2),
+        paddingHorizontal: px(3),
+        borderRadius: px(4),
+    },
+    portCardUpdateHintText: {
+        fontSize: px(10),
+        lineHeight: px(14),
+        color: '#0051CC',
+    },
     card_amount: {
         fontSize: px(12),
         fontFamily: Font.numFontFamily,
@@ -438,11 +505,18 @@ const styles = StyleSheet.create({
         marginLeft: px(1),
         marginBottom: px(-2),
     },
-    name: {fontWeight: '700', fontSize: px(12), marginBottom: px(6)},
+    name: {fontWeight: '700', fontSize: px(12)},
     holdingDays: {
         fontSize: px(11),
         color: Colors.lightBlackColor,
         lineHeight: px(15.4),
         marginBottom: px(4),
+    },
+    toolTag: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: px(2),
+        paddingHorizontal: px(5),
+        paddingVertical: 1,
+        marginLeft: px(6),
     },
 });

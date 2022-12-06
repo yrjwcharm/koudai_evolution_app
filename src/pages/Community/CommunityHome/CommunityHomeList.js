@@ -77,7 +77,6 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
             </Text>
         ) : null;
     };
-
     const renderEmpty = () => {
         return params.type == 1 ? (
             <EmptyTip
@@ -123,7 +122,6 @@ const CommunityHomeList = ({getData = () => {}, params, muid, history_id, show_a
     useEffect(() => {
         init();
     }, [page]);
-
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {data?.length > 0 ? (
@@ -173,12 +171,7 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: Colors.descColor,
     },
-    cardDelete: {
-        alignSelf: 'flex-start',
-        paddingRight: px(6),
-        marginTop: px(12),
-        paddingTop: px(16),
-    },
+
     card: {
         flex: 1,
         backgroundColor: '#fff',

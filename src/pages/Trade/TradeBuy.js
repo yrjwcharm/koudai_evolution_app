@@ -66,7 +66,7 @@ class TradeBuy extends Component {
             fee_text: '',
             errTip: '', //错误提示
             mfbTip: false,
-            isLargeAmount: false,
+            isLargeAmount: !!this.props.route?.params?.isLargeAmount,
             largeAmount: '',
             fixTip: '',
             largeTip: '',
@@ -133,6 +133,7 @@ class TradeBuy extends Component {
                         {
                             data: res.result,
                             bankSelect: res.result?.pay_methods[0],
+                            largeAmount: this.state.isLargeAmount ? res.result.large_pay_method : '',
                             currentDate: res.result?.period_info?.current_date,
                             nextday: res.result?.period_info?.nextday,
                         },
@@ -150,7 +151,11 @@ class TradeBuy extends Component {
             });
         }, 300);
     };
-
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        if (!!nextProps.route?.params.isLargeAmount !== !!this.state.isLargeAmount && !this.state.isLargeAmount) {
+            this.ratioChange(null, 1);
+        }
+    }
     /**
      * @description 展示风险揭示书
      * @param {any} data 风险揭示书内容
@@ -913,17 +918,20 @@ class TradeBuy extends Component {
                                         {large_pay_method.limit_desc}
                                     </Text>
                                 </View>
-                                <TouchableOpacity
-                                    style={[styles.yel_btn]}
-                                    onPress={() => {
-                                        global.LogTool('usebutton');
-                                        this.jumpPage('LargeAmount');
-                                    }}>
-                                    <Text style={{color: Colors.yellow}}>
-                                        去使用
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
-                                </TouchableOpacity>
+                                {large_pay_method?.button ? (
+                                    <TouchableOpacity
+                                        style={[styles.yel_btn]}
+                                        onPress={() => {
+                                            global.LogTool('usebutton');
+                                            const url = large_pay_method?.button.url;
+                                            this.jumpPage(url.path, url.params);
+                                        }}>
+                                        <Text style={{color: Colors.yellow}}>
+                                            {large_pay_method?.button.text}
+                                            <Icon name={'right'} size={px(12)} />
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : null}
                             </>
                         ) : null}
                     </View>

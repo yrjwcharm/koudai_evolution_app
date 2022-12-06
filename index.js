@@ -14,6 +14,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import {PlaybackService} from './src/pages/Community/components/audioService/AudioConfig';
 LogBox.ignoreLogs([
+    "Warning: Can't perform a React state update on an unmounted component.",
     'Warning: BackAndroid is deprecated. Please use BackHandler instead.',
     'source.uri should not be an empty string',
     'Invalid props.style key',

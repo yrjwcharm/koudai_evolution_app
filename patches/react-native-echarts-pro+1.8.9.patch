@@ -1,22 +1,19 @@
 diff --git a/node_modules/react-native-echarts-pro/index.d.ts b/node_modules/react-native-echarts-pro/index.d.ts
-index 8b14787..541404a 100644
+index c53e08d..e45a1b2 100644
 --- a/node_modules/react-native-echarts-pro/index.d.ts
 +++ b/node_modules/react-native-echarts-pro/index.d.ts
-@@ -11,8 +11,11 @@ declare function RNEChartsPro(props: {
+@@ -12,7 +12,8 @@ declare function RNEChartsPro(props: {
    formatterVariable?: object;
    eventActions?:object;
    legendSelectChanged?(result: string);
 -  onDataZoom?(result: string);
-+  onDataZoom?(result: string,option:object);
++  onDataZoom?(result: object,option:object);
++  onFinished?();
    onPress?(result: string);
-+  onFinished?(result:string);
-+  onRendered?(result:string)
-+  onMousemove?(result:string)
  }): JSX.Element;
  
- export default RNEChartsPro;
 diff --git a/node_modules/react-native-echarts-pro/index.js b/node_modules/react-native-echarts-pro/index.js
-index e1e5f49..a32ebd8 100644
+index e1e5f49..57deb32 100644
 --- a/node_modules/react-native-echarts-pro/index.js
 +++ b/node_modules/react-native-echarts-pro/index.js
 @@ -19,6 +19,31 @@ function APP(props, ref) {
@@ -28,7 +25,6 @@ index e1e5f49..a32ebd8 100644
 +      textColor: '#121D3A',
 +      maskColor: 'rgba(255, 255, 255, 0.8)',
 +      zlevel: 0,
-+
 +      // 字体大小。从 `v4.8.0` 开始支持。
 +      fontSize: 12,
 +      // 是否显示旋转动画（spinner）。从 `v4.8.0` 开始支持。
@@ -42,7 +38,8 @@ index e1e5f49..a32ebd8 100644
 +      // 字体风格。从 `v5.0.1` 开始支持。
 +      fontStyle: 'normal',
 +      // 字体系列。从 `v5.0.1` 开始支持。
-+      fontFamily: 'sans-serif'}){
++      fontFamily: 'sans-serif'
++    }){
 +      chartRef.current.showLoading(opt);
 +    },
 +    hideLoading() {
@@ -52,90 +49,79 @@ index e1e5f49..a32ebd8 100644
       * Get echarts instance support function.
       * @param {string} functionName
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
-index 5ab341e..f7f90c3 100644
+index 3014574..a35713b 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/index.js
-@@ -42,6 +42,16 @@ function Echarts(props, ref) {
+@@ -43,6 +43,17 @@ function Echarts(props, ref) {
          JSON.stringify({ type: "dispatchAction", action })
        );
      },
-+    showLoading(opt) {
-+      eChartRef.current?.postMessage(
-+          JSON.stringify({ type: "showLoading",opt})
-+      );
++    showLoading(opt){
++      eChartRef.current?.postMessage(JSON.stringify({
++        type:'showLoading',
++        opt
++      }))
 +    },
-+    hideLoading() {
-+      eChartRef.current?.postMessage(
-+          JSON.stringify({ type: "hideLoading"})
-+      );
++    hideLoading(){
++      eChartRef.current?.postMessage(JSON.stringify({
++        type:'hideLoading'
++      }))
 +    },
      /**
       * Get echarts instance support function.
       * @param {string} functionName
-@@ -83,7 +93,14 @@ function Echarts(props, ref) {
+@@ -101,8 +112,10 @@ function Echarts(props, ref) {
      const echartsData = JSON.parse(event.nativeEvent.data);
      // 判断监听类型
      if (echartsData.type === "datazoom") {
 -      props.onDataZoom?.();
-+      props.onDataZoom?.(echartsData.params,echartsData.option);
+-    } else if (echartsData.type === "legendselectchanged") {
++      props.onDataZoom?.(echartsData.params, echartsData.option);
 +    } else if(echartsData.type==='finished'){
-+      props.onFinished?.(echartsData.type);
-+    }else if(echartsData.type==='rendered'){
-+      props.onRendered?.(echartsData.type);
-+
-+    }else if(echartsData.type==='mousemove'){
-+      props.onMousemove?.(echartsData.type);
-     } else if (echartsData.type === "legendselectchanged") {
++      props.onFinished?.();
++    }else if (echartsData.type === "legendselectchanged") {
        props.legendSelectChanged?.(echartsData.name);
      } else if (echartsData.type === "tooltipEvent") {
+       props.tooltipEvent?.(echartsData.params);
 diff --git a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-index d232268..6e6034d 100644
+index d232268..8f4ad2c 100644
 --- a/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
 +++ b/node_modules/react-native-echarts-pro/src/components/Echarts/renderChart.js
-@@ -50,8 +50,19 @@ export default function renderChart(props) {
+@@ -50,7 +50,10 @@ export default function renderChart(props) {
        window.ReactNativeWebView.postMessage(JSON.stringify(clickParams));
      });
      myChart.on('dataZoom', (params)=>{
 -        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type}));
 +        window.ReactNativeWebView.postMessage(JSON.stringify({type:params.type,params,option:myChart.getOption()}));
++    });
++    myChart.on('finished',()=>{
++        window.ReactNativeWebView.postMessage(JSON.stringify({type:'finished'}));
      });
-+    myChart.on('rendered',function (){
-+        window.ReactNativeWebView.postMessage(JSON.stringify({type:'rendered'}));
-+    })
-+    myChart.on('finished', function () {
-+            window.ReactNativeWebView.postMessage(JSON.stringify({type:'finished'}));
-+
-+   });
-+     myChart.on('mousemove', function () {
-+            window.ReactNativeWebView.postMessage(JSON.stringify({type:'mousemove'}));
-+
-+   });
      myChart.on('legendselectchanged', (params)=>{
          window.ReactNativeWebView.postMessage(JSON.stringify({type: params.type,name:params.name}));
-     });
-@@ -93,6 +104,12 @@ export default function renderChart(props) {
+@@ -93,6 +96,12 @@ export default function renderChart(props) {
            if (option.type === "dispatchAction") {
              dispatchAction(option.action);
            }
-+          if(option.type==='showLoading'){
-+              myChart.showLoading(option.opt);
-+          }
-+           if(option.type==='hideLoading'){
-+              myChart.hideLoading();
-+          }
++           if(option.type==='showLoading'){
++            myChart.showLoading(option.opt);
++            }
++            if(option.type=='hideLoading'){
++                myChart.hideLoading();
++            }
            // 获取实例进行操作
            if (option.type === "getInstance") {
              const result = myChart[option.functionName](option.params);
-@@ -115,6 +132,12 @@ export default function renderChart(props) {
+@@ -115,6 +124,12 @@ export default function renderChart(props) {
          if(option.type === 'dispatchAction'){
            dispatchAction(option.action)
          }
-+         if(option.type==='showLoading'){
-+              myChart.showLoading();
-+          }
-+           if(option.type==='hideLoading'){
-+              myChart.hideLoading();
-+          }
++        if(option.type==='showLoading'){
++            myChart.showLoading(option.opt);
++        }
++        if(option.type=='hideLoading'){
++            myChart.hideLoading();
++        }
          // 获取实例进行操作
          if(option.type === 'getInstance'){
            const result = myChart[option.functionName](option.params)

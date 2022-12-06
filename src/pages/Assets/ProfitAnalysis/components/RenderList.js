@@ -22,6 +22,7 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
     const [showEmpty, setShowEmpty] = useState(false);
     const jump = useJump();
     useEffect(() => {
+        let didCancel = false;
         (async () => {
             let params = {
                 type,
@@ -30,14 +31,19 @@ const RenderList = React.memo(({curDate = '', poid = '', type, fund_code = '', u
                 unit_key: curDate,
                 fund_code,
             };
-            const res = await getProfitDetail(params);
-            if (res.code === '000000') {
-                const {head_list = [], data_list = [], button = {}} = res.result || {};
-                setHeaderList(head_list);
-                setProfitList(data_list);
-                data_list.length > 0 ? setShowEmpty(false) : setShowEmpty(true);
+            if (type && unitType && curDate) {
+                const res = await getProfitDetail(params);
+                if (res?.code === '000000') {
+                    if (!didCancel) {
+                        const {head_list = [], data_list = [], button = {}} = res?.result || {};
+                        setHeaderList(head_list);
+                        setProfitList(data_list);
+                        data_list.length > 0 ? setShowEmpty(false) : setShowEmpty(true);
+                    }
+                }
             }
         })();
+        return () => (didCancel = true);
     }, [type, unitType, curDate]);
     const executeSort = async (data) => {
         if (data.sort_key) {

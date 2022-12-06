@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-29 18:44:45
+ * @LastEditTime: 2022-11-23 16:14:20
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -149,7 +149,7 @@ const MonthRatio = ({fund_code = '', poid = ''}) => {
                         <View style={{height: 240}}>
                             {chartData.chart && (
                                 <Chart
-                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
+                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor], {})}
                                     data={chartData.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}

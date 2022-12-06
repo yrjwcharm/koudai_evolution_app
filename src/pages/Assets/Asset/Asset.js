@@ -91,7 +91,7 @@ const Index = ({navigation}) => {
                         showEye={showEye}
                         tradeMes={holding?.trade_notice}
                         showChart={holding?.show_chart}>
-                        <Eye onChange={(_data) => setShowEye(_data)} />
+                        <Eye onChange={(_data) => setShowEye(_data)} size={px(14)} />
                     </AssetHeaderCard>
                     {/* 运营位 */}
                     {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}

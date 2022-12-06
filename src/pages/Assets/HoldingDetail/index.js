@@ -40,9 +40,11 @@ import CenterControl from './CenterControl';
 import PointCard from '../components/PointCard';
 import RenderAlert from '../components/RenderAlert';
 import ToolMenusCard from '../components/ToolMenusCard';
+import RenderHtml from '~/components/RenderHtml';
+import http from '~/services';
 
 /** @name 顶部基金信息 */
-const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info = {}}) => {
+const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info = {}, profit_explain}) => {
     const jump = useJump();
     const {asset_info, code, indicators, name, profit_acc_info, profit_info, tags = []} = top_info;
     const [expand, setExpand] = useState(false);
@@ -59,6 +61,56 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
     /** @name 处理隐藏金额信息 */
     const hideAmount = (value) => {
         return showEye === 'true' ? value : '****';
+    };
+
+    const profitAccInfoMean = () => {
+        const {btn, title, profit_holding, start_date, end_date, formula, content} = profit_explain;
+        Modal.show({
+            confirmText: btn?.text,
+            children: () => (
+                <View style={{paddingHorizontal: px(20), backgroundColor: '#fff', borderRadius: px(6)}}>
+                    <Text
+                        style={{
+                            fontSize: px(14),
+                            lineHeight: px(20),
+                            color: '#000',
+                            marginTop: px(20),
+                            textAlign: 'center',
+                        }}>
+                        {title}
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: px(9),
+                            lineHeight: px(13),
+                            color: '#9AA0B1',
+                            marginTop: px(4),
+                            textAlign: 'center',
+                        }}>
+                        {start_date || '--'} ~ {end_date || '--'}
+                    </Text>
+                    <View style={{marginTop: px(18), alignItems: 'center'}}>
+                        <RenderHtml html={profit_holding} />
+                    </View>
+                    <View
+                        style={{
+                            marginTop: px(18),
+                            borderRadius: px(4),
+                            backgroundColor: '#F1F6FF',
+                            paddingVertical: px(18),
+                            width: px(240),
+                        }}>
+                        <Text style={{textAlign: 'center', fontSize: px(12), lineHeight: px(17), color: '#000'}}>
+                            {formula}
+                        </Text>
+                    </View>
+                    <View style={{marginTop: px(12)}}>
+                        <RenderHtml html={content} />
+                    </View>
+                    <View style={{height: px(16)}} />
+                </View>
+            ),
+        });
     };
 
     return (
@@ -107,10 +159,26 @@ const TopPart = ({setShowEye, showEye, trade_notice = {}, top_button, top_info =
                     <View style={Style.flexRow}>
                         <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_info.text}</Text>
                         <HTML html={hideAmount(`${profit_info.value}`)} style={styles.profitText} />
+                        {profit_explain?.tool_type == 21 ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={profitAccInfoMean}
+                                style={{marginLeft: px(6)}}>
+                                <Image source={tip} style={{width: px(16), height: px(16)}} />
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
                     <View style={[Style.flexRow, {marginTop: px(8)}]}>
                         <Text style={[styles.smallText, {marginRight: px(4)}]}>{profit_acc_info.text}</Text>
                         <HTML html={hideAmount(`${profit_acc_info.value}`)} style={styles.profitText} />
+                        {profit_explain?.tool_type != 21 ? (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={profitAccInfoMean}
+                                style={{marginLeft: px(6)}}>
+                                <Image source={tip} style={{width: px(16), height: px(16)}} />
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
                 </View>
             </View>
@@ -360,7 +428,7 @@ const ChartTabs = ({tabs = []}) => {
 };
 
 /** @name 渲染图表 */
-const RenderChart = ({data = {}}) => {
+export const RenderChart = ({data = {}}) => {
     const route = useRoute();
     const {key, params, period: initPeriod} = data;
     const [period, setPeriod] = useState(initPeriod);
@@ -817,7 +885,9 @@ const DsList = ({data = [], showEye}) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     key={fundName + i}
-                                    onPress={() => jump(url)}
+                                    onPress={() => {
+                                        jump(url);
+                                    }}
                                     style={styles.dsFundBox}>
                                     <View style={Style.flexBetween}>
                                         <Text style={styles.desc}>{fundName}</Text>
@@ -909,6 +979,7 @@ const Index = ({navigation, route, setLoading}) => {
         name,
         service_info,
         summary,
+        profit_explain,
         tags,
         top_button,
         trade_notice,
@@ -1011,6 +1082,48 @@ const Index = ({navigation, route, setLoading}) => {
         }, [])
     );
 
+    const accountJump = (url) => {
+        http.get('/position/popup/20210101', {poid: route?.params?.poid, action: 'redeem'}).then((res) => {
+            if (res.result) {
+                global.LogTool('RedemptionDetainmentWindows');
+                if (res.result?.button_list) {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: res.result?.button_list[0]?.text || '确认赎回',
+                        confirmText: res.result?.button_list[1]?.text || '再想一想',
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                            jump(res?.result?.button_list[0]?.url || url);
+                        },
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(res?.result?.button_list[1]?.url || url);
+                        },
+                    });
+                } else {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: '确认赎回',
+                        confirmText: '再想一想',
+                        confirmCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_No');
+                        },
+                        cancelCallBack: () => {
+                            global.LogTool('RedemptionDetainmentWindows_Yes');
+                            jump(url);
+                        },
+                    });
+                }
+            } else {
+                jump(url);
+            }
+        });
+    };
+
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
@@ -1026,6 +1139,7 @@ const Index = ({navigation, route, setLoading}) => {
                         <TopPart
                             setShowEye={setShowEye}
                             showEye={showEye}
+                            profit_explain={profit_explain}
                             top_button={top_button}
                             top_info={{code, name, ...(summary || {}), tags}}
                             trade_notice={trade_notice}
@@ -1114,10 +1228,10 @@ const Index = ({navigation, route, setLoading}) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            disabled={avail === 0}
                                             onPress={() => {
                                                 log_id && global.LogTool({event: log_id});
-                                                jump(url);
+
+                                                accountJump(url);
                                             }}
                                             key={text + i}
                                             style={[Style.flexCenter, {paddingHorizontal: px(26)}]}>

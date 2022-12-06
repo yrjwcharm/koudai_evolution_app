@@ -122,9 +122,6 @@ export default function Launch({navigation}) {
             console.log('connectListener:' + JSON.stringify(result));
         });
         JPush.setBadge({badge: 0, appbadge: '123'});
-        JPush.getRegistrationID((result) => {
-            console.log('registerID:' + JSON.stringify(result));
-        });
         //通知回调
         JPush.addNotificationListener((result) => {
             if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {

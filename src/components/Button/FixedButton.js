@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 15:51:24
+ * @LastEditTime: 2022-11-22 10:31:37
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -58,6 +58,7 @@ export default class FixedButton extends Component {
             otherParam,
             checkIcon,
             containerStyle,
+            agreementStyle,
         } = this.props;
         return (
             <Animated.View style={[styles.bottom, {bottom: keyboardHeight}, containerStyle]}>
@@ -71,7 +72,7 @@ export default class FixedButton extends Component {
                 ) : null}
                 {agreement ? (
                     <View
-                        style={{paddingTop: px(4), paddingBottom: Space.padding}}
+                        style={[{paddingTop: px(4), paddingBottom: Space.padding}, agreementStyle]}
                         onLayout={(e) => heightChange && heightChange(e.nativeEvent.layout.height)}>
                         <Agreements
                             check={agreement?.default_agree}

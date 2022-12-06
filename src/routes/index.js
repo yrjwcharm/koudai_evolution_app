@@ -315,6 +315,8 @@ import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // �
 import RichTextInputPage from '~/pages/CreatorCenter/Special/Modify/RichTextInputPage'; // 富文本编辑
 import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机构
 import CommunityProSort from '../pages/Community/CommunityHome/CommunityProSort'; //社区作品内容管理
+import Popularize from '~/pages/Popularize'; // 产品推广
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -565,7 +567,7 @@ export default function AppStack() {
                     component={TradeProcessing}
                     options={{gestureEnabled: false, headerShown: false}}
                 />
-                <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速购'}} />
+                <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
                 <Stack.Screen
                     name="LargeAmountIntro"
                     component={LargeAmountIntro}
@@ -1310,6 +1312,24 @@ export default function AppStack() {
                 />
                 <Stack.Screen name="AdvisorTransfer" component={AdvisorTransfer} options={{headerShown: false}} />
                 <Stack.Screen name="CommunityProSort" component={CommunityProSort} options={{title: '编辑'}} />
+                <Stack.Screen
+                    name="Popularize"
+                    component={Popularize}
+                    options={{
+                        title: '',
+                        headerTransparent: true,
+                        headerBackImage: () => {
+                            return (
+                                <Feather
+                                    name="chevron-left"
+                                    color="#fff"
+                                    size={px(26)}
+                                    style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                                />
+                            );
+                        },
+                    }}
+                />
             </Stack.Navigator>
         </>
     );
