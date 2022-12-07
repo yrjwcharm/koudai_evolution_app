@@ -76,8 +76,8 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
             },
         });
     };
-    const sort = () => {
-        const item_ids = data.map((item) => item.item_id).join(',');
+    const sort = (_data) => {
+        const item_ids = _data.map((item) => item.item_id).join(',');
         proSort({community_id: params.community_id, item_ids}).then((res) => {
             if (res.code === '000000') {
                 setTimeout(() => {
@@ -159,8 +159,8 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                         renderItem={renderItem}
                         autoscrollSpeed={150}
                         onDragEnd={(_data) => {
-                            sort();
                             setData(_data.data);
+                            sort(_data.data);
                         }}
                         ListFooterComponent={renderFooter}
                     />

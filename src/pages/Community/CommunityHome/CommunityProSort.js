@@ -15,7 +15,7 @@ const CommunityProSort = ({route}) => {
         setData(res.result);
     };
     const getProData = (params) => {
-        return getCommunityProductList(params);
+        return getCommunityProductList({scene: 'edit', ...params});
     };
 
     useEffect(() => {
