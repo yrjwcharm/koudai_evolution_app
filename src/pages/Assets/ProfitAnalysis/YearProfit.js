@@ -176,6 +176,7 @@ const YearProfit = ({poid, fund_code, type, unit_type, slideFn}) => {
                         let cur = dayjs_.year();
                         if (cur > max || cur < min) return;
                         let period = '';
+                        console.log(groupArr);
                         groupArr.map((el, index) => {
                             if (el.includes(dayjs_.year())) {
                                 if (index == 0) {

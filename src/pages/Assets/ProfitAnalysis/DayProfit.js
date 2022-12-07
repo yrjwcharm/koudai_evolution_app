@@ -443,14 +443,16 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, sli
         [dateArr]
     );
     const renderBarChart = useCallback(
-        (xAxisData) => {
+        (xAxisData, minDate) => {
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
                         slideFn(false);
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 15;
-                        // if (xAxisData[center] <= minDate) return;
+                        //前端
+                        let min = dayjs(minDate).format('YYYY-MM-DD');
+                        if (xAxisData[center] < min) return;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
                         let realDate = dayjs().endOf('month').format('YYYY-MM-DD');
                         let diff = dayjs(realDate).diff(curDate, 'month');
@@ -517,7 +519,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, sli
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
-                                <View style={{marginTop: px(15), overflow: 'hidden'}}>{renderBarChart(xAxisData)}</View>
+                                <View style={{marginTop: px(15), overflow: 'hidden'}}>
+                                    {renderBarChart(xAxisData, minDate)}
+                                </View>
                                 <View style={styles.separator} />
                             </View>
                         )}
