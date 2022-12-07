@@ -313,7 +313,7 @@ const ArticleDetail = ({navigation, route}) => {
                 if (res.code === '000000') {
                     setTimeout(() => {
                         DeviceEventEmitter.emit('articel_up_change');
-                    }, []);
+                    }, 800);
                     shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
                 }
             }
