@@ -258,6 +258,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                             signal_icons, //工具icon
                             open_tip, //私募下期开放时间
                             profit_title,
+                            right_top_tag,
                         } = product;
                         return (
                             <TouchableOpacity
@@ -304,6 +305,13 @@ const PortfolioAssetList = ({route, navigation}) => {
                                                 {open_tip}
                                             </Text>
                                         )}
+                                        {right_top_tag ? (
+                                            <Icon
+                                                name="chevron-thin-right"
+                                                color={Colors.lightBlackColor}
+                                                style={{position: 'absolute', right: px(0), top: px(3)}}
+                                            />
+                                        ) : null}
                                     </View>
                                 )}
 
