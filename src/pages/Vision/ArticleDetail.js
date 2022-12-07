@@ -668,6 +668,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                                     global.LogTool({
                                                                         event: 'suggested_products',
                                                                         oid: item.code || item.plan_id,
+                                                                        rec_json: portfolios.rec_json,
                                                                     }),
                                                             }}
                                                             key={index}
