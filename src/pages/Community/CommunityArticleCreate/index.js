@@ -519,6 +519,7 @@ const Index = ({navigation, route, setLoading}) => {
             community_id,
             content,
             cover_media_id: cover?.id || '',
+            history_id,
             tag_ids: tags?.map((tag) => tag.id)?.join(','),
             title,
         })
@@ -543,6 +544,7 @@ const Index = ({navigation, route, setLoading}) => {
             content,
             cover_media_id: cover?.id || '',
             fr,
+            history_id,
             tag_ids: tags?.map((tag) => tag.id)?.join(','),
             title,
         })
