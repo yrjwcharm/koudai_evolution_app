@@ -58,6 +58,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                 const item_ids = chooseDeleteData.join(',');
                 let res = await removeProduct({community_id: params.community_id, item_ids});
                 if (res.code == '000000') {
+                    setChooseDeleteData([]);
                     setTimeout(() => {
                         DeviceEventEmitter.emit('community_product_change');
                     }, 800);
@@ -174,6 +175,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
             </View>
             <CommunityFooter
                 onDelete={onDelete}
+                title={params.type == 1 ? '删除作品' : '删除产品'}
                 onChooseAll={chooseAll}
                 isAllSelect={chooseDeleteData.length == data.length}
                 btnActive={chooseDeleteData.length > 0}

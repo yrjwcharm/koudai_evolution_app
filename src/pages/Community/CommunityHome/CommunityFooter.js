@@ -7,7 +7,7 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Style} from '../../../common/commonStyle';
 import {isIphoneX, px} from '../../../utils/appUtil';
-const CommunityFooter = ({onChooseAll, onDelete, isAllSelect, btnActive}) => {
+const CommunityFooter = ({onChooseAll, title = '删除', onDelete, isAllSelect, btnActive}) => {
     const [active, setBtnActive] = useState(btnActive);
     useEffect(() => {
         setBtnActive(btnActive);
@@ -23,7 +23,7 @@ const CommunityFooter = ({onChooseAll, onDelete, isAllSelect, btnActive}) => {
                 onPress={onDelete}
                 style={[styles.button, {opacity: active ? 1 : 0.6}]}
                 activeOpacity={0.9}>
-                <Text style={{fontSize: px(13), color: Colors.btnColor, lineHeight: px(18)}}>删除作品</Text>
+                <Text style={{fontSize: px(13), color: Colors.btnColor, lineHeight: px(18)}}>{title}</Text>
             </TouchableOpacity>
         </View>
     );
