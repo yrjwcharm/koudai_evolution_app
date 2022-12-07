@@ -64,7 +64,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                     setData((prev) => {
                         let tmp = [...prev];
                         chooseDeleteData.forEach((chooseItem) => {
-                            let index = data.findIndex((item) => {
+                            let index = tmp.findIndex((item) => {
                                 return item.item_id == chooseItem;
                             });
                             tmp.splice(index, 1);
@@ -137,9 +137,9 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
     };
     const renderEmpty = () => {
         return params.type == 1 ? (
-            <EmptyTip text={'暂无相关作品'} style={{marginTop: px(200)}} imageStyle={{marginBottom: px(-30)}} />
+            <EmptyTip text={'暂无相关作品'} style={{marginTop: px(160)}} imageStyle={{marginBottom: px(-30)}} />
         ) : (
-            <EmptyTip text={'暂无相关产品'} style={{marginTop: px(200)}} imageStyle={{marginBottom: px(-30)}} />
+            <EmptyTip text={'暂无相关产品'} style={{marginTop: px(160)}} imageStyle={{marginBottom: px(-30)}} />
         );
     };
 
