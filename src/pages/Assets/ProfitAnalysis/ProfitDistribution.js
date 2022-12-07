@@ -55,6 +55,9 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
         setHeadData(headData);
     }, [headData]);
     const selUnitType = (el, i) => {
+        scrollRef.current?.setNativeProps({
+            scrollEnabled: true,
+        });
         setUnitType(el.type);
         tabs.map((item) => {
             item.checked = false;
