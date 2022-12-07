@@ -515,7 +515,7 @@ export const CommunityCard = (props) => {
                         </View>
                     ) : null
                 ) : // 卡片底部分享、收藏、评论和点赞
-                ['article_history', 'community'].includes(product_type) ? null : (
+                ['article_history', 'community', 'simple_card'].includes(product_type) ? null : (
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                         <TouchableOpacity
                             activeOpacity={0.8}
