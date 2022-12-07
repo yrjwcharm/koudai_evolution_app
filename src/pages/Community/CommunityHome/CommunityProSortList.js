@@ -60,7 +60,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                 if (res.code == '000000') {
                     setTimeout(() => {
                         DeviceEventEmitter.emit('community_product_change');
-                    }, 200);
+                    }, 800);
                     setData((prev) => {
                         let tmp = [...prev];
                         chooseDeleteData.forEach((chooseItem) => {
@@ -82,7 +82,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
             if (res.code === '000000') {
                 setTimeout(() => {
                     DeviceEventEmitter.emit('community_product_change');
-                }, 200);
+                }, 800);
             }
         });
     };
