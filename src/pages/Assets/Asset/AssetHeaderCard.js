@@ -2,7 +2,7 @@
  * @Date: 2022-07-11 14:31:52
  * @Description:资产页金额卡片
  */
-import {StyleSheet, Text, View, TouchableWithoutFeedback, Image} from 'react-native';
+import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
@@ -51,7 +51,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                     end={{x: 0, y: 1}}
                     style={styles.assetsContainer}>
                     {/* 资产信息 */}
-                    <View style={Style.flexRow}>
+                    <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
                         <View style={{flex: 1}}>
                             <View style={Style.flexRow}>
                                 <View
@@ -67,7 +67,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                                         style={{
                                             position: 'absolute',
                                             left: eyeLeft,
-                                            top: px(-12),
+                                            top: px(-11),
                                         }}>
                                         {children}
                                     </View>
@@ -78,18 +78,7 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                             </Text>
                         </View>
 
-                        {chart?.length > 0 ? (
-                            <View style={{width: px(120), height: px(44)}}>
-                                <Chart
-                                    data={chart}
-                                    style={{backgroundColor: 'transparent'}}
-                                    initScript={chartOptions.smAssetChart(chart)}
-                                    updateScript={chartOptions.smAssetChart}
-                                />
-                            </View>
-                        ) : null}
-
-                        <Icon name="chevron-thin-right" color="#fff" size={px(13)} style={{marginLeft: px(13)}} />
+                        <Icon name="chevron-thin-right" color="#fff" size={px(13)} style={{marginRight: -px(4)}} />
                     </View>
                     <View style={[Style.flexRow, styles.profitContainer]}>
                         <View style={[{flex: 1}]}>
@@ -104,12 +93,17 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                                 {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
                             </Text>
                         </View>
-                        <View style={[{flex: 1}]}>
-                            <Text style={styles.profitKey}>{summary?.profit_acc?.text || '累计收益'}</Text>
-                            <Text style={styles.profitVal}>
-                                {showEye === 'true' ? summary?.profit_acc?.value : '****'}
-                            </Text>
-                        </View>
+
+                        {chart?.length > 0 ? (
+                            <View style={{width: px(120), height: px(44)}}>
+                                <Chart
+                                    data={chart}
+                                    style={{backgroundColor: 'transparent'}}
+                                    initScript={chartOptions.smAssetChart(chart)}
+                                    updateScript={chartOptions.smAssetChart}
+                                />
+                            </View>
+                        ) : null}
                     </View>
                     {/* 交易通知 */}
                     {tradeMes ? <TradeNotice data={tradeMes} /> : null}

@@ -15,7 +15,6 @@ const Eye = ({storageKey, onChange, color, size}) => {
             onChange(res ? res : 'true');
             setShowEye(res ? res : 'true');
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // 显示|隐藏金额信息
     const toggleEye = () => {
@@ -30,7 +29,7 @@ const Eye = ({storageKey, onChange, color, size}) => {
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={toggleEye}
-            style={{width: px(40), height: px(40), justifyContent: 'center'}}>
+            style={{width: px(40), height: px(40), justifyContent: 'center', alignItems: 'center'}}>
             <Feather
                 name={showEye === 'true' ? 'eye' : 'eye-off'}
                 size={size || px(16)}

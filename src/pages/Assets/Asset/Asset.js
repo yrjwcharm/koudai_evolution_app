@@ -56,7 +56,6 @@ const Index = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
     useFocusEffect(
@@ -73,7 +72,6 @@ const Index = ({navigation}) => {
             }
         });
         return () => listener();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]);
 
     return !showGesture ? (

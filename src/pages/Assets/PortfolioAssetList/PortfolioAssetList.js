@@ -3,7 +3,7 @@
  * @Description:持仓品类列表
  */
 import {StyleSheet, Text, Animated, View, TouchableOpacity, Image, RefreshControl} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {px} from '~/utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import Eye from '../../../components/Eye';
@@ -27,6 +27,7 @@ import LoadingTips from '~/components/LoadingTips';
 import RenderHtml from '~/components/RenderHtml';
 import EmptyTip from '~/components/EmptyTip';
 import {FixedButton} from '~/components/Button';
+import {useFocusEffect} from '@react-navigation/native';
 // type = 公墓 10;私募 20;投顾组合 30;计划 40;
 const PortfolioAssetList = ({route, navigation}) => {
     const jump = useJump();
@@ -63,9 +64,11 @@ const PortfolioAssetList = ({route, navigation}) => {
             });
         }
     };
-    useEffect(() => {
-        init();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
             return text.split('|')?.map((item, index) =>
@@ -116,13 +119,15 @@ const PortfolioAssetList = ({route, navigation}) => {
                             <View style={Style.flexRow}>
                                 <Text style={styles.summaryKey}>总资产(元)</Text>
                                 <Text style={styles.date}>{summary?.asset_info?.date}</Text>
-                                <Eye
-                                    color={Colors.lightGrayColor}
-                                    storageKey={'PortfolioAssetListEye'}
-                                    onChange={(_data) => {
-                                        setShowEye(_data);
-                                    }}
-                                />
+                                <View style={{position: 'absolute', top: -px(11), right: -px(30)}}>
+                                    <Eye
+                                        color={Colors.lightGrayColor}
+                                        storageKey={'PortfolioAssetListEye'}
+                                        onChange={(_data) => {
+                                            setShowEye(_data);
+                                        }}
+                                    />
+                                </View>
                             </View>
                             <Icon name="chevron-thin-right" color={Colors.lightBlackColor} />
                         </View>

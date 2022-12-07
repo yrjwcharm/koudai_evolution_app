@@ -11,14 +11,14 @@ import {useJump} from '~/components/hooks';
 const ToolMenusCard = ({data, style}) => {
     const jump = useJump();
     return (
-        <View style={[styles.topMenu, Style.flexRow, style]}>
+        <View style={[Style.flexRow, styles.topMenu, style]}>
             {data?.map((item) => {
                 return (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={item.tool_id}
                         style={[
-                            {width: Math.floor((deviceWidth - px(52)) / 5), marginBottom: px(18), alignItems: 'center'},
+                            {width: Math.floor((deviceWidth - px(52)) / 5), marginBottom: px(16), alignItems: 'center'},
                         ]}
                         onPress={() => {
                             if (item?.tip) {
@@ -58,13 +58,14 @@ export default ToolMenusCard;
 
 const styles = StyleSheet.create({
     topMenu: {
-        paddingVertical: px(12),
+        paddingTop: px(16),
         flexWrap: 'wrap',
         marginBottom: px(12),
         marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
         paddingHorizontal: px(10),
+        alignItems: 'flex-start',
     },
     topMenuIcon: {
         width: px(24),
