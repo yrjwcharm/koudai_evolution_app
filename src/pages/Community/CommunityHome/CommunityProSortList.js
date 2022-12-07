@@ -103,7 +103,7 @@ const CommunityProSortList = ({getData = () => {}, params}) => {
                 </TouchableOpacity>
                 {params.type == 1 ? (
                     <CommunityCard data={item} style={{flex: 1}} drag={drag} />
-                ) : item?.relation_type == 4 ? (
+                ) : item?.relation_type == 4 || item?.relation_type == 1 ? (
                     <ProductList data={[item]} drag={drag} style={styles.card} />
                 ) : (
                     <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} drag={drag} />

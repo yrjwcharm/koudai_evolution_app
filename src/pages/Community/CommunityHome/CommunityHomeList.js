@@ -62,7 +62,7 @@ const CommunityHomeList = forwardRef(({getData = () => {}, params, muid, history
     const renderItem = ({item = {}}) => {
         return params.type == 1 ? (
             <CommunityCard data={item} style={{flex: 1}} x />
-        ) : item?.relation_type == 4 ? (
+        ) : item?.relation_type == 4 || item?.relation_type == 1 ? (
             <ProductList data={[item]} style={styles.card} />
         ) : (
             <AlbumCard {...item} style={{marginTop: px(12), flex: 1}} />
