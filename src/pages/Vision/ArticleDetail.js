@@ -637,7 +637,7 @@ const ArticleDetail = ({navigation, route}) => {
                                             <LogView.Item
                                                 handler={() =>
                                                     global.LogTool({
-                                                        event: 'suggested_products_show',
+                                                        event: 'rec_show',
                                                         rec_json: portfolios.rec_json,
                                                     })
                                                 }
@@ -666,7 +666,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                                 ...item,
                                                                 LogTool: () =>
                                                                     global.LogTool({
-                                                                        event: 'suggested_products',
+                                                                        event: 'rec_click',
                                                                         oid: item.code || item.plan_id,
                                                                         rec_json: portfolios.rec_json,
                                                                     }),
@@ -682,7 +682,7 @@ const ArticleDetail = ({navigation, route}) => {
                                             <LogView.Item
                                                 handler={() =>
                                                     global.LogTool({
-                                                        event: 'recommended_articles_show',
+                                                        event: 'rec_show',
                                                         rec_json: articles.rec_json,
                                                     })
                                                 }
