@@ -94,6 +94,7 @@ const EvaluateMessage = ({message, rowId, wsSend, reconnect}) => {
                 <View style={{paddingHorizontal: px(12)}}>
                     <View style={styles.evaluateHeader}>
                         <Text style={styles.evaluateHeadText}>{header?.text || header?.value}</Text>
+                        {header?.tip ? <Text style={styles.evaluateHeadTip}>{header?.tip}</Text> : null}
                     </View>
                     <View style={[styles.evaluateMiddle, {justifyContent: 'space-between'}]}>
                         {body?.type === 'icon'
@@ -201,6 +202,11 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         color: '#1f2432',
         lineHeight: px(20),
+    },
+    evaluateHeadTip: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: '#545968',
     },
     evaluateMiddle: {
         paddingVertical: px(12),
