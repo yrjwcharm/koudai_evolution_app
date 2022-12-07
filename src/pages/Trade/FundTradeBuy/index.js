@@ -679,6 +679,11 @@ const Index = ({navigation, route}) => {
                                 ? [...pay_methods, large_pay_method]
                                 : pay_methods
                         }
+                        initIndex={
+                            route.params?.isLargeAmount && large_pay_show_type === 1 && large_pay_method
+                                ? pay_methods.length
+                                : null
+                        }
                         onDone={(select, index) => {
                             if (select.pay_method === 'wallet' && index === pay_methods.length) {
                                 setIsLarge(true);

@@ -31,6 +31,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         style = {},
         onClose = () => {}, //关闭回调
         isTouchMaskToClose = true,
+        initIndex, //是否默认选择大额极速购
     } = props;
     const navigation = useNavigation();
     const jump = useJump();
@@ -68,6 +69,13 @@ const BankCardModal = React.forwardRef((props, ref) => {
     React.useEffect(() => {
         setSelect(props.select);
     }, [props.select, visible]);
+
+    React.useEffect(() => {
+        if (initIndex && data?.[0]) {
+            onDone?.(data[initIndex], initIndex);
+        }
+    }, [data, initIndex]);
+
     const renderItem = ({item, index}) => {
         return (
             item && (

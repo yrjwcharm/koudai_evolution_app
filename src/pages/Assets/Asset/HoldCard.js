@@ -15,9 +15,10 @@ import {postAssetClass} from './service';
 import {fromJS} from 'immutable';
 import TagInfo from '../components/TagInfo';
 import RenderAlert from '../components/RenderAlert';
+import Icon from 'react-native-vector-icons/Entypo';
 const ClassCard = ({data = {}, showEye}) => {
     const jump = useJump();
-    const {name, number, remind_info, tag_info, indicators, icon, url} = data;
+    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url} = data;
     return (
         <TouchableOpacity
             style={styles.card}
@@ -72,6 +73,13 @@ const ClassCard = ({data = {}, showEye}) => {
                 ))}
             </View>
             {!!remind_info && <RenderAlert alert={remind_info} />}
+            {right_top_tag ? (
+                <Icon
+                    name="chevron-thin-right"
+                    color={Colors.lightBlackColor}
+                    style={{position: 'absolute', right: px(16), top: px(16)}}
+                />
+            ) : null}
         </TouchableOpacity>
     );
 };
