@@ -15,7 +15,7 @@ import ChartHeader from './components/ChartHeader';
 import {getChartData} from './services';
 import EmptyData from './components/EmptyData';
 import RNEChartsPro from 'react-native-echarts-pro';
-const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) => {
+const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, slideFn}) => {
     const [xAxisData, setXAxisData] = useState([]);
     const [dataAxis, setDataAxis] = useState([]);
     const [startDate, setStartDate] = useState('');
@@ -446,6 +446,7 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
             return (
                 <RNEChartsPro
                     onDataZoom={(result, option) => {
+                        slideFn(false);
                         const {startValue} = option.dataZoom[0];
                         let center = startValue + 15;
                         let curDate = dayjs(xAxisData[center]).endOf('month').format('YYYY-MM-DD');
@@ -453,6 +454,9 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0}) =>
                         let diff = dayjs(realDate).diff(curDate, 'month');
                         setDiff(-diff || 0);
                         setProfitDay(xAxisData[center]);
+                    }}
+                    onFinished={() => {
+                        slideFn(true);
                     }}
                     webViewSettings={{androidLayerType: 'software'}}
                     legendSelectChanged={(result) => {}}
