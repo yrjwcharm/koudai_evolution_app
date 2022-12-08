@@ -54,7 +54,7 @@ export default function Tabbar() {
 
     React.useEffect(() => {
         getNews();
-        const timer = setInterval(getNews, 10000);
+        const timer = setInterval(getNews, 60000);
         return () => {
             clearInterval(timer);
         };
