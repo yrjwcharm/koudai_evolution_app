@@ -152,6 +152,7 @@ const CommunityHomeList = forwardRef(({getData = () => {}, params, muid, history
                 community_id={params.community_id}
                 history_id={history_id}
                 muid={muid}
+                type={params.type}
                 handleClick={(type) => {
                     setTimeout(() => {
                         chooseModal?.current?.show(type, data);
