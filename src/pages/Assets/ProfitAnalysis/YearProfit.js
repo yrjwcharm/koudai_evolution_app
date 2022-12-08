@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     },
     year: {
         marginBottom: px(4),
-        width: px(103),
+        width: px(102),
         height: px(46),
         marginRight: px(4),
         backgroundColor: '#f5f6f8',
