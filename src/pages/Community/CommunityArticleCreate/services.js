@@ -10,4 +10,4 @@ export const saveArticleDraft = (params) => http.post('/community/article/savedr
 
 export const publishArticle = (params) => http.post('/community/article/submitpublish/check/202209', params);
 
-export const editArticle = (params) => http.post('/article/submitdoedit/202210', params);
+export const editArticle = (params) => http.post('/community/article/submitdoedit/202210', params);
