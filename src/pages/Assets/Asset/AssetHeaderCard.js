@@ -78,22 +78,6 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                             </Text>
                         </View>
 
-                        <Icon name="chevron-thin-right" color="#fff" size={px(13)} style={{marginRight: -px(4)}} />
-                    </View>
-                    <View style={[Style.flexRow, styles.profitContainer]}>
-                        <View style={[{flex: 1}]}>
-                            <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
-                            <Text style={styles.profitVal}>
-                                {showEye === 'true' ? summary?.profit_info?.value : '****'}
-                            </Text>
-                        </View>
-                        <View style={[{flex: 1}]}>
-                            <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '累计收益'}</Text>
-                            <Text style={styles.profitVal}>
-                                {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
-                            </Text>
-                        </View>
-
                         {chart?.length > 0 ? (
                             <View style={{width: px(120), height: px(44)}}>
                                 <Chart
@@ -102,6 +86,39 @@ const AssetHeaderCard = ({summary = {}, tradeMes, showEye, children, showChart})
                                     initScript={chartOptions.smAssetChart(chart)}
                                     updateScript={chartOptions.smAssetChart}
                                 />
+                            </View>
+                        ) : null}
+
+                        <Icon
+                            name="chevron-thin-right"
+                            color="#fff"
+                            size={px(13)}
+                            style={{marginRight: -px(4), marginLeft: px(12)}}
+                        />
+                    </View>
+                    <View style={[Style.flexRow, styles.profitContainer]}>
+                        {summary?.profit_info?.value ? (
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_info?.text || '日收益'}</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? summary?.profit_info?.value : '****'}
+                                </Text>
+                            </View>
+                        ) : null}
+                        {summary?.profit_acc_info?.value ? (
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_acc_info?.text || '持仓收益'}</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? summary?.profit_acc_info?.value : '****'}
+                                </Text>
+                            </View>
+                        ) : null}
+                        {summary?.profit_acc?.value ? (
+                            <View style={[{flex: 1}]}>
+                                <Text style={styles.profitKey}>{summary?.profit_acc?.text || '累计收益'}</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? summary?.profit_acc?.value : '****'}
+                                </Text>
                             </View>
                         ) : null}
                     </View>
