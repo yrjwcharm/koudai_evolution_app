@@ -276,7 +276,7 @@ const CenterControl = forwardRef(({data = {}, refresh = (a) => a}, ref) => {
                 ) : (
                     <View style={descBoxSty(type)}>
                         {type === 'upgrade' ? <Image source={leftQuota1} style={styles.leftQuota} /> : null}
-                        <HTML html={content} numberOfLines={3} style={styles.desc} />
+                        <HTML html={content} numberOfLines={7} style={styles.desc} />
                         {adjustDate || adjustDesc ? (
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                 {adjustDesc ? (
