@@ -3,7 +3,7 @@
  * @Date: 2022-09-13 11:45:41
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, RefreshControl, ActivityIndicator, DeviceEventEmitter} from 'react-native';
+import {View, StyleSheet, RefreshControl, ActivityIndicator, DeviceEventEmitter, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Space} from '~/common/commonStyle';
@@ -117,19 +117,27 @@ const Product = ({navigation}) => {
             });
         }
     }, [userInfo]);
+    const postClipBordText = (value) => {
+        if (value && value?.indexOf('vmark') == 0) {
+            http.post('/common/device/heart_beat/20210101', {polaris_favor: value}).then((result) => {
+                if (result.code === '000000') {
+                    // 刷新
+                    refresh();
+                    Clipboard.setString('');
+                }
+            });
+        }
+    };
     // 获取剪切板内容
     const getClipboard = async () => {
-        const hasContent = await Clipboard.hasString();
-        if (hasContent) {
+        if (Platform.OS == 'android') {
             const res = await Clipboard.getString();
-            if (res && res?.indexOf('vmark') == 0) {
-                http.post('/common/device/heart_beat/20210101', {polaris_favor: res}).then((result) => {
-                    if (result.code === '000000') {
-                        // 刷新
-                        refresh();
-                        Clipboard.setString('');
-                    }
-                });
+            postClipBordText(res);
+        } else {
+            const hasContent = await Clipboard.hasString();
+            if (hasContent) {
+                const res = await Clipboard.getString();
+                postClipBordText(res);
             }
         }
     };
