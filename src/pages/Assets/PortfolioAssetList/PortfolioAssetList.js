@@ -282,69 +282,64 @@ const PortfolioAssetList = ({route, navigation}) => {
                                         <Text style={styles.portCardUpdateHintText}>{profit_title}</Text>
                                     </View>
                                 ) : null}
-                                {type != 10 && (
-                                    <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
-                                            {!!anno && (
-                                                <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>
-                                            )}
-                                            {!!tag_info && <TagInfo data={tag_info} />}
-                                            {tool_tag_info?.map?.((item) => (
-                                                <View
-                                                    style={[styles.toolTag, {borderColor: item.tag_color}]}
-                                                    key={item.text}>
-                                                    <Text
-                                                        style={{
-                                                            fontSize: px(10),
-                                                            lineHeight: px(14),
-                                                            color: item.tag_color,
-                                                        }}>
-                                                        {item?.text}
-                                                    </Text>
-                                                </View>
-                                            ))}
-                                        </View>
-                                        {!!open_tip && (
-                                            <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>
-                                                {open_tip}
-                                            </Text>
-                                        )}
-                                        {right_top_tag ? (
-                                            <Icon
-                                                name="chevron-thin-right"
-                                                color={Colors.lightBlackColor}
-                                                style={{position: 'absolute', right: px(0), top: px(3)}}
-                                            />
-                                        ) : null}
+                                <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
+                                    <View style={Style.flexRow}>
+                                        <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
+                                        {!!anno && <Text style={{fontSize: px(11), marginLeft: px(4)}}>{anno}</Text>}
+                                        {!!tag_info && <TagInfo data={tag_info} />}
+                                        {tool_tag_info?.map?.((item) => (
+                                            <View
+                                                style={[styles.toolTag, {borderColor: item.tag_color}]}
+                                                key={item.text}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(10),
+                                                        lineHeight: px(14),
+                                                        color: item.tag_color,
+                                                    }}>
+                                                    {item?.text}
+                                                </Text>
+                                            </View>
+                                        ))}
                                     </View>
-                                )}
+                                    {!!open_tip && (
+                                        <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{open_tip}</Text>
+                                    )}
+                                    {right_top_tag ? (
+                                        <Icon
+                                            name="chevron-thin-right"
+                                            color={Colors.lightBlackColor}
+                                            style={{position: 'absolute', right: px(0), top: px(3)}}
+                                        />
+                                    ) : null}
+                                </View>
 
                                 <View style={Style.flexRow}>
                                     {/* 基金 */}
                                     {type == 10 ? (
                                         <View style={{flex: 1.4}}>
-                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
-                                                <Text style={[styles.name]} numberOfLines={1}>
-                                                    {name}
-                                                </Text>
-                                                {tool_tag_info?.map?.((item) => (
-                                                    <View
-                                                        style={[styles.toolTag, {borderColor: item.tag_color}]}
-                                                        key={item.text}>
-                                                        <Text
-                                                            style={{
-                                                                fontSize: px(10),
-                                                                lineHeight: px(14),
-                                                                color: item.tag_color,
-                                                            }}>
-                                                            {item?.text}
-                                                        </Text>
-                                                    </View>
-                                                ))}
-                                            </View>
+                                            <Text style={styles.holdingDays}>{code}</Text>
+                                            {/* 计划工具icon */}
 
-                                            <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{code}</Text>
+                                            {signal_icons ? (
+                                                <View style={Style.flexRow}>
+                                                    {signal_icons?.map((_icon, _index) => (
+                                                        <Image
+                                                            source={{uri: _icon}}
+                                                            key={_index}
+                                                            style={{width: px(14), height: px(14), marginRight: px(6)}}
+                                                        />
+                                                    ))}
+                                                </View>
+                                            ) : holding_days ? (
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(10),
+                                                        color: Colors.lightGrayColor,
+                                                    }}>
+                                                    {holding_days}
+                                                </Text>
+                                            ) : null}
                                         </View>
                                     ) : (
                                         <View style={{flex: 1.4}}>

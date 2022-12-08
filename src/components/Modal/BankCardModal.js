@@ -3,7 +3,7 @@
  * @Description: 银行卡选择
  */
 
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList} from 'react-native';
 import Image from 'react-native-fast-image';
 import {constants} from './util';
@@ -37,6 +37,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
     const jump = useJump();
     const [visible, setVisible] = React.useState(false);
     const [select, setSelect] = React.useState(props.select); //默认选中的银行卡
+    const firstShow = useRef(true);
     const show = () => {
         setVisible(true);
     };
@@ -71,8 +72,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
     }, [props.select, visible]);
 
     React.useEffect(() => {
-        if (initIndex && data?.[0]) {
-            onDone?.(data[initIndex], initIndex);
+        if (initIndex && data?.[0] && firstShow.current) {
+            firstShow.current = false;
+            confirmClick(initIndex);
         }
     }, [data, initIndex]);
 
