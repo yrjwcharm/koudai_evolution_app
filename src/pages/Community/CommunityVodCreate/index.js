@@ -352,7 +352,7 @@ const Index = ({route, setLoading}) => {
             community_id,
             fr,
             media_ids: video.id,
-            tag_ids: video.tags.map?.((tag) => tag.id)?.join(','),
+            tag_ids: video.tags?.map?.((tag) => tag.id)?.join(',') || '',
             title: video.intro,
         })
             .then((res) => {
