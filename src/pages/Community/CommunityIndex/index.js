@@ -767,7 +767,7 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
                     </TouchableOpacity>
                     <View style={[Style.flexEvenly, {paddingTop: px(64)}]}>
                         {btn_list?.map((item, index) => {
-                            const {event_id, icon, name, url, type} = item;
+                            const {event_id, icon, name, url, type: btnType} = item;
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -775,9 +775,9 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
                                     onPress={() => {
                                         global.LogTool({event: 'publishing_content', oid: event_id});
                                         bottomModal.current.hide();
-                                        if (type == 'addArticle') {
+                                        if (btnType == 'addArticle') {
                                             handleClick('article');
-                                        } else if (type == 'addProduct') {
+                                        } else if (btnType == 'addProduct') {
                                             handleClick('all');
                                         } else {
                                             jump(url);
