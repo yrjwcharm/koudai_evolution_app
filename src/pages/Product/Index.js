@@ -25,7 +25,7 @@ import Security from './Security';
 import LiveList from './LiveList';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserInfo} from '~/redux/actions/userInfo';
-import Clipboard from '@react-native-community/clipboard';
+import {getClipboard} from './util';
 const Product = ({navigation}) => {
     const jump = useJump();
     const insets = useSafeAreaInsets();
@@ -117,33 +117,10 @@ const Product = ({navigation}) => {
             });
         }
     }, [userInfo]);
-    const postClipBordText = (value) => {
-        if (value && value?.indexOf('vmark') == 0) {
-            http.post('/common/device/heart_beat/20210101', {polaris_favor: value}).then((result) => {
-                if (result.code === '000000') {
-                    // 刷新
-                    refresh();
-                    Clipboard.setString('');
-                }
-            });
-        }
-    };
-    // 获取剪切板内容
-    const getClipboard = async () => {
-        if (Platform.OS == 'android') {
-            const res = await Clipboard.getString();
-            postClipBordText(res);
-        } else {
-            const hasContent = await Clipboard.hasString();
-            if (hasContent) {
-                const res = await Clipboard.getString();
-                postClipBordText(res);
-            }
-        }
-    };
+
     useEffect(() => {
         if (!userInfo.is_login && userInfo.use_clipboard == 1) {
-            getClipboard();
+            getClipboard(refresh);
         }
     }, [userInfo.is_login, userInfo.use_clipboard]);
     const onChangeTab = useCallback((cur) => {
