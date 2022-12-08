@@ -500,7 +500,10 @@ const CalendarHeader = React.memo(
                 <View style={styles.selMonth}>
                     {unitList.length > 0 && date != startYear && (
                         <TouchableOpacity onPress={subtract}>
-                            <Image source={require('../../../assets/img/icon/prev.png')} />
+                            <Image
+                                style={{width: px(13), height: px(13)}}
+                                source={require('../../../assets/img/icon/prev.png')}
+                            />
                         </TouchableOpacity>
                     )}
                     <Text style={styles.MMText}>{date}</Text>
