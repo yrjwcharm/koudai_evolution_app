@@ -23,9 +23,9 @@ const FixedButton = (props) => {
         ...restProps
     } = props;
     const keyboardHeight = useRef(new Animated.Value(0)).current;
-    const [check, setCheck] = useState();
+    const [check, setCheck] = useState(agreement?.default_agree !== undefined ? agreement.default_agree : true);
     const [showCheckTag, setShowCheckTag] = useState(true);
-    const firstIn = useRef(true);
+    const agreementRef = useRef();
 
     const keyboardWillShow = (e) => {
         Animated.timing(keyboardHeight, {
@@ -52,18 +52,18 @@ const FixedButton = (props) => {
     }, []);
 
     useEffect(() => {
-        if (firstIn.current && agreement) {
+        if (!agreementRef.current && agreement) {
             setCheck(agreement.default_agree);
             setShowCheckTag(!agreement.default_agree);
-            firstIn.current = false;
         }
+        agreementRef.current = agreement;
     }, [agreement]);
 
     return (
         <Animated.View style={[styles.bottom, {bottom: keyboardHeight}, containerStyle]}>
             {agreement?.radio_text && showCheckTag && !check ? (
                 <View style={styles.checkTag}>
-                    <Text style={{fontSize: px(14), lineHeight: px(20), color: '#fff'}}>{agreement?.radio_text}</Text>
+                    <Text style={{fontSize: px(14), lineHeight: px(20), color: '#fff'}}>{agreement.radio_text}</Text>
                     <View style={styles.qualTag} />
                 </View>
             ) : null}
@@ -72,12 +72,12 @@ const FixedButton = (props) => {
                     style={[{paddingTop: px(4), paddingBottom: Space.padding}, agreementStyle]}
                     onLayout={(e) => heightChange && heightChange(e.nativeEvent.layout.height)}>
                     <Agreements
-                        check={agreement?.default_agree}
-                        data={agreement?.list}
+                        check={agreement.default_agree}
+                        data={agreement.list}
                         otherAgreement={otherAgreement}
                         otherParam={otherParam}
-                        title={agreement?.text}
-                        text1={agreement?.text1}
+                        title={agreement.text}
+                        text1={agreement.text1}
                         onChange={(checkStatus) => {
                             global.LogTool({ctrl: checkStatus ? 'check' : 'uncheck', event: 'contract'});
                             setCheck(checkStatus);
