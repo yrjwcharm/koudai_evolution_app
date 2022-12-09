@@ -375,6 +375,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type, slideFn}) => 
                     onFinished={() => {
                         slideFn(true);
                     }}
+                    webViewSettings={{androidLayerType: 'software'}}
                     legendSelectChanged={(result) => {}}
                     onPress={(result) => {}}
                     ref={myChart}
