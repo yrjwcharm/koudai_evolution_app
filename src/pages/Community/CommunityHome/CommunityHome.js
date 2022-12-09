@@ -156,6 +156,7 @@ const CommunityHome = ({navigation, route}) => {
                                 show_add_btn={data?.show_add_btn}
                                 history_id={history_id}
                                 params={{community_id, type}}
+                                emptyStyle={{marginTop: parallaxHeaderHeight + introHeight - px(30)}}
                             />
                         ))}
                     </ScrollTabView>
