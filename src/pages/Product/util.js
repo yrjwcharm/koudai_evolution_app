@@ -1,6 +1,7 @@
 const {Platform} = require('react-native');
 import Clipboard from '@react-native-community/clipboard';
 import http from '~/services';
+//上报剪切板内容
 const postClipBordText = (value, callback) => {
     if (value && value?.indexOf('vmark') == 0) {
         http.post('/common/device/heart_beat/20210101', {polaris_favor: value}).then((result) => {

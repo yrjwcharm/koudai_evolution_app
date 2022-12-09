@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 11:30:12
+ * @LastEditTime: 2022-12-09 11:29:22
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
@@ -29,17 +29,14 @@ const btnHeight = isIphoneX() ? text(90) : text(66);
 const LargeAmount = (props) => {
     const inset = useSafeAreaInsets();
     const jump = useJump();
-
     const [data, setData] = useState(null);
     const [criticalState, setScrollCriticalState] = useState(false);
     const [button, setButton] = useState(null);
-
     const navBarRef = useRef();
 
     const init = () => {
         Http.get('/trade/large_transfer/info/20210101', props.route.params).then((res) => {
             setData(res.result);
-            setButton(null);
             setButton(res.result.button);
         });
     };

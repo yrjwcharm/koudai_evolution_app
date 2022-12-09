@@ -331,7 +331,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                                                         />
                                                     ))}
                                                 </View>
-                                            ) : holding_days ? (
+                                            ) : holding_days && right_top_tag ? (
                                                 <Text
                                                     style={{
                                                         fontSize: px(10),
@@ -343,9 +343,10 @@ const PortfolioAssetList = ({route, navigation}) => {
                                         </View>
                                     ) : (
                                         <View style={{flex: 1.4}}>
-                                            <Text style={styles.holdingDays}>{holding_days}</Text>
+                                            {!!holding_days && right_top_tag && (
+                                                <Text style={styles.holdingDays}>{holding_days}</Text>
+                                            )}
                                             {/* 计划工具icon */}
-
                                             {signal_icons ? (
                                                 <View style={Style.flexRow}>
                                                     {signal_icons?.map((_icon, _index) => (
