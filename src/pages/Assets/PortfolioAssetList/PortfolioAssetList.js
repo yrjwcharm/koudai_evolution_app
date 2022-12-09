@@ -327,13 +327,20 @@ const PortfolioAssetList = ({route, navigation}) => {
                                                     }}>
                                                     {holding_days}
                                                 </Text>
-                                            ) : null}
+                                            ) : (
+                                                //占位
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(10),
+                                                        color: Colors.lightGrayColor,
+                                                    }}>
+                                                    {''}
+                                                </Text>
+                                            )}
                                         </View>
                                     ) : (
                                         <View style={{flex: 1.4}}>
-                                            {!!holding_days && right_top_tag && (
-                                                <Text style={styles.holdingDays}>{holding_days}</Text>
-                                            )}
+                                            {!!holding_days && <Text style={styles.holdingDays}>{holding_days}</Text>}
                                             {/* 计划工具icon */}
                                             {signal_icons ? (
                                                 <View style={Style.flexRow}>
