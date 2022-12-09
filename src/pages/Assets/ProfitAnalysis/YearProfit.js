@@ -388,6 +388,16 @@ const YearProfit = ({poid, fund_code, type, unit_type, slideFn}) => {
                 lazyUpdate: true,
                 silent: false,
             });
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
         }
     }, [isBarChart, sortProfitList, profitDay, selCurYear]);
     return (

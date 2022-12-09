@@ -380,6 +380,16 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, sli
                 lazyUpdate: true,
                 silent: false,
             });
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
+            myChart.current?.setNewOption(barOption, {
+                notMerge: false,
+                lazyUpdate: true,
+                silent: false,
+            });
         }
     }, [isBarChart, sortProfitList, profitDay, selCurDate]);
     const renderWeek = useMemo(
