@@ -125,3 +125,16 @@ index d232268..8f4ad2c 100644
          // 获取实例进行操作
          if(option.type === 'getInstance'){
            const result = myChart[option.functionName](option.params)
+diff --git a/node_modules/react-native-echarts-pro/src/components/Utils/HtmlWeb.js b/node_modules/react-native-echarts-pro/src/components/Utils/HtmlWeb.js
+index 89ff58d..420bc92 100644
+--- a/node_modules/react-native-echarts-pro/src/components/Utils/HtmlWeb.js
++++ b/node_modules/react-native-echarts-pro/src/components/Utils/HtmlWeb.js
+@@ -26,7 +26,7 @@ const HtmlWeb = function (fontFamiliesObject) {
+       }
+       ${fontFamiliesObject.fontFamilyString || ""}
+     </style>
+-    <script>${echarts}</script>
++    <script type="text/javascript"  src="https://static.licaimofang.com/wp-content/uploads/2021/04/echarts.min_.js"></script>
+     <script>${Theme}</script>
+     </head>
+     <body>
