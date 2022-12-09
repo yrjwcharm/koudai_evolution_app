@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 10:31:37
+ * @LastEditTime: 2022-12-09 17:29:02
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -22,7 +22,7 @@ export default class FixedButton extends Component {
         Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
     }
     UNSAFE_componentWillReceiveProps(next) {
-        if (!this.agreement && next.agreement) {
+        if (!this.agreement && next.agreement && this.props.agreement != next.agreement) {
             this.setState({check: next.agreement.default_agree, showCheckTag: !next.agreement.default_agree});
         }
         this.agreement = next.agreement;

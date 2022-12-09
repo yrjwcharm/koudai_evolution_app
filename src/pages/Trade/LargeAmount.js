@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-09 11:29:22
+ * @LastEditTime: 2022-12-09 17:19:39
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
@@ -86,9 +86,9 @@ const LargeAmount = (props) => {
         }
 
         if (opacity > 0.8) {
-            !criticalState && setScrollCriticalState(true);
+            setScrollCriticalState(true);
         } else {
-            criticalState && setScrollCriticalState(false);
+            setScrollCriticalState(false);
         }
 
         requestAnimationFrame(() => {
@@ -123,6 +123,7 @@ const LargeAmount = (props) => {
                 </TouchableOpacity>
             </View>
             <ScrollView
+                scrollIndicatorInsets={{right: 1}}
                 style={
                     (Style.containerPadding,
                     {padding: 0, marginBottom: btnHeight, borderTopWidth: 0.5, borderColor: Colors.borderColor})
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         zIndex: 1,
-        paddingBottom: px(8),
+        paddingBottom: px(12),
     },
     navTitle: {
         position: 'absolute',
