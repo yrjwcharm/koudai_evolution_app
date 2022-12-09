@@ -529,9 +529,11 @@ const DayProfit = React.memo(({poid, fund_code, type, unit_type, differ = 0, sli
                                         <Text style={styles.date}>{selCurDate}</Text>
                                     </View>
                                 </View>
+
                                 <View style={{marginTop: px(15), overflow: 'hidden'}}>
                                     {renderBarChart(xAxisData, minDate)}
                                 </View>
+
                                 <View style={styles.separator} />
                             </View>
                         )}
@@ -613,6 +615,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: px(5),
         borderBottomRightRadius: px(5),
         marginBottom: isIphoneX() ? px(58) : px(24),
+        minHeight: px(500),
     },
     dateWrap: {
         marginTop: px(8),

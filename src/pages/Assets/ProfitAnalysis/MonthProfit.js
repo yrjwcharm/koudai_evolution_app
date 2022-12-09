@@ -534,6 +534,7 @@ const CalendarHeader = React.memo(
 export default MonthProfit;
 const styles = StyleSheet.create({
     container: {
+        minHeight: px(500),
         paddingTop: px(16),
         paddingBottom: px(20),
         paddingHorizontal: px(12),

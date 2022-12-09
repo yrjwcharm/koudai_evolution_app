@@ -608,6 +608,7 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     container: {
+        minHeight: px(500),
         paddingTop: px(16),
         paddingBottom: px(20),
         paddingHorizontal: px(12),

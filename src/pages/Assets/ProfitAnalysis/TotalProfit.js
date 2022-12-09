@@ -35,6 +35,7 @@ export default TotalProfit;
 
 const styles = StyleSheet.create({
     container: {
+        minHeight: px(500),
         backgroundColor: '#fff',
         paddingBottom: px(22),
         borderBottomLeftRadius: px(5),
