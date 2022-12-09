@@ -292,7 +292,6 @@ const YearProfit = ({poid, fund_code, type, unit_type, slideFn}) => {
                                 diffYear = index * 5;
                             }
                         });
-                        console.log(-diffYear);
                         setDiff(-diffYear);
                         setProfitDay(xAxisData[center]);
                     }}
@@ -347,7 +346,7 @@ const YearProfit = ({poid, fund_code, type, unit_type, slideFn}) => {
                 }
             }
         })();
-    }, [type, isBarChart, diff]);
+    }, [type, isBarChart]);
     useEffect(() => {
         if (isBarChart && selCurYear && sortProfitList.length > 0) {
             const [xAxisData, dataAxis] = [[], []];

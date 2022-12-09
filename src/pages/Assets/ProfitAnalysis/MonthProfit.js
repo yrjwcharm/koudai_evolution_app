@@ -284,7 +284,7 @@ const MonthProfit = React.memo(({poid, fund_code, type, unit_type, slideFn}) => 
                 }
             }
         })();
-    }, [type, isBarChart, diff]);
+    }, [type, isBarChart]);
 
     useEffect(() => {
         if (isBarChart && selCurDate && sortProfitList.length > 0) {
