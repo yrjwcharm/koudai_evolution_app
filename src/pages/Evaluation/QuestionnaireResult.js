@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-19 14:55:36
+ * @LastEditTime: 2022-12-19 16:33:36
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,10 +21,10 @@ const QuestionnaireResult = () => {
     const jump = useJump();
     const navigation = useNavigation();
     const route = useRoute();
-    const {fr, fund_code = '', upid = '', append = ''} = route.params;
+    const {fr, fund_code = '', upid = '', append = '', summary_id} = route.params;
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('/questionnaire/result/20210101', {fr, fund_code, upid, append}).then((res) => {
+        http.get('/questionnaire/result/20210101', {fr, fund_code, upid, append, summary_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
