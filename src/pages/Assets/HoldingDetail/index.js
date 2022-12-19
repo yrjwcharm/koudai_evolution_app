@@ -1228,9 +1228,9 @@ const Index = ({navigation, route, setLoading}) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
+                                            disabled={avail === 0}
                                             onPress={() => {
                                                 log_id && global.LogTool({event: log_id});
-
                                                 accountJump(url);
                                             }}
                                             key={text + i}

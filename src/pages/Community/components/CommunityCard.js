@@ -170,7 +170,7 @@ export const CommunityCard = (props) => {
     const {
         cardType = 'list', // 卡片类型 list代表列表卡片 waterflow代表瀑布流卡片
         drag,
-        scene, // 场景 article代表在内容详情页
+        scene, // 场景 article代表在内容详情页 community代表在社区等页面
         style, // 自定义样式
     } = props;
     const jump = useJump();
@@ -317,7 +317,7 @@ export const CommunityCard = (props) => {
                     activeOpacity={0.8}
                     onPress={() => {
                         global.LogTool({event: rec_json ? 'rec_click' : 'content', oid: id, rec_json});
-                        jump(url, scene === 'article' ? 'push' : 'navigate');
+                        jump(url, ['article', 'community'].includes(scene) ? 'push' : 'navigate');
                     }}>
                     {cardType === 'waterflow' ? null : (
                         <>

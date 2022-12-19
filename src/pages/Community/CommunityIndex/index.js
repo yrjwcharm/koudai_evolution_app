@@ -330,7 +330,7 @@ const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
         getFollowedData({page, type: current})
             .then((res) => {
                 if (res.code === '000000') {
-                    const {has_more, list: _list} = res.result;
+                    const {has_more, list: _list = []} = res.result;
                     setHasMore(has_more);
                     setData((prev) => (page === 1 ? _list : prev.concat(_list)));
                 }
@@ -458,6 +458,7 @@ const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
                 renderItem={({item, index}) => (
                     <CommunityCard
                         data={item}
+                        scene="community"
                         style={{marginTop: index === 0 ? px(8) : px(12), marginHorizontal: Space.marginAlign}}
                     />
                 )}
@@ -510,6 +511,7 @@ export const WaterfallFlowList = forwardRef(
                 <CommunityCard
                     cardType={listType}
                     data={item}
+                    scene="community"
                     style={
                         listType === 'list'
                             ? {marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}
