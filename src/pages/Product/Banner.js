@@ -34,6 +34,12 @@ const Banner = ({bgType, proData}) => {
                             activeDotStyle={{
                                 width: px(12),
                                 ...styles.dotStyle,
+                            }}
+                            onIndexChanged={(index) => {
+                                global.LogTool({
+                                    event: 'banner_show',
+                                    ctrl: proData?.banner_list[index]?.id,
+                                });
                             }}>
                             {proData?.banner_list?.map?.((banner, index) => (
                                 <TouchableOpacity
@@ -41,9 +47,8 @@ const Banner = ({bgType, proData}) => {
                                     activeOpacity={0.9}
                                     onPress={() => {
                                         global.LogTool({
-                                            event: 'swiper',
+                                            event: 'banner',
                                             ctrl: banner.id,
-                                            oid: banner.log_id,
                                         });
                                         jump(banner.url);
                                     }}>
@@ -62,6 +67,10 @@ const Banner = ({bgType, proData}) => {
                 <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => {
+                        global.LogTool({
+                            event: 'banner',
+                            ctrl: proData?.popular_banner_list?.id,
+                        });
                         jump(proData?.popular_banner_list?.url);
                     }}>
                     <FastImage
