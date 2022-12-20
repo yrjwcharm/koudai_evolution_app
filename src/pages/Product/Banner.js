@@ -3,6 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-11-03 11:33:57
  */
+import {useIsFocused} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -12,6 +13,7 @@ import {px} from '~/utils/appUtil';
 
 const Banner = ({bgType, proData}) => {
     const jump = useJump();
+    const isFocused = useIsFocused();
     return (
         <View style={styles.bannerWrap}>
             {bgType ? (
@@ -36,10 +38,11 @@ const Banner = ({bgType, proData}) => {
                                 ...styles.dotStyle,
                             }}
                             onIndexChanged={(index) => {
-                                global.LogTool({
-                                    event: 'banner_show',
-                                    ctrl: proData?.banner_list[index]?.id,
-                                });
+                                isFocused &&
+                                    global.LogTool({
+                                        event: 'banner_show',
+                                        ctrl: proData?.banner_list[index]?.id,
+                                    });
                             }}>
                             {proData?.banner_list?.map?.((banner, index) => (
                                 <TouchableOpacity
