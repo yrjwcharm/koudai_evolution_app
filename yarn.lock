@@ -7613,6 +7613,11 @@ react-native-video@^5.2.1:
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
 
+react-native-view-shot@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.npmmirror.com/react-native-view-shot/-/react-native-view-shot-3.5.0.tgz#129e92b893aca25918c6ecddc08ff44f29d70c27"
+  integrity sha512-+/a0zcEcCzAwuzQTU7CmwR1/bDcuy3Yj7093xI3Dhcjccb3FwxNiRyIBonsMSj3fQMmBcqV5d8DGCAeOJ5Ij3A==
+
 react-native-waterflow-list@^1.2.3:
   version "1.2.3"
   resolved "https://registry.npmmirror.com/react-native-waterflow-list/-/react-native-waterflow-list-1.2.3.tgz#1b6de3e559e68ffe8b082883cddcf14c88e64e67"

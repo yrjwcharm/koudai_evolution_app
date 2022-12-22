@@ -3,10 +3,10 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 16:18:20
+ * @LastEditTime: 2022-12-22 11:38:38
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '~/components/hooks';
 import {WebView as RNWebView} from 'react-native-webview';
@@ -22,6 +22,7 @@ import BottomDesc from '~/components/BottomDesc';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import Toast from '~/components/Toast';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
+import {captureScreen} from 'react-native-view-shot';
 
 const PortfolioDetails = ({navigation, route}) => {
     const jump = useJump();
@@ -44,6 +45,15 @@ const PortfolioDetails = ({navigation, route}) => {
             });
         };
         getToken();
+        // captureScreen({
+        //     format: 'jpg',
+        //     quality: 0.8,
+        // }).then(
+        //     (uri) => {
+        //         console.log('Image saved to', uri);
+        //     },
+        //     (error) => console.error('Oops, snapshot failed', error)
+        // );
     }, []);
 
     const init = () => {
@@ -154,10 +164,19 @@ const PortfolioDetails = ({navigation, route}) => {
                 scrollIndicatorInsets={{right: 1}}
                 scrollEventThrottle={16}
                 bounces={false}>
-                {token ? (
+                <View
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 2,
+                    }}>
                     <RNWebView
                         bounces={false}
                         ref={webview}
+                        androidHardwareAccelerationDisabled={true}
                         onMessage={(event) => {
                             const _data = event.nativeEvent.data;
                             if (_data?.indexOf('url=') > -1) {
@@ -204,7 +223,56 @@ const PortfolioDetails = ({navigation, route}) => {
                         }}
                         textZoom={100}
                     />
-                ) : null}
+                </View>
+                <RNWebView
+                    bounces={false}
+                    ref={webview}
+                    onMessage={(event) => {
+                        const _data = event.nativeEvent.data;
+                        if (_data?.indexOf('url=') > -1) {
+                            const url = JSON.parse(_data.split('url=')[1]);
+                            jump(url);
+                        } else if (_data?.indexOf('tip=') > -1) {
+                            const _tip = JSON.parse(_data.split('tip=')[1]);
+                            setTip(_tip);
+                            bottomModal2.current.show();
+                        }
+                        if (_data * 1) {
+                            setHeight((prev) => (_data * 1 < deviceHeight / 2 ? prev : _data * 1));
+                        }
+                    }}
+                    originWhitelist={['*']}
+                    onHttpError={(syntheticEvent) => {
+                        const {nativeEvent} = syntheticEvent;
+                        console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                    }}
+                    javaScriptEnabled={true}
+                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
+                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
+                    onLoadEnd={async (e) => {
+                        const loginStatus = await Storage.get('loginStatus');
+                        webview.current.postMessage(
+                            JSON.stringify({
+                                ...loginStatus,
+                                did: global.did,
+                                timeStamp: timeStamp.current + '',
+                                ver: global.ver,
+                            })
+                        );
+                    }}
+                    renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
+                    startInLoadingState={true}
+                    style={{height: webviewHeight, opacity: 0.9999}}
+                    source={{
+                        uri: URI(route.params.link)
+                            .addQuery({
+                                timeStamp: timeStamp.current,
+                                ...route.params.params,
+                            })
+                            .valueOf(),
+                    }}
+                    textZoom={100}
+                />
                 <BottomDesc />
             </ScrollView>
             {bottom_btns ? (
