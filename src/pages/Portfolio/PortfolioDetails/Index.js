@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-09-14 17:21:25
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 11:38:38
+ * @LastEditTime: 2022-12-22 11:53:02
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Platform, ScrollView, Text, Linking, Image} from 'react-native';
@@ -31,6 +31,8 @@ const PortfolioDetails = ({navigation, route}) => {
     const [tip, setTip] = useState({});
     const {bottom_btns} = data;
     const [webviewHeight, setHeight] = useState(deviceHeight - 97);
+    const [zIndex, setZIndex] = useState(-1);
+    const [uri, setUri] = useState('');
 
     const webview = useRef(null);
     const bottomModal = useRef();
@@ -45,15 +47,20 @@ const PortfolioDetails = ({navigation, route}) => {
             });
         };
         getToken();
-        // captureScreen({
-        //     format: 'jpg',
-        //     quality: 0.8,
-        // }).then(
-        //     (uri) => {
-        //         console.log('Image saved to', uri);
-        //     },
-        //     (error) => console.error('Oops, snapshot failed', error)
-        // );
+        setTimeout(() => {
+            setZIndex(2);
+            captureScreen({
+                format: 'jpg',
+                quality: 0.8,
+            }).then(
+                (uri) => {
+                    console.log('Image saved to', uri);
+                    setUri(uri);
+                    setZIndex(-1);
+                },
+                (error) => console.error('Oops, snapshot failed', error)
+            );
+        }, 5000);
     }, []);
 
     const init = () => {
@@ -171,7 +178,7 @@ const PortfolioDetails = ({navigation, route}) => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        zIndex: 2,
+                        zIndex,
                     }}>
                     <RNWebView
                         bounces={false}
