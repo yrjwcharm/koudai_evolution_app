@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-14 17:43:24
+ * @LastEditTime: 2022-12-23 17:10:36
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -21,8 +21,10 @@ import {useDispatch} from 'react-redux';
 import {updateFundList} from '~/redux/actions/ocrFundList';
 import RenderHtml from '~/components/RenderHtml';
 import FitImage from 'react-native-fit-image';
-const Index = ({navigation}) => {
+import {useJump} from '~/components/hooks';
+const Index = ({navigation, route}) => {
     const dispatch = useDispatch();
+    const jump = useJump();
     const [data, setData] = useState(data);
     const _getData = async () => {
         let res = await getInfo();
@@ -62,12 +64,19 @@ const Index = ({navigation}) => {
     };
     const uploadImage = async (data) => {
         let toast = Toast.showLoading('正在识别...');
-        let res = await uploadFile(data, (e) => {
-            console.log(e);
-        });
+        let res = await uploadFile(
+            data,
+            (e) => {
+                console.log(e);
+            },
+            route.params
+        );
         Toast.hide(toast);
         Toast.show(res.message);
         if (res.code === '000000') {
+            if (res.result?.buy_url) {
+                return jump(res.result?.buy_url);
+            }
             if (res.result?.type == 'self_select') {
                 dispatch(updateFundList({ocrOptionalList: res.result.list}));
                 navigation.navigate('ImportOptionalFund');
