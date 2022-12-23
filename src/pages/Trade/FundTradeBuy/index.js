@@ -2,10 +2,12 @@
  * @Date: 2022-06-23 16:05:46
  * @Description: 基金购买
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     ActivityIndicator,
     Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -21,6 +23,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import checked from '~/assets/img/login/checked.png';
 import notChecked from '~/assets/img/login/notChecked.png';
+import tips from '~/assets/img/trade/tips.png';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
 import BottomDesc from '~/components/BottomDesc';
 import {Button, FixedButton} from '~/components/Button';
@@ -31,10 +34,12 @@ import {PasswordModal} from '~/components/Password';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import {isIphoneX, onlyNumber, px} from '~/utils/appUtil';
+import {onlyNumber, px} from '~/utils/appUtil';
 import {
+    fundBatchBuyDo,
     fundBuyDo,
     fundFixDo,
+    getBatchBuyInfo,
     getBuyFee,
     getBuyInfo,
     getBuyQuestionnaire,
@@ -128,6 +133,7 @@ export const Questionnaire = ({callback, data = [], summary_id}) => {
     );
 };
 
+/** @name 金额输入框 */
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
     const jump = useJump();
     const route = useRoute();
@@ -146,12 +152,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
             </View>
             <View style={[Style.flexRow, styles.inputBox]}>
                 <Text style={styles.unit}>{'￥'}</Text>
-                {`${value}`.length === 0 && (
-                    <Text style={styles.placeholder}>
-                        {/* <Text style={{fontSize: px(28)}}>{'10'}</Text> */}
-                        {hidden_text}
-                    </Text>
-                )}
+                {`${value}`.length === 0 && <Text style={styles.placeholder}>{hidden_text}</Text>}
                 <TextInput
                     keyboardType="numeric"
                     onBlur={() => {
@@ -167,7 +168,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     </TouchableOpacity>
                 )}
             </View>
-            {type === 1 && !errTip ? null : (
+            {(type === 1 || type === 3) && !errTip ? null : (
                 <View style={styles.tipsBox}>
                     {errTip ? (
                         <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
@@ -251,7 +252,6 @@ const FixedInvestCycle = ({current_date = [], date_items = [], nextday, onChange
 
     useEffect(() => {
         pickerData.current = createPickerData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -274,6 +274,7 @@ const FixedInvestCycle = ({current_date = [], date_items = [], nextday, onChange
     );
 };
 
+/** @name 支付方式 */
 const PayMethod = ({
     bankCardModal,
     isLarge,
@@ -381,19 +382,242 @@ const PayMethod = ({
     );
 };
 
+/** @name 买入/卖出明细 */
+const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
+    const {disable_info, header, items, title, total_info} = data;
+    const [list, setList] = useState(items);
+    const inputArr = useRef([]);
+
+    const allSelected = useMemo(() => {
+        return list?.every?.((item) => item.select);
+    }, [list]);
+
+    const totalPercent = useMemo(() => {
+        return list?.reduce?.((prev, curr) => prev + (curr.select ? Number(curr.percent) : 0), 0) || 0;
+    }, [list]);
+
+    const canBuy = useMemo(() => {
+        return (
+            list?.every?.((item) => {
+                const {max_amount, min_amount, percent} = item;
+                const _amount = (amount * percent) / 100;
+                return _amount >= min_amount && (max_amount ? _amount <= max_amount : true);
+            }) && totalPercent === 100
+        );
+    }, [amount, list, totalPercent]);
+
+    const selectAll = () => {
+        setList((prev) => {
+            const next = [...prev];
+            next.forEach((item) => (item.select = !allSelected));
+            return next;
+        });
+    };
+
+    const onSelect = (index) => {
+        setList((prev) => {
+            const next = [...prev];
+            next[index].select = !next[index].select;
+            return next;
+        });
+    };
+
+    const onChangePercent = (val, index) => {
+        const _amount = Number(val.replace(/\D/g, ''));
+        setList((prev) => {
+            const next = [...prev];
+            next[index].percent = _amount > 100 ? '100' : `${_amount}`;
+            return next;
+        });
+    };
+
+    useEffect(() => {
+        setCanBuy?.(canBuy);
+    }, [canBuy]);
+
+    useEffect(() => {
+        listRef.current = list;
+    }, [list]);
+
+    return (
+        <>
+            <View style={[styles.partBox, {marginTop: px(12), paddingVertical: Space.padding}]}>
+                <View style={[Style.flexBetween, {paddingBottom: px(12)}]}>
+                    <Text style={[styles.title, {fontWeight: '400'}]}>{title}</Text>
+                </View>
+                <View style={styles.detailBox}>
+                    <View style={Style.flexRow}>
+                        {header?.map?.((item, index, arr) => {
+                            const {pop, text} = item;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={index === 0 ? 0.8 : 1}
+                                    key={text + index}
+                                    onPress={index === 0 ? selectAll : undefined}
+                                    style={[
+                                        Style.flexRow,
+                                        {
+                                            flex: index === 0 ? 1.6 : 1,
+                                            justifyContent:
+                                                index === arr.length - 1
+                                                    ? 'flex-end'
+                                                    : index === 0
+                                                    ? 'flex-start'
+                                                    : 'center',
+                                        },
+                                    ]}>
+                                    {index === 0 && (
+                                        <Image source={allSelected ? checked : notChecked} style={styles.checkIcon} />
+                                    )}
+                                    <Text style={styles.desc}>{text}</Text>
+                                    {pop ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                const {content, confirm} = pop;
+                                                Modal.show({
+                                                    confirmText: confirm.text,
+                                                    content,
+                                                });
+                                            }}
+                                            style={{marginLeft: px(4)}}>
+                                            <AntDesign
+                                                color={Colors.lightGrayColor}
+                                                name="questioncircleo"
+                                                size={px(12)}
+                                            />
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                    {list?.map?.((item, index) => {
+                        const {code, max_amount, min_amount, name, percent, select} = item;
+                        const _amount = (amount * percent) / 100;
+                        const errTip =
+                            _amount && select
+                                ? _amount < min_amount
+                                    ? `小于最低起购金额${min_amount}元`
+                                    : max_amount && _amount > max_amount
+                                    ? `大于最大申购金额${max_amount}元`
+                                    : ''
+                                : '';
+                        return (
+                            <View key={code} style={{marginTop: Space.marginVertical}}>
+                                <View style={Style.flexRow}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => onSelect(index)}
+                                        style={{flexDirection: 'row', flex: 1.6}}>
+                                        <Image source={select ? checked : notChecked} style={styles.checkIcon} />
+                                        <View>
+                                            <Text style={styles.fundName}>{name}</Text>
+                                            <Text style={styles.fundCodeText}>{code}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        onPress={() => {
+                                            const input = inputArr.current?.[index];
+                                            if (!input?.isFocused?.()) input?.focus?.();
+                                        }}
+                                        style={[Style.flexRowCenter, {flex: 1}]}>
+                                        <View style={styles.percentInputBox}>
+                                            <TextInput
+                                                editable={select}
+                                                keyboardType="number-pad"
+                                                onChangeText={(val) => onChangePercent(val, index)}
+                                                ref={(ref) => (inputArr.current[index] = ref)}
+                                                style={[
+                                                    styles.percentInput,
+                                                    select ? {} : {color: Colors.lightGrayColor},
+                                                ]}
+                                                value={`${percent}`}
+                                            />
+                                        </View>
+                                        <Text style={styles.percentUnit}>%</Text>
+                                    </TouchableOpacity>
+                                    <View style={{flex: 1, alignItems: 'flex-end'}}>
+                                        <Text
+                                            style={[
+                                                styles.fundAmount,
+                                                {
+                                                    color:
+                                                        _amount && _amount >= min_amount && select
+                                                            ? Colors.defaultColor
+                                                            : Colors.lightGrayColor,
+                                                },
+                                            ]}>
+                                            {_amount && select ? _amount.toFixed(2) : `最低${min_amount}元`}
+                                        </Text>
+                                    </View>
+                                </View>
+                                {errTip ? <Text style={styles.errTip}>{errTip}</Text> : null}
+                            </View>
+                        );
+                    })}
+                </View>
+                {total_info ? (
+                    <View style={[Style.flexRow, {paddingTop: Space.padding}]}>
+                        <View style={[Style.flexRow, {flex: 1.6}]}>
+                            <Text style={styles.totalText}>{total_info.text}</Text>
+                            <Text
+                                style={[
+                                    styles.totalTip,
+                                    {color: totalPercent !== 100 ? Colors.red : Colors.lightGrayColor},
+                                ]}>
+                                {total_info.tip}
+                            </Text>
+                        </View>
+                        <Text
+                            style={[
+                                styles.totalPercentText,
+                                {color: totalPercent !== 100 ? Colors.red : Colors.defaultColor},
+                            ]}>
+                            {totalPercent}%
+                        </Text>
+                        <View style={{flex: 1}} />
+                    </View>
+                ) : null}
+            </View>
+            {disable_info?.items?.length > 0 && (
+                <View style={styles.disableBox}>
+                    <Text style={[styles.desc, {color: Colors.defaultColor}]}>{disable_info.text}</Text>
+                    {disable_info.items.map?.((item, index) => {
+                        const {code, name} = item;
+                        return (
+                            <Text
+                                key={code}
+                                style={[
+                                    styles.fundName,
+                                    {marginTop: Space.marginVertical, color: Colors.lightGrayColor},
+                                ]}>
+                                {name}
+                            </Text>
+                        );
+                    })}
+                </View>
+            )}
+        </>
+    );
+};
+
 const Index = ({navigation, route}) => {
     const jump = useJump();
-    const {amount: _amount = '', code, type = 0, append = ''} = route.params;
+    const {amount: _amount = '', append = '', code, isLargeAmount = false, type = 0} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
+    const tradeDetailList = useRef();
     const [amount, setAmount] = useState(_amount);
     const [data, setData] = useState({});
     const [feeData, setFeeData] = useState({});
-    const [isLarge, setIsLarge] = useState(false);
+    const [isLarge, setIsLarge] = useState(isLargeAmount);
     const [bankSelectIndex, setIndex] = useState(0);
     const [deltaHeight, setDeltaHeight] = useState(0);
     const [errTip, setErrTip] = useState('');
     const [showMask, setShowMask] = useState(false);
+    const [canBuy, setCanBuy] = useState(true);
     const {
         add_payment_disable = false,
         agreement,
@@ -406,8 +630,10 @@ const Index = ({navigation, route}) => {
         money_safe,
         pay_methods = [],
         period_info,
+        ratio_detail,
         rule_button,
         sub_title,
+        tip,
     } = data;
     const timer = useRef();
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
@@ -495,7 +721,14 @@ const Index = ({navigation, route}) => {
     const onSubmit = (password) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
-        const params = {amount, fund_code: code, password, pay_method: method.pay_method, poid: data.poid, append};
+        const params = {
+            amount,
+            fund_code: code,
+            password,
+            pay_method: method.pay_method,
+            poid: data.poid || '',
+            append,
+        };
         if (type === 1) {
             params.cycle = period_info.current_date[0];
             params.need_buy = false;
@@ -503,12 +736,20 @@ const Index = ({navigation, route}) => {
             params.trade_method = method.pay_type;
             params.wallet_auto_charge = 0;
         }
-        (type === 0 ? fundBuyDo : fundFixDo)(params)
+        if (type === 3) {
+            params.fund_ratios = JSON.stringify(
+                tradeDetailList.current?.map?.((item) => {
+                    const {code: _code, percent} = item;
+                    return {amount: (amount * percent) / 100, code: _code, percent};
+                })
+            );
+        }
+        (type === 0 ? fundBuyDo : type === 3 ? fundBatchBuyDo : fundFixDo)(params)
             .then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
-                    navigation[type === 0 ? 'navigate' : 'replace'](
-                        type === 0 ? 'TradeProcessing' : 'TradeFixedConfirm',
+                    navigation[type === 0 || type === 3 ? 'navigate' : 'replace'](
+                        type === 0 || type === 3 ? 'TradeProcessing' : 'TradeFixedConfirm',
                         res.result
                     );
                 } else {
@@ -593,14 +834,13 @@ const Index = ({navigation, route}) => {
                     confirmText: confirm_action?.text,
                 });
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
 
     useFocusEffect(
         useCallback(() => {
             global.LogTool({ctrl: code, event: 'buy_detail_view'});
-            getBuyInfo({amount, fund_code: code, type}).then((res) => {
+            (type === 3 ? getBatchBuyInfo : getBuyInfo)({amount, fund_code: code, type}).then((res) => {
                 if (res.code === '000000') {
                     const {risk_pop, title = '买入'} = res.result;
                     risk_pop && showRiskPop(risk_pop);
@@ -608,7 +848,6 @@ const Index = ({navigation, route}) => {
                     setData(res.result);
                 }
             });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
 
@@ -616,11 +855,13 @@ const Index = ({navigation, route}) => {
         if (pay_methods.length > 0) {
             onInput();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [amount, bankSelectIndex, code, isLarge, large_pay_method, pay_methods]);
 
     return (
-        <View style={[styles.container, {paddingBottom: (isIphoneX() ? px(86) : px(60)) + deltaHeight}]}>
+        <KeyboardAvoidingView
+            behavior={Platform.select({android: 'height', ios: 'padding'})}
+            keyboardVerticalOffset={deltaHeight}
+            style={[styles.container]}>
             {showMask && (
                 <Mask
                     onClick={() => {
@@ -636,10 +877,18 @@ const Index = ({navigation, route}) => {
                         keyboardShouldPersistTaps="handled"
                         scrollIndicatorInsets={{right: 1}}
                         style={{flex: 1}}>
-                        <View style={[Style.flexRow, styles.nameBox]}>
-                            <Text style={styles.title}>{sub_title}</Text>
-                            <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
-                        </View>
+                        {sub_title ? (
+                            <View style={[Style.flexRow, styles.nameBox]}>
+                                <Text style={styles.title}>{sub_title}</Text>
+                                <Text style={[styles.desc, styles.fundCode]}>{code}</Text>
+                            </View>
+                        ) : null}
+                        {tip ? (
+                            <View style={styles.topTips}>
+                                <Image source={tips} style={styles.tipsIcon} />
+                                <Text style={styles.desc}>{tip}</Text>
+                            </View>
+                        ) : null}
                         {money_safe ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -671,6 +920,14 @@ const Index = ({navigation, route}) => {
                             pay_method={isLarge ? large_pay_method : pay_methods[bankSelectIndex]}
                             setIsLarge={setIsLarge}
                         />
+                        {ratio_detail ? (
+                            <TradeDetail
+                                amount={amount}
+                                data={ratio_detail}
+                                listRef={tradeDetailList}
+                                setCanBuy={setCanBuy}
+                            />
+                        ) : null}
                         <BottomDesc />
                     </ScrollView>
                     <BankCardModal
@@ -700,7 +957,9 @@ const Index = ({navigation, route}) => {
                     <PasswordModal onDone={onSubmit} ref={passwordModal} />
                     <FixedButton
                         agreement={agreement_bottom}
-                        disabled={amount === '' || button.avail === 0 || errTip !== ''}
+                        containerStyle={{position: 'relative'}}
+                        disabled={amount === '' || button.avail === 0 || errTip !== '' || !canBuy}
+                        enableKeyboardAvoiding={false}
                         heightChange={(height) => setDeltaHeight(height)}
                         onPress={buyClick}
                         otherAgreement={agreement}
@@ -712,7 +971,7 @@ const Index = ({navigation, route}) => {
             ) : (
                 <Loading />
             )}
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -720,6 +979,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    topTips: {
+        paddingVertical: px(12),
+        paddingHorizontal: Space.padding,
+        flexDirection: 'row',
+    },
+    tipsIcon: {
+        marginRight: px(4),
+        width: px(16),
+        height: px(16),
     },
     nameBox: {
         paddingVertical: px(10),
@@ -855,6 +1124,95 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(8),
         borderRadius: px(4),
         backgroundColor: '#FFF5E5',
+    },
+    detailBox: {
+        paddingVertical: Space.padding,
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: Colors.borderColor,
+    },
+    checkIcon: {
+        marginRight: px(8),
+        width: px(16),
+        height: px(16),
+    },
+    fundName: {
+        fontSize: px(13),
+        lineHeight: px(15),
+        color: Colors.defaultColor,
+        maxWidth: px(140),
+    },
+    fundCodeText: {
+        marginTop: px(2),
+        fontSize: Font.textSm,
+        lineHeight: px(13),
+        color: Colors.lightGrayColor,
+        fontFamily: Font.numRegular,
+    },
+    percentInputBox: {
+        marginRight: px(4),
+        paddingRight: px(8),
+        borderRadius: px(2),
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: Colors.borderColor,
+        width: px(54),
+        height: px(28),
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        backgroundColor: Colors.bgColor,
+    },
+    percentInput: {
+        padding: 0,
+        fontSize: Font.textH2,
+        lineHeight: px(16),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+        minWidth: 2,
+    },
+    percentUnit: {
+        fontSize: Font.textH3,
+        lineHeight: px(14),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+    },
+    fundAmount: {
+        fontSize: px(13),
+        lineHeight: px(15),
+        color: Colors.lightGrayColor,
+    },
+    totalText: {
+        fontSize: px(15),
+        lineHeight: px(17),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    totalTip: {
+        marginLeft: px(4),
+        fontSize: Font.textSm,
+        lineHeight: px(14),
+        color: Colors.lightGrayColor,
+        fontFamily: Font.numRegular,
+    },
+    totalPercentText: {
+        flex: 1,
+        fontSize: Font.textH1,
+        lineHeight: px(18),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+        textAlign: 'center',
+    },
+    disableBox: {
+        padding: Space.padding,
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderColor: Colors.borderColor,
+        backgroundColor: '#fff',
+    },
+    errTip: {
+        marginTop: px(8),
+        fontSize: Font.textSm,
+        lineHeight: px(14),
+        color: Colors.red,
+        textAlign: 'right',
     },
     agreementBox: {
         paddingTop: px(12),

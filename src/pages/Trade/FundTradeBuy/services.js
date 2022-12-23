@@ -6,11 +6,15 @@ import http from '~/services';
 
 export const getBuyInfo = (params) => http.get('/fund/buy/info/20220701', params);
 
+export const getBatchBuyInfo = (params) => http.get('/fund/batch/buy/info/20221222', params);
+
 export const getBuyFee = (params) => http.get('/fund/buy/fee/20220701', params);
 
 export const getNextDay = (params) => http.get('/trade/fix_invest/next_day/20210101', params);
 
 export const fundBuyDo = (params) => http.post('/fund/buy/do/20220701', params);
+
+export const fundBatchBuyDo = (params) => http.post('/fund/batch/buy/do/20221222', params);
 
 export const fundFixDo = (params) => http.post('/trade/fix_invest/do/20210101', params);
 

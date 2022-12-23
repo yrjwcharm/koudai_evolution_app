@@ -20,6 +20,7 @@ const FixedButton = (props) => {
         checkIcon,
         containerStyle,
         agreementStyle,
+        enableKeyboardAvoiding = true,
         ...restProps
     } = props;
     const keyboardHeight = useRef(new Animated.Value(0)).current;
@@ -43,12 +44,14 @@ const FixedButton = (props) => {
     };
 
     useEffect(() => {
-        Keyboard.addListener('keyboardWillShow', keyboardWillShow);
-        Keyboard.addListener('keyboardWillHide', keyboardWillHide);
-        return () => {
-            Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
-            Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
-        };
+        if (enableKeyboardAvoiding) {
+            Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+            Keyboard.addListener('keyboardWillHide', keyboardWillHide);
+            return () => {
+                Keyboard.removeListener('keyboardWillShow', keyboardWillShow);
+                Keyboard.removeListener('keyboardWillHide', keyboardWillHide);
+            };
+        }
     }, []);
 
     useEffect(() => {
