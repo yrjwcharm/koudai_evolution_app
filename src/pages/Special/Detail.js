@@ -18,6 +18,7 @@ import {followAdd, followCancel} from '../Attention/Index/service';
 import {publishNewComment} from '../Common/CommentList/services';
 import {constants} from '~/components/Modal/util';
 import QuestionModal from './QuestionModal';
+import IdentifyToTrade from '~/components/IdentifyToTrade';
 
 const SpecialDetail = ({navigation, route}) => {
     const jump = useJump();
@@ -25,6 +26,7 @@ const SpecialDetail = ({navigation, route}) => {
     const [token, setToken] = useState('');
     const [content, setContent] = useState('');
     const [scrolling, setScrolling] = useState(false);
+    const [webviewLoadEnd, setWebviewLoadEnd] = useState();
 
     const webview = useRef(null);
     const questionModalRef = useRef(null);
@@ -33,6 +35,7 @@ const SpecialDetail = ({navigation, route}) => {
     const inputRef = useRef();
     const navBarRef = useRef();
     const clickRef = useRef(true);
+    const identifyParams = useRef();
 
     useEffect(() => {
         const getToken = () => {
@@ -113,7 +116,6 @@ const SpecialDetail = ({navigation, route}) => {
         }, 100);
     };
 
-
     const handleTestSure = () => {
         webview.current?.postMessage(JSON.stringify({action: 'reload'}));
         questionModalRef.current?.hide();
@@ -124,6 +126,50 @@ const SpecialDetail = ({navigation, route}) => {
         }
         questionModalRef.current?.hide();
     };
+
+    const handlerIdentifyStart = useCallback(async () => {
+        // 滚动到顶部，并且滚动时禁止点击
+        webview.current.injectJavaScript(
+            `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'none';document.getElementsByClassName('AppRouter')[0].children[0].scrollTo(0,0)`
+        );
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+                webview.current.injectJavaScript(
+                    `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'auto'`
+                );
+            }, 150);
+        });
+    }, []);
+
+    const timer = useRef();
+
+    const handlerIdentify = useCallback(async (done) => {
+        // 通知h5发送params
+        webview.current.postMessage(JSON.stringify({action: 'getIdentifyParams'}));
+        // 等待接受params
+        let _identifyParams = await new Promise((resolve) => {
+            timer.current = setInterval(() => {
+                if (identifyParams.current) {
+                    clearInterval(timer.current);
+                    resolve(identifyParams.current);
+                }
+            }, 200);
+        });
+        // 获得跳转url
+        http.get('products/subject/ocr_btn/20220901', _identifyParams).then((res) => {
+            done();
+            if (res.code === '000000') {
+                jump(res.result.buy_url);
+            } else {
+                Toast.show('识别失败');
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        return () => timer.current && clearInterval(timer.current);
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -195,6 +241,7 @@ const SpecialDetail = ({navigation, route}) => {
                     zIndex: 9,
                 }}
             />
+
             {token ? (
                 <RNWebView
                     bounces={false}
@@ -216,6 +263,12 @@ const SpecialDetail = ({navigation, route}) => {
                             const config = JSON.parse(data?.split('showTest=')[1] || []);
                             console.log('config:', config);
                             questionModalRef.current?.show(config);
+                        } else if (data?.indexOf('loadEnd') > -1) {
+                            // h5加载完毕
+                            setWebviewLoadEnd(true);
+                        } else if (data?.indexOf('identifyParams=') > -1) {
+                            const _identifyParams = JSON.parse(data?.split('identifyParams=')[1] || []);
+                            identifyParams.current = _identifyParams;
                         }
                     }}
                     originWhitelist={['*']}
@@ -349,6 +402,14 @@ const SpecialDetail = ({navigation, route}) => {
             </PageModal>
 
             <QuestionModal onSure={handleTestSure} onClose={handleTestClose} ref={questionModalRef} />
+
+            {data?.show_ocr_btn && webviewLoadEnd ? (
+                <IdentifyToTrade
+                    onStart={handlerIdentifyStart}
+                    onIdentify={handlerIdentify}
+                    style={{bottom: px(109)}}
+                />
+            ) : null}
         </View>
     );
 };
