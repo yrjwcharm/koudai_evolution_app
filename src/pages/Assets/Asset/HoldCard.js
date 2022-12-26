@@ -16,85 +16,125 @@ import {fromJS} from 'immutable';
 import TagInfo from '../components/TagInfo';
 import RenderAlert from '../components/RenderAlert';
 import Icon from 'react-native-vector-icons/Entypo';
-const ClassCard = ({data = {}, showEye}) => {
+import AssetCard from '../components/AssetCard';
+const ClassCard = ({data = {}, showEye, expand}) => {
     const jump = useJump();
-    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url} = data;
+    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url, child} = data;
     return (
-        <TouchableOpacity
-            style={styles.card}
-            activeOpacity={0.9}
-            onPress={() => {
-                if (tag_info?.log_id) {
-                    global.LogTool('guide_click', '卡片标签', tag_info.log_id);
-                }
-                global.LogTool('product_type', data?.log_id);
-                jump(url);
-            }}>
-            {name && (
-                <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                    {!!icon && (
-                        <Image source={{uri: icon}} style={{width: px(16), height: px(16), marginRight: px(3)}} />
-                    )}
-                    <Text style={{fontSize: px(12), fontWeight: '700'}}>
-                        {name}({number})
-                    </Text>
-                    {!!tag_info && <TagInfo data={tag_info} />}
+        <>
+            <TouchableOpacity
+                style={[
+                    styles.card,
+                    {
+                        marginBottom: child?.length && expand > 0 ? 0 : px(12),
+                    },
+                ]}
+                activeOpacity={0.9}
+                onPress={() => {
+                    if (tag_info?.log_id) {
+                        global.LogTool('guide_click', '卡片标签', tag_info.log_id);
+                    }
+                    global.LogTool('product_type', data?.log_id);
+                    jump(url);
+                }}>
+                {name && (
+                    <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                        {!!icon && (
+                            <Image source={{uri: icon}} style={{width: px(16), height: px(16), marginRight: px(3)}} />
+                        )}
+                        <Text style={{fontSize: px(12), fontWeight: '700'}}>
+                            {name}({number})
+                        </Text>
+                        {!!tag_info && <TagInfo data={tag_info} />}
+                    </View>
+                )}
+                <View style={[Style.flexRow]}>
+                    {indicators?.map(({text, value, color, type}, index) => (
+                        <View
+                            key={index}
+                            style={{
+                                flex: [2, 1.15, 1][index],
+                            }}>
+                            {type === 1 ? (
+                                <View style={Style.flexRow}>
+                                    <View style={styles.labelBgWrap}>
+                                        <Text style={styles.labelBgText}>{text}</Text>
+                                    </View>
+                                </View>
+                            ) : (
+                                <Text style={[styles.label_text]}>{text}</Text>
+                            )}
+
+                            <Text
+                                style={[
+                                    styles.amount_text,
+
+                                    {
+                                        fontSize: index == 0 ? px(14) : px(12),
+                                        color: showEye == 'true' && color ? color : Colors.lightBlackColor,
+                                    },
+                                ]}>
+                                {showEye == 'true' ? value : '****'}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+                {!!remind_info && <RenderAlert alert={remind_info} />}
+                {right_top_tag ? (
+                    <Icon
+                        name="chevron-thin-right"
+                        color={Colors.lightBlackColor}
+                        style={{position: 'absolute', right: px(16), top: px(16)}}
+                    />
+                ) : null}
+            </TouchableOpacity>
+            {child?.length > 0 && expand && (
+                <View>
+                    <View style={[styles.circle, {left: px(12)}]} />
+                    <View style={[styles.circle, {right: px(12)}]} />
+                    {child?.map((item, index, arr) => (
+                        <AssetCard
+                            data={item}
+                            key={index}
+                            showEye={showEye}
+                            style={{
+                                marginBottom: index == arr.length - 1 ? px(12) : 0,
+                                borderRadius: 0,
+                                borderBottomLeftRadius: index == arr.length - 1 ? px(6) : 0,
+                                borderBottomRightRadius: index == arr.length - 1 ? px(6) : 0,
+                            }}
+                            borderStyle={{
+                                borderTopWidth: 0.5,
+                                borderTopColor: Colors.lineColor,
+                            }}
+                        />
+                    ))}
                 </View>
             )}
-            <View style={[Style.flexRow]}>
-                {indicators?.map(({text, value, color, type}, index) => (
-                    <View
-                        key={index}
-                        style={{
-                            flex: [2, 1.15, 1][index],
-                        }}>
-                        {type === 1 ? (
-                            <View style={Style.flexRow}>
-                                <View style={styles.labelBgWrap}>
-                                    <Text style={styles.labelBgText}>{text}</Text>
-                                </View>
-                            </View>
-                        ) : (
-                            <Text style={[styles.label_text]}>{text}</Text>
-                        )}
-
-                        <Text
-                            style={[
-                                styles.amount_text,
-
-                                {
-                                    fontSize: index == 0 ? px(14) : px(12),
-                                    color: showEye == 'true' && color ? color : Colors.lightBlackColor,
-                                },
-                            ]}>
-                            {showEye == 'true' ? value : '****'}
-                        </Text>
-                    </View>
-                ))}
-            </View>
-            {!!remind_info && <RenderAlert alert={remind_info} />}
-            {right_top_tag ? (
-                <Icon
-                    name="chevron-thin-right"
-                    color={Colors.lightBlackColor}
-                    style={{position: 'absolute', right: px(16), top: px(16)}}
-                />
-            ) : null}
-        </TouchableOpacity>
+        </>
     );
 };
 const HoldCard = ({data, reload, showEye}) => {
     const {class_list, pop_info} = data;
+    const [expand, setExpand] = useState(true);
     return (
         <>
-            <ListTitle title="全部资产" pop_info={pop_info} reload={reload} />
+            <ListTitle
+                allData={class_list}
+                pop_info={pop_info}
+                reload={reload}
+                expand={expand}
+                onExpand={() => {
+                    setExpand((prev) => !prev);
+                }}
+            />
             {class_list?.map((account, key) => {
-                return <ClassCard data={account} showEye={showEye} key={key} />;
+                return <ClassCard expand={expand} data={account} showEye={showEye} key={key} />;
             })}
         </>
     );
 };
-const ListTitle = ({title, pop_info, reload}) => {
+const ListTitle = ({title = '全部资产', pop_info, reload, allData, expand, onExpand}) => {
     const bottomModal = useRef();
     const [list, setList] = useState(fromJS([]));
     useEffect(() => {
@@ -102,7 +142,6 @@ const ListTitle = ({title, pop_info, reload}) => {
     }, [pop_info]);
     const modal = () => {
         global.LogTool('total_assets_card');
-
         bottomModal.current.show();
     };
     const onChange = (index) => {
@@ -120,15 +159,18 @@ const ListTitle = ({title, pop_info, reload}) => {
         });
     };
     return (
-        <TouchableOpacity
-            onPress={modal}
-            style={[Style.flexRow, {marginBottom: px(10), marginTop: px(8), position: 'relative', zIndex: -10}]}
-            activeOpacity={0.8}>
-            <View style={styles.title_tag} />
-            <Text style={styles.bold_text}>
-                {title} {''}
-            </Text>
-            <AntDesign name="caretdown" size={px(10)} />
+        <View style={[Style.flexBetween, {marginBottom: px(10), marginTop: px(8), position: 'relative', zIndex: -10}]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={modal} style={Style.flexRow}>
+                <View style={styles.title_tag} />
+                <Text style={styles.bold_text}>
+                    {allData?.length >= pop_info?.list.length ? title : '部分资产'} {''}
+                </Text>
+                <AntDesign name="caretdown" size={px(10)} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={onExpand} style={[Style.flexRow, {marginRight: px(16)}]}>
+                <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>{expand ? '收起' : '展开'}</Text>
+                <AntDesign color={Colors.lightBlackColor} name={!expand ? 'down' : 'up'} size={px(10)} />
+            </TouchableOpacity>
             <BottomModal ref={bottomModal} title={pop_info?.title} style={{height: px(460)}} onClose={onClose}>
                 <>
                     {list.toJS().map(({name, icon, number, desc, select, type}, index) => (
@@ -158,7 +200,7 @@ const ListTitle = ({title, pop_info, reload}) => {
                     ))}
                 </>
             </BottomModal>
-        </TouchableOpacity>
+        </View>
     );
 };
 
@@ -215,5 +257,14 @@ const styles = StyleSheet.create({
         height: px(62),
         borderBottomColor: '#E9EAEF',
         borderBottomWidth: 0.5,
+    },
+    circle: {
+        width: px(10),
+        height: px(10),
+        position: 'absolute',
+        backgroundColor: Colors.bgColor,
+        borderRadius: px(6),
+        top: px(-5),
+        zIndex: 10,
     },
 });
