@@ -38,7 +38,10 @@ export default ({navigation, route}) => {
     );
 
     return (
-        <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={styles.container}>
+        <ScrollView
+            bounces={false}
+            scrollIndicatorInsets={{right: 1}}
+            style={[styles.container, {paddingHorizontal: loading ? 0 : Space.padding}]}>
             {loading ? (
                 <Loading />
             ) : items?.length > 0 ? (
@@ -98,7 +101,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        paddingHorizontal: Space.padding,
     },
     card: {
         marginTop: Space.marginVertical,
