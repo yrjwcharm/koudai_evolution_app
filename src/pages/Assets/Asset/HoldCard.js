@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import AssetCard from '../components/AssetCard';
 const ClassCard = ({data = {}, showEye, expand}) => {
     const jump = useJump();
-    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url, child} = data;
+    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url, child, child_header_list} = data;
     return (
         <>
             <TouchableOpacity
@@ -46,6 +46,12 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                             {name}({number})
                         </Text>
                         {!!tag_info && <TagInfo data={tag_info} />}
+                        <Icon
+                            name="chevron-thin-right"
+                            color={Colors.lightBlackColor}
+                            size={px(10)}
+                            style={{position: 'absolute', right: px(-4)}}
+                        />
                     </View>
                 )}
                 <View style={[Style.flexRow]}>
@@ -92,6 +98,28 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                 <View>
                     <View style={[styles.circle, {left: px(12)}]} />
                     <View style={[styles.circle, {right: px(12)}]} />
+                    <View style={[styles.portCard]}>
+                        <View
+                            style={{
+                                borderTopWidth: 0.5,
+                                borderTopColor: Colors.lineColor,
+                                ...Style.flexRow,
+                                paddingTop: px(12),
+                            }}>
+                            {child_header_list?.map((head, index) => (
+                                <View
+                                    activeOpacity={0.8}
+                                    key={index}
+                                    style={{
+                                        flex: index == 0 ? 1.4 : 1,
+                                        ...Style.flexRow,
+                                        justifyContent: index == 0 ? 'flex-start' : 'flex-end',
+                                    }}>
+                                    <Text style={{color: Colors.lightGrayColor, fontSize: px(11)}}>{head.text}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
                     {child?.map((item, index, arr) => (
                         <AssetCard
                             data={item}
@@ -266,5 +294,11 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
         top: px(-5),
         zIndex: 10,
+    },
+    portCard: {
+        backgroundColor: '#fff',
+        padding: px(12),
+        marginHorizontal: px(16),
+        paddingTop: 0,
     },
 });
