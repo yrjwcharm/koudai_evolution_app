@@ -27,6 +27,7 @@ const IdentifyToTrade = ({style, onStart, onIdentify, onError}) => {
                 setFloatIconVisible(true);
             },
             (error) => {
+                console.log(error);
                 setIdentifyModalVisible(false);
                 onError(error);
                 setFloatIconVisible(true);
