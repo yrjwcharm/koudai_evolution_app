@@ -562,9 +562,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 scalesPageToFit={Platform.select({ios: true, android: false})}
                                 source={{
-                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}?timeStamp=${
-                                        timeStamp.current
-                                    }`,
+                                    uri: `http://192.168.190.32:3000/article/9859?timeStamp=${timeStamp.current}`,
                                 }}
                                 onError={(err) => {
                                     console.log(err, 'object111');
@@ -706,7 +704,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                     }}>
                                                     {articles.list.map?.((item, index) => {
                                                         return (
-                                                            <>
+                                                            <React.Fragment key={index}>
                                                                 {index === 0 ? null : (
                                                                     <View
                                                                         style={{
@@ -717,7 +715,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                                     />
                                                                 )}
                                                                 {RenderCate(item, styles.cardStye, 'article')}
-                                                            </>
+                                                            </React.Fragment>
                                                         );
                                                     })}
                                                 </View>

@@ -71,10 +71,10 @@ const PortfolioAssetList = ({route, navigation}) => {
     );
     const handleSortText = (isSort, text, activeText) => {
         if (activeText && isSort) {
-            return text.split('|')?.map((item, index) =>
+            return text.split('|')?.map((item, index, arr) =>
                 item == activeText ? (
                     <Text style={{color: Colors.defaultColor}}>
-                        {index == 1 ? '|' : ''} {activeText} {index == 0 ? '|' : ''}
+                        {index == 1 ? '|' : ''} {activeText} {index == 0 && arr.length > 1 ? '|' : ''}
                     </Text>
                 ) : (
                     item
