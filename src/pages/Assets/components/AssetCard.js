@@ -67,14 +67,10 @@ const AssetCard = ({data = {}, showEye, style, borderStyle}) => {
                             </View>
                         ))}
                     </View>
-                    {!!open_tip && <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{open_tip}</Text>}
-                    {right_top_tag ? (
-                        <Icon
-                            name="chevron-thin-right"
-                            color={Colors.lightBlackColor}
-                            style={{position: 'absolute', right: px(0), top: px(3)}}
-                        />
-                    ) : null}
+                    <View style={Style.flexRow}>
+                        {!!open_tip && <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{open_tip}</Text>}
+                        <Icon name="chevron-thin-right" color={Colors.lightBlackColor} size={px(10)} />
+                    </View>
                 </View>
 
                 <View style={Style.flexRow}>

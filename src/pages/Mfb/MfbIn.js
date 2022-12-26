@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 19:20:52
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-26 14:58:31
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -30,7 +30,7 @@ class MfbIn extends Component {
             bankSelect: '',
             tips: '',
             enable: false,
-            checked: true,
+            checked: false,
             code: props?.route?.params?.code || '',
         };
     }
@@ -234,6 +234,7 @@ class MfbIn extends Component {
                     onChange={(checked) => {
                         this.setState({checked});
                     }}
+                    check={this.state.checked}
                     title="我已阅读并同意"
                     style={{marginHorizontal: px(16)}}
                     data={agreement}
