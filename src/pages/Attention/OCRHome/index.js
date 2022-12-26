@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 17:10:36
+ * @LastEditTime: 2022-12-26 15:52:40
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -97,7 +97,7 @@ const Index = ({navigation, route}) => {
             },
         });
     };
-    return (
+    return data ? (
         <ScrollView style={styles.con}>
             {data?.list?.map((item, index) => (
                 <View key={index} style={{marginBottom: px(20)}}>
@@ -108,7 +108,7 @@ const Index = ({navigation, route}) => {
             ))}
             <Button onPress={handleUpload} title="上传图片" />
         </ScrollView>
-    );
+    ) : null;
 };
 
 export default Index;
