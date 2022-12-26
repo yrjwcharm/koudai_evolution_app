@@ -95,7 +95,7 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                 ) : null}
             </TouchableOpacity>
             {child?.length > 0 && expand && (
-                <View>
+                <>
                     <View style={[styles.circle, {left: px(12)}]} />
                     <View style={[styles.circle, {right: px(12)}]} />
                     <View style={[styles.portCard]}>
@@ -126,10 +126,10 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                             key={index}
                             showEye={showEye}
                             style={{
-                                marginBottom: index == arr.length - 1 ? px(12) : 0,
+                                marginBottom: index == arr.length - 1 && arr.length >= number ? px(12) : 0,
                                 borderRadius: 0,
-                                borderBottomLeftRadius: index == arr.length - 1 ? px(6) : 0,
-                                borderBottomRightRadius: index == arr.length - 1 ? px(6) : 0,
+                                borderBottomLeftRadius: index == arr.length - 1 && child.length >= number ? px(6) : 0,
+                                borderBottomRightRadius: index == arr.length - 1 && child.length >= number ? px(6) : 0,
                             }}
                             borderStyle={{
                                 borderTopWidth: 0.5,
@@ -137,7 +137,17 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                             }}
                         />
                     ))}
-                </View>
+                    {child.length < number ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                jump(url);
+                            }}
+                            style={{...styles.expandAll, ...Style.flexCenter}}>
+                            <Text style={{fontSize: px(11), color: Colors.btnColor}}>查看全部</Text>
+                        </TouchableOpacity>
+                    ) : null}
+                </>
             )}
         </>
     );
@@ -300,5 +310,15 @@ const styles = StyleSheet.create({
         padding: px(12),
         marginHorizontal: px(16),
         paddingTop: 0,
+    },
+    expandAll: {
+        height: px(38),
+        backgroundColor: '#fff',
+        marginHorizontal: px(16),
+        marginBottom: px(12),
+        borderTopColor: Colors.lineColor,
+        borderTopWidth: 0.5,
+        borderBottomLeftRadius: px(6),
+        borderBottomRightRadius: px(6),
     },
 });
