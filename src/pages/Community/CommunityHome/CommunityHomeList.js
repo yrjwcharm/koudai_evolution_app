@@ -8,7 +8,6 @@ import {px} from '~/utils/appUtil';
 import {Colors, Font, Space} from '~/common/commonStyle';
 import {addProduct} from './service';
 import {CommunityCard} from '../components/CommunityCard';
-import ProductCards from '../../../components/Portfolios/ProductCards';
 import {FlatList} from 'react-native-scroll-head-tab-view';
 import {PublishContent} from '../CommunityIndex';
 import {ChooseModal} from '../CommunityVodCreate';
