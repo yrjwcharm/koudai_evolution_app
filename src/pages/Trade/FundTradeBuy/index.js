@@ -820,21 +820,22 @@ const Index = ({navigation, route}) => {
             const {anti_pop} = userInfo;
             if (anti_pop) {
                 const {cancel_action, confirm_action, content, title} = anti_pop;
-                Modal.show({
-                    title: title,
-                    content: content,
-                    confirm: true,
-                    backButtonClose: false,
-                    isTouchMaskToClose: false,
-                    cancelCallBack: () => {
-                        navigation.goBack();
-                    },
-                    confirmCallBack: () => {
-                        jump(confirm_action?.url);
-                    },
-                    cancelText: cancel_action?.text,
-                    confirmText: confirm_action?.text,
-                });
+                isFocusedRef.current &&
+                    Modal.show({
+                        title: title,
+                        content: content,
+                        confirm: true,
+                        backButtonClose: false,
+                        isTouchMaskToClose: false,
+                        cancelCallBack: () => {
+                            navigation.goBack();
+                        },
+                        confirmCallBack: () => {
+                            jump(confirm_action?.url);
+                        },
+                        cancelText: cancel_action?.text,
+                        confirmText: confirm_action?.text,
+                    });
             }
         }, [userInfo])
     );
