@@ -770,7 +770,7 @@ const Index = ({navigation, route}) => {
 
     /** @name 弹出风险弹窗 */
     const showRiskPop = (pop) => {
-        const {cancel, confirm, content, title} = pop;
+        const {cancel = {}, confirm, content, title} = pop;
         Modal.show({
             backButtonClose: false,
             cancelCallBack: () => {
