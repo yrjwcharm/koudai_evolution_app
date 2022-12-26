@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2022-06-24 22:25:52
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-26 17:56:41
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
@@ -249,6 +249,8 @@ export default class TradeRedeem extends Component {
                     this.setState({showMask: false});
                     Http.get('/trade/redeem/survey/20210101', {
                         id: _id,
+                        poid: this.props.route?.params?.poid,
+                        fund_code: this.props.route?.params?.fund_code,
                     }).then((res) => {
                         this.passwordInput();
                     });
