@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 19:34:31
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 15:52:40
+ * @LastEditTime: 2022-12-26 15:54:38
  * @Description:
  */
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, PermissionsAndroid, Platform, Image} from 'react-native';
@@ -27,7 +27,7 @@ const Index = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState(data);
     const _getData = async () => {
-        let res = await getInfo();
+        let res = await getInfo(route.params);
         navigation.setOptions({title: res.result?.title || '识图导入'});
         setData(res.result);
     };
