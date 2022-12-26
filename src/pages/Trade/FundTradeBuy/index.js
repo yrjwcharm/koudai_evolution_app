@@ -16,7 +16,7 @@ import {
     View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {useFocusEffect, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import Picker from 'react-native-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -605,10 +605,12 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
 
 const Index = ({navigation, route}) => {
     const jump = useJump();
+    const isFocused = useIsFocused();
     const {amount: _amount = '', append = '', code, isLargeAmount = false, type = 0} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
     const tradeDetailList = useRef();
+    const isFocusedRef = useRef(isFocused);
     const [amount, setAmount] = useState(_amount);
     const [data, setData] = useState({});
     const [feeData, setFeeData] = useState({});
@@ -843,14 +845,16 @@ const Index = ({navigation, route}) => {
             (type === 3 ? getBatchBuyInfo : getBuyInfo)({amount, fund_code: code, type}).then((res) => {
                 if (res.code === '000000') {
                     const {risk_pop, title = '买入'} = res.result;
-                    risk_pop && showRiskPop(risk_pop);
+                    risk_pop && isFocusedRef.current && showRiskPop(risk_pop);
                     navigation.setOptions({title});
                     setData(res.result);
                 }
             });
         }, [])
     );
-
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
     useEffect(() => {
         if (pay_methods.length > 0) {
             onInput();

@@ -130,7 +130,7 @@ const SpecialDetail = ({navigation, route}) => {
     const handlerIdentifyStart = useCallback(async () => {
         // 滚动到顶部，并且滚动时禁止点击
         webview.current.injectJavaScript(
-            `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'none';document.getElementsByClassName('AppRouter')[0].children[0].scrollTo(0,0)`
+            `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'none';document.getElementById('tab-products').click();`
         );
         await new Promise((resolve) => {
             setTimeout(() => {
@@ -138,7 +138,7 @@ const SpecialDetail = ({navigation, route}) => {
                 webview.current.injectJavaScript(
                     `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'auto'`
                 );
-            }, 150);
+            }, 500);
         });
     }, []);
 
