@@ -349,9 +349,12 @@ const SpecialDetail = ({navigation, route}) => {
                 }}
             />
             {genWebView()}
-            <View style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: floatZIndex}}>
-                {genWebView(true)}
-            </View>
+            {data?.show_ocr_btn ? (
+                <View
+                    style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: floatZIndex}}>
+                    {genWebView(true)}
+                </View>
+            ) : null}
 
             {data ? (
                 <View style={[styles.footer, Style.flexRow, {opacity: floatZIndex < 0 ? 1 : 0}]}>
