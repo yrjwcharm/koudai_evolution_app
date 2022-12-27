@@ -2,7 +2,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-07-27 18:56:57
+ * @LastEditTime: 2022-12-27 19:16:20
  * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -248,7 +248,7 @@ const TradeProcessing = ({navigation, route}) => {
                     <View style={styles.contentStyle}>
                         <FastImage source={{uri: data.header.img}} style={styles.coverImage} />
                         <View style={{marginVertical: text(16)}}>
-                            <Html style={{fontSize: text(16)}} html={data.header.status} />
+                            <Html style={{fontSize: text(16), textAlign: 'center'}} html={data.header.status} />
                         </View>
                         {data.header.amount ? <Text style={styles.head_text}>{data.header.amount}</Text> : null}
                         <Text style={styles.head_text}>{data.header.pay_method}</Text>
