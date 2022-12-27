@@ -431,6 +431,12 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
         });
     };
 
+    const keyboardHide = () => {
+        inputArr.current?.forEach((input) => {
+            input?.blur?.();
+        });
+    };
+
     useEffect(() => {
         setCanBuy?.(canBuy);
     }, [canBuy]);
@@ -438,6 +444,13 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     useEffect(() => {
         listRef.current = list;
     }, [list]);
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidHide', keyboardHide);
+        return () => {
+            Keyboard.removeAllListeners('keyboardDidHide');
+        };
+    }, []);
 
     return (
         <>
@@ -1174,7 +1187,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: px(16),
         color: Colors.defaultColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         minWidth: 2,
         textAlign: 'right',
     },
